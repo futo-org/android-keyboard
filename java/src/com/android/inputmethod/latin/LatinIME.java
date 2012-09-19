@@ -72,6 +72,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.Utils.Stats;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.research.ResearchLogger;
@@ -148,7 +149,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-    private WordComposer mWordComposer = new WordComposer();
+    private final WordComposer mWordComposer = new WordComposer();
     private RichInputConnection mConnection = new RichInputConnection(this);
 
     // Keep track of the last selection range to decide if we need to show word alternatives
@@ -1331,6 +1332,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
                 if (SPACE_STATE_PHANTOM == spaceState) {
+                    if (ProductionFlag.IS_INTERNAL) {
+                        if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
+                            Stats.onAutoCorrection(
+                                    "", mWordComposer.getTypedWord(), " ", mWordComposer);
+                        }
+                    }
                     commitTyped(LastComposedWord.NOT_A_SEPARATOR);
                 }
                 final int keyX, keyY;
@@ -1389,6 +1396,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
+            if (ProductionFlag.IS_INTERNAL) {
+                if (mWordComposer.isBatchMode()) {
+                    Stats.onAutoCorrection("", mWordComposer.getTypedWord(), " ", mWordComposer);
+                }
+            }
             commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mExpectingUpdateSelection = true;
             // The following is necessary for the case where the user typed something but didn't
@@ -1547,7 +1559,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
-                Utils.Stats.onAutoCorrectionCancellation();
+                if (ProductionFlag.IS_INTERNAL) {
+                    Stats.onAutoCorrectionCancellation();
+                }
                 revertCommit();
                 return;
             }
@@ -1696,7 +1710,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (null != mSuggestionStripView) mSuggestionStripView.dismissAddToDictionaryHint();
         }
         mHandler.postUpdateSuggestionStrip();
-        Utils.Stats.onNonSeparator((char)primaryCode, x, y);
+        if (ProductionFlag.IS_INTERNAL) {
+            Utils.Stats.onNonSeparator((char)primaryCode, x, y);
+        }
     }
 
     // Returns true if we did an autocorrection, false otherwise.
@@ -1760,8 +1776,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // already displayed or not, so it's okay.
             setPunctuationSuggestions();
         }
-
-        Utils.Stats.onSeparator((char)primaryCode, x, y);
+        if (ProductionFlag.IS_INTERNAL) {
+            Utils.Stats.onSeparator((char)primaryCode, x, y);
+        }
 
         mHandler.postUpdateShiftState();
         return didAutoCorrect;
@@ -1930,7 +1947,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
             }
-            Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorString);
+            if (ProductionFlag.IS_INTERNAL) {
+                Stats.onAutoCorrection(
+                        typedWord, autoCorrection.toString(), separatorString, mWordComposer);
+            }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorString);
@@ -2020,8 +2040,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // If the suggestion is not in the dictionary, the hint should be shown.
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
-        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE,
-                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        if (ProductionFlag.IS_INTERNAL) {
+            Stats.onSeparator((char)Keyboard.CODE_SPACE,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        }
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, mCurrentSettings.mHintToSaveText);
@@ -2138,8 +2160,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     previousWord.toString(), committedWord.toString());
         }
         mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
-        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorString,
-                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        if (ProductionFlag.IS_INTERNAL) {
+            Stats.onSeparator(mLastComposedWord.mSeparatorString,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(originallyTypedWord);
         }
