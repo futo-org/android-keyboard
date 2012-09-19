@@ -189,22 +189,29 @@ public class PreviewPlacerView extends RelativeLayout {
     }
 
     public void invalidatePointer(final PointerTracker tracker, final boolean isOldestTracker) {
-        GesturePreviewTrail trail;
-        synchronized (mGesturePreviewTrails) {
-            trail = mGesturePreviewTrails.get(tracker.mPointerId);
-            if (trail == null) {
-                trail = new GesturePreviewTrail();
-                mGesturePreviewTrails.put(tracker.mPointerId, trail);
-            }
-        }
-        trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
-
-        if (isOldestTracker) {
+        final boolean needsToUpdateLastPointer =
+                isOldestTracker && mDrawsGestureFloatingPreviewText;
+        if (needsToUpdateLastPointer) {
             mLastPointerX = tracker.getLastX();
             mLastPointerY = tracker.getLastY();
         }
+
+        if (mDrawsGesturePreviewTrail) {
+            GesturePreviewTrail trail;
+            synchronized (mGesturePreviewTrails) {
+                trail = mGesturePreviewTrails.get(tracker.mPointerId);
+                if (trail == null) {
+                    trail = new GesturePreviewTrail();
+                    mGesturePreviewTrails.put(tracker.mPointerId, trail);
+                }
+            }
+            trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
+        }
+
         // TODO: Should narrow the invalidate region.
-        invalidate();
+        if (mDrawsGesturePreviewTrail || needsToUpdateLastPointer) {
+            invalidate();
+        }
     }
 
     @Override
@@ -262,6 +269,7 @@ public class PreviewPlacerView extends RelativeLayout {
     }
 
     public void setGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
+        if (!mDrawsGestureFloatingPreviewText) return;
         mGestureFloatingPreviewText = gestureFloatingPreviewText;
         invalidate();
     }

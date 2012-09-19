@@ -138,11 +138,11 @@
                 android:persistent="true"
                 android:defaultValue="true" />
             <CheckBoxPreference
-                android:key="pref_gesture_floating_preview_text"
+                android:key="pref_show_gesture_floating_preview_text"
                 android:title="@string/gesture_floating_preview_text"
                 android:summary="@string/gesture_floating_preview_text_summary"
                 android:persistent="true"
-                android:defaultValue="true" />
+                android:defaultValue="false" />
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
