@@ -77,8 +77,8 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
     public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
-    public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
-            "pref_gesture_floating_preview_text";
+    public static final String PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT =
+            "pref_show_gesture_floating_preview_text";
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
@@ -207,7 +207,7 @@ public class Settings extends InputMethodSettingsFragment
                 R.bool.config_gesture_input_enabled_by_build_config);
         final Preference gesturePreviewTrail = findPreference(PREF_GESTURE_PREVIEW_TRAIL);
         final Preference gestureFloatingPreviewText = findPreference(
-                PREF_GESTURE_FLOATING_PREVIEW_TEXT);
+                PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT);
         if (!gestureInputEnabledByBuildConfig) {
             miscSettings.removePreference(findPreference(PREF_GESTURE_INPUT));
             miscSettings.removePreference(gesturePreviewTrail);
@@ -304,7 +304,7 @@ public class Settings extends InputMethodSettingsFragment
                         PREF_GESTURE_INPUT, true);
                 setPreferenceEnabled(findPreference(PREF_GESTURE_PREVIEW_TRAIL),
                         gestureInputEnabledByUser);
-                setPreferenceEnabled(findPreference(PREF_GESTURE_FLOATING_PREVIEW_TEXT),
+                setPreferenceEnabled(findPreference(PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT),
                         gestureInputEnabledByUser);
             }
         }

@@ -178,7 +178,7 @@ public final class SettingsValues {
                 && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
         mGesturePreviewTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
-                Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
+                Settings.PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT, false);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
