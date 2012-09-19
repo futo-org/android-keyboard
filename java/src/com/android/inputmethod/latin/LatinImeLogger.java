@@ -49,7 +49,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void logOnAutoCorrectionForGeometric(String before, String after,
-            int separatorCode, int[] xCoordinates, int[] yCoordinates, int[] relativeTimes) {
+            int separatorCode, InputPointers inputPointers) {
     }
 
     public static void logOnAutoCorrectionCancelled() {
