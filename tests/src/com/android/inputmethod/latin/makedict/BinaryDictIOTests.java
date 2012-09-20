@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
-import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -473,6 +473,95 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         for (final String result : results) {
             Log.d(TAG, result);
+        }
+    }
+
+    // Tests for getTerminalPosition
+    private String getWordFromBinary(final FusionDictionaryBufferInterface buffer,
+            final int address) {
+        if (buffer.position() != 0) buffer.position(0);
+
+        FileHeader header = null;
+        try {
+            header = BinaryDictInputOutput.readHeader(buffer);
+        } catch (IOException e) {
+            return null;
+        } catch (UnsupportedFormatException e) {
+            return null;
+        }
+        if (header == null) return null;
+        return BinaryDictInputOutput.getWordAtAddress(buffer, header.mHeaderSize,
+                address - header.mHeaderSize, header.mFormatOptions);
+    }
+
+    private long runGetTerminalPosition(final FusionDictionaryBufferInterface buffer,
+            final String word, int index, boolean contained) {
+        final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
+        long diff = -1;
+        int position = -1;
+        try {
+            final long now = System.nanoTime();
+            position = BinaryDictIOUtils.getTerminalPosition(buffer, word);
+            diff = System.nanoTime() - now;
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while getTerminalPosition: " + e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "UnsupportedFormatException while getTermianlPosition: " + e);
+        }
+
+        assertEquals(FormatSpec.NOT_VALID_WORD != position, contained);
+        if (contained) assertEquals(getWordFromBinary(buffer, position), word);
+        return diff;
+    }
+
+    public void testGetTerminalPosition() {
+        File file = null;
+        try {
+            file = File.createTempFile("runReadUnigrams", ".dict");
+        } catch (IOException e) {
+            // do nothing
+        }
+        assertNotNull(file);
+
+        final FusionDictionary dict = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(
+                        new HashMap<String, String>(), false, false));
+        addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
+        timeWritingDictToFile(file, dict, VERSION3_WITH_LINKEDLIST_NODE);
+
+        final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
+
+        try {
+            // too long word
+            final String longWord = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+            assertEquals(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, longWord));
+
+            // null
+            assertEquals(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, null));
+
+            // empty string
+            assertEquals(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, ""));
+        } catch (IOException e) {
+        } catch (UnsupportedFormatException e) {
+        }
+
+        // Test a word that is contained within the dictionary.
+        long sum = 0;
+        for (int i = 0; i < sWords.size(); ++i) {
+            final long time = runGetTerminalPosition(buffer, sWords.get(i), i, true);
+            sum += time == -1 ? 0 : time;
+        }
+        Log.d(TAG, "per a search : " + (((double)sum) / sWords.size() / 1000000));
+
+        // Test a word that isn't contained within the dictionary.
+        final Random random = new Random((int)System.currentTimeMillis());
+        for (int i = 0; i < 1000; ++i) {
+            final String word = generateWord(random.nextInt());
+            if (sWords.indexOf(word) != -1) continue;
+            runGetTerminalPosition(buffer, word, i, false);
         }
     }
 }
