@@ -464,8 +464,8 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (mInputSize > 0 && index > 0 && index < mInputSize - 1) {
-        return mTimes[index + 1] - mTimes[index - 1];
+    if (mInputSize > 0 && index >= 0 && index < mInputSize - 1) {
+        return mTimes[index + 1] - mTimes[index];
     }
     return 0;
 }
