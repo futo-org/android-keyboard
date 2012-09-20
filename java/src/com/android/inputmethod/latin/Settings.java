@@ -42,9 +42,9 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
-public class Settings extends InputMethodSettingsFragment
+public final class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
+    public static final boolean ENABLE_INTERNAL_SETTINGS = ProductionFlag.IS_INTERNAL;
 
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
@@ -63,8 +63,8 @@ public class Settings extends InputMethodSettingsFragment
             "last_user_dictionary_write_time";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
-    public static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
-            "pref_suppress_language_switch_key";
+    public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
+            "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
@@ -77,8 +77,8 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
     public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
-    public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
-            "pref_gesture_floating_preview_text";
+    public static final String PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT =
+            "pref_show_gesture_floating_preview_text";
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
@@ -97,7 +97,7 @@ public class Settings extends InputMethodSettingsFragment
     private TextView mKeypressVibrationDurationSettingsTextView;
     private TextView mKeypressSoundVolumeSettingsTextView;
 
-    private static void setPreferenceEnabled(Preference preference, boolean enabled) {
+    private static void setPreferenceEnabled(final Preference preference, final boolean enabled) {
         if (preference != null) {
             preference.setEnabled(enabled);
         }
@@ -111,7 +111,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
         setSubtypeEnablerTitle(R.string.select_language);
@@ -192,7 +192,7 @@ public class Settings extends InputMethodSettingsFragment
         }
 
         setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
-                !SettingsValues.isLanguageSwitchKeySupressed(prefs));
+                SettingsValues.showsLanguageSwitchKey(prefs));
 
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);
@@ -207,7 +207,7 @@ public class Settings extends InputMethodSettingsFragment
                 R.bool.config_gesture_input_enabled_by_build_config);
         final Preference gesturePreviewTrail = findPreference(PREF_GESTURE_PREVIEW_TRAIL);
         final Preference gestureFloatingPreviewText = findPreference(
-                PREF_GESTURE_FLOATING_PREVIEW_TEXT);
+                PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT);
         if (!gestureInputEnabledByBuildConfig) {
             miscSettings.removePreference(findPreference(PREF_GESTURE_INPUT));
             miscSettings.removePreference(gesturePreviewTrail);
@@ -220,7 +220,7 @@ public class Settings extends InputMethodSettingsFragment
 
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
-                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_EXPERIMENTAL_SETTINGS;
+                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_INTERNAL_SETTINGS;
         final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
         if (!showUsabilityStudyModeOption) {
             if (usabilityStudyPref != null) {
@@ -288,14 +288,14 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         (new BackupManager(getActivity())).dataChanged();
         if (key.equals(PREF_POPUP_ON)) {
             setPreferenceEnabled(findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY),
                     prefs.getBoolean(PREF_POPUP_ON, true));
-        } else if (key.equals(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
+        } else if (key.equals(PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
             setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
-                    !SettingsValues.isLanguageSwitchKeySupressed(prefs));
+                    SettingsValues.showsLanguageSwitchKey(prefs));
         } else if (key.equals(PREF_GESTURE_INPUT)) {
             final boolean gestureInputEnabledByConfig = getResources().getBoolean(
                     R.bool.config_gesture_input_enabled_by_build_config);
@@ -304,7 +304,7 @@ public class Settings extends InputMethodSettingsFragment
                         PREF_GESTURE_INPUT, true);
                 setPreferenceEnabled(findPreference(PREF_GESTURE_PREVIEW_TRAIL),
                         gestureInputEnabledByUser);
-                setPreferenceEnabled(findPreference(PREF_GESTURE_FLOATING_PREVIEW_TEXT),
+                setPreferenceEnabled(findPreference(PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT),
                         gestureInputEnabledByUser);
             }
         }
@@ -352,7 +352,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
-            SharedPreferences sp, Resources res) {
+            final SharedPreferences sp, final Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
             final boolean hasVibratorHardware = VibratorUtils.getInstance(getActivity())
                     .hasVibrator();
@@ -370,7 +370,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     private void updateKeypressVibrationDurationSettingsSummary(
-            SharedPreferences sp, Resources res) {
+            final SharedPreferences sp, final Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
             mKeypressVibrationDurationSettingsPref.setSummary(
                     SettingsValues.getCurrentVibrationDuration(sp, res)
@@ -428,7 +428,7 @@ public class Settings extends InputMethodSettingsFragment
         builder.create().show();
     }
 
-    private void updateKeypressSoundVolumeSummary(SharedPreferences sp, Resources res) {
+    private void updateKeypressSoundVolumeSummary(final SharedPreferences sp, final Resources res) {
         if (mKeypressSoundVolumeSettingsPref != null) {
             mKeypressSoundVolumeSettingsPref.setSummary(String.valueOf(
                     (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100)));

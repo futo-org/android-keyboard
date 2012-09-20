@@ -306,6 +306,10 @@ public class Suggest {
                     wordComposer, prevWordForBigram, proximityInfo, sessionId));
         }
 
+        for (SuggestedWordInfo wordInfo : suggestionsSet) {
+            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(), wordInfo.mSourceDict);
+        }
+
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();

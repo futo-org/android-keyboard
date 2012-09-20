@@ -409,11 +409,11 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
                 }
                 NearKeysDistanceMap::const_iterator itPP =
                         prevNearKeysDistances->find(minChar);
-                if (DEBUG_GEO_FULL) {
-                    AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
-                            minChar, itPP->second, minDist);
-                }
                 if (itPP != prevNearKeysDistances->end() && minDist > itPP->second) {
+                    if (DEBUG_GEO_FULL) {
+                        AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
+                                minChar, itPP->second, minDist);
+                    }
                     return popped;
                 }
             }
@@ -464,8 +464,8 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (mInputSize > 0 && index > 0 && index < mInputSize - 1) {
-        return mTimes[index + 1] - mTimes[index - 1];
+    if (mInputSize > 0 && index >= 0 && index < mInputSize - 1) {
+        return mTimes[index + 1] - mTimes[index];
     }
     return 0;
 }
@@ -504,7 +504,7 @@ int32_t ProximityInfoState::getAllPossibleChars(
     if (index >= mInputXs.size()) {
         return filterSize;
     }
-    int i = filterSize;
+    int newFilterSize = filterSize;
     for (int j = 0; j < mProximityInfo->getKeyCount(); ++j) {
         if (mNearKeysVector[index].test(j)) {
             const int32_t keyCodePoint = mProximityInfo->getCodePointOf(j);
@@ -517,11 +517,11 @@ int32_t ProximityInfoState::getAllPossibleChars(
                 }
             }
             if (insert) {
-                filter[i++] = keyCodePoint;
+                filter[newFilterSize++] = keyCodePoint;
             }
         }
     }
-    return i;
+    return newFilterSize;
 }
 
 float ProximityInfoState::getAveragePointDuration() const {

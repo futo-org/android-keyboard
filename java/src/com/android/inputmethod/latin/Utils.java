@@ -412,14 +412,24 @@ public final class Utils {
         }
 
         public static void onAutoCorrection(final String typedWord, final String correctedWord,
-                final String separatorString) {
-            if (TextUtils.isEmpty(typedWord)) return;
+                final String separatorString, final WordComposer wordComposer) {
+            final boolean isBatchMode = wordComposer.isBatchMode();
+            if (!isBatchMode && TextUtils.isEmpty(typedWord)) return;
             // TODO: this fails when the separator is more than 1 code point long, but
             // the backend can't handle it yet. The only case when this happens is with
             // smileys and other multi-character keys.
             final int codePoint = TextUtils.isEmpty(separatorString) ? Constants.NOT_A_CODE
                     : separatorString.codePointAt(0);
-            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, codePoint);
+            if (!isBatchMode) {
+                LatinImeLogger.logOnAutoCorrectionForTyping(typedWord, correctedWord, codePoint);
+            } else {
+                if (!TextUtils.isEmpty(correctedWord)) {
+                    // We must make sure that InputPointer contains only the relative timestamps,
+                    // not actual timestamps.
+                    LatinImeLogger.logOnAutoCorrectionForGeometric(
+                            "", correctedWord, codePoint, wordComposer.getInputPointers());
+                }
+            }
         }
 
         public static void onAutoCorrectionCancellation() {

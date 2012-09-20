@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
@@ -96,6 +97,11 @@ public class UserHistoryDictIOUtils {
         public void put(final byte b) {
             mBuffer[mPosition++] = b;
         }
+
+        @Override
+        public int limit() {
+            return mBuffer.length;
+        }
     }
 
     /**
@@ -162,7 +168,7 @@ public class UserHistoryDictIOUtils {
         final Map<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
 
         try {
-            BinaryDictInputOutput.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
+            BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
                     bigrams);
             addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
         } catch (IOException e) {

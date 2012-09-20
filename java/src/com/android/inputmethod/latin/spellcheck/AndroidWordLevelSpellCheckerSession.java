@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.content.ContentResolver;
+import android.database.ContentObserver;
+import android.provider.UserDictionary.Words;
 import android.service.textservice.SpellCheckerService.Session;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,6 +48,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private int mScript; // One of SCRIPT_LATIN or SCRIPT_CYRILLIC for now.
     private final AndroidSpellCheckerService mService;
     protected final SuggestionsCache mSuggestionsCache = new SuggestionsCache();
+    private final ContentObserver mObserver;
 
     private static class SuggestionsParams {
         public final String[] mSuggestions;
@@ -83,10 +87,23 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             mUnigramSuggestionsInfoCache.put(
                     generateKey(query, prevWord), new SuggestionsParams(suggestions, flags));
         }
+
+        public void clearCache() {
+            mUnigramSuggestionsInfoCache.evictAll();
+        }
     }
 
     AndroidWordLevelSpellCheckerSession(final AndroidSpellCheckerService service) {
         mService = service;
+        final ContentResolver cres = service.getContentResolver();
+
+        mObserver = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean self) {
+                mSuggestionsCache.clearCache();
+            }
+        };
+        cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
     }
 
     @Override
@@ -95,6 +112,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         mDictionaryPool = mService.getDictionaryPool(localeString);
         mLocale = LocaleUtils.constructLocaleFromString(localeString);
         mScript = AndroidSpellCheckerService.getScriptFromLocale(mLocale);
+    }
+
+    @Override
+    public void onClose() {
+        final ContentResolver cres = mService.getContentResolver();
+        cres.unregisterContentObserver(mObserver);
     }
 
     /*

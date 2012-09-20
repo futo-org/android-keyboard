@@ -72,7 +72,7 @@ public final class SettingsValues {
     @SuppressWarnings("unused") // TODO: Use this
     private final boolean mUsabilityStudyMode;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
-    public final boolean mIsLanguageSwitchKeySuppressed;
+    public final boolean mShowsLanguageSwitchKey;
     @SuppressWarnings("unused") // TODO: Use this
     private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
@@ -151,7 +151,7 @@ public final class SettingsValues {
         mUsabilityStudyMode = getUsabilityStudyMode(prefs);
         mIncludesOtherImesInLanguageSwitchList = prefs.getBoolean(
                 Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false);
-        mIsLanguageSwitchKeySuppressed = isLanguageSwitchKeySupressed(prefs);
+        mShowsLanguageSwitchKey = showsLanguageSwitchKey(prefs);
         mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
@@ -178,7 +178,7 @@ public final class SettingsValues {
                 && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
         mGesturePreviewTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
-                Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
+                Settings.PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT, false);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
@@ -336,12 +336,25 @@ public final class SettingsValues {
         return mVoiceKeyOnMain;
     }
 
-    public static boolean isLanguageSwitchKeySupressed(final SharedPreferences prefs) {
-        return prefs.getBoolean(Settings.PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+    // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
+    // This is being used only for the backward compatibility.
+    private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
+            "pref_suppress_language_switch_key";
+
+    public static boolean showsLanguageSwitchKey(final SharedPreferences prefs) {
+        if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
+            final boolean suppressLanguageSwitchKey = prefs.getBoolean(
+                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+            final SharedPreferences.Editor editor = prefs.edit();
+            editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
+            editor.putBoolean(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
+            editor.apply();
+        }
+        return prefs.getBoolean(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
     }
 
     public boolean isLanguageSwitchKeyEnabled(final Context context) {
-        if (mIsLanguageSwitchKeySuppressed) {
+        if (!mShowsLanguageSwitchKey) {
             return false;
         }
         if (mIncludesOtherImesInLanguageSwitchList) {
@@ -353,7 +366,7 @@ public final class SettingsValues {
         }
     }
 
-    public boolean isFullscreenModeAllowed(final Resources res) {
+    public static boolean isFullscreenModeAllowed(final Resources res) {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
     }
 

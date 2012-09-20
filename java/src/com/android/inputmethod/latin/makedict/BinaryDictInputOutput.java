@@ -63,6 +63,7 @@ public class BinaryDictInputOutput {
         public int position();
         public void position(int newPosition);
         public void put(final byte b);
+        public int limit();
     }
 
     public static final class ByteBufferWrapper implements FusionDictionaryBufferInterface {
@@ -106,6 +107,11 @@ public class BinaryDictInputOutput {
         @Override
         public void put(final byte b) {
             mBuffer.put(b);
+        }
+
+        @Override
+        public int limit() {
+            return mBuffer.limit();
         }
     }
 
@@ -284,7 +290,7 @@ public class BinaryDictInputOutput {
      * @param count the group count
      * @return the size of the group count, either 1 or 2 bytes.
      */
-    private static int getGroupCountSize(final int count) {
+    public static int getGroupCountSize(final int count) {
         if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
             return 1;
         } else if (FormatSpec.MAX_CHARGROUPS_IN_A_NODE >= count) {
@@ -370,13 +376,16 @@ public class BinaryDictInputOutput {
             g.mCachedSize = groupSize;
             size += groupSize;
         }
+        if (options.mHasLinkedListNode) {
+            size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
+        }
         node.mCachedSize = size;
     }
 
     /**
      * Helper method to hide the actual value of the no children address.
      */
-    private static boolean hasChildrenAddress(final int address) {
+    public static boolean hasChildrenAddress(final int address) {
         return FormatSpec.NO_CHILDREN_ADDRESS != address;
     }
 
@@ -521,6 +530,9 @@ public class BinaryDictInputOutput {
             group.mCachedSize = groupSize;
             size += groupSize;
         }
+        if (formatOptions.mHasLinkedListNode) {
+            size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
+        }
         if (node.mCachedSize != size) {
             node.mCachedSize = size;
             changed = true;
@@ -532,9 +544,11 @@ public class BinaryDictInputOutput {
      * Computes the byte size of a list of nodes and updates each node cached position.
      *
      * @param flatNodes the array of nodes.
+     * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
-    private static int stackNodes(final ArrayList<Node> flatNodes) {
+    private static int stackNodes(final ArrayList<Node> flatNodes,
+            final FormatOptions formatOptions) {
         int nodeOffset = 0;
         for (Node n : flatNodes) {
             n.mCachedAddress = nodeOffset;
@@ -544,7 +558,9 @@ public class BinaryDictInputOutput {
                 g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
                 groupOffset += g.mCachedSize;
             }
-            if (groupOffset + groupCountSize != n.mCachedSize) {
+            final int nodeSize = groupCountSize + groupOffset
+                    + (formatOptions.mHasLinkedListNode ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
+            if (nodeSize != n.mCachedSize) {
                 throw new RuntimeException("Bug : Stored and computed node size differ");
             }
             nodeOffset += n.mCachedSize;
@@ -571,7 +587,7 @@ public class BinaryDictInputOutput {
             final ArrayList<Node> flatNodes, final FormatOptions formatOptions) {
         // First get the worst sizes and offsets
         for (Node n : flatNodes) setNodeMaximumSize(n, formatOptions);
-        final int offset = stackNodes(flatNodes);
+        final int offset = stackNodes(flatNodes, formatOptions);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -587,7 +603,7 @@ public class BinaryDictInputOutput {
                 if (oldNodeSize < newNodeSize) throw new RuntimeException("Increased size ?!");
                 changesDone |= changed;
             }
-            stackNodes(flatNodes);
+            stackNodes(flatNodes, formatOptions);
             ++passes;
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
@@ -776,7 +792,8 @@ public class BinaryDictInputOutput {
         return (options.mFrenchLigatureProcessing ? FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG : 0)
                 + (options.mGermanUmlautProcessing ? FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG : 0)
                 + (hasBigrams ? FormatSpec.CONTAINS_BIGRAMS_FLAG : 0)
-                + (formatOptions.mHasParentAddress ? FormatSpec.HAS_PARENT_ADDRESS : 0);
+                + (formatOptions.mHasParentAddress ? FormatSpec.HAS_PARENT_ADDRESS : 0)
+                + (formatOptions.mHasLinkedListNode ? FormatSpec.HAS_LINKEDLIST_NODE : 0);
     }
 
     /**
@@ -909,6 +926,11 @@ public class BinaryDictInputOutput {
                 }
             }
 
+        }
+        if (formatOptions.mHasLinkedListNode) {
+            buffer[index] = buffer[index + 1] = buffer[index + 2]
+                    = FormatSpec.NO_FORWARD_LINK_ADDRESS;
+            index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         if (index != node.mCachedAddress + node.mCachedSize) throw new RuntimeException(
                 "Not the same size : written "
@@ -1083,7 +1105,7 @@ public class BinaryDictInputOutput {
     // readDictionaryBinary is the public entry point for them.
 
     private static final int[] CHARACTER_BUFFER = new int[FormatSpec.MAX_WORD_LENGTH];
-    private static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
+    public static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
             final int originalGroupAddress, final FormatOptions options) {
         int addressPointer = originalGroupAddress;
         final int flags = buffer.readUnsignedByte();
@@ -1196,7 +1218,7 @@ public class BinaryDictInputOutput {
     /**
      * Reads and returns the char group count out of a buffer and forwards the pointer.
      */
-    private static int readCharGroupCount(final FusionDictionaryBufferInterface buffer) {
+    public static int readCharGroupCount(final FusionDictionaryBufferInterface buffer) {
         final int msb = buffer.readUnsignedByte();
         if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
             return msb;
@@ -1220,8 +1242,9 @@ public class BinaryDictInputOutput {
      * @param formatOptions file format options.
      * @return the word, as a string.
      */
-    private static String getWordAtAddress(final FusionDictionaryBufferInterface buffer,
-            final int headerSize, final int address, final FormatOptions formatOptions) {
+    /* packages for tests */ static String getWordAtAddress(
+            final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
+            final FormatOptions formatOptions) {
         final String cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
 
@@ -1325,144 +1348,65 @@ public class BinaryDictInputOutput {
             final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap,
             final FormatOptions options)
             throws IOException {
-        final int nodeOrigin = buffer.position() - headerSize;
-        final int count = readCharGroupCount(buffer);
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
-        int groupOffset = nodeOrigin + getGroupCountSize(count);
-        for (int i = count; i > 0; --i) {
-            CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
-            ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
-            ArrayList<WeightedString> bigrams = null;
-            if (null != info.mBigrams) {
-                bigrams = new ArrayList<WeightedString>();
-                for (PendingAttribute bigram : info.mBigrams) {
-                    final String word = getWordAtAddress(
-                            buffer, headerSize, bigram.mAddress, options);
-                    bigrams.add(new WeightedString(word, bigram.mFrequency));
+        final int nodeOrigin = buffer.position() - headerSize;
+
+        do { // Scan the linked-list node.
+            final int nodeHeadPosition = buffer.position() - headerSize;
+            final int count = readCharGroupCount(buffer);
+            int groupOffset = nodeHeadPosition + getGroupCountSize(count);
+            for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
+                CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
+                ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
+                ArrayList<WeightedString> bigrams = null;
+                if (null != info.mBigrams) {
+                    bigrams = new ArrayList<WeightedString>();
+                    for (PendingAttribute bigram : info.mBigrams) {
+                        final String word = getWordAtAddress(
+                                buffer, headerSize, bigram.mAddress, options);
+                        bigrams.add(new WeightedString(word, bigram.mFrequency));
+                    }
+                }
+                if (hasChildrenAddress(info.mChildrenAddress)) {
+                    Node children = reverseNodeMap.get(info.mChildrenAddress);
+                    if (null == children) {
+                        final int currentPosition = buffer.position();
+                        buffer.position(info.mChildrenAddress + headerSize);
+                        children = readNode(
+                                buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
+                        buffer.position(currentPosition);
+                    }
+                    nodeContents.add(
+                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                                    info.mFrequency,
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
+                } else {
+                    nodeContents.add(
+                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                                    info.mFrequency,
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
+                }
+                groupOffset = info.mEndAddress;
+            }
+
+            // reach the end of the array.
+            if (options.mHasLinkedListNode) {
+                final int nextAddress = buffer.readUnsignedInt24();
+                if (nextAddress >= 0 && nextAddress < buffer.limit()) {
+                    buffer.position(nextAddress);
+                } else {
+                    break;
                 }
             }
-            if (hasChildrenAddress(info.mChildrenAddress)) {
-                Node children = reverseNodeMap.get(info.mChildrenAddress);
-                if (null == children) {
-                    final int currentPosition = buffer.position();
-                    buffer.position(info.mChildrenAddress + headerSize);
-                    children = readNode(
-                            buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
-                    buffer.position(currentPosition);
-                }
-                nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
-            } else {
-                nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
-            }
-            groupOffset = info.mEndAddress;
-        }
+        } while (options.mHasLinkedListNode &&
+                buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
+
         final Node node = new Node(nodeContents);
         node.mCachedAddress = nodeOrigin;
         reverseNodeMap.put(node.mCachedAddress, node);
         return node;
-    }
-
-    // TODO: move these methods (readUnigramsAndBigramsBinary(|Inner)) and an inner class (Position)
-    // out of this class.
-    private static class Position {
-        public static final int NOT_READ_GROUPCOUNT = -1;
-
-        public int mAddress;
-        public int mNumOfCharGroup;
-        public int mPosition;
-        public int mLength;
-
-        public Position(int address, int length) {
-            mAddress = address;
-            mLength = length;
-            mNumOfCharGroup = NOT_READ_GROUPCOUNT;
-        }
-    }
-
-    /**
-     * Tours all node without recursive call.
-     */
-    private static void readUnigramsAndBigramsBinaryInner(
-            final FusionDictionaryBufferInterface buffer, final int headerSize,
-            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams,
-            final FormatOptions formatOptions) {
-        int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
-
-        Stack<Position> stack = new Stack<Position>();
-        int index = 0;
-
-        Position initPos = new Position(headerSize, 0);
-        stack.push(initPos);
-
-        while (!stack.empty()) {
-            Position p = stack.peek();
-
-            if (DBG) {
-                MakedictLog.d("read: address=" + p.mAddress + ", numOfCharGroup=" +
-                        p.mNumOfCharGroup + ", position=" + p.mPosition + ", length=" + p.mLength);
-            }
-
-            if (buffer.position() != p.mAddress) buffer.position(p.mAddress);
-            if (index != p.mLength) index = p.mLength;
-
-            if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
-                p.mNumOfCharGroup = readCharGroupCount(buffer);
-                p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
-                p.mPosition = 0;
-            }
-
-            CharGroupInfo info = readCharGroup(buffer, p.mAddress - headerSize, formatOptions);
-            for (int i = 0; i < info.mCharacters.length; ++i) {
-                pushedChars[index++] = info.mCharacters[i];
-            }
-            p.mPosition++;
-
-            if (info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) { // found word
-                words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
-                frequencies.put(info.mOriginalAddress, info.mFrequency);
-                if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
-            }
-
-            if (p.mPosition == p.mNumOfCharGroup) {
-                stack.pop();
-            } else {
-                // the node has more groups.
-                p.mAddress = buffer.position();
-            }
-
-            if (hasChildrenAddress(info.mChildrenAddress)) {
-                Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
-                stack.push(childrenPos);
-            }
-        }
-    }
-
-    /**
-     * Reads unigrams and bigrams from the binary file.
-     * Doesn't make the memory representation of the dictionary.
-     *
-     * @param buffer the buffer to read.
-     * @param words the map to store the address as a key and the word as a value.
-     * @param frequencies the map to store the address as a key and the frequency as a value.
-     * @param bigrams the map to store the address as a key and the list of address as a value.
-     * @throws IOException
-     * @throws UnsupportedFormatException
-     */
-    public static void readUnigramsAndBigramsBinary(final FusionDictionaryBufferInterface buffer,
-            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
-            UnsupportedFormatException {
-        // Read header
-        final FileHeader header = readHeader(buffer);
-        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams,
-                header.mFormatOptions);
     }
 
     /**
@@ -1501,7 +1445,7 @@ public class BinaryDictInputOutput {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    private static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
+    public static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
             throws IOException, UnsupportedFormatException {
         final int version = checkFormatVersion(buffer);
         final int optionsFlags = buffer.readUnsignedShort();
@@ -1525,7 +1469,8 @@ public class BinaryDictInputOutput {
                         0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
                         0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
                 new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.HAS_PARENT_ADDRESS)));
+                        0 != (optionsFlags & FormatSpec.HAS_PARENT_ADDRESS),
+                        0 != (optionsFlags & FormatSpec.HAS_LINKEDLIST_NODE)));
         return header;
     }
 
@@ -1542,11 +1487,6 @@ public class BinaryDictInputOutput {
             final String value = CharEncoding.readString(buffer);
             options.put(key, value);
         }
-    }
-    // TODO: remove this method.
-    public static void populateOptions(final ByteBuffer buffer, final int headerSize,
-            final HashMap<String, String> options) {
-        populateOptions(new ByteBufferWrapper(buffer), headerSize, options);
     }
 
     /**

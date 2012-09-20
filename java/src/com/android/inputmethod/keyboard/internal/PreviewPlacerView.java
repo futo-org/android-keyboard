@@ -46,7 +46,6 @@ public class PreviewPlacerView extends RelativeLayout {
     private final float mGestureFloatingPreviewHorizontalPadding;
     private final float mGestureFloatingPreviewVerticalPadding;
     private final float mGestureFloatingPreviewRoundRadius;
-    /* package */ final int mGestureFloatingPreviewTextLingerTimeout;
 
     private int mXOrigin;
     private int mYOrigin;
@@ -78,11 +77,14 @@ public class PreviewPlacerView extends RelativeLayout {
         private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
 
         private final Params mGesturePreviewTrailParams;
+        private final int mGestureFloatingPreviewTextLingerTimeout;
 
         public DrawingHandler(final PreviewPlacerView outerInstance,
-                final Params gesturePreviewTrailParams) {
+                final Params gesturePreviewTrailParams,
+                final int getstureFloatinPreviewTextLinerTimeout) {
             super(outerInstance);
             mGesturePreviewTrailParams = gesturePreviewTrailParams;
+            mGestureFloatingPreviewTextLingerTimeout = getstureFloatinPreviewTextLinerTimeout;
         }
 
         @Override
@@ -105,10 +107,8 @@ public class PreviewPlacerView extends RelativeLayout {
 
         public void dismissGestureFloatingPreviewText() {
             cancelDismissGestureFloatingPreviewText();
-            final PreviewPlacerView placerView = getOuterInstance();
-            sendMessageDelayed(
-                    obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
-                    placerView.mGestureFloatingPreviewTextLingerTimeout);
+            sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
+                    mGestureFloatingPreviewTextLingerTimeout);
         }
 
         private void cancelUpdateGestureTrailPreview() {
@@ -122,7 +122,6 @@ public class PreviewPlacerView extends RelativeLayout {
         }
 
         public void cancelAllMessages() {
-            cancelDismissGestureFloatingPreviewText();
             cancelUpdateGestureTrailPreview();
         }
     }
@@ -151,12 +150,13 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
         mGestureFloatingPreviewRoundRadius = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
-        mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
+        final int gestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         mGesturePreviewTrailParams = new Params(keyboardViewAttr);
         keyboardViewAttr.recycle();
 
-        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
+        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams,
+                gestureFloatingPreviewTextLingerTimeout);
 
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
@@ -189,22 +189,29 @@ public class PreviewPlacerView extends RelativeLayout {
     }
 
     public void invalidatePointer(final PointerTracker tracker, final boolean isOldestTracker) {
-        GesturePreviewTrail trail;
-        synchronized (mGesturePreviewTrails) {
-            trail = mGesturePreviewTrails.get(tracker.mPointerId);
-            if (trail == null) {
-                trail = new GesturePreviewTrail();
-                mGesturePreviewTrails.put(tracker.mPointerId, trail);
-            }
-        }
-        trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
-
-        if (isOldestTracker) {
+        final boolean needsToUpdateLastPointer =
+                isOldestTracker && mDrawsGestureFloatingPreviewText;
+        if (needsToUpdateLastPointer) {
             mLastPointerX = tracker.getLastX();
             mLastPointerY = tracker.getLastY();
         }
+
+        if (mDrawsGesturePreviewTrail) {
+            GesturePreviewTrail trail;
+            synchronized (mGesturePreviewTrails) {
+                trail = mGesturePreviewTrails.get(tracker.mPointerId);
+                if (trail == null) {
+                    trail = new GesturePreviewTrail();
+                    mGesturePreviewTrails.put(tracker.mPointerId, trail);
+                }
+            }
+            trail.addStroke(tracker.getGestureStrokeWithPreviewPoints(), tracker.getDownTime());
+        }
+
         // TODO: Should narrow the invalidate region.
-        invalidate();
+        if (mDrawsGesturePreviewTrail || needsToUpdateLastPointer) {
+            invalidate();
+        }
     }
 
     @Override
@@ -262,6 +269,7 @@ public class PreviewPlacerView extends RelativeLayout {
     }
 
     public void setGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
+        if (!mDrawsGestureFloatingPreviewText) return;
         mGestureFloatingPreviewText = gestureFloatingPreviewText;
         invalidate();
     }

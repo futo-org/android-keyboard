@@ -25,44 +25,50 @@ public class GestureStroke {
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private float mLength;
-    private float mAngle;
     private int mIncrementalRecognitionSize;
     private int mLastIncrementalBatchSize;
     private long mLastPointTime;
     private int mLastPointX;
     private int mLastPointY;
 
-    private int mMinGestureLength;
-    private int mMinGestureSampleLength;
+    private int mMinGestureLength; // pixel
+    private int mMinGestureSampleLength; // pixel
+    private int mGestureRecognitionThreshold; // pixel / sec
 
     // TODO: Move some of these to resource.
     private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
-    private static final int MIN_GESTURE_DURATION = 100; // msec
+    private static final int MIN_GESTURE_START_DURATION = 100; // msec
+    private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
-    private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
-    private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
+    private static final float GESTURE_RECOGNITION_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH =
+            5.5f; // keyWidth / sec
+    private static final int MSEC_PER_SEC = 1000;
 
-    private static final float DOUBLE_PI = (float)(2.0f * Math.PI);
+    public static final boolean hasRecognitionTimePast(
+            final long currentTime, final long lastRecognitionTime) {
+        return currentTime > lastRecognitionTime + MIN_GESTURE_RECOGNITION_TIME;
+    }
 
     public GestureStroke(final int pointerId) {
         mPointerId = pointerId;
     }
 
-    public void setGestureSampleLength(final int keyWidth) {
+    public void setKeyboardGeometry(final int keyWidth) {
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
         mMinGestureSampleLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
+        mGestureRecognitionThreshold =
+                (int)(keyWidth * GESTURE_RECOGNITION_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH);
     }
 
     public boolean isStartOfAGesture() {
         final int size = mEventTimes.getLength();
         final int downDuration = (size > 0) ? mEventTimes.get(size - 1) : 0;
-        return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
+        return downDuration > MIN_GESTURE_START_DURATION && mLength > mMinGestureLength;
     }
 
     public void reset() {
         mLength = 0;
-        mAngle = 0;
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;
         mLastPointTime = 0;
@@ -71,54 +77,41 @@ public class GestureStroke {
         mYCoordinates.setLength(0);
     }
 
-    private void updateLastPoint(final int x, final int y, final int time) {
+    public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
+        final boolean needsSampling;
+        final int size = mEventTimes.getLength();
+        if (size == 0) {
+            needsSampling = true;
+        } else {
+            final int lastIndex = size - 1;
+            final int lastX = mXCoordinates.get(lastIndex);
+            final int lastY = mYCoordinates.get(lastIndex);
+            final float dist = getDistance(lastX, lastY, x, y);
+            needsSampling = dist > mMinGestureSampleLength;
+            mLength += dist;
+        }
+        if (needsSampling) {
+            mEventTimes.add(time);
+            mXCoordinates.add(x);
+            mYCoordinates.add(y);
+        }
+        if (!isHistorical) {
+            updateIncrementalRecognitionSize(x, y, time);
+        }
+    }
+
+    private void updateIncrementalRecognitionSize(final int x, final int y, final int time) {
+        final int msecs = (int)(time - mLastPointTime);
+        if (msecs > 0) {
+            final int pixels = (int)getDistance(mLastPointX, mLastPointY, x, y);
+            // Equivalent to (pixels / msecs < mGestureRecognitionThreshold / MSEC_PER_SEC)
+            if (pixels * MSEC_PER_SEC < mGestureRecognitionThreshold * msecs) {
+                mIncrementalRecognitionSize = mEventTimes.getLength();
+            }
+        }
         mLastPointTime = time;
         mLastPointX = x;
         mLastPointY = y;
-    }
-
-    public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
-        final int size = mEventTimes.getLength();
-        if (size == 0) {
-            mEventTimes.add(time);
-            mXCoordinates.add(x);
-            mYCoordinates.add(y);
-            if (!isHistorical) {
-                updateLastPoint(x, y, time);
-            }
-            return;
-        }
-
-        final int lastX = mXCoordinates.get(size - 1);
-        final int lastY = mYCoordinates.get(size - 1);
-        final float dist = getDistance(lastX, lastY, x, y);
-        if (dist > mMinGestureSampleLength) {
-            mEventTimes.add(time);
-            mXCoordinates.add(x);
-            mYCoordinates.add(y);
-            mLength += dist;
-            final float angle = getAngle(lastX, lastY, x, y);
-            if (size > 1) {
-                final float curvature = getAngleDiff(angle, mAngle);
-                if (curvature > GESTURE_RECOG_CURVATURE_THRESHOLD) {
-                    if (size > mIncrementalRecognitionSize) {
-                        mIncrementalRecognitionSize = size;
-                    }
-                }
-            }
-            mAngle = angle;
-        }
-
-        if (!isHistorical) {
-            final int duration = (int)(time - mLastPointTime);
-            if (mLastPointTime != 0 && duration > 0) {
-                final float speed = getDistance(mLastPointX, mLastPointY, x, y) / duration;
-                if (speed < GESTURE_RECOG_SPEED_THRESHOLD) {
-                    mIncrementalRecognitionSize = size;
-                }
-            }
-            updateLastPoint(x, y, time);
-        }
     }
 
     public void appendAllBatchPoints(final InputPointers out) {
@@ -145,22 +138,5 @@ public class GestureStroke {
         // Note that, in recent versions of Android, FloatMath is actually slower than
         // java.lang.Math due to the way the JIT optimizes java.lang.Math.
         return (float)Math.sqrt(dx * dx + dy * dy);
-    }
-
-    private static float getAngle(final int x1, final int y1, final int x2, final int y2) {
-        final int dx = x1 - x2;
-        final int dy = y1 - y2;
-        if (dx == 0 && dy == 0) return 0;
-        // Would it be faster to call atan2f() directly via JNI?  Not sure about what the JIT
-        // does with Math.atan2().
-        return (float)Math.atan2(dy, dx);
-    }
-
-    private static float getAngleDiff(final float a1, final float a2) {
-        final float diff = Math.abs(a1 - a2);
-        if (diff > Math.PI) {
-            return DOUBLE_PI - diff;
-        }
-        return diff;
     }
 }
