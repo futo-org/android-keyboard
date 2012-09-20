@@ -36,9 +36,15 @@ public class GestureStroke {
 
     // TODO: Move some of these to resource.
     private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
-    private static final int MIN_GESTURE_DURATION = 100; // msec
+    private static final int MIN_GESTURE_START_DURATION = 100; // msec
+    private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
+
+    public static final boolean hasRecognitionTimePast(
+            final long currentTime, final long lastRecognitionTime) {
+        return currentTime > lastRecognitionTime + MIN_GESTURE_RECOGNITION_TIME;
+    }
 
     public GestureStroke(final int pointerId) {
         mPointerId = pointerId;
@@ -53,7 +59,7 @@ public class GestureStroke {
     public boolean isStartOfAGesture() {
         final int size = mEventTimes.getLength();
         final int downDuration = (size > 0) ? mEventTimes.get(size - 1) : 0;
-        return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
+        return downDuration > MIN_GESTURE_START_DURATION && mLength > mMinGestureLength;
     }
 
     public void reset() {
@@ -97,7 +103,8 @@ public class GestureStroke {
         if (!isHistorical) {
             final int duration = (int)(time - mLastPointTime);
             if (mLastPointTime != 0 && duration > 0) {
-                final float speed = getDistance(mLastPointX, mLastPointY, x, y) / duration;
+                final float distance = getDistance(mLastPointX, mLastPointY, x, y);
+                final float speed = distance / duration;
                 if (speed < GESTURE_RECOG_SPEED_THRESHOLD) {
                     mIncrementalRecognitionSize = size;
                 }
