@@ -47,8 +47,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private static boolean sGestureHandlingEnabledByInputField = false;
     private static boolean sGestureHandlingEnabledByUser = false;
 
-    private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
-
     public interface KeyEventHandler {
         /**
          * Get KeyDetector object that is used for this PointerTracker.
@@ -562,7 +560,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             mGestureStrokeWithPreviewPoints.appendIncrementalBatchPoints(sAggregratedPointers);
             final int size = sAggregratedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
-                    && eventTime > sLastRecognitionTime + MIN_GESTURE_RECOGNITION_TIME) {
+                    && GestureStroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
                 sLastRecognitionPointSize = size;
                 sLastRecognitionTime = eventTime;
                 if (DEBUG_LISTENER) {
