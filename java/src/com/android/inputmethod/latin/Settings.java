@@ -42,7 +42,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
-public class Settings extends InputMethodSettingsFragment
+public final class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final boolean ENABLE_INTERNAL_SETTINGS = ProductionFlag.IS_INTERNAL;
 
@@ -63,8 +63,8 @@ public class Settings extends InputMethodSettingsFragment
             "last_user_dictionary_write_time";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
-    public static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
-            "pref_suppress_language_switch_key";
+    public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
+            "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
@@ -97,7 +97,7 @@ public class Settings extends InputMethodSettingsFragment
     private TextView mKeypressVibrationDurationSettingsTextView;
     private TextView mKeypressSoundVolumeSettingsTextView;
 
-    private static void setPreferenceEnabled(Preference preference, boolean enabled) {
+    private static void setPreferenceEnabled(final Preference preference, final boolean enabled) {
         if (preference != null) {
             preference.setEnabled(enabled);
         }
@@ -111,7 +111,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
         setSubtypeEnablerTitle(R.string.select_language);
@@ -192,7 +192,7 @@ public class Settings extends InputMethodSettingsFragment
         }
 
         setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
-                !SettingsValues.isLanguageSwitchKeySupressed(prefs));
+                SettingsValues.showsLanguageSwitchKey(prefs));
 
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);
@@ -288,14 +288,14 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         (new BackupManager(getActivity())).dataChanged();
         if (key.equals(PREF_POPUP_ON)) {
             setPreferenceEnabled(findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY),
                     prefs.getBoolean(PREF_POPUP_ON, true));
-        } else if (key.equals(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
+        } else if (key.equals(PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
             setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
-                    !SettingsValues.isLanguageSwitchKeySupressed(prefs));
+                    SettingsValues.showsLanguageSwitchKey(prefs));
         } else if (key.equals(PREF_GESTURE_INPUT)) {
             final boolean gestureInputEnabledByConfig = getResources().getBoolean(
                     R.bool.config_gesture_input_enabled_by_build_config);
@@ -352,7 +352,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
-            SharedPreferences sp, Resources res) {
+            final SharedPreferences sp, final Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
             final boolean hasVibratorHardware = VibratorUtils.getInstance(getActivity())
                     .hasVibrator();
@@ -370,7 +370,7 @@ public class Settings extends InputMethodSettingsFragment
     }
 
     private void updateKeypressVibrationDurationSettingsSummary(
-            SharedPreferences sp, Resources res) {
+            final SharedPreferences sp, final Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
             mKeypressVibrationDurationSettingsPref.setSummary(
                     SettingsValues.getCurrentVibrationDuration(sp, res)
@@ -428,7 +428,7 @@ public class Settings extends InputMethodSettingsFragment
         builder.create().show();
     }
 
-    private void updateKeypressSoundVolumeSummary(SharedPreferences sp, Resources res) {
+    private void updateKeypressSoundVolumeSummary(final SharedPreferences sp, final Resources res) {
         if (mKeypressSoundVolumeSettingsPref != null) {
             mKeypressSoundVolumeSettingsPref.setSummary(String.valueOf(
                     (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100)));
