@@ -207,6 +207,9 @@ public final class FormatSpec {
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
 
+    // This option needs to be the same numeric value as the one in binary_format.h.
+    static final int NOT_VALID_WORD = -99;
+
     /**
      * Options about file format.
      */
