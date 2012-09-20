@@ -22,7 +22,7 @@
         <!-- Build.HARDWARE,duration_in_milliseconds -->
         <item>herring,5</item>
         <item>tuna,5</item>
-        <item>mako,20</item>
+        <item>mako,5</item>
         <item>manta,16</item>
     </string-array>
 </resources>
