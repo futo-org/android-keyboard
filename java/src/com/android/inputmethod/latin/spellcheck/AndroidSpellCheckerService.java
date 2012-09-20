@@ -16,9 +16,12 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.preference.PreferenceManager;
+import android.provider.UserDictionary.Words;
 import android.service.textservice.SpellCheckerService;
 import android.text.TextUtils;
 import android.util.Log;
@@ -490,6 +493,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         private final AndroidSpellCheckerService mService;
 
         private final SuggestionsCache mSuggestionsCache = new SuggestionsCache();
+        private final ContentObserver mObserver;
 
         private static class SuggestionsParams {
             public final String[] mSuggestions;
@@ -516,10 +520,23 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 }
                 mUnigramSuggestionsInfoCache.put(query, new SuggestionsParams(suggestions, flags));
             }
+
+            public void clearCache() {
+                mUnigramSuggestionsInfoCache.evictAll();
+            }
         }
 
         AndroidSpellCheckerSession(final AndroidSpellCheckerService service) {
             mService = service;
+            final ContentResolver cres = service.getContentResolver();
+
+            mObserver = new ContentObserver(null) {
+                @Override
+                public void onChange(boolean self) {
+                    mSuggestionsCache.clearCache();
+                }
+            };
+            cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
         }
 
         @Override
@@ -528,6 +545,12 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mDictionaryPool = mService.getDictionaryPool(localeString);
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
             mScript = getScriptFromLocale(mLocale);
+        }
+
+        @Override
+        public void onClose() {
+            final ContentResolver cres = mService.getContentResolver();
+            cres.unregisterContentObserver(mObserver);
         }
 
         /*
