@@ -1401,7 +1401,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     Stats.onAutoCorrection("", mWordComposer.getTypedWord(), " ", mWordComposer);
                 }
             }
-            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            if (mWordComposer.size() <= 1) {
+                // We auto-correct the previous (typed, not gestured) string iff it's one character
+                // long. The reason for this is, even in the middle of gesture typing, you'll still
+                // tap one-letter words and you want them auto-corrected (typically, "i" in English
+                // should become "I"). However for any longer word, we assume that the reason for
+                // tapping probably is that the word you intend to type is not in the dictionary,
+                // so we do not attempt to correct, on the assumption that if that was a dictionary
+                // word, the user would probably have gestured instead.
+                commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+            } else {
+                commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            }
             mExpectingUpdateSelection = true;
             // The following is necessary for the case where the user typed something but didn't
             // manual pick it and didn't input any separator.
