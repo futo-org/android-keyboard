@@ -16,10 +16,11 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -123,5 +124,70 @@ public class BinaryDictIOUtils {
         final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
         readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams,
                 header.mFormatOptions);
+    }
+
+    /**
+     * Gets the address of the last CharGroup of the exact matching word in the dictionary.
+     * If no match is found, returns NOT_VALID_WORD.
+     *
+     * @param buffer the buffer to read.
+     * @param word the word we search for.
+     * @return the address of the terminal node.
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    public static int getTerminalPosition(final FusionDictionaryBufferInterface buffer,
+            final String word) throws IOException, UnsupportedFormatException {
+        if (word == null) return FormatSpec.NOT_VALID_WORD;
+        if (buffer.position() != 0) buffer.position(0);
+
+        final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+        int wordPos = 0;
+        final int wordLen = word.codePointCount(0, word.length());
+        for (int depth = 0; depth < Constants.Dictionary.MAX_WORD_LENGTH; ++depth) {
+            if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
+            int groupOffset = buffer.position() - header.mHeaderSize;
+            final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
+            groupOffset += BinaryDictInputOutput.getGroupCountSize(charGroupCount);
+
+            for (int i = 0; i < charGroupCount; ++i) {
+                final int charGroupPos = buffer.position();
+                final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
+                        buffer.position(), header.mFormatOptions);
+                boolean same = true;
+                for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
+                        p < currentInfo.mCharacters.length;
+                        ++p, j = word.offsetByCodePoints(j, 1)) {
+                    if (wordPos + p >= wordLen
+                            || word.codePointAt(j) != currentInfo.mCharacters[p]) {
+                        same = false;
+                        break;
+                    }
+                }
+
+                if (same) {
+                    if (wordPos + currentInfo.mCharacters.length == wordLen) {
+                        if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL) {
+                            return FormatSpec.NOT_VALID_WORD;
+                        } else {
+                            return charGroupPos;
+                        }
+                    }
+                    wordPos += currentInfo.mCharacters.length;
+                    if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {
+                        return FormatSpec.NOT_VALID_WORD;
+                    }
+                    buffer.position(currentInfo.mChildrenAddress);
+                    break;
+                }
+                groupOffset = currentInfo.mEndAddress;
+
+                // not found
+                if (i >= charGroupCount - 1) {
+                    return FormatSpec.NOT_VALID_WORD;
+                }
+            }
+        }
+        return FormatSpec.NOT_VALID_WORD;
     }
 }

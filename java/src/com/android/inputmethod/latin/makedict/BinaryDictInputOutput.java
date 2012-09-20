@@ -1242,8 +1242,9 @@ public class BinaryDictInputOutput {
      * @param formatOptions file format options.
      * @return the word, as a string.
      */
-    private static String getWordAtAddress(final FusionDictionaryBufferInterface buffer,
-            final int headerSize, final int address, final FormatOptions formatOptions) {
+    /* packages for tests */ static String getWordAtAddress(
+            final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
+            final FormatOptions formatOptions) {
         final String cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
 
