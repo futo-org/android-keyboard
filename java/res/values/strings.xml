@@ -61,8 +61,10 @@
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
     <!-- Option summary for including other IMEs in the language switch list [CHAR LIMIT=65] -->
     <string name="include_other_imes_in_language_switch_list_summary">Language switch key covers other input methods too</string>
-    <!-- Option to suppress language switch key [CHAR LIMIT=30] -->
-    <string name="suppress_language_switch_key">Suppress language switch key</string>
+    <!-- Option to show language switch key [CHAR LIMIT=30] -->
+    <string name="show_language_switch_key">Language switch key</string>
+    <!-- Option summary for showing language switch key [CHAR LIMIT=65] -->
+    <string name="show_language_switch_key_summary">Show when multiple input languages are enabled</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
     <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
