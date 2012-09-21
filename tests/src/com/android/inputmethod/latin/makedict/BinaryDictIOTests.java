@@ -65,13 +65,10 @@ public class BinaryDictIOTests extends AndroidTestCase {
             CollectionUtils.newSparseArray();
 
     private static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
-    private static final FormatSpec.FormatOptions VERSION3_WITHOUT_PARENTADDRESS =
-            new FormatSpec.FormatOptions(3, false /* hasParentAddress */);
-    private static final FormatSpec.FormatOptions VERSION3_WITH_PARENTADDRESS =
-            new FormatSpec.FormatOptions(3, true /* hasParentAddress */);
-    private static final FormatSpec.FormatOptions VERSION3_WITH_LINKEDLIST_NODE =
-            new FormatSpec.FormatOptions(3, true /* hasParentAddress */,
-                    true /* hasLinkedListNode */);
+    private static final FormatSpec.FormatOptions VERSION3_WITHOUT_DYNAMIC_UPDATE =
+            new FormatSpec.FormatOptions(3, false /* supportsDynamicUpdate */);
+    private static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
+            new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -240,8 +237,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         String result = " : buffer type = "
                 + ((bufferType == USE_BYTE_BUFFER) ? "byte buffer" : "byte array");
         result += " : version = " + formatOptions.mVersion;
-        return result + ", hasParentAddress = " + formatOptions.mHasParentAddress
-                + ", hasLinkedListNode = " + formatOptions.mHasLinkedListNode;
+        return result + ", supportsDynamicUpdate = " + formatOptions.mSupportsDynamicUpdate;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
@@ -308,9 +304,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION2);
-        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_PARENTADDRESS);
-        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_PARENTADDRESS);
-        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_LINKEDLIST_NODE);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -321,9 +316,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION2);
-        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_PARENTADDRESS);
-        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_PARENTADDRESS);
-        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_LINKEDLIST_NODE);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -455,9 +449,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION2);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_PARENTADDRESS);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_PARENTADDRESS);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_LINKEDLIST_NODE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -468,9 +461,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final List<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION2);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_PARENTADDRESS);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_PARENTADDRESS);
-        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_LINKEDLIST_NODE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -528,7 +520,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
-        timeWritingDictToFile(file, dict, VERSION3_WITH_LINKEDLIST_NODE);
+        timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
         final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
 
@@ -569,7 +561,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     public void testDeleteWord() {
         File file = null;
         try {
-            file = File.createTempFile("testGetTerminalPosition", ".dict");
+            file = File.createTempFile("testDeleteWord", ".dict");
         } catch (IOException e) {
             // do nothing
         }
@@ -579,7 +571,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
-        timeWritingDictToFile(file, dict, VERSION3_WITH_LINKEDLIST_NODE);
+        timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
         final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
 
