@@ -201,4 +201,26 @@ public class BinaryDictIOUtils {
         }
         return FormatSpec.NOT_VALID_WORD;
     }
+
+    /**
+     * Delete the word from the binary file.
+     *
+     * @param buffer the buffer to write.
+     * @param word the word we delete
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    public static void deleteWord(final FusionDictionaryBufferInterface buffer,
+            final String word) throws IOException, UnsupportedFormatException {
+        buffer.position(0);
+        final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+        final int wordPosition = getTerminalPosition(buffer, word);
+        if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
+
+        buffer.position(wordPosition);
+        final int flags = buffer.readUnsignedByte();
+        final int newFlags = flags ^ FormatSpec.FLAG_IS_TERMINAL;
+        buffer.position(wordPosition);
+        buffer.put((byte)newFlags);
+    }
 }

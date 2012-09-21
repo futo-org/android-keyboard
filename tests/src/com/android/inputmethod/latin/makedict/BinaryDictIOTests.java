@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import android.test.AndroidTestCase;
+import android.test.MoreAsserts;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -517,7 +518,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     public void testGetTerminalPosition() {
         File file = null;
         try {
-            file = File.createTempFile("runReadUnigrams", ".dict");
+            file = File.createTempFile("testGetTerminalPosition", ".dict");
         } catch (IOException e) {
             // do nothing
         }
@@ -562,6 +563,40 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final String word = generateWord(random.nextInt());
             if (sWords.indexOf(word) != -1) continue;
             runGetTerminalPosition(buffer, word, i, false);
+        }
+    }
+
+    public void testDeleteWord() {
+        File file = null;
+        try {
+            file = File.createTempFile("testGetTerminalPosition", ".dict");
+        } catch (IOException e) {
+            // do nothing
+        }
+        assertNotNull(file);
+
+        final FusionDictionary dict = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(
+                        new HashMap<String, String>(), false, false));
+        addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
+        timeWritingDictToFile(file, dict, VERSION3_WITH_LINKEDLIST_NODE);
+
+        final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
+
+        try {
+            MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
+            BinaryDictIOUtils.deleteWord(buffer, sWords.get(0));
+            assertEquals(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
+
+            MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
+            BinaryDictIOUtils.deleteWord(buffer, sWords.get(5));
+            assertEquals(FormatSpec.NOT_VALID_WORD,
+                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
+        } catch (IOException e) {
+        } catch (UnsupportedFormatException e) {
         }
     }
 }
