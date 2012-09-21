@@ -14,34 +14,45 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.util.Log;
+
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.ResizableIntArray;
 
 public class GestureStroke {
+    private static final String TAG = GestureStroke.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     public static final int DEFAULT_CAPACITY = 128;
 
     private final int mPointerId;
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
-    private float mLength;
     private int mIncrementalRecognitionSize;
     private int mLastIncrementalBatchSize;
-    private long mLastPointTime;
-    private int mLastPointX;
-    private int mLastPointY;
+    private long mLastMajorEventTime;
+    private int mLastMajorEventX;
+    private int mLastMajorEventY;
 
-    private int mMinGestureLength; // pixel
-    private int mMinGestureSampleLength; // pixel
-    private int mGestureRecognitionThreshold; // pixel / sec
+    private int mKeyWidth;
+    private int mStartGestureLengthThreshold; // pixel
+    private int mMinGestureSamplingLength; // pixel
+    private int mGestureRecognitionSpeedThreshold; // pixel / sec
+    private int mDetectFastMoveSpeedThreshold; // pixel /sec
+    private int mDetectFastMoveTime;
+    private int mDetectFastMoveX;
+    private int mDetectFastMoveY;
 
     // TODO: Move some of these to resource.
-    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
-    private static final int MIN_GESTURE_START_DURATION = 100; // msec
+    private static final float START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH = 0.75f;
+    private static final int START_GESTURE_DURATION_THRESHOLD = 70; // msec
     private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
     private static final float GESTURE_RECOGNITION_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH =
             5.5f; // keyWidth / sec
+    private static final float DETECT_FAST_MOVE_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH =
+            5.0f; // keyWidth / sec
     private static final int MSEC_PER_SEC = 1000;
 
     public static final boolean hasRecognitionTimePast(
@@ -54,64 +65,120 @@ public class GestureStroke {
     }
 
     public void setKeyboardGeometry(final int keyWidth) {
+        mKeyWidth = keyWidth;
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
-        mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
-        mMinGestureSampleLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
-        mGestureRecognitionThreshold =
+        mStartGestureLengthThreshold =
+                (int)(keyWidth * START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH);
+        mMinGestureSamplingLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
+        mGestureRecognitionSpeedThreshold =
                 (int)(keyWidth * GESTURE_RECOGNITION_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH);
+        mDetectFastMoveSpeedThreshold =
+                (int)(keyWidth * DETECT_FAST_MOVE_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH);
+        if (DEBUG) {
+            Log.d(TAG, "setKeyboardGeometry: keyWidth=" + keyWidth);
+        }
     }
 
     public boolean isStartOfAGesture() {
+        if (mDetectFastMoveTime == 0) {
+            return false;
+        }
         final int size = mEventTimes.getLength();
-        final int downDuration = (size > 0) ? mEventTimes.get(size - 1) : 0;
-        return downDuration > MIN_GESTURE_START_DURATION && mLength > mMinGestureLength;
+        if (size <= 0) {
+            return false;
+        }
+        final int lastIndex = size - 1;
+        final int deltaTime = mEventTimes.get(lastIndex) - mDetectFastMoveTime;
+        final int deltaLength = getDistance(
+                mXCoordinates.get(lastIndex), mYCoordinates.get(lastIndex),
+                mDetectFastMoveX, mDetectFastMoveY);
+        final boolean isStartOfAGesture = deltaTime > START_GESTURE_DURATION_THRESHOLD
+                && deltaLength > mStartGestureLengthThreshold;
+        if (DEBUG) {
+            Log.d(TAG, "isStartOfAGesture: dT=" + deltaTime + " dL=" + deltaLength
+                    + " points=" + size + (isStartOfAGesture ? " Detect start of a gesture" : ""));
+        }
+        return isStartOfAGesture;
     }
 
     public void reset() {
-        mLength = 0;
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;
-        mLastPointTime = 0;
         mEventTimes.setLength(0);
         mXCoordinates.setLength(0);
         mYCoordinates.setLength(0);
+        mLastMajorEventTime = 0;
+        mDetectFastMoveTime = 0;
     }
 
-    public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
-        final boolean needsSampling;
+    private void appendPoint(final int x, final int y, final int time) {
+        mEventTimes.add(time);
+        mXCoordinates.add(x);
+        mYCoordinates.add(y);
+    }
+
+    private void updateMajorEvent(final int x, final int y, final int time) {
+        mLastMajorEventTime = time;
+        mLastMajorEventX = x;
+        mLastMajorEventY = y;
+    }
+
+    private int detectFastMove(final int x, final int y, final int time) {
         final int size = mEventTimes.getLength();
-        if (size == 0) {
-            needsSampling = true;
+        final int lastIndex = size - 1;
+        final int lastX = mXCoordinates.get(lastIndex);
+        final int lastY = mYCoordinates.get(lastIndex);
+        final int dist = getDistance(lastX, lastY, x, y);
+        final int msecs = time - mEventTimes.get(lastIndex);
+        if (msecs > 0) {
+            final int pixels = getDistance(lastX, lastY, x, y);
+            final int pixelsPerSec = pixels * MSEC_PER_SEC;
+            if (DEBUG) {
+                final float speed = (float)pixelsPerSec / msecs / mKeyWidth;
+                Log.d(TAG, String.format("Speed=%.3f keyWidth/sec", speed));
+            }
+            // Equivalent to (pixels / msecs < mStartSpeedThreshold / MSEC_PER_SEC)
+            if (mDetectFastMoveTime == 0 && pixelsPerSec > mDetectFastMoveSpeedThreshold * msecs) {
+                if (DEBUG) {
+                    Log.d(TAG, "Detect fast move: T=" + time + " points = " + size);
+                }
+                mDetectFastMoveTime = time;
+                mDetectFastMoveX = x;
+                mDetectFastMoveY = y;
+            }
+        }
+        return dist;
+    }
+
+    public void addPoint(final int x, final int y, final int time, final boolean isMajorEvent) {
+        final int size = mEventTimes.getLength();
+        if (size <= 0) {
+            // Down event
+            appendPoint(x, y, time);
+            updateMajorEvent(x, y, time);
         } else {
-            final int lastIndex = size - 1;
-            final int lastX = mXCoordinates.get(lastIndex);
-            final int lastY = mYCoordinates.get(lastIndex);
-            final float dist = getDistance(lastX, lastY, x, y);
-            needsSampling = dist > mMinGestureSampleLength;
-            mLength += dist;
+            final int dist = detectFastMove(x, y, time);
+            if (dist > mMinGestureSamplingLength) {
+                appendPoint(x, y, time);
+            }
         }
-        if (needsSampling) {
-            mEventTimes.add(time);
-            mXCoordinates.add(x);
-            mYCoordinates.add(y);
-        }
-        if (!isHistorical) {
+        if (isMajorEvent) {
             updateIncrementalRecognitionSize(x, y, time);
+            updateMajorEvent(x, y, time);
         }
     }
 
     private void updateIncrementalRecognitionSize(final int x, final int y, final int time) {
-        final int msecs = (int)(time - mLastPointTime);
-        if (msecs > 0) {
-            final int pixels = (int)getDistance(mLastPointX, mLastPointY, x, y);
-            // Equivalent to (pixels / msecs < mGestureRecognitionThreshold / MSEC_PER_SEC)
-            if (pixels * MSEC_PER_SEC < mGestureRecognitionThreshold * msecs) {
-                mIncrementalRecognitionSize = mEventTimes.getLength();
-            }
+        final int msecs = (int)(time - mLastMajorEventTime);
+        if (msecs <= 0) {
+            return;
         }
-        mLastPointTime = time;
-        mLastPointX = x;
-        mLastPointY = y;
+        final int pixels = getDistance(mLastMajorEventX, mLastMajorEventY, x, y);
+        final int pixelsPerSec = pixels * MSEC_PER_SEC;
+        // Equivalent to (pixels / msecs < mGestureRecognitionThreshold / MSEC_PER_SEC)
+        if (pixelsPerSec < mGestureRecognitionSpeedThreshold * msecs) {
+            mIncrementalRecognitionSize = mEventTimes.getLength();
+        }
     }
 
     public void appendAllBatchPoints(final InputPointers out) {
@@ -132,11 +199,11 @@ public class GestureStroke {
         mLastIncrementalBatchSize = size;
     }
 
-    private static float getDistance(final int x1, final int y1, final int x2, final int y2) {
-        final float dx = x1 - x2;
-        final float dy = y1 - y2;
+    private static int getDistance(final int x1, final int y1, final int x2, final int y2) {
+        final int dx = x1 - x2;
+        final int dy = y1 - y2;
         // Note that, in recent versions of Android, FloatMath is actually slower than
         // java.lang.Math due to the way the JIT optimizes java.lang.Math.
-        return (float)Math.sqrt(dx * dx + dy * dy);
+        return (int)Math.sqrt(dx * dx + dy * dy);
     }
 }

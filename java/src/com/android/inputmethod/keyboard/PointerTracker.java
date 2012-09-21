@@ -688,7 +688,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mIsDetectingGesture = true;
         final int elapsedTimeFromFirstDown = (int)(eventTime - sGestureFirstDownTime);
         mGestureStrokeWithPreviewPoints.addPoint(x, y, elapsedTimeFromFirstDown,
-                false /* isHistorical */);
+                true /* isMajorEvent */);
     }
 
     private void onDownEventInternal(final int x, final int y, final long eventTime) {
@@ -724,10 +724,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
-            final boolean isHistorical, final Key key) {
+            final boolean isMajorEvent, final Key key) {
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
         if (mIsDetectingGesture) {
-            mGestureStrokeWithPreviewPoints.addPoint(x, y, gestureTime, isHistorical);
+            mGestureStrokeWithPreviewPoints.addPoint(x, y, gestureTime, isMajorEvent);
             mayStartBatchInput();
             if (sInGesture && key != null) {
                 updateBatchInput(eventTime);
@@ -752,7 +752,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 final int historicalY = (int)me.getHistoricalY(pointerIndex, h);
                 final long historicalTime = me.getHistoricalEventTime(h);
                 onGestureMoveEvent(historicalX, historicalY, historicalTime,
-                        true /* isHistorical */, null);
+                        false /* isMajorEvent */, null);
             }
         }
 
@@ -767,7 +767,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
         if (sShouldHandleGesture) {
             // Register move event on gesture tracker.
-            onGestureMoveEvent(x, y, eventTime, false /* isHistorical */, key);
+            onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, key);
             if (sInGesture) {
                 mIgnoreModifierKey = true;
                 mTimerProxy.cancelLongPressTimer();
