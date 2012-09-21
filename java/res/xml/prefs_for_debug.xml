@@ -48,4 +48,10 @@
             android:persistent="true"
             android:defaultValue="false"
             />
+
+    <CheckBoxPreference
+            android:key="usability_study_mode"
+            android:title="@string/prefs_usability_study_mode"
+            android:persistent="true"
+            android:defaultValue="false" />
 </PreferenceScreen>
