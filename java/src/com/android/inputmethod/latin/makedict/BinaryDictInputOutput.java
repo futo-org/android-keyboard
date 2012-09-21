@@ -392,7 +392,7 @@ public class BinaryDictInputOutput {
     /**
      * Helper method to check whether the CharGroup has a parent address.
      */
-    private static boolean hasParentAddress(final FormatOptions options) {
+    public static boolean hasParentAddress(final FormatOptions options) {
         return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS
                 && options.mHasParentAddress;
     }
