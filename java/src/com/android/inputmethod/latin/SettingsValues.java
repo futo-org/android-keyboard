@@ -410,7 +410,7 @@ public final class SettingsValues {
     // Likewise
     public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
         // TODO: use mUsabilityStudyMode instead of reading it again here
-        return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
+        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
     }
 
     public static long getLastUserHistoryWriteTime(final SharedPreferences prefs,

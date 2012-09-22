@@ -92,11 +92,6 @@
             android:summary="@string/gesture_input_summary"
             android:persistent="true"
             android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="usability_study_mode"
-            android:title="@string/prefs_usability_study_mode"
-            android:persistent="true"
-            android:defaultValue="false" />
         <PreferenceScreen
             android:key="pref_advanced_settings"
             android:title="@string/advanced_settings"
@@ -145,5 +140,10 @@
                 android:persistent="true"
                 android:defaultValue="false" />
         </PreferenceScreen>
+        <PreferenceScreen
+            android:key="debug_settings"
+            android:title="Debug settings"
+            android:persistent="true"
+            android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>
