@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
 public class UserHistoryDictionary extends ExpandableDictionary {
-    private static final String TAG = "UserHistoryDictionary";
+    private static final String TAG = UserHistoryDictionary.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
     public static final boolean DBG_STRESS_TEST = false;
     public static final boolean DBG_ALWAYS_WRITE = false;

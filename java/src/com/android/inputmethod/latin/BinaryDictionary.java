@@ -45,7 +45,7 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_WORDS = 18;
     public static final int MAX_SPACES = 16;
 
-    private static final String TAG = "BinaryDictionary";
+    private static final String TAG = BinaryDictionary.class.getSimpleName();
     private static final int MAX_PREDICTIONS = 60;
     private static final int MAX_RESULTS = Math.max(MAX_PREDICTIONS, MAX_WORDS);
 

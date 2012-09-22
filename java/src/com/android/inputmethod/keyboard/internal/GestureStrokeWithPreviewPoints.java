@@ -65,21 +65,18 @@ public class GestureStrokeWithPreviewPoints extends GestureStroke {
     private boolean needsSampling(final int x, final int y) {
         final int dx = x - mLastX;
         final int dy = y - mLastY;
-        final boolean needsSampling = (dx * dx + dy * dy >= mMinPreviewSampleLengthSquare);
-        if (needsSampling) {
-            mLastX = x;
-            mLastY = y;
-        }
-        return needsSampling;
+        return dx * dx + dy * dy >= mMinPreviewSampleLengthSquare;
     }
 
     @Override
-    public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
-        super.addPoint(x, y, time, isHistorical);
-        if (mPreviewEventTimes.getLength() == 0 || isHistorical || needsSampling(x, y)) {
+    public void addPoint(final int x, final int y, final int time, final boolean isMajorEvent) {
+        super.addPoint(x, y, time, isMajorEvent);
+        if (isMajorEvent || needsSampling(x, y)) {
             mPreviewEventTimes.add(time);
             mPreviewXCoordinates.add(x);
             mPreviewYCoordinates.add(y);
+            mLastX = x;
+            mLastY = y;
         }
     }
 
