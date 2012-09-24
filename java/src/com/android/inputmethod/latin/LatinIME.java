@@ -715,7 +715,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSpaceState = SPACE_STATE_NONE;
 
             if (mSuggestionStripView != null) {
-                mSuggestionStripView.clear();
+                // This will set the punctuation suggestions if next word suggestion is off;
+                // otherwise it will clear the suggestion strip.
+                setPunctuationSuggestions();
             }
         }
 
