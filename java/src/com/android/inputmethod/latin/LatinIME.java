@@ -856,7 +856,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // TODO: the following is probably better done in resetEntireInputState().
             // it should only happen when the cursor moved, and the very purpose of the
             // test below is to narrow down whether this happened or not. Likewise with
-            // the call to postUpdateShiftState.
+            // the call to updateShiftState.
             // We set this to NONE because after a cursor move, we don't want the space
             // state-related special processing to kick in.
             mSpaceState = SPACE_STATE_NONE;
@@ -865,7 +865,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 resetEntireInputState(newSelStart);
             }
 
-            mHandler.postUpdateShiftState();
+            mKeyboardSwitcher.updateShiftState();
         }
         mExpectingUpdateSelection = false;
         // TODO: Decide to call restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() or not
@@ -1551,7 +1551,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void handleBackspace(final int spaceState) {
-        // In many cases, we may have to put the keyboard in auto-shift state again.
+        // In many cases, we may have to put the keyboard in auto-shift state again. However
+        // we want to wait a few milliseconds before doing it to avoid the keyboard flashing
+        // during key repeat.
         mHandler.postUpdateShiftState();
 
         if (mWordComposer.isComposingWord()) {
@@ -1791,7 +1793,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Utils.Stats.onSeparator((char)primaryCode, x, y);
         }
 
-        mHandler.postUpdateShiftState();
+        mKeyboardSwitcher.updateShiftState();
         return didAutoCorrect;
     }
 
