@@ -864,6 +864,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSpaceState = SPACE_STATE_NONE;
 
             if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan) {
+                // If we are composing a word and moving the cursor, we would want to set a
+                // suggestion span for recorrection to work correctly. Unfortunately, that
+                // would involve the keyboard committing some new text, which would move the
+                // cursor back to where it was. Latin IME could then fix the position of the cursor
+                // again, but the asynchronous nature of the calls results in this wreaking havoc
+                // with selection on double tap and the like.
+                // Another option would be to send suggestions each time we set the composing
+                // text, but that is probably too expensive to do, so we decided to leave things
+                // as is.
                 resetEntireInputState(newSelStart);
             }
 
@@ -1089,11 +1098,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
-            mConnection.commitText(typedWord, 1);
-            final CharSequence prevWord = addToUserHistoryDictionary(typedWord);
-            mLastComposedWord = mWordComposer.commitWord(
-                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
-                    separatorString, prevWord);
+            commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
+                    separatorString);
         }
     }
 
