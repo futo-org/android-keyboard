@@ -685,18 +685,13 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (!sShouldHandleGesture) {
             return;
         }
-        final int activePointerTrackerCount = getActivePointerTrackerCount();
-        if (activePointerTrackerCount == 1) {
-            mIsDetectingGesture = false;
-            // A gesture should start only from the letter key.
-            final boolean isAlphabetKeyboard = (mKeyboard != null)
-                    && mKeyboard.mId.isAlphabetKeyboard();
-            if (isAlphabetKeyboard && !mIsShowingMoreKeysPanel && key != null
-                    && Keyboard.isLetterCode(key.mCode)) {
+        // A gesture should start only from the letter key.
+        mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
+                && !mIsShowingMoreKeysPanel && key != null && Keyboard.isLetterCode(key.mCode);
+        if (mIsDetectingGesture) {
+            if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
-                onGestureDownEvent(x, y, eventTime);
             }
-        } else if (sInGesture && activePointerTrackerCount > 1) {
             onGestureDownEvent(x, y, eventTime);
         }
     }
