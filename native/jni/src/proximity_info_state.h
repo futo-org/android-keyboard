@@ -55,7 +55,7 @@ class ProximityInfoState {
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
-              mDistanceCache(), mLengthCache(), mNearKeysVector(),
+              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mNearKeysVector(),
               mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
@@ -220,7 +220,9 @@ class ProximityInfoState {
     int32_t getAllPossibleChars(
             const size_t startIndex, int32_t *const filter, const int32_t filterSize) const;
 
-    float getAveragePointDuration() const;
+    float getRelativeSpeed(const int index) const {
+        return mRelativeSpeeds[index];
+    }
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
@@ -283,6 +285,7 @@ class ProximityInfoState {
     std::vector<int> mInputIndice;
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
+    std::vector<float> mRelativeSpeeds;
     std::vector<NearKeycodesSet> mNearKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
