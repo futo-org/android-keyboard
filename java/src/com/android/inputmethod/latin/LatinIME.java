@@ -721,7 +721,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        mConnection.resetCachesUponCursorMove(mLastSelectionStart);
+        mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart);
 
         if (isDifferentTextField) {
             mainKeyboardView.closing();
