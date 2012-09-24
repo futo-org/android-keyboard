@@ -326,6 +326,7 @@
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
+            android:subtypeId="1343007020"
             android:imeSubtypeLocale="nl_BE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=azerty,AsciiCapable"
