@@ -36,10 +36,8 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Επιλογές για έμπειρους χρήστες"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Άλλη μέθοδος εισόδου"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Το κλειδί αλλαγής γλώσσας καλύπτει και άλλες μεθόδους εισόδου"</string>
-    <!-- no translation found for show_language_switch_key (5915478828318774384) -->
-    <skip />
-    <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
-    <skip />
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Πλήκτρο εναλλαγής γλώσσας"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Εμφάνιση κατά την ενεργοποίηση πολλών γλωσσών εισόδου"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Χρόνος εξαφ. αναδ. παραθ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Χωρίς καθυστέρ."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Προεπιλογή"</string>
