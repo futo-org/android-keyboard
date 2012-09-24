@@ -92,7 +92,7 @@ public class BinaryDictIOUtils {
             }
 
             if (p.mPosition == p.mNumOfCharGroup) {
-                if (formatOptions.mHasLinkedListNode) {
+                if (formatOptions.mSupportsDynamicUpdate) {
                     final int forwardLinkAddress = buffer.readUnsignedInt24();
                     if (forwardLinkAddress != FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                         // the node has a forward link.

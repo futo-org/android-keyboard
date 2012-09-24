@@ -145,17 +145,14 @@ public final class FormatSpec {
     static final int MAXIMUM_SUPPORTED_VERSION = 3;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
-    static final int FIRST_VERSION_WITH_PARENT_ADDRESS = 3;
-    static final int FIRST_VERSION_WITH_LINKEDLIST_NODE = 3;
+    static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
     // TODO: Make the native reading code read this variable.
-    static final int HAS_PARENT_ADDRESS = 0x2;
+    static final int SUPPORTS_DYNAMIC_UPDATE = 0x2;
     static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     static final int CONTAINS_BIGRAMS_FLAG = 0x8;
-    // TODO: Make the native reading code read this variable.
-    static final int HAS_LINKEDLIST_NODE = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
@@ -215,31 +212,17 @@ public final class FormatSpec {
      */
     public static class FormatOptions {
         public final int mVersion;
-        public final boolean mHasParentAddress;
-        public final boolean mHasLinkedListNode;
+        public final boolean mSupportsDynamicUpdate;
         public FormatOptions(final int version) {
             this(version, false);
         }
-        public FormatOptions(final int version, final boolean hasParentAddress) {
-            this(version, hasParentAddress, false);
-        }
-        public FormatOptions(final int version, final boolean hasParentAddress,
-                final boolean hasLinkedListNode) {
+        public FormatOptions(final int version, final boolean supportsDynamicUpdate) {
             mVersion = version;
-            if (version < FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
-                throw new RuntimeException("Parent addresses are only supported with versions "
-                        + FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
+            if (version < FIRST_VERSION_WITH_DYNAMIC_UPDATE && supportsDynamicUpdate) {
+                throw new RuntimeException("Dynamic updates are only supported with versions "
+                        + FIRST_VERSION_WITH_DYNAMIC_UPDATE + " and ulterior.");
             }
-            mHasParentAddress = hasParentAddress;
-
-            if (version < FIRST_VERSION_WITH_LINKEDLIST_NODE && hasLinkedListNode) {
-                throw new RuntimeException("Linked list nodes are only supported with versions "
-                        + FIRST_VERSION_WITH_LINKEDLIST_NODE + " and ulterior.");
-            }
-            if (!hasParentAddress && hasLinkedListNode) {
-                throw new RuntimeException("Linked list nodes need parent addresses.");
-            }
-            mHasLinkedListNode = hasLinkedListNode;
+            mSupportsDynamicUpdate = supportsDynamicUpdate;
         }
     }
 
