@@ -125,6 +125,8 @@
         <attr name="longPressShiftKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
+        <!-- Disable gesture input while fast typing timer in millisecond. -->
+        <attr name="disableGestureWhileFastTypingTimeout" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
     </declare-styleable>
