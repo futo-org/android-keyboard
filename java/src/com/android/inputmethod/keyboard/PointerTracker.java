@@ -46,6 +46,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private static boolean sMainDictionaryAvailable = false;
     private static boolean sGestureHandlingEnabledByInputField = false;
     private static boolean sGestureHandlingEnabledByUser = false;
+    private static boolean sGestureOffWhileFastTyping = false;
 
     public interface KeyEventHandler {
         /**
@@ -84,6 +85,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     public interface TimerProxy {
         public void startTypingStateTimer(Key typedKey);
         public boolean isTypingState();
+        public void startGestureOffWhileFastTypingTimer();
         public void startKeyRepeatTimer(PointerTracker tracker);
         public void startLongPressTimer(PointerTracker tracker);
         public void startLongPressTimer(int code);
@@ -98,6 +100,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             public void startTypingStateTimer(Key typedKey) {}
             @Override
             public boolean isTypingState() { return false; }
+            @Override
+            public void startGestureOffWhileFastTypingTimer() {}
             @Override
             public void startKeyRepeatTimer(PointerTracker tracker) {}
             @Override
@@ -225,6 +229,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     private static void updateGestureHandlingMode() {
         sShouldHandleGesture = sMainDictionaryAvailable
+                && !sGestureOffWhileFastTyping
                 && sGestureHandlingEnabledByInputField
                 && sGestureHandlingEnabledByUser
                 && !AccessibilityUtils.getInstance().isTouchExplorationEnabled();
@@ -238,6 +243,16 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     public static void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {
         sGestureHandlingEnabledByUser = gestureHandlingEnabledByUser;
+        updateGestureHandlingMode();
+    }
+
+    public static void setGestureOffWhileFastTyping() {
+        sGestureOffWhileFastTyping = true;
+        updateGestureHandlingMode();
+    }
+
+    public static void clearGestureOffWhileFastTyping() {
+        sGestureOffWhileFastTyping = false;
         updateGestureHandlingMode();
     }
 
@@ -346,8 +361,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (key.isEnabled() || altersCode) {
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.getOutputText());
+                mTimerProxy.startGestureOffWhileFastTypingTimer();
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, x, y);
+                mTimerProxy.startGestureOffWhileFastTypingTimer();
             }
         }
     }

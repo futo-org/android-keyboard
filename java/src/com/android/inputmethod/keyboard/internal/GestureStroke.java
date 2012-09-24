@@ -45,7 +45,7 @@ public class GestureStroke {
     private int mDetectFastMoveY;
 
     // TODO: Move some of these to resource.
-    private static final float START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH = 0.75f;
+    private static final float START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH = 0.60f;
     private static final int START_GESTURE_DURATION_THRESHOLD = 70; // msec
     private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
