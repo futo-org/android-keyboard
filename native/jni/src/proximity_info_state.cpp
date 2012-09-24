@@ -104,6 +104,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mLengthCache.clear();
         mDistanceCache.clear();
         mNearKeysVector.clear();
+        mRelativeSpeeds.clear();
     }
     if (DEBUG_GEO_FULL) {
         AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
@@ -157,6 +158,36 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             }
         }
         mInputSize = mInputXs.size();
+    }
+
+    if (mInputSize > 0 && isGeometric) {
+        int sumDuration = mTimes.back() - mTimes.front();
+        int sumLength = mLengthCache.back() - mLengthCache.front();
+        float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
+        mRelativeSpeeds.resize(mInputSize);
+        for (int i = lastSavedInputSize; i < mInputSize; ++i) {
+            const int index = mInputIndice[i];
+            int length = 0;
+            int duration = 0;
+            if (index == 0 && index < inputSize - 1) {
+                length = getDistanceInt(xCoordinates[index], yCoordinates[index],
+                        xCoordinates[index + 1], yCoordinates[index + 1]);
+                duration = times[index + 1] - times[index];
+            } else if (index == inputSize - 1 && index > 0) {
+                length = getDistanceInt(xCoordinates[index - 1], yCoordinates[index - 1],
+                        xCoordinates[index], yCoordinates[index]);
+                duration = times[index] - times[index - 1];
+            } else if (0 < index && index < inputSize - 1) {
+                length = getDistanceInt(xCoordinates[index - 1], yCoordinates[index - 1],
+                        xCoordinates[index + 1], yCoordinates[index + 1]);
+                duration = times[index + 1] - times[index - 1];
+            } else {
+                length = 0;
+                duration = 1;
+            }
+            const float speed = static_cast<float>(length) / static_cast<float>(duration);
+            mRelativeSpeeds[i] = speed / averageSpeed;
+        }
     }
 
     if (mInputSize > 0) {
@@ -464,7 +495,7 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (mInputSize > 0 && index >= 0 && index < mInputSize - 1) {
+    if (index >= 0 && index < mInputSize - 1) {
         return mTimes[index + 1] - mTimes[index];
     }
     return 0;
@@ -522,13 +553,6 @@ int32_t ProximityInfoState::getAllPossibleChars(
         }
     }
     return newFilterSize;
-}
-
-float ProximityInfoState::getAveragePointDuration() const {
-    if (mInputSize == 0) {
-        return 0.0f;
-    }
-    return static_cast<float>(mTimes[mInputSize - 1] - mTimes[0]) / static_cast<float>(mInputSize);
 }
 
 void ProximityInfoState::popInputData() {
