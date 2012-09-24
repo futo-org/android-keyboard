@@ -89,6 +89,7 @@
         <item name="longPressKeyTimeout">@integer/config_long_press_key_timeout</item>
         <item name="longPressShiftKeyTimeout">@integer/config_long_press_shift_key_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
+        <item name="disableGestureWhileFastTypingTimeout">@integer/config_disable_gesture_while_fast_typing_timeout</item>
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
         <item name="languageOnSpacebarFinalAlpha">@integer/config_language_on_spacebar_final_alpha</item>
         <item name="languageOnSpacebarFadeoutAnimator">@anim/language_on_spacebar_fadeout</item>
