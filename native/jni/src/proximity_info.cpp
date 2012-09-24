@@ -134,10 +134,22 @@ static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float 
     return (SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY)) / SQUARE_FLOAT(scale);
 }
 
-float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloat(
+float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
         const int keyId, const int x, const int y) const {
-    const float centerX = static_cast<float>(getKeyCenterXOfKeyIdG(keyId));
-    const float centerY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
+    const static float verticalSweetSpotScaleForGeometric = 1.1f;
+    const bool correctTouchPosition = hasTouchPositionCorrectionData();
+    const float centerX = static_cast<float>(correctTouchPosition
+            ? getSweetSpotCenterXAt(keyId)
+            : getKeyCenterXOfKeyIdG(keyId));
+    const float visualKeyCenterY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
+    float centerY;
+    if (correctTouchPosition) {
+        const float sweetSpotCenterY = static_cast<float>(getSweetSpotCenterYAt(keyId));
+        const float gapY = sweetSpotCenterY - visualKeyCenterY;
+        centerY = visualKeyCenterY + gapY * verticalSweetSpotScaleForGeometric;
+    } else {
+        centerY = visualKeyCenterY;
+    }
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
