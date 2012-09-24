@@ -376,7 +376,7 @@ public class BinaryDictInputOutput {
             g.mCachedSize = groupSize;
             size += groupSize;
         }
-        if (options.mHasLinkedListNode) {
+        if (options.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         node.mCachedSize = size;
@@ -390,11 +390,11 @@ public class BinaryDictInputOutput {
     }
 
     /**
-     * Helper method to check whether the CharGroup has a parent address.
+     * Helper method to check whether the dictionary can be updated dynamically.
      */
-    public static boolean hasParentAddress(final FormatOptions options) {
-        return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS
-                && options.mHasParentAddress;
+    public static boolean supportsDynamicUpdate(final FormatOptions options) {
+        return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_DYNAMIC_UPDATE
+                && options.mSupportsDynamicUpdate;
     }
 
     /**
@@ -404,7 +404,7 @@ public class BinaryDictInputOutput {
      * @param options file format options.
      */
     private static int getGroupHeaderSize(final CharGroup group, final FormatOptions options) {
-        if (hasParentAddress(options)) {
+        if (supportsDynamicUpdate(options)) {
             return FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
                     + getGroupCharactersSize(group);
         } else {
@@ -530,7 +530,7 @@ public class BinaryDictInputOutput {
             group.mCachedSize = groupSize;
             size += groupSize;
         }
-        if (formatOptions.mHasLinkedListNode) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         if (node.mCachedSize != size) {
@@ -559,7 +559,8 @@ public class BinaryDictInputOutput {
                 groupOffset += g.mCachedSize;
             }
             final int nodeSize = groupCountSize + groupOffset
-                    + (formatOptions.mHasLinkedListNode ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
+                    + (formatOptions.mSupportsDynamicUpdate
+                            ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
             if (nodeSize != n.mCachedSize) {
                 throw new RuntimeException("Bug : Stored and computed node size differ");
             }
@@ -792,8 +793,7 @@ public class BinaryDictInputOutput {
         return (options.mFrenchLigatureProcessing ? FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG : 0)
                 + (options.mGermanUmlautProcessing ? FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG : 0)
                 + (hasBigrams ? FormatSpec.CONTAINS_BIGRAMS_FLAG : 0)
-                + (formatOptions.mHasParentAddress ? FormatSpec.HAS_PARENT_ADDRESS : 0)
-                + (formatOptions.mHasLinkedListNode ? FormatSpec.HAS_LINKEDLIST_NODE : 0);
+                + (formatOptions.mSupportsDynamicUpdate ? FormatSpec.SUPPORTS_DYNAMIC_UPDATE : 0);
     }
 
     /**
@@ -857,7 +857,7 @@ public class BinaryDictInputOutput {
             byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset);
             buffer[index++] = flags;
 
-            if (hasParentAddress(formatOptions)) {
+            if (supportsDynamicUpdate(formatOptions)) {
                 if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
                     // this node is the root node.
                     buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
@@ -927,7 +927,7 @@ public class BinaryDictInputOutput {
             }
 
         }
-        if (formatOptions.mHasLinkedListNode) {
+        if (formatOptions.mSupportsDynamicUpdate) {
             buffer[index] = buffer[index + 1] = buffer[index + 2]
                     = FormatSpec.NO_FORWARD_LINK_ADDRESS;
             index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
@@ -1112,7 +1112,7 @@ public class BinaryDictInputOutput {
         ++addressPointer;
 
         final int parentAddress;
-        if (hasParentAddress(options)) {
+        if (supportsDynamicUpdate(options)) {
             // read the parent address. (version 3)
             parentAddress = -buffer.readUnsignedInt24();
             addressPointer += 3;
@@ -1251,7 +1251,7 @@ public class BinaryDictInputOutput {
         final String result;
         final int originalPointer = buffer.position();
 
-        if (hasParentAddress(formatOptions)) {
+        if (supportsDynamicUpdate(formatOptions)) {
             result = getWordAtAddressWithParentAddress(buffer, headerSize, address, formatOptions);
         } else {
             result = getWordAtAddressWithoutParentAddress(buffer, headerSize, address,
@@ -1392,7 +1392,7 @@ public class BinaryDictInputOutput {
             }
 
             // reach the end of the array.
-            if (options.mHasLinkedListNode) {
+            if (options.mSupportsDynamicUpdate) {
                 final int nextAddress = buffer.readUnsignedInt24();
                 if (nextAddress >= 0 && nextAddress < buffer.limit()) {
                     buffer.position(nextAddress);
@@ -1400,7 +1400,7 @@ public class BinaryDictInputOutput {
                     break;
                 }
             }
-        } while (options.mHasLinkedListNode &&
+        } while (options.mSupportsDynamicUpdate &&
                 buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
 
         final Node node = new Node(nodeContents);
@@ -1469,8 +1469,7 @@ public class BinaryDictInputOutput {
                         0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
                         0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
                 new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.HAS_PARENT_ADDRESS),
-                        0 != (optionsFlags & FormatSpec.HAS_LINKEDLIST_NODE)));
+                        0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE)));
         return header;
     }
 
