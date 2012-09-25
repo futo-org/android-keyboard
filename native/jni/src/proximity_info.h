@@ -44,7 +44,7 @@ class ProximityInfo {
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
-    float getNormalizedSquaredDistanceFromCenterFloat(
+    float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
     int getKeyIndexOf(const int c) const;
@@ -123,8 +123,6 @@ class ProximityInfo {
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
-    float calculateSquaredDistanceFromSweetSpotCenter(
-            const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
     int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
     bool isOnKey(const int keyId, const int x, const int y) const {
