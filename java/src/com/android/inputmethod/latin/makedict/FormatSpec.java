@@ -52,13 +52,18 @@ public final class FormatSpec {
      */
 
     /* Node(CharGroup) layout is as follows:
-     *   | addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
-     *                                 2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
-     * f |                                     01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
-     * l |                                     10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
-     * a |                                     11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
-     * g | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
-     * s | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
+     *   | IF !SUPPORTS_DYNAMIC_UPDATE
+     *   |   addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
+     *   |                           2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
+     * f |                                   01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
+     * l |                                   10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
+     * a |                                   11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
+     * g | ELSE
+     * s |   is moved ?              2 bits, 11 = no
+     *   |                                   01 = yes
+     *   |                        the new address is stored in the same place as the parent address
+     *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
+     *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
@@ -178,6 +183,7 @@ public final class FormatSpec {
     static final int FLAG_HAS_BIGRAMS = 0x04;
     static final int FLAG_IS_NOT_A_WORD = 0x02;
     static final int FLAG_IS_BLACKLISTED = 0x01;
+    static final int FLAG_IS_MOVED = 0x40;
 
     static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
