@@ -44,7 +44,6 @@ public class ProximityInfo {
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
     private final Key[] mKeys;
-    private final TouchPositionCorrection mTouchPositionCorrection;
     private final Key[][] mGridNeighbors;
     private final String mLocaleStr;
 
@@ -67,14 +66,13 @@ public class ProximityInfo {
         mKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
         mKeys = keys;
-        mTouchPositionCorrection = touchPositionCorrection;
         mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
             return;
         }
         computeNearestNeighbors();
-        mNativeProximityInfo = createNativeProximityInfo();
+        mNativeProximityInfo = createNativeProximityInfo(touchPositionCorrection);
     }
 
     public static ProximityInfo createDummyProximityInfo() {
@@ -106,12 +104,12 @@ public class ProximityInfo {
 
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    private final long createNativeProximityInfo() {
+    private final long createNativeProximityInfo(
+            final TouchPositionCorrection touchPositionCorrection) {
         final Key[][] gridNeighborKeys = mGridNeighbors;
         final int keyboardWidth = mKeyboardMinWidth;
         final int keyboardHeight = mKeyboardHeight;
         final Key[] keys = mKeys;
-        final TouchPositionCorrection touchPositionCorrection = mTouchPositionCorrection;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
@@ -148,12 +146,12 @@ public class ProximityInfo {
                 final Key key = keys[i];
                 final Rect hitBox = key.mHitBox;
                 final int row = hitBox.top / mKeyHeight;
-                if (row < touchPositionCorrection.mRadii.length) {
+                if (row < touchPositionCorrection.getRows()) {
                     final int hitBoxWidth = hitBox.width();
                     final int hitBoxHeight = hitBox.height();
-                    final float x = touchPositionCorrection.mXs[row];
-                    final float y = touchPositionCorrection.mYs[row];
-                    final float radius = touchPositionCorrection.mRadii[row];
+                    final float x = touchPositionCorrection.getX(row);
+                    final float y = touchPositionCorrection.getY(row);
+                    final float radius = touchPositionCorrection.getRadius(row);
                     sweetSpotCenterXs[i] = hitBox.exactCenterX() + x * hitBoxWidth;
                     sweetSpotCenterYs[i] = hitBox.exactCenterY() + y * hitBoxHeight;
                     // Note that, in recent versions of Android, FloatMath is actually slower than
