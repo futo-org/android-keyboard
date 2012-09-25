@@ -100,6 +100,11 @@ public class UserHistoryDictIOUtils {
 
         @Override
         public int limit() {
+            return mBuffer.length - 1;
+        }
+
+        @Override
+        public int capacity() {
             return mBuffer.length;
         }
     }
