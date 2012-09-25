@@ -42,11 +42,13 @@ public final class FormatSpec {
      * ps
      *
      * f |
-     * o | IF HAS_LINKEDLIST_NODE (defined in the file header)
+     * o | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
      * r |     forward link address, 3byte
-     * w | the address must be positive.
-     * a |
-     * rdlinkaddress
+     * w | 1 byte = bbbbbbbb match
+     * a |   case 1xxxxxxx => -((xxxxxxx << 16) + (next byte << 8) + next byte)
+     * r |   otherwise => (xxxxxxx << 16) + (next byte << 8) + next byte
+     * d |
+     * linkaddress
      */
 
     /* Node(CharGroup) layout is as follows:
@@ -63,11 +65,13 @@ public final class FormatSpec {
      *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
      *
      * p |
-     * a | IF HAS_PARENT_ADDRESS (defined in the file header)
+     * a | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
      * r |     parent address, 3byte
-     * e | the address must be negative, so the absolute value of the address is stored.
-     * n |
-     * taddress
+     * e | 1 byte = bbbbbbbb match
+     * n |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
+     * t |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
+     * a |
+     * ddress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -206,6 +210,7 @@ public final class FormatSpec {
 
     // This option needs to be the same numeric value as the one in binary_format.h.
     static final int NOT_VALID_WORD = -99;
+    static final int SIGNED_CHILDREN_ADDRESS_SIZE = 3;
 
     /**
      * Options about file format.

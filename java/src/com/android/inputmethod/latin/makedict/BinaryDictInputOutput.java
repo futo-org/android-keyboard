@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Stack;
 import java.util.TreeMap;
 
 /**
@@ -412,6 +411,10 @@ public class BinaryDictInputOutput {
         }
     }
 
+    private static final int UINT8_MAX = 0xFF;
+    private static final int UINT16_MAX = 0xFFFF;
+    private static final int UINT24_MAX = 0xFFFFFF;
+
     /**
      * Compute the size, in bytes, that an address will occupy.
      *
@@ -423,17 +426,25 @@ public class BinaryDictInputOutput {
      * @return the byte size.
      */
     private static int getByteSize(final int address) {
-        assert(address < 0x1000000);
+        assert(address <= UINT24_MAX);
         if (!hasChildrenAddress(address)) {
             return 0;
-        } else if (Math.abs(address) < 0x100) {
+        } else if (Math.abs(address) <= UINT8_MAX) {
             return 1;
-        } else if (Math.abs(address) < 0x10000) {
+        } else if (Math.abs(address) <= UINT16_MAX) {
             return 2;
         } else {
             return 3;
         }
     }
+
+    private static final int SINT8_MAX = 0x7F;
+    private static final int SINT16_MAX = 0x7FFF;
+    private static final int SINT24_MAX = 0x7FFFFF;
+    private static final int MSB8 = 0x80;
+    private static final int MSB16 = 0x8000;
+    private static final int MSB24 = 0x800000;
+
     // End utility methods.
 
     // This method is responsible for finding a nice ordering of the nodes that favors run-time
@@ -509,13 +520,19 @@ public class BinaryDictInputOutput {
             }
             int groupSize = getGroupHeaderSize(group, formatOptions);
             if (group.isTerminal()) groupSize += FormatSpec.GROUP_FREQUENCY_SIZE;
-            if (null != group.mChildren) {
+            if (null == group.mChildren && formatOptions.mSupportsDynamicUpdate) {
+                groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+            } else if (null != group.mChildren) {
                 final int offsetBasePoint = groupSize + node.mCachedAddress + size;
                 final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
                 // assign my address to children's parent address
                 group.mChildren.mCachedParentAddress = group.mCachedAddress
                         - group.mChildren.mCachedAddress;
-                groupSize += getByteSize(offset);
+                if (formatOptions.mSupportsDynamicUpdate) {
+                    groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+                } else {
+                    groupSize += getByteSize(offset);
+                }
             }
             groupSize += getShortcutListSize(group.mShortcutTargets);
             if (null != group.mBigrams) {
@@ -669,27 +686,52 @@ public class BinaryDictInputOutput {
         }
     }
 
+    /**
+     * Helper method to write a variable-size signed address to a file.
+     *
+     * @param buffer the buffer to write to.
+     * @param index the index in the buffer to write the address to.
+     * @param address the address to write.
+     * @return the size in bytes the address actually took.
+     */
+    private static int writeVariableSignedAddress(final byte[] buffer, int index,
+            final int address) {
+        if (!hasChildrenAddress(address)) {
+            buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
+        } else {
+            final int absAddress = Math.abs(address);
+            buffer[index++] = (byte)((address < 0 ? MSB8 : 0) | (0xFF & (absAddress >> 16)));
+            buffer[index++] = (byte)(0xFF & (absAddress >> 8));
+            buffer[index++] = (byte)(0xFF & absAddress);
+        }
+        return 3;
+    }
+
     private static byte makeCharGroupFlags(final CharGroup group, final int groupAddress,
-            final int childrenOffset) {
+            final int childrenOffset, final FormatOptions formatOptions) {
         byte flags = 0;
         if (group.mChars.length > 1) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
         if (group.mFrequency >= 0) {
             flags |= FormatSpec.FLAG_IS_TERMINAL;
         }
         if (null != group.mChildren) {
-            switch (getByteSize(childrenOffset)) {
-             case 1:
-                 flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
-                 break;
-             case 2:
-                 flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
-                 break;
-             case 3:
-                 flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
-                 break;
-             default:
-                 throw new RuntimeException("Node with a strange address");
-             }
+            final int byteSize = formatOptions.mSupportsDynamicUpdate
+                    ? FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE : getByteSize(childrenOffset);
+            switch (byteSize) {
+            case 1:
+                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
+                break;
+            case 2:
+                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
+                break;
+            case 3:
+                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
+                break;
+            default:
+                throw new RuntimeException("Node with a strange address");
+            }
+        } else if (formatOptions.mSupportsDynamicUpdate) {
+            flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
         }
         if (null != group.mShortcutTargets) {
             if (DBG && 0 == group.mShortcutTargets.size()) {
@@ -808,6 +850,25 @@ public class BinaryDictInputOutput {
                 + (frequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY);
     }
 
+    private static final int writeParentAddress(final byte[] buffer, final int index,
+            final int address, final FormatOptions formatOptions) {
+        if (supportsDynamicUpdate(formatOptions)) {
+            if (address == FormatSpec.NO_PARENT_ADDRESS) {
+                buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
+            } else {
+                final int absAddress = Math.abs(address);
+                assert(absAddress <= SINT24_MAX);
+                buffer[index] = (byte)((address < 0 ? MSB8 : 0)
+                        | ((absAddress >> 16) & 0xFF));
+                buffer[index + 1] = (byte)((absAddress >> 8) & 0xFF);
+                buffer[index + 2] = (byte)(absAddress & 0xFF);
+            }
+            return index + 3;
+        } else {
+            return index;
+        }
+    }
+
     /**
      * Write a node to memory. The node is expected to have its final position cached.
      *
@@ -854,22 +915,15 @@ public class BinaryDictInputOutput {
             final int childrenOffset = null == group.mChildren
                     ? FormatSpec.NO_CHILDREN_ADDRESS
                             : group.mChildren.mCachedAddress - groupAddress;
-            byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset);
+            byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset, formatOptions);
             buffer[index++] = flags;
 
-            if (supportsDynamicUpdate(formatOptions)) {
-                if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
-                    // this node is the root node.
-                    buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
-                } else {
-                    // write parent address. (version 3)
-                    final int actualParentAddress = Math.abs(parentAddress
-                            + (node.mCachedAddress - group.mCachedAddress));
-                    buffer[index] = (byte)((actualParentAddress >> 16) & 0xFF);
-                    buffer[index + 1] = (byte)((actualParentAddress >> 8) & 0xFF);
-                    buffer[index + 2] = (byte)(actualParentAddress & 0xFF);
-                }
-                index += 3;
+            if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
+                index = writeParentAddress(buffer, index, parentAddress, formatOptions);
+            } else {
+                index = writeParentAddress(buffer, index,
+                        parentAddress + (node.mCachedAddress - group.mCachedAddress),
+                        formatOptions);
             }
 
             index = CharEncoding.writeCharArray(group.mChars, buffer, index);
@@ -879,7 +933,13 @@ public class BinaryDictInputOutput {
             if (group.mFrequency >= 0) {
                 buffer[index++] = (byte) group.mFrequency;
             }
-            final int shift = writeVariableAddress(buffer, index, childrenOffset);
+
+            final int shift;
+            if (formatOptions.mSupportsDynamicUpdate) {
+                shift = writeVariableSignedAddress(buffer, index, childrenOffset);
+            } else {
+                shift = writeVariableAddress(buffer, index, childrenOffset);
+            }
             index += shift;
             groupAddress += shift;
 
@@ -1104,6 +1164,58 @@ public class BinaryDictInputOutput {
     // Input methods: Read a binary dictionary to memory.
     // readDictionaryBinary is the public entry point for them.
 
+    private static int getChildrenAddressSize(final int optionFlags,
+            final FormatOptions formatOptions) {
+        if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+        switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+                return 1;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+                return 2;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+                return 3;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+            default:
+                return 0;
+        }
+    }
+
+    private static int readChildrenAddress(final FusionDictionaryBufferInterface buffer,
+            final int optionFlags, final FormatOptions options) {
+        if (options.mSupportsDynamicUpdate) {
+            final int address = buffer.readUnsignedInt24();
+            if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
+            if ((address & MSB24) != 0) {
+                return -(address & SINT24_MAX);
+            } else {
+                return address;
+            }
+        }
+        int address;
+        switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+                return buffer.readUnsignedByte();
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+                return buffer.readUnsignedShort();
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+                return buffer.readUnsignedInt24();
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+            default:
+                return FormatSpec.NO_CHILDREN_ADDRESS;
+        }
+    }
+
+    private static int readParentAddress(final FusionDictionaryBufferInterface buffer,
+            final FormatOptions formatOptions) {
+        if (supportsDynamicUpdate(formatOptions)) {
+            final int parentAddress = buffer.readUnsignedInt24();
+            final int sign = ((parentAddress & MSB24) != 0) ? -1 : 1;
+            return sign * (parentAddress & SINT24_MAX);
+        } else {
+            return FormatSpec.NO_PARENT_ADDRESS;
+        }
+    }
+
     private static final int[] CHARACTER_BUFFER = new int[FormatSpec.MAX_WORD_LENGTH];
     public static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
             final int originalGroupAddress, final FormatOptions options) {
@@ -1111,13 +1223,9 @@ public class BinaryDictInputOutput {
         final int flags = buffer.readUnsignedByte();
         ++addressPointer;
 
-        final int parentAddress;
+        final int parentAddress = readParentAddress(buffer, options);
         if (supportsDynamicUpdate(options)) {
-            // read the parent address. (version 3)
-            parentAddress = -buffer.readUnsignedInt24();
             addressPointer += 3;
-        } else {
-            parentAddress = FormatSpec.NO_PARENT_ADDRESS;
         }
 
         final int characters[];
@@ -1146,25 +1254,11 @@ public class BinaryDictInputOutput {
         } else {
             frequency = CharGroup.NOT_A_TERMINAL;
         }
-        int childrenAddress = addressPointer;
-        switch (flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
-        case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
-            childrenAddress += buffer.readUnsignedByte();
-            addressPointer += 1;
-            break;
-        case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
-            childrenAddress += buffer.readUnsignedShort();
-            addressPointer += 2;
-            break;
-        case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
-            childrenAddress += buffer.readUnsignedInt24();
-            addressPointer += 3;
-            break;
-        case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
-        default:
-            childrenAddress = FormatSpec.NO_CHILDREN_ADDRESS;
-            break;
+        int childrenAddress = readChildrenAddress(buffer, flags, options);
+        if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
+            childrenAddress += addressPointer;
         }
+        addressPointer += getChildrenAddressSize(flags, options);
         ArrayList<WeightedString> shortcutTargets = null;
         if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
             final int pointerBefore = buffer.position();
@@ -1250,6 +1344,7 @@ public class BinaryDictInputOutput {
 
         final String result;
         final int originalPointer = buffer.position();
+        buffer.position(address);
 
         if (supportsDynamicUpdate(formatOptions)) {
             result = getWordAtAddressWithParentAddress(buffer, headerSize, address, formatOptions);
@@ -1279,7 +1374,6 @@ public class BinaryDictInputOutput {
                 sGetWordBuffer[index--] =
                         currentInfo.mCharacters[currentInfo.mCharacters.length - i - 1];
             }
-
             if (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS) break;
             currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
         }
