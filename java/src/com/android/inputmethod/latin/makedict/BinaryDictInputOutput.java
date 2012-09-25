@@ -63,6 +63,7 @@ public class BinaryDictInputOutput {
         public void position(int newPosition);
         public void put(final byte b);
         public int limit();
+        public int capacity();
     }
 
     public static final class ByteBufferWrapper implements FusionDictionaryBufferInterface {
@@ -111,6 +112,11 @@ public class BinaryDictInputOutput {
         @Override
         public int limit() {
             return mBuffer.limit();
+        }
+
+        @Override
+        public int capacity() {
+            return mBuffer.capacity();
         }
     }
 
