@@ -169,6 +169,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private boolean mIsDetectingGesture = false; // per PointerTracker.
     private static boolean sInGesture = false;
     private static long sGestureFirstDownTime;
+    private static long sLastLetterTypingUpTime;
     private static final InputPointers sAggregratedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
     private static int sLastRecognitionPointSize = 0;
@@ -698,6 +699,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     private void onGestureDownEvent(final int x, final int y, final long eventTime) {
         mIsDetectingGesture = true;
+        mGestureStrokeWithPreviewPoints.setLastLetterTypingTime(eventTime, sLastLetterTypingUpTime);
         final int elapsedTimeFromFirstDown = (int)(eventTime - sGestureFirstDownTime);
         mGestureStrokeWithPreviewPoints.addPoint(x, y, elapsedTimeFromFirstDown,
                 true /* isMajorEvent */);
@@ -842,7 +844,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
-                        onUpEventInternal();
+                        onUpEventInternal(eventTime);
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         // HACK: If there are currently multiple touches, register the key even if
@@ -852,7 +854,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                         // this hack.
                         if (getActivePointerTrackerCount() > 1 && sPointerTrackerQueue != null
                                 && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
-                            onUpEventInternal();
+                            onUpEventInternal(eventTime);
                         }
                         if (!mIsDetectingGesture) {
                             mKeyAlreadyProcessed = true;
@@ -897,7 +899,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 }
             }
         }
-        onUpEventInternal();
+        onUpEventInternal(eventTime);
         if (queue != null) {
             queue.remove(this);
         }
@@ -911,11 +913,11 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_EVENT) {
             printTouchEvent("onPhntEvent:", getLastX(), getLastY(), eventTime);
         }
-        onUpEventInternal();
+        onUpEventInternal(eventTime);
         mKeyAlreadyProcessed = true;
     }
 
-    private void onUpEventInternal() {
+    private void onUpEventInternal(final long eventTime) {
         mTimerProxy.cancelKeyTimers();
         mIsInSlidingKeyInput = false;
         mIsDetectingGesture = false;
@@ -943,6 +945,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
         if (currentKey != null && !currentKey.isRepeatable()) {
             detectAndSendKey(currentKey, mKeyX, mKeyY);
+            final int code = currentKey.mCode;
+            if (Keyboard.isLetterCode(code) && code != Keyboard.CODE_SPACE) {
+                sLastLetterTypingUpTime = eventTime;
+            }
         }
     }
 
