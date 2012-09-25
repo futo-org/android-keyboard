@@ -177,9 +177,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return this;
     }
 
-    // TODO: Remove this method.
-    public void setTouchPositionCorrectionEnabled(final boolean enabled) {
-        mParams.mTouchPositionCorrection.setEnabled(enabled);
+    // For test only
+    public void disableTouchPositionCorrectionDataForTest() {
+        mParams.mTouchPositionCorrection.setEnabled(false);
     }
 
     public void setProximityCharsCorrectionEnabled(final boolean enabled) {
@@ -314,7 +314,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
-            params.mTouchPositionCorrection.setEnabled(resourceId != 0);
             if (resourceId != 0) {
                 final String[] data = mResources.getStringArray(resourceId);
                 params.mTouchPositionCorrection.load(data);
