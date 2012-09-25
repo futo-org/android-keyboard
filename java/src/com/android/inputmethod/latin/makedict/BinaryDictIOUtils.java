@@ -157,47 +157,63 @@ public class BinaryDictIOUtils {
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.Dictionary.MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
-            int groupOffset = buffer.position() - header.mHeaderSize;
-            final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
-            groupOffset += BinaryDictInputOutput.getGroupCountSize(charGroupCount);
 
-            for (int i = 0; i < charGroupCount; ++i) {
-                final int charGroupPos = buffer.position();
-                final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
-                        buffer.position(), header.mFormatOptions);
-                boolean same = true;
-                for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
-                        p < currentInfo.mCharacters.length;
-                        ++p, j = word.offsetByCodePoints(j, 1)) {
-                    if (wordPos + p >= wordLen
-                            || word.codePointAt(j) != currentInfo.mCharacters[p]) {
-                        same = false;
-                        break;
-                    }
-                }
+            do {
+                int groupOffset = buffer.position() - header.mHeaderSize;
+                final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
+                groupOffset += BinaryDictInputOutput.getGroupCountSize(charGroupCount);
 
-                if (same) {
-                    if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                        if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL) {
-                            return FormatSpec.NOT_VALID_WORD;
-                        } else {
-                            return charGroupPos;
+                boolean foundNextCharGroup = false;
+                for (int i = 0; i < charGroupCount; ++i) {
+                    final int charGroupPos = buffer.position();
+                    final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
+                            buffer.position(), header.mFormatOptions);
+                    boolean same = true;
+                    for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
+                            p < currentInfo.mCharacters.length;
+                            ++p, j = word.offsetByCodePoints(j, 1)) {
+                        if (wordPos + p >= wordLen
+                                || word.codePointAt(j) != currentInfo.mCharacters[p]) {
+                            same = false;
+                            break;
                         }
                     }
-                    wordPos += currentInfo.mCharacters.length;
-                    if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {
-                        return FormatSpec.NOT_VALID_WORD;
-                    }
-                    buffer.position(currentInfo.mChildrenAddress);
-                    break;
-                }
-                groupOffset = currentInfo.mEndAddress;
 
-                // not found
-                if (i >= charGroupCount - 1) {
+                    if (same) {
+                        // found the group matches the word.
+                        if (wordPos + currentInfo.mCharacters.length == wordLen) {
+                            if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL) {
+                                return FormatSpec.NOT_VALID_WORD;
+                            } else {
+                                return charGroupPos;
+                            }
+                        }
+                        wordPos += currentInfo.mCharacters.length;
+                        if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {
+                            return FormatSpec.NOT_VALID_WORD;
+                        }
+                        foundNextCharGroup = true;
+                        buffer.position(currentInfo.mChildrenAddress);
+                        break;
+                    }
+                    groupOffset = currentInfo.mEndAddress;
+                }
+
+                // If we found the next char group, it is under the file pointer.
+                // But if not, we are at the end of this node so we expect to have
+                // a forward link address that we need to consult and possibly resume
+                // search on the next node in the linked list.
+                if (foundNextCharGroup) break;
+                if (!header.mFormatOptions.mSupportsDynamicUpdate) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
-            }
+
+                final int forwardLinkAddress = buffer.readUnsignedInt24();
+                if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
+                    return FormatSpec.NOT_VALID_WORD;
+                }
+                buffer.position(forwardLinkAddress);
+            } while(true);
         }
         return FormatSpec.NOT_VALID_WORD;
     }
