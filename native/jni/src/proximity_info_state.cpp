@@ -202,7 +202,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int x = mInputXs[i];
                 const int y = mInputYs[i];
                 const float normalizedSquaredDistance =
-                        mProximityInfo->getNormalizedSquaredDistanceFromCenterFloat(k, x, y);
+                        mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
                 mDistanceCache[index] = normalizedSquaredDistance;
                 if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
                     mNearKeysVector[i].set(k, 1);
@@ -234,7 +234,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     memset(mNormalizedSquaredDistances, NOT_A_DISTANCE, sizeof(mNormalizedSquaredDistances));
     memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
     mTouchPositionCorrectionEnabled = mInputSize > 0 && mHasTouchPositionCorrectionData
-            && xCoordinates && yCoordinates && !isGeometric;
+            && xCoordinates && yCoordinates;
     if (!isGeometric && pointerId == 0) {
         for (int i = 0; i < inputSize; ++i) {
             mPrimaryInputWord[i] = getPrimaryCharAt(i);
@@ -298,7 +298,7 @@ float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
     const int keyCount = mProximityInfo->getKeyCount();
     float nearestKeyDistance = mMaxPointToKeyLength;
     for (int k = 0; k < keyCount; ++k) {
-        const float dist = mProximityInfo->getNormalizedSquaredDistanceFromCenterFloat(k, x, y);
+        const float dist = mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
         if (dist < NEAR_KEY_THRESHOLD) {
             currentNearKeysDistances->insert(std::pair<int, float>(k, dist));
         }
