@@ -34,8 +34,10 @@ public class GestureStroke {
     private long mLastMajorEventTime;
     private int mLastMajorEventX;
     private int mLastMajorEventY;
+    private boolean mAfterFastTyping;
 
     private int mKeyWidth;
+    private int mStartGestureLengthThresholdAfterFastTyping; // pixel
     private int mStartGestureLengthThreshold; // pixel
     private int mMinGestureSamplingLength; // pixel
     private int mGestureRecognitionSpeedThreshold; // pixel / sec
@@ -45,7 +47,11 @@ public class GestureStroke {
     private int mDetectFastMoveY;
 
     // TODO: Move some of these to resource.
-    private static final float START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH = 0.60f;
+    private static final int GESTURE_AFTER_FAST_TYPING_DURATION_THRESHOLD = 350; // msec
+    private static final float START_GESTURE_LENGTH_THRESHOLD_AFTER_FAST_TYPING_RATIO_TO_KEY_WIDTH =
+            8.0f;
+    private static final int START_GESTURE_LENGTH_THRESHOLD_DECAY_DURATION = 400; // msec
+    private static final float START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH = 0.6f;
     private static final int START_GESTURE_DURATION_THRESHOLD = 70; // msec
     private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
@@ -67,6 +73,8 @@ public class GestureStroke {
     public void setKeyboardGeometry(final int keyWidth) {
         mKeyWidth = keyWidth;
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
+        mStartGestureLengthThresholdAfterFastTyping = (int)(keyWidth
+                * START_GESTURE_LENGTH_THRESHOLD_AFTER_FAST_TYPING_RATIO_TO_KEY_WIDTH);
         mStartGestureLengthThreshold =
                 (int)(keyWidth * START_GESTURE_LENGTH_THRESHOLD_RATIO_TO_KEY_WIDTH);
         mMinGestureSamplingLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
@@ -75,8 +83,31 @@ public class GestureStroke {
         mDetectFastMoveSpeedThreshold =
                 (int)(keyWidth * DETECT_FAST_MOVE_SPEED_THRESHOLD_RATIO_TO_KEY_WIDTH);
         if (DEBUG) {
-            Log.d(TAG, "setKeyboardGeometry: keyWidth=" + keyWidth);
+            Log.d(TAG, "[" + mPointerId + "] setKeyboardGeometry: keyWidth=" + keyWidth
+                    + " tL0=" + mStartGestureLengthThresholdAfterFastTyping
+                    + " tL=" + mStartGestureLengthThreshold);
         }
+    }
+
+    public void setLastLetterTypingTime(final long downTime, final long lastTypingTime) {
+        final long elpasedTimeAfterTyping = downTime - lastTypingTime;
+        if (elpasedTimeAfterTyping < GESTURE_AFTER_FAST_TYPING_DURATION_THRESHOLD) {
+            mAfterFastTyping = true;
+        }
+        if (DEBUG) {
+            Log.d(TAG, "[" + mPointerId + "] setLastTypingTime: dT=" + elpasedTimeAfterTyping
+                    + " afterFastTyping=" + mAfterFastTyping);
+        }
+    }
+
+    private int getStartGestureLengthThreshold(final int deltaTime) {
+        if (!mAfterFastTyping || deltaTime >= START_GESTURE_LENGTH_THRESHOLD_DECAY_DURATION) {
+            return mStartGestureLengthThreshold;
+        }
+        final int decayedThreshold =
+                (mStartGestureLengthThresholdAfterFastTyping - mStartGestureLengthThreshold)
+                * deltaTime / START_GESTURE_LENGTH_THRESHOLD_DECAY_DURATION;
+        return mStartGestureLengthThresholdAfterFastTyping - decayedThreshold;
     }
 
     public boolean isStartOfAGesture() {
@@ -92,10 +123,12 @@ public class GestureStroke {
         final int deltaLength = getDistance(
                 mXCoordinates.get(lastIndex), mYCoordinates.get(lastIndex),
                 mDetectFastMoveX, mDetectFastMoveY);
+        final int startGestureLengthThreshold = getStartGestureLengthThreshold(deltaTime);
         final boolean isStartOfAGesture = deltaTime > START_GESTURE_DURATION_THRESHOLD
-                && deltaLength > mStartGestureLengthThreshold;
+                && deltaLength > startGestureLengthThreshold;
         if (DEBUG) {
-            Log.d(TAG, "isStartOfAGesture: dT=" + deltaTime + " dL=" + deltaLength
+            Log.d(TAG, "[" + mPointerId + "] isStartOfAGesture: dT=" + deltaTime
+                    + " dL=" + deltaLength + " tL=" + startGestureLengthThreshold
                     + " points=" + size + (isStartOfAGesture ? " Detect start of a gesture" : ""));
         }
         return isStartOfAGesture;
@@ -109,6 +142,7 @@ public class GestureStroke {
         mYCoordinates.setLength(0);
         mLastMajorEventTime = 0;
         mDetectFastMoveTime = 0;
+        mAfterFastTyping = false;
     }
 
     private void appendPoint(final int x, final int y, final int time) {
@@ -135,12 +169,13 @@ public class GestureStroke {
             final int pixelsPerSec = pixels * MSEC_PER_SEC;
             if (DEBUG) {
                 final float speed = (float)pixelsPerSec / msecs / mKeyWidth;
-                Log.d(TAG, String.format("Speed=%.3f keyWidth/sec", speed));
+                Log.d(TAG, String.format("[" + mPointerId + "] speed=%.3f", speed));
             }
             // Equivalent to (pixels / msecs < mStartSpeedThreshold / MSEC_PER_SEC)
             if (mDetectFastMoveTime == 0 && pixelsPerSec > mDetectFastMoveSpeedThreshold * msecs) {
                 if (DEBUG) {
-                    Log.d(TAG, "Detect fast move: T=" + time + " points = " + size);
+                    Log.d(TAG, "[" + mPointerId + "] detect fast move: T="
+                            + time + " points = " + size);
                 }
                 mDetectFastMoveTime = time;
                 mDetectFastMoveX = x;

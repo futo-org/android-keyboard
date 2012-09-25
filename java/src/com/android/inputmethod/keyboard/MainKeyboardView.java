@@ -318,12 +318,13 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             return hasMessages(MSG_TYPING_STATE_EXPIRED);
         }
 
+        // TODO: Remove "gesture off while fast typing" related dead code.
         @Override
         public void startGestureOffWhileFastTypingTimer() {
-            removeMessages(MSG_DISABLE_GESTURE_EXPIRED);
-            PointerTracker.setGestureOffWhileFastTyping();
-            sendMessageDelayed(obtainMessage(MSG_DISABLE_GESTURE_EXPIRED),
-                    mDisableGestureWhileFastTypingTimeout);
+//            removeMessages(MSG_DISABLE_GESTURE_EXPIRED);
+//            PointerTracker.setGestureOffWhileFastTyping();
+//            sendMessageDelayed(obtainMessage(MSG_DISABLE_GESTURE_EXPIRED),
+//                    mDisableGestureWhileFastTypingTimeout);
         }
 
         @Override
