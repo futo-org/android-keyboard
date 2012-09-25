@@ -179,7 +179,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 duration = times[index] - times[index - 1];
             } else if (0 < index && index < inputSize - 1) {
                 length = getDistanceInt(xCoordinates[index - 1], yCoordinates[index - 1],
-                        xCoordinates[index + 1], yCoordinates[index + 1]);
+                        xCoordinates[index], yCoordinates[index])
+                        + getDistanceInt(xCoordinates[index], yCoordinates[index],
+                                xCoordinates[index + 1], yCoordinates[index + 1]);
                 duration = times[index + 1] - times[index - 1];
             } else {
                 length = 0;
@@ -509,7 +511,7 @@ float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int co
         return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
     }
     if (isSkippableChar(codePoint)) {
-        return 0;
+        return 0.0f;
     }
     // If the char is not a key on the keyboard then return the max length.
     return MAX_POINT_TO_KEY_LENGTH;
