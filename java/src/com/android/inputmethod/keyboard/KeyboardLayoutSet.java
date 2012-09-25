@@ -96,7 +96,7 @@ public class KeyboardLayoutSet {
         String mKeyboardLayoutSetName;
         int mMode;
         EditorInfo mEditorInfo;
-        boolean mTouchPositionCorrectionEnabled;
+        boolean mDisableTouchPositionCorrectionDataForTest;
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
@@ -167,7 +167,9 @@ public class KeyboardLayoutSet {
             }
             final int keyboardXmlId = elementParams.mKeyboardXmlId;
             builder.load(keyboardXmlId, id);
-            builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
+            if (mParams.mDisableTouchPositionCorrectionDataForTest) {
+                builder.disableTouchPositionCorrectionDataForTest();
+            }
             builder.setProximityCharsCorrectionEnabled(
                     elementParams.mProximityCharsCorrectionEnabled);
             keyboard = builder.build();
@@ -264,8 +266,9 @@ public class KeyboardLayoutSet {
             return this;
         }
 
-        public void setTouchPositionCorrectionEnabled(final boolean enabled) {
-            mParams.mTouchPositionCorrectionEnabled = enabled;
+        // For test only
+        public void disableTouchPositionCorrectionDataForTest() {
+            mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }
 
         public KeyboardLayoutSet build() {
