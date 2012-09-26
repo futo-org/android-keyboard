@@ -85,7 +85,10 @@ public class BinaryDictIOUtils {
             }
             p.mPosition++;
 
-            if (info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) { // found word
+            final boolean isMovedGroup = BinaryDictInputOutput.isMovedGroup(info.mFlags,
+                    formatOptions);
+            if (!isMovedGroup
+                    && info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) {// found word
                 words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
                 frequencies.put(info.mOriginalAddress, info.mFrequency);
                 if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
@@ -109,7 +112,7 @@ public class BinaryDictIOUtils {
                 p.mAddress = buffer.position();
             }
 
-            if (BinaryDictInputOutput.hasChildrenAddress(info.mChildrenAddress)) {
+            if (!isMovedGroup && BinaryDictInputOutput.hasChildrenAddress(info.mChildrenAddress)) {
                 Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
                 stack.push(childrenPos);
             }
@@ -168,6 +171,10 @@ public class BinaryDictIOUtils {
                     final int charGroupPos = buffer.position();
                     final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
                             buffer.position(), header.mFormatOptions);
+                    if (BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
+                            header.mFormatOptions)) {
+                        continue;
+                    }
                     boolean same = true;
                     for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
                             p < currentInfo.mCharacters.length;

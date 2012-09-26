@@ -53,6 +53,7 @@ public class BinaryDictInputOutput {
     // If the number of passes exceeds this number, makedict bails with an exception on
     // suspicion that a bug might be causing an infinite loop.
     private static final int MAX_PASSES = 24;
+    private static final int MAX_JUMPS = 12;
 
     public interface FusionDictionaryBufferInterface {
         public int readUnsignedByte();
@@ -392,6 +393,13 @@ public class BinaryDictInputOutput {
      */
     public static boolean hasChildrenAddress(final int address) {
         return FormatSpec.NO_CHILDREN_ADDRESS != address;
+    }
+
+    /**
+     * Helper method to check whether the group is moved.
+     */
+    public static boolean isMovedGroup(final int flags, final FormatOptions options) {
+        return options.mSupportsDynamicUpdate && ((flags & FormatSpec.FLAG_IS_MOVED) == 1);
     }
 
     /**
@@ -1374,8 +1382,18 @@ public class BinaryDictInputOutput {
         int index = FormatSpec.MAX_WORD_LENGTH - 1;
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
         for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
-            buffer.position(currentAddress + headerSize);
-            final CharGroupInfo currentInfo = readCharGroup(buffer, currentAddress, options);
+            CharGroupInfo currentInfo;
+            int loopCounter = 0;
+            do {
+                buffer.position(currentAddress + headerSize);
+                currentInfo = readCharGroup(buffer, currentAddress, options);
+                if (isMovedGroup(currentInfo.mFlags, options)) {
+                    currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
+                }
+                if (DBG && loopCounter++ > MAX_JUMPS) {
+                    MakedictLog.d("Too many jumps - probably a bug");
+                }
+            } while (isMovedGroup(currentInfo.mFlags, options));
             for (int i = 0; i < currentInfo.mCharacters.length; ++i) {
                 sGetWordBuffer[index--] =
                         currentInfo.mCharacters[currentInfo.mCharacters.length - i - 1];
@@ -1457,6 +1475,7 @@ public class BinaryDictInputOutput {
             int groupOffset = nodeHeadPosition + getGroupCountSize(count);
             for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
                 CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
+                if (isMovedGroup(info.mFlags, options)) continue;
                 ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
                 ArrayList<WeightedString> bigrams = null;
                 if (null != info.mBigrams) {
