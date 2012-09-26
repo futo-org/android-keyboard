@@ -101,28 +101,16 @@ public class PreviewPlacerView extends RelativeLayout {
             }
         }
 
-        private void cancelDismissGestureFloatingPreviewText() {
-            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
-        }
-
         public void dismissGestureFloatingPreviewText() {
-            cancelDismissGestureFloatingPreviewText();
+            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
             sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
                     mGestureFloatingPreviewTextLingerTimeout);
         }
 
-        private void cancelUpdateGestureTrailPreview() {
-            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
-        }
-
         public void postUpdateGestureTrailPreview() {
-            cancelUpdateGestureTrailPreview();
+            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_TRAIL),
                     mGesturePreviewTrailParams.mUpdateInterval);
-        }
-
-        public void cancelAllMessages() {
-            cancelUpdateGestureTrailPreview();
         }
     }
 
@@ -276,10 +264,6 @@ public class PreviewPlacerView extends RelativeLayout {
 
     public void dismissGestureFloatingPreviewText() {
         mDrawingHandler.dismissGestureFloatingPreviewText();
-    }
-
-    public void cancelAllMessages() {
-        mDrawingHandler.cancelAllMessages();
     }
 
     private void drawGestureFloatingPreviewText(final Canvas canvas,
