@@ -49,6 +49,9 @@
     <!-- Category title for text prediction -->
     <string name="correction_category">Text correction</string>
 
+    <!-- Category title for gesture typing -->
+    <string name="gesture_typing_category">Gesture typing</string>
+
     <!-- Category title for misc options  -->
     <string name="misc_category">Other options</string>
 
@@ -80,6 +83,8 @@
 
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
+    <!-- Description for option to enable auto capitalization of sentences -->
+    <string name="auto_cap_summary">Capitalize the first word of each sentence</string>
 
     <!-- Option to configure dictionaries -->
     <string name="configure_dictionaries_title">Add-on dictionaries</string>
@@ -91,12 +96,12 @@
     <!-- Description for show suggestions -->
     <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name">Show in portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
 
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
-    <string name="auto_correction">Auto correction</string>
+    <string name="auto_correction">Auto-correction</string>
     <!-- Description for auto correction [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
     <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
     <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
@@ -109,20 +114,20 @@
     <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
 
     <!-- Option to enable using next word suggestions. After the user types a space, with this option on, the keyboard will try to predict the next word. -->
-    <string name="bigram_prediction">Next word suggestions</string>
+    <string name="bigram_prediction">Next-word suggestions</string>
     <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
-    <string name="bigram_prediction_summary">Based on previous word</string>
+    <string name="bigram_prediction_summary">Use the previous word in making suggestions</string>
 
     <!-- Option to enable gesture input. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=30]-->
-    <string name="gesture_input">Gesture input</string>
+    <string name="gesture_input">Enable gesture typing</string>
     <!-- Description for "gesture_input" option. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=65]-->
-    <string name="gesture_input_summary">Input a word by tracing the letters of a word</string>
+    <string name="gesture_input_summary">Input a word by sliding through the letters</string>
     <!-- Option to enable gesture trail preview. The user can see a trail of the gesture during gesture input. [CHAR LIMIT=30]-->
     <string name="gesture_preview_trail">Show gesture trail</string>
     <!-- Option to enable gesture floating text preview. The user can see a suggested word floating under the moving finger during a gesture input. [CHAR LIMIT=30]-->
-    <string name="gesture_floating_preview_text">Show gesture word</string>
+    <string name="gesture_floating_preview_text">Dynamic floating preview</string>
     <!-- Description for "gesture_floating_preview_text" option. The user can see a suggested word floating under the moving finger during a gesture input. [CHAR LIMIT=65]-->
-    <string name="gesture_floating_preview_text_summary">Show floating preview word with gesture</string>
+    <string name="gesture_floating_preview_text_summary">See the suggested word while gesturing</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
