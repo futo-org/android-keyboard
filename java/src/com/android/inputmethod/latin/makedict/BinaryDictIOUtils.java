@@ -246,4 +246,34 @@ public class BinaryDictIOUtils {
         buffer.position(wordPosition);
         buffer.put((byte)newFlags);
     }
+
+    private static void putSInt24(final FusionDictionaryBufferInterface buffer,
+            final int value) {
+        final int absValue = Math.abs(value);
+        buffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
+        buffer.put((byte)((absValue >> 8) & 0xFF));
+        buffer.put((byte)(absValue & 0xFF));
+    }
+
+    /**
+     * Update a parent address in a CharGroup that is addressed by groupOriginAddress.
+     *
+     * @param buffer the buffer to write.
+     * @param groupOriginAddress the address of the group.
+     * @param newParentAddress the absolute address of the parent.
+     * @param formatOptions file format options.
+     */
+    public static void updateParentAddress(final FusionDictionaryBufferInterface buffer,
+            final int groupOriginAddress, final int newParentAddress,
+            final FormatOptions formatOptions) {
+        final int originalPosition = buffer.position();
+        buffer.position(groupOriginAddress);
+        if (!formatOptions.mSupportsDynamicUpdate) {
+            throw new RuntimeException("this file format does not support parent addresses");
+        }
+        final int flags = buffer.readUnsignedByte();
+        final int parentOffset = newParentAddress - groupOriginAddress;
+        putSInt24(buffer, parentOffset);
+        buffer.position(originalPosition);
+    }
 }
