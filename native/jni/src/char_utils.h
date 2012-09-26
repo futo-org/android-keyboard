@@ -23,7 +23,9 @@
 namespace latinime {
 
 inline static bool isAsciiUpper(unsigned short c) {
-    return isupper(static_cast<int>(c)) != 0;
+    // Note: isupper(...) reports false positives for some Cyrillic characters, causing them to
+    // be incorrectly lower-cased using toAsciiLower(...) rather than latin_tolower(...).
+    return (c >= 'A' && c <= 'Z');
 }
 
 inline static unsigned short toAsciiLower(unsigned short c) {
