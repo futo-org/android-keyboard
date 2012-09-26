@@ -25,7 +25,7 @@
     <string name="english_ime_research_log" msgid="8492602295696577851">"Forschungsprotokollbefehle"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-Rechtschreibprüfung (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktnamen prüfen"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Rechtschreibprüfung verwendet Einträge aus Ihrer Kontaktliste."</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Rechtschreibprüfung kann Einträge aus meiner Kontaktliste verwenden"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Bei Tastendruck vibrieren"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ton bei Tastendruck"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bei Tastendruck"</string>
@@ -36,16 +36,14 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Optionen für Experten"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Eingabemethoden wechseln"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Sprachwechseltaste umfasst auch andere Eingabemethoden."</string>
-    <!-- no translation found for show_language_switch_key (5915478828318774384) -->
-    <skip />
-    <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
-    <skip />
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Sprachwechsel"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Anzeigen, wenn mehrere Eingabesprachen aktiviert sind"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tasten-Pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Keine Verzögerung"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Kontakte vorschlagen"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Namen aus \"Kontakte\" als Vorschläge und Korrekturmöglichkeiten anzeigen"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschr."</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschreibung"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Erweiterte Wörterbücher"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Allgemeines Wörterbuch"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge"</string>
@@ -143,7 +141,7 @@
     <string name="enable" msgid="5031294444630523247">"Aktivieren"</string>
     <string name="not_now" msgid="6172462888202790482">"Später"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Der gleiche Eingabestil ist bereits vorhanden: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus der Studie zur Benutzerfreundlichkeit"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Einstellungen für Vibrationsdauer bei Tastendruck"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Einstellungen für Tonlautstärke bei Tastendruck"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Studie zur Benutzerfreundlichkeit"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Vibrationsdauer bei Tastendruck"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tonlautstärke bei Tastendruck"</string>
 </resources>
