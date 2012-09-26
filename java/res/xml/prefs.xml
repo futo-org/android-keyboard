@@ -24,6 +24,7 @@
         <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
+            android:summary="@string/auto_cap_summary"
             android:persistent="true"
             android:defaultValue="true" />
         <CheckBoxPreference
@@ -78,18 +79,33 @@
             android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
     </PreferenceCategory>
     <PreferenceCategory
+        android:title="@string/gesture_typing_category"
+        android:key="gesture_typing_settings">
+        <CheckBoxPreference
+            android:key="gesture_input"
+            android:title="@string/gesture_input"
+            android:summary="@string/gesture_input_summary"
+            android:persistent="true"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_show_gesture_floating_preview_text"
+            android:title="@string/gesture_floating_preview_text"
+            android:summary="@string/gesture_floating_preview_text_summary"
+            android:persistent="true"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="pref_gesture_preview_trail"
+            android:title="@string/gesture_preview_trail"
+            android:persistent="true"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="@string/misc_category"
         android:key="misc_settings">
         <CheckBoxPreference
             android:key="next_word_prediction"
             android:title="@string/bigram_prediction"
             android:summary="@string/bigram_prediction_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="gesture_input"
-            android:title="@string/gesture_input"
-            android:summary="@string/gesture_input_summary"
             android:persistent="true"
             android:defaultValue="true" />
         <PreferenceScreen
@@ -128,17 +144,6 @@
             <PreferenceScreen
                 android:key="pref_keypress_sound_volume"
                 android:title="@string/prefs_keypress_sound_volume_settings" />
-            <CheckBoxPreference
-                android:key="pref_gesture_preview_trail"
-                android:title="@string/gesture_preview_trail"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="pref_show_gesture_floating_preview_text"
-                android:title="@string/gesture_floating_preview_text"
-                android:summary="@string/gesture_floating_preview_text_summary"
-                android:persistent="true"
-                android:defaultValue="false" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="debug_settings"
