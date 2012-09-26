@@ -781,9 +781,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     public void cancelAllMessages() {
         mDrawingHandler.cancelAllMessages();
-        if (mPreviewPlacerView != null) {
-            mPreviewPlacerView.cancelAllMessages();
-        }
     }
 
     private TextView getKeyPreviewText(final int pointerId) {
