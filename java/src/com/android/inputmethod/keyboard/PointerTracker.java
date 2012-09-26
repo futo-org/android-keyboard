@@ -560,8 +560,11 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         return (sPointerTrackerQueue == null) ? 1 : sPointerTrackerQueue.size();
     }
 
-    private void mayStartBatchInput() {
+    private void mayStartBatchInput(final Key key) {
         if (sInGesture || !mGestureStrokeWithPreviewPoints.isStartOfAGesture()) {
+            return;
+        }
+        if (key == null || !Character.isLetter(key.mCode)) {
             return;
         }
         if (DEBUG_LISTENER) {
@@ -742,7 +745,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
         if (mIsDetectingGesture) {
             mGestureStrokeWithPreviewPoints.addPoint(x, y, gestureTime, isMajorEvent);
-            mayStartBatchInput();
+            mayStartBatchInput(key);
             if (sInGesture && key != null) {
                 updateBatchInput(eventTime);
             }
