@@ -826,7 +826,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
-        mPreviewPlacerView.setOrigin(viewOrigin[0], viewOrigin[1]);
+        mPreviewPlacerView.setKeyboardViewGeometry(
+                viewOrigin[0], viewOrigin[1], getWidth(), getHeight());
         final View rootView = getRootView();
         if (rootView == null) {
             Log.w(TAG, "Cannot find root view");
