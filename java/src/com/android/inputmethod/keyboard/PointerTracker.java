@@ -576,18 +576,20 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
-    private void updateBatchInput(final long eventTime) {
-        synchronized (sAggregratedPointers) {
-            mGestureStrokeWithPreviewPoints.appendIncrementalBatchPoints(sAggregratedPointers);
-            final int size = sAggregratedPointers.getPointerSize();
-            if (size > sLastRecognitionPointSize
-                    && GestureStroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
-                sLastRecognitionPointSize = size;
-                sLastRecognitionTime = eventTime;
-                if (DEBUG_LISTENER) {
-                    Log.d(TAG, "onUpdateBatchInput: batchPoints=" + size);
+    private void mayUpdateBatchInput(final long eventTime, final Key key) {
+        if (key != null) {
+            synchronized (sAggregratedPointers) {
+                mGestureStrokeWithPreviewPoints.appendIncrementalBatchPoints(sAggregratedPointers);
+                final int size = sAggregratedPointers.getPointerSize();
+                if (size > sLastRecognitionPointSize
+                        && GestureStroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
+                    sLastRecognitionPointSize = size;
+                    sLastRecognitionTime = eventTime;
+                    if (DEBUG_LISTENER) {
+                        Log.d(TAG, "onUpdateBatchInput: batchPoints=" + size);
+                    }
+                    mListener.onUpdateBatchInput(sAggregratedPointers);
                 }
-                mListener.onUpdateBatchInput(sAggregratedPointers);
             }
         }
         final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
@@ -746,8 +748,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsDetectingGesture) {
             mGestureStrokeWithPreviewPoints.addPoint(x, y, gestureTime, isMajorEvent);
             mayStartBatchInput(key);
-            if (sInGesture && key != null) {
-                updateBatchInput(eventTime);
+            if (sInGesture) {
+                mayUpdateBatchInput(eventTime, key);
             }
         }
     }
