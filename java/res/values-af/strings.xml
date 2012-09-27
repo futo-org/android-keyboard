@@ -31,41 +31,51 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Opspring met sleuteldruk"</string>
     <string name="general_category" msgid="1859088467017573195">"Algemeen"</string>
     <string name="correction_category" msgid="2236750915056607613">"Tekskorrigering"</string>
+    <!-- no translation found for gesture_typing_category (497263612130532630) -->
+    <skip />
     <string name="misc_category" msgid="6894192814868233453">"Ander opsies"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Gevorderde instellings"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opsies vir kundiges"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Skakel oor na die ander invoermetodes"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Taal-wisselsleutel dek ook ander invoermetodes"</string>
-    <!-- no translation found for show_language_switch_key (5915478828318774384) -->
-    <skip />
-    <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
-    <skip />
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Taal-wisselsleutel"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Toon aan wanneer meervoudige invoertale geaktiveer is"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Sleutelopspringer-wagperiode"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Geen wagperiode nie"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Verstek"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Stel kontakname voor"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Gebruik name van kontakte vir voorstelle en korreksies"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Outohoofletters"</string>
+    <!-- no translation found for auto_cap_summary (7934452761022946874) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Voeg woordeboeke by"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Hoofwoordeboek"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Wys voorstelle vir korrigering"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Wys voorgestelde woorde terwyl jy tik"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Wys altyd"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Wys in portretmodus"</string>
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3859783767435239118) -->
+    <skip />
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Versteek altyd"</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Outokorrigering"</string>
+    <!-- no translation found for auto_correction (7630720885194996950) -->
+    <skip />
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spasiebalk en leestekens korrigeer outomaties woorde wat verkeerd gespel is"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Af"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Matig"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressief"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Baie aggressief"</string>
-    <string name="bigram_prediction" msgid="5809665643352206540">"Stel volgende woord voor"</string>
-    <string name="bigram_prediction_summary" msgid="3253961591626441019">"Gebaseer op vorige woord"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Gebaarinvoer"</string>
-    <string name="gesture_input_summary" msgid="7019742443455085809">"Voer \'n woord in deur die letters van \'n woord te trek"</string>
+    <!-- no translation found for bigram_prediction (1084449187723948550) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (3896362682751109677) -->
+    <skip />
+    <!-- no translation found for gesture_input (826951152254563827) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (9180350639305731231) -->
+    <skip />
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Wys gebaarspoor"</string>
-    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Wys gebaar se woord"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Wys swewende voorskouwoord saam met die gebaar"</string>
+    <!-- no translation found for gesture_floating_preview_text (4443240334739381053) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Gestoor"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Gaan"</string>
     <string name="label_next_key" msgid="362972844525672568">"Volgende"</string>
