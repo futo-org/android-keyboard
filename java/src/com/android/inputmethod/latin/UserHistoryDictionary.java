@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Locally gathers stats about the words user types and various other signals like auto-correction
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
-public class UserHistoryDictionary extends ExpandableDictionary {
+public final class UserHistoryDictionary extends ExpandableDictionary {
     private static final String TAG = UserHistoryDictionary.class.getSimpleName();
     private static final String NAME = UserHistoryDictionary.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
@@ -283,7 +283,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     /**
      * Async task to write pending words to the binarydicts.
      */
-    private static class UpdateBinaryTask extends AsyncTask<Void, Void, Void>
+    private static final class UpdateBinaryTask extends AsyncTask<Void, Void, Void>
             implements BigramDictionaryInterface {
         private final UserHistoryDictionaryBigramList mBigramList;
         private final boolean mAddLevel0Bigrams;

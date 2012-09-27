@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
 
-public class KeyCodeDescriptionMapper {
+public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
 
     // The resource ID of the string spoken for obscured keys

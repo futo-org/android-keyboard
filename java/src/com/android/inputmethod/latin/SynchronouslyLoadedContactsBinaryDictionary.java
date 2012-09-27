@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
+public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
     private boolean mClosed;
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {

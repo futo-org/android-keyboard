@@ -29,7 +29,7 @@ import java.util.Locale;
 /**
  * Factory for dictionary instances.
  */
-public class DictionaryFactory {
+public final class DictionaryFactory {
     private static final String TAG = DictionaryFactory.class.getSimpleName();
     // This class must be located in the same package as LatinIME.java.
     private static final String RESOURCE_PACKAGE_NAME =

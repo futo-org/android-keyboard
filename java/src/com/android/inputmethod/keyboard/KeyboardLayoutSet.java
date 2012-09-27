@@ -61,7 +61,7 @@ import java.util.HashMap;
  * A {@link KeyboardLayoutSet} needs to be created for each
  * {@link android.view.inputmethod.EditorInfo}.
  */
-public class KeyboardLayoutSet {
+public final class KeyboardLayoutSet {
     private static final String TAG = KeyboardLayoutSet.class.getSimpleName();
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
 
@@ -77,7 +77,7 @@ public class KeyboardLayoutSet {
             CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
 
-    public static class KeyboardLayoutSetException extends RuntimeException {
+    public static final class KeyboardLayoutSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
 
         public KeyboardLayoutSetException(final Throwable cause, final KeyboardId keyboardId) {
@@ -86,13 +86,13 @@ public class KeyboardLayoutSet {
         }
     }
 
-    private static class ElementParams {
+    private static final class ElementParams {
         int mKeyboardXmlId;
         boolean mProximityCharsCorrectionEnabled;
         public ElementParams() {}
     }
 
-    private static class Params {
+    private static final class Params {
         String mKeyboardLayoutSetName;
         int mMode;
         EditorInfo mEditorInfo;
@@ -203,7 +203,7 @@ public class KeyboardLayoutSet {
                 params.mLanguageSwitchKeyEnabled);
     }
 
-    public static class Builder {
+    public static final class Builder {
         private final Context mContext;
         private final String mPackageName;
         private final Resources mResources;

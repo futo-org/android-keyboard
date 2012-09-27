@@ -27,7 +27,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
 
-public class KeyboardIconsSet {
+public final class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
     public static final int ICON_UNDEFINED = 0;

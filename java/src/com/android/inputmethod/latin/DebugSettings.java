@@ -30,7 +30,7 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.research.ResearchLogger;
 
-public class DebugSettings extends PreferenceFragment
+public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DebugSettings.class.getSimpleName();

@@ -27,7 +27,7 @@ import android.net.Uri;
 /**
  * Takes action to reload the necessary data when a dictionary pack was added/removed.
  */
-public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
+public final class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
 
     final LatinIME mService;
     /**

@@ -33,7 +33,7 @@ import com.android.inputmethod.latin.R;
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
  * detecting key presses and touch movements.
  */
-public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
+public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;

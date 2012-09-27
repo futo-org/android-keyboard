@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
-public class DebugSettingsActivity extends PreferenceActivity {
+public final class DebugSettingsActivity extends PreferenceActivity {
     @Override
     public Intent getIntent() {
         final Intent modIntent = new Intent(super.getIntent());

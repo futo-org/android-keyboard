@@ -23,7 +23,7 @@ import android.preference.PreferenceActivity;
 /**
  * Spell checker preference screen.
  */
-public class SpellCheckerSettingsActivity extends PreferenceActivity {
+public final class SpellCheckerSettingsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

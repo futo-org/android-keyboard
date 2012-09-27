@@ -21,7 +21,7 @@ import android.util.Log;
 /**
  * Wrapper to redirect log events to the right output medium.
  */
-public class MakedictLog {
+public final class MakedictLog {
     public static final boolean DBG = false;
     private static final String TAG = MakedictLog.class.getSimpleName();
 

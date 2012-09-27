@@ -28,8 +28,7 @@ import java.util.LinkedList;
 /**
  * A dictionary that can fusion heads and tails of words for more compression.
  */
-public class FusionDictionary implements Iterable<Word> {
-
+public final class FusionDictionary implements Iterable<Word> {
     private static final boolean DBG = MakedictLog.DBG;
 
     /**
@@ -40,7 +39,7 @@ public class FusionDictionary implements Iterable<Word> {
      * This class also contains fields to cache size and address, to help with binary
      * generation.
      */
-    public static class Node {
+    public static final class Node {
         ArrayList<CharGroup> mData;
         // To help with binary generation
         int mCachedSize = Integer.MIN_VALUE;
@@ -60,7 +59,7 @@ public class FusionDictionary implements Iterable<Word> {
      *
      * This represents an "attribute", that is either a bigram or a shortcut.
      */
-    public static class WeightedString {
+    public static final class WeightedString {
         public final String mWord;
         public int mFrequency;
         public WeightedString(String word, int frequency) {
@@ -94,7 +93,7 @@ public class FusionDictionary implements Iterable<Word> {
      * value is the frequency of this terminal. A terminal may have non-null shortcuts and/or
      * bigrams, but a non-terminal may not. Moreover, children, if present, are null.
      */
-    public static class CharGroup {
+    public static final class CharGroup {
         public static final int NOT_A_TERMINAL = -1;
         final int mChars[];
         ArrayList<WeightedString> mShortcutTargets;
@@ -253,7 +252,7 @@ public class FusionDictionary implements Iterable<Word> {
      *
      * There are no options at the moment, so this class is empty.
      */
-    public static class DictionaryOptions {
+    public static final class DictionaryOptions {
         public final boolean mGermanUmlautProcessing;
         public final boolean mFrenchLigatureProcessing;
         public final HashMap<String, String> mAttributes;
@@ -511,7 +510,7 @@ public class FusionDictionary implements Iterable<Word> {
      * is ignored.
      * This comparator imposes orderings that are inconsistent with equals.
      */
-    static private class CharGroupComparator implements java.util.Comparator<CharGroup> {
+    static private final class CharGroupComparator implements java.util.Comparator<CharGroup> {
         @Override
         public int compare(CharGroup c1, CharGroup c2) {
             if (c1.mChars[0] == c2.mChars[0]) return 0;
@@ -746,9 +745,8 @@ public class FusionDictionary implements Iterable<Word> {
      *
      * This is purely for convenience.
      */
-    public static class DictionaryIterator implements Iterator<Word> {
-
-        private static class Position {
+    public static final class DictionaryIterator implements Iterator<Word> {
+        private static final class Position {
             public Iterator<CharGroup> pos;
             public int length;
             public Position(ArrayList<CharGroup> groups) {

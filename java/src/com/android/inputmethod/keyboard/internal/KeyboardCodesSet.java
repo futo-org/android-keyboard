@@ -21,7 +21,7 @@ import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.HashMap;
 
-public class KeyboardCodesSet {
+public final class KeyboardCodesSet {
     private static final HashMap<String, int[]> sLanguageToCodesMap = CollectionUtils.newHashMap();
     private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
 

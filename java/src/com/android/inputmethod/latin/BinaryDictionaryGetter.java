@@ -37,7 +37,7 @@ import java.util.Locale;
 /**
  * Helper class to get the address of a mmap'able dictionary file.
  */
-class BinaryDictionaryGetter {
+final class BinaryDictionaryGetter {
 
     /**
      * Used for Log actions from this class
@@ -178,7 +178,7 @@ class BinaryDictionaryGetter {
                 context.getApplicationInfo().sourceDir, afd.getStartOffset(), afd.getLength());
     }
 
-    static private class DictPackSettings {
+    private static final class DictPackSettings {
         final SharedPreferences mDictPreferences;
         public DictPackSettings(final Context context) {
             Context dictPackContext = null;
@@ -237,7 +237,7 @@ class BinaryDictionaryGetter {
     /**
      * Utility class for the {@link #getCachedWordLists} method
      */
-    private static class FileAndMatchLevel {
+    private static final class FileAndMatchLevel {
         final File mFile;
         final int mMatchLevel;
         public FileAndMatchLevel(final File file, final int matchLevel) {

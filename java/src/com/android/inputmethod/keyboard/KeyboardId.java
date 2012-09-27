@@ -33,7 +33,7 @@ import java.util.Locale;
 /**
  * Unique identifier for each keyboard type.
  */
-public class KeyboardId {
+public final class KeyboardId {
     public static final int MODE_TEXT = 0;
     public static final int MODE_URL = 1;
     public static final int MODE_EMAIL = 2;

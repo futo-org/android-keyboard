@@ -23,7 +23,7 @@ import android.view.inputmethod.EditorInfo;
 /**
  * Class to hold attributes of the input field.
  */
-public class InputAttributes {
+public final class InputAttributes {
     private final String TAG = InputAttributes.class.getSimpleName();
 
     final public boolean mInputTypeNoAutoCorrect;
