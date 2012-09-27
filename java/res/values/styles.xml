@@ -19,7 +19,7 @@
     <style name="Keyboard">
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">0</item>
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_empty</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_default</item>
         <item name="rowHeight">25%p</item>
         <item name="keyboardHeight">@dimen/keyboardHeight</item>
         <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>

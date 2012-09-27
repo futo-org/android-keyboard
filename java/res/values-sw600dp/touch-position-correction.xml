@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -40,39 +40,21 @@
         name="touch_position_correction_data_gingerbread"
         translatable="false"
     >
-        <!-- First row -->
-        <item>0.0091285</item>
-        <item>0.1193203</item>
-        <item>0.1622607</item>
-
-        <!-- Second row -->
-        <item>-0.0233128</item>
-        <item>0.1379798</item>
-        <item>0.1585229</item>
-
-        <!-- Third row -->
-        <item>-0.0080185</item>
-        <item>0.1911477</item>
-        <item>0.1570948</item>
+        <!-- The default touch position data (See com.android.inputmethod.keyboard.ProximityInfo)
+             correctionX = 0.0f
+             correctionY = 0.0f
+             correctionR = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
+        -->
     </string-array>
 
     <string-array
         name="touch_position_correction_data_ice_cream_sandwich"
         translatable="false"
     >
-        <!-- First row -->
-        <item>0.0038756</item>
-        <item>-0.0005677</item>
-        <item>0.1577026</item>
-
-        <!-- Second row -->
-        <item>-0.0236678</item>
-        <item>0.0381731</item>
-        <item>0.1529972</item>
-
-        <!-- Third row -->
-        <item>-0.0086827</item>
-        <item>0.0880847</item>
-        <item>0.1522819</item>
+        <!-- The default touch position data (See com.android.inputmethod.keyboard.ProximityInfo)
+             correctionX = 0.0f
+             correctionY = 0.0f
+             correctionR = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
+        -->
     </string-array>
 </resources>
