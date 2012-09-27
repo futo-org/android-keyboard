@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-public class AlphabetShiftState {
+public final class AlphabetShiftState {
     private static final String TAG = AlphabetShiftState.class.getSimpleName();
     private static final boolean DEBUG = false;
 

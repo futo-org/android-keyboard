@@ -43,7 +43,7 @@ import java.util.TreeMap;
  *
  * All the methods in this class are static.
  */
-public class BinaryDictInputOutput {
+public final class BinaryDictInputOutput {
 
     private static final boolean DBG = MakedictLog.DBG;
 
@@ -124,7 +124,7 @@ public class BinaryDictInputOutput {
     /**
      * A class grouping utility function for our specific character encoding.
      */
-    private static class CharEncoding {
+    private static final class CharEncoding {
 
         private static final int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
         private static final int MAXIMAL_ONE_BYTE_CHARACTER_VALUE = 0xFF;

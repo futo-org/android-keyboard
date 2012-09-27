@@ -28,7 +28,7 @@ import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
-public class SuddenJumpingTouchEventHandler {
+public final class SuddenJumpingTouchEventHandler {
     private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 

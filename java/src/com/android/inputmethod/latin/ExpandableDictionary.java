@@ -48,7 +48,7 @@ public class ExpandableDictionary extends Dictionary {
     // Use this lock before touching mUpdatingDictionary & mRequiresDownload
     private Object mUpdatingLock = new Object();
 
-    private static class Node {
+    private static final class Node {
         Node() {}
         char mCode;
         int mFrequency;
@@ -60,7 +60,7 @@ public class ExpandableDictionary extends Dictionary {
         LinkedList<NextWord> mNGrams; // Supports ngram
     }
 
-    private static class NodeArray {
+    private static final class NodeArray {
         Node[] mData;
         int mLength = 0;
         private static final int INCREMENT = 2;
@@ -88,7 +88,7 @@ public class ExpandableDictionary extends Dictionary {
         public int notifyTypedAgainAndGetFrequency();
     }
 
-    private static class NextStaticWord implements NextWord {
+    private static final class NextStaticWord implements NextWord {
         public final Node mWord;
         private final int mFrequency;
         public NextStaticWord(Node word, int frequency) {
@@ -117,7 +117,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    private static class NextHistoryWord implements NextWord {
+    private static final class NextHistoryWord implements NextWord {
         public final Node mWord;
         public final ForgettingCurveParams mFcp;
 
@@ -703,7 +703,7 @@ public class ExpandableDictionary extends Dictionary {
         mRoots = new NodeArray();
     }
 
-    private class LoadDictionaryTask extends Thread {
+    private final class LoadDictionaryTask extends Thread {
         LoadDictionaryTask() {}
         @Override
         public void run() {

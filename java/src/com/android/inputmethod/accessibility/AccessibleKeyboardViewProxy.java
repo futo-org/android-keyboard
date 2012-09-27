@@ -32,7 +32,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
-public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
+public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
 
     private InputMethodService mInputMethod;

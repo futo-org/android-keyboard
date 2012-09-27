@@ -34,7 +34,7 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public class PointerTracker implements PointerTrackerQueue.Element {
+public final class PointerTracker implements PointerTrackerQueue.Element {
     private static final String TAG = PointerTracker.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
@@ -121,7 +121,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    static class PointerTrackerParams {
+    static final class PointerTrackerParams {
         public final boolean mSlidingKeyInputEnabled;
         public final int mTouchNoiseThresholdTime;
         public final float mTouchNoiseThresholdDistance;

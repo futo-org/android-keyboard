@@ -138,7 +138,7 @@ public class Key implements Comparable<Key> {
 
     private final OptionalAttributes mOptionalAttributes;
 
-    private static class OptionalAttributes {
+    private static final class OptionalAttributes {
         /** Text to output when pressed. This can be multiple characters, like ".com" */
         public final String mOutputText;
         public final int mAltCode;

@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
-public class Suggest {
+public final class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
     // Session id for
@@ -362,7 +362,8 @@ public class Suggest {
         return suggestionsList;
     }
 
-    private static class SuggestedWordInfoComparator implements Comparator<SuggestedWordInfo> {
+    private static final class SuggestedWordInfoComparator
+            implements Comparator<SuggestedWordInfo> {
         // This comparator ranks the word info with the higher frequency first. That's because
         // that's the order we want our elements in.
         @Override

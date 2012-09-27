@@ -22,7 +22,7 @@ import com.android.inputmethod.latin.Constants;
 
 import java.util.TreeMap;
 
-public class SpellCheckerProximityInfo {
+public final class SpellCheckerProximityInfo {
     /* public for test */
     final public static int NUL = Constants.NOT_A_CODE;
 
@@ -53,7 +53,7 @@ public class SpellCheckerProximityInfo {
         return result;
     }
 
-    private static class Latin {
+    private static final class Latin {
         // This is a map from the code point to the index in the PROXIMITY array.
         // At the time the native code to read the binary dictionary needs the proximity info be
         // passed as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input
@@ -122,7 +122,7 @@ public class SpellCheckerProximityInfo {
         }
     }
 
-    private static class Cyrillic {
+    private static final class Cyrillic {
         final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.

@@ -36,7 +36,7 @@ public final class UserHistoryForgettingCurveUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static class ForgettingCurveParams {
+    public static final class ForgettingCurveParams {
         private byte mFc;
         long mLastTouchedTime = 0;
         private final boolean mIsValid;
@@ -195,7 +195,7 @@ public final class UserHistoryForgettingCurveUtils {
         return (elapsedTime < ELAPSED_TIME_MAX - 1 || level > 0);
     }
 
-    private static class MathUtils {
+    private static final class MathUtils {
         public static final int[][] SCORE_TABLE = new int[FC_LEVEL_MAX][ELAPSED_TIME_MAX + 1];
         static {
             for (int i = 0; i < FC_LEVEL_MAX; ++i) {

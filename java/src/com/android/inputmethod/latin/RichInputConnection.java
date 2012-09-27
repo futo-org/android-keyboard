@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * all the time to find out what text is in the buffer, when we need it to determine caps mode
  * for example.
  */
-public class RichInputConnection {
+public final class RichInputConnection {
     private static final String TAG = RichInputConnection.class.getSimpleName();
     private static final boolean DBG = false;
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
@@ -415,7 +415,7 @@ public class RichInputConnection {
     /**
      * Represents a range of text, relative to the current cursor position.
      */
-    public static class Range {
+    public static final class Range {
         /** Characters before selection start */
         public final int mCharsBefore;
 

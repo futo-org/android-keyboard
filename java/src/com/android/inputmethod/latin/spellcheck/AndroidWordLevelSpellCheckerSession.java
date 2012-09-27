@@ -50,7 +50,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     protected final SuggestionsCache mSuggestionsCache = new SuggestionsCache();
     private final ContentObserver mObserver;
 
-    private static class SuggestionsParams {
+    private static final class SuggestionsParams {
         public final String[] mSuggestions;
         public final int mFlags;
         public SuggestionsParams(String[] suggestions, int flags) {
@@ -59,7 +59,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         }
     }
 
-    protected static class SuggestionsCache {
+    protected static final class SuggestionsCache {
         private static final char CHAR_DELIMITER = '\uFFFC';
         private static final int MAX_CACHE_SIZE = 50;
         private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =

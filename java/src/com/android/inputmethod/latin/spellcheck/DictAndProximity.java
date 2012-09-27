@@ -22,7 +22,7 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 /**
  * A simple container for both a Dictionary and a ProximityInfo.
  */
-public class DictAndProximity {
+public final class DictAndProximity {
     public final Dictionary mDictionary;
     public final ProximityInfo mProximityInfo;
     public DictAndProximity(final Dictionary dictionary, final ProximityInfo proximityInfo) {

@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * This is chiefly used to iterate a dictionary.
  */
-public class Word implements Comparable<Word> {
+public final class Word implements Comparable<Word> {
     public final String mWord;
     public final int mFrequency;
     public final ArrayList<WeightedString> mShortcutTargets;

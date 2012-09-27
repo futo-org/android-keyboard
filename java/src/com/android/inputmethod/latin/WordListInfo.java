@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 /**
  * Information container for a word list.
  */
-public class WordListInfo {
+public final class WordListInfo {
     public final String mId;
     public final String mLocale;
     public WordListInfo(final String id, final String locale) {

@@ -47,7 +47,7 @@ import com.android.inputmethod.latin.CollectionUtils;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
+public final class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
     private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 

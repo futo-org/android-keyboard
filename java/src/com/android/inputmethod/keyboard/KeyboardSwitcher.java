@@ -39,12 +39,12 @@ import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
 
-public class KeyboardSwitcher implements KeyboardState.SwitchActions {
+public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
 
-    static class KeyboardTheme {
+    static final class KeyboardTheme {
         public final int mThemeId;
         public final int mStyleId;
 

@@ -22,7 +22,7 @@ import android.text.TextUtils;
  * This class encapsulates data about a word previously composed, but that has been
  * committed already. This is used for resuming suggestion, and cancel auto-correction.
  */
-public class LastComposedWord {
+public final class LastComposedWord {
     // COMMIT_TYPE_USER_TYPED_WORD is used when the word committed is the exact typed word, with
     // no hinting from the IME. It happens when some external event happens (rotating the device,
     // for example) or when auto-correction is off by settings or editor attributes.

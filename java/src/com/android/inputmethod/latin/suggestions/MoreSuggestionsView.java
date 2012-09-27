@@ -40,7 +40,7 @@ import com.android.inputmethod.latin.R;
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
+public final class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     final KeyDetector mModalPanelKeyDetector;

@@ -27,7 +27,7 @@ import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 
-public class MoreKeysKeyboard extends Keyboard {
+public final class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
     MoreKeysKeyboard(final MoreKeysKeyboardParams params) {

@@ -22,8 +22,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.LruCache;
 
-public class TargetApplicationGetter extends AsyncTask<String, Void, ApplicationInfo> {
-
+public final class TargetApplicationGetter extends AsyncTask<String, Void, ApplicationInfo> {
     private static final int MAX_CACHE_ENTRIES = 64; // arbitrary
     private static LruCache<String, ApplicationInfo> sCache =
             new LruCache<String, ApplicationInfo>(MAX_CACHE_ENTRIES);
@@ -32,6 +31,7 @@ public class TargetApplicationGetter extends AsyncTask<String, Void, Application
         if (null == packageName) return null;
         return sCache.get(packageName);
     }
+
     public static void removeApplicationInfoCache(final String packageName) {
         sCache.remove(packageName);
     }

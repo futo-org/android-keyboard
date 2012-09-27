@@ -49,7 +49,7 @@ import com.android.inputmethod.compat.CompatUtils;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-public class AdditionalSubtypeSettings extends PreferenceFragment {
+public final class AdditionalSubtypeSettings extends PreferenceFragment {
     private SharedPreferences mPrefs;
     private SubtypeLocaleAdapter mSubtypeLocaleAdapter;
     private KeyboardLayoutSetAdapter mKeyboardLayoutSetAdapter;

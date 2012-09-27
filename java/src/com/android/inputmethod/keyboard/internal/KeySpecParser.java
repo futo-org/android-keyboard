@@ -46,7 +46,7 @@ import java.util.Locale;
  * Note that the '\' is also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
  */
-public class KeySpecParser {
+public final class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
@@ -318,7 +318,7 @@ public class KeySpecParser {
     }
 
     @SuppressWarnings("serial")
-    public static class KeySpecParserError extends RuntimeException {
+    public static final class KeySpecParserError extends RuntimeException {
         public KeySpecParserError(final String message) {
             super(message);
         }
