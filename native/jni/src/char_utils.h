@@ -67,5 +67,11 @@ inline static unsigned short toLowerCase(const unsigned short c) {
 inline static unsigned short toBaseLowerCase(const unsigned short c) {
     return toLowerCase(toBaseChar(c));
 }
+
+inline static bool isSkippableChar(const uint16_t character) {
+    // TODO: Do not hardcode here
+    return character == '\'' || character == '-';
+}
+
 } // namespace latinime
 #endif // LATINIME_CHAR_UTILS_H

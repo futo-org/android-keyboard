@@ -19,15 +19,11 @@
 
 #include <cmath>
 
-#define MAX_PATHS 2
-
 #define DEBUG_DECODER false
 
 #define M_PI_F 3.14159265f
-
 #define ROUND_FLOAT_10000(f) ((f) < 1000.0f && (f) > 0.001f) \
         ? (floorf((f) * 10000.0f) / 10000.0f) : (f)
-
 #define SQUARE_FLOAT(x) ((x) * (x))
 
 namespace latinime {
