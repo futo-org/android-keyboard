@@ -39,6 +39,8 @@
     <skip />
     <!-- no translation found for correction_category (2236750915056607613) -->
     <skip />
+    <!-- no translation found for gesture_typing_category (497263612130532630) -->
+    <skip />
     <!-- no translation found for misc_category (6894192814868233453) -->
     <skip />
     <!-- no translation found for advanced_settings (362895144495591463) -->
@@ -64,6 +66,8 @@
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
+    <!-- no translation found for auto_cap_summary (7934452761022946874) -->
+    <skip />
     <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
     <skip />
     <!-- no translation found for main_dictionary (4798763781818361168) -->
@@ -74,11 +78,11 @@
     <skip />
     <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
     <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3859783767435239118) -->
     <skip />
     <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
     <skip />
-    <!-- no translation found for auto_correction (4979925752001319458) -->
+    <!-- no translation found for auto_correction (7630720885194996950) -->
     <skip />
     <!-- no translation found for auto_correction_summary (5625751551134658006) -->
     <skip />
@@ -90,19 +94,19 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
     <skip />
-    <!-- no translation found for bigram_prediction (5809665643352206540) -->
+    <!-- no translation found for bigram_prediction (1084449187723948550) -->
     <skip />
-    <!-- no translation found for bigram_prediction_summary (3253961591626441019) -->
+    <!-- no translation found for bigram_prediction_summary (3896362682751109677) -->
     <skip />
-    <!-- no translation found for gesture_input (3310827802759290774) -->
+    <!-- no translation found for gesture_input (826951152254563827) -->
     <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
+    <!-- no translation found for gesture_input_summary (9180350639305731231) -->
     <skip />
     <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
     <skip />
-    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
+    <!-- no translation found for gesture_floating_preview_text (4443240334739381053) -->
     <skip />
-    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
+    <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
     <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>

@@ -31,41 +31,51 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
     <string name="general_category" msgid="1859088467017573195">"Общи"</string>
     <string name="correction_category" msgid="2236750915056607613">"Корекция на текста"</string>
+    <!-- no translation found for gesture_typing_category (497263612130532630) -->
+    <skip />
     <string name="misc_category" msgid="6894192814868233453">"Други опции"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Разширени настройки"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Опции за експерти"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Други методи за въвеждане"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавишът за превкл. на езика обхваща и други методи за въвеждане"</string>
-    <!-- no translation found for show_language_switch_key (5915478828318774384) -->
-    <skip />
-    <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
-    <skip />
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиш за превкл. на езика"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Показване при няколко активирани езика за въвеждане"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Отхвърляне на подсказката"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без задържане"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По подразбиране"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Предложения за контакти"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Използване на имена от „Контакти“ за предложения и поправки"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
+    <!-- no translation found for auto_cap_summary (7934452761022946874) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Добавени речници"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основен речник"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Винаги да се показва"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показване с вертикална ориентация"</string>
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3859783767435239118) -->
+    <skip />
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Винаги да се скрива"</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Автоко"</string>
+    <!-- no translation found for auto_correction (7630720885194996950) -->
+    <skip />
     <string name="auto_correction_summary" msgid="5625751551134658006">"Клавишът за интервал и пунктуация авт. поправя сгрешени думи"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Изкл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агресивно"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Много агресивно"</string>
-    <string name="bigram_prediction" msgid="5809665643352206540">"Предложения за следващата дума"</string>
-    <string name="bigram_prediction_summary" msgid="3253961591626441019">"Въз основа на предишната дума"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Въвеждане чрез жест"</string>
-    <string name="gesture_input_summary" msgid="7019742443455085809">"Въвеждане на дума чрез проследяване на буквите й"</string>
+    <!-- no translation found for bigram_prediction (1084449187723948550) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (3896362682751109677) -->
+    <skip />
+    <!-- no translation found for gesture_input (826951152254563827) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (9180350639305731231) -->
+    <skip />
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Следа на жестовете: Показване"</string>
-    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Показване на дума при жестове"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Показване на дума с плаваща визуализация при жест"</string>
+    <!-- no translation found for gesture_floating_preview_text (4443240334739381053) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Запазено"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Старт"</string>
     <string name="label_next_key" msgid="362972844525672568">"Напред"</string>
