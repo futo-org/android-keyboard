@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 
-public class TouchPositionCorrection {
+public final class TouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
 
     private boolean mEnabled;
@@ -80,7 +80,9 @@ public class TouchPositionCorrection {
     }
 
     public float getX(final int row) {
-        return mXs[row];
+        return 0.0f;
+        // Touch position correction data for X coordinate is obsolete.
+        // return mXs[row];
     }
 
     public float getY(final int row) {
