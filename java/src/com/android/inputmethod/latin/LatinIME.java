@@ -1402,6 +1402,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onStartBatchInput() {
+        BatchInputUpdater.getInstance().onStartBatchInput();
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             if (ProductionFlag.IS_INTERNAL) {
@@ -1433,6 +1434,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private static final class BatchInputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private LatinIME mLatinIme;
+        private boolean mInBatchInput; // synchornized using "this".
 
         private BatchInputUpdater() {
             final HandlerThread handlerThread = new HandlerThread(
@@ -1456,17 +1458,32 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         public boolean handleMessage(final Message msg) {
             switch (msg.what) {
             case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                final SuggestedWords suggestedWords = getSuggestedWordsGesture(
-                        (InputPointers)msg.obj, mLatinIme);
-                showGesturePreviewAndSuggestionStrip(
-                        suggestedWords, false /* dismissGestureFloatingPreviewText */, mLatinIme);
+                updateBatchInput((InputPointers)msg.obj, mLatinIme);
                 break;
             }
             return true;
         }
 
-        public void updateGesturePreviewAndSuggestionStrip(final InputPointers batchPointers,
+        // Run in the UI thread.
+        public synchronized void onStartBatchInput() {
+            mInBatchInput = true;
+        }
+
+        // Run in the Handler thread.
+        private synchronized void updateBatchInput(final InputPointers batchPointers,
                 final LatinIME latinIme) {
+            if (!mInBatchInput) {
+                // Batch input has ended while the message was being delivered.
+                return;
+            }
+            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(
+                    batchPointers, latinIme);
+            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                    suggestedWords, false /* dismissGestureFloatingPreviewText */);
+        }
+
+        // Run in the UI thread.
+        public void onUpdateBatchInput(final InputPointers batchPointers, final LatinIME latinIme) {
             mLatinIme = latinIme;
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
                 return;
@@ -1476,15 +1493,20 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
-        public void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
-                final boolean dismissGestureFloatingPreviewText, final LatinIME latinIme) {
+        // Run in the UI thread.
+        public synchronized SuggestedWords onEndBatchInput(final InputPointers batchPointers,
+                final LatinIME latinIme) {
+            mInBatchInput = false;
+            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(
+                    batchPointers, latinIme);
             latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                    suggestedWords, dismissGestureFloatingPreviewText);
+                    suggestedWords, true /* dismissGestureFloatingPreviewText */);
+            return suggestedWords;
         }
 
         // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
         // be synchronized.
-        public synchronized SuggestedWords getSuggestedWordsGesture(
+        private static SuggestedWords getSuggestedWordsGestureLocked(
                 final InputPointers batchPointers, final LatinIME latinIme) {
             latinIme.mWordComposer.setBatchInputPointers(batchPointers);
             return latinIme.getSuggestedWords(Suggest.SESSION_GESTURE);
@@ -1505,16 +1527,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        BatchInputUpdater.getInstance().updateGesturePreviewAndSuggestionStrip(batchPointers, this);
+        BatchInputUpdater.getInstance().onUpdateBatchInput(batchPointers, this);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
-        final BatchInputUpdater batchInputUpdater = BatchInputUpdater.getInstance();
-        final SuggestedWords suggestedWords = batchInputUpdater.getSuggestedWordsGesture(
+        final SuggestedWords suggestedWords = BatchInputUpdater.getInstance().onEndBatchInput(
                 batchPointers, this);
-        batchInputUpdater.showGesturePreviewAndSuggestionStrip(
-                suggestedWords, true /* dismissGestureFloatingPreviewText */, this);
         final String batchInputText = (suggestedWords.size() > 0)
                 ? suggestedWords.getWord(0) : null;
         if (TextUtils.isEmpty(batchInputText)) {
