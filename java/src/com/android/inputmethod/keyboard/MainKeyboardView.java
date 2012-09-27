@@ -83,7 +83,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_ignoreAltCodeKeyTimeout
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
  */
-public class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
+public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
@@ -136,7 +136,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
 
     private final KeyTimerHandler mKeyTimerHandler;
 
-    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
+    private static final class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
             implements TimerProxy {
         private static final int MSG_TYPING_STATE_EXPIRED = 0;
         private static final int MSG_REPEAT_KEY = 1;

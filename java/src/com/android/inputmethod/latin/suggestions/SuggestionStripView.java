@@ -70,7 +70,7 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public class SuggestionStripView extends RelativeLayout implements OnClickListener,
+public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
     public interface Listener {
         public boolean addWordToUserDictionary(String word);
@@ -105,7 +105,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
 
     private final UiHandler mHandler = new UiHandler(this);
 
-    private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionStripView> {
+    private static final class UiHandler extends StaticInnerHandlerWrapper<SuggestionStripView> {
         private static final int MSG_HIDE_PREVIEW = 0;
 
         public UiHandler(SuggestionStripView outerInstance) {
@@ -131,7 +131,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
         }
     }
 
-    private static class SuggestionStripViewParams {
+    private static final class SuggestionStripViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
         private static final float DEFAULT_CENTER_SUGGESTION_PERCENTILE = 0.40f;
         private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;

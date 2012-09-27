@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Stack;
 
-public class BinaryDictIOUtils {
+public final class BinaryDictIOUtils {
     private static final boolean DBG = false;
 
-    private static class Position {
+    private static final class Position {
         public static final int NOT_READ_GROUPCOUNT = -1;
 
         public int mAddress;

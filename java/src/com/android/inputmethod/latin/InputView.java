@@ -23,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-public class InputView extends LinearLayout {
+public final class InputView extends LinearLayout {
     private View mSuggestionStripContainer;
     private View mKeyboardView;
     private int mKeyboardTopPadding;

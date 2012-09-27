@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SubtypeSwitcher {
+public final class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
@@ -60,7 +60,7 @@ public class SubtypeSwitcher {
 
     private boolean mIsNetworkConnected;
 
-    static class NeedsToDisplayLanguage {
+    static final class NeedsToDisplayLanguage {
         private int mEnabledSubtypeCount;
         private boolean mIsSystemLanguageSameAsInputLanguage;
 

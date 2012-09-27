@@ -22,7 +22,7 @@ package com.android.inputmethod.latin.makedict;
  * An attribute is either a bigram or a shortcut.
  * All instances of this class are always immutable.
  */
-public class PendingAttribute {
+public final class PendingAttribute {
     public final int mFrequency;
     public final int mAddress;
     public PendingAttribute(final int frequency, final int address) {

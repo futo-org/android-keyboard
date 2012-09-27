@@ -23,7 +23,7 @@ import android.util.Log;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AutoCorrection {
+public final class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = AutoCorrection.class.getSimpleName();
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;

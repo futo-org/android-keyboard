@@ -30,7 +30,7 @@ import java.util.Locale;
 /**
  * Implements a static, compacted, binary dictionary of standard words.
  */
-public class BinaryDictionary extends Dictionary {
+public final class BinaryDictionary extends Dictionary {
 
     public static final String DICTIONARY_PACK_AUTHORITY =
             "com.android.inputmethod.latin.dictionarypack";

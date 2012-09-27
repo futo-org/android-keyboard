@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Intent;
 import android.preference.PreferenceActivity;
 
-public class SettingsActivity extends PreferenceActivity {
+public final class SettingsActivity extends PreferenceActivity {
     private static final String DEFAULT_FRAGMENT = Settings.class.getName();
 
     @Override

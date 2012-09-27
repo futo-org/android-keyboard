@@ -38,7 +38,7 @@ import java.util.Map;
  *
  * All the methods in this class are static.
  */
-public class UserHistoryDictIOUtils {
+public final class UserHistoryDictIOUtils {
     private static final String TAG = UserHistoryDictIOUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
 

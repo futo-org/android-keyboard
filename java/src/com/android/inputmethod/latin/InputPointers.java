@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin;
 
 // TODO: This class is not thread-safe.
-public class InputPointers {
+public final class InputPointers {
     private final int mDefaultCapacity;
     private final ResizableIntArray mXCoordinates;
     private final ResizableIntArray mYCoordinates;

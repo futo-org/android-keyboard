@@ -39,7 +39,7 @@ import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
-public class PreviewPlacerView extends RelativeLayout {
+public final class PreviewPlacerView extends RelativeLayout {
     // The height of extra area above the keyboard to draw gesture trails.
     // Proportional to the keyboard height.
     private static final float EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO = 0.25f;
@@ -79,7 +79,7 @@ public class PreviewPlacerView extends RelativeLayout {
 
     private final DrawingHandler mDrawingHandler;
 
-    private static class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
+    private static final class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
         private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
         private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
 

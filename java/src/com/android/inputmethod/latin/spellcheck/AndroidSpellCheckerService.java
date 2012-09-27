@@ -50,7 +50,7 @@ import java.util.TreeMap;
 /**
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
  */
-public class AndroidSpellCheckerService extends SpellCheckerService
+public final class AndroidSpellCheckerService extends SpellCheckerService
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = AndroidSpellCheckerService.class.getSimpleName();
     private static final boolean DBG = false;
@@ -201,8 +201,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     // TODO: remove this class and replace it by storage local to the session.
-    public static class SuggestionsGatherer {
-        public static class Result {
+    public static final class SuggestionsGatherer {
+        public static final class Result {
             public final String[] mSuggestions;
             public final boolean mHasRecommendedSuggestions;
             public Result(final String[] gatheredSuggestions,
