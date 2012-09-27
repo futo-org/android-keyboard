@@ -36,10 +36,8 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"上級者向けオプション"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"他の入力方法に切り替え"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
-    <!-- no translation found for show_language_switch_key (5915478828318774384) -->
-    <skip />
-    <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
-    <skip />
+    <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"複数の入力言語が有効なときに表示"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"キーのポップアップ時間"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"すぐに消去"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"デフォルト"</string>

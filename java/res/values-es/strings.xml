@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresiva"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Sugerir siguiente palabra"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Según la palabra anterior"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Entrada de gestos"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Escritura gestual"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Trazar las letras de una palabra para introducirla"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido del gesto"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Mostrar palabra del gesto"</string>
@@ -141,7 +141,7 @@
     <string name="enable" msgid="5031294444630523247">"Habilitar"</string>
     <string name="not_now" msgid="6172462888202790482">"Ahora no"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ya existe el estilo de entrada <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Estudiar usabilidad"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo estudio de usabilidad"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Duración de la vibración al pulsar tecla"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volumen sonido al pulsar tecla"</string>
 </resources>

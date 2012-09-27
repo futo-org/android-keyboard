@@ -68,7 +68,7 @@
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Siguiente"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Ant."</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Hecho"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Listo"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
