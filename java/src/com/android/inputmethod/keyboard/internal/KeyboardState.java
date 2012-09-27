@@ -34,7 +34,7 @@ import com.android.inputmethod.latin.Constants;
  *
  * The actions are {@link SwitchActions}'s methods.
  */
-public class KeyboardState {
+public final class KeyboardState {
     private static final String TAG = KeyboardState.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_ACTION = false;
@@ -92,7 +92,7 @@ public class KeyboardState {
 
     private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
 
-    static class SavedKeyboardState {
+    static final class SavedKeyboardState {
         public boolean mIsValid;
         public boolean mIsAlphabetMode;
         public boolean mIsAlphabetShiftLocked;

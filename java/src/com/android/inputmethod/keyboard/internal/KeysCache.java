@@ -21,7 +21,7 @@ import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.HashMap;
 
-public class KeysCache {
+public final class KeysCache {
     private final HashMap<Key, Key> mMap = CollectionUtils.newHashMap();
 
     public void clear() {

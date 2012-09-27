@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Class for a collection of dictionaries that behave like one dictionary.
  */
-public class DictionaryCollection extends Dictionary {
+public final class DictionaryCollection extends Dictionary {
     private final String TAG = DictionaryCollection.class.getSimpleName();
     protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 

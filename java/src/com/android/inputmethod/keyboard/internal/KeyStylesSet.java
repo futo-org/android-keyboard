@@ -29,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.HashMap;
 
-public class KeyStylesSet {
+public final class KeyStylesSet {
     private static final String TAG = KeyStylesSet.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -45,7 +45,7 @@ public class KeyStylesSet {
         mStyles.put(EMPTY_STYLE_NAME, mEmptyKeyStyle);
     }
 
-    private static class EmptyKeyStyle extends KeyStyle {
+    private static final class EmptyKeyStyle extends KeyStyle {
         EmptyKeyStyle(final KeyboardTextsSet textsSet) {
             super(textsSet);
         }
@@ -71,7 +71,7 @@ public class KeyStylesSet {
         }
     }
 
-    private static class DeclaredKeyStyle extends KeyStyle {
+    private static final class DeclaredKeyStyle extends KeyStyle {
         private final HashMap<String, KeyStyle> mStyles;
         private final String mParentStyleName;
         private final SparseArray<Object> mStyleAttributes = CollectionUtils.newSparseArray();

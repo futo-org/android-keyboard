@@ -23,7 +23,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 
-public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
+public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale) {
         this(context, locale, false);

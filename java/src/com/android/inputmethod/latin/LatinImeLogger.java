@@ -21,7 +21,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.Keyboard;
 
-public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
+public final class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static boolean sDBG = false;
     public static boolean sVISUALDEBUG = false;

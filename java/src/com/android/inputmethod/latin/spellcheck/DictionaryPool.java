@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * the client code, but may help with sloppy clients.
  */
 @SuppressWarnings("serial")
-public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
+public final class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
     private final static String TAG = DictionaryPool.class.getSimpleName();
     // How many seconds we wait for a dictionary to become available. Past this delay, we give up in
     // fear some bug caused a deadlock, and reset the whole pool.

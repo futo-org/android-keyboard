@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 import java.util.Arrays;
 
 // TODO: This class is not thread-safe.
-public class ResizableIntArray {
+public final class ResizableIntArray {
     private int[] mArray;
     private int mLength;
 

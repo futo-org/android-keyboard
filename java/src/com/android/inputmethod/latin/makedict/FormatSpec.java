@@ -221,7 +221,7 @@ public final class FormatSpec {
     /**
      * Options about file format.
      */
-    public static class FormatOptions {
+    public static final class FormatOptions {
         public final int mVersion;
         public final boolean mSupportsDynamicUpdate;
         public FormatOptions(final int version) {

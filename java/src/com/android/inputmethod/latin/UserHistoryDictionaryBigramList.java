@@ -26,7 +26,7 @@ import java.util.Set;
  * All bigrams including stale ones in SQL DB should be stored in this class to avoid adding stale
  * bigrams when we write to the SQL DB.
  */
-public class UserHistoryDictionaryBigramList {
+public final class UserHistoryDictionaryBigramList {
     public static final byte FORGETTING_CURVE_INITIAL_VALUE = 0;
     private static final String TAG = UserHistoryDictionaryBigramList.class.getSimpleName();
     private static final HashMap<String, Byte> EMPTY_BIGRAM_MAP = CollectionUtils.newHashMap();

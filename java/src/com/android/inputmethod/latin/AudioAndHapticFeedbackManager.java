@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.VibratorUtils;
  * It offers a consistent and simple interface that allows LatinIME to forget about the
  * complexity of settings and the like.
  */
-public class AudioAndHapticFeedbackManager {
+public final class AudioAndHapticFeedbackManager {
     final private SettingsValues mSettingsValues;
     final private AudioManager mAudioManager;
     final private VibratorUtils mVibratorUtils;

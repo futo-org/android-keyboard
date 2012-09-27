@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class SuggestedWords {
+public final class SuggestedWords {
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
@@ -117,7 +117,7 @@ public class SuggestedWords {
         return suggestionsList;
     }
 
-    public static class SuggestedWordInfo {
+    public static final class SuggestedWordInfo {
         public static final int MAX_SCORE = Integer.MAX_VALUE;
         public static final int KIND_TYPED = 0; // What user typed
         public static final int KIND_CORRECTION = 1; // Simple correction/suggestion

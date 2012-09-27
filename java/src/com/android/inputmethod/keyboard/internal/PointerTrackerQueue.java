@@ -22,7 +22,7 @@ import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.ArrayList;
 
-public class PointerTrackerQueue {
+public final class PointerTrackerQueue {
     private static final String TAG = PointerTrackerQueue.class.getSimpleName();
     private static final boolean DEBUG = false;
 

@@ -30,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +39,7 @@ import java.util.Locale;
  * Group class for static methods to help with creation and getting of the binary dictionary
  * file from the dictionary provider
  */
-public class BinaryDictionaryFileDumper {
+public final class BinaryDictionaryFileDumper {
     private static final String TAG = BinaryDictionaryFileDumper.class.getSimpleName();
     private static final boolean DEBUG = false;
 

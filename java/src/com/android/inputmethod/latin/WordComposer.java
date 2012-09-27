@@ -24,7 +24,7 @@ import java.util.Arrays;
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
-public class WordComposer {
+public final class WordComposer {
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     public static final int CAPS_MODE_OFF = 0;

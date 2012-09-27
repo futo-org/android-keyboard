@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.makedict;
 /**
  * Simple exception thrown when a file format is not recognized.
  */
-public class UnsupportedFormatException extends Exception {
+public final class UnsupportedFormatException extends Exception {
     public UnsupportedFormatException(String description) {
         super(description);
     }

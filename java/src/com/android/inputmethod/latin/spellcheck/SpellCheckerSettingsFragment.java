@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.R;
 /**
  * Preference screen.
  */
-public class SpellCheckerSettingsFragment extends PreferenceFragment {
+public final class SpellCheckerSettingsFragment extends PreferenceFragment {
     /**
      * Empty constructor for fragment generation.
      */

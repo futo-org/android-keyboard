@@ -16,7 +16,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.ResizableIntArray;
 
-public class GestureStrokeWithPreviewPoints extends GestureStroke {
+public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public static final int PREVIEW_CAPACITY = 256;
 
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);

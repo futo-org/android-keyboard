@@ -85,7 +85,7 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodService implements KeyboardActionListener,
+public final class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener,
         Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
@@ -183,7 +183,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public final UIHandler mHandler = new UIHandler(this);
 
-    public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
+    public static final class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;

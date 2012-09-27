@@ -30,14 +30,14 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 
-public class MoreSuggestions extends Keyboard {
+public final class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
 
     MoreSuggestions(final MoreSuggestionsParam params) {
         super(params);
     }
 
-    private static class MoreSuggestionsParam extends KeyboardParams {
+    private static final class MoreSuggestionsParam extends KeyboardParams {
         private final int[] mWidths = new int[SuggestionStripView.MAX_SUGGESTIONS];
         private final int[] mRowNumbers = new int[SuggestionStripView.MAX_SUGGESTIONS];
         private final int[] mColumnOrders = new int[SuggestionStripView.MAX_SUGGESTIONS];
@@ -163,7 +163,7 @@ public class MoreSuggestions extends Keyboard {
         }
     }
 
-    public static class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
+    public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestions;
         private int mFromPos;
@@ -216,7 +216,7 @@ public class MoreSuggestions extends Keyboard {
         }
     }
 
-    private static class Divider extends Key.Spacer {
+    private static final class Divider extends Key.Spacer {
         private final Drawable mIcon;
 
         public Divider(final KeyboardParams params, final Drawable icon, final int x,
