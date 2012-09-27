@@ -22,6 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyboardHorizontalEdgesPadding="10%p"
     latin:keyWidth="13.250%p"
+    latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
 >
     <!-- Tablet doesn't have phone symbols keyboard -->
     <include
