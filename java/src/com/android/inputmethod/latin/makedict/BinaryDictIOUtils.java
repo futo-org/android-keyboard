@@ -77,7 +77,10 @@ public class BinaryDictIOUtils {
                 p.mAddress += BinaryDictInputOutput.getGroupCountSize(p.mNumOfCharGroup);
                 p.mPosition = 0;
             }
-
+            if (p.mNumOfCharGroup == 0) {
+                stack.pop();
+                continue;
+            }
             CharGroupInfo info = BinaryDictInputOutput.readCharGroup(buffer,
                     p.mAddress - headerSize, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
