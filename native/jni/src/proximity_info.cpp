@@ -239,8 +239,8 @@ int ProximityInfo::getKeyIndexOf(const int c) const {
         // We do not have the coordinate data
         return NOT_AN_INDEX;
     }
-    const int baseLowerC = static_cast<int>(toBaseLowerCase(c));
-    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(baseLowerC);
+    const int lowerCode = static_cast<int>(toLowerCase(c));
+    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(lowerCode);
     if (mapPos != mCodeToKeyMap.end()) {
         return mapPos->second;
     }
@@ -258,7 +258,7 @@ void ProximityInfo::initializeG() {
     // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCodePoints[i];
-        const int lowerCode = toBaseLowerCase(code);
+        const int lowerCode = static_cast<int>(toLowerCase(code));
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
         mCodeToKeyMap[lowerCode] = i;
