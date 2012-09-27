@@ -27,11 +27,6 @@ namespace latinime {
 
 class Correction;
 
-inline bool isSkippableChar(const uint16_t character) {
-    // TODO: Do not hardcode here
-    return character == '\'' || character == '-';
-}
-
 class ProximityInfo {
  public:
     ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,

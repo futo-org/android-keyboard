@@ -368,6 +368,9 @@ static inline void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
+// TODO: Remove
+#define MAX_POINTER_COUNT_FOR_G 2
+
 // Size, in bytes, of the bloom filter index for bigrams
 // 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
 // where k is the number of hash functions, n the number of bigrams, and m the number of
