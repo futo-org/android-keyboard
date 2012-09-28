@@ -142,14 +142,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_DOUBLE_TAP = 3;
-        private static final int MSG_DISABLE_GESTURE_EXPIRED = 4;
 
         private final int mKeyRepeatStartTimeout;
         private final int mKeyRepeatInterval;
         private final int mLongPressKeyTimeout;
         private final int mLongPressShiftKeyTimeout;
         private final int mIgnoreAltCodeKeyTimeout;
-        private final int mDisableGestureWhileFastTypingTimeout;
 
         public KeyTimerHandler(final MainKeyboardView outerInstance,
                 final TypedArray mainKeyboardViewAttr) {
@@ -165,8 +163,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                     R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
             mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
-            mDisableGestureWhileFastTypingTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_disableGestureWhileFastTypingTimeout, 0);
         }
 
         @Override
@@ -190,9 +186,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
                 }
-                break;
-            case MSG_DISABLE_GESTURE_EXPIRED:
-                PointerTracker.clearGestureOffWhileFastTyping();
                 break;
             }
         }
@@ -316,15 +309,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         @Override
         public boolean isTypingState() {
             return hasMessages(MSG_TYPING_STATE_EXPIRED);
-        }
-
-        // TODO: Remove "gesture off while fast typing" related dead code.
-        @Override
-        public void startGestureOffWhileFastTypingTimer() {
-//            removeMessages(MSG_DISABLE_GESTURE_EXPIRED);
-//            PointerTracker.setGestureOffWhileFastTyping();
-//            sendMessageDelayed(obtainMessage(MSG_DISABLE_GESTURE_EXPIRED),
-//                    mDisableGestureWhileFastTypingTimeout);
         }
 
         @Override
