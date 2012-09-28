@@ -38,7 +38,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     }
 
     @Override
-    public void reset() {
+    protected void reset() {
         super.reset();
         mStrokeId++;
         mLastPreviewSize = 0;
