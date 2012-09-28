@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
@@ -277,6 +278,41 @@ public final class BinaryDictIOUtils {
         final int flags = buffer.readUnsignedByte();
         final int parentOffset = newParentAddress - groupOriginAddress;
         putSInt24(buffer, parentOffset);
+        buffer.position(originalPosition);
+    }
+
+    private static void skipString(final FusionDictionaryBufferInterface buffer,
+            final boolean hasMultipleChars) {
+        if (hasMultipleChars) {
+            int character = CharEncoding.readChar(buffer);
+            while (character != FormatSpec.INVALID_CHARACTER) {
+                character = CharEncoding.readChar(buffer);
+            }
+        } else {
+            CharEncoding.readChar(buffer);
+        }
+    }
+
+    /**
+     * Update a children address in a CharGroup that is addressed by groupOriginAddress.
+     *
+     * @param buffer the buffer to write.
+     * @param groupOriginAddress the address of the group.
+     * @param newChildrenAddress the absolute address of the child.
+     * @param formatOptions file format options.
+     */
+    public static void updateChildrenAddress(final FusionDictionaryBufferInterface buffer,
+            final int groupOriginAddress, final int newChildrenAddress,
+            final FormatOptions formatOptions) {
+        final int originalPosition = buffer.position();
+        buffer.position(groupOriginAddress);
+        final int flags = buffer.readUnsignedByte();
+        final int parentAddress = BinaryDictInputOutput.readParentAddress(buffer, formatOptions);
+        skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        if ((FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
+        final int childrenOffset = newChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS
+                ? FormatSpec.NO_CHILDREN_ADDRESS : newChildrenAddress - buffer.position();
+        putSInt24(buffer, childrenOffset);
         buffer.position(originalPosition);
     }
 }
