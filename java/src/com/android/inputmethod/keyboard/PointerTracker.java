@@ -48,6 +48,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static boolean sGestureHandlingEnabledByUser = false;
     private static boolean sGestureOffWhileFastTyping = false;
 
+    // TODO: Move this to resource.
+    private static final int SUPPRESS_KEY_PREVIEW_AFTER_LAST_BATCH_INPUT_DURATION = 1000; // msec
+
     public interface KeyEventHandler {
         /**
          * Get KeyDetector object that is used for this PointerTracker.
@@ -169,6 +172,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private boolean mIsDetectingGesture = false; // per PointerTracker.
     private static boolean sInGesture = false;
     private static long sGestureFirstDownTime;
+    private static long sLastBatchInputTime;
     private static long sLastLetterTypingUpTime;
     private static final InputPointers sAggregratedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
@@ -360,6 +364,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
         if (key.isEnabled() || altersCode) {
+            sLastBatchInputTime = 0; // reset time
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.getOutputText());
                 mTimerProxy.startGestureOffWhileFastTypingTimer();
@@ -469,7 +474,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    private void setPressedKeyGraphics(final Key key) {
+    private static boolean needsToSuppressKeyPreviewPopup(final long eventTime) {
+        if (!sShouldHandleGesture) return false;
+        if (sLastBatchInputTime == 0) return false;
+        final long elapsedTimeAfterTheLastBatchInput = eventTime - sLastBatchInputTime;
+        return elapsedTimeAfterTheLastBatchInput
+                < SUPPRESS_KEY_PREVIEW_AFTER_LAST_BATCH_INPUT_DURATION;
+    }
+
+    private void setPressedKeyGraphics(final Key key, final long eventTime) {
         if (key == null) {
             return;
         }
@@ -481,7 +494,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
 
-        if (!key.noKeyPreview() && !sInGesture) {
+        if (!key.noKeyPreview() && !sInGesture && !needsToSuppressKeyPreviewPopup(eventTime)) {
             mDrawingProxy.showKeyPreview(this);
         }
         updatePressKeyGraphics(key);
@@ -596,7 +609,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
-    private void mayEndBatchInput() {
+    private void mayEndBatchInput(final long eventTime) {
         synchronized (sAggregratedPointers) {
             mGestureStrokeWithPreviewPoints.appendAllBatchPoints(sAggregratedPointers);
             mGestureStrokeWithPreviewPoints.reset();
@@ -606,6 +619,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                             + sAggregratedPointers.getPointerSize());
                 }
                 sInGesture = false;
+                sLastBatchInputTime = eventTime;
                 mListener.onEndBatchInput(sAggregratedPointers);
                 clearBatchInputPointsOfAllPointerTrackers();
             }
@@ -731,7 +745,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
             startRepeatKey(key);
             startLongPressTimer(key);
-            setPressedKeyGraphics(key);
+            setPressedKeyGraphics(key, eventTime);
         }
     }
 
@@ -809,7 +823,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 }
                 onMoveToNewKey(key, x, y);
                 startLongPressTimer(key);
-                setPressedKeyGraphics(key);
+                setPressedKeyGraphics(key, eventTime);
             } else if (isMajorEnoughMoveToBeOnNewKey(x, y, key)) {
                 // The pointer has been slid in to the new key from the previous key, we must call
                 // onRelease() first to notify that the previous key has been released, then call
@@ -828,7 +842,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     }
                     onMoveToNewKey(key, x, y);
                     startLongPressTimer(key);
-                    setPressedKeyGraphics(key);
+                    setPressedKeyGraphics(key, eventTime);
                 } else {
                     // HACK: On some devices, quick successive touches may be translated to sudden
                     // move by touch panel firmware. This hack detects the case and translates the
@@ -939,7 +953,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (currentKey != null) {
                 callListenerOnRelease(currentKey, currentKey.mCode, true);
             }
-            mayEndBatchInput();
+            mayEndBatchInput(eventTime);
             return;
         }
         // This event will be recognized as a regular code input. Clear unused possible batch points
