@@ -180,12 +180,14 @@ public final class UserHistoryDictIOUtils {
         try {
             BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
                     bigrams);
-            addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while reading file: " + e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format: " + e);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Log.e(TAG, "ArrayIndexOutOfBoundsException while reading file: " + e);
         }
+        addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
     }
 
     /**
