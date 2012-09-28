@@ -124,8 +124,7 @@ public final class BinaryDictInputOutput {
     /**
      * A class grouping utility function for our specific character encoding.
      */
-    private static final class CharEncoding {
-
+    static final class CharEncoding {
         private static final int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
         private static final int MAXIMAL_ONE_BYTE_CHARACTER_VALUE = 0xFF;
 
@@ -263,7 +262,7 @@ public final class BinaryDictInputOutput {
          * @param buffer the buffer, positioned over an encoded character.
          * @return the character code.
          */
-        private static int readChar(final FusionDictionaryBufferInterface buffer) {
+        static int readChar(final FusionDictionaryBufferInterface buffer) {
             int character = buffer.readUnsignedByte();
             if (!fitsOnOneByte(character)) {
                 if (FormatSpec.GROUP_CHARACTERS_TERMINATOR == character) {
@@ -1219,7 +1218,7 @@ public final class BinaryDictInputOutput {
         }
     }
 
-    private static int readParentAddress(final FusionDictionaryBufferInterface buffer,
+    static int readParentAddress(final FusionDictionaryBufferInterface buffer,
             final FormatOptions formatOptions) {
         if (supportsDynamicUpdate(formatOptions)) {
             final int parentAddress = buffer.readUnsignedInt24();
