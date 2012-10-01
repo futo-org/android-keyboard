@@ -153,7 +153,7 @@ public final class BinaryDictInputOutput {
          * @param character the character code.
          * @return the size in binary encoded-form, either 1 or 3 bytes.
          */
-        private static int getCharSize(final int character) {
+        static int getCharSize(final int character) {
             // See char encoding in FusionDictionary.java
             if (fitsOnOneByte(character)) return 1;
             if (FormatSpec.INVALID_CHARACTER == character) return 1;
@@ -337,7 +337,7 @@ public final class BinaryDictInputOutput {
      * This is known in advance and does not change according to position in the file
      * like address lists do.
      */
-    private static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
+    static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
         if (null == shortcutList) return 0;
         int size = FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
         for (final WeightedString shortcut : shortcutList) {
@@ -438,7 +438,7 @@ public final class BinaryDictInputOutput {
      * @param address the address
      * @return the byte size.
      */
-    private static int getByteSize(final int address) {
+    static int getByteSize(final int address) {
         assert(address <= UINT24_MAX);
         if (!hasChildrenAddress(address)) {
             return 0;
@@ -858,7 +858,7 @@ public final class BinaryDictInputOutput {
      * @param frequency the frequency of the attribute, 0..15
      * @return the flags
      */
-    private static final int makeShortcutFlags(final boolean more, final int frequency) {
+    static final int makeShortcutFlags(final boolean more, final int frequency) {
         return (more ? FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT : 0)
                 + (frequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY);
     }
@@ -896,6 +896,7 @@ public final class BinaryDictInputOutput {
      */
     private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
             final Node node, final FormatOptions formatOptions) {
+        // TODO: Make the code in common with BinaryDictIOUtils#writeCharGroup
         int index = node.mCachedAddress;
 
         final int groupCount = node.mData.size();
