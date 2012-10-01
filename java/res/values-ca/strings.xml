@@ -37,7 +37,7 @@
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altres mètodes d\'entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de canvi d\'idioma serveix també per a altres mètodes d\'entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de canvi d\'idioma"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostra-ho quan hi hagi diversos idiomes d\'entrada activats"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostra-la quan hi hagi diversos idiomes d\'entrada activats"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retard en ampliar tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sense retard"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminat"</string>

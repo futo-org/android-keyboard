@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Çok geniş ölçekte"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Sonraki kelime önerileri"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Önceki kelimeye dayanarak"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Hareket girişi"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Hareketle giriş"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Bir kelimeyi harflerini izleyerek girin"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Hareket izini göster"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Hareketle yazılan kelimeyi göster"</string>
