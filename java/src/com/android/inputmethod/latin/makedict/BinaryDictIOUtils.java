@@ -255,23 +255,34 @@ public final class BinaryDictIOUtils {
         buffer.put((byte)newFlags);
     }
 
-    private static void writeSInt24ToBuffer(final FusionDictionaryBufferInterface buffer,
+    /**
+     * @return the size written, in bytes. Always 3 bytes.
+     */
+    private static int writeSInt24ToBuffer(final FusionDictionaryBufferInterface buffer,
             final int value) {
         final int absValue = Math.abs(value);
         buffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
         buffer.put((byte)((absValue >> 8) & 0xFF));
         buffer.put((byte)(absValue & 0xFF));
+        return 3;
     }
 
-    private static void writeSInt24ToStream(final OutputStream destination, final int value)
+    /**
+     * @return the size written, in bytes. Always 3 bytes.
+     */
+    private static int writeSInt24ToStream(final OutputStream destination, final int value)
             throws IOException {
         final int absValue = Math.abs(value);
         destination.write((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
         destination.write((byte)((absValue >> 8) & 0xFF));
         destination.write((byte)(absValue & 0xFF));
+        return 3;
     }
 
-    private static void writeVariableAddress(final OutputStream destination, final int value)
+    /**
+     * @return the size written, in bytes. 1, 2, or 3 bytes.
+     */
+    private static int writeVariableAddress(final OutputStream destination, final int value)
             throws IOException {
         switch (BinaryDictInputOutput.getByteSize(value)) {
         case 1:
@@ -287,6 +298,7 @@ public final class BinaryDictIOUtils {
             destination.write((byte)(0xFF & value));
             break;
         }
+        return BinaryDictInputOutput.getByteSize(value);
     }
 
     /**
@@ -323,20 +335,33 @@ public final class BinaryDictIOUtils {
         }
     }
 
-    private static void writeString(final OutputStream destination, final String word)
+    /**
+     * Write a string to a stream.
+     *
+     * @param destination the stream to write.
+     * @param word the string to be written.
+     * @return the size written, in bytes.
+     * @throws IOException
+     */
+    private static int writeString(final OutputStream destination, final String word)
             throws IOException {
+        int size = 0;
         final int length = word.length();
         for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
             final int codePoint = word.codePointAt(i);
             if (CharEncoding.getCharSize(codePoint) == 1) {
                 destination.write((byte)codePoint);
+                size++;
             } else {
                 destination.write((byte)(0xFF & (codePoint >> 16)));
                 destination.write((byte)(0xFF & (codePoint >> 8)));
                 destination.write((byte)(0xFF & codePoint));
+                size += 3;
             }
         }
         destination.write((byte)FormatSpec.GROUP_CHARACTERS_TERMINATOR);
+        size++;
+        return size;
     }
 
     /**
@@ -369,27 +394,32 @@ public final class BinaryDictIOUtils {
      *
      * @param destination the stream to write.
      * @param info the char group info to be written.
+     * @return the size written, in bytes.
      */
-    public static void writeCharGroup(final OutputStream destination, final CharGroupInfo info)
+    public static int writeCharGroup(final OutputStream destination, final CharGroupInfo info)
             throws IOException {
+        int size = 1;
         destination.write((byte)info.mFlags);
         final int parentOffset = info.mParentAddress == FormatSpec.NO_PARENT_ADDRESS ?
                 FormatSpec.NO_PARENT_ADDRESS : info.mParentAddress - info.mOriginalAddress;
-        writeSInt24ToStream(destination, parentOffset);
+        size += writeSInt24ToStream(destination, parentOffset);
 
         for (int i = 0; i < info.mCharacters.length; ++i) {
             if (CharEncoding.getCharSize(info.mCharacters[i]) == 1) {
                 destination.write((byte)info.mCharacters[i]);
+                size++;
             } else {
-                writeSInt24ToStream(destination, info.mCharacters[i]);
+                size += writeSInt24ToStream(destination, info.mCharacters[i]);
             }
         }
         if (info.mCharacters.length > 1) {
             destination.write((byte)FormatSpec.GROUP_CHARACTERS_TERMINATOR);
+            size++;
         }
 
         if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
             destination.write((byte)info.mFrequency);
+            size++;
         }
 
         final int childrenOffset = info.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS ?
@@ -401,12 +431,14 @@ public final class BinaryDictIOUtils {
                     BinaryDictInputOutput.getShortcutListSize(info.mShortcutTargets);
             destination.write((byte)(shortcutListSize >> 8));
             destination.write((byte)(shortcutListSize & 0xFF));
+            size += 2;
             final Iterator<WeightedString> shortcutIterator = info.mShortcutTargets.iterator();
             while (shortcutIterator.hasNext()) {
                 final WeightedString target = shortcutIterator.next();
                 destination.write((byte)BinaryDictInputOutput.makeShortcutFlags(
                         shortcutIterator.hasNext(), target.mFrequency));
-                writeString(destination, target.mWord);
+                size++;
+                size += writeString(destination, target.mWord);
             }
         }
 
@@ -432,8 +464,10 @@ public final class BinaryDictIOUtils {
                 }
                 bigramFlags |= bigramFrequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY;
                 destination.write((byte)bigramFlags);
-                writeVariableAddress(destination, Math.abs(bigramOffset));
+                size++;
+                size += writeVariableAddress(destination, Math.abs(bigramOffset));
             }
         }
+        return size;
     }
 }
