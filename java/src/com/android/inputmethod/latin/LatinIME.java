@@ -1878,6 +1878,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
             final CharSequence textWithUnderline =
                     getTextWithUnderline(mWordComposer.getTypedWord());
+            // TODO: when called from an updateSuggestionStrip() call that results from a posted
+            // message, this is called outside any batch edit. Potentially, this may result in some
+            // janky flickering of the screen, although the display speed makes it unlikely in
+            // the practice.
             mConnection.setComposingText(textWithUnderline, 1);
         }
     }
