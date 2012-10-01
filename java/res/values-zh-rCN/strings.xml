@@ -31,51 +31,41 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
     <string name="general_category" msgid="1859088467017573195">"常规"</string>
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
-    <!-- no translation found for gesture_typing_category (497263612130532630) -->
-    <skip />
+    <string name="gesture_typing_category" msgid="497263612130532630">"手势输入"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"高级选项"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切换到其他输入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"语言切换键也可用于切换其他输入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"语言切换键"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"启用多种输入语言时显示"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"启用了多种输入语言时显示"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"弹出字符隐藏延迟"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"无延迟"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"默认"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"联系人姓名建议"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用联系人中的姓名提供建议和更正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
-    <!-- no translation found for auto_cap_summary (7934452761022946874) -->
-    <skip />
+    <string name="auto_cap_summary" msgid="7934452761022946874">"句首字词大写"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加词典"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"主词典"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"显示更正建议"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"键入时显示建议的字词"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"始终显示"</string>
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3859783767435239118) -->
-    <skip />
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"在纵向模式中显示"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"始终隐藏"</string>
-    <!-- no translation found for auto_correction (7630720885194996950) -->
-    <skip />
+    <string name="auto_correction" msgid="7630720885194996950">"自动更正"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"按空格键和标点可自动更正错别字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"小改"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"大改"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"改动极大"</string>
-    <!-- no translation found for bigram_prediction (1084449187723948550) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (3896362682751109677) -->
-    <skip />
-    <!-- no translation found for gesture_input (826951152254563827) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (9180350639305731231) -->
-    <skip />
+    <string name="bigram_prediction" msgid="1084449187723948550">"下一个字词建议"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"根据上一个字词提供建议"</string>
+    <string name="gesture_input" msgid="826951152254563827">"启用手势输入"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"以滑动方式写出字词中字母来输入字词"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"显示手势轨迹"</string>
-    <!-- no translation found for gesture_floating_preview_text (4443240334739381053) -->
-    <skip />
-    <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
-    <skip />
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"动态漂浮预览"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用手势输入时显示建议字词"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
     <string name="label_go_key" msgid="1635148082137219148">"开始"</string>
     <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
