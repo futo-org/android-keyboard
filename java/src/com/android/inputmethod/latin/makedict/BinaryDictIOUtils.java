@@ -27,12 +27,15 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
 public final class BinaryDictIOUtils {
     private static final boolean DBG = false;
+    private static final int MSB24 = 0x800000;
+    private static final int SINT24_MAX = 0x7FFFFF;
     private static final int MAX_JUMPS = 10000;
 
     private BinaryDictIOUtils() {
@@ -645,5 +648,303 @@ public final class BinaryDictIOUtils {
         for (final CharGroupInfo info : infos) size += writeCharGroup(destination, info);
         writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
         return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
+    }
+
+    /**
+     * Move a group that is referred to by oldGroupOrigin to the tail of the file.
+     * And set the children address to the byte after the group.
+     *
+     * @param nodeOrigin the address of the tail of the file.
+     * @param characters
+     * @param length
+     * @param flags
+     * @param frequency
+     * @param parentAddress
+     * @param shortcutTargets
+     * @param bigrams
+     * @param destination the stream representing the tail of the file.
+     * @param buffer the buffer representing the (constant-size) body of the file.
+     * @param oldNodeOrigin
+     * @param oldGroupOrigin
+     * @param formatOptions
+     * @return the size written, in bytes.
+     * @throws IOException
+     */
+    private static int moveGroup(final int nodeOrigin, final int[] characters, final int length,
+            final int flags, final int frequency, final int parentAddress,
+            final ArrayList<WeightedString> shortcutTargets,
+            final ArrayList<PendingAttribute> bigrams, final OutputStream destination,
+            final FusionDictionaryBufferInterface buffer, final int oldNodeOrigin,
+            final int oldGroupOrigin, final FormatOptions formatOptions) throws IOException {
+        int size = 0;
+        final int newGroupOrigin = nodeOrigin + 1;
+        final int[] writtenCharacters = Arrays.copyOfRange(characters, 0, length);
+        final CharGroupInfo tmpInfo = new CharGroupInfo(newGroupOrigin, -1 /* endAddress */,
+                flags, writtenCharacters, frequency, parentAddress, FormatSpec.NO_CHILDREN_ADDRESS,
+                shortcutTargets, bigrams);
+        size = computeGroupSize(tmpInfo, formatOptions);
+        final CharGroupInfo newInfo = new CharGroupInfo(newGroupOrigin, newGroupOrigin + size,
+                flags, writtenCharacters, frequency, parentAddress,
+                nodeOrigin + 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE, shortcutTargets,
+                bigrams);
+        moveCharGroup(destination, buffer, newInfo, oldNodeOrigin, oldGroupOrigin, formatOptions);
+        return 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
+    }
+
+    /**
+     * Insert a word into a binary dictionary.
+     *
+     * @param buffer
+     * @param destination
+     * @param word
+     * @param frequency
+     * @param bigramStrings
+     * @param shortcuts
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    // TODO: Support batch insertion.
+    public static void insertWord(final FusionDictionaryBufferInterface buffer,
+            final OutputStream destination, final String word, final int frequency,
+            final ArrayList<WeightedString> bigramStrings,
+            final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
+            final boolean isBlackListEntry)
+                    throws IOException, UnsupportedFormatException {
+        final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
+        if (bigramStrings != null) {
+            for (final WeightedString bigram : bigramStrings) {
+                int position = getTerminalPosition(buffer, bigram.mWord);
+                if (position == FormatSpec.NOT_VALID_WORD) {
+                    // TODO: figure out what is the correct thing to do here.
+                } else {
+                    bigrams.add(new PendingAttribute(position, bigram.mFrequency));
+                }
+            }
+        }
+
+        final boolean isTerminal = true;
+        final boolean hasBigrams = !bigrams.isEmpty();
+        final boolean hasShortcuts = shortcuts != null && !shortcuts.isEmpty();
+
+        // find the insert position of the word.
+        if (buffer.position() != 0) buffer.position(0);
+        final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+
+        int wordPos = 0, address = buffer.position(), nodeOriginAddress = buffer.position();
+        final int[] codePoints = FusionDictionary.getCodePoints(word);
+        final int wordLen = codePoints.length;
+
+        for (int depth = 0; depth < Constants.Dictionary.MAX_WORD_LENGTH; ++depth) {
+            if (wordPos >= wordLen) break;
+            nodeOriginAddress = buffer.position();
+            int nodeParentAddress = -1;
+            final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
+            boolean foundNextGroup = false;
+
+            for (int i = 0; i < charGroupCount; ++i) {
+                address = buffer.position();
+                final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
+                        buffer.position(), header.mFormatOptions);
+                final boolean isMovedGroup = BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
+                        header.mFormatOptions);
+                if (isMovedGroup) continue;
+                nodeParentAddress = (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS)
+                        ? FormatSpec.NO_PARENT_ADDRESS : currentInfo.mParentAddress + address;
+                boolean matched = true;
+                for (int p = 0; p < currentInfo.mCharacters.length; ++p) {
+                    if (wordPos + p >= wordLen) {
+                        /*
+                         * splitting
+                         * before
+                         *  abcd - ef
+                         *
+                         * insert "abc"
+                         *
+                         * after
+                         *  abc - d - ef
+                         */
+                        final int newNodeAddress = buffer.limit();
+                        final int flags = BinaryDictInputOutput.makeCharGroupFlags(p > 1,
+                                isTerminal, 0, hasShortcuts, hasBigrams, false /* isNotAWord */,
+                                false /* isBlackListEntry */, header.mFormatOptions);
+                        int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p, flags,
+                                frequency, nodeParentAddress, shortcuts, bigrams, destination,
+                                buffer, nodeOriginAddress, address, header.mFormatOptions);
+
+                        final int[] characters2 = Arrays.copyOfRange(currentInfo.mCharacters, p,
+                                currentInfo.mCharacters.length);
+                        if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
+                            updateParentAddresses(buffer, currentInfo.mChildrenAddress,
+                                    newNodeAddress + written + 1, header.mFormatOptions);
+                        }
+                        final CharGroupInfo newInfo2 = new CharGroupInfo(
+                                newNodeAddress + written + 1, -1 /* endAddress */,
+                                currentInfo.mFlags, characters2, currentInfo.mFrequency,
+                                newNodeAddress + 1, currentInfo.mChildrenAddress,
+                                currentInfo.mShortcutTargets, currentInfo.mBigrams);
+                        writeNode(destination, new CharGroupInfo[] { newInfo2 });
+                        return;
+                    } else if (codePoints[wordPos + p] != currentInfo.mCharacters[p]) {
+                        if (p > 0) {
+                            /*
+                             * splitting
+                             * before
+                             *   ab - cd
+                             *
+                             * insert "ac"
+                             *
+                             * after
+                             *   a - b - cd
+                             *     |
+                             *     - c
+                             */
+
+                            final int newNodeAddress = buffer.limit();
+                            final int childrenAddress = currentInfo.mChildrenAddress;
+
+                            // move prefix
+                            final int prefixFlags = BinaryDictInputOutput.makeCharGroupFlags(p > 1,
+                                    false /* isTerminal */, 0 /* childrenAddressSize*/,
+                                    false /* hasShortcut */, false /* hasBigrams */,
+                                    false /* isNotAWord */, false /* isBlackListEntry */,
+                                    header.mFormatOptions);
+                            int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p,
+                                    prefixFlags, -1 /* frequency */, nodeParentAddress, null, null,
+                                    destination, buffer, nodeOriginAddress, address,
+                                    header.mFormatOptions);
+
+                            final int[] suffixCharacters = Arrays.copyOfRange(
+                                    currentInfo.mCharacters, p, currentInfo.mCharacters.length);
+                            if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
+                                updateParentAddresses(buffer, currentInfo.mChildrenAddress,
+                                        newNodeAddress + written + 1, header.mFormatOptions);
+                            }
+                            final int suffixFlags = BinaryDictInputOutput.makeCharGroupFlags(
+                                    suffixCharacters.length > 1,
+                                    (currentInfo.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0,
+                                    0 /* childrenAddressSize */,
+                                    (currentInfo.mFlags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)
+                                            != 0,
+                                    (currentInfo.mFlags & FormatSpec.FLAG_HAS_BIGRAMS) != 0,
+                                    isNotAWord, isBlackListEntry, header.mFormatOptions);
+                            final CharGroupInfo suffixInfo = new CharGroupInfo(
+                                    newNodeAddress + written + 1, -1 /* endAddress */, suffixFlags,
+                                    suffixCharacters, currentInfo.mFrequency, newNodeAddress + 1,
+                                    currentInfo.mChildrenAddress, currentInfo.mShortcutTargets,
+                                    currentInfo.mBigrams);
+                            written += computeGroupSize(suffixInfo, header.mFormatOptions) + 1;
+
+                            final int[] newCharacters = Arrays.copyOfRange(codePoints, wordPos + p,
+                                    codePoints.length);
+                            final int flags = BinaryDictInputOutput.makeCharGroupFlags(
+                                    newCharacters.length > 1, isTerminal,
+                                    0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
+                                    isNotAWord, isBlackListEntry, header.mFormatOptions);
+                            final CharGroupInfo newInfo = new CharGroupInfo(
+                                    newNodeAddress + written, -1 /* endAddress */, flags,
+                                    newCharacters, frequency, newNodeAddress + 1,
+                                    FormatSpec.NO_CHILDREN_ADDRESS, shortcuts, bigrams);
+                            writeNode(destination, new CharGroupInfo[] { suffixInfo, newInfo });
+                            return;
+                        }
+                        matched = false;
+                        break;
+                    }
+                }
+
+                if (matched) {
+                    if (wordPos + currentInfo.mCharacters.length == wordLen) {
+                        // the word exists in the dictionary.
+                        // only update group.
+                        final int newNodeAddress = buffer.limit();
+                        final boolean hasMultipleChars = currentInfo.mCharacters.length > 1;
+                        final int flags = BinaryDictInputOutput.makeCharGroupFlags(hasMultipleChars,
+                                isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
+                                isNotAWord, isBlackListEntry, header.mFormatOptions);
+                        final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
+                                -1 /* endAddress */, flags, currentInfo.mCharacters, frequency,
+                                nodeParentAddress, currentInfo.mChildrenAddress, shortcuts,
+                                bigrams);
+                        moveCharGroup(destination, buffer, newInfo, nodeOriginAddress, address,
+                                header.mFormatOptions);
+                        return;
+                    }
+                    wordPos += currentInfo.mCharacters.length;
+                    if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {
+                        /*
+                         * found the prefix of the word.
+                         * make new node and link to the node from this group.
+                         *
+                         * before
+                         * ab - cd
+                         *
+                         * insert "abcde"
+                         *
+                         * after
+                         * ab - cd - e
+                         */
+                        final int newNodeAddress = buffer.limit();
+                        updateChildrenAddress(buffer, address, newNodeAddress,
+                                header.mFormatOptions);
+                        final int newGroupAddress = newNodeAddress + 1;
+                        final boolean hasMultipleChars = (wordLen - wordPos) > 1;
+                        final int flags = BinaryDictInputOutput.makeCharGroupFlags(hasMultipleChars,
+                                isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
+                                isNotAWord, isBlackListEntry, header.mFormatOptions);
+                        final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
+                        final CharGroupInfo newInfo = new CharGroupInfo(newGroupAddress, -1, flags,
+                                characters, frequency, address, FormatSpec.NO_CHILDREN_ADDRESS,
+                                shortcuts, bigrams);
+                        writeNode(destination, new CharGroupInfo[] { newInfo });
+                        return;
+                    }
+                    buffer.position(currentInfo.mChildrenAddress);
+                    foundNextGroup = true;
+                    break;
+                }
+            }
+
+            if (foundNextGroup) continue;
+
+            // reached the end of the array.
+            final int linkAddressPosition = buffer.position();
+            int nextLink = buffer.readUnsignedInt24();
+            if ((nextLink & MSB24) != 0) {
+                nextLink = -(nextLink & SINT24_MAX);
+            }
+            if (nextLink == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
+                /*
+                 * expand this node.
+                 *
+                 * before
+                 * ab - cd
+                 *
+                 * insert "abef"
+                 *
+                 * after
+                 * ab - cd
+                 *    |
+                 *    - ef
+                 */
+
+                // change the forward link address.
+                final int newNodeAddress = buffer.limit();
+                buffer.position(linkAddressPosition);
+                writeSInt24ToBuffer(buffer, newNodeAddress);
+
+                final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
+                final int flags = BinaryDictInputOutput.makeCharGroupFlags(characters.length > 1,
+                        isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
+                        isNotAWord, isBlackListEntry, header.mFormatOptions);
+                final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
+                        -1 /* endAddress */, flags, characters, frequency, nodeParentAddress,
+                        FormatSpec.NO_CHILDREN_ADDRESS, shortcuts, bigrams);
+                writeNode(destination, new CharGroupInfo[]{ newInfo });
+                return;
+            } else {
+                depth--;
+                buffer.position(nextLink);
+            }
+        }
     }
 }

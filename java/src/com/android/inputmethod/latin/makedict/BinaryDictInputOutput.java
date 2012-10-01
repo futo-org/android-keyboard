@@ -411,7 +411,8 @@ public final class BinaryDictInputOutput {
      * Helper method to check whether the group is moved.
      */
     public static boolean isMovedGroup(final int flags, final FormatOptions options) {
-        return options.mSupportsDynamicUpdate && ((flags & FormatSpec.FLAG_IS_MOVED) == 1);
+        return options.mSupportsDynamicUpdate
+                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
     }
 
     /**

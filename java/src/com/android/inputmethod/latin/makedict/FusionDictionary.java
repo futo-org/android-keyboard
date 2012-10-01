@@ -279,7 +279,7 @@ public final class FusionDictionary implements Iterable<Word> {
     /**
      * Helper method to convert a String to an int array.
      */
-    static private int[] getCodePoints(final String word) {
+    static int[] getCodePoints(final String word) {
         // TODO: this is a copy-paste of the contents of StringUtils.toCodePointArray,
         // which is not visible from the makedict package. Factor this code.
         final char[] characters = word.toCharArray();
