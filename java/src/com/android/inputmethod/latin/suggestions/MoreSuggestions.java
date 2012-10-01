@@ -22,7 +22,6 @@ import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -175,11 +174,11 @@ public final class MoreSuggestions extends Keyboard {
         }
 
         public Builder layout(final SuggestedWords suggestions, final int fromPos,
-                final int maxWidth, final int minWidth, final int maxRow) {
-            final Keyboard keyboard = KeyboardSwitcher.getInstance().getKeyboard();
+                final int maxWidth, final int minWidth, final int maxRow,
+                final Keyboard parentKeyboard) {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
-            load(xmlId, keyboard.mId);
-            mParams.mVerticalGap = mParams.mTopPadding = keyboard.mVerticalGap / 2;
+            load(xmlId, parentKeyboard.mId);
+            mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
 
             final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
                     mPaneView);

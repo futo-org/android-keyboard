@@ -52,7 +52,9 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
@@ -751,36 +753,37 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     private boolean showMoreSuggestions() {
-        final SuggestionStripViewParams params = mParams;
-        if (params.mMoreSuggestionsAvailable) {
-            final int stripWidth = getWidth();
-            final View container = mMoreSuggestionsContainer;
-            final int maxWidth = stripWidth - container.getPaddingLeft()
-                    - container.getPaddingRight();
-            final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-            builder.layout(mSuggestedWords, params.mSuggestionsCountInStrip, maxWidth,
-                    (int)(maxWidth * params.mMinMoreSuggestionsWidth),
-                    params.getMaxMoreSuggestionsRow());
-            mMoreSuggestionsView.setKeyboard(builder.build());
-            container.measure(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-            final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
-            final int pointX = stripWidth / 2;
-            final int pointY = -params.mMoreSuggestionsBottomGap;
-            moreKeysPanel.showMoreKeysPanel(
-                    this, mMoreSuggestionsController, pointX, pointY,
-                    mMoreSuggestionsWindow, mMoreSuggestionsListener);
-            mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
-            mOriginX = mLastX;
-            mOriginY = mLastY;
-            mKeyboardView.dimEntireKeyboard(true);
-            for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
-                mWords.get(i).setPressed(false);
-            }
-            return true;
+        final Keyboard parentKeyboard = KeyboardSwitcher.getInstance().getKeyboard();
+        if (parentKeyboard == null) {
+            return false;
         }
-        return false;
+        final SuggestionStripViewParams params = mParams;
+        if (!params.mMoreSuggestionsAvailable) {
+            return false;
+        }
+        final int stripWidth = getWidth();
+        final View container = mMoreSuggestionsContainer;
+        final int maxWidth = stripWidth - container.getPaddingLeft() - container.getPaddingRight();
+        final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
+        builder.layout(mSuggestedWords, params.mSuggestionsCountInStrip, maxWidth,
+                (int)(maxWidth * params.mMinMoreSuggestionsWidth),
+                params.getMaxMoreSuggestionsRow(), parentKeyboard);
+        mMoreSuggestionsView.setKeyboard(builder.build());
+        container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
+        final int pointX = stripWidth / 2;
+        final int pointY = -params.mMoreSuggestionsBottomGap;
+        moreKeysPanel.showMoreKeysPanel(this, mMoreSuggestionsController, pointX, pointY,
+                mMoreSuggestionsWindow, mMoreSuggestionsListener);
+        mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
+        mOriginX = mLastX;
+        mOriginY = mLastY;
+        mKeyboardView.dimEntireKeyboard(true);
+        for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
+            mWords.get(i).setPressed(false);
+        }
+        return true;
     }
 
     // Working variables for onLongClick and dispatchTouchEvent.
