@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -824,10 +825,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mPreviewPlacerView.getParent() != null) {
             return;
         }
+        final int width = getWidth();
+        final int height = getHeight();
+        if (width == 0 || height == 0) {
+            // In transient state.
+            return;
+        }
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
-        mPreviewPlacerView.setKeyboardViewGeometry(
-                viewOrigin[0], viewOrigin[1], getWidth(), getHeight());
+        final DisplayMetrics dm = getResources().getDisplayMetrics();
+        if (viewOrigin[1] < dm.heightPixels / 4) {
+            // In transient state.
+            return;
+        }
         final View rootView = getRootView();
         if (rootView == null) {
             Log.w(TAG, "Cannot find root view");
@@ -839,6 +849,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
         } else {
             windowContentView.addView(mPreviewPlacerView);
+            mPreviewPlacerView.setKeyboardViewGeometry(viewOrigin[0], viewOrigin[1], width, height);
         }
     }
 
