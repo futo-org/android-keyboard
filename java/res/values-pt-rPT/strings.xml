@@ -53,7 +53,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar em modo retrato"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar sempre"</string>
-    <string name="auto_correction" msgid="7630720885194996950">"Correcão automática"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"Correção automática"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Correcção automática de palavras mal escritas c/ barra de espaços e pontuação"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desligar"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderada"</string>
