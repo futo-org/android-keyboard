@@ -206,6 +206,11 @@ public final class RichInputMethodManager {
         return null;
     }
 
+    public void setInputMethodAndSubtype(final IBinder token, final InputMethodSubtype subtype) {
+        mImmWrapper.mImm.setInputMethodAndSubtype(
+                token, mInputMethodInfoOfThisIme.getId(), subtype);
+    }
+
     public void setAdditionalInputMethodSubtypes(final InputMethodSubtype[] subtypes) {
         mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
                 mInputMethodInfoOfThisIme.getId(), subtypes);

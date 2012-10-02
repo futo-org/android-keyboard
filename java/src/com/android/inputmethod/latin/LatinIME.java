@@ -56,7 +56,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -142,7 +141,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private SharedPreferences mPrefs;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
-    private boolean mShouldSwitchToLastSubtype = true;
+    private final SubtypeState mSubtypeState = new SubtypeState();
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
@@ -363,6 +362,33 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 executePendingImsCallback(latinIme, null, false);
                 latinIme.onFinishInputInternal();
             }
+        }
+    }
+
+    static final class SubtypeState {
+        private InputMethodSubtype mLastActiveSubtype;
+        private boolean mCurrentSubtypeUsed;
+
+        public void currentSubtypeUsed() {
+            mCurrentSubtypeUsed = true;
+        }
+
+        public void switchSubtype(final IBinder token, final RichInputMethodManager richImm) {
+            final InputMethodSubtype currentSubtype = richImm.getInputMethodManager()
+                    .getCurrentInputMethodSubtype();
+            final InputMethodSubtype lastActiveSubtype = mLastActiveSubtype;
+            final boolean currentSubtypeUsed = mCurrentSubtypeUsed;
+            if (currentSubtypeUsed) {
+                mLastActiveSubtype = currentSubtype;
+                mCurrentSubtypeUsed = false;
+            }
+            if (currentSubtypeUsed
+                    && richImm.checkIfSubtypeBelongsToThisImeAndEnabled(lastActiveSubtype)
+                    && !currentSubtype.equals(lastActiveSubtype)) {
+                richImm.setInputMethodAndSubtype(token, lastActiveSubtype);
+                return;
+            }
+            richImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
         }
     }
 
@@ -897,6 +923,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // Make a note of the cursor position
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
+        mSubtypeState.currentSubtypeUsed();
     }
 
     /**
@@ -1244,20 +1271,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
             return;
         }
-        if (mShouldSwitchToLastSubtype) {
-            final InputMethodManager imm = mRichImm.getInputMethodManager();
-            final InputMethodSubtype lastSubtype = imm.getLastInputMethodSubtype();
-            final boolean lastSubtypeBelongsToThisIme =
-                    mRichImm.checkIfSubtypeBelongsToThisImeAndEnabled(lastSubtype);
-            if (lastSubtypeBelongsToThisIme && imm.switchToLastInputMethod(token)) {
-                mShouldSwitchToLastSubtype = false;
-            } else {
-                mRichImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
-                mShouldSwitchToLastSubtype = true;
-            }
-        } else {
-            mRichImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
-        }
+        mSubtypeState.switchSubtype(token, mRichImm);
     }
 
     private void sendDownUpKeyEventForBackwardCompatibility(final int code) {
@@ -1326,7 +1340,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             handleBackspace(spaceState);
             mDeleteCount++;
             mExpectingUpdateSelection = true;
-            mShouldSwitchToLastSubtype = true;
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
@@ -1382,7 +1395,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 handleCharacter(primaryCode, keyX, keyY, spaceState);
             }
             mExpectingUpdateSelection = true;
-            mShouldSwitchToLastSubtype = true;
             break;
         }
         switcher.onCodeInput(primaryCode);
