@@ -1910,6 +1910,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private SuggestedWords getSuggestedWords(final int sessionId) {
+        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+        if (keyboard == null) {
+            return SuggestedWords.EMPTY;
+        }
         final String typedWord = mWordComposer.getTypedWord();
         // Get the word on which we should search the bigrams. If we are composing a word, it's
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
@@ -1919,8 +1923,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled, sessionId);
+                prevWord, keyboard.getProximityInfo(), mCurrentSettings.mCorrectionEnabled,
+                sessionId);
         return maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
     }
 
