@@ -720,51 +720,58 @@ public final class BinaryDictInputOutput {
         return 3;
     }
 
+    /**
+     * Makes the flag value for a char group.
+     *
+     * @param hasMultipleChars whether the group has multiple chars.
+     * @param isTerminal whether the group is terminal.
+     * @param childrenAddressSize the size of a children address.
+     * @param hasShortcuts whether the group has shortcuts.
+     * @param hasBigrams whether the group has bigrams.
+     * @param isNotAWord whether the group is not a word.
+     * @param isBlackListEntry whether the group is a blacklist entry.
+     * @param formatOptions file format options.
+     * @return the flags
+     */
+    static int makeCharGroupFlags(final boolean hasMultipleChars, final boolean isTerminal,
+            final int childrenAddressSize, final boolean hasShortcuts, final boolean hasBigrams,
+            final boolean isNotAWord, final boolean isBlackListEntry,
+            final FormatOptions formatOptions) {
+        byte flags = 0;
+        if (hasMultipleChars) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
+        if (isTerminal) flags |= FormatSpec.FLAG_IS_TERMINAL;
+        if (formatOptions.mSupportsDynamicUpdate) {
+            flags |= FormatSpec.FLAG_IS_NOT_MOVED;
+        } else if (true) {
+            switch (childrenAddressSize) {
+                case 1:
+                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
+                    break;
+                case 2:
+                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
+                    break;
+                case 3:
+                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
+                    break;
+                case 0:
+                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS;
+                    break;
+                default:
+                    throw new RuntimeException("Node with a strange address");
+            }
+        }
+        if (hasShortcuts) flags |= FormatSpec.FLAG_HAS_SHORTCUT_TARGETS;
+        if (hasBigrams) flags |= FormatSpec.FLAG_HAS_BIGRAMS;
+        if (isNotAWord) flags |= FormatSpec.FLAG_IS_NOT_A_WORD;
+        if (isBlackListEntry) flags |= FormatSpec.FLAG_IS_BLACKLISTED;
+        return flags;
+    }
+
     private static byte makeCharGroupFlags(final CharGroup group, final int groupAddress,
             final int childrenOffset, final FormatOptions formatOptions) {
-        byte flags = 0;
-        if (group.mChars.length > 1) flags |= FormatSpec.FLAG_HAS_MULTIPLE_CHARS;
-        if (group.mFrequency >= 0) {
-            flags |= FormatSpec.FLAG_IS_TERMINAL;
-        }
-        if (null != group.mChildren) {
-            final int byteSize = formatOptions.mSupportsDynamicUpdate
-                    ? FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE : getByteSize(childrenOffset);
-            switch (byteSize) {
-            case 1:
-                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
-                break;
-            case 2:
-                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
-                break;
-            case 3:
-                flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
-                break;
-            default:
-                throw new RuntimeException("Node with a strange address");
-            }
-        } else if (formatOptions.mSupportsDynamicUpdate) {
-            flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
-        }
-        if (null != group.mShortcutTargets) {
-            if (DBG && 0 == group.mShortcutTargets.size()) {
-                throw new RuntimeException("0-sized shortcut list must be null");
-            }
-            flags |= FormatSpec.FLAG_HAS_SHORTCUT_TARGETS;
-        }
-        if (null != group.mBigrams) {
-            if (DBG && 0 == group.mBigrams.size()) {
-                throw new RuntimeException("0-sized bigram list must be null");
-            }
-            flags |= FormatSpec.FLAG_HAS_BIGRAMS;
-        }
-        if (group.mIsNotAWord) {
-            flags |= FormatSpec.FLAG_IS_NOT_A_WORD;
-        }
-        if (group.mIsBlacklistEntry) {
-            flags |= FormatSpec.FLAG_IS_BLACKLISTED;
-        }
-        return flags;
+        return (byte) makeCharGroupFlags(group.mChars.length > 1, group.mFrequency >= 0,
+                getByteSize(childrenOffset), group.mShortcutTargets != null, group.mBigrams != null,
+                group.mIsNotAWord, group.mIsBlacklistEntry, formatOptions);
     }
 
     /**

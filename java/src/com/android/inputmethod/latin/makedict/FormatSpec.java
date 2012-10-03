@@ -59,8 +59,9 @@ public final class FormatSpec {
      * l |                                   10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
      * a |                                   11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
      * g | ELSE
-     * s |   is moved ?              2 bits, 11 = no
-     *   |                                   01 = yes
+     * s |   is moved ?              2 bits, 11 = no          : FLAG_IS_NOT_MOVED
+     *   |                              This must be the same as FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
+     *   |                                   01 = yes         : FLAG_IS_MOVED
      *   |                        the new address is stored in the same place as the parent address
      *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
      *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
@@ -170,6 +171,7 @@ public final class FormatSpec {
     static final int PARENT_ADDRESS_SIZE = 3;
     static final int FORWARD_LINK_ADDRESS_SIZE = 3;
 
+    // These flags are used only in the static dictionary.
     static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
     static final int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
@@ -183,7 +185,11 @@ public final class FormatSpec {
     static final int FLAG_HAS_BIGRAMS = 0x04;
     static final int FLAG_IS_NOT_A_WORD = 0x02;
     static final int FLAG_IS_BLACKLISTED = 0x01;
-    static final int FLAG_IS_MOVED = 0x40;
+
+    // These flags are used only in the dynamic dictionary.
+    static final int FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE = 0x40;
+    static final int FLAG_IS_MOVED = 0x00 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
+    static final int FLAG_IS_NOT_MOVED = 0x80 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
 
     static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
