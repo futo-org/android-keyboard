@@ -276,6 +276,21 @@ public final class BinaryDictInputOutput {
     }
 
     /**
+     * Compute the binary size of the character array.
+     *
+     * If only one character, this is the size of this character. If many, it's the sum of their
+     * sizes + 1 byte for the terminator.
+     *
+     * @param characters the character array
+     * @return the size of the char array, including the terminator if any
+     */
+    static int getGroupCharactersSize(final int[] characters) {
+        int size = CharEncoding.getCharArraySize(characters);
+        if (characters.length > 1) size += FormatSpec.GROUP_TERMINATOR_SIZE;
+        return size;
+    }
+
+    /**
      * Compute the binary size of the character array in a group
      *
      * If only one character, this is the size of this character. If many, it's the sum of their
@@ -285,9 +300,7 @@ public final class BinaryDictInputOutput {
      * @return the size of the char array, including the terminator if any
      */
     private static int getGroupCharactersSize(final CharGroup group) {
-        int size = CharEncoding.getCharArraySize(group.mChars);
-        if (group.hasSeveralChars()) size += FormatSpec.GROUP_TERMINATOR_SIZE;
-        return size;
+        return getGroupCharactersSize(group.mChars);
     }
 
     /**
@@ -1193,7 +1206,7 @@ public final class BinaryDictInputOutput {
     // Input methods: Read a binary dictionary to memory.
     // readDictionaryBinary is the public entry point for them.
 
-    private static int getChildrenAddressSize(final int optionFlags,
+    static int getChildrenAddressSize(final int optionFlags,
             final FormatOptions formatOptions) {
         if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
         switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {

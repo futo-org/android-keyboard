@@ -33,6 +33,11 @@ import java.util.Stack;
 
 public final class BinaryDictIOUtils {
     private static final boolean DBG = false;
+    private static final int MAX_JUMPS = 10000;
+
+    private BinaryDictIOUtils() {
+        // This utility class is not publicly instantiable.
+    }
 
     private static final class Position {
         public static final int NOT_READ_GROUPCOUNT = -1;
@@ -377,8 +382,8 @@ public final class BinaryDictIOUtils {
      *
      * @param buffer the buffer to be modified.
      * @param nodeOriginAddress the address of a modified Node.
-     * @param newParentAddress the address to be written
-     * @param formatOptions file format options
+     * @param newParentAddress the address to be written.
+     * @param formatOptions file format options.
      */
     public static void updateParentAddresses(final FusionDictionaryBufferInterface buffer,
             final int nodeOriginAddress, final int newParentAddress,
@@ -435,7 +440,7 @@ public final class BinaryDictIOUtils {
             }
         }
         destination.write((byte)FormatSpec.GROUP_CHARACTERS_TERMINATOR);
-        size++;
+        size += FormatSpec.GROUP_TERMINATOR_SIZE;
         return size;
     }
 
@@ -473,7 +478,7 @@ public final class BinaryDictIOUtils {
      */
     public static int writeCharGroup(final OutputStream destination, final CharGroupInfo info)
             throws IOException {
-        int size = 1;
+        int size = FormatSpec.GROUP_FLAGS_SIZE;
         destination.write((byte)info.mFlags);
         final int parentOffset = info.mParentAddress == FormatSpec.NO_PARENT_ADDRESS ?
                 FormatSpec.NO_PARENT_ADDRESS : info.mParentAddress - info.mOriginalAddress;
@@ -497,9 +502,15 @@ public final class BinaryDictIOUtils {
             size++;
         }
 
+        if (DBG) {
+            MakedictLog.d("writeCharGroup origin=" + info.mOriginalAddress + ", size=" + size
+                    + ", child=" + info.mChildrenAddress + ", characters ="
+                    + new String(info.mCharacters, 0, info.mCharacters.length));
+        }
         final int childrenOffset = info.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS ?
-                0 : info.mChildrenAddress - info.mOriginalAddress;
+                0 : info.mChildrenAddress - (info.mOriginalAddress + size);
         writeSInt24ToStream(destination, childrenOffset);
+        size += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
 
         if (info.mShortcutTargets != null && info.mShortcutTargets.size() > 0) {
             final int shortcutListSize =
@@ -544,5 +555,95 @@ public final class BinaryDictIOUtils {
             }
         }
         return size;
+    }
+
+    private static void updateForwardLink(final FusionDictionaryBufferInterface buffer,
+            final int nodeOriginAddress, final int newNodeAddress,
+            final FormatOptions formatOptions) {
+        buffer.position(nodeOriginAddress);
+        int jumpCount = 0;
+        while (jumpCount++ < MAX_JUMPS) {
+            final int count = BinaryDictInputOutput.readCharGroupCount(buffer);
+            for (int i = 0; i < count; ++i) skipCharGroup(buffer, formatOptions);
+            final int forwardLinkAddress = buffer.readUnsignedInt24();
+            if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
+                buffer.position(buffer.position() - FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
+                writeSInt24ToBuffer(buffer, newNodeAddress);
+                return;
+            }
+            buffer.position(forwardLinkAddress);
+        }
+        if (DBG && jumpCount >= MAX_JUMPS) {
+            throw new RuntimeException("too many jumps, probably a bug.");
+        }
+    }
+
+    /**
+     * Helper method to move a char group to the tail of the file.
+     */
+    private static int moveCharGroup(final OutputStream destination,
+            final FusionDictionaryBufferInterface buffer, final CharGroupInfo info,
+            final int nodeOriginAddress, final int oldGroupAddress,
+            final FormatOptions formatOptions) throws IOException {
+        updateParentAddress(buffer, oldGroupAddress, buffer.limit() + 1, formatOptions);
+        buffer.position(oldGroupAddress);
+        final int currentFlags = buffer.readUnsignedByte();
+        buffer.position(oldGroupAddress);
+        buffer.put((byte)(FormatSpec.FLAG_IS_MOVED | (currentFlags
+                & (~FormatSpec.MASK_MOVE_AND_DELETE_FLAG))));
+        int size = FormatSpec.GROUP_FLAGS_SIZE;
+        updateForwardLink(buffer, nodeOriginAddress, buffer.limit(), formatOptions);
+        size += writeNode(destination, new CharGroupInfo[] { info });
+        return size;
+    }
+
+    /**
+     * Compute the size of the char group.
+     */
+    private static int computeGroupSize(final CharGroupInfo info,
+            final FormatOptions formatOptions) {
+        int size = FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
+                + BinaryDictInputOutput.getGroupCharactersSize(info.mCharacters)
+                + BinaryDictInputOutput.getChildrenAddressSize(info.mFlags, formatOptions);
+        if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
+            size += FormatSpec.GROUP_FREQUENCY_SIZE;
+        }
+        if (info.mShortcutTargets != null && !info.mShortcutTargets.isEmpty()) {
+            size += BinaryDictInputOutput.getShortcutListSize(info.mShortcutTargets);
+        }
+        if (info.mBigrams != null) {
+            for (final PendingAttribute attr : info.mBigrams) {
+                size += FormatSpec.GROUP_FLAGS_SIZE;
+                size += BinaryDictInputOutput.getByteSize(attr.mAddress);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * Write a node to the stream.
+     *
+     * @param destination the stream to write.
+     * @param infos groups to be written.
+     * @return the size written, in bytes.
+     * @throws IOException
+     */
+    private static int writeNode(final OutputStream destination, final CharGroupInfo[] infos)
+            throws IOException {
+        int size = BinaryDictInputOutput.getGroupCountSize(infos.length);
+        switch (BinaryDictInputOutput.getGroupCountSize(infos.length)) {
+            case 1:
+                destination.write((byte)infos.length);
+                break;
+            case 2:
+                destination.write((byte)(infos.length >> 8));
+                destination.write((byte)(infos.length & 0xFF));
+                break;
+            default:
+                throw new RuntimeException("Invalid group count size.");
+        }
+        for (final CharGroupInfo info : infos) size += writeCharGroup(destination, info);
+        writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
+        return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
 }
