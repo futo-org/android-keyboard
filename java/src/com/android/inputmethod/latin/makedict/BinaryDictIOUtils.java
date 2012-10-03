@@ -95,7 +95,9 @@ public final class BinaryDictIOUtils {
 
             final boolean isMovedGroup = BinaryDictInputOutput.isMovedGroup(info.mFlags,
                     formatOptions);
-            if (!isMovedGroup
+            final boolean isDeletedGroup = BinaryDictInputOutput.isDeletedGroup(info.mFlags,
+                    formatOptions);
+            if (!isMovedGroup && !isDeletedGroup
                     && info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) {// found word
                 words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
                 frequencies.put(info.mOriginalAddress, info.mFrequency);
@@ -179,10 +181,13 @@ public final class BinaryDictIOUtils {
                     final int charGroupPos = buffer.position();
                     final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
                             buffer.position(), header.mFormatOptions);
-                    if (BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
-                            header.mFormatOptions)) {
-                        continue;
-                    }
+                    final boolean isMovedGroup =
+                            BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
+                                    header.mFormatOptions);
+                    final boolean isDeletedGroup =
+                            BinaryDictInputOutput.isDeletedGroup(currentInfo.mFlags,
+                                    header.mFormatOptions);
+                    if (isMovedGroup) continue;
                     boolean same = true;
                     for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
                             p < currentInfo.mCharacters.length;
@@ -197,7 +202,8 @@ public final class BinaryDictIOUtils {
                     if (same) {
                         // found the group matches the word.
                         if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                            if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL) {
+                            if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL
+                                    || isDeletedGroup) {
                                 return FormatSpec.NOT_VALID_WORD;
                             } else {
                                 return charGroupPos;
@@ -233,6 +239,10 @@ public final class BinaryDictIOUtils {
         return FormatSpec.NOT_VALID_WORD;
     }
 
+    private static int markAsDeleted(final int flags) {
+        return (flags & (~FormatSpec.MASK_GROUP_ADDRESS_TYPE)) | FormatSpec.FLAG_IS_DELETED;
+    }
+
     /**
      * Delete the word from the binary file.
      *
@@ -250,9 +260,8 @@ public final class BinaryDictIOUtils {
 
         buffer.position(wordPosition);
         final int flags = buffer.readUnsignedByte();
-        final int newFlags = flags ^ FormatSpec.FLAG_IS_TERMINAL;
         buffer.position(wordPosition);
-        buffer.put((byte)newFlags);
+        buffer.put((byte)markAsDeleted(flags));
     }
 
     /**
@@ -302,7 +311,7 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Update a parent address in a CharGroup that is addressed by groupOriginAddress.
+     * Update a parent address in a CharGroup that is referred to by groupOriginAddress.
      *
      * @param buffer the buffer to write.
      * @param groupOriginAddress the address of the group.
@@ -380,7 +389,7 @@ public final class BinaryDictIOUtils {
         final int flags = buffer.readUnsignedByte();
         final int parentAddress = BinaryDictInputOutput.readParentAddress(buffer, formatOptions);
         skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        if ((FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
         final int childrenOffset = newChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS
                 ? FormatSpec.NO_CHILDREN_ADDRESS : newChildrenAddress - buffer.position();
         writeSInt24ToBuffer(buffer, childrenOffset);

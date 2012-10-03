@@ -63,6 +63,7 @@ public final class FormatSpec {
      *   |                              This must be the same as FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
      *   |                                   01 = yes         : FLAG_IS_MOVED
      *   |                        the new address is stored in the same place as the parent address
+     *   |   is deleted?                     10 = yes         : FLAG_IS_DELETED
      *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
      *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
@@ -190,6 +191,7 @@ public final class FormatSpec {
     static final int FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE = 0x40;
     static final int FLAG_IS_MOVED = 0x00 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
     static final int FLAG_IS_NOT_MOVED = 0x80 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
+    static final int FLAG_IS_DELETED = 0x80;
 
     static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;

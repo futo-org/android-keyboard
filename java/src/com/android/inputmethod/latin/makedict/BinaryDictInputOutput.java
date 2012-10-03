@@ -402,6 +402,14 @@ public final class BinaryDictInputOutput {
     }
 
     /**
+     * Helper method to check whether the group is deleted.
+     */
+    public static boolean isDeletedGroup(final int flags, final FormatOptions formatOptions) {
+        return formatOptions.mSupportsDynamicUpdate
+                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
+    }
+
+    /**
      * Helper method to check whether the dictionary can be updated dynamically.
      */
     public static boolean supportsDynamicUpdate(final FormatOptions options) {
