@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Legyen nagyobb billentyű lenyomásakor"</string>
     <string name="general_category" msgid="1859088467017573195">"Általános"</string>
     <string name="correction_category" msgid="2236750915056607613">"Szövegjavítás"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Kézmozdulatokkal történő gépelés"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Gépelés kézmozdulatokkal"</string>
     <string name="misc_category" msgid="6894192814868233453">"Egyéb beállítások"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Speciális beállítások"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Beállítások gyakorlott felhasználóknak"</string>

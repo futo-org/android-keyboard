@@ -48,7 +48,7 @@
     <string name="auto_cap_summary" msgid="7934452761022946874">"Posa en majúscula la primera paraula de cada frase"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionaris complementaris"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionari principal"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra els suggeriments de correcció"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggeriments de correcció"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra paraules suggerides mentre s\'escriu"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostra en mode vertical"</string>
