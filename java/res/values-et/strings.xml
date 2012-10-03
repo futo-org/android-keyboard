@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Klahvivajutusel kuva hüpik"</string>
     <string name="general_category" msgid="1859088467017573195">"Üldine"</string>
     <string name="correction_category" msgid="2236750915056607613">"Teksti parandamine"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Liigutustega tippimine"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Joonistusega sisestamine"</string>
     <string name="misc_category" msgid="6894192814868233453">"Muud valikud"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Täpsemad seaded"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Valikud ekspertidele"</string>
@@ -61,11 +61,11 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Väga agressiivne"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Järgmise sõna soovitused"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Soovituste tegemisel eelmise sõna kasutamine"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Luba liigutustega tippimine"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Luba joonistusega sisestamine"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Sõna sisestamine tähtede lohistamisega"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Näita liigutuse jälge"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dünaamiline ujuv eelvaade"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Soovitatud sõna vaatamine liigutuste kasutamise ajal"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Soovitatud sõna vaatamine joonistusega sisestamise ajal"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : salvestatud"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Mine"</string>
     <string name="label_next_key" msgid="362972844525672568">"Edasi"</string>
