@@ -60,6 +60,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
@@ -132,14 +133,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
     private SuggestionStripView mSuggestionStripView;
-    /* package for tests */ Suggest mSuggest;
+    @UsedForTesting Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
     private ApplicationInfo mTargetApplicationInfo;
 
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
-    /* package for tests */ final KeyboardSwitcher mKeyboardSwitcher;
+    @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private boolean mShouldSwitchToLastSubtype = true;
 
@@ -422,7 +423,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     // Has to be package-visible for unit tests
-    /* package for test */
+    @UsedForTesting
     void loadSettings() {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
@@ -1848,7 +1849,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // TODO: make this private
     // Outside LatinIME, only used by the test suite.
-    /* package for tests */
+    @UsedForTesting
     boolean isShowingPunctuationList() {
         if (mSuggestionStripView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionStripView.getSuggestions();
@@ -2232,7 +2233,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // TODO: Make this private
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
-    /* package for test */
+    @UsedForTesting
     void loadKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.

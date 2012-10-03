@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.android.inputmethod.annotations.VisibleForTesting;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 
@@ -64,7 +65,7 @@ public final class KeyboardTextsSet {
         loadStringResourcesInternal(context, RESOURCE_NAMES, R.string.english_ime_name);
     }
 
-    /* package for test */
+    @VisibleForTesting
     void loadStringResourcesInternal(Context context, final String[] resourceNames,
             int referenceId) {
         final Resources res = context.getResources();

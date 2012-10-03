@@ -34,6 +34,7 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -265,7 +266,7 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        // For test only
+        @UsedForTesting
         public void disableTouchPositionCorrectionDataForTest() {
             mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }

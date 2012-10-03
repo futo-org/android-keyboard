@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
@@ -23,7 +24,7 @@ import com.android.inputmethod.latin.Constants;
 import java.util.TreeMap;
 
 public final class SpellCheckerProximityInfo {
-    /* public for test */
+    @UsedForTesting
     final public static int NUL = Constants.NOT_A_CODE;
 
     // This must be the same as MAX_PROXIMITY_CHARS_SIZE else it will not work inside

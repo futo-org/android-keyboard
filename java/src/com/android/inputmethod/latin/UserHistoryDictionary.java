@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils.BigramDictionaryInterface;
@@ -75,7 +76,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
     private final SharedPreferences mPrefs;
 
     // Should always be false except when we use this class for test
-    /* package for test */ boolean isTest = false;
+    @UsedForTesting boolean isTest = false;
 
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangDictCache = CollectionUtils.newConcurrentHashMap();
@@ -390,6 +391,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         }
     }
 
+    @UsedForTesting
     void forceAddWordForTest(final String word1, final String word2, final boolean isValid) {
         mBigramListLock.lock();
         try {

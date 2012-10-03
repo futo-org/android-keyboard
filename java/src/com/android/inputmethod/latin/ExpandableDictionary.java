@@ -267,8 +267,7 @@ public class ExpandableDictionary extends Dictionary {
 
     // This reloads the dictionary if required, and returns whether it's currently updating its
     // contents or not.
-    // @VisibleForTesting
-    boolean reloadDictionaryIfRequired() {
+    private boolean reloadDictionaryIfRequired() {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
@@ -611,25 +610,6 @@ public class ExpandableDictionary extends Dictionary {
         if (prevWord != null && prevWord.mNGrams != null) {
             reverseLookUp(prevWord.mNGrams, suggestions);
         }
-    }
-
-    /**
-     * Used for testing purposes and in the spell checker
-     * This function will wait for loading from database to be done
-     */
-    void waitForDictionaryLoading() {
-        while (mUpdatingDictionary) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                //
-            }
-        }
-    }
-
-    protected final void blockingReloadDictionaryIfRequired() {
-        reloadDictionaryIfRequired();
-        waitForDictionaryLoading();
     }
 
     // Local to reverseLookUp, but do not allocate each time.

@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
@@ -167,6 +168,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
+    @UsedForTesting
     public static int getTerminalPosition(final FusionDictionaryBufferInterface buffer,
             final String word) throws IOException, UnsupportedFormatException {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
@@ -254,6 +256,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
+    @UsedForTesting
     public static void deleteWord(final FusionDictionaryBufferInterface buffer,
             final String word) throws IOException, UnsupportedFormatException {
         buffer.position(0);
@@ -706,6 +709,8 @@ public final class BinaryDictIOUtils {
      * @throws UnsupportedFormatException
      */
     // TODO: Support batch insertion.
+    // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
+    @UsedForTesting
     public static void insertWord(final FusionDictionaryBufferInterface buffer,
             final OutputStream destination, final String word, final int frequency,
             final ArrayList<WeightedString> bigramStrings,
@@ -959,6 +964,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
+    @UsedForTesting
     public static CharGroupInfo findWordFromBuffer(final FusionDictionaryBufferInterface buffer,
             final String word) throws IOException, UnsupportedFormatException {
         int position = getTerminalPosition(buffer, word);

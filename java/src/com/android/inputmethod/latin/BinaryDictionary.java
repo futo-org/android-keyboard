@@ -81,7 +81,6 @@ public final class BinaryDictionary extends Dictionary {
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
      * dictionary factory.
-     * All implementations should pass null into flagArray, except for testing purposes.
      * @param context the context to access the environment from.
      * @param filename the name of the file to read through native code.
      * @param offset the offset of the dictionary data within the file.
@@ -174,7 +173,7 @@ public final class BinaryDictionary extends Dictionary {
         return suggestions;
     }
 
-    /* package for test */ boolean isValidDictionary() {
+    public boolean isValidDictionary() {
         return mNativeDict != 0;
     }
 

@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
@@ -1651,6 +1652,7 @@ public final class BinaryDictInputOutput {
      * @param dict an optional dictionary to add words to, or null.
      * @return the created (or merged) dictionary.
      */
+    @UsedForTesting
     public static FusionDictionary readDictionaryBinary(
             final FusionDictionaryBufferInterface buffer, final FusionDictionary dict)
                     throws IOException, UnsupportedFormatException {

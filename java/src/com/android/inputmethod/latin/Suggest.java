@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -71,7 +72,8 @@ public final class Suggest {
         mLocale = locale;
     }
 
-    /* package for test */ Suggest(final Context context, final File dictionary,
+    @UsedForTesting
+    Suggest(final Context context, final File dictionary,
             final long startOffset, final long length, final Locale locale) {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);

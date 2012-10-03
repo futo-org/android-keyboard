@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 // TODO: This class is not thread-safe.
 public final class InputPointers {
     private final int mDefaultCapacity;
@@ -39,7 +41,8 @@ public final class InputPointers {
         mTimes.add(index, time);
     }
 
-    public void addPointer(int x, int y, int pointerId, int time) {
+    @UsedForTesting
+    void addPointer(int x, int y, int pointerId, int time) {
         mXCoordinates.add(x);
         mYCoordinates.add(y);
         mPointerIds.add(pointerId);
@@ -66,7 +69,8 @@ public final class InputPointers {
      * @param startPos the starting index of the pointers in {@code src}.
      * @param length the number of pointers to be appended.
      */
-    public void append(InputPointers src, int startPos, int length) {
+    @UsedForTesting
+    void append(InputPointers src, int startPos, int length) {
         if (length == 0) {
             return;
         }

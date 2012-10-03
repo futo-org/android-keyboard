@@ -41,6 +41,7 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
@@ -417,20 +418,23 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return animator;
     }
 
-    // Getter/setter methods for {@link ObjectAnimator}.
+    @ExternallyReferenced
     public int getLanguageOnSpacebarAnimAlpha() {
         return mLanguageOnSpacebarAnimAlpha;
     }
 
+    @ExternallyReferenced
     public void setLanguageOnSpacebarAnimAlpha(final int alpha) {
         mLanguageOnSpacebarAnimAlpha = alpha;
         invalidateKey(mSpaceKey);
     }
 
+    @ExternallyReferenced
     public int getAltCodeKeyWhileTypingAnimAlpha() {
         return mAltCodeKeyWhileTypingAnimAlpha;
     }
 
+    @ExternallyReferenced
     public void setAltCodeKeyWhileTypingAnimAlpha(final int alpha) {
         mAltCodeKeyWhileTypingAnimAlpha = alpha;
         updateAltCodeKeyWhileTyping();

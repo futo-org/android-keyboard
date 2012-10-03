@@ -27,6 +27,7 @@ import android.util.TypedValue;
 import android.util.Xml;
 import android.view.InflateException;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -177,7 +178,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return this;
     }
 
-    // For test only
+    @UsedForTesting
     public void disableTouchPositionCorrectionDataForTest() {
         mParams.mTouchPositionCorrection.setEnabled(false);
     }

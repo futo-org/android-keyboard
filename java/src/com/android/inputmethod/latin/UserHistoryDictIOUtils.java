@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
@@ -129,7 +130,8 @@ public final class UserHistoryDictIOUtils {
     /**
      * Constructs a new FusionDictionary from BigramDictionaryInterface.
      */
-    /* packages for test */ static FusionDictionary constructFusionDictionary(
+    @UsedForTesting
+    static FusionDictionary constructFusionDictionary(
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams) {
         final FusionDictionary fusionDict = new FusionDictionary(new Node(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
@@ -193,7 +195,8 @@ public final class UserHistoryDictIOUtils {
     /**
      * Adds all unigrams and bigrams in maps to OnAddWordListener.
      */
-    /* package for test */ static void addWordsFromWordMap(final Map<Integer, String> unigrams,
+    @UsedForTesting
+    static void addWordsFromWordMap(final Map<Integer, String> unigrams,
             final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams, final OnAddWordListener to) {
         for (Map.Entry<Integer, String> entry : unigrams.entrySet()) {

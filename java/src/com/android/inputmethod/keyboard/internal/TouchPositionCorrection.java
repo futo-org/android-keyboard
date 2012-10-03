@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.LatinImeLogger;
 
 public final class TouchPositionCorrection {
@@ -66,7 +67,7 @@ public final class TouchPositionCorrection {
         }
     }
 
-    // For test only
+    @UsedForTesting
     public void setEnabled(final boolean enabled) {
         mEnabled = enabled;
     }
