@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
     <string name="general_category" msgid="1859088467017573195">"Общие"</string>
     <string name="correction_category" msgid="2236750915056607613">"Исправление текста"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Ввод жестами"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Непрерывный ввод"</string>
     <string name="misc_category" msgid="6894192814868233453">"Другие варианты"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Расширенные настройки"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Для опытных пользователей"</string>
@@ -61,10 +61,10 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Очень активно"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Подсказка следующего слова"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Предлагать подсказки на основе предыдущего слова"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Ввод жестами"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Включить функцию"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Вводить слова, не отрывая пальца от клавиатуры"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Рисовать линию"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Динамический просмотр слов"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Показывать подсказки"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показывать предлагаемые слова при вводе текста"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: сохранено"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Поиск"</string>
