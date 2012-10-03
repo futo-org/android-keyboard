@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup vid knapptryck"</string>
     <string name="general_category" msgid="1859088467017573195">"Allmänt"</string>
     <string name="correction_category" msgid="2236750915056607613">"Textkorrigering"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Rörelsespårning på tangentbord"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Svepskrivning"</string>
     <string name="misc_category" msgid="6894192814868233453">"Andra alternativ"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Avancerade inställningar"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Alternativ för experter"</string>
@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Mycket aggressivt"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Föreslå nästa ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Ge förslag utifrån föregående ord"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Aktivera rörelsespårning på tangentbord"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Aktivera svepskrivning"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Skriv genom att dra från tecken till tecken utan att lyfta handen"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Visa spår efter rörelse"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Visa ordförslag i skrivrörelse"</string>
