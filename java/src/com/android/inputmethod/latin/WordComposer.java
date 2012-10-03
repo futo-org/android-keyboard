@@ -177,14 +177,16 @@ public final class WordComposer {
      * Internal method to retrieve reasonable proximity info for a character.
      */
     private void addKeyInfo(final int codePoint, final Keyboard keyboard) {
-        final Key key = keyboard.getKey(codePoint);
-        if (key != null) {
-            final int x = key.mX + key.mWidth / 2;
-            final int y = key.mY + key.mHeight / 2;
-            add(codePoint, x, y);
-            return;
+        final int x, y;
+        final Key key;
+        if (keyboard != null && (key = keyboard.getKey(codePoint)) != null) {
+            x = key.mX + key.mWidth / 2;
+            y = key.mY + key.mHeight / 2;
+        } else {
+            x = Constants.NOT_A_COORDINATE;
+            y = Constants.NOT_A_COORDINATE;
         }
-        add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        add(codePoint, x, y);
     }
 
     /**
@@ -195,7 +197,7 @@ public final class WordComposer {
         reset();
         final int length = word.length();
         for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
-            int codePoint = Character.codePointAt(word, i);
+            final int codePoint = Character.codePointAt(word, i);
             addKeyInfo(codePoint, keyboard);
         }
         mIsResumed = true;
