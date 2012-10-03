@@ -124,6 +124,7 @@
         <item name="keyboardTopPadding">0dp</item>
         <item name="keyboardBottomPadding">0dp</item>
         <item name="horizontalGap">0dp</item>
+        <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
         name="MoreKeysKeyboardView"
@@ -231,6 +232,7 @@
         <item name="keyboardTopPadding">0dp</item>
         <item name="keyboardBottomPadding">0dp</item>
         <item name="horizontalGap">0dp</item>
+        <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
         name="MoreKeysKeyboardView.Stone"
@@ -300,6 +302,7 @@
         <item name="keyboardTopPadding">0dp</item>
         <item name="keyboardBottomPadding">0dp</item>
         <item name="horizontalGap">0dp</item>
+        <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
         name="MoreKeysKeyboardView.Gingerbread"
@@ -355,6 +358,7 @@
         <item name="keyboardTopPadding">0dp</item>
         <item name="keyboardBottomPadding">0dp</item>
         <item name="horizontalGap">0dp</item>
+        <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
         name="MoreKeysKeyboardView.IceCreamSandwich"
