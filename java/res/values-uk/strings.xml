@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Дуже активне"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Пропозиції наступного слова"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"На основі попереднього слова"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Введення жестами"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Ввід жестами"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Введіть слово, малюючи літери, з яких воно складається"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Показувати слід жестів"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Показувати слово для жесту"</string>

@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Mycket aggressivt"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Föreslå nästa ord"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Baserat på föregående ord"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Gestinmatning"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Svepskrivning"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Skriv ett ord för hand genom att rita bokstäverna i ordet"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Visa spår efter rörelse"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Visa svävande ord för rörelse"</string>

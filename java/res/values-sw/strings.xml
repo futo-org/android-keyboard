@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Changamfu zaidi"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Mapendekezo ya neno lifuatalo"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Kulingana na neno la awali"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Ingizo la ishara"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Kuandika kwa ishara"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Ingiza neno kwa kufuatilia herufi za neno"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Onyesha njia ya ishara"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Onyesha neno la ishara"</string>

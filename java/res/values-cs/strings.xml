@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Velmi agresivní"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Návrhy dalšího slova"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Na základě předchozího slova"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Zadávání gesty"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Psaní gesty"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Napište slovo zadáním jeho písmen."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Zobrazovat stopu gesta"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Zobrazovat slovo gesta"</string>

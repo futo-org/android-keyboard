@@ -37,7 +37,7 @@
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"切換至其他輸入法"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"使語言切換鍵包含其他輸入法"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"語言切換鍵"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"可使用多種輸入語言時顯示"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"有多種輸入語言可選用時顯示切換鍵"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"關閉彈出式鍵盤的延遲時間"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"不延遲"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"預設"</string>
@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"更正範圍極大"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"下一個字詞建議"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"根據上一個字詞產生"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"手勢輸入"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"滑行輸入"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"以手指寫出字詞中字母的方式來輸入字詞"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示手勢軌跡"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"顯示手勢字詞"</string>

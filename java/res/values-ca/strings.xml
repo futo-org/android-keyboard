@@ -46,7 +46,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Majúscules automàtiques"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionaris complementaris"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionari principal"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra els suggeriments de correcció"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggeriments de correcció"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra paraules suggerides mentre s\'escriu"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostra en mode vertical"</string>
@@ -57,7 +57,7 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderada"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Molt agressiu"</string>
-    <string name="bigram_prediction" msgid="5809665643352206540">"Suggeriments de paraula següent"</string>
+    <string name="bigram_prediction" msgid="5809665643352206540">"Suggereix paraula següent"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Segons la paraula anterior"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Entrada de gestos"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Traça les lletres d\'una paraula per introduir-la"</string>

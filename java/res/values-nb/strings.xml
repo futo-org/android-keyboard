@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veldig aggressiv"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Forslag til neste ord"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Basert på det forrige ordet"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Bevegelseskommandoer"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Ordføring"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Angi et ord ved å skrive bokstavene på skjermen med fingeren"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Vis bevegelsesspor"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Vis bevegelsesord"</string>
