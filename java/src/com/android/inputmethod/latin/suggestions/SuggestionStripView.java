@@ -77,7 +77,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         OnLongClickListener {
     public interface Listener {
         public boolean addWordToUserDictionary(String word);
-        public void pickSuggestionManually(int index, CharSequence word);
+        public void pickSuggestionManually(int index, String word);
     }
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
@@ -286,7 +286,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         private CharSequence getStyledSuggestionWord(final SuggestedWords suggestedWords,
                 final int pos) {
-            final CharSequence word = suggestedWords.getWord(pos);
+            final String word = suggestedWords.getWord(pos);
             final boolean isAutoCorrect = pos == 1 && suggestedWords.willAutoCorrect();
             final boolean isTypedWordValid = pos == 0 && suggestedWords.mTypedWordValid;
             if (!isAutoCorrect && !isTypedWordValid)
@@ -338,7 +338,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 // is in slot 1.
                 if (index == mCenterSuggestionIndex
                         && AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(
-                                suggestedWords.getWord(1).toString(), suggestedWords.getWord(0))) {
+                                suggestedWords.getWord(1), suggestedWords.getWord(0))) {
                     return 0xFFFF0000;
                 }
             }
@@ -409,7 +409,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 x += word.getMeasuredWidth();
 
                 if (DBG && pos < suggestedWords.size()) {
-                    final CharSequence debugInfo = Utils.getDebugInfo(suggestedWords, pos);
+                    final String debugInfo = Utils.getDebugInfo(suggestedWords, pos);
                     if (debugInfo != null) {
                         final TextView info = mInfos.get(pos);
                         info.setText(debugInfo);
@@ -466,7 +466,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 final TextView word = mWords.get(index);
                 word.setEnabled(true);
                 word.setTextColor(mColorAutoCorrect);
-                final CharSequence text = suggestedWords.getWord(index);
+                final String text = suggestedWords.getWord(index);
                 word.setText(text);
                 word.setTextScaleX(1.0f);
                 word.setCompoundDrawables(null, null, null, null);
@@ -476,7 +476,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mMoreSuggestionsAvailable = false;
         }
 
-        public void layoutAddToDictionaryHint(final CharSequence word, final ViewGroup stripView,
+        public void layoutAddToDictionaryHint(final String word, final ViewGroup stripView,
                 final int stripWidth, final CharSequence hintText, final OnClickListener listener) {
             final int width = stripWidth - mDividerWidth - mPadding * 2;
 
@@ -690,7 +690,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 && mParams.isAddToDictionaryShowing(mSuggestionsStrip.getChildAt(0));
     }
 
-    public void showAddToDictionaryHint(final CharSequence word, final CharSequence hintText) {
+    public void showAddToDictionaryHint(final String word, final CharSequence hintText) {
         clear();
         mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth(), hintText, this);
     }
@@ -723,7 +723,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         @Override
         public boolean onCustomRequest(final int requestCode) {
             final int index = requestCode;
-            final CharSequence word = mSuggestedWords.getWord(index);
+            final String word = mSuggestedWords.getWord(index);
             mListener.pickSuggestionManually(index, word);
             dismissMoreSuggestions();
             return true;
@@ -871,7 +871,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (index >= mSuggestedWords.size())
             return;
 
-        final CharSequence word = mSuggestedWords.getWord(index);
+        final String word = mSuggestedWords.getWord(index);
         mListener.pickSuggestionManually(index, word);
     }
 

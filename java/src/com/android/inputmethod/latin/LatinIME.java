@@ -171,7 +171,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
-    private CharSequence mEnteredText;
+    private String mEnteredText;
 
     private boolean mIsAutoCorrectionIndicatorOn;
 
@@ -1093,7 +1093,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private void commitTyped(final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
-        final CharSequence typedWord = mWordComposer.getTypedWord();
+        final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
             commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
                     separatorString);
@@ -1379,7 +1379,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
-    public void onTextInput(final CharSequence rawText) {
+    public void onTextInput(final String rawText) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             commitCurrentAutoCorrection(rawText.toString());
@@ -1387,7 +1387,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
         mHandler.postUpdateSuggestionStrip();
-        final CharSequence text = specificTldProcessingOnTextInput(rawText);
+        final String text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
@@ -1558,7 +1558,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mKeyboardSwitcher.updateShiftState();
     }
 
-    private CharSequence specificTldProcessingOnTextInput(final CharSequence text) {
+    private String specificTldProcessingOnTextInput(final String text) {
         if (text.length() <= 1 || text.charAt(0) != Keyboard.CODE_PERIOD
                 || !Character.isLetter(text.charAt(1))) {
             // Not a tld: do nothing.
@@ -1571,7 +1571,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_PERIOD) {
-            return text.subSequence(1, text.length());
+            return text.substring(1);
         } else {
             return text;
         }
@@ -1831,7 +1831,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         return didAutoCorrect;
     }
 
-    private CharSequence getTextWithUnderline(final CharSequence text) {
+    private CharSequence getTextWithUnderline(final String text) {
         return mIsAutoCorrectionIndicatorOn
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(this, text)
                 : text;
@@ -1926,7 +1926,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
         // should just skip whitespace if any, so 1.
         // TODO: this is slow (2-way IPC) - we should probably cache this instead.
-        final CharSequence prevWord =
+        final String prevWord =
                 mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
@@ -1935,7 +1935,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         return maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
     }
 
-    private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
+    private SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
             final SuggestedWords suggestedWords) {
         // TODO: consolidate this into getSuggestedWords
         // We update the suggestion strip only when we have some suggestions to show, i.e. when
@@ -1965,13 +1965,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
     }
 
-    private void showSuggestionStrip(final SuggestedWords suggestedWords,
-            final CharSequence typedWord) {
+    private void showSuggestionStrip(final SuggestedWords suggestedWords, final String typedWord) {
         if (suggestedWords.isEmpty()) {
             clearSuggestionStrip();
             return;
         }
-        final CharSequence autoCorrection;
+        final String autoCorrection;
         if (suggestedWords.mWillAutoCorrect) {
             autoCorrection = suggestedWords.getWord(1);
         } else {
@@ -1989,9 +1988,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (mHandler.hasPendingUpdateSuggestions()) {
             updateSuggestionStrip();
         }
-        final CharSequence typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
+        final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
-        final CharSequence autoCorrection = (typedAutoCorrection != null)
+        final String autoCorrection = (typedAutoCorrection != null)
                 ? typedAutoCorrection : typedWord;
         if (autoCorrection != null) {
             if (TextUtils.isEmpty(typedWord)) {
@@ -2022,7 +2021,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     @Override
-    public void pickSuggestionManually(final int index, final CharSequence suggestion) {
+    public void pickSuggestionManually(final int index, final String suggestion) {
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
@@ -2107,13 +2106,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
-    private void commitChosenWord(final CharSequence chosenWord, final int commitType,
+    private void commitChosenWord(final String chosenWord, final int commitType,
             final String separatorString) {
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                 this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
         // Add the word to the user history dictionary
-        final CharSequence prevWord = addToUserHistoryDictionary(chosenWord);
+        final String prevWord = addToUserHistoryDictionary(chosenWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
@@ -2132,7 +2131,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private CharSequence addToUserHistoryDictionary(final CharSequence suggestion) {
+    private String addToUserHistoryDictionary(final String suggestion) {
         if (TextUtils.isEmpty(suggestion)) return null;
         if (mSuggest == null) return null;
 
@@ -2147,19 +2146,18 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
             if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
-                secondWord = suggestion.toString().toLowerCase(
-                        mSubtypeSwitcher.getCurrentSubtypeLocale());
+                secondWord = suggestion.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
             } else {
-                secondWord = suggestion.toString();
+                secondWord = suggestion;
             }
             // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
             // We don't add words with 0-frequency (assuming they would be profanity etc.).
             final int maxFreq = AutoCorrection.getMaxFrequency(
                     mSuggest.getUnigramDictionaries(), suggestion);
             if (maxFreq == 0) return null;
-            userHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
-                    secondWord, maxFreq > 0);
-            return prevWord;
+            final String prevWordString = (null == prevWord) ? null : prevWord.toString();
+            userHistoryDictionary.addToUserHistory(prevWordString, secondWord, maxFreq > 0);
+            return prevWordString;
         }
         return null;
     }
@@ -2184,9 +2182,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private void revertCommit() {
-        final CharSequence previousWord = mLastComposedWord.mPrevWord;
+        final String previousWord = mLastComposedWord.mPrevWord;
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
-        final CharSequence committedWord = mLastComposedWord.mCommittedWord;
+        final String committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
         final int separatorLength = LastComposedWord.getSeparatorLength(
                 mLastComposedWord.mSeparatorString);
@@ -2196,9 +2194,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (mWordComposer.isComposingWord()) {
                 throw new RuntimeException("revertCommit, but we are composing a word");
             }
-            final String wordBeforeCursor =
+            final CharSequence wordBeforeCursor =
                     mConnection.getTextBeforeCursor(deleteLength, 0)
-                            .subSequence(0, cancelLength).toString();
+                            .subSequence(0, cancelLength);
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
                 throw new RuntimeException("revertCommit check failed: we thought we were "
                         + "reverting \"" + committedWord

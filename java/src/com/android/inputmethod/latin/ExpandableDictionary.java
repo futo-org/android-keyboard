@@ -69,7 +69,7 @@ public class ExpandableDictionary extends Dictionary {
             mData = new Node[INCREMENT];
         }
 
-        void add(Node n) {
+        void add(final Node n) {
             if (mLength + 1 > mData.length) {
                 Node[] tempData = new Node[mLength + INCREMENT];
                 if (mLength > 0) {
@@ -172,7 +172,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    public void setRequiresReload(boolean reload) {
+    public void setRequiresReload(final boolean reload) {
         synchronized (mUpdatingLock) {
             mRequiresReload = reload;
         }
@@ -202,8 +202,8 @@ public class ExpandableDictionary extends Dictionary {
         addWordRec(mRoots, word, 0, shortcutTarget, frequency, null);
     }
 
-    private void addWordRec(NodeArray children, final String word, final int depth,
-            final String shortcutTarget, final int frequency, Node parentNode) {
+    private void addWordRec(final NodeArray children, final String word, final int depth,
+            final String shortcutTarget, final int frequency, final Node parentNode) {
         final int wordLength = word.length();
         if (wordLength <= depth) return;
         final char c = word.charAt(depth);
@@ -248,7 +248,7 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
         if (composer.size() > 1) {
             if (composer.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
@@ -277,7 +277,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+            final String prevWordForBigrams, final ProximityInfo proximityInfo) {
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
@@ -305,7 +305,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public synchronized boolean isValidWord(CharSequence word) {
+    public synchronized boolean isValidWord(final String word) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
@@ -320,7 +320,7 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? false : !node.mShortcutOnly;
     }
 
-    protected boolean removeBigram(String word1, String word2) {
+    protected boolean removeBigram(final String word1, final String word2) {
         // Refer to addOrSetBigram() about word1.toLowerCase()
         final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         final Node secondWord = searchWord(mRoots, word2, 0, null);
@@ -345,13 +345,13 @@ public class ExpandableDictionary extends Dictionary {
     /**
      * Returns the word's frequency or -1 if not found
      */
-    protected int getWordFrequency(CharSequence word) {
+    protected int getWordFrequency(final String word) {
         // Case-sensitive search
         final Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
     }
 
-    protected NextWord getBigramWord(String word1, String word2) {
+    protected NextWord getBigramWord(final String word1, final String word2) {
         // Refer to addOrSetBigram() about word1.toLowerCase()
         final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         final Node secondWord = searchWord(mRoots, word2, 0, null);
@@ -368,7 +368,8 @@ public class ExpandableDictionary extends Dictionary {
         return null;
     }
 
-    private static int computeSkippedWordFinalFreq(int freq, int snr, int inputLength) {
+    private static int computeSkippedWordFinalFreq(final int freq, final int snr,
+            final int inputLength) {
         // The computation itself makes sense for >= 2, but the == 2 case returns 0
         // anyway so we may as well test against 3 instead and return the constant
         if (inputLength >= 3) {
@@ -431,9 +432,9 @@ public class ExpandableDictionary extends Dictionary {
      * @param suggestions the list in which to add suggestions
      */
     // TODO: Share this routine with the native code for BinaryDictionary
-    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word,
-            final int depth, final boolean completion, int snr, int inputIndex, int skipPos,
-            final ArrayList<SuggestedWordInfo> suggestions) {
+    protected void getWordsRec(final NodeArray roots, final WordComposer codes, final char[] word,
+            final int depth, final boolean completion, final int snr, final int inputIndex,
+            final int skipPos, final ArrayList<SuggestedWordInfo> suggestions) {
         final int count = roots.mLength;
         final int codeSize = mInputLength;
         // Optimization: Prune out words that are too long compared to how much was typed.
@@ -524,11 +525,13 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    public int setBigramAndGetFrequency(String word1, String word2, int frequency) {
+    public int setBigramAndGetFrequency(final String word1, final String word2,
+            final int frequency) {
         return setBigramAndGetFrequency(word1, word2, frequency, null /* unused */);
     }
 
-    public int setBigramAndGetFrequency(String word1, String word2, ForgettingCurveParams fcp) {
+    public int setBigramAndGetFrequency(final String word1, final String word2,
+            final ForgettingCurveParams fcp) {
         return setBigramAndGetFrequency(word1, word2, 0 /* unused */, fcp);
     }
 
@@ -540,8 +543,8 @@ public class ExpandableDictionary extends Dictionary {
      * @param fcp an instance of ForgettingCurveParams to use for decay policy
      * @return returns the final bigram frequency
      */
-    private int setBigramAndGetFrequency(
-            String word1, String word2, int frequency, ForgettingCurveParams fcp) {
+    private int setBigramAndGetFrequency(final String word1, final String word2,
+            final int frequency, final ForgettingCurveParams fcp) {
         // We don't want results to be different according to case of the looked up left hand side
         // word. We do want however to return the correct case for the right hand side.
         // So we want to squash the case of the left hand side, and preserve that of the right
@@ -572,7 +575,8 @@ public class ExpandableDictionary extends Dictionary {
      * Searches for the word and add the word if it does not exist.
      * @return Returns the terminal node of the word we are searching for.
      */
-    private Node searchWord(NodeArray children, String word, int depth, Node parentNode) {
+    private Node searchWord(final NodeArray children, final String word, final int depth,
+            final Node parentNode) {
         final int wordLength = word.length();
         final char c = word.charAt(depth);
         // Does children have the current character?
@@ -602,11 +606,11 @@ public class ExpandableDictionary extends Dictionary {
         return searchWord(childNode.mChildren, word, depth + 1, childNode);
     }
 
-    private void runBigramReverseLookUp(final CharSequence previousWord,
+    private void runBigramReverseLookUp(final String previousWord,
             final ArrayList<SuggestedWordInfo> suggestions) {
         // Search for the lowercase version of the word only, because that's where bigrams
         // store their sons.
-        Node prevWord = searchNode(mRoots, previousWord.toString().toLowerCase(), 0,
+        final Node prevWord = searchNode(mRoots, previousWord.toLowerCase(), 0,
                 previousWord.length());
         if (prevWord != null && prevWord.mNGrams != null) {
             reverseLookUp(prevWord.mNGrams, suggestions);
@@ -641,7 +645,7 @@ public class ExpandableDictionary extends Dictionary {
      * @param terminalNodes list of terminal nodes we want to add
      * @param suggestions the suggestion collection to add the word to
      */
-    private void reverseLookUp(LinkedList<NextWord> terminalNodes,
+    private void reverseLookUp(final LinkedList<NextWord> terminalNodes,
             final ArrayList<SuggestedWordInfo> suggestions) {
         Node node;
         int freq;
@@ -714,7 +718,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    private static char toLowerCase(char c) {
+    private static char toLowerCase(final char c) {
         char baseChar = c;
         if (c < BASE_CHARS.length) {
             baseChar = BASE_CHARS[c];

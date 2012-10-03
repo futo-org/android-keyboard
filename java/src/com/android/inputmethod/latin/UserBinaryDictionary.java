@@ -200,7 +200,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         mContext.startActivity(intent);
     }
 
-    private void addWords(Cursor cursor) {
+    private void addWords(final Cursor cursor) {
         // 16 is JellyBean, but we want this to compile against ICS.
         final boolean hasShortcutColumn = android.os.Build.VERSION.SDK_INT >= 16;
         clearFusionDictionary();

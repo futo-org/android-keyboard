@@ -62,7 +62,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private final boolean mUseFirstLastBigrams;
 
-    public ContactsBinaryDictionary(final Context context, Locale locale) {
+    public ContactsBinaryDictionary(final Context context, final Locale locale) {
         super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
@@ -120,7 +120,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    private boolean useFirstLastBigramsForLocale(Locale locale) {
+    private boolean useFirstLastBigramsForLocale(final Locale locale) {
         // TODO: Add firstname/lastname bigram rules for other languages.
         if (locale != null && locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
             return true;
@@ -128,7 +128,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return false;
     }
 
-    private void addWords(Cursor cursor) {
+    private void addWords(final Cursor cursor) {
         clearFusionDictionary();
         int count = 0;
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
@@ -160,7 +160,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      * Adds the words in a name (e.g., firstname/lastname) to the binary dictionary along with their
      * bigrams depending on locale.
      */
-    private void addName(String name) {
+    private void addName(final String name) {
         int len = StringUtils.codePointCount(name);
         String prevWord = null;
         // TODO: Better tokenization for non-Latin writing systems
@@ -188,7 +188,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Returns the index of the last letter in the word, starting from position startIndex.
      */
-    private static int getWordEndPosition(String string, int len, int startIndex) {
+    private static int getWordEndPosition(final String string, final int len,
+            final int startIndex) {
         int end;
         int cp = 0;
         for (end = startIndex + 1; end < len; end += Character.charCount(cp)) {
@@ -249,7 +250,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return false;
     }
 
-    private static boolean isValidName(String name) {
+    private static boolean isValidName(final String name) {
         if (name != null && -1 == name.indexOf('@')) {
             return true;
         }
@@ -259,7 +260,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Checks if the words in a name are in the current binary dictionary.
      */
-    private boolean isNameInDictionary(String name) {
+    private boolean isNameInDictionary(final String name) {
         int len = StringUtils.codePointCount(name);
         String prevWord = null;
         for (int i = 0; i < len; i++) {

@@ -38,7 +38,7 @@ public final class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
     // Session id for
-    // {@link #getSuggestedWords(WordComposer,CharSequence,ProximityInfo,boolean,int)}.
+    // {@link #getSuggestedWords(WordComposer,String,ProximityInfo,boolean,int)}.
     public static final int SESSION_TYPING = 0;
     public static final int SESSION_GESTURE = 1;
 
@@ -138,7 +138,7 @@ public final class Suggest {
      * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
-    public void setUserDictionary(UserBinaryDictionary userDictionary) {
+    public void setUserDictionary(final UserBinaryDictionary userDictionary) {
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER, userDictionary);
     }
 
@@ -147,12 +147,12 @@ public final class Suggest {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    public void setContactsDictionary(ContactsBinaryDictionary contactsDictionary) {
+    public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
-    public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
+    public void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
     }
 
@@ -160,9 +160,9 @@ public final class Suggest {
         mAutoCorrectionThreshold = threshold;
     }
 
-    public SuggestedWords getSuggestedWords(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled, int sessionId) {
+    public SuggestedWords getSuggestedWords(final WordComposer wordComposer,
+            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final boolean isCorrectionEnabled, final int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
             return getSuggestedWordsForBatchInput(
@@ -174,9 +174,9 @@ public final class Suggest {
     }
 
     // Retrieves suggestions for the typing input.
-    private SuggestedWords getSuggestedWordsForTypingInput(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+    private SuggestedWords getSuggestedWordsForTypingInput(final WordComposer wordComposer,
+            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final boolean isCorrectionEnabled) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -203,7 +203,7 @@ public final class Suggest {
                     wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
-        final CharSequence whitelistedWord;
+        final String whitelistedWord;
         if (suggestionsSet.isEmpty()) {
             whitelistedWord = null;
         } else if (SuggestedWordInfo.KIND_WHITELIST != suggestionsSet.first().mKind) {
@@ -287,9 +287,9 @@ public final class Suggest {
     }
 
     // Retrieves suggestions for the batch input.
-    private SuggestedWords getSuggestedWordsForBatchInput(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, int sessionId) {
+    private SuggestedWords getSuggestedWordsForBatchInput(final WordComposer wordComposer,
+            final String prevWordForBigram, final ProximityInfo proximityInfo,
+            final int sessionId) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
@@ -307,7 +307,7 @@ public final class Suggest {
         }
 
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
-            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(), wordInfo.mSourceDict);
+            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict);
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
@@ -372,7 +372,7 @@ public final class Suggest {
             if (o1.mScore < o2.mScore) return 1;
             if (o1.mCodePointCount < o2.mCodePointCount) return -1;
             if (o1.mCodePointCount > o2.mCodePointCount) return 1;
-            return o1.mWord.toString().compareTo(o2.mWord.toString());
+            return o1.mWord.compareTo(o2.mWord);
         }
     }
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
@@ -383,16 +383,17 @@ public final class Suggest {
             final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
         final StringBuilder sb = new StringBuilder(wordInfo.mWord.length());
         if (isAllUpperCase) {
-            sb.append(wordInfo.mWord.toString().toUpperCase(locale));
+            sb.append(wordInfo.mWord.toUpperCase(locale));
         } else if (isFirstCharCapitalized) {
-            sb.append(StringUtils.toTitleCase(wordInfo.mWord.toString(), locale));
+            sb.append(StringUtils.toTitleCase(wordInfo.mWord, locale));
         } else {
             sb.append(wordInfo.mWord);
         }
         for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb, wordInfo.mScore, wordInfo.mKind, wordInfo.mSourceDict);
+        return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
+                wordInfo.mSourceDict);
     }
 
     public void close() {

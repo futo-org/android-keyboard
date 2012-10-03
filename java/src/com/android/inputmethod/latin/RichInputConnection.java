@@ -398,7 +398,7 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public CharSequence getNthPreviousWord(final String sentenceSeperators, final int n) {
+    public String getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -466,19 +466,22 @@ public final class RichInputConnection {
     // (n = 2) "abc|" -> null
     // (n = 2) "abc |" -> null
     // (n = 2) "abc. def|" -> null
-    public static CharSequence getNthPreviousWord(final CharSequence prev,
+    public static String getNthPreviousWord(final CharSequence prev,
             final String sentenceSeperators, final int n) {
         if (prev == null) return null;
-        String[] w = spaceRegex.split(prev);
+        final String[] w = spaceRegex.split(prev);
 
         // If we can't find n words, or we found an empty word, return null.
-        if (w.length < n || w[w.length - n].length() <= 0) return null;
+        if (w.length < n) return null;
+        final String nthPrevWord = w[w.length - n];
+        final int length = nthPrevWord.length();
+        if (length <= 0) return null;
 
         // If ends in a separator, return null
-        char lastChar = w[w.length - n].charAt(w[w.length - n].length() - 1);
+        final char lastChar = nthPrevWord.charAt(length - 1);
         if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
 
-        return w[w.length - n];
+        return nthPrevWord;
     }
 
     /**
@@ -511,19 +514,20 @@ public final class RichInputConnection {
      *   be included in the returned range
      * @return a range containing the text surrounding the cursor
      */
-    public Range getWordRangeAtCursor(String sep, int additionalPrecedingWordsCount) {
+    public Range getWordRangeAtCursor(final String sep, final int additionalPrecedingWordsCount) {
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null || sep == null) {
             return null;
         }
-        CharSequence before = mIC.getTextBeforeCursor(1000, 0);
-        CharSequence after = mIC.getTextAfterCursor(1000, 0);
+        final CharSequence before = mIC.getTextBeforeCursor(1000, 0);
+        final CharSequence after = mIC.getTextAfterCursor(1000, 0);
         if (before == null || after == null) {
             return null;
         }
 
         // Going backward, alternate skipping non-separators and separators until enough words
         // have been read.
+        int count = additionalPrecedingWordsCount;
         int start = before.length();
         boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
         while (true) { // see comments below for why this is guaranteed to halt
@@ -540,7 +544,7 @@ public final class RichInputConnection {
             // isStoppingAtWhitespace is true every other time through the loop,
             // so additionalPrecedingWordsCount is guaranteed to become < 0, which
             // guarantees outer loop termination
-            if (isStoppingAtWhitespace && (--additionalPrecedingWordsCount < 0)) {
+            if (isStoppingAtWhitespace && (--count < 0)) {
                 break;  // outer loop
             }
             isStoppingAtWhitespace = !isStoppingAtWhitespace;
@@ -558,7 +562,7 @@ public final class RichInputConnection {
             }
         }
 
-        int cursor = getCursorPosition();
+        final int cursor = getCursorPosition();
         if (start >= 0 && cursor + end <= after.length() + before.length()) {
             String word = before.toString().substring(start, before.length())
                     + after.toString().substring(0, end);
@@ -569,8 +573,8 @@ public final class RichInputConnection {
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
-        CharSequence before = getTextBeforeCursor(1, 0);
-        CharSequence after = getTextAfterCursor(1, 0);
+        final CharSequence before = getTextBeforeCursor(1, 0);
+        final CharSequence after = getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(before) && !settingsValues.isWordSeparator(before.charAt(0))
                 && !settingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
             return true;

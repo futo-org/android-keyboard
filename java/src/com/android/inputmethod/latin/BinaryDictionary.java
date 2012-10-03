@@ -64,7 +64,7 @@ public final class BinaryDictionary extends Dictionary {
 
     // TODO: There should be a way to remove used DicTraverseSession objects from
     // {@code mDicTraverseSessions}.
-    private DicTraverseSession getTraverseSession(int traverseSessionId) {
+    private DicTraverseSession getTraverseSession(final int traverseSessionId) {
         synchronized(mDicTraverseSessions) {
             DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
             if (traverseSession == null) {
@@ -116,26 +116,27 @@ public final class BinaryDictionary extends Dictionary {
     private static native int editDistanceNative(char[] before, char[] after);
 
     // TODO: Move native dict into session
-    private final void loadDictionary(String path, long startOffset, long length) {
+    private final void loadDictionary(final String path, final long startOffset,
+            final long length) {
         mNativeDict = openNative(path, startOffset, length, FULL_WORD_SCORE_MULTIPLIER,
                 MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
     }
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo) {
         return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, 0);
     }
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
+            final String prevWord, final ProximityInfo proximityInfo, int sessionId) {
         if (!isValidDictionary()) return null;
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
-                ? null : StringUtils.toCodePointArray(prevWord.toString());
+                ? null : StringUtils.toCodePointArray(prevWord);
         final int composerSize = composer.size();
 
         final boolean isGesture = composer.isBatchMode();
@@ -178,11 +179,12 @@ public final class BinaryDictionary extends Dictionary {
         return mNativeDict != 0;
     }
 
-    public static float calcNormalizedScore(String before, String after, int score) {
+    public static float calcNormalizedScore(final String before, final String after,
+            final int score) {
         return calcNormalizedScoreNative(before.toCharArray(), after.toCharArray(), score);
     }
 
-    public static int editDistance(String before, String after) {
+    public static int editDistance(final String before, final String after) {
         if (before == null || after == null) {
             throw new IllegalArgumentException();
         }
@@ -190,23 +192,23 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(CharSequence word) {
+    public boolean isValidWord(final String word) {
         return getFrequency(word) >= 0;
     }
 
     @Override
-    public int getFrequency(CharSequence word) {
+    public int getFrequency(final String word) {
         if (word == null) return -1;
-        int[] codePoints = StringUtils.toCodePointArray(word.toString());
+        int[] codePoints = StringUtils.toCodePointArray(word);
         return getFrequencyNative(mNativeDict, codePoints);
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
     // calls when checking for changes in an entire dictionary.
-    public boolean isValidBigram(CharSequence word1, CharSequence word2) {
+    public boolean isValidBigram(final String word1, final String word2) {
         if (TextUtils.isEmpty(word1) || TextUtils.isEmpty(word2)) return false;
-        int[] chars1 = StringUtils.toCodePointArray(word1.toString());
-        int[] chars2 = StringUtils.toCodePointArray(word2.toString());
+        final int[] chars1 = StringUtils.toCodePointArray(word1);
+        final int[] chars2 = StringUtils.toCodePointArray(word2);
         return isValidBigramNative(mNativeDict, chars1, chars2);
     }
 

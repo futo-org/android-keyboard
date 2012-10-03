@@ -90,11 +90,14 @@ public final class SuggestedWords {
     public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = CollectionUtils.newArrayList();
-        for (CompletionInfo info : infos) {
-            if (null != info && info.getText() != null) {
-                result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE,
-                        SuggestedWordInfo.KIND_APP_DEFINED, Dictionary.TYPE_APPLICATION_DEFINED));
-            }
+        for (final CompletionInfo info : infos) {
+            if (info == null) continue;
+            final CharSequence text = info.getText();
+            if (null == text) continue;
+            final SuggestedWordInfo suggestedWordInfo = new SuggestedWordInfo(text.toString(),
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_APP_DEFINED,
+                    Dictionary.TYPE_APPLICATION_DEFINED);
+            result.add(suggestedWordInfo);
         }
         return result;
     }
@@ -102,7 +105,7 @@ public final class SuggestedWords {
     // Should get rid of the first one (what the user typed previously) from suggestions
     // and replace it with what the user currently typed.
     public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
-            final CharSequence typedWord, final SuggestedWords previousSuggestions) {
+            final String typedWord, final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = CollectionUtils.newArrayList();
         final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
@@ -111,7 +114,7 @@ public final class SuggestedWords {
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
             final SuggestedWordInfo prevWordInfo = previousSuggestions.getWordInfo(pos);
-            final String prevWord = prevWordInfo.mWord.toString();
+            final String prevWord = prevWordInfo.mWord;
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
                 suggestionsList.add(prevWordInfo);
@@ -139,9 +142,9 @@ public final class SuggestedWords {
         public final String mSourceDict;
         private String mDebugString = "";
 
-        public SuggestedWordInfo(final CharSequence word, final int score, final int kind,
+        public SuggestedWordInfo(final String word, final int score, final int kind,
                 final String sourceDict) {
-            mWord = word.toString();
+            mWord = word;
             mScore = score;
             mKind = kind;
             mSourceDict = sourceDict;
@@ -149,7 +152,7 @@ public final class SuggestedWords {
         }
 
 
-        public void setDebugString(String str) {
+        public void setDebugString(final String str) {
             if (null == str) throw new NullPointerException("Debug info is null");
             mDebugString = str;
         }
@@ -171,7 +174,7 @@ public final class SuggestedWords {
             if (TextUtils.isEmpty(mDebugString)) {
                 return mWord;
             } else {
-                return mWord + " (" + mDebugString.toString() + ")";
+                return mWord + " (" + mDebugString + ")";
             }
         }
 

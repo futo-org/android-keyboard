@@ -83,14 +83,13 @@ public final class SuggestionSpanUtils {
     }
 
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
-            Context context, CharSequence text) {
+            final Context context, final String text) {
         if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null
                 || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null
                 || OBJ_FLAG_MISSPELLED == null || OBJ_FLAG_EASY_CORRECT == null) {
             return text;
         }
-        final Spannable spannable = text instanceof Spannable
-                ? (Spannable) text : new SpannableString(text);
+        final Spannable spannable = new SpannableString(text);
         final Object[] args =
                 { context, null, new String[] {}, (int)OBJ_FLAG_AUTO_CORRECTION,
                         (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
@@ -104,8 +103,9 @@ public final class SuggestionSpanUtils {
         return spannable;
     }
 
-    public static CharSequence getTextWithSuggestionSpan(Context context,
-            CharSequence pickedWord, SuggestedWords suggestedWords, boolean dictionaryAvailable) {
+    public static CharSequence getTextWithSuggestionSpan(final Context context,
+            final String pickedWord, final SuggestedWords suggestedWords,
+            final boolean dictionaryAvailable) {
         if (!dictionaryAvailable || TextUtils.isEmpty(pickedWord)
                 || CONSTRUCTOR_SuggestionSpan == null
                 || suggestedWords.isEmpty() || suggestedWords.mIsPrediction
@@ -114,18 +114,13 @@ public final class SuggestionSpanUtils {
             return pickedWord;
         }
 
-        final Spannable spannable;
-        if (pickedWord instanceof Spannable) {
-            spannable = (Spannable) pickedWord;
-        } else {
-            spannable = new SpannableString(pickedWord);
-        }
+        final Spannable spannable = new SpannableString(pickedWord);
         final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= OBJ_SUGGESTIONS_MAX_SIZE) {
                 break;
             }
-            final CharSequence word = suggestedWords.getWord(i);
+            final String word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
             }

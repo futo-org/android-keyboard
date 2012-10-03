@@ -212,7 +212,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             }
         }
 
-        private final ArrayList<CharSequence> mSuggestions;
+        private final ArrayList<String> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;
         private final float mSuggestionThreshold;
@@ -335,7 +335,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
 
                 final int bestScore = mScores[mLength - 1];
-                final CharSequence bestSuggestion = mSuggestions.get(0);
+                final String bestSuggestion = mSuggestions.get(0);
                 final float normalizedScore =
                         BinaryDictionary.calcNormalizedScore(
                                 mOriginalText, bestSuggestion.toString(), bestScore);

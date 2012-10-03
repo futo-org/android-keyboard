@@ -56,7 +56,7 @@ public final class DictionaryCollection extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
         if (dictionaries.isEmpty()) return null;
         // To avoid creating unnecessary objects, we get the list out of the first
@@ -74,14 +74,14 @@ public final class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(CharSequence word) {
+    public boolean isValidWord(final String word) {
         for (int i = mDictionaries.size() - 1; i >= 0; --i)
             if (mDictionaries.get(i).isValidWord(word)) return true;
         return false;
     }
 
     @Override
-    public int getFrequency(CharSequence word) {
+    public int getFrequency(final String word) {
         int maxFreq = -1;
         for (int i = mDictionaries.size() - 1; i >= 0; --i) {
             final int tempFreq = mDictionaries.get(i).getFrequency(word);
