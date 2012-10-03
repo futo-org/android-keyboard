@@ -1209,7 +1209,7 @@ public final class BinaryDictInputOutput {
         }
     }
 
-    private static int readChildrenAddress(final FusionDictionaryBufferInterface buffer,
+    static int readChildrenAddress(final FusionDictionaryBufferInterface buffer,
             final int optionFlags, final FormatOptions options) {
         if (options.mSupportsDynamicUpdate) {
             final int address = buffer.readUnsignedInt24();

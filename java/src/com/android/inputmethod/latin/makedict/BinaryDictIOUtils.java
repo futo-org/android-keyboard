@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -172,10 +171,7 @@ public final class BinaryDictIOUtils {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
-                int groupOffset = buffer.position() - header.mHeaderSize;
                 final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
-                groupOffset += BinaryDictInputOutput.getGroupCountSize(charGroupCount);
-
                 boolean foundNextCharGroup = false;
                 for (int i = 0; i < charGroupCount; ++i) {
                     final int charGroupPos = buffer.position();
@@ -217,7 +213,6 @@ public final class BinaryDictIOUtils {
                         buffer.position(currentInfo.mChildrenAddress);
                         break;
                     }
-                    groupOffset = currentInfo.mEndAddress;
                 }
 
                 // If we found the next char group, it is under the file pointer.
@@ -327,8 +322,79 @@ public final class BinaryDictIOUtils {
             throw new RuntimeException("this file format does not support parent addresses");
         }
         final int flags = buffer.readUnsignedByte();
+        if (BinaryDictInputOutput.isMovedGroup(flags, formatOptions)) {
+            // if the group is moved, the parent address is stored in the destination group.
+            // We are guaranteed to process the destination group later, so there is no need to
+            // update anything here.
+            buffer.position(originalPosition);
+            return;
+        }
+        if (DBG) {
+            MakedictLog.d("update parent address flags=" + flags + ", " + groupOriginAddress);
+        }
         final int parentOffset = newParentAddress - groupOriginAddress;
         writeSInt24ToBuffer(buffer, parentOffset);
+        buffer.position(originalPosition);
+    }
+
+    private static void skipCharGroup(final FusionDictionaryBufferInterface buffer,
+            final FormatOptions formatOptions) {
+        final int flags = buffer.readUnsignedByte();
+        BinaryDictInputOutput.readParentAddress(buffer, formatOptions);
+        skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        BinaryDictInputOutput.readChildrenAddress(buffer, flags, formatOptions);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
+        if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
+            final int shortcutsSize = buffer.readUnsignedShort();
+            buffer.position(buffer.position() + shortcutsSize
+                    - FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE);
+        }
+        if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
+            int bigramCount = 0;
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+                final int bigramFlags = buffer.readUnsignedByte();
+                switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
+                        buffer.readUnsignedByte();
+                        break;
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
+                        buffer.readUnsignedShort();
+                        break;
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
+                        buffer.readUnsignedInt24();
+                        break;
+                }
+                if ((bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT) == 0) break;
+            }
+            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+                throw new RuntimeException("Too many bigrams in a group.");
+            }
+        }
+    }
+
+    /**
+     * Update parent addresses in a Node that is referred to by nodeOriginAddress.
+     *
+     * @param buffer the buffer to be modified.
+     * @param nodeOriginAddress the address of a modified Node.
+     * @param newParentAddress the address to be written
+     * @param formatOptions file format options
+     */
+    public static void updateParentAddresses(final FusionDictionaryBufferInterface buffer,
+            final int nodeOriginAddress, final int newParentAddress,
+            final FormatOptions formatOptions) {
+        final int originalPosition = buffer.position();
+        buffer.position(nodeOriginAddress);
+        do {
+            final int count = BinaryDictInputOutput.readCharGroupCount(buffer);
+            for (int i = 0; i < count; ++i) {
+                updateParentAddress(buffer, buffer.position(), newParentAddress, formatOptions);
+                skipCharGroup(buffer, formatOptions);
+            }
+            final int forwardLinkAddress = buffer.readUnsignedInt24();
+            buffer.position(forwardLinkAddress);
+        } while (formatOptions.mSupportsDynamicUpdate
+                && buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
         buffer.position(originalPosition);
     }
 
