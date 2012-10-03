@@ -1297,7 +1297,8 @@ public final class BinaryDictInputOutput {
         ArrayList<PendingAttribute> bigrams = null;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            while (true) {
+            int bigramCount = 0;
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
                 final int bigramFlags = buffer.readUnsignedByte();
                 ++addressPointer;
                 final int sign = 0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE)
@@ -1324,6 +1325,9 @@ public final class BinaryDictInputOutput {
                 bigrams.add(new PendingAttribute(bigramFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY,
                         bigramAddress));
                 if (0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
+            }
+            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+                MakedictLog.d("too many bigrams in a group.");
             }
         }
         return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,

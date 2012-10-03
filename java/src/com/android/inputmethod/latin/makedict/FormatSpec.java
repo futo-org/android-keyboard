@@ -216,6 +216,7 @@ public final class FormatSpec {
 
     static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
     static final int MAX_CHARGROUPS_IN_A_NODE = 0x7FFF; // 32767
+    static final int MAX_BIGRAMS_IN_A_GROUP = 10000;
 
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
