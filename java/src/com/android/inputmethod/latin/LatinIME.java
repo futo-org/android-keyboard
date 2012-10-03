@@ -1518,8 +1518,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
-        final String batchInputText = (suggestedWords.size() > 0)
-                ? suggestedWords.getWord(0) : null;
+        final String batchInputText = suggestedWords.isEmpty()
+                ? null : suggestedWords.getWord(0);
         final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         mainKeyboardView.showGestureFloatingPreviewText(batchInputText);
         showSuggestionStrip(suggestedWords, null);
@@ -1537,8 +1537,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void onEndBatchInput(final InputPointers batchPointers) {
         final SuggestedWords suggestedWords = BatchInputUpdater.getInstance().onEndBatchInput(
                 batchPointers, this);
-        final String batchInputText = (suggestedWords.size() > 0)
-                ? suggestedWords.getWord(0) : null;
+        final String batchInputText = suggestedWords.isEmpty()
+                ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {
             return;
         }
@@ -1963,19 +1963,15 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private void showSuggestionStrip(final SuggestedWords suggestedWords,
             final CharSequence typedWord) {
-        if (null == suggestedWords || suggestedWords.size() <= 0) {
+        if (suggestedWords.isEmpty()) {
             clearSuggestionStrip();
             return;
         }
         final CharSequence autoCorrection;
-        if (suggestedWords.size() > 0) {
-            if (suggestedWords.mWillAutoCorrect) {
-                autoCorrection = suggestedWords.getWord(1);
-            } else {
-                autoCorrection = typedWord;
-            }
+        if (suggestedWords.mWillAutoCorrect) {
+            autoCorrection = suggestedWords.getWord(1);
         } else {
-            autoCorrection = null;
+            autoCorrection = typedWord;
         }
         mWordComposer.setAutoCorrection(autoCorrection);
         final boolean isAutoCorrection = suggestedWords.willAutoCorrect();

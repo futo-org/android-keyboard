@@ -672,9 +672,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords) {
-        if (suggestedWords == null)
-            return;
-
         clear();
         mSuggestedWords = suggestedWords;
         mParams.layout(mSuggestedWords, mSuggestionsStrip, this, getWidth());

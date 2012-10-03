@@ -53,6 +53,10 @@ public final class SuggestedWords {
         mIsPrediction = isPrediction;
     }
 
+    public boolean isEmpty() {
+        return mSuggestedWordInfoList.isEmpty();
+    }
+
     public int size() {
         return mSuggestedWordInfoList.size();
     }
