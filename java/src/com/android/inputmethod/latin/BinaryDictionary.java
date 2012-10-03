@@ -187,6 +187,9 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     public static int editDistance(String before, String after) {
+        if (before == null || after == null) {
+            throw new IllegalArgumentException();
+        }
         return editDistanceNative(before.toCharArray(), after.toCharArray());
     }
 
