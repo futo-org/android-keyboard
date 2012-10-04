@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup sa keypress"</string>
     <string name="general_category" msgid="1859088467017573195">"Pangkalahatan"</string>
     <string name="correction_category" msgid="2236750915056607613">"Pagwawasto ng teksto"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Pag-type gamit ang galaw"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Gesture na pag-type"</string>
     <string name="misc_category" msgid="6894192814868233453">"Iba pang mga pagpipilian"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Mga advanced na setting"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Mga pagpipilian para sa mga dalubhasa"</string>
@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Napaka-agresibo"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Mga suhestiyon sa susunod na salita"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Gamitin ang nakaraang salita sa paggawa ng mga suhestiyon"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Paganahin pag-type gamit galaw"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Paganahin ang gesture na pag-type"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Mag-input ng salita sa pamamagitan ng pag-slide sa mga titik"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Ipakita ang trail ng galaw"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamic na floating preview"</string>
