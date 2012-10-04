@@ -200,6 +200,7 @@ public final class BinaryDictionaryFileDumper {
                 outputStream.flush();
                 outputStream.close();
                 final File finalFile = new File(finalFileName);
+                finalFile.delete();
                 if (!outputFile.renameTo(finalFile)) {
                     throw new IOException("Can't move the file to its final name");
                 }
