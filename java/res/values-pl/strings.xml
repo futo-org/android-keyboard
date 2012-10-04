@@ -91,7 +91,7 @@
     <string name="spoken_description_settings" msgid="4627462689603838099">"Ustawienia"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Spacja"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Wprowadzanie głosowe"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Rozpoznawanie mowy"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Uśmiechnięta buźka"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Szukaj"</string>
@@ -112,7 +112,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Wyłącz"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon na klawiaturze głównej"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon na klawiaturze z symbolami"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Wprowadzanie głosowe jest wyłączone"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Rozpoznawanie mowy jest wyłączone"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguruj metody wprowadzania"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Języki wprowadzania"</string>
     <string name="select_language" msgid="3693815588777926848">"Języki wprowadzania"</string>
