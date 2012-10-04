@@ -65,7 +65,7 @@
     <string name="gesture_input_summary" msgid="9180350639305731231">"Nhập từ bằng cách trượt qua các chữ cái"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Hiển thị vệt cử chỉ"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Xem trước nổi động"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Xem từ được đề xuất trong khi tạo cử chỉ"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Xem từ được đề xuất trong khi dùng cử chỉ"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Đã lưu"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Tìm"</string>
     <string name="label_next_key" msgid="362972844525672568">"Tiếp theo"</string>

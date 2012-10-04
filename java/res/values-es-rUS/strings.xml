@@ -51,7 +51,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugerencias de correcciones"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostrar palabras sugeridas al escribir"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar siempre"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar en modo retrato"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar en modo de retrato"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Corrección automática"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y las teclas de puntuación insertan automáticamente la palabra corregida"</string>
@@ -62,7 +62,7 @@
     <string name="bigram_prediction" msgid="1084449187723948550">"Sugerencias para la palabra siguiente"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usa la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Habilitar escritura gestual"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"Introduce una palabra al deslizarte sobre las letras"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra al deslizarte sobre las letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Vista previa dinámica flotante"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Mira la palabra sugerida mientras haces gestos"</string>

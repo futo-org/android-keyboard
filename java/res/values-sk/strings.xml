@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Zobraziť znaky pri stlačení klávesu"</string>
     <string name="general_category" msgid="1859088467017573195">"Všeobecné"</string>
     <string name="correction_category" msgid="2236750915056607613">"Oprava textu"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Písanie gestami"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Písanie gest"</string>
     <string name="misc_category" msgid="6894192814868233453">"Ďalšie možnosti"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Rozšírené nastavenia"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Možnosti pre odborníkov"</string>
@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veľmi agresívne"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Návrhy ďalšieho slova"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Návrhy podľa predchádzajúceho slova"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Povoliť písanie gestami"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Povoliť písanie gest"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Vkladanie slov prejdením prstom po písmenách"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Zobrazovať stopu gesta"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynamická plávajúca ukážka"</string>
