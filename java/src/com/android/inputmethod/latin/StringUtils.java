@@ -250,15 +250,19 @@ public final class StringUtils {
 
         // Step 3 : Search for the start of a paragraph. From the starting point computed in step 2,
         // we go back over any space or tab char sitting there. We find the start of a paragraph
-        // if the first char that's not a space or tab is a start of line (as in, either \n or
-        // start of text).
+        // if the first char that's not a space or tab is a start of line (as in \n, start of text,
+        // or some other similar characters).
         int j = i;
+        char prevChar = Keyboard.CODE_SPACE;
         if (hasSpaceBefore) --j;
-        while (j > 0 && Character.isWhitespace(cs.charAt(j - 1))) {
+        while (j > 0) {
+            prevChar = cs.charAt(j - 1);
+            if (!Character.isSpaceChar(prevChar) && prevChar != Keyboard.CODE_TAB) break;
             j--;
         }
-        if (j == 0) {
-            // There is only whitespace between the start of the text and the cursor. Both
+        if (j <= 0 || Character.isWhitespace(prevChar)) {
+            // There are only spacing chars between the start of the paragraph and the cursor,
+            // defined as a isWhitespace() char that is neither a isSpaceChar() nor a tab. Both
             // MODE_WORDS and MODE_SENTENCES should be active.
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
                     | TextUtils.CAP_MODE_SENTENCES) & reqModes;

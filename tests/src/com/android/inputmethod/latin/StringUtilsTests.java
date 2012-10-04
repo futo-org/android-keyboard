@@ -140,6 +140,14 @@ public class StringUtilsTests extends AndroidTestCase {
         allPathsForCaps("Word", c | w, l, true);
         allPathsForCaps("Word.", c | w | s, l, true);
 
+        // Tests after some whitespace
+        allPathsForCaps("Word\n", c | w | s, l, false);
+        allPathsForCaps("Word\n", c | w | s, l, true);
+        allPathsForCaps("Word\n ", c | w | s, l, true);
+        allPathsForCaps("Word.\n", c | w | s, l, false);
+        allPathsForCaps("Word.\n", c | w | s, l, true);
+        allPathsForCaps("Word.\n ", c | w | s, l, true);
+
         l = Locale.FRENCH;
         allPathsForCaps("\"Word.\" ", c | w, l, false);
         allPathsForCaps("\"Word\". ", c | w | s, l, false);
