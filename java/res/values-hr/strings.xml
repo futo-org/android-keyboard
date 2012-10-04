@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Povećanja na pritisak tipke"</string>
     <string name="general_category" msgid="1859088467017573195">"Općenito"</string>
     <string name="correction_category" msgid="2236750915056607613">"Ispravak teksta"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Tipkanje pokretom"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Pisanje kretnjama"</string>
     <string name="misc_category" msgid="6894192814868233453">"Ostale opcije"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Napredne postavke"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opcije za stručnjake"</string>
@@ -45,7 +45,7 @@
     <string name="use_contacts_dict" msgid="4435317977804180815">"Predlaži imena kontakata"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Upotreba imena iz Kontakata za prijedloge i ispravke"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Kapitaliziraj prvu riječ svake rečenice"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Napiši velikim slovom prvu riječ svake rečenice"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Rječnici-dodaci"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Glavni rječnik"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Pokaži prijedloge ispravka"</string>
@@ -60,8 +60,8 @@
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivno"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Vrlo agresivno"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Prijedlozi za sljedeću riječ"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Koristi prethodnu riječ u izradi prijedloga"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Omogući tipkanje pokretom"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Koristi se prethodnom riječi u izradi prijedloga"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Omogući pisanje kretnjama"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Unesi riječ klizanjem preko slova"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Prikaži trag pokreta"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinamički plutajući pregled"</string>

@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"키를 누를 때 팝업"</string>
     <string name="general_category" msgid="1859088467017573195">"일반"</string>
     <string name="correction_category" msgid="2236750915056607613">"텍스트 수정"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"동작으로 입력"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"제스처 타이핑"</string>
     <string name="misc_category" msgid="6894192814868233453">"기타 옵션"</string>
     <string name="advanced_settings" msgid="362895144495591463">"고급 설정"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"전문가용 옵션"</string>
@@ -59,9 +59,9 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"약"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"중"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"강"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"다음 추천 검색어"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"다음 단어 추천"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"추천할 때 이전 단어를 사용"</string>
-    <string name="gesture_input" msgid="826951152254563827">"동작으로 입력 사용"</string>
+    <string name="gesture_input" msgid="826951152254563827">"제스처 타이핑 사용"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"문자를 슬라이드하여 단어 입력"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"동작 흔적 표시"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"동적 플로팅 미리보기"</string>
