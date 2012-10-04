@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Iššoka paspaudus klavišą"</string>
     <string name="general_category" msgid="1859088467017573195">"Bendra"</string>
     <string name="correction_category" msgid="2236750915056607613">"Teksto taisymas"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Įvestis gestais"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Teksto vedimas gestais"</string>
     <string name="misc_category" msgid="6894192814868233453">"Kitos parinktys"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Išplėstiniai nustatymai"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Parinktys ekspertams"</string>
@@ -51,7 +51,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Rodyti taisymo pasiūlymus"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Įvedant tekstą pateikti siūlomų žodžių"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visada rodyti"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Rodyti stačiuoju režimu"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Rodyti portreto režimu"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Visada slėpti"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Automatinis taisymas"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Tarpo kl. ir skyr. ženkl. aut. išt. neteis. įv. žodž."</string>
@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Labai agresyviai"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Kito žodžio pasiūlymai"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Sudarant pasiūlymus naudoti ankstesnį žodį"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Įgalinti įvestį gestais"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Įgalinti teksto vedimą gestais"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Įvesti žodį slenkant raidėmis"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Rodyti gestų kelią"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dinaminė slankioji peržiūra"</string>
