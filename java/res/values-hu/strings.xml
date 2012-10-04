@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Legyen nagyobb billentyű lenyomásakor"</string>
     <string name="general_category" msgid="1859088467017573195">"Általános"</string>
     <string name="correction_category" msgid="2236750915056607613">"Szövegjavítás"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Gépelés kézmozdulatokkal"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Kézmozdulatokkal történő gépelés"</string>
     <string name="misc_category" msgid="6894192814868233453">"Egyéb beállítások"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Speciális beállítások"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Beállítások gyakorlott felhasználóknak"</string>
@@ -60,7 +60,7 @@
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresszív"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Nagyon agresszív"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Következő szóra vonatkozó javaslatok"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Az előző szó használata javaslatok tételére"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Az előző szó felhasználása a javaslatoknál"</string>
     <string name="gesture_input" msgid="826951152254563827">"Kézmozdulatokkal gépelés"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Szó beírása úgy, hogy ujjait végigcsúsztatja a betűkön"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mozdulat irányának mutatása"</string>
