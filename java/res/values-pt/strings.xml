@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muito agressivo"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Sugestões para a palavra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Com base na palavra anterior"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Entrada por gesto"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Entrada por gestos"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Introduza uma palavra traçando suas letras"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar percurso do gesto"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Mostrar palavra do gesto"</string>

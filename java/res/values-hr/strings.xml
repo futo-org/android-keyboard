@@ -59,7 +59,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Vrlo agresivno"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Prijedlozi za sljedeću riječ"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Na temelju prethodne riječi"</string>
-    <string name="gesture_input" msgid="3310827802759290774">"Unos pokretom"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Pisanje kretnjama"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Unos riječi ispisivanjem slova riječi"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Prikaži trag pokreta"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Prikaži riječ pokreta"</string>
