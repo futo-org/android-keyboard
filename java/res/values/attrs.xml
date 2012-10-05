@@ -127,6 +127,23 @@
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
+        <!-- Static threshold for gesture after fast typing (msec) -->
+        <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer" />
+        <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
+        <attr name="gestureDetectFastMoveSpeedThreshold" format="fraction" />
+        <!-- Dynamic threshold for gesture after fast typing (msec) -->
+        <attr name="gestureDynamicThresholdDecayDuration" format="integer" />
+        <!-- Time based threshold values for gesture detection (msec) -->
+        <attr name="gestureDynamicTimeThresholdFrom" format="integer" />
+        <attr name="gestureDynamicTimeThresholdTo" format="integer" />
+        <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
+        <attr name="gestureDynamicDistanceThresholdFrom" format="fraction" />
+        <attr name="gestureDynamicDistanceThresholdTo" format="fraction" />
+        <!-- Parameter for gesture sampling (keyWidth%/sec) -->
+        <attr name="gestureSamplingMinimumDistance" format="fraction" />
+        <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
+        <attr name="gestureRecognitionMinimumTime" format="integer" />
+        <attr name="gestureRecognitionSpeedThreshold" format="fraction" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">

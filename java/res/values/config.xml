@@ -69,6 +69,23 @@
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <!-- Static threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_static_time_threshold_after_fast_typing">350</integer>
+    <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
+    <!-- Dynamic threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
+    <!-- Time based threshold values for gesture detection (msec) -->
+    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
+    <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
+    <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_to">35%</fraction>
+    <!-- Parameter for gesture sampling (keyWidth%/sec) -->
+    <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
+    <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
+    <integer name="config_gesture_recognition_minimum_time">100</integer>
+    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
     <!--
         Configuration for auto correction
      -->
