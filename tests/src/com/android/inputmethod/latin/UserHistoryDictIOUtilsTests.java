@@ -188,7 +188,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
         File file = null;
         try {
-            file = File.createTempFile("testReadAndWrite", ".dict");
+            file = File.createTempFile("testReadAndWrite", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
             Log.d(TAG, "IOException while creating a temporary file: " + e);
         }

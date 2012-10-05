@@ -271,7 +271,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final String message) {
         File file = null;
         try {
-            file = File.createTempFile("runReadAndWrite", ".dict");
+            file = File.createTempFile("runReadAndWrite", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e);
         }
@@ -412,7 +412,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final FormatSpec.FormatOptions formatOptions, final String message) {
         File file = null;
         try {
-            file = File.createTempFile("runReadUnigrams", ".dict");
+            file = File.createTempFile("runReadUnigrams", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e);
         }
@@ -510,7 +510,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
     public void testGetTerminalPosition() {
         File file = null;
         try {
-            file = File.createTempFile("testGetTerminalPosition", ".dict");
+            file = File.createTempFile("testGetTerminalPosition", ".dict",
+                    getContext().getCacheDir());
         } catch (IOException e) {
             // do nothing
         }
@@ -561,7 +562,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     public void testDeleteWord() {
         File file = null;
         try {
-            file = File.createTempFile("testDeleteWord", ".dict");
+            file = File.createTempFile("testDeleteWord", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
             // do nothing
         }
