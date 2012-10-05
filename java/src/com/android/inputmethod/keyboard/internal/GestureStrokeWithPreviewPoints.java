@@ -33,8 +33,8 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     // TODO: Move this to resource.
     private static final float MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH = 0.1f;
 
-    public GestureStrokeWithPreviewPoints(final int pointerId) {
-        super(pointerId);
+    public GestureStrokeWithPreviewPoints(final int pointerId, final GestureStrokeParams params) {
+        super(pointerId, params);
     }
 
     @Override
