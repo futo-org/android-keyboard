@@ -764,13 +764,23 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
         }
     }
 
+    int additionalProximityCount = 0;
+    // Demote additional proximity characters
+    for (int i = 0; i < outputLength; ++i) {
+        const int squaredDistance = correction->mDistances[i];
+        if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
+            ++additionalProximityCount;
+        }
+    }
+
     const bool performTouchPositionCorrection =
             CALIBRATE_SCORE_BY_TOUCH_COORDINATES
                     && proximityInfoState->touchPositionCorrectionEnabled()
-                    && skippedCount == 0 && excessiveCount == 0 && transposedCount == 0;
+                    && skippedCount == 0 && excessiveCount == 0 && transposedCount == 0
+                    && additionalProximityCount == 0;
+
     // Score calibration by touch coordinates is being done only for pure-fat finger typing error
     // cases.
-    int additionalProximityCount = 0;
     // TODO: Remove this constraint.
     if (performTouchPositionCorrection) {
         for (int i = 0; i < outputLength; ++i) {
@@ -802,19 +812,9 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 multiplyRate((int)(factor * 100), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
                 multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
-            } else if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
-                ++additionalProximityCount;
-                multiplyRate(WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
             }
         }
     } else {
-        // Demote additional proximity characters
-        for (int i = 0; i < outputLength; ++i) {
-            const int squaredDistance = correction->mDistances[i];
-            if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
-                ++additionalProximityCount;
-            }
-        }
         // Promotion for a word with proximity characters
         for (int i = 0; i < adjustedProximityMatchedCount; ++i) {
             // A word with proximity corrections
