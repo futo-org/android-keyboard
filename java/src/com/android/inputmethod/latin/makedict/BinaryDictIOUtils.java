@@ -535,10 +535,13 @@ public final class BinaryDictIOUtils {
             // TODO: Consolidate this code with the code that computes the size of the bigram list
             //        in BinaryDictionaryInputOutput#computeActualNodeSize
             for (int i = 0; i < info.mBigrams.size(); ++i) {
-                final int bigramOffset = info.mBigrams.get(i).mAddress - info.mOriginalAddress;
+
                 final int bigramFrequency = info.mBigrams.get(i).mFrequency;
                 int bigramFlags = (i < info.mBigrams.size() - 1)
                         ? FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT : 0;
+                size++;
+                final int bigramOffset = info.mBigrams.get(i).mAddress - (info.mOriginalAddress
+                        + size);
                 bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0;
                 switch (BinaryDictInputOutput.getByteSize(bigramOffset)) {
                 case 1:
@@ -553,7 +556,6 @@ public final class BinaryDictIOUtils {
                 }
                 bigramFlags |= bigramFrequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY;
                 destination.write((byte)bigramFlags);
-                size++;
                 size += writeVariableAddress(destination, Math.abs(bigramOffset));
             }
         }
@@ -717,7 +719,7 @@ public final class BinaryDictIOUtils {
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {
-                    bigrams.add(new PendingAttribute(position, bigram.mFrequency));
+                    bigrams.add(new PendingAttribute(bigram.mFrequency, position));
                 }
             }
         }
@@ -946,5 +948,26 @@ public final class BinaryDictIOUtils {
                 buffer.position(nextLink);
             }
         }
+    }
+
+    /**
+     * Find a word from the buffer.
+     *
+     * @param buffer the buffer representing the body of the dictionary file.
+     * @param word the word searched
+     * @return the found group
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    public static CharGroupInfo findWordFromBuffer(final FusionDictionaryBufferInterface buffer,
+            final String word) throws IOException, UnsupportedFormatException {
+        int position = getTerminalPosition(buffer, word);
+        if (position != FormatSpec.NOT_VALID_WORD) {
+            buffer.position(0);
+            final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+            buffer.position(position);
+            return BinaryDictInputOutput.readCharGroup(buffer, position, header.mFormatOptions);
+        }
+        return null;
     }
 }
