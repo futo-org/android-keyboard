@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
+import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
@@ -135,7 +136,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mTouchNoiseThresholdDistanceSquared = 0;
         }
 
-        public PointerTrackerParams(TypedArray mainKeyboardViewAttr) {
+        public PointerTrackerParams(final TypedArray mainKeyboardViewAttr) {
             mSlidingKeyInputEnabled = mainKeyboardViewAttr.getBoolean(
                     R.styleable.MainKeyboardView_slidingKeyInputEnable, false);
             mTouchNoiseThresholdTime = mainKeyboardViewAttr.getInt(
@@ -150,6 +151,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
+    private static GestureStrokeParams sGestureStrokeParams;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
@@ -222,10 +224,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
         sParams = PointerTrackerParams.DEFAULT;
+        sGestureStrokeParams = GestureStrokeParams.DEFAULT;
     }
 
     public static void setParameters(final TypedArray mainKeyboardViewAttr) {
         sParams = new PointerTrackerParams(mainKeyboardViewAttr);
+        sGestureStrokeParams = new GestureStrokeParams(mainKeyboardViewAttr);
     }
 
     private static void updateGestureHandlingMode() {
@@ -296,7 +300,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             throw new NullPointerException();
         }
         mPointerId = id;
-        mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(id);
+        mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(
+                id, sGestureStrokeParams);
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
@@ -587,10 +592,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void mayUpdateBatchInput(final long eventTime, final Key key) {
         if (key != null) {
             synchronized (sAggregratedPointers) {
-                mGestureStrokeWithPreviewPoints.appendIncrementalBatchPoints(sAggregratedPointers);
+                final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
+                stroke.appendIncrementalBatchPoints(sAggregratedPointers);
                 final int size = sAggregratedPointers.getPointerSize();
                 if (size > sLastRecognitionPointSize
-                        && GestureStroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
+                        && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
                     sLastRecognitionPointSize = size;
                     sLastRecognitionTime = eventTime;
                     if (DEBUG_LISTENER) {
