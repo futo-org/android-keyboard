@@ -105,6 +105,7 @@
         <item name="gestureSamplingMinimumDistance">@fraction/config_gesture_sampling_minimum_distance</item>
         <item name="gestureRecognitionMinimumTime">@integer/config_gesture_recognition_minimum_time</item>
         <item name="gestureRecognitionSpeedThreshold">@fraction/config_gesture_recognition_speed_threshold</item>
+        <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
     </style>
     <style
         name="MainKeyboardView"
