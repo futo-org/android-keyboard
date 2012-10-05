@@ -144,6 +144,8 @@
         <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
         <attr name="gestureRecognitionMinimumTime" format="integer" />
         <attr name="gestureRecognitionSpeedThreshold" format="fraction" />
+        <!-- Suppress showing key preview duration after batch input in millisecond -->
+        <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionStripView">
