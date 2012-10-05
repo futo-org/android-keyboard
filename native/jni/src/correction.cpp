@@ -799,9 +799,9 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 const float x = static_cast<float>(squaredDistance)
                         / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
                 const float factor = max((x < R1)
-                    ? (A * (R1 - x) + B * x) / R1
-                    : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
-                // factor is piecewise linear function like:
+                        ? (A * (R1 - x) + B * x) / R1
+                        : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
+                // factor is a piecewise linear function like:
                 // A -_                  .
                 //     ^-_               .
                 // B      \              .
@@ -809,7 +809,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 // C         ------------.
                 //                       .
                 // 0   R1 R2             .
-                multiplyRate((int)(factor * 100), &finalFreq);
+                multiplyRate((int)(factor * 100.0f), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
                 multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
             }
