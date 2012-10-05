@@ -82,6 +82,17 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_longPressShiftKeyTimeout
  * @attr ref R.styleable#MainKeyboardView_ignoreAltCodeKeyTimeout
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
+ * @attr ref R.styleable#MainKeyboardView_gestureStaticTimeThresholdAfterFastTyping
+ * @attr ref R.styleable#MainKeyboardView_gestureDetectFastMoveSpeedThreshold
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicThresholdDecayDuration
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicTimeThresholdFrom
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicTimeThresholdTo
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicDistanceThresholdFrom
+ * @attr ref R.styleable#MainKeyboardView_gestureDynamicDistanceThresholdTo
+ * @attr ref R.styleable#MainKeyboardView_gestureSamplingMinimumDistance
+ * @attr ref R.styleable#MainKeyboardView_gestureRecognitionMinimumTime
+ * @attr ref R.styleable#MainKeyboardView_gestureRecognitionSpeedThreshold
+ * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
 public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {

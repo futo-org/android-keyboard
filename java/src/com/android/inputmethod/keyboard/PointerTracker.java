@@ -48,9 +48,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static boolean sGestureHandlingEnabledByInputField = false;
     private static boolean sGestureHandlingEnabledByUser = false;
 
-    // TODO: Move this to resource.
-    private static final int SUPPRESS_KEY_PREVIEW_AFTER_LAST_BATCH_INPUT_DURATION = 1000; // msec
-
     public interface KeyEventHandler {
         /**
          * Get KeyDetector object that is used for this PointerTracker.
@@ -126,6 +123,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public final int mTouchNoiseThresholdTime;
         public final float mTouchNoiseThresholdDistance;
         public final int mTouchNoiseThresholdDistanceSquared;
+        public final int mSuppressKeyPreviewAfterBatchInputDuration;
 
         public static final PointerTrackerParams DEFAULT = new PointerTrackerParams();
 
@@ -134,6 +132,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mTouchNoiseThresholdTime = 0;
             mTouchNoiseThresholdDistance = 0.0f;
             mTouchNoiseThresholdDistanceSquared = 0;
+            mSuppressKeyPreviewAfterBatchInputDuration = 0;
         }
 
         public PointerTrackerParams(final TypedArray mainKeyboardViewAttr) {
@@ -146,6 +145,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mTouchNoiseThresholdDistance = touchNouseThresholdDistance;
             mTouchNoiseThresholdDistanceSquared =
                     (int)(touchNouseThresholdDistance * touchNouseThresholdDistance);
+            mSuppressKeyPreviewAfterBatchInputDuration = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration, 0);
         }
     }
 
@@ -170,12 +171,79 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private boolean mIsDetectingGesture = false; // per PointerTracker.
     private static boolean sInGesture = false;
     private static long sGestureFirstDownTime;
-    private static long sLastBatchInputTime;
-    private static long sLastLetterTypingUpTime;
+    private static TimeRecorder sTimeRecorder;
     private static final InputPointers sAggregratedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
     private static int sLastRecognitionPointSize = 0; // synchronized using sAggregratedPointers
     private static long sLastRecognitionTime = 0; // synchronized using sAggregratedPointers
+
+    static final class TimeRecorder {
+        private final int mSuppressKeyPreviewAfterBatchInputDuration;
+        private final int mStaticTimeThresholdAfterFastTyping; // msec
+        private long mLastTypingTime;
+        private long mLastLetterTypingTime;
+        private long mLastBatchInputTime;
+
+        public TimeRecorder(final PointerTrackerParams pointerTrackerParams,
+                final GestureStrokeParams gestureStrokeParams) {
+            mSuppressKeyPreviewAfterBatchInputDuration =
+                    pointerTrackerParams.mSuppressKeyPreviewAfterBatchInputDuration;
+            mStaticTimeThresholdAfterFastTyping =
+                    gestureStrokeParams.mStaticTimeThresholdAfterFastTyping;
+        }
+
+        private void recordTyping(final long eventTime) {
+            mLastTypingTime = eventTime;
+        }
+
+        private void recordLetterTyping(final long eventTime) {
+            mLastLetterTypingTime = eventTime;
+            // Reset gesture typing time
+            mLastBatchInputTime = 0;
+        }
+
+        private void recordGestureTyping(final long eventTime) {
+            mLastBatchInputTime = eventTime;
+            // Reset typing time.
+            mLastTypingTime = 0;
+        }
+
+        private boolean isInTyping() {
+            return mLastTypingTime != 0;
+        }
+
+        private boolean isInBatchInput() {
+            return mLastBatchInputTime != 0;
+        }
+
+        public void onCodeInput(final int code, final long eventTime) {
+            if (Keyboard.isLetterCode(code) && code != Keyboard.CODE_SPACE) {
+                if (isInTyping()
+                        && eventTime - mLastTypingTime < mStaticTimeThresholdAfterFastTyping) {
+                    recordLetterTyping(eventTime);
+                }
+            } else {
+                if (eventTime - mLastLetterTypingTime < mStaticTimeThresholdAfterFastTyping) {
+                    // This non-letter typing should be treated as a part of fast typing.
+                    recordLetterTyping(eventTime);
+                }
+            }
+            recordTyping(eventTime);
+        }
+
+        public void onEndBatchInput(final long eventTime) {
+            recordGestureTyping(eventTime);
+        }
+
+        public long getLastLetterTypingTime() {
+            return mLastLetterTypingTime;
+        }
+
+        public boolean needsToSuppressKeyPreviewPopup(final long eventTime) {
+            return !isInTyping() && isInBatchInput()
+                    && eventTime - mLastBatchInputTime < mSuppressKeyPreviewAfterBatchInputDuration;
+        }
+    }
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -225,11 +293,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
         sParams = PointerTrackerParams.DEFAULT;
         sGestureStrokeParams = GestureStrokeParams.DEFAULT;
+        sTimeRecorder = new TimeRecorder(sParams, sGestureStrokeParams);
     }
 
     public static void setParameters(final TypedArray mainKeyboardViewAttr) {
         sParams = new PointerTrackerParams(mainKeyboardViewAttr);
         sGestureStrokeParams = new GestureStrokeParams(mainKeyboardViewAttr);
+        sTimeRecorder = new TimeRecorder(sParams, sGestureStrokeParams);
     }
 
     private static void updateGestureHandlingMode() {
@@ -336,7 +406,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
-            final int y) {
+            final int y, final long eventTime) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
@@ -356,7 +426,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
         if (key.isEnabled() || altersCode) {
-            sLastBatchInputTime = 0; // reset time
+            sTimeRecorder.onCodeInput(code, eventTime);
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.getOutputText());
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
@@ -471,10 +541,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private static boolean needsToSuppressKeyPreviewPopup(final long eventTime) {
         if (!sShouldHandleGesture) return false;
-        if (sLastBatchInputTime == 0) return false;
-        final long elapsedTimeAfterTheLastBatchInput = eventTime - sLastBatchInputTime;
-        return elapsedTimeAfterTheLastBatchInput
-                < SUPPRESS_KEY_PREVIEW_AFTER_LAST_BATCH_INPUT_DURATION;
+        return sTimeRecorder.needsToSuppressKeyPreviewPopup(eventTime);
     }
 
     private void setPressedKeyGraphics(final Key key, final long eventTime) {
@@ -620,7 +687,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                             mPointerId, sAggregratedPointers.getPointerSize()));
                 }
                 sInGesture = false;
-                sLastBatchInputTime = eventTime;
+                sTimeRecorder.onEndBatchInput(eventTime);
                 mListener.onEndBatchInput(sAggregratedPointers);
             }
         }
@@ -698,7 +765,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 sGestureFirstDownTime = eventTime;
             }
             mGestureStrokeWithPreviewPoints.onDownEvent(x, y, eventTime, sGestureFirstDownTime,
-                    sLastLetterTypingUpTime);
+                    sTimeRecorder.getLastLetterTypingTime());
         }
     }
 
@@ -939,11 +1006,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
         if (currentKey != null && !currentKey.isRepeatable()) {
-            detectAndSendKey(currentKey, mKeyX, mKeyY);
-            final int code = currentKey.mCode;
-            if (Keyboard.isLetterCode(code) && code != Keyboard.CODE_SPACE) {
-                sLastLetterTypingUpTime = eventTime;
-            }
+            detectAndSendKey(currentKey, mKeyX, mKeyY, eventTime);
         }
     }
 
@@ -994,7 +1057,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     public void onRegisterKey(final Key key) {
         if (key != null) {
-            detectAndSendKey(key, key.mX, key.mY);
+            detectAndSendKey(key, key.mX, key.mY, SystemClock.uptimeMillis());
             mTimerProxy.startTypingStateTimer(key);
         }
     }
@@ -1020,14 +1083,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    private void detectAndSendKey(final Key key, final int x, final int y) {
+    private void detectAndSendKey(final Key key, final int x, final int y, final long eventTime) {
         if (key == null) {
             callListenerOnCancelInput();
             return;
         }
 
         final int code = key.mCode;
-        callListenerOnCodeInput(key, code, x, y);
+        callListenerOnCodeInput(key, code, x, y, eventTime);
         callListenerOnRelease(key, code, false);
     }
 
