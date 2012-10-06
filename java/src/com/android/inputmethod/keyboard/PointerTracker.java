@@ -268,14 +268,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if this pointer has been long-pressed and is showing a more keys panel.
     private boolean mIsShowingMoreKeysPanel;
 
-    // true if this pointer is in sliding key input
+    // true if this pointer is in a sliding key input.
     boolean mIsInSlidingKeyInput;
+    // true if this pointer is in a sliding key input from a modifier key,
+    // so that further modifier keys should be ignored.
+    boolean mIsInSlidingKeyInputFromModifier;
 
-    // true if sliding key is allowed.
+    // true if a sliding key input is allowed.
     private boolean mIsAllowedSlidingKeyInput;
-
-    // ignore modifier key if true
-    private boolean mIgnoreModifierKey;
 
     // Empty {@link KeyboardActionListener}
     private static final KeyboardActionListener EMPTY_LISTENER =
@@ -383,7 +383,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (sInGesture) {
             return false;
         }
-        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onPress    : %s%s%s", mPointerId,
                     KeyDetector.printableCode(key),
@@ -407,7 +407,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
             final int y, final long eventTime) {
-        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
@@ -435,14 +435,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    // Note that we need primaryCode argument because the keyboard may in shifted state and the
+    // Note that we need primaryCode argument because the keyboard may be in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding) {
         if (sInGesture) {
             return;
         }
-        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onRelease  : %s%s%s%s", mPointerId,
                     Keyboard.printableCode(primaryCode),
@@ -778,8 +778,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
-        mIsInSlidingKeyInput = false;
-        mIgnoreModifierKey = false;
+        resetSlidingKeyInput();
         if (key != null) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
             // {@link #setKeyboard}. In those cases, we should update key according to the new
@@ -796,9 +795,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void startSlidingKeyInput(final Key key) {
         if (!mIsInSlidingKeyInput) {
-            mIgnoreModifierKey = key.isModifier();
+            mIsInSlidingKeyInputFromModifier = key.isModifier();
         }
         mIsInSlidingKeyInput = true;
+    }
+
+    private void resetSlidingKeyInput() {
+        mIsInSlidingKeyInput = false;
+        mIsInSlidingKeyInputFromModifier = false;
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
@@ -847,9 +851,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             // Register move event on gesture tracker.
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, key);
             if (sInGesture) {
-                mIgnoreModifierKey = true;
                 mTimerProxy.cancelLongPressTimer();
-                mIsInSlidingKeyInput = true;
                 mCurrentKey = null;
                 setReleasedKeyGraphics(oldKey);
                 return;
@@ -983,7 +985,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void onUpEventInternal(final long eventTime) {
         mTimerProxy.cancelKeyTimers();
-        mIsInSlidingKeyInput = false;
+        resetSlidingKeyInput();
         mIsDetectingGesture = false;
         final Key currentKey = mCurrentKey;
         mCurrentKey = null;
@@ -1041,7 +1043,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void onCancelEventInternal() {
         mTimerProxy.cancelKeyTimers();
         setReleasedKeyGraphics(mCurrentKey);
-        mIsInSlidingKeyInput = false;
+        resetSlidingKeyInput();
         if (mIsShowingMoreKeysPanel) {
             mDrawingProxy.dismissMoreKeysPanel();
             mIsShowingMoreKeysPanel = false;
@@ -1070,8 +1072,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (newKey == curKey) {
             return false;
         } else if (curKey != null) {
-            return curKey.squaredDistanceToEdge(x, y)
-                    >= mKeyDetector.getKeyHysteresisDistanceSquared();
+            final int keyHysteresisDistanceSquared = mKeyDetector.getKeyHysteresisDistanceSquared(
+                    mIsInSlidingKeyInputFromModifier);
+            return curKey.squaredDistanceToEdge(x, y) >= keyHysteresisDistanceSquared;
         } else {
             return true;
         }

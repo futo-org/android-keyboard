@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.Constants;
 
 public class KeyDetector {
     private final int mKeyHysteresisDistanceSquared;
+    private final int mKeyHysteresisDistanceForSlidingModifierSquared;
 
     private Keyboard mKeyboard;
     private int mCorrectionX;
@@ -30,10 +31,24 @@ public class KeyDetector {
      * This class handles key detection.
      *
      * @param keyHysteresisDistance if the pointer movement distance is smaller than this, the
-     * movement will not been handled as meaningful movement. The unit is pixel.
+     * movement will not be handled as meaningful movement. The unit is pixel.
      */
     public KeyDetector(float keyHysteresisDistance) {
+        this(keyHysteresisDistance, keyHysteresisDistance);
+    }
+
+    /**
+     * This class handles key detection.
+     *
+     * @param keyHysteresisDistance if the pointer movement distance is smaller than this, the
+     * movement will not be handled as meaningful movement. The unit is pixel.
+     * @param keyHysteresisDistanceForSlidingModifier the same parameter for sliding input that
+     * starts from a modifier key such as shift and symbols key.
+     */
+    public KeyDetector(float keyHysteresisDistance, float keyHysteresisDistanceForSlidingModifier) {
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
+        mKeyHysteresisDistanceForSlidingModifierSquared = (int)(
+                keyHysteresisDistanceForSlidingModifier * keyHysteresisDistanceForSlidingModifier);
     }
 
     public void setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
@@ -45,8 +60,9 @@ public class KeyDetector {
         mKeyboard = keyboard;
     }
 
-    public int getKeyHysteresisDistanceSquared() {
-        return mKeyHysteresisDistanceSquared;
+    public int getKeyHysteresisDistanceSquared(boolean isSlidingFromModifier) {
+        return isSlidingFromModifier
+                ? mKeyHysteresisDistanceForSlidingModifierSquared : mKeyHysteresisDistanceSquared;
     }
 
     public int getTouchX(int x) {
