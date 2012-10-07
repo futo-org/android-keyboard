@@ -57,6 +57,7 @@
          Configuration for MainKeyboardView
     -->
     <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
+    <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
     <integer name="config_touch_noise_threshold_time">40</integer>
     <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
     <bool name="config_sliding_key_input_enabled">true</bool>
