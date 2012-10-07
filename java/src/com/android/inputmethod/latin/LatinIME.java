@@ -1230,7 +1230,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
             final boolean lastSubtypeBelongsToThisIme =
                     ImfUtils.checkIfSubtypeBelongsToThisImeAndEnabled(this, lastSubtype);
-            if (lastSubtypeBelongsToThisIme  && mImm.switchToLastInputMethod(token)) {
+            if (lastSubtypeBelongsToThisIme && mImm.switchToLastInputMethod(token)) {
                 mShouldSwitchToLastSubtype = false;
             } else {
                 mImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
