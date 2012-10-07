@@ -389,7 +389,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final float keyHysteresisDistance = a.getDimension(
                 R.styleable.MainKeyboardView_keyHysteresisDistance, 0);
-        mKeyDetector = new KeyDetector(keyHysteresisDistance);
+        final float keyHysteresisDistanceForSlidingModifier = a.getDimension(
+                R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0);
+        mKeyDetector = new KeyDetector(
+                keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
         mKeyTimerHandler = new KeyTimerHandler(this, a);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = a.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
