@@ -109,6 +109,8 @@
         <attr name="altCodeKeyWhileTypingFadeinAnimator" format="reference" />
         <!-- Key detection hysteresis distance. -->
         <attr name="keyHysteresisDistance" format="dimension" />
+        <!-- Key detection hysteresis distance for shift/symbols sliding input. -->
+        <attr name="keyHysteresisDistanceForSlidingModifier" format="dimension" />
         <!-- Touch noise threshold time in millisecond -->
         <attr name="touchNoiseThresholdTime" format="integer" />
         <!-- Touch noise threshold distance in millimeter -->

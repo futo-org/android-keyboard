@@ -81,6 +81,7 @@
         <item name="gesturePreviewTrailEndWidth">@dimen/gesture_preview_trail_end_width</item>
         <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
+        <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
         <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
