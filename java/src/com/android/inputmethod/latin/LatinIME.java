@@ -1219,22 +1219,25 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mConnection.performEditorAction(actionId);
     }
 
+    // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
     private void handleLanguageSwitchKey() {
-        final boolean includesOtherImes = mCurrentSettings.mIncludesOtherImesInLanguageSwitchList;
         final IBinder token = getWindow().getWindow().getAttributes().token;
+        if (mCurrentSettings.mIncludesOtherImesInLanguageSwitchList) {
+            mImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
+            return;
+        }
         if (mShouldSwitchToLastSubtype) {
             final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
             final boolean lastSubtypeBelongsToThisIme =
                     ImfUtils.checkIfSubtypeBelongsToThisImeAndEnabled(this, lastSubtype);
-            if ((includesOtherImes || lastSubtypeBelongsToThisIme)
-                    && mImm.switchToLastInputMethod(token)) {
+            if (lastSubtypeBelongsToThisIme && mImm.switchToLastInputMethod(token)) {
                 mShouldSwitchToLastSubtype = false;
             } else {
-                mImm.switchToNextInputMethod(token, !includesOtherImes);
+                mImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
                 mShouldSwitchToLastSubtype = true;
             }
         } else {
-            mImm.switchToNextInputMethod(token, !includesOtherImes);
+            mImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
         }
     }
 
