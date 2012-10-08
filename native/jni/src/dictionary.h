@@ -41,8 +41,8 @@ class Dictionary {
     const static int KIND_SHORTCUT = 7; // A shortcut
     const static int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
 
-    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
+    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int fullWordMultiplier,
+            int maxWordLength, int maxWords, int maxPredictions);
 
     int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
             int *ycoordinates, int *times, int *pointerIds, int *codes, int codesSize,

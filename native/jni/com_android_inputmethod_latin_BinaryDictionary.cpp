@@ -44,9 +44,8 @@ class ProximityInfo;
 static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
-        jstring sourceDir, jlong dictOffset, jlong dictSize,
-        jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
-        jint maxPredictions) {
+        jstring sourceDir, jlong dictOffset, jlong dictSize, jint fullWordMultiplier,
+        jint maxWordLength, jint maxWords, jint maxPredictions) {
     PROF_OPEN;
     PROF_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
@@ -121,7 +120,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
         dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust,
-                typedLetterMultiplier, fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
+                fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -277,7 +276,7 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIIIII)J",
+    {"openNative", "(Ljava/lang/String;JJIIII)J",
             reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
     {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[C[I[I[I)I",
@@ -294,7 +293,6 @@ static JNINativeMethod sMethods[] = {
 
 int register_BinaryDictionary(JNIEnv *env) {
     const char *const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
-    return registerNativeMethods(env, kClassPathName, sMethods,
-            sizeof(sMethods) / sizeof(sMethods[0]));
+    return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime

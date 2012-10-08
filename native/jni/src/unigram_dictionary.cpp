@@ -41,14 +41,12 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
         { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int typedLetterMultiplier,
-        int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags)
-    : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
-    TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
-      // TODO : remove this variable.
-    ROOT_POS(0),
-    BYTES_IN_ONE_CHAR(sizeof(int)),
-    MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
+UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int fullWordMultiplier,
+        int maxWordLength, int maxWords, const unsigned int flags)
+        : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
+          FULL_WORD_MULTIPLIER(fullWordMultiplier), // TODO : remove this variable.
+          ROOT_POS(0), BYTES_IN_ONE_CHAR(sizeof(int)),
+          MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
     }
@@ -188,8 +186,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
                 useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
-                &queuePool, GERMAN_UMLAUT_DIGRAPHS,
-                sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
+                &queuePool, GERMAN_UMLAUT_DIGRAPHS, NELEMS(GERMAN_UMLAUT_DIGRAPHS));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
         int xCoordinatesBuffer[codesSize];
@@ -197,8 +194,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
                 useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
-                &queuePool, FRENCH_LIGATURES_DIGRAPHS,
-                sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
+                &queuePool, FRENCH_LIGATURES_DIGRAPHS, NELEMS(FRENCH_LIGATURES_DIGRAPHS));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
                 bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, &queuePool);
@@ -313,8 +309,6 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
     const int maxDepth = min(inputSize * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     correction->initCorrection(proximityInfo, inputSize, maxDepth);
 }
-
-static const char SPACE = ' ';
 
 void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
@@ -570,7 +564,7 @@ int UnigramDictionary::getSubStringSuggestion(
         if (outputWordStartPos + nextWordLength >= MAX_WORD_LENGTH) {
             return FLAG_MULTIPLE_SUGGEST_SKIP;
         }
-        outputWord[tempOutputWordLength] = SPACE;
+        outputWord[tempOutputWordLength] = KEYCODE_SPACE;
         if (outputWordLength) {
             ++*outputWordLength;
         }

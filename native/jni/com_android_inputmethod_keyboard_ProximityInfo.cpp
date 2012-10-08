@@ -17,6 +17,7 @@
 #define LOG_TAG "LatinIME: jni: ProximityInfo"
 
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
+#include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "proximity_info.h"
@@ -41,7 +42,7 @@ static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximi
     delete pi;
 }
 
-static JNINativeMethod sKeyboardMethods[] = {
+static JNINativeMethod sMethods[] = {
     {"setProximityInfoNative", "(Ljava/lang/String;IIIIII[II[I[I[I[I[I[F[F[F)J",
             reinterpret_cast<void *>(latinime_Keyboard_setProximityInfo)},
     {"releaseProximityInfoNative", "(J)V", reinterpret_cast<void *>(latinime_Keyboard_release)}
@@ -49,7 +50,6 @@ static JNINativeMethod sKeyboardMethods[] = {
 
 int register_ProximityInfo(JNIEnv *env) {
     const char *const kClassPathName = "com/android/inputmethod/keyboard/ProximityInfo";
-    return registerNativeMethods(env, kClassPathName, sKeyboardMethods,
-            sizeof(sKeyboardMethods) / sizeof(sKeyboardMethods[0]));
+    return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime

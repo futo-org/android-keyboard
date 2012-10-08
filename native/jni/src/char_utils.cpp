@@ -17,6 +17,7 @@
 #include <cstdlib>
 
 #include "char_utils.h"
+#include "defines.h"
 
 namespace latinime {
 
@@ -33,7 +34,7 @@ struct LatinCapitalSmallPair {
 //
 //    unsigned short c, cc, ccc, ccc2;
 //    for (c = 0; c < 0xFFFF ; c++) {
-//        if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
+//        if (c < NELEMS(BASE_CHARS)) {
 //            cc = BASE_CHARS[c];
 //        } else {
 //            cc = c;
@@ -894,9 +895,7 @@ static int compare_pair_capital(const void *a, const void *b) {
 unsigned short latin_tolower(const unsigned short c) {
     struct LatinCapitalSmallPair *p =
             static_cast<struct LatinCapitalSmallPair *>(bsearch(&c, SORTED_CHAR_MAP,
-                    sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]),
-                    sizeof(SORTED_CHAR_MAP[0]),
-                    compare_pair_capital));
+                    NELEMS(SORTED_CHAR_MAP), sizeof(SORTED_CHAR_MAP[0]), compare_pair_capital));
     return p ? p->small : c;
 }
 } // namespace latinime

@@ -518,7 +518,7 @@ float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int co
 }
 
 int ProximityInfoState::getSpaceY() const {
-    const int keyId = mProximityInfo->getKeyIndexOf(' ');
+    const int keyId = mProximityInfo->getKeyIndexOf(KEYCODE_SPACE);
     return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
 }
 

@@ -116,7 +116,6 @@ class Correction {
         static int editDistance(const unsigned short *before,
                 const int beforeLength, const unsigned short *after, const int afterLength);
      private:
-        static const int CODE_SPACE = ' ';
         static const int MAX_INITIAL_SCORE = 255;
     };
 

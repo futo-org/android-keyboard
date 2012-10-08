@@ -1118,7 +1118,7 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *be
     const int distance = editDistance(before, beforeLength, after, afterLength);
     int spaceCount = 0;
     for (int i = 0; i < afterLength; ++i) {
-        if (after[i] == CODE_SPACE) {
+        if (after[i] == KEYCODE_SPACE) {
             ++spaceCount;
         }
     }
