@@ -85,5 +85,24 @@ static inline float pointToLineSegSquaredDistanceFloat(
     }
     return getSquaredDistanceFloat(x, y, projectionX, projectionY);
 }
+
+// Normal distribution N(u, sigma^2).
+struct NormalDistribution {
+    NormalDistribution(const float u, const float sigma)
+            : mU(u), mSigma(sigma),
+              mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * sigma * sigma)),
+              mPreComputedExponentPart(-1.0f / (2.0f * sigma * sigma)) {}
+
+    float getProbabilityDensity(const float x) {
+        const float shiftedX = x - mU;
+        return mPreComputedNonExpPart * expf(mPreComputedExponentPart * SQUARE_FLOAT(shiftedX));
+    }
+private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
+    float mU; // mean value
+    float mSigma; // standard deviation
+    float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
+    float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
+};
 } // namespace latinime
 #endif // LATINIME_GEOMETRY_UTILS_H

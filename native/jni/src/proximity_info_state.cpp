@@ -15,6 +15,7 @@
  */
 
 #include <cstring> // for memset()
+#include <sstream> // for debug prints
 #include <stdint.h>
 
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
@@ -105,6 +106,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mDistanceCache.clear();
         mNearKeysVector.clear();
         mRelativeSpeeds.clear();
+        mCharProbabilities.clear();
     }
     if (DEBUG_GEO_FULL) {
         AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
@@ -161,34 +163,42 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 
     if (mInputSize > 0 && isGeometric) {
-        int sumDuration = mTimes.back() - mTimes.front();
-        int sumLength = mLengthCache.back() - mLengthCache.front();
-        float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
+        const int sumDuration = mTimes.back() - mTimes.front();
+        const int sumLength = mLengthCache.back() - mLengthCache.front();
+        const float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
         mRelativeSpeeds.resize(mInputSize);
         for (int i = lastSavedInputSize; i < mInputSize; ++i) {
             const int index = mInputIndice[i];
             int length = 0;
             int duration = 0;
-            if (index == 0 && index < inputSize - 1) {
-                length = getDistanceInt(xCoordinates[index], yCoordinates[index],
-                        xCoordinates[index + 1], yCoordinates[index + 1]);
-                duration = times[index + 1] - times[index];
-            } else if (index == inputSize - 1 && index > 0) {
-                length = getDistanceInt(xCoordinates[index - 1], yCoordinates[index - 1],
-                        xCoordinates[index], yCoordinates[index]);
-                duration = times[index] - times[index - 1];
-            } else if (0 < index && index < inputSize - 1) {
-                length = getDistanceInt(xCoordinates[index - 1], yCoordinates[index - 1],
-                        xCoordinates[index], yCoordinates[index])
-                        + getDistanceInt(xCoordinates[index], yCoordinates[index],
-                                xCoordinates[index + 1], yCoordinates[index + 1]);
-                duration = times[index + 1] - times[index - 1];
-            } else {
-                length = 0;
-                duration = 1;
+
+            // Calculate velocity by using distances and durations of
+            // NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and backward.
+            static const int NUM_POINTS_FOR_SPEED_CALCULATION = 1;
+            for (int j = index; j < min(inputSize - 1, index + NUM_POINTS_FOR_SPEED_CALCULATION);
+                    ++j) {
+                if (i < mInputSize - 1 && j >= mInputIndice[i + 1]) {
+                    break;
+                }
+                length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+                        xCoordinates[j + 1], yCoordinates[j + 1]);
+                duration += times[j + 1] - times[j];
             }
-            const float speed = static_cast<float>(length) / static_cast<float>(duration);
-            mRelativeSpeeds[i] = speed / averageSpeed;
+            for (int j = index - 1; j >= max(0, index - NUM_POINTS_FOR_SPEED_CALCULATION); --j) {
+                if (i > 0 && j < mInputIndice[i - 1]) {
+                    break;
+                }
+                length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+                        xCoordinates[j + 1], yCoordinates[j + 1]);
+                duration += times[j + 1] - times[j];
+            }
+            if (duration == 0 || sumDuration == 0) {
+                // Cannot calculate speed; thus, it gives an average value (1.0);
+                mRelativeSpeeds[i] = 1.0f;
+            } else {
+                const float speed = static_cast<float>(length) / static_cast<float>(duration);
+                mRelativeSpeeds[i] = speed / averageSpeed;
+            }
         }
     }
 
@@ -215,7 +225,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         static const float READ_FORWORD_LENGTH_SCALE = 0.95f;
         const int readForwordLength = static_cast<int>(
                 hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
-                * READ_FORWORD_LENGTH_SCALE);
+                        * READ_FORWORD_LENGTH_SCALE);
         for (int i = 0; i < mInputSize; ++i) {
             if (DEBUG_GEO_FULL) {
                 AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mInputXs[i], mInputYs[i],
@@ -230,6 +240,27 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         }
     }
 
+    if (DEBUG_SAMPLING_POINTS) {
+        std::stringstream originalX, originalY, sampledX, sampledY;
+        for (int i = 0; i < inputSize; ++i) {
+            originalX << xCoordinates[i];
+            originalY << yCoordinates[i];
+            if (i != inputSize - 1) {
+                originalX << ";";
+                originalY << ";";
+            }
+        }
+        for (int i = 0; i < mInputSize; ++i) {
+            sampledX << mInputXs[i];
+            sampledY << mInputYs[i];
+            if (i != mInputSize - 1) {
+                sampledX << ";";
+                sampledY << ";";
+            }
+        }
+        AKLOGI("\n%s, %s,\n%s, %s,\n", originalX.str().c_str(), originalY.str().c_str(),
+                sampledX.str().c_str(), sampledY.str().c_str());
+    }
     // end
     ///////////////////////
 
@@ -276,6 +307,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (DEBUG_GEO_FULL) {
         AKLOGI("ProximityState init finished: %d points out of %d", mInputSize, inputSize);
     }
+    if (isGeometric && mInputSize > 0) {
+        // updates probabilities of skipping or mapping each key for all points.
+        updateAlignPointProbabilities();
+    }
 }
 
 bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
@@ -294,7 +329,7 @@ bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSiz
 // the given point and the nearest key position.
 float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
         NearKeysDistanceMap *const currentNearKeysDistances) {
-    static const float NEAR_KEY_THRESHOLD = 4.0f;
+    static const float NEAR_KEY_THRESHOLD = 1.7f;
 
     currentNearKeysDistances->clear();
     const int keyCount = mProximityInfo->getKeyCount();
@@ -315,7 +350,7 @@ float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
 bool ProximityInfoState::isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const float MARGIN = 0.01f;
+    static const float MARGIN = 0.03f;
 
     for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
         it != prevNearKeysDistances->end(); ++it) {
@@ -336,18 +371,20 @@ float ProximityInfoState::getPointScore(
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
     static const int DISTANCE_BASE_SCALE = 100;
-    static const int SAVE_DISTANCE_SCALE = 200;
-    static const int SKIP_DISTANCE_SCALE = 25;
-    static const int CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 40;
-    static const int STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 50;
-    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 27;
+    static const int SAVE_DISTANCE_SCALE = 500;
+    static const int SKIP_DISTANCE_SCALE = 10;
+    static const float NEAR_KEY_THRESHOLD = 1.0f;
+    static const int CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 100;
+    static const int STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 200;
+    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 20;
     static const float SAVE_DISTANCE_SCORE = 2.0f;
     static const float SKIP_DISTANCE_SCORE = -1.0f;
-    static const float CHECK_LOCALMIN_DISTANCE_SCORE = -1.0f;
+    static const float NOT_LOCALMIN_DISTANCE_SCORE = -1.0f;
+    static const float LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE = 2.0f;
     static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 36.0f;
     static const float STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD = 0.5f;
     static const float STRAIGHT_SKIP_SCORE = -1.0f;
-    static const float CORNER_ANGLE_THRESHOLD = M_PI_F / 2.0f;
+    static const float CORNER_ANGLE_THRESHOLD = M_PI_F / 6.0f;
     static const float CORNER_SCORE = 1.0f;
 
     const std::size_t size = mInputXs.size();
@@ -373,7 +410,10 @@ float ProximityInfoState::getPointScore(
     if (distPrev < baseSampleRate * CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE) {
         if (!isPrevLocalMin(currentNearKeysDistances, prevNearKeysDistances,
             prevPrevNearKeysDistances)) {
-            score += CHECK_LOCALMIN_DISTANCE_SCORE;
+            score += NOT_LOCALMIN_DISTANCE_SCORE;
+        } else if (nearest < NEAR_KEY_THRESHOLD) {
+            // Promote points nearby keys
+            score += LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
         }
     }
     // Angle
@@ -402,7 +442,8 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
         NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
-    static const float LAST_POINT_SKIP_DISTANCE_SCALE = 0.25f;
+    static const int LAST_POINT_SKIP_DISTANCE_SCALE = 4;
+    static const int LAST_AND_NOT_NEAREST_POINT_SKIP_DISTANCE_SCALE = 2;
 
     size_t size = mInputXs.size();
     bool popped = false;
@@ -419,33 +460,38 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
             popped = false;
         }
         // Check if the last point should be skipped.
-        if (isLastPoint) {
-            if (size > 0 && getDistanceFloat(x, y, mInputXs.back(), mInputYs.back())
-                    < mProximityInfo->getMostCommonKeyWidth() * LAST_POINT_SKIP_DISTANCE_SCALE) {
+        if (isLastPoint && size > 0) {
+            const int lastPointsDistance = getDistanceInt(x, y, mInputXs.back(), mInputYs.back());
+            if (lastPointsDistance * LAST_POINT_SKIP_DISTANCE_SCALE
+                    < mProximityInfo->getMostCommonKeyWidth()) {
+                // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
-                    AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %f, "
-                           "width = %f", size, x, y, mInputXs.back(), mInputYs.back(),
-                           getDistanceFloat(x, y, mInputXs.back(), mInputYs.back()),
+                    AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
+                           "width = %d", size, x, y, mInputXs.back(), mInputYs.back(),
+                           getDistanceInt(x, y, mInputXs.back(), mInputYs.back()),
                            mProximityInfo->getMostCommonKeyWidth()
-                                   * LAST_POINT_SKIP_DISTANCE_SCALE);
+                                   / LAST_POINT_SKIP_DISTANCE_SCALE);
                 }
                 return popped;
-            } else if (size > 1) {
-                int minChar = 0;
-                float minDist = mMaxPointToKeyLength;
+            } else if (lastPointsDistance * LAST_AND_NOT_NEAREST_POINT_SKIP_DISTANCE_SCALE
+                    < mProximityInfo->getMostCommonKeyWidth()) {
+                int nearestChar = 0;
+                float nearestCharDistance = mMaxPointToKeyLength;
                 for (NearKeysDistanceMap::const_iterator it = currentNearKeysDistances->begin();
                         it != currentNearKeysDistances->end(); ++it) {
-                    if (minDist > it->second) {
-                        minChar = it->first;
-                        minDist = it->second;
+                    if (nearestCharDistance > it->second) {
+                        nearestChar = it->first;
+                        nearestCharDistance = it->second;
                     }
                 }
                 NearKeysDistanceMap::const_iterator itPP =
-                        prevNearKeysDistances->find(minChar);
-                if (itPP != prevNearKeysDistances->end() && minDist > itPP->second) {
+                        prevNearKeysDistances->find(nearestChar);
+                if (itPP != prevNearKeysDistances->end() && nearestCharDistance > itPP->second) {
+                    // The nearest key of the penultimate point is same as the nearest key of the
+                    // last point. So, we don't need to use the last point.
                     if (DEBUG_GEO_FULL) {
                         AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
-                                minChar, itPP->second, minDist);
+                                nearestChar, itPP->second, nearestCharDistance);
                     }
                     return popped;
                 }
@@ -503,18 +549,21 @@ int ProximityInfoState::getDuration(const int index) const {
     return 0;
 }
 
-float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint,
-        const float scale) const {
-    const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
-    if (keyId != NOT_AN_INDEX) {
-        const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
-    }
+float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint) const {
     if (isSkippableChar(codePoint)) {
         return 0.0f;
     }
+    const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
+    return getPointToKeyByIdLength(inputIndex, keyId);
+}
+
+float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const int keyId) const {
+    if (keyId != NOT_AN_INDEX) {
+        const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
+        return min(mDistanceCache[index], mMaxPointToKeyLength);
+    }
     // If the char is not a key on the keyboard then return the max length.
-    return MAX_POINT_TO_KEY_LENGTH;
+    return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
 }
 
 int ProximityInfoState::getSpaceY() const {
@@ -563,6 +612,219 @@ void ProximityInfoState::popInputData() {
     mTimes.pop_back();
     mLengthCache.pop_back();
     mInputIndice.pop_back();
+}
+
+float ProximityInfoState::getPointAngle(const int index) const {
+    if (index <= 0 || index >= mInputSize - 1) {
+        return 0.0f;
+    }
+    const int x = mInputXs[index];
+    const int y = mInputYs[index];
+    const int nextX = mInputXs[index + 1];
+    const int nextY = mInputYs[index + 1];
+    const int previousX = mInputXs[index - 1];
+    const int previousY = mInputYs[index - 1];
+    const float previousDirection = getAngle(previousX, previousY, x, y);
+    const float nextDirection = getAngle(x, y, nextX, nextY);
+    const float directionDiff = getAngleDiff(previousDirection, nextDirection);
+    return directionDiff;
+}
+
+float ProximityInfoState::getPointsAngle(
+        const int index0, const int index1, const int index2) const {
+    if (index0 < 0 || index0 > mInputSize - 1) {
+        return 0.0f;
+    }
+    if (index1 < 0 || index1 > mInputSize - 1) {
+        return 0.0f;
+    }
+    if (index2 < 0 || index2 > mInputSize - 1) {
+        return 0.0f;
+    }
+    const int x0 = mInputXs[index0];
+    const int y0 = mInputYs[index0];
+    const int x1 = mInputXs[index1];
+    const int y1 = mInputYs[index1];
+    const int x2 = mInputXs[index2];
+    const int y2 = mInputYs[index2];
+    const float previousDirection = getAngle(x0, y0, x1, y1);
+    const float nextDirection = getAngle(x1, y1, x2, y2);
+    const float directionDiff = getAngleDiff(previousDirection, nextDirection);
+    return directionDiff;
+}
+
+// Updates probabilities of aligning to some keys and skipping.
+// Word suggestion should be based on this probabilities.
+void ProximityInfoState::updateAlignPointProbabilities() {
+    static const float MIN_PROBABILITY = 0.00001f;
+    static const float SKIP_FIRST_POINT_PROBABILITY = 0.01f;
+    static const float SKIP_LAST_POINT_PROBABILITY = 0.1f;
+    static const float ANGLE_RATE = 0.8f;
+    static const float DEEP_CORNER_ANGLE_THRESHOLD = M_PI_F * 0.5f;
+    static const float SKIP_DEEP_CORNER_PROBABILITY = 0.3f;
+    static const float CORNER_ANGLE_THRESHOLD = M_PI_F * 35.0f / 180.0f;
+    static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F * 15.0f / 180.0f;
+    static const float SKIP_CORNER_PROBABILITY = 0.5f;
+    static const float SLOW_STRAIGHT_WEIGHT = 0.8f;
+    static const float CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION = 0.0f;
+
+    mCharProbabilities.resize(mInputSize);
+    // Calculates probabilities of using a point as a correlated point with the character
+    // for each point.
+    for (int i = 0; i < mInputSize; ++i) {
+        // First, calculates skip probability. Starts form 100%.
+        // Note that all values that are multiplied to this probability should be in [0.0, 1.0];
+        float skipProbability = 1.0f;
+        const float speed = getRelativeSpeed(i);
+
+        // Adjusts skip probability by a rate depending on speed.
+        skipProbability *= min(1.0f, speed);
+        if (i == 0) {
+            skipProbability *= SKIP_FIRST_POINT_PROBABILITY;
+        } else if (i == mInputSize - 1) {
+            skipProbability *= SKIP_LAST_POINT_PROBABILITY;
+        } else {
+            const float currentAngle = getPointAngle(i);
+
+            // Adjusts skip probability by a rate depending on angle.
+            // ANGLE_RATE of skipProbability is adjusted by current angle.
+            skipProbability *= max((M_PI_F - currentAngle) / M_PI_F, 0.0f) * ANGLE_RATE +
+                    (1.0f - ANGLE_RATE);
+            if (currentAngle > DEEP_CORNER_ANGLE_THRESHOLD) {
+                skipProbability *= SKIP_DEEP_CORNER_PROBABILITY;
+            }
+            const float prevAngle = getPointsAngle(i, i - 1, i - 2);
+            if (prevAngle < STRAIGHT_ANGLE_THRESHOLD && currentAngle > CORNER_ANGLE_THRESHOLD) {
+                skipProbability *= SKIP_CORNER_PROBABILITY;
+            }
+            if (currentAngle < STRAIGHT_ANGLE_THRESHOLD) {
+                // Adjusts skip probability by speed.
+                skipProbability *= min(1.0f, speed * SLOW_STRAIGHT_WEIGHT);
+            }
+        }
+
+        // probabilities must be in [0.0, 1.0];
+        ASSERT(skipProbability >= 0.0f);
+        ASSERT(skipProbability <= 1.0f);
+
+        mCharProbabilities[i][NOT_AN_INDEX] = skipProbability;
+        // Second, calculates key probabilities by dividing the rest probability
+        // (1.0f - skipProbability).
+        const float inputCharProbability = 1.0f - skipProbability;
+        // Summing up probability densities of all near keys.
+        float sumOfProbabilityDensityOfNearKeys = 0.0f;
+        const float sigma = speed;
+        NormalDistribution distribution(CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
+        for (int j = 0; j < mProximityInfo->getKeyCount(); ++j) {
+            if (mNearKeysVector[i].test(j)) {
+                const float distance = sqrtf(getPointToKeyByIdLength(i, j));
+                sumOfProbabilityDensityOfNearKeys += distribution.getProbabilityDensity(distance);
+            }
+        }
+        for (int j = 0; j < mProximityInfo->getKeyCount(); ++j) {
+            if (mNearKeysVector[i].test(j)) {
+                const float distance = sqrtf(getPointToKeyByIdLength(i, j));
+                const float probabilityDessity = distribution.getProbabilityDensity(distance);
+                // inputCharProbability divided to the probability for each near key.
+                const float probability = inputCharProbability * probabilityDessity
+                        / sumOfProbabilityDensityOfNearKeys;
+                if (probability > MIN_PROBABILITY) {
+                    mCharProbabilities[i][j] = probability;
+                }
+            }
+        }
+    }
+
+    // Decrease key probabilities of points which don't have the highest probability of that key
+    // among nearby points. Probabilities of the first point and the last point are not suppressed.
+    for (int i = 1; i < mInputSize - 1; ++i) {
+        // forward
+        for (int j = i + 1; j < mInputSize; ++j) {
+            if (suppressCharProbabilities(i, j)) {
+                break;
+            }
+        }
+        // backward
+        for (int j = i - 1; j >= 0; --j) {
+            if (suppressCharProbabilities(i, j)) {
+                break;
+            }
+        }
+    }
+
+    if (DEBUG_POINTS_PROBABILITY) {
+        for (int i = 0; i < mInputSize; ++i) {
+            std::stringstream sstream;
+            sstream << i << ", ";
+            for (hash_map_compat<int, float>::iterator it = mCharProbabilities[i].begin();
+                    it != mCharProbabilities[i].end(); ++it) {
+                sstream << it->first
+                        << "("
+                        << static_cast<char>(mProximityInfo->getCodePointOf(it->first))
+                        << "):"
+                        << it->second
+                        << ", ";
+            }
+            AKLOGI("%s", sstream.str().c_str());
+        }
+    }
+}
+
+// Decreases char probabilities of index0 by checking probabilities of a near point (index1).
+bool ProximityInfoState::suppressCharProbabilities(const int index0, const int index1) {
+    ASSERT(0 <= index0 && index0 < mInputSize);
+    ASSERT(0 <= index1 && index1 < mInputSize);
+    static const float SUPPRESSION_LENGTH_WEIGHT = 1.5f;
+    const float keyWidthFloat = static_cast<float>(mProximityInfo->getMostCommonKeyWidth());
+    const float diff = fabsf(static_cast<float>(mLengthCache[index0] - mLengthCache[index1]));
+    if (diff > keyWidthFloat * SUPPRESSION_LENGTH_WEIGHT) {
+        return false;
+    }
+    // Summing up decreased amount of probabilities from 0%.
+    float sumOfAdjustedProbabilities = 0.0f;
+    const float suppressionRate = diff / keyWidthFloat / SUPPRESSION_LENGTH_WEIGHT;
+    for (hash_map_compat<int, float>::iterator it = mCharProbabilities[index0].begin();
+            it != mCharProbabilities[index0].end(); ++it) {
+        hash_map_compat<int, float>::const_iterator it2 =
+                mCharProbabilities[index1].find(it->first);
+        if (it2 != mCharProbabilities[index1].end() && it->second < it2->second) {
+            const float newProbability = it->second * suppressionRate;
+            sumOfAdjustedProbabilities += it->second - newProbability;
+            it->second = newProbability;
+        }
+    }
+    // All decreased amount of probabilities are added to the probability of skipping.
+    mCharProbabilities[index0][NOT_AN_INDEX] += sumOfAdjustedProbabilities;
+    return true;
+}
+
+// Get a word that is detected by tracing highest probability sequence into charBuf and returns
+// probability of generating the word.
+float ProximityInfoState::getHighestProbabilitySequence(uint16_t *const charBuf) const {
+    int buf[mInputSize];
+    // Maximum probabilities of each point are multiplied to 100%.
+    float probability = 1.0f;
+    // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
+    for (int i = 0; i < mInputSize; ++i) {
+        float maxProbability = 0.0f;
+        for (hash_map_compat<int, float>::const_iterator it = mCharProbabilities[i].begin();
+                it != mCharProbabilities[i].end(); ++it) {
+            if (it->second > maxProbability) {
+                maxProbability = it->second;
+                buf[i] = it->first;
+            }
+        }
+        probability *= maxProbability;
+    }
+    int index = 0;
+    for (int i = 0; i < mInputSize && index < MAX_WORD_LENGTH_INTERNAL - 1; ++i) {
+        if (buf[i] != NOT_AN_INDEX) {
+            charBuf[index] = mProximityInfo->getCodePointOf(buf[i]);
+            index++;
+        }
+    }
+    charBuf[index] = '\0';
+    return probability;
 }
 
 } // namespace latinime

@@ -55,8 +55,8 @@ class ProximityInfoState {
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
-              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mNearKeysVector(),
-              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
+              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mCharProbabilities(),
+              mNearKeysVector(), mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -213,7 +213,9 @@ class ProximityInfoState {
         return mIsContinuationPossible;
     }
 
-    float getPointToKeyLength(const int inputIndex, const int charCode, const float scale) const;
+    float getPointToKeyLength(const int inputIndex, const int charCode) const;
+
+    float getPointToKeyByIdLength(const int inputIndex, const int keyId) const;
 
     int getSpaceY() const;
 
@@ -223,6 +225,12 @@ class ProximityInfoState {
     float getRelativeSpeed(const int index) const {
         return mRelativeSpeeds[index];
     }
+
+    float getPointAngle(const int index) const;
+    // Returns angle of three points. x, y, and z are indices.
+    float getPointsAngle(const int index0, const int index1, const int index2) const;
+
+    float getHighestProbabilitySequence(uint16_t *const charBuf) const;
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
@@ -265,6 +273,8 @@ class ProximityInfoState {
     bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
             const int *const yCoordinates, const int *const times);
     void popInputData();
+    void updateAlignPointProbabilities();
+    bool suppressCharProbabilities(const int index1, const int index2);
 
     // const
     const ProximityInfo *mProximityInfo;
@@ -286,6 +296,8 @@ class ProximityInfoState {
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
     std::vector<float> mRelativeSpeeds;
+    // probabilities of skipping or mapping to a key for each point.
+    std::vector<hash_map_compat<int, float> > mCharProbabilities;
     std::vector<NearKeycodesSet> mNearKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
