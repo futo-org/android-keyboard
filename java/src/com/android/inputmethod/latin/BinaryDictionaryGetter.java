@@ -350,7 +350,7 @@ final class BinaryDictionaryGetter {
     // of the dictionary would lose whitelist functionality.
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
         // Only for English - other languages didn't have a whitelist, hence this
-        // ad-hock ## HACK ##
+        // ad-hoc ## HACK ##
         if (!Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) return true;
 
         FileInputStream inStream = null;
