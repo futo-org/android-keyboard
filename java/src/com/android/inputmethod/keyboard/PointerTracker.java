@@ -192,47 +192,32 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     gestureStrokeParams.mStaticTimeThresholdAfterFastTyping;
         }
 
-        private void recordTyping(final long eventTime) {
-            mLastTypingTime = eventTime;
-        }
-
-        private void recordLetterTyping(final long eventTime) {
-            mLastLetterTypingTime = eventTime;
-            // Reset gesture typing time
-            mLastBatchInputTime = 0;
-        }
-
-        private void recordGestureTyping(final long eventTime) {
-            mLastBatchInputTime = eventTime;
-            // Reset typing time.
-            mLastTypingTime = 0;
-        }
-
-        private boolean isInTyping() {
-            return mLastTypingTime != 0;
-        }
-
-        private boolean isInBatchInput() {
-            return mLastBatchInputTime != 0;
+        private boolean wasLastInputTyping() {
+            return mLastTypingTime >= mLastBatchInputTime;
         }
 
         public void onCodeInput(final int code, final long eventTime) {
-            if (Keyboard.isLetterCode(code) && code != Keyboard.CODE_SPACE) {
-                if (isInTyping()
-                        && eventTime - mLastTypingTime < mStaticTimeThresholdAfterFastTyping) {
-                    recordLetterTyping(eventTime);
+            // Record the letter typing time when
+            // 1. Letter keys are typed successively without any batch input in between.
+            // 2. A letter key is typed within the threshold time since the last any key typing.
+            // 3. A non-letter key is typed within the threshold time since the last letter key
+            // typing.
+            if (Character.isLetter(code)) {
+                if (wasLastInputTyping()
+                        || eventTime - mLastTypingTime < mStaticTimeThresholdAfterFastTyping) {
+                    mLastLetterTypingTime = eventTime;
                 }
             } else {
                 if (eventTime - mLastLetterTypingTime < mStaticTimeThresholdAfterFastTyping) {
                     // This non-letter typing should be treated as a part of fast typing.
-                    recordLetterTyping(eventTime);
+                    mLastLetterTypingTime = eventTime;
                 }
             }
-            recordTyping(eventTime);
+            mLastTypingTime = eventTime;
         }
 
         public void onEndBatchInput(final long eventTime) {
-            recordGestureTyping(eventTime);
+            mLastBatchInputTime = eventTime;
         }
 
         public long getLastLetterTypingTime() {
@@ -240,7 +225,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         public boolean needsToSuppressKeyPreviewPopup(final long eventTime) {
-            return !isInTyping() && isInBatchInput()
+            return !wasLastInputTyping()
                     && eventTime - mLastBatchInputTime < mSuppressKeyPreviewAfterBatchInputDuration;
         }
     }
@@ -851,10 +836,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             // Register move event on gesture tracker.
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, key);
             if (sInGesture) {
-                mTimerProxy.cancelLongPressTimer();
                 mCurrentKey = null;
                 setReleasedKeyGraphics(oldKey);
                 return;
+            }
+            if (mGestureStrokeWithPreviewPoints.hasDetectedFastMove()) {
+                mTimerProxy.cancelLongPressTimer();
             }
         }
 
