@@ -93,7 +93,7 @@ public class XmlDictInputOutput {
             final FusionDictionary dict = mDictionary;
             for (final String shortcutOnly : mShortcutsMap.keySet()) {
                 if (dict.hasWord(shortcutOnly)) continue;
-                dict.add(shortcutOnly, 0, mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
+                dict.add(shortcutOnly, 1, mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
             }
             mDictionary = null;
             mShortcutsMap.clear();
