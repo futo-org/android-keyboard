@@ -757,9 +757,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!sShouldHandleGesture) {
             return;
         }
-        // A gesture should start only from the letter key.
+        // A gesture should start only from a non-modifier key.
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
-                && !mIsShowingMoreKeysPanel && key != null && Keyboard.isLetterCode(key.mCode);
+                && !mIsShowingMoreKeysPanel && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
