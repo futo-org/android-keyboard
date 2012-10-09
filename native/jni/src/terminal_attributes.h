@@ -57,7 +57,6 @@ class TerminalAttributes {
                 outWord[i] = (uint16_t)codePoint;
             }
             *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
-            mPos += BinaryFormat::CHARACTER_ARRAY_TERMINATOR_SIZE;
             return i;
         }
     };
