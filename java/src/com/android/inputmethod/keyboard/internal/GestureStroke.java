@@ -190,8 +190,8 @@ public class GestureStroke {
         return mParams.mDynamicTimeThresholdFrom - decayedThreshold;
     }
 
-    public boolean isStartOfAGesture() {
-        if (mDetectFastMoveTime == 0) {
+    public final boolean isStartOfAGesture() {
+        if (!hasDetectedFastMove()) {
             return false;
         }
         final int size = mEventTimes.getLength();
@@ -200,6 +200,9 @@ public class GestureStroke {
         }
         final int lastIndex = size - 1;
         final int deltaTime = mEventTimes.get(lastIndex) - mDetectFastMoveTime;
+        if (deltaTime < 0) {
+            return false;
+        }
         final int deltaDistance = getDistance(
                 mXCoordinates.get(lastIndex), mYCoordinates.get(lastIndex),
                 mDetectFastMoveX, mDetectFastMoveY);
@@ -240,6 +243,10 @@ public class GestureStroke {
         mLastMajorEventY = y;
     }
 
+    public final boolean hasDetectedFastMove() {
+        return mDetectFastMoveTime > 0;
+    }
+
     private int detectFastMove(final int x, final int y, final int time) {
         final int size = mEventTimes.getLength();
         final int lastIndex = size - 1;
@@ -255,7 +262,7 @@ public class GestureStroke {
                 Log.d(TAG, String.format("[%d] detectFastMove: speed=%5.2f", mPointerId, speed));
             }
             // Equivalent to (pixels / msecs < mStartSpeedThreshold / MSEC_PER_SEC)
-            if (mDetectFastMoveTime == 0 && pixelsPerSec > mDetectFastMoveSpeedThreshold * msecs) {
+            if (!hasDetectedFastMove() && pixelsPerSec > mDetectFastMoveSpeedThreshold * msecs) {
                 if (DEBUG) {
                     final float speed = (float)pixelsPerSec / msecs / mKeyWidth;
                     Log.d(TAG, String.format(
@@ -306,11 +313,11 @@ public class GestureStroke {
         return currentTime > lastRecognitionTime + mParams.mRecognitionMinimumTime;
     }
 
-    public void appendAllBatchPoints(final InputPointers out) {
+    public final void appendAllBatchPoints(final InputPointers out) {
         appendBatchPoints(out, mEventTimes.getLength());
     }
 
-    public void appendIncrementalBatchPoints(final InputPointers out) {
+    public final void appendIncrementalBatchPoints(final InputPointers out) {
         appendBatchPoints(out, mIncrementalRecognitionSize);
     }
 
