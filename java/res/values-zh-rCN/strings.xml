@@ -31,7 +31,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
     <string name="general_category" msgid="1859088467017573195">"常规"</string>
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"手势输入"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"滑行输入"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"高级选项"</string>
@@ -61,9 +61,9 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"改动极大"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"下一个字词建议"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根据上一个字词提供建议"</string>
-    <string name="gesture_input" msgid="826951152254563827">"启用手势输入"</string>
+    <string name="gesture_input" msgid="826951152254563827">"启用滑行输入"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"以滑动方式写出字词中字母来输入字词"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"显示手势轨迹"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"显示滑行输入轨迹"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"动态漂浮预览"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用手势输入时显示建议字词"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
