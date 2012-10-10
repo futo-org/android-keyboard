@@ -212,7 +212,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // any subsequent post in this queue. However the queue itself is still fully functional!
         // If we have a way of resetting "queue.mQuiting" then we can continue using it as normal,
         // coming back to this method to run the messages.
-        MessageQueue queue = looper.getQueue();
+        MessageQueue queue = Looper.myQueue();
         try {
             // However there is no way of doing it externally, and mQuiting is private.
             // So... get out the big guns.
