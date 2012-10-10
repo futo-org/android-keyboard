@@ -88,17 +88,19 @@ public class BlueUnderlineTests extends InputTestsBase {
 
     public void testBlueUnderlineDisappearsWhenCursorMoved() {
         final String STRING_TO_TYPE = "tgis";
+        final int typedLength = STRING_TO_TYPE.length();
         final int NEW_CURSOR_POSITION = 0;
         type(STRING_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         // Simulate the onUpdateSelection() event
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         runMessages();
         // Here the blue underline has been set. testBlueUnderline() is testing for this already,
         // so let's not test it here again.
         // Now simulate the user moving the cursor.
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        mLatinIME.onUpdateSelection(typedLength, typedLength,
+                NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
         final SpanGetter span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
