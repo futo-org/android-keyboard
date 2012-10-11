@@ -56,7 +56,8 @@ class ProximityInfoState {
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
               mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mCharProbabilities(),
-              mNearKeysVector(), mTouchPositionCorrectionEnabled(false), mInputSize(0) {
+              mNearKeysVector(), mSearchKeysVector(),
+              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -214,7 +215,6 @@ class ProximityInfoState {
     }
 
     float getPointToKeyLength(const int inputIndex, const int charCode) const;
-
     float getPointToKeyByIdLength(const int inputIndex, const int keyId) const;
 
     int getSpaceY() const;
@@ -226,11 +226,21 @@ class ProximityInfoState {
         return mRelativeSpeeds[index];
     }
 
+    // get xy direction
+    float getDirection(const int x, const int y) const;
+
     float getPointAngle(const int index) const;
     // Returns angle of three points. x, y, and z are indices.
     float getPointsAngle(const int index0, const int index1, const int index2) const;
 
     float getHighestProbabilitySequence(uint16_t *const charBuf) const;
+
+    float getProbability(const int index, const int charCode) const;
+
+    float getLineToKeyDistance(
+            const int from, const int to, const int keyId, const bool extend) const;
+
+    bool isKeyInSerchKeysAfterIndex(const int index, const int keyId) const;
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
@@ -243,7 +253,7 @@ class ProximityInfoState {
             const int keyIndex, const int inputIndex) const;
 
     bool pushTouchPoint(const int inputIndex, const int nodeChar, int x, int y, const int time,
-            const bool sample, const bool isLastPoint,
+            const bool sample, const bool isLastPoint, const float sumAngle,
             NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances);
@@ -267,13 +277,13 @@ class ProximityInfoState {
             const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
     float getPointScore(
             const int x, const int y, const int time, const bool last, const float nearest,
-            const NearKeysDistanceMap *const currentNearKeysDistances,
+            const float sumAngle, const NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
     bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
             const int *const yCoordinates, const int *const times);
     void popInputData();
-    void updateAlignPointProbabilities();
+    void updateAlignPointProbabilities(const int start);
     bool suppressCharProbabilities(const int index1, const int index2);
 
     // const
@@ -298,7 +308,15 @@ class ProximityInfoState {
     std::vector<float> mRelativeSpeeds;
     // probabilities of skipping or mapping to a key for each point.
     std::vector<hash_map_compat<int, float> > mCharProbabilities;
+    // The vector for the key code set which holds nearby keys for each sampled input point
+    // 1. Used to calculate the probability of the key
+    // 2. Used to calculate mSearchKeysVector
     std::vector<NearKeycodesSet> mNearKeysVector;
+    // The vector for the key code set which holds nearby keys of some trailing sampled input points
+    // for each sampled input point. These nearby keys contain the next characters which can be in
+    // the dictionary. Specifically, currently we are looking for keys nearby trailing sampled
+    // inputs including the current input point.
+    std::vector<NearKeycodesSet> mSearchKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
