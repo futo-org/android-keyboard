@@ -243,7 +243,7 @@ public class GestureStroke {
         mLastMajorEventY = y;
     }
 
-    public final boolean hasDetectedFastMove() {
+    private final boolean hasDetectedFastMove() {
         return mDetectFastMoveTime > 0;
     }
 
