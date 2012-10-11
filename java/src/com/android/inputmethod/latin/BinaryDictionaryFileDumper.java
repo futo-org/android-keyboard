@@ -46,7 +46,7 @@ public final class BinaryDictionaryFileDumper {
     /**
      * The size of the temporary buffer to copy files.
      */
-    private static final int FILE_READ_BUFFER_SIZE = 1024;
+    private static final int FILE_READ_BUFFER_SIZE = 8192;
     // TODO: make the following data common with the native code
     private static final byte[] MAGIC_NUMBER_VERSION_1 =
             new byte[] { (byte)0x78, (byte)0xB1, (byte)0x00, (byte)0x00 };
@@ -149,7 +149,7 @@ public final class BinaryDictionaryFileDumper {
 
         final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
         final String finalFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
-        final String tempFileName = finalFileName + ".tmp";
+        final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
             InputStream originalSourceStream = null;
@@ -287,6 +287,7 @@ public final class BinaryDictionaryFileDumper {
      * @param input the stream to be copied.
      * @param output an output stream to copy the data to.
      */
+    // TODO: make output a BufferedOutputStream
     private static void checkMagicAndCopyFileTo(final BufferedInputStream input,
             final FileOutputStream output) throws FileNotFoundException, IOException {
         // Check the magic number
