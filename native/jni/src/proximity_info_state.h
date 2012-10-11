@@ -55,8 +55,8 @@ class ProximityInfoState {
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
-              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mCharProbabilities(),
-              mNearKeysVector(), mSearchKeysVector(),
+              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mDirections(),
+              mCharProbabilities(), mNearKeysVector(), mSearchKeysVector(),
               mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
@@ -226,6 +226,9 @@ class ProximityInfoState {
         return mRelativeSpeeds[index];
     }
 
+    float getDirection(const int index) const {
+        return mDirections[index];
+    }
     // get xy direction
     float getDirection(const int x, const int y) const;
 
@@ -306,6 +309,7 @@ class ProximityInfoState {
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
     std::vector<float> mRelativeSpeeds;
+    std::vector<float> mDirections;
     // probabilities of skipping or mapping to a key for each point.
     std::vector<hash_map_compat<int, float> > mCharProbabilities;
     // The vector for the key code set which holds nearby keys for each sampled input point

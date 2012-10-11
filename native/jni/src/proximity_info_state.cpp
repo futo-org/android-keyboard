@@ -108,6 +108,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mSearchKeysVector.clear();
         mRelativeSpeeds.clear();
         mCharProbabilities.clear();
+        mDirections.clear();
     }
     if (DEBUG_GEO_FULL) {
         AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
@@ -216,6 +217,13 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 mRelativeSpeeds[i] = speed / averageSpeed;
             }
         }
+
+        // Direction calculation.
+        mDirections.resize(mInputSize - 1);
+        for (int i = max(0, lastSavedInputSize - 1); i < mInputSize - 1; ++i) {
+            mDirections[i] = getDirection(i, i + 1);
+        }
+
     }
 
     if (DEBUG_GEO_FULL) {
