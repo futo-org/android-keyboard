@@ -109,7 +109,7 @@ class ProximityInfo {
     int getKeyCenterYOfCodePointG(int charCode) const;
     int getKeyCenterXOfKeyIdG(int keyId) const;
     int getKeyCenterYOfKeyIdG(int keyId) const;
-    int getKeyKeyDistanceG(int key0, int key1) const;
+    int getKeyKeyDistanceG(int keyId0, int keyId1) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);

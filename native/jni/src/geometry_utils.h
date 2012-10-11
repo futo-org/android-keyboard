@@ -90,8 +90,8 @@ static inline float pointToLineSegSquaredDistanceFloat(
 struct NormalDistribution {
     NormalDistribution(const float u, const float sigma)
             : mU(u), mSigma(sigma),
-              mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * sigma * sigma)),
-              mPreComputedExponentPart(-1.0f / (2.0f * sigma * sigma)) {}
+              mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * SQUARE_FLOAT(sigma))),
+              mPreComputedExponentPart(-1.0f / (2.0f * SQUARE_FLOAT(sigma))) {}
 
     float getProbabilityDensity(const float x) {
         const float shiftedX = x - mU;
