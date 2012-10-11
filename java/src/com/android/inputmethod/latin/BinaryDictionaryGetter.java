@@ -164,6 +164,18 @@ final class BinaryDictionaryGetter {
     }
 
     /**
+     * Generates a unique temporary file name in the app cache directory.
+     *
+     * This is unique as long as it doesn't get called twice in the same millisecond by the same
+     * thread, which should be more than enough for our purposes.
+     */
+    public static String getTempFileName(String id, Context context) {
+        final String fileName = replaceFileNameDangerousCharacters(id);
+        return context.getCacheDir() + File.separator + fileName + "."
+                + Thread.currentThread().getId() + "." + System.currentTimeMillis();
+    }
+
+    /**
      * Returns a file address from a resource, or null if it cannot be opened.
      */
     private static AssetFileAddress loadFallbackResource(final Context context,
