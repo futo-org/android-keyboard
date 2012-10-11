@@ -637,6 +637,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             sLastRecognitionTime = 0;
             mListener.onStartBatchInput();
         }
+        mTimerProxy.cancelLongPressTimer();
         final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
@@ -836,7 +837,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             // Register move event on gesture tracker.
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, key);
             if (sInGesture) {
-                mTimerProxy.cancelLongPressTimer();
                 mCurrentKey = null;
                 setReleasedKeyGraphics(oldKey);
                 return;
