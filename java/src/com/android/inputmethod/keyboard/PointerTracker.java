@@ -836,12 +836,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             // Register move event on gesture tracker.
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, key);
             if (sInGesture) {
+                mTimerProxy.cancelLongPressTimer();
                 mCurrentKey = null;
                 setReleasedKeyGraphics(oldKey);
                 return;
-            }
-            if (mGestureStrokeWithPreviewPoints.hasDetectedFastMove()) {
-                mTimerProxy.cancelLongPressTimer();
             }
         }
 
