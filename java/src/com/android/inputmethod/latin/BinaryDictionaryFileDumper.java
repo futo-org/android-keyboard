@@ -149,7 +149,13 @@ public final class BinaryDictionaryFileDumper {
 
         final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
         final String finalFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
-        final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
+        String tempFileName;
+        try {
+            tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
+        } catch (IOException e) {
+            Log.e(TAG, "Can't open the temporary file", e);
+            return null;
+        }
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
             InputStream originalSourceStream = null;
