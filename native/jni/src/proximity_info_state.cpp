@@ -963,7 +963,7 @@ bool ProximityInfoState::suppressCharProbabilities(const int index0, const int i
 // Get a word that is detected by tracing highest probability sequence into charBuf and returns
 // probability of generating the word.
 float ProximityInfoState::getHighestProbabilitySequence(uint16_t *const charBuf) const {
-    static const float LOG_PROBABILITY_MARGIN = 0.2f;
+    static const float DEMOTION_LOG_PROBABILITY = 0.3f;
     int index = 0;
     float sumLogProbability = 0.0f;
     // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
@@ -973,7 +973,7 @@ float ProximityInfoState::getHighestProbabilitySequence(uint16_t *const charBuf)
         for (hash_map_compat<int, float>::const_iterator it = mCharProbabilities[i].begin();
                 it != mCharProbabilities[i].end(); ++it) {
             const float logProbability = (it->first != NOT_AN_INDEX)
-                    ? it->second + LOG_PROBABILITY_MARGIN : it->second;
+                    ? it->second + DEMOTION_LOG_PROBABILITY : it->second;
             if (logProbability < minLogProbability) {
                 minLogProbability = logProbability;
                 character = it->first;
