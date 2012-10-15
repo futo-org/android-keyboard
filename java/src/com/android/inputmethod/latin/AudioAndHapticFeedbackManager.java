@@ -31,17 +31,15 @@ import com.android.inputmethod.latin.VibratorUtils;
  * complexity of settings and the like.
  */
 public final class AudioAndHapticFeedbackManager {
-    final private SettingsValues mSettingsValues;
-    final private AudioManager mAudioManager;
-    final private VibratorUtils mVibratorUtils;
+    private final AudioManager mAudioManager;
+    private final VibratorUtils mVibratorUtils;
+
+    private SettingsValues mSettingsValues;
     private boolean mSoundOn;
 
-    public AudioAndHapticFeedbackManager(final LatinIME latinIme,
-            final SettingsValues settingsValues) {
-        mSettingsValues = settingsValues;
+    public AudioAndHapticFeedbackManager(final LatinIME latinIme) {
         mVibratorUtils = VibratorUtils.getInstance(latinIme);
         mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
-        mSoundOn = reevaluateIfSoundIsOn();
     }
 
     public void hapticAndAudioFeedback(final int primaryCode,
@@ -51,7 +49,7 @@ public final class AudioAndHapticFeedbackManager {
     }
 
     private boolean reevaluateIfSoundIsOn() {
-        if (!mSettingsValues.mSoundOn || mAudioManager == null) {
+        if (mSettingsValues == null || !mSettingsValues.mSoundOn || mAudioManager == null) {
             return false;
         } else {
             return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
@@ -81,8 +79,7 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
-    // TODO: make this private when LatinIME does not call it any more
-    public void vibrate(final View viewToPerformHapticFeedbackOn) {
+    private void vibrate(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
@@ -96,6 +93,11 @@ public final class AudioAndHapticFeedbackManager {
         } else if (mVibratorUtils != null) {
             mVibratorUtils.vibrate(mSettingsValues.mKeypressVibrationDuration);
         }
+    }
+
+    public void onSettingsChanged(final SettingsValues settingsValues) {
+        mSettingsValues = settingsValues;
+        mSoundOn = reevaluateIfSoundIsOn();
     }
 
     public void onRingerModeChanged() {

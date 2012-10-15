@@ -163,8 +163,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private int mDeleteCount;
     private long mLastKeyTime;
 
-    private AudioAndHapticFeedbackManager mFeedbackManager;
-
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
 
@@ -438,7 +436,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         };
         mCurrentSettings = job.runInLocale(mResources, mSubtypeSwitcher.getCurrentSubtypeLocale());
-        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mCurrentSettings);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
@@ -2251,13 +2248,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.postUpdateSuggestionStrip();
     }
 
-    // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
-    // {@link KeyboardSwitcher}. Called from KeyboardSwitcher
-    public void hapticAndAudioFeedback(final int primaryCode) {
-        mFeedbackManager.hapticAndAudioFeedback(
-                primaryCode, mKeyboardSwitcher.getMainKeyboardView());
-    }
-
     // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
     // key is depressed; release matching call is onReleaseKey below.
     @Override
@@ -2303,7 +2293,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mSubtypeSwitcher.onNetworkStateChanged(intent);
             } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-                mFeedbackManager.onRingerModeChanged();
+                mKeyboardSwitcher.onRingerModeChanged();
             }
         }
     };

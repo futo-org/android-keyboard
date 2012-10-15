@@ -29,6 +29,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
+import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.InputView;
@@ -65,6 +66,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
     };
 
+    private AudioAndHapticFeedbackManager mFeedbackManager;
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
     private boolean mForceNonDistinctMultitouch;
@@ -102,6 +104,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private void initInternal(LatinIME latinIme, SharedPreferences prefs) {
         mLatinIME = latinIme;
         mResources = latinIme.getResources();
+        mFeedbackManager = new AudioAndHapticFeedbackManager(latinIme);
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
@@ -147,11 +150,16 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
+            mFeedbackManager.onSettingsChanged(settingsValues);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
             return;
         }
+    }
+
+    public void onRingerModeChanged() {
+        mFeedbackManager.onRingerModeChanged();
     }
 
     public void saveKeyboardState() {
@@ -202,7 +210,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void onPressKey(int code) {
         if (isVibrateAndSoundFeedbackRequired()) {
-            mLatinIME.hapticAndAudioFeedback(code);
+            mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
         }
         mState.onPressKey(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
@@ -314,7 +322,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void hapticAndAudioFeedback(int code) {
-        mLatinIME.hapticAndAudioFeedback(code);
+        mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
     }
 
     public void onLongPressTimeout(int code) {
