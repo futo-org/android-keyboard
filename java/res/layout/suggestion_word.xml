@@ -18,6 +18,8 @@
 */
 -->
 
+<!-- Provide a haptic feedback by ourselves based on the keyboard settings.
+     We just need to ignore the system's haptic feedback settings. -->
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -29,6 +31,7 @@
     android:paddingTop="0dp"
     android:paddingRight="@dimen/suggestion_padding"
     android:paddingBottom="0dp"
+    android:hapticFeedbackEnabled="false"
     android:focusable="false"
     android:clickable="false"
     android:singleLine="true"
