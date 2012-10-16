@@ -1429,6 +1429,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // The following is necessary for the case where the user typed something but didn't
             // manual pick it and didn't input any separator.
             mSpaceState = SPACE_STATE_PHANTOM;
+        } else {
+            final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+            if (Constants.NOT_A_CODE != codePointBeforeCursor
+                    && !Character.isWhitespace(codePointBeforeCursor)) {
+                mSpaceState = SPACE_STATE_PHANTOM;
+            }
         }
         mConnection.endBatchEdit();
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
@@ -1564,6 +1570,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // We have a TLD (or something that looks like this): make sure we don't add
         // a space even if currently in phantom mode.
         mSpaceState = SPACE_STATE_NONE;
+        // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
         final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_PERIOD) {
@@ -2284,6 +2291,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // This is a stopgap solution to avoid leaving a high surrogate alone in a text view.
             // In the future, we need to deprecate deteleSurroundingText() and have a surrogate
             // pair-friendly way of deleting characters in InputConnection.
+            // TODO: use getCodePointBeforeCursor instead to improve performance
             final CharSequence lastChar = mConnection.getTextBeforeCursor(1, 0);
             if (!TextUtils.isEmpty(lastChar) && Character.isHighSurrogate(lastChar.charAt(0))) {
                 mConnection.deleteSurroundingText(1, 0);
