@@ -389,7 +389,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public int getManualCapsMode() {
+    public int getKeyboardShiftMode() {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) {
             return WordComposer.CAPS_MODE_OFF;
@@ -400,6 +400,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             return WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED;
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
             return WordComposer.CAPS_MODE_MANUAL_SHIFTED;
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+            return WordComposer.CAPS_MODE_AUTO_SHIFTED;
         default:
             return WordComposer.CAPS_MODE_OFF;
         }
