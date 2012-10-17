@@ -1119,8 +1119,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // Factor in auto-caps and manual caps and compute the current caps mode.
     private int getActualCapsMode() {
-        final int manual = mKeyboardSwitcher.getManualCapsMode();
-        if (manual != WordComposer.CAPS_MODE_OFF) return manual;
+        final int keyboardShiftMode = mKeyboardSwitcher.getKeyboardShiftMode();
+        if (keyboardShiftMode != WordComposer.CAPS_MODE_AUTO_SHIFTED) return keyboardShiftMode;
         final int auto = getCurrentAutoCapsState();
         if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
             return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
