@@ -194,12 +194,11 @@ public final class KeyboardLayoutSet {
         final Params params = mParams;
         final boolean isSymbols = (keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS
                 || keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean noLanguage = SubtypeLocale.isNoLanguage(params.mSubtype);
-        final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !noLanguage;
-        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
+        final boolean hasShortcutKey = params.mVoiceKeyEnabled
+                && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mDeviceFormFactor,
                 params.mOrientation, params.mWidth, params.mMode, params.mEditorInfo,
-                params.mNoSettingsKey, voiceKeyEnabled, hasShortcutKey,
+                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey,
                 params.mLanguageSwitchKeyEnabled);
     }
 
