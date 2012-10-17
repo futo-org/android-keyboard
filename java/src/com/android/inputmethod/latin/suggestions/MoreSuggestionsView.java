@@ -105,6 +105,10 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
         }
     }
 
+    public void updateKeyboardGeometry(final int keyHeight) {
+        mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
+    }
+
     @Override
     public void setKeyboard(Keyboard keyboard) {
         super.setKeyboard(keyboard);
