@@ -235,7 +235,14 @@ public final class RichInputConnection {
                 hasSpaceBefore);
     }
 
+    public int getCodePointBeforeCursor() {
+        if (mCommittedTextBeforeComposingText.length() < 1) return Constants.NOT_A_CODE;
+        return Character.codePointBefore(mCommittedTextBeforeComposingText,
+                mCommittedTextBeforeComposingText.length());
+    }
+
     public CharSequence getTextBeforeCursor(final int i, final int j) {
+        // TODO: use mCommittedTextBeforeComposingText if possible to improve performance
         mIC = mParent.getCurrentInputConnection();
         if (null != mIC) return mIC.getTextBeforeCursor(i, j);
         return null;
