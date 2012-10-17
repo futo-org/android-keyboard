@@ -180,8 +180,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     static final class BogusMoveEventDetector {
         // Move these thresholds to resource.
-        private static final float BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD = 0.70f; // in keyWidth
-        private static final float BOGUS_MOVE_RADIUS_THRESHOLD = 1.50f; // in keyWidth
+        // These thresholds' unit is a diagonal length of a key.
+        private static final float BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD = 0.53f;
+        private static final float BOGUS_MOVE_RADIUS_THRESHOLD = 1.14f;
 
         private int mAccumulatedDistanceThreshold;
         private int mRadiusThreshold;
@@ -191,10 +192,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         private int mActualDownX;
         private int mActualDownY;
 
-        public void setKeyboardGeometry(final int keyWidth) {
+        public void setKeyboardGeometry(final int keyWidth, final int keyHeight) {
+            final float keyDiagonal = (float)Math.hypot(keyWidth, keyHeight);
             mAccumulatedDistanceThreshold = (int)(
-                    keyWidth * BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD);
-            mRadiusThreshold = (int)(keyWidth * BOGUS_MOVE_RADIUS_THRESHOLD);
+                    keyDiagonal * BOGUS_MOVE_ACCUMULATED_DISTANCE_THRESHOLD);
+            mRadiusThreshold = (int)(keyDiagonal * BOGUS_MOVE_RADIUS_THRESHOLD);
         }
 
         public void onActualDownEvent(final int x, final int y) {
@@ -210,8 +212,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mAccumulatedDistanceFromDownKey += distance;
         }
 
-        public boolean hasTraveledLongDistance() {
-            return mAccumulatedDistanceFromDownKey >= mAccumulatedDistanceThreshold;
+        public boolean hasTraveledLongDistance(final int x, final int y) {
+            final int dx = Math.abs(x - mActualDownX);
+            final int dy = Math.abs(y - mActualDownY);
+            // A bogus move event should be a horizontal movement. A vertical movement might be
+            // a sloppy typing and should be ignored.
+            return dx >= dy && mAccumulatedDistanceFromDownKey >= mAccumulatedDistanceThreshold;
         }
 
         /* package */ int getDistanceFromDownEvent(final int x, final int y) {
@@ -514,7 +520,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
-        mGestureStrokeWithPreviewPoints.setKeyboardGeometry(mKeyboard.mMostCommonKeyWidth);
+        final int keyWidth = mKeyboard.mMostCommonKeyWidth;
+        final int keyHeight = mKeyboard.mMostCommonKeyHeight;
+        mGestureStrokeWithPreviewPoints.setKeyboardGeometry(keyWidth);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (mDrawingProxy != null) {
@@ -522,9 +530,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             }
             // Keep {@link #mCurrentKey} that comes from previous keyboard.
         }
-        final int keyWidth = mKeyboard.mMostCommonKeyWidth;
         mPhantonSuddenMoveThreshold = (int)(keyWidth * PHANTOM_SUDDEN_MOVE_THRESHOLD);
-        mBogusMoveEventDetector.setKeyboardGeometry(keyWidth);
+        mBogusMoveEventDetector.setKeyboardGeometry(keyWidth, keyHeight);
     }
 
     @Override
@@ -962,11 +969,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                             && sTimeRecorder.isInFastTyping(eventTime)
                             && mBogusMoveEventDetector.isCloseToActualDownEvent(x, y)) {
                         if (DEBUG_MODE) {
+                            final float keyDiagonal = (float)Math.hypot(
+                                    mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
                             final float radiusRatio =
-                                    (float)mBogusMoveEventDetector.getDistanceFromDownEvent(x, y)
-                                    / mKeyboard.mMostCommonKeyWidth;
+                                    mBogusMoveEventDetector.getDistanceFromDownEvent(x, y)
+                                    / keyDiagonal;
                             Log.w(TAG, String.format("[%d] onMoveEvent:"
-                                    + " bogus down-move-up event (raidus=%.2f keyWidth) is "
+                                    + " bogus down-move-up event (raidus=%.2f key diagonal) is "
                                     + " translated to up[%d,%d,%s]/down[%d,%d,%s] events",
                                     mPointerId, radiusRatio,
                                     lastX, lastY, Keyboard.printableCode(oldKey.mCode),
@@ -1146,24 +1155,24 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             final int distanceFromKeyEdgeSquared = curKey.squaredDistanceToEdge(x, y);
             if (distanceFromKeyEdgeSquared >= keyHysteresisDistanceSquared) {
                 if (DEBUG_MODE) {
-                    final int keyWidth = mKeyboard.mMostCommonKeyWidth;
-                    final float distanceToEdgeRatio = (float)distanceFromKeyEdgeSquared
-                            / (keyWidth * keyWidth);
+                    final float distanceToEdgeRatio = (float)Math.sqrt(distanceFromKeyEdgeSquared)
+                            / mKeyboard.mMostCommonKeyWidth;
                     Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
-                            +" %.2f keyWidth from key edge",
+                            +" %.2f key width from key edge",
                             mPointerId, distanceToEdgeRatio));
                 }
                 return true;
             }
             if (sNeedsProximateBogusDownMoveUpEventHack && !mIsAllowedSlidingKeyInput
                     && sTimeRecorder.isInFastTyping(eventTime)
-                    && mBogusMoveEventDetector.hasTraveledLongDistance()) {
+                    && mBogusMoveEventDetector.hasTraveledLongDistance(x, y)) {
                 if (DEBUG_MODE) {
+                    final float keyDiagonal = (float)Math.hypot(
+                            mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
                     final float lengthFromDownRatio =
-                            (float)mBogusMoveEventDetector.mAccumulatedDistanceFromDownKey
-                            / mKeyboard.mMostCommonKeyWidth;
+                            mBogusMoveEventDetector.mAccumulatedDistanceFromDownKey / keyDiagonal;
                     Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
-                            + " %.2f keyWidth from virtual down point",
+                            + " %.2f key diagonal from virtual down point",
                             mPointerId, lengthFromDownRatio));
                 }
                 return true;
