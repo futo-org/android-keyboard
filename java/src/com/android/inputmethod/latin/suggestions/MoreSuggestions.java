@@ -50,10 +50,11 @@ public final class MoreSuggestions extends Keyboard {
             super();
         }
 
+        // TODO: Remove {@link MoreSuggestionsView} argument.
         public int layout(final SuggestedWords suggestions, final int fromPos, final int maxWidth,
                 final int minWidth, final int maxRow, final MoreSuggestionsView view) {
             clearKeys();
-            final Resources res = view.getContext().getResources();
+            final Resources res = view.getResources();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
             final int padding = (int) res.getDimension(
@@ -180,6 +181,7 @@ public final class MoreSuggestions extends Keyboard {
             load(xmlId, parentKeyboard.mId);
             mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
 
+            mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
             final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
                     mPaneView);
             mFromPos = fromPos;

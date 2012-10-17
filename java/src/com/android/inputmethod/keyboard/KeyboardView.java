@@ -105,7 +105,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
 
     // XML attributes
-    private final KeyVisualAttributes mKeyVisualAttributes;
+    protected final KeyVisualAttributes mKeyVisualAttributes;
     private final int mKeyLabelHorizontalPadding;
     private final float mKeyHintLetterPadding;
     private final float mKeyPopupHintLetterPadding;
@@ -733,6 +733,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return width;
     }
 
+    // TODO: Remove this method.
     public float getLabelWidth(final String label, final Paint paint) {
         paint.getTextBounds(label, 0, label.length(), mTextBounds);
         return mTextBounds.width();
