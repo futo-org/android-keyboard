@@ -798,7 +798,8 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t *const inWord
             // into inputIndex if there is a match.
             const bool isAlike = testCharGroupForContinuedLikeness(flags, root, pos, inWord,
                     inputIndex, inputSize, newWord, &inputIndex, &pos);
-            if (isAlike && (BinaryFormat::FLAG_IS_TERMINAL & flags) && (inputIndex == inputSize)) {
+            if (isAlike && (!(BinaryFormat::FLAG_IS_NOT_A_WORD & flags))
+                    && (BinaryFormat::FLAG_IS_TERMINAL & flags) && (inputIndex == inputSize)) {
                 const int frequency = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
                 onTerminalWordLike(frequency, newWord, inputIndex, outWord, &maxFreq);
             }
