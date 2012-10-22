@@ -80,6 +80,7 @@ public class Dicttool {
         } catch (Exception e) {
             System.out.println("Exception while processing command "
                     + command.getClass().getSimpleName() + " : " + e);
+            e.printStackTrace();
             return;
         }
     }
