@@ -59,12 +59,12 @@ public abstract class Dictionary {
     // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
     // and more)
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo);
+            final String prevWord, final ProximityInfo proximityInfo);
 
     // The default implementation of this method ignores sessionId.
     // Subclasses that want to use sessionId need to override this method.
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
+            final String prevWord, final ProximityInfo proximityInfo, final int sessionId) {
         return getSuggestions(composer, prevWord, proximityInfo);
     }
 
@@ -73,9 +73,9 @@ public abstract class Dictionary {
      * @param word the word to search for. The search should be case-insensitive.
      * @return true if the word exists, false otherwise
      */
-    abstract public boolean isValidWord(CharSequence word);
+    abstract public boolean isValidWord(final String word);
 
-    public int getFrequency(CharSequence word) {
+    public int getFrequency(final String word) {
         return NOT_A_PROBABILITY;
     }
 
@@ -87,7 +87,7 @@ public abstract class Dictionary {
      * @param typedWord the word to compare with
      * @return true if they are the same, false otherwise.
      */
-    protected boolean same(final char[] word, final int length, final CharSequence typedWord) {
+    protected boolean same(final char[] word, final int length, final String typedWord) {
         if (typedWord.length() != length) {
             return false;
         }

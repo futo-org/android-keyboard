@@ -44,7 +44,7 @@ public final class LastComposedWord {
     public final String mTypedWord;
     public final String mCommittedWord;
     public final String mSeparatorString;
-    public final CharSequence mPrevWord;
+    public final String mPrevWord;
     public final InputPointers mInputPointers = new InputPointers(BinaryDictionary.MAX_WORD_LENGTH);
 
     private boolean mActive;
@@ -56,7 +56,7 @@ public final class LastComposedWord {
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
             final String typedWord, final String committedWord,
-            final String separatorString, final CharSequence prevWord) {
+            final String separatorString, final String prevWord) {
         mPrimaryKeyCodes = primaryKeyCodes;
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);

@@ -281,7 +281,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         waitForDictionaryToBeLoaded();
     }
 
-    protected void pickSuggestionManually(final int index, final CharSequence suggestion) {
+    protected void pickSuggestionManually(final int index, final String suggestion) {
         mLatinIME.pickSuggestionManually(index, suggestion);
     }
 

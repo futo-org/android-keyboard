@@ -268,7 +268,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
                                 dictInfo.mProximityInfo);
                 for (final SuggestedWordInfo suggestion : suggestions) {
-                    final String suggestionStr = suggestion.mWord.toString();
+                    final String suggestionStr = suggestion.mWord;
                     suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
                             suggestionStr.length(), suggestion.mScore);
                 }

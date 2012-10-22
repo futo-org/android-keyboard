@@ -51,11 +51,11 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> 
             new Dictionary(Dictionary.TYPE_MAIN) {
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                        final CharSequence prevWord, final ProximityInfo proximityInfo) {
+                        final String prevWord, final ProximityInfo proximityInfo) {
                     return noSuggestions;
                 }
                 @Override
-                public boolean isValidWord(CharSequence word) {
+                public boolean isValidWord(final String word) {
                     // This is never called. However if for some strange reason it ever gets
                     // called, returning true is less destructive (it will not underline the
                     // word in red).

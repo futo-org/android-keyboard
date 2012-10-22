@@ -123,7 +123,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
 
     @Override
     protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo) {
         // Inhibit suggestions (not predictions) for user history for now. Removing this method
         // is enough to use it through the standard ExpandableDictionary way.
         return null;
@@ -133,7 +133,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
      * Return whether the passed charsequence is in the dictionary.
      */
     @Override
-    public synchronized boolean isValidWord(final CharSequence word) {
+    public synchronized boolean isValidWord(final String word) {
         // TODO: figure out what is the correct thing to do here.
         return false;
     }
@@ -146,7 +146,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public int addToUserHistory(final String word1, String word2, boolean isValid) {
+    public int addToUserHistory(final String word1, final String word2, final boolean isValid) {
         if (word2.length() >= BinaryDictionary.MAX_WORD_LENGTH ||
                 (word1 != null && word1.length() >= BinaryDictionary.MAX_WORD_LENGTH)) {
             return -1;
@@ -176,7 +176,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         return -1;
     }
 
-    public boolean cancelAddingUserHistory(String word1, String word2) {
+    public boolean cancelAddingUserHistory(final String word1, final String word2) {
         if (mBigramListLock.tryLock()) {
             try {
                 if (mBigramList.removeBigram(word1, word2)) {
@@ -227,7 +227,8 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         final ExpandableDictionary dictionary = this;
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
-            public void setUnigram(String word, String shortcutTarget, int frequency) {
+            public void setUnigram(final String word, final String shortcutTarget,
+                    final int frequency) {
                 profTotal++;
                 if (DBG_SAVE_RESTORE) {
                     Log.d(TAG, "load unigram: " + word + "," + frequency);
@@ -237,7 +238,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
             }
 
             @Override
-            public void setBigram(String word1, String word2, int frequency) {
+            public void setBigram(final String word1, final String word2, final int frequency) {
                 if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
                         && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
                     profTotal++;
@@ -251,7 +252,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
                 mBigramList.addBigram(word1, word2, (byte)frequency);
             }
         };
-        
+
         // Load the dictionary from binary file
         FileInputStream inStream = null;
         try {
@@ -293,8 +294,9 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         private final SharedPreferences mPrefs;
         private final Context mContext;
 
-        public UpdateBinaryTask(UserHistoryDictionaryBigramList pendingWrites, String locale,
-                UserHistoryDictionary dict, SharedPreferences prefs, Context context) {
+        public UpdateBinaryTask(final UserHistoryDictionaryBigramList pendingWrites,
+                final String locale, final UserHistoryDictionary dict,
+                final SharedPreferences prefs, final Context context) {
             mBigramList = pendingWrites;
             mLocale = locale;
             mUserHistoryDictionary = dict;
@@ -304,7 +306,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         }
 
         @Override
-        protected Void doInBackground(Void... v) {
+        protected Void doInBackground(final Void... v) {
             if (mUserHistoryDictionary.isTest) {
                 // If isTest == true, wait until the lock is released.
                 mUserHistoryDictionary.mBigramListLock.lock();
@@ -361,7 +363,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
         }
 
         @Override
-        public int getFrequency(String word1, String word2) {
+        public int getFrequency(final String word1, final String word2) {
             final int freq;
             if (word1 == null) { // unigram
                 freq = FREQUENCY_FOR_TYPED;

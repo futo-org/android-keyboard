@@ -38,7 +38,7 @@ public final class WordComposer {
     private int[] mPrimaryKeyCodes;
     private final InputPointers mInputPointers = new InputPointers(N);
     private final StringBuilder mTypedWord;
-    private CharSequence mAutoCorrection;
+    private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
 
@@ -64,7 +64,7 @@ public final class WordComposer {
         refreshSize();
     }
 
-    public WordComposer(WordComposer source) {
+    public WordComposer(final WordComposer source) {
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);
@@ -121,7 +121,8 @@ public final class WordComposer {
         return mInputPointers;
     }
 
-    private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
+    private static boolean isFirstCharCapitalized(final int index, final int codePoint,
+            final boolean previous) {
         if (index == 0) return Character.isUpperCase(codePoint);
         return previous && !Character.isUpperCase(codePoint);
     }
@@ -129,7 +130,7 @@ public final class WordComposer {
     /**
      * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
      */
-    public void add(int primaryCode, int keyX, int keyY) {
+    public void add(final int primaryCode, final int keyX, final int keyY) {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
@@ -156,12 +157,12 @@ public final class WordComposer {
         mAutoCorrection = null;
     }
 
-    public void setBatchInputPointers(InputPointers batchPointers) {
+    public void setBatchInputPointers(final InputPointers batchPointers) {
         mInputPointers.set(batchPointers);
         mIsBatchMode = true;
     }
 
-    public void setBatchInputWord(CharSequence word) {
+    public void setBatchInputWord(final String word) {
         reset();
         mIsBatchMode = true;
         final int length = word.length();
@@ -321,14 +322,14 @@ public final class WordComposer {
     /**
      * Sets the auto-correction for this word.
      */
-    public void setAutoCorrection(final CharSequence correction) {
+    public void setAutoCorrection(final String correction) {
         mAutoCorrection = correction;
     }
 
     /**
      * @return the auto-correction for this word, or null if none.
      */
-    public CharSequence getAutoCorrectionOrNull() {
+    public String getAutoCorrectionOrNull() {
         return mAutoCorrection;
     }
 
@@ -341,7 +342,7 @@ public final class WordComposer {
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
-            final String separatorString, final CharSequence prevWord) {
+            final String separatorString, final String prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.

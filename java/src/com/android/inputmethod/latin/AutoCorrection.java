@@ -33,11 +33,11 @@ public final class AutoCorrection {
     }
 
     public static boolean isValidWord(final ConcurrentHashMap<String, Dictionary> dictionaries,
-            CharSequence word, boolean ignoreCase) {
+            final String word, final boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
-        final CharSequence lowerCasedWord = word.toString().toLowerCase();
+        final String lowerCasedWord = word.toLowerCase();
         for (final String key : dictionaries.keySet()) {
             final Dictionary dictionary = dictionaries.get(key);
             // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
@@ -57,7 +57,7 @@ public final class AutoCorrection {
     }
 
     public static int getMaxFrequency(final ConcurrentHashMap<String, Dictionary> dictionaries,
-            CharSequence word) {
+            final String word) {
         if (TextUtils.isEmpty(word)) {
             return Dictionary.NOT_A_PROBABILITY;
         }
@@ -76,12 +76,13 @@ public final class AutoCorrection {
     // Returns true if this is in any of the dictionaries.
     public static boolean isInTheDictionary(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final CharSequence word, final boolean ignoreCase) {
+            final String word, final boolean ignoreCase) {
         return isValidWord(dictionaries, word, ignoreCase);
     }
 
-    public static boolean suggestionExceedsAutoCorrectionThreshold(SuggestedWordInfo suggestion,
-            CharSequence consideredWord, float autoCorrectionThreshold) {
+    public static boolean suggestionExceedsAutoCorrectionThreshold(
+            final SuggestedWordInfo suggestion, final String consideredWord,
+            final float autoCorrectionThreshold) {
         if (null != suggestion) {
             // Shortlist a whitelisted word
             if (suggestion.mKind == SuggestedWordInfo.KIND_WHITELIST) return true;
@@ -89,8 +90,7 @@ public final class AutoCorrection {
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             final float normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    consideredWord.toString(), suggestion.mWord.toString(),
-                    autoCorrectionSuggestionScore);
+                    consideredWord, suggestion.mWord, autoCorrectionSuggestionScore);
             if (DBG) {
                 Log.d(TAG, "Normalized " + consideredWord + "," + suggestion + ","
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
@@ -100,8 +100,7 @@ public final class AutoCorrection {
                 if (DBG) {
                     Log.d(TAG, "Auto corrected by S-threshold.");
                 }
-                return !shouldBlockAutoCorrectionBySafetyNet(consideredWord.toString(),
-                        suggestion.mWord);
+                return !shouldBlockAutoCorrectionBySafetyNet(consideredWord, suggestion.mWord);
             }
         }
         return false;
@@ -110,7 +109,7 @@ public final class AutoCorrection {
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
     public static boolean shouldBlockAutoCorrectionBySafetyNet(final String typedWord,
-            final CharSequence suggestion) {
+            final String suggestion) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's a bug.
         // If user selected aggressive auto correction mode, there is no need to use the safety
@@ -123,7 +122,7 @@ public final class AutoCorrection {
         }
         final int maxEditDistanceOfNativeDictionary =
                 (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
-        final int distance = BinaryDictionary.editDistance(typedWord, suggestion.toString());
+        final int distance = BinaryDictionary.editDistance(typedWord, suggestion);
         if (DBG) {
             Log.d(TAG, "Autocorrected edit distance = " + distance
                     + ", " + maxEditDistanceOfNativeDictionary);

@@ -198,7 +198,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
         if (mLocalDictionaryController.tryLock()) {
             try {
@@ -213,12 +213,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isValidWord(final CharSequence word) {
+    public boolean isValidWord(final String word) {
         asyncReloadDictionaryIfRequired();
         return isValidWordInner(word);
     }
 
-    protected boolean isValidWordInner(final CharSequence word) {
+    protected boolean isValidWordInner(final String word) {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 return isValidWordLocked(word);
@@ -229,17 +229,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return false;
     }
 
-    protected boolean isValidWordLocked(final CharSequence word) {
+    protected boolean isValidWordLocked(final String word) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidWord(word);
     }
 
-    protected boolean isValidBigram(final CharSequence word1, final CharSequence word2) {
+    protected boolean isValidBigram(final String word1, final String word2) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidBigram(word1, word2);
     }
 
-    protected boolean isValidBigramInner(final CharSequence word1, final CharSequence word2) {
+    protected boolean isValidBigramInner(final String word1, final String word2) {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 return isValidBigramLocked(word1, word2);
@@ -250,7 +250,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return false;
     }
 
-    protected boolean isValidBigramLocked(final CharSequence word1, final CharSequence word2) {
+    protected boolean isValidBigramLocked(final String word1, final String word2) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidBigram(word1, word2);
     }
