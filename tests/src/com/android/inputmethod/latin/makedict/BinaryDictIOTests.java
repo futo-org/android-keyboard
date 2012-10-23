@@ -484,7 +484,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         }
         if (header == null) return null;
         return BinaryDictInputOutput.getWordAtAddress(buffer, header.mHeaderSize,
-                address - header.mHeaderSize, header.mFormatOptions);
+                address - header.mHeaderSize, header.mFormatOptions).mWord;
     }
 
     private long runGetTerminalPosition(final FusionDictionaryBufferInterface buffer,
