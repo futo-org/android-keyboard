@@ -1699,6 +1699,14 @@ public final class BinaryDictInputOutput {
     }
 
     /**
+     * Helper method to pass a file name instead of a File object to isBinaryDictionary.
+     */
+    public static boolean isBinaryDictionary(final String filename) {
+        final File file = new File(filename);
+        return isBinaryDictionary(file);
+    }
+
+    /**
      * Basic test to find out whether the file is a binary dictionary or not.
      *
      * Concretely this only tests the magic number.
@@ -1706,10 +1714,9 @@ public final class BinaryDictInputOutput {
      * @param filename The name of the file to test.
      * @return true if it's a binary dictionary, false otherwise
      */
-    public static boolean isBinaryDictionary(final String filename) {
+    public static boolean isBinaryDictionary(final File file) {
         FileInputStream inStream = null;
         try {
-            final File file = new File(filename);
             inStream = new FileInputStream(file);
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, file.length());

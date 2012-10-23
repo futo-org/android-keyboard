@@ -16,19 +16,42 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+
+import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
-* Class grouping utilities for offline dictionary making.
-*
-* Those should not be used on-device, essentially because they are quite
-* liberal about I/O and performance.
-*/
-public class BinaryDictOffdeviceUtils {
+ * Class grouping utilities for offline dictionary making.
+ *
+ * Those should not be used on-device, essentially because they are quite
+ * liberal about I/O and performance.
+ */
+public final class BinaryDictOffdeviceUtils {
+    // Prefix and suffix are arbitrary, the values do not really matter
+    private final static String PREFIX = "dicttool";
+    private final static String SUFFIX = ".tmp";
+
+    public final static String COMPRESSION = "compression";
+
+    public static class DecoderChainSpec {
+        ArrayList<String> mDecoderSpec = new ArrayList<String>();
+        File mFile;
+        public DecoderChainSpec addStep(final String stepDescription) {
+            mDecoderSpec.add(stepDescription);
+            return this;
+        }
+    }
+
     public static void copy(final InputStream input, final OutputStream output) throws IOException {
         final byte[] buffer = new byte[1000];
         final BufferedInputStream in = new BufferedInputStream(input);
@@ -37,5 +60,52 @@ public class BinaryDictOffdeviceUtils {
             output.write(buffer, 0, readBytes);
         in.close();
         out.close();
+    }
+
+    /**
+     * Returns a decrypted/uncompressed binary dictionary.
+     *
+     * This will decrypt/uncompress any number of times as necessary until it finds the binary
+     * dictionary signature, and copy the decoded file to a temporary place.
+     * If this is not a binary dictionary, the method returns null.
+     */
+    public static DecoderChainSpec getRawBinaryDictionaryOrNull(final File src) {
+        return getRawBinaryDictionaryOrNullInternal(new DecoderChainSpec(), src);
+    }
+
+    private static DecoderChainSpec getRawBinaryDictionaryOrNullInternal(
+            final DecoderChainSpec spec, final File src) {
+        // TODO: arrange for the intermediary files to be deleted
+        if (BinaryDictInputOutput.isBinaryDictionary(src)) {
+            spec.mFile = src;
+            return spec;
+        }
+        // It's not a raw dictionary - try to see if it's compressed.
+        final File uncompressedFile = tryGetUncompressedFile(src);
+        if (null != uncompressedFile) {
+            final DecoderChainSpec newSpec =
+                    getRawBinaryDictionaryOrNullInternal(spec, uncompressedFile);
+            if (null == newSpec) return null;
+            return newSpec.addStep(COMPRESSION);
+        }
+        return null;
+    }
+
+    /* Try to uncompress the file passed as an argument.
+     *
+     * If the file can be uncompressed, the uncompressed version is returned. Otherwise, null
+     * is returned.
+     */
+    private static File tryGetUncompressedFile(final File src) {
+        try {
+            final File dst = File.createTempFile(PREFIX, SUFFIX);
+            final FileOutputStream dstStream = new FileOutputStream(dst);
+            copy(Compress.getUncompressedStream(new BufferedInputStream(new FileInputStream(src))),
+                    new BufferedOutputStream(dstStream)); // #copy() closes the streams
+            return dst;
+        } catch (IOException e) {
+            // Could not uncompress the file: presumably the file is simply not a compressed file
+            return null;
+        }
     }
 }

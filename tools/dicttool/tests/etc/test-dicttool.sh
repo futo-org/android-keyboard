@@ -14,3 +14,4 @@
 # limitations under the License.
 
 java -classpath ${ANDROID_HOST_OUT}/framework/junit.jar:${ANDROID_HOST_OUT}/framework/dicttool_aosp.jar junit.textui.TestRunner com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest
+java -classpath ${ANDROID_HOST_OUT}/framework/junit.jar:${ANDROID_HOST_OUT}/framework/dicttool_aosp.jar junit.textui.TestRunner com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtilsTests

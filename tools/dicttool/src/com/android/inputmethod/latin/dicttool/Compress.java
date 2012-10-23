@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,12 +29,12 @@ import java.util.zip.GZIPOutputStream;
 
 public class Compress {
 
-    private static OutputStream getCompressedStream(final OutputStream out)
+    public static OutputStream getCompressedStream(final OutputStream out)
         throws java.io.IOException {
         return new GZIPOutputStream(out);
     }
 
-    private static InputStream getUncompressedStream(final InputStream in) throws IOException {
+    public static InputStream getUncompressedStream(final InputStream in) throws IOException {
         return new GZIPInputStream(in);
     }
 
@@ -55,9 +57,9 @@ public class Compress {
             final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
             final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
             final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
-                    : new FileInputStream(new File(inFilename));
+                    : new BufferedInputStream(new FileInputStream(new File(inFilename)));
             final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
-                    : new FileOutputStream(new File(outFilename));
+                    : new BufferedOutputStream(new FileOutputStream(new File(outFilename)));
             BinaryDictOffdeviceUtils.copy(input, new GZIPOutputStream(output));
         }
     }
@@ -81,9 +83,9 @@ public class Compress {
             final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
             final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
             final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
-                    : new FileInputStream(new File(inFilename));
+                    : new BufferedInputStream(new FileInputStream(new File(inFilename)));
             final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
-                    : new FileOutputStream(new File(outFilename));
+                    : new BufferedOutputStream(new FileOutputStream(new File(outFilename)));
             BinaryDictOffdeviceUtils.copy(new GZIPInputStream(input), output);
         }
     }
