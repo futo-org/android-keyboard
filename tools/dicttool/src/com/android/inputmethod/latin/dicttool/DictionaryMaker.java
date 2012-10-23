@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.MakedictLog;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -328,6 +329,7 @@ public class DictionaryMaker {
      */
     private static void writeXmlDictionary(final String outputFilename,
             final FusionDictionary dict) throws FileNotFoundException, IOException {
-        XmlDictInputOutput.writeDictionaryXml(new FileWriter(outputFilename), dict);
+        XmlDictInputOutput.writeDictionaryXml(new BufferedWriter(new FileWriter(outputFilename)),
+                dict);
     }
 }
