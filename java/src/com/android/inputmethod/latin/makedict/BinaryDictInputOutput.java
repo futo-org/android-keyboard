@@ -1374,7 +1374,8 @@ public final class BinaryDictInputOutput {
     // of this method. Since it performs direct, unbuffered random access to the file and
     // may be called hundreds of thousands of times, the resulting performance is not
     // reasonable without some kind of cache. Thus:
-    private static TreeMap<Integer, String> wordCache = new TreeMap<Integer, String>();
+    private static TreeMap<Integer, WeightedString> wordCache =
+            new TreeMap<Integer, WeightedString>();
     /**
      * Finds, as a string, the word at the address passed as an argument.
      *
@@ -1382,15 +1383,15 @@ public final class BinaryDictInputOutput {
      * @param headerSize the size of the header.
      * @param address the address to seek.
      * @param formatOptions file format options.
-     * @return the word, as a string.
+     * @return the word with its frequency, as a weighted string.
      */
-    /* packages for tests */ static String getWordAtAddress(
+    /* package for tests */ static WeightedString getWordAtAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions formatOptions) {
-        final String cachedString = wordCache.get(address);
+        final WeightedString cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
 
-        final String result;
+        final WeightedString result;
         final int originalPointer = buffer.position();
         buffer.position(address);
 
@@ -1406,14 +1407,17 @@ public final class BinaryDictInputOutput {
         return result;
     }
 
+    // TODO: static!? This will behave erratically when used in multi-threaded code.
+    // We need to fix this
     private static int[] sGetWordBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
-    private static String getWordAtAddressWithParentAddress(
+    private static WeightedString getWordAtAddressWithParentAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions options) {
         final StringBuilder builder = new StringBuilder();
 
         int currentAddress = address;
         int index = FormatSpec.MAX_WORD_LENGTH - 1;
+        int frequency = Integer.MIN_VALUE;
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
         for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
             CharGroupInfo currentInfo;
@@ -1428,6 +1432,7 @@ public final class BinaryDictInputOutput {
                     MakedictLog.d("Too many jumps - probably a bug");
                 }
             } while (isMovedGroup(currentInfo.mFlags, options));
+            if (Integer.MIN_VALUE == frequency) frequency = currentInfo.mFrequency;
             for (int i = 0; i < currentInfo.mCharacters.length; ++i) {
                 sGetWordBuffer[index--] =
                         currentInfo.mCharacters[currentInfo.mCharacters.length - i - 1];
@@ -1436,17 +1441,19 @@ public final class BinaryDictInputOutput {
             currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
         }
 
-        return new String(sGetWordBuffer, index + 1, FormatSpec.MAX_WORD_LENGTH - index - 1);
+        return new WeightedString(
+                new String(sGetWordBuffer, index + 1, FormatSpec.MAX_WORD_LENGTH - index - 1),
+                        frequency);
     }
 
-    private static String getWordAtAddressWithoutParentAddress(
+    private static WeightedString getWordAtAddressWithoutParentAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions options) {
         buffer.position(headerSize);
         final int count = readCharGroupCount(buffer);
         int groupOffset = getGroupCountSize(count);
         final StringBuilder builder = new StringBuilder();
-        String result = null;
+        WeightedString result = null;
 
         CharGroupInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
@@ -1454,7 +1461,7 @@ public final class BinaryDictInputOutput {
             groupOffset = info.mEndAddress;
             if (info.mOriginalAddress == address) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
-                result = builder.toString();
+                result = new WeightedString(builder.toString(), info.mFrequency);
                 break; // and return
             }
             if (hasChildrenAddress(info.mChildrenAddress)) {
@@ -1515,9 +1522,11 @@ public final class BinaryDictInputOutput {
                 if (null != info.mBigrams) {
                     bigrams = new ArrayList<WeightedString>();
                     for (PendingAttribute bigram : info.mBigrams) {
-                        final String word = getWordAtAddress(
+                        final WeightedString word = getWordAtAddress(
                                 buffer, headerSize, bigram.mAddress, options);
-                        bigrams.add(new WeightedString(word, bigram.mFrequency));
+                        final int reconstructedFrequency =
+                                reconstructBigramFrequency(word.mFrequency, bigram.mFrequency);
+                        bigrams.add(new WeightedString(word.mWord, reconstructedFrequency));
                     }
                 }
                 if (hasChildrenAddress(info.mChildrenAddress)) {
