@@ -254,11 +254,13 @@ public final class SettingsValues {
         return mSymbolsExcludedFromWordSeparators.contains(String.valueOf((char)code));
     }
 
+    // TODO: use "Phantom" instead of "Weak" in this method name
     public boolean isWeakSpaceStripper(final int code) {
         // TODO: this does not work if the code does not fit in a char
         return mWeakSpaceStrippers.contains(String.valueOf((char)code));
     }
 
+    // TODO: use "Phantom" instead of "Weak" in this method name
     public boolean isWeakSpaceSwapper(final int code) {
         // TODO: this does not work if the code does not fit in a char
         return mWeakSpaceSwappers.contains(String.valueOf((char)code));

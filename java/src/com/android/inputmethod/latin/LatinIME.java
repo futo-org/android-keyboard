@@ -1429,8 +1429,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mSpaceState = SPACE_STATE_PHANTOM;
         } else {
             final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+            // TODO: reverse this logic. We should have the means to determine whether a character
+            // should usually be followed by a space, and it should be more readable.
             if (Constants.NOT_A_CODE != codePointBeforeCursor
-                    && !Character.isWhitespace(codePointBeforeCursor)) {
+                    && !Character.isWhitespace(codePointBeforeCursor)
+                    && !mCurrentSettings.isPhantomSpacePromotingSymbol(codePointBeforeCursor)
+                    && !mCurrentSettings.isWeakSpaceStripper(codePointBeforeCursor)) {
                 mSpaceState = SPACE_STATE_PHANTOM;
             }
         }
