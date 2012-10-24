@@ -133,7 +133,7 @@ import java.util.Map;
                 // will not have been opened for writing.
                 if (jsonWriter == null) {
                     jsonWriter = researchLog.getValidJsonWriterLocked();
-                    outputLogUnitStart(jsonWriter);
+                    outputLogUnitStart(jsonWriter, isIncludingPrivateData);
                 }
                 outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
                         mTimeList.get(i));
@@ -169,11 +169,14 @@ import java.util.Map;
     private static final String LOG_UNIT_BEGIN_KEY = "logUnitStart";
     private static final String LOG_UNIT_END_KEY = "logUnitEnd";
 
-    private void outputLogUnitStart(final JsonWriter jsonWriter) {
+    private void outputLogUnitStart(final JsonWriter jsonWriter,
+            final boolean isIncludingPrivateData) {
         try {
             jsonWriter.beginObject();
             jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            jsonWriter.name(WORD_KEY).value(getWord());
+            if (isIncludingPrivateData) {
+                jsonWriter.name(WORD_KEY).value(getWord());
+            }
             jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_BEGIN_KEY);
             jsonWriter.endObject();
         } catch (IOException e) {
