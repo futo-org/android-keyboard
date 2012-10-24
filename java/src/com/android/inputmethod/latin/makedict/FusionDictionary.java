@@ -358,6 +358,10 @@ public final class FusionDictionary implements Iterable<Word> {
             if (charGroup2 == null) {
                 add(getCodePoints(word2), 0, null, false /* isNotAWord */,
                         false /* isBlacklistEntry */);
+                // The chargroup for the first word may have moved by the above insertion,
+                // if word1 and word2 share a common stem that happens not to have been
+                // a cutting point until now. In this case, we need to refresh charGroup.
+                charGroup = findWordInTree(mRoot, word1);
             }
             charGroup.addBigram(word2, frequency);
         } else {
