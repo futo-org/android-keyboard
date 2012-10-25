@@ -22,6 +22,10 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
@@ -260,6 +264,35 @@ public class XmlDictInputOutput {
         // As per getAssocMap(), this never returns null.
         public HashMap<String, ArrayList<WeightedString>> getShortcutAndWhitelistMap() {
             return getAssocMap();
+        }
+    }
+
+    /**
+     * Basic test to find out whether the file is in the unigram XML format or not.
+     *
+     * Concretely this only tests the header line.
+     *
+     * @param filename The name of the file to test.
+     * @return true if the file is in the unigram XML format, false otherwise
+     */
+    public static boolean isXmlUnigramDictionary(final String filename) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(new File(filename)));
+            final String firstLine = reader.readLine();
+            return firstLine.matches("^\\s*<wordlist .*>\\s*$");
+        } catch (FileNotFoundException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
     }
 

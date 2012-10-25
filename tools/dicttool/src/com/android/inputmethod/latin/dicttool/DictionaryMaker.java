@@ -172,12 +172,15 @@ public class DictionaryMaker {
                         String filename = args.get(0);
                         args.remove(0);
                         if (OPTION_INPUT_SOURCE.equals(arg)) {
-                            if (BinaryDictInputOutput.isBinaryDictionary(filename)) {
-                                inputBinary = filename;
+                            if (XmlDictInputOutput.isXmlUnigramDictionary(filename)) {
+                                inputUnigramXml = filename;
                             } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
                                 inputCombined = filename;
+                            } else if (BinaryDictInputOutput.isBinaryDictionary(filename)) {
+                                inputBinary = filename;
                             } else {
-                                inputUnigramXml = filename;
+                                throw new IllegalArgumentException(
+                                        "Unknown format for file " + filename);
                             }
                         } else if (OPTION_INPUT_SHORTCUT_XML.equals(arg)) {
                             inputShortcutXml = filename;
