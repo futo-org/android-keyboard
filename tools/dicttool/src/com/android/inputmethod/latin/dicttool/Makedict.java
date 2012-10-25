@@ -29,10 +29,12 @@ public class Makedict extends Dicttool.Command {
     public Makedict() {
     }
 
+    @Override
     public String getHelp() {
         return DictionaryMaker.Arguments.getHelp();
     }
 
+    @Override
     public void run() throws FileNotFoundException, IOException, ParserConfigurationException,
             SAXException, UnsupportedFormatException {
         DictionaryMaker.main(mArgs);

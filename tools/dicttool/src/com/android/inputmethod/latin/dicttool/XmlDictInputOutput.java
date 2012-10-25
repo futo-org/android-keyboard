@@ -56,8 +56,6 @@ public class XmlDictInputOutput {
     private static final String WORD_ATTR = "word";
     private static final String NOT_A_WORD_ATTR = "not_a_word";
 
-    private static final int SHORTCUT_ONLY_DEFAULT_FREQ = 1;
-
     private static final String OPTIONS_KEY = "options";
     private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
     private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
@@ -67,12 +65,9 @@ public class XmlDictInputOutput {
      */
     static private class UnigramHandler extends DefaultHandler {
         // Parser states
-        private static final int NONE = 0;
         private static final int START = 1;
         private static final int WORD = 2;
-        private static final int BIGRAM = 4;
-        private static final int END = 5;
-        private static final int UNKNOWN = 6;
+        private static final int UNKNOWN = 3;
 
         FusionDictionary mDictionary;
         int mState; // the state of the parser

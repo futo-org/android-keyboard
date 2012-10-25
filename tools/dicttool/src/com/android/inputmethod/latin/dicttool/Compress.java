@@ -45,11 +45,13 @@ public class Compress {
         public Compressor() {
         }
 
+        @Override
         public String getHelp() {
             return COMMAND + " <src_filename> <dst_filename>: "
                     + "Compresses a file using gzip compression";
         }
 
+        @Override
         public void run() throws IOException {
             if (mArgs.length > 2) {
                 throw new RuntimeException("Too many arguments for command " + COMMAND);
@@ -71,11 +73,13 @@ public class Compress {
         public Uncompressor() {
         }
 
+        @Override
         public String getHelp() {
             return COMMAND + " <src_filename> <dst_filename>: "
                     + "Uncompresses a file compressed with gzip compression";
         }
 
+        @Override
         public void run() throws IOException {
             if (mArgs.length > 2) {
                 throw new RuntimeException("Too many arguments for command " + COMMAND);

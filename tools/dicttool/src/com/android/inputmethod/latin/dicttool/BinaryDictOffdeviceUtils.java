@@ -17,6 +17,11 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.ByteBufferWrapper;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.BufferedInputStream;
@@ -26,7 +31,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Class grouping utilities for offline dictionary making.
@@ -140,5 +150,55 @@ public final class BinaryDictOffdeviceUtils {
             // Could not uncompress the file: presumably the file is simply not a compressed file
             return null;
         }
+    }
+
+    static void crash(final String filename, final Exception e) {
+        throw new RuntimeException("Can't read file " + filename, e);
+    }
+
+    static FusionDictionary getDictionary(final String filename, final boolean report) {
+        final File file = new File(filename);
+        if (report) {
+            System.out.println("Dictionary : " + file.getAbsolutePath());
+            System.out.println("Size : " + file.length() + " bytes");
+        }
+        try {
+            if (XmlDictInputOutput.isXmlUnigramDictionary(filename)) {
+                if (report) System.out.println("Format : XML unigram list");
+                return XmlDictInputOutput.readDictionaryXml(
+                        new BufferedInputStream(new FileInputStream(file)),
+                        null /* shortcuts */, null /* bigrams */);
+            } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
+                if (report) System.out.println("Format : Combined format");
+                return CombinedInputOutput.readDictionaryCombined(
+                        new BufferedInputStream(new FileInputStream(file)));
+            } else {
+                final DecoderChainSpec decodedSpec = getRawBinaryDictionaryOrNull(file);
+                if (null == decodedSpec) {
+                    crash(filename, new RuntimeException(
+                            filename + " does not seem to be a dictionary file"));
+                } else {
+                    final FileInputStream inStream = new FileInputStream(decodedSpec.mFile);
+                    final ByteBuffer buffer = inStream.getChannel().map(
+                            FileChannel.MapMode.READ_ONLY, 0, decodedSpec.mFile.length());
+                    if (report) {
+                        System.out.println("Format : Binary dictionary format");
+                        System.out.println("Packaging : " + decodedSpec.describeChain());
+                        System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
+                    }
+                    return BinaryDictInputOutput.readDictionaryBinary(
+                            new BinaryDictInputOutput.ByteBufferWrapper(buffer), null);
+                }
+            }
+        } catch (IOException e) {
+            crash(filename, e);
+        } catch (SAXException e) {
+            crash(filename, e);
+        } catch (ParserConfigurationException e) {
+            crash(filename, e);
+        } catch (UnsupportedFormatException e) {
+            crash(filename, e);
+        }
+        return null;
     }
 }
