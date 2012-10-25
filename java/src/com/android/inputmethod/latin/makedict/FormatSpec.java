@@ -224,6 +224,8 @@ public final class FormatSpec {
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
 
+    public static final int SHORTCUT_WHITELIST_FREQUENCY = 15;
+
     // This option needs to be the same numeric value as the one in binary_format.h.
     static final int NOT_VALID_WORD = -99;
     static final int SIGNED_CHILDREN_ADDRESS_SIZE = 3;

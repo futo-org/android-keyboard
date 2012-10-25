@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -255,8 +256,6 @@ public final class FusionDictionary implements Iterable<Word> {
 
     /**
      * Options global to the dictionary.
-     *
-     * There are no options at the moment, so this class is empty.
      */
     public static final class DictionaryOptions {
         public final boolean mGermanUmlautProcessing;
@@ -267,6 +266,39 @@ public final class FusionDictionary implements Iterable<Word> {
             mAttributes = attributes;
             mGermanUmlautProcessing = germanUmlautProcessing;
             mFrenchLigatureProcessing = frenchLigatureProcessing;
+        }
+        @Override
+        public String toString() { // Convenience method
+            return toString(0);
+        }
+        public String toString(final int indentCount) {
+            final StringBuilder indent = new StringBuilder();
+            for (int i = 0; i < indentCount; ++i) {
+                indent.append(" ");
+            }
+            final StringBuilder s = new StringBuilder();
+            for (final String optionKey : mAttributes.keySet()) {
+                s.append(indent);
+                s.append(optionKey);
+                s.append(" = ");
+                if ("date".equals(optionKey)) {
+                    // Date needs a number of milliseconds, but the dictionary contains seconds
+                    s.append(new Date(
+                            1000 * Long.parseLong(mAttributes.get(optionKey))).toString());
+                } else {
+                    s.append(mAttributes.get(optionKey));
+                }
+                s.append("\n");
+            }
+            if (mGermanUmlautProcessing) {
+                s.append(indent);
+                s.append("Needs German umlaut processing\n");
+            }
+            if (mFrenchLigatureProcessing) {
+                s.append(indent);
+                s.append("Needs French ligature processing\n");
+            }
+            return s.toString();
         }
     }
 

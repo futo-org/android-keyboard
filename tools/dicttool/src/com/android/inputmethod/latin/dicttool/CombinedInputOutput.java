@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -150,8 +151,9 @@ public class CombinedInputOutput {
                     if (SHORTCUT_TAG.equals(params[0])) {
                         shortcut = params[1];
                     } else if (FREQUENCY_TAG.equals(params[0])) {
-                        shortcutFreq =
-                                WHITELIST_TAG.equals(params[1]) ? 15 : Integer.parseInt(params[1]);
+                        shortcutFreq = WHITELIST_TAG.equals(params[1])
+                                ? FormatSpec.SHORTCUT_WHITELIST_FREQUENCY
+                                : Integer.parseInt(params[1]);
                     }
                 }
                 if (null != shortcut) {

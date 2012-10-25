@@ -18,8 +18,11 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtils.DecoderChainSpec;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Word;
 
 import org.xml.sax.SAXException;
 
@@ -38,8 +41,9 @@ public class Info extends Dicttool.Command {
     public Info() {
     }
 
+    @Override
     public String getHelp() {
-        return "info <filename>: prints various information about a dictionary file";
+        return COMMAND + "<filename>: prints various information about a dictionary file";
     }
 
     private static void crash(final String filename, final Exception e) {
@@ -72,6 +76,7 @@ public class Info extends Dicttool.Command {
                         FileChannel.MapMode.READ_ONLY, 0, decodedSpec.mFile.length());
                 System.out.println("Format : Binary dictionary format");
                 System.out.println("Packaging : " + decodedSpec.describeChain());
+                System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                 return BinaryDictInputOutput.readDictionaryBinary(
                         new BinaryDictInputOutput.ByteBufferWrapper(buffer), null);
             }
@@ -87,12 +92,40 @@ public class Info extends Dicttool.Command {
         return null;
     }
 
+    private static void showInfo(final FusionDictionary dict) {
+        System.out.println("Header attributes :");
+        System.out.print(dict.mOptions.toString(2));
+        int wordCount = 0;
+        int bigramCount = 0;
+        int shortcutCount = 0;
+        int whitelistCount = 0;
+        for (final Word w : dict) {
+            ++wordCount;
+            if (null != w.mBigrams) {
+                bigramCount += w.mBigrams.size();
+            }
+            if (null != w.mShortcutTargets) {
+                shortcutCount += w.mShortcutTargets.size();
+                for (WeightedString shortcutTarget : w.mShortcutTargets) {
+                    if (FormatSpec.SHORTCUT_WHITELIST_FREQUENCY == shortcutTarget.mFrequency) {
+                        ++whitelistCount;
+                    }
+                }
+            }
+        }
+        System.out.println("Words in the dictionary : " + wordCount);
+        System.out.println("Bigram count : " + bigramCount);
+        System.out.println("Shortcuts : " + shortcutCount + " (out of which " + whitelistCount
+                + " whitelist entries)");
+    }
+
+    @Override
     public void run() {
-        // TODO: implement this
         if (mArgs.length < 1) {
             throw new RuntimeException("Not enough arguments for command " + COMMAND);
         }
         final String filename = mArgs[0];
         final FusionDictionary dict = getDictionary(filename);
+        showInfo(dict);
     }
 }
