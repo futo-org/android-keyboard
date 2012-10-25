@@ -36,14 +36,6 @@ public class Compress {
         return new GZIPInputStream(in);
     }
 
-    public static void copy(final InputStream input, final OutputStream output) throws IOException {
-        final byte[] buffer = new byte[1000];
-        for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
-            output.write(buffer, 0, readBytes);
-        input.close();
-        output.close();
-    }
-
     static public class Compressor extends Dicttool.Command {
         public static final String COMMAND = "compress";
         public static final String STDIN_OR_STDOUT = "-";
@@ -66,7 +58,7 @@ public class Compress {
                     : new FileInputStream(new File(inFilename));
             final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
                     : new FileOutputStream(new File(outFilename));
-            copy(input, new GZIPOutputStream(output));
+            BinaryDictOffdeviceUtils.copy(input, new GZIPOutputStream(output));
         }
     }
 
@@ -92,7 +84,7 @@ public class Compress {
                     : new FileInputStream(new File(inFilename));
             final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
                     : new FileOutputStream(new File(outFilename));
-            copy(new GZIPInputStream(input), output);
+            BinaryDictOffdeviceUtils.copy(new GZIPInputStream(input), output);
         }
     }
 }
