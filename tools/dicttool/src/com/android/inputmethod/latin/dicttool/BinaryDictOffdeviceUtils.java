@@ -39,8 +39,8 @@ public final class BinaryDictOffdeviceUtils {
     private final static String PREFIX = "dicttool";
     private final static String SUFFIX = ".tmp";
 
-    public final static String COMPRESSION = "compression";
-    public final static String ENCRYPTION = "encryption";
+    public final static String COMPRESSION = "compressed";
+    public final static String ENCRYPTION = "encrypted";
 
     public static class DecoderChainSpec {
         ArrayList<String> mDecoderSpec = new ArrayList<String>();
@@ -48,6 +48,14 @@ public final class BinaryDictOffdeviceUtils {
         public DecoderChainSpec addStep(final String stepDescription) {
             mDecoderSpec.add(stepDescription);
             return this;
+        }
+        public String describeChain() {
+            final StringBuilder s = new StringBuilder("raw");
+            for (final String step : mDecoderSpec) {
+                s.append(" > ");
+                s.append(step);
+            }
+            return s.toString();
         }
     }
 
