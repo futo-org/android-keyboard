@@ -24,8 +24,6 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -42,6 +40,7 @@ public final class BinaryDictOffdeviceUtils {
     private final static String SUFFIX = ".tmp";
 
     public final static String COMPRESSION = "compression";
+    public final static String ENCRYPTION = "encryption";
 
     public static class DecoderChainSpec {
         ArrayList<String> mDecoderSpec = new ArrayList<String>();
@@ -88,6 +87,14 @@ public final class BinaryDictOffdeviceUtils {
             if (null == newSpec) return null;
             return newSpec.addStep(COMPRESSION);
         }
+        // It's not a compressed either - try to see if it's crypted.
+        final File decryptedFile = tryGetDecryptedFile(src);
+        if (null != decryptedFile) {
+            final DecoderChainSpec newSpec =
+                    getRawBinaryDictionaryOrNullInternal(spec, decryptedFile);
+            if (null == newSpec) return null;
+            return newSpec.addStep(ENCRYPTION);
+        }
         return null;
     }
 
@@ -102,6 +109,24 @@ public final class BinaryDictOffdeviceUtils {
             final FileOutputStream dstStream = new FileOutputStream(dst);
             copy(Compress.getUncompressedStream(new BufferedInputStream(new FileInputStream(src))),
                     new BufferedOutputStream(dstStream)); // #copy() closes the streams
+            return dst;
+        } catch (IOException e) {
+            // Could not uncompress the file: presumably the file is simply not a compressed file
+            return null;
+        }
+    }
+
+    /* Try to decrypt the file passed as an argument.
+     *
+     * If the file can be decrypted, the decrypted version is returned. Otherwise, null
+     * is returned.
+     */
+    private static File tryGetDecryptedFile(final File src) {
+        try {
+            final File dst = File.createTempFile(PREFIX, SUFFIX);
+            final FileOutputStream dstStream = new FileOutputStream(dst);
+            copy(Crypt.getDecryptedStream(new BufferedInputStream(new FileInputStream(src))),
+                    dstStream); // #copy() closes the streams
             return dst;
         } catch (IOException e) {
             // Could not uncompress the file: presumably the file is simply not a compressed file
