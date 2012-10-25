@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.dicttool;
 public class CommandList {
     public static void populate() {
         Dicttool.addCommand("info", Info.class);
+        Dicttool.addCommand("diff", Diff.class);
         Dicttool.addCommand("compress", Compress.Compressor.class);
         Dicttool.addCommand("uncompress", Compress.Uncompressor.class);
         Dicttool.addCommand("makedict", Makedict.class);
