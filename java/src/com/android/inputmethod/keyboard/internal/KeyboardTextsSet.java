@@ -799,8 +799,12 @@ public final class KeyboardTextsSet {
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
         /* 0 */ "\u00E4,\u00E2,\u00E0,\u00E1,\u00E6,\u00E3,\u00E5,\u0101",
+        // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+        // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
+        // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+        // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
         // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
-        /* 1 */ "\u0117",
+        /* 1 */ "\u00E9,\u00E8,\u00EA,\u00EB,\u0117",
         /* 2 */ null,
         // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
         // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
