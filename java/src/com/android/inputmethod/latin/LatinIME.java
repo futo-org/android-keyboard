@@ -1932,7 +1932,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private SuggestedWords getSuggestedWords(final int sessionId) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-        if (keyboard == null) {
+        if (keyboard == null || mSuggest == null) {
             return SuggestedWords.EMPTY;
         }
         final String typedWord = mWordComposer.getTypedWord();
