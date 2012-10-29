@@ -227,7 +227,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             cancelLongPressTimer();
             final int delay;
             switch (code) {
-            case Keyboard.CODE_SHIFT:
+            case Constants.CODE_SHIFT:
                 delay = mLongPressShiftKeyTimeout;
                 break;
             default:
@@ -248,7 +248,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final Key key = tracker.getKey();
             final int delay;
             switch (key.mCode) {
-            case Keyboard.CODE_SHIFT:
+            case Constants.CODE_SHIFT:
                 delay = mLongPressShiftKeyTimeout;
                 break;
             default:
@@ -305,7 +305,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
             // When user hits the space or the enter key, just cancel the while-typing timer.
             final int typedCode = typedKey.mCode;
-            if (typedCode == Keyboard.CODE_SPACE || typedCode == Keyboard.CODE_ENTER) {
+            if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
                 startWhileTypingFadeinAnimation(keyboardView);
                 return;
             }
@@ -487,7 +487,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
-        mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
+        mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null)
                 ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
@@ -604,7 +604,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
             return true;
         }
-        if (primaryCode == Keyboard.CODE_SPACE || primaryCode == Keyboard.CODE_LANGUAGE_SWITCH) {
+        if (primaryCode == Constants.CODE_SPACE || primaryCode == Constants.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
             if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
@@ -875,7 +875,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public void updateShortcutKey(final boolean available) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard == null) return;
-        final Key shortcutKey = keyboard.getKey(Keyboard.CODE_SHORTCUT);
+        final Key shortcutKey = keyboard.getKey(Constants.CODE_SHORTCUT);
         if (shortcutKey == null) return;
         shortcutKey.setEnabled(available);
         invalidateKey(shortcutKey);
@@ -924,13 +924,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
-        if (key.mCode == Keyboard.CODE_SPACE) {
+        if (key.mCode == Constants.CODE_SPACE) {
             drawSpacebar(key, canvas, paint);
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
-        } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
+        } else if (key.mCode == Constants.CODE_LANGUAGE_SWITCH) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
             drawKeyPopupHint(key, canvas, paint, params);
         } else {

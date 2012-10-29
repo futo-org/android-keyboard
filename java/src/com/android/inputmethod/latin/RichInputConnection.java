@@ -26,7 +26,6 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -590,7 +589,7 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         final CharSequence lastOne = getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
+                && lastOne.charAt(0) == Constants.CODE_SPACE) {
             deleteSurroundingText(1, 0);
         }
     }
@@ -616,7 +615,7 @@ public final class RichInputConnection {
         CharSequence word = getWordAtCursor(settings.mWordSeparators);
         // We don't suggest on leading single quotes, so we have to remove them from the word if
         // it starts with single quotes.
-        while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {
+        while (!TextUtils.isEmpty(word) && Constants.CODE_SINGLE_QUOTE == word.charAt(0)) {
             word = word.subSequence(1, word.length());
         }
         if (TextUtils.isEmpty(word)) return null;
@@ -668,7 +667,7 @@ public final class RichInputConnection {
         // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
         // enter surrogate pairs this code will have been removed.
         if (TextUtils.isEmpty(textBeforeCursor)
-                || (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))) {
+                || (Constants.CODE_SPACE != textBeforeCursor.charAt(1))) {
             // We may only come here if the application is changing the text while we are typing.
             // This is quite a broken case, but not logically impossible, so we shouldn't crash,
             // but some debugging log may be in order.

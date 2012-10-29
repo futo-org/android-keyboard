@@ -27,6 +27,7 @@ import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokePara
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -453,8 +454,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
-            final String output = code == Keyboard.CODE_OUTPUT_TEXT
-                    ? key.getOutputText() : Keyboard.printableCode(code);
+            final String output = code == Constants.CODE_OUTPUT_TEXT
+                    ? key.getOutputText() : Constants.printableCode(code);
             Log.d(TAG, String.format("[%d] onCodeInput: %4d %4d %s%s%s", mPointerId, x, y,
                     output, ignoreModifierKey ? " ignoreModifier" : "",
                     altersCode ? " altersCode" : "", key.isEnabled() ? "" : " disabled"));
@@ -469,9 +470,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
         if (key.isEnabled() || altersCode) {
             sTimeRecorder.onCodeInput(code, eventTime);
-            if (code == Keyboard.CODE_OUTPUT_TEXT) {
+            if (code == Constants.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.getOutputText());
-            } else if (code != Keyboard.CODE_UNSPECIFIED) {
+            } else if (code != Constants.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, x, y);
             }
         }
@@ -487,7 +488,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onRelease  : %s%s%s%s", mPointerId,
-                    Keyboard.printableCode(primaryCode),
+                    Constants.printableCode(primaryCode),
                     withSliding ? " sliding" : "", ignoreModifierKey ? " ignoreModifier" : "",
                     key.isEnabled() ?  "": " disabled"));
         }
@@ -952,8 +953,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                                     + " phantom sudden move event (distance=%d) is translated to "
                                     + "up[%d,%d,%s]/down[%d,%d,%s] events", mPointerId,
                                     getDistance(x, y, lastX, lastY),
-                                    lastX, lastY, Keyboard.printableCode(oldKey.mCode),
-                                    x, y, Keyboard.printableCode(key.mCode)));
+                                    lastX, lastY, Constants.printableCode(oldKey.mCode),
+                                    x, y, Constants.printableCode(key.mCode)));
                         }
                         // TODO: This should be moved to outside of this nested if-clause?
                         if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -978,8 +979,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                                     + " bogus down-move-up event (raidus=%.2f key diagonal) is "
                                     + " translated to up[%d,%d,%s]/down[%d,%d,%s] events",
                                     mPointerId, radiusRatio,
-                                    lastX, lastY, Keyboard.printableCode(oldKey.mCode),
-                                    x, y, Keyboard.printableCode(key.mCode)));
+                                    lastX, lastY, Constants.printableCode(oldKey.mCode),
+                                    x, y, Constants.printableCode(key.mCode)));
                         }
                         onUpEventInternal(eventTime);
                         onDownEventInternal(x, y, eventTime);

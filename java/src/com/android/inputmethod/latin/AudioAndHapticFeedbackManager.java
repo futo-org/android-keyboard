@@ -21,7 +21,6 @@ import android.media.AudioManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.VibratorUtils;
 
 /**
@@ -62,13 +61,13 @@ public final class AudioAndHapticFeedbackManager {
         if (mSoundOn) {
             final int sound;
             switch (primaryCode) {
-            case Keyboard.CODE_DELETE:
+            case Constants.CODE_DELETE:
                 sound = AudioManager.FX_KEYPRESS_DELETE;
                 break;
-            case Keyboard.CODE_ENTER:
+            case Constants.CODE_ENTER:
                 sound = AudioManager.FX_KEYPRESS_RETURN;
                 break;
-            case Keyboard.CODE_SPACE:
+            case Constants.CODE_SPACE:
                 sound = AudioManager.FX_KEYPRESS_SPACEBAR;
                 break;
             default:

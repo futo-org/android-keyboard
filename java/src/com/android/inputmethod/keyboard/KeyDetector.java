@@ -118,7 +118,7 @@ public class KeyDetector {
     }
 
     public static String printableCode(Key key) {
-        return key != null ? Keyboard.printableCode(key.mCode) : "none";
+        return key != null ? Constants.printableCode(key.mCode) : "none";
     }
 
     public static String printableCodes(int[] codes) {
@@ -127,7 +127,7 @@ public class KeyDetector {
         for (final int code : codes) {
             if (code == Constants.NOT_A_CODE) break;
             if (addDelimiter) sb.append(", ");
-            sb.append(Keyboard.printableCode(code));
+            sb.append(Constants.printableCode(code));
             addDelimiter = true;
         }
         return "[" + sb + "]";

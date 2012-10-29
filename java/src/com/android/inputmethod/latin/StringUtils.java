@@ -19,9 +19,6 @@ package com.android.inputmethod.latin;
 import android.text.InputType;
 import android.text.TextUtils;
 
-//For character constants
-import com.android.inputmethod.keyboard.Keyboard;
-
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -175,7 +172,7 @@ public final class StringUtils {
         } else {
             for (i = cs.length(); i > 0; i--) {
                 final char c = cs.charAt(i - 1);
-                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                if (c != Constants.CODE_DOUBLE_QUOTE && c != Constants.CODE_SINGLE_QUOTE
                         && Character.getType(c) != Character.START_PUNCTUATION) {
                     break;
                 }
@@ -191,11 +188,11 @@ public final class StringUtils {
         // if the first char that's not a space or tab is a start of line (as in \n, start of text,
         // or some other similar characters).
         int j = i;
-        char prevChar = Keyboard.CODE_SPACE;
+        char prevChar = Constants.CODE_SPACE;
         if (hasSpaceBefore) --j;
         while (j > 0) {
             prevChar = cs.charAt(j - 1);
-            if (!Character.isSpaceChar(prevChar) && prevChar != Keyboard.CODE_TAB) break;
+            if (!Character.isSpaceChar(prevChar) && prevChar != Constants.CODE_TAB) break;
             j--;
         }
         if (j <= 0 || Character.isWhitespace(prevChar)) {
@@ -234,7 +231,7 @@ public final class StringUtils {
                 // variants of English, the final period is placed within double quotes and maybe
                 // other closing punctuation signs. This is generally not true in other languages.
                 final char c = cs.charAt(j - 1);
-                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                if (c != Constants.CODE_DOUBLE_QUOTE && c != Constants.CODE_SINGLE_QUOTE
                         && Character.getType(c) != Character.END_PUNCTUATION) {
                     break;
                 }
@@ -248,10 +245,10 @@ public final class StringUtils {
         // end of a sentence. If we have a question mark or an exclamation mark, it's the end of
         // a sentence. If it's neither, the only remaining case is the period so we get the opposite
         // case out of the way.
-        if (c == Keyboard.CODE_QUESTION_MARK || c == Keyboard.CODE_EXCLAMATION_MARK) {
+        if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        if (c != Keyboard.CODE_PERIOD || j <= 0) {
+        if (c != Constants.CODE_PERIOD || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
 
@@ -301,7 +298,7 @@ public final class StringUtils {
             case WORD:
                 if (Character.isLetter(c)) {
                     state = WORD;
-                } else if (c == Keyboard.CODE_PERIOD) {
+                } else if (c == Constants.CODE_PERIOD) {
                     state = PERIOD;
                 } else {
                     return caps;
@@ -317,7 +314,7 @@ public final class StringUtils {
             case LETTER:
                 if (Character.isLetter(c)) {
                     state = LETTER;
-                } else if (c == Keyboard.CODE_PERIOD) {
+                } else if (c == Constants.CODE_PERIOD) {
                     state = PERIOD;
                 } else {
                     return noCaps;

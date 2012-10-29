@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.research;
 
-import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Constants;
 
 public class Statistics {
     // Number of characters entered during a typing session
@@ -104,7 +104,7 @@ public class Statistics {
 
     public void recordChar(int codePoint, long time) {
         final long delta = time - mLastTapTime;
-        if (codePoint == Keyboard.CODE_DELETE) {
+        if (codePoint == Constants.CODE_DELETE) {
             mDeleteKeyCount++;
             if (delta < MIN_DELETION_INTERMISSION) {
                 if (mIsLastKeyDeleteKey) {
