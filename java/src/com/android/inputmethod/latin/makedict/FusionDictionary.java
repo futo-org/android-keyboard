@@ -143,9 +143,32 @@ public final class FusionDictionary implements Iterable<Word> {
             return NOT_A_TERMINAL != mFrequency;
         }
 
-        @UsedForTesting
         public int getFrequency() {
             return mFrequency;
+        }
+
+        public boolean getIsNotAWord() {
+            return mIsNotAWord;
+        }
+
+        public boolean getIsBlacklistEntry() {
+            return mIsBlacklistEntry;
+        }
+
+        public ArrayList<WeightedString> getShortcutTargets() {
+            // We don't want write permission to escape outside the package, so we return a copy
+            if (null == mShortcutTargets) return null;
+            final ArrayList<WeightedString> copyOfShortcutTargets = new ArrayList<WeightedString>();
+            copyOfShortcutTargets.addAll(mShortcutTargets);
+            return copyOfShortcutTargets;
+        }
+
+        public ArrayList<WeightedString> getBigrams() {
+            // We don't want write permission to escape outside the package, so we return a copy
+            if (null == mBigrams) return null;
+            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<WeightedString>();
+            copyOfBigrams.addAll(mBigrams);
+            return copyOfBigrams;
         }
 
         public boolean hasSeveralChars() {
