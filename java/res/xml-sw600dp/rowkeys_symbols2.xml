@@ -34,7 +34,7 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="#" />
+                latin:keyLabel="\#" />
         </default>
     </switch>
     <Key
@@ -49,9 +49,9 @@
             <!-- U+066B: "٫" ARABIC DECIMAL SEPARATOR -->
             <Key
                 latin:keyLabel="&#x066B;"
-                latin:keyHintLabel="#"
+                latin:keyHintLabel="\#"
                 latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
-                latin:moreKeys="#" />
+                latin:moreKeys="\#" />
         </case>
         <default>
             <Key

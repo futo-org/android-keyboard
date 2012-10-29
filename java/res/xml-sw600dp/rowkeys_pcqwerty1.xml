@@ -52,8 +52,8 @@
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="3"
-                latin:keyHintLabel="#"
-                latin:additionalMoreKeys="#"
+                latin:keyHintLabel="\#"
+                latin:additionalMoreKeys="\#"
                 latin:moreKeys="!text/more_keys_for_symbols_3"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key

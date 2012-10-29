@@ -33,14 +33,14 @@
                 latin:moreKeys="\@" />
             <Key
                 latin:keyLabel="&#x066B;"
-                latin:keyHintLabel="#"
-                latin:moreKeys="#" />
+                latin:keyHintLabel="\#"
+                latin:moreKeys="\#" />
         </case>
         <default>
             <Key
                 latin:keyLabel="\@" />
             <Key
-                latin:keyLabel="#" />
+                latin:keyLabel="\#" />
         </default>
     </switch>
     <Key

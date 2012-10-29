@@ -41,7 +41,7 @@
                 latin:moreKeys="!text/more_keys_for_symbols_2" />
             <Key
                 latin:keyLabel="3"
-                latin:additionalMoreKeys="#"
+                latin:additionalMoreKeys="\#"
                 latin:moreKeys="!text/more_keys_for_symbols_3" />
             <Key
                 latin:keyLabel="4"

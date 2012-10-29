@@ -151,7 +151,7 @@
             latin:keyLabel="0"
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyLabel="#"
+            latin:keyLabel="\#"
             latin:keyStyle="numKeyStyle" />
         <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
         <Spacer

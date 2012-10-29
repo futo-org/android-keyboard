@@ -132,7 +132,7 @@
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:keyLabel="#"
+            latin:keyLabel="\#"
             latin:keyStyle="numKeyStyle" />
    </Row>
 </merge>

@@ -32,7 +32,7 @@
     <Key
         latin:keyLabel="\@" />
     <Key
-        latin:keyLabel="#" />
+        latin:keyLabel="\#" />
     <Key
         latin:keyLabel="$" />
     <!-- U+2030: "‰" PER MILLE SIGN -->

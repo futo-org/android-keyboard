@@ -65,7 +65,7 @@
         <Key
             latin:keyStyle="numWaitKeyStyle" />
         <Key
-            latin:keyLabel="#"
+            latin:keyLabel="\#"
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
