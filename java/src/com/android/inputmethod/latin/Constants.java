@@ -16,11 +16,8 @@
 
 package com.android.inputmethod.latin;
 
-import android.util.Log;
 
 public final class Constants {
-    private static final String TAG = Constants.class.getSimpleName();
-
     public static final class Color {
         /**
          * The alpha value for fully opaque.
@@ -204,7 +201,6 @@ public final class Constants {
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
         default:
-            if (code <= 0) Log.w(TAG, "Unknown non-positive key code=" + code);
             if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
             if (code < 0x100) return String.format("'%c'", code);
             return String.format("'\\u%04x'", code);
