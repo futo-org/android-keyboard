@@ -52,6 +52,7 @@ public class CombinedInputOutput {
     private static final String OPTIONS_TAG = "options";
     private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
     private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
+    private static final String COMMENT_LINE_STARTER = "#";
 
     /**
      * Basic test to find out whether the file is in the combined format or not.
@@ -65,7 +66,10 @@ public class CombinedInputOutput {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(new File(filename)));
-            final String firstLine = reader.readLine();
+            String firstLine = reader.readLine();
+            while (firstLine.startsWith(COMMENT_LINE_STARTER)) {
+                firstLine = reader.readLine();
+            }
             return firstLine.matches("^" + DICTIONARY_TAG + "=[^:]+(:[^=]+=[^:]+)*");
         } catch (FileNotFoundException e) {
             return false;
@@ -94,7 +98,10 @@ public class CombinedInputOutput {
     public static FusionDictionary readDictionaryCombined(final InputStream source)
             throws IOException {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(source, "UTF-8"));
-        final String headerLine = reader.readLine();
+        String headerLine = reader.readLine();
+        while (headerLine.startsWith(COMMENT_LINE_STARTER)) {
+            headerLine = reader.readLine();
+        }
         final String header[] = headerLine.split(",");
         final HashMap<String, String> attributes = new HashMap<String, String>();
         for (String item : header) {
@@ -120,6 +127,7 @@ public class CombinedInputOutput {
         ArrayList<WeightedString> bigrams = new ArrayList<WeightedString>();
         ArrayList<WeightedString> shortcuts = new ArrayList<WeightedString>();
         while (null != (line = reader.readLine())) {
+            if (line.startsWith(COMMENT_LINE_STARTER)) continue;
             final String args[] = line.trim().split(",");
             if (args[0].matches(WORD_TAG + "=.*")) {
                 if (null != word) {
