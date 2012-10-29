@@ -1140,7 +1140,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
-                && lastTwo.charAt(0) == Keyboard.CODE_SPACE) {
+                && lastTwo.charAt(0) == Constants.CODE_SPACE) {
             mConnection.deleteSurroundingText(2, 0);
             mConnection.commitText(lastTwo.charAt(1) + " ", 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1156,8 +1156,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
                 && canBeFollowedByPeriod(lastThree.charAt(0))
-                && lastThree.charAt(1) == Keyboard.CODE_SPACE
-                && lastThree.charAt(2) == Keyboard.CODE_SPACE) {
+                && lastThree.charAt(1) == Constants.CODE_SPACE
+                && lastThree.charAt(2) == Constants.CODE_SPACE) {
             mHandler.cancelDoubleSpacesTimer();
             mConnection.deleteSurroundingText(2, 0);
             mConnection.commitText(". ", 1);
@@ -1171,12 +1171,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // TODO: Check again whether there really ain't a better way to check this.
         // TODO: This should probably be language-dependant...
         return Character.isLetterOrDigit(codePoint)
-                || codePoint == Keyboard.CODE_SINGLE_QUOTE
-                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
-                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
-                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
+                || codePoint == Constants.CODE_SINGLE_QUOTE
+                || codePoint == Constants.CODE_DOUBLE_QUOTE
+                || codePoint == Constants.CODE_CLOSING_PARENTHESIS
+                || codePoint == Constants.CODE_CLOSING_SQUARE_BRACKET
+                || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
+                || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
@@ -1271,7 +1271,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         // 16 is android.os.Build.VERSION_CODES.JELLY_BEAN but we can't write it because
         // we want to be able to compile against the Ice Cream Sandwich SDK.
-        if (Keyboard.CODE_ENTER == code && mTargetApplicationInfo != null
+        if (Constants.CODE_ENTER == code && mTargetApplicationInfo != null
                 && mTargetApplicationInfo.targetSdkVersion < 16) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
             // a hardware keyboard event on pressing enter or delete. This is bad for many
@@ -1288,7 +1288,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
         final long when = SystemClock.uptimeMillis();
-        if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
+        if (primaryCode != Constants.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
@@ -1303,13 +1303,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (!mWordComposer.isComposingWord()) mIsAutoCorrectionIndicatorOn = false;
 
         // TODO: Consolidate the double space timer, mLastKeyTime, and the space state.
-        if (primaryCode != Keyboard.CODE_SPACE) {
+        if (primaryCode != Constants.CODE_SPACE) {
             mHandler.cancelDoubleSpacesTimer();
         }
 
         boolean didAutoCorrect = false;
         switch (primaryCode) {
-        case Keyboard.CODE_DELETE:
+        case Constants.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
             handleBackspace(spaceState);
             mDeleteCount++;
@@ -1317,29 +1317,29 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mShouldSwitchToLastSubtype = true;
             LatinImeLogger.logOnDelete(x, y);
             break;
-        case Keyboard.CODE_SHIFT:
-        case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
+        case Constants.CODE_SHIFT:
+        case Constants.CODE_SWITCH_ALPHA_SYMBOL:
             // Shift and symbol key is handled in onPressKey() and onReleaseKey().
             break;
-        case Keyboard.CODE_SETTINGS:
+        case Constants.CODE_SETTINGS:
             onSettingsKeyPressed();
             break;
-        case Keyboard.CODE_SHORTCUT:
+        case Constants.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME(this);
             break;
-        case Keyboard.CODE_ACTION_ENTER:
+        case Constants.CODE_ACTION_ENTER:
             performEditorAction(getActionId(switcher.getKeyboard()));
             break;
-        case Keyboard.CODE_ACTION_NEXT:
+        case Constants.CODE_ACTION_NEXT:
             performEditorAction(EditorInfo.IME_ACTION_NEXT);
             break;
-        case Keyboard.CODE_ACTION_PREVIOUS:
+        case Constants.CODE_ACTION_PREVIOUS:
             performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
             break;
-        case Keyboard.CODE_LANGUAGE_SWITCH:
+        case Constants.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();
             break;
-        case Keyboard.CODE_RESEARCH:
+        case Constants.CODE_RESEARCH:
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.getInstance().onResearchKeySelected(this);
             }
@@ -1375,10 +1375,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         switcher.onCodeInput(primaryCode);
         // Reset after any single keystroke, except shift and symbol-shift
-        if (!didAutoCorrect && primaryCode != Keyboard.CODE_SHIFT
-                && primaryCode != Keyboard.CODE_SWITCH_ALPHA_SYMBOL)
+        if (!didAutoCorrect && primaryCode != Constants.CODE_SHIFT
+                && primaryCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
-        if (Keyboard.CODE_DELETE != primaryCode) {
+        if (Constants.CODE_DELETE != primaryCode) {
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
@@ -1399,14 +1399,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.postUpdateSuggestionStrip();
         final String text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Constants.CODE_SPACE);
         }
         mConnection.commitText(text, 1);
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
         mSpaceState = SPACE_STATE_NONE;
         mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
+        mKeyboardSwitcher.onCodeInput(Constants.CODE_OUTPUT_TEXT);
         mEnteredText = text;
     }
 
@@ -1562,7 +1562,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mWordComposer.setBatchInputWord(batchInputText);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Constants.CODE_SPACE);
         }
         mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
@@ -1573,7 +1573,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private String specificTldProcessingOnTextInput(final String text) {
-        if (text.length() <= 1 || text.charAt(0) != Keyboard.CODE_PERIOD
+        if (text.length() <= 1 || text.charAt(0) != Constants.CODE_PERIOD
                 || !Character.isLetter(text.charAt(1))) {
             // Not a tld: do nothing.
             return text;
@@ -1584,7 +1584,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // TODO: use getCodePointBeforeCursor instead to improve performance and simplify the code
         final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Keyboard.CODE_PERIOD) {
+                && lastOne.charAt(0) == Constants.CODE_PERIOD) {
             return text.substring(1);
         } else {
             return text;
@@ -1689,7 +1689,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private boolean maybeStripSpace(final int code,
             final int spaceState, final boolean isFromSuggestionStrip) {
-        if (Keyboard.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+        if (Constants.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
             mConnection.removeTrailingSpace();
             return false;
         } else if ((SPACE_STATE_WEAK == spaceState
@@ -1718,7 +1718,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            sendKeyCodePoint(Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Constants.CODE_SPACE);
         }
 
         // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
@@ -1732,7 +1732,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // the character is a single quote. The idea here is, single quote is not a
             // separator and it should be treated as a normal character, except in the first
             // position where it should not start composing a word.
-            isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != primaryCode);
+            isComposingWord = (Constants.CODE_SINGLE_QUOTE != primaryCode);
             // Here we don't need to reset the last composed word. It will be reset
             // when we commit this one, if we ever do; if on the other hand we backspace
             // it entirely and resume suggestions on the previous word, we'd like to still
@@ -1796,11 +1796,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
-            sendKeyCodePoint(Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Constants.CODE_SPACE);
         }
         sendKeyCodePoint(primaryCode);
 
-        if (Keyboard.CODE_SPACE == primaryCode) {
+        if (Constants.CODE_SPACE == primaryCode) {
             if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
                 if (maybeDoubleSpace()) {
                     mSpaceState = SPACE_STATE_DOUBLE;
@@ -2060,7 +2060,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
                     && (!mCurrentSettings.isWeakSpaceSwapper(firstChar))) {
-                sendKeyCodePoint(Keyboard.CODE_SPACE);
+                sendKeyCodePoint(Constants.CODE_SPACE);
             }
         }
 
@@ -2105,7 +2105,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
         if (ProductionFlag.IS_INTERNAL) {
-            Stats.onSeparator((char)Keyboard.CODE_SPACE,
+            Stats.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
@@ -2276,16 +2276,16 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // If accessibility is on, ensure the user receives keyboard state updates.
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             switch (primaryCode) {
-            case Keyboard.CODE_SHIFT:
+            case Constants.CODE_SHIFT:
                 AccessibleKeyboardViewProxy.getInstance().notifyShiftState();
                 break;
-            case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
+            case Constants.CODE_SWITCH_ALPHA_SYMBOL:
                 AccessibleKeyboardViewProxy.getInstance().notifySymbolsState();
                 break;
             }
         }
 
-        if (Keyboard.CODE_DELETE == primaryCode) {
+        if (Constants.CODE_DELETE == primaryCode) {
             // This is a stopgap solution to avoid leaving a high surrogate alone in a text view.
             // In the future, we need to deprecate deteleSurroundingText() and have a surrogate
             // pair-friendly way of deleting characters in InputConnection.

@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
-import static com.android.inputmethod.keyboard.Keyboard.CODE_OUTPUT_TEXT;
-import static com.android.inputmethod.keyboard.Keyboard.CODE_SHIFT;
-import static com.android.inputmethod.keyboard.Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
-import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
 import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.latin.Constants.CODE_SHIFT;
+import static com.android.inputmethod.latin.Constants.CODE_SWITCH_ALPHA_SYMBOL;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -39,6 +39,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardRow;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StringUtils;
@@ -453,7 +454,7 @@ public class Key implements Comparable<Key> {
             label = "/" + mLabel;
         }
         return String.format("%s%s %d,%d %dx%d %s/%s/%s",
-                Keyboard.printableCode(mCode), label, mX, mY, mWidth, mHeight, mHintLabel,
+                Constants.printableCode(mCode), label, mX, mY, mWidth, mHeight, mHintLabel,
                 KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
     }
 

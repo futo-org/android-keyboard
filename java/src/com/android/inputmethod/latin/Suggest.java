@@ -20,7 +20,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -392,7 +391,7 @@ public final class Suggest {
             sb.append(wordInfo.mWord);
         }
         for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-            sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
+            sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
         return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
                 wordInfo.mSourceDict);

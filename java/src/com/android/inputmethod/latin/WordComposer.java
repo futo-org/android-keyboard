@@ -135,7 +135,7 @@ public final class WordComposer {
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
-            mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE
+            mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
             // In the batch input mode, the {@code mInputPointers} holds batch input points and
             // shouldn't be overridden by the "typed key" coordinates
@@ -149,7 +149,7 @@ public final class WordComposer {
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
         if (Character.isDigit(primaryCode)) mDigitsCount++;
-        if (Keyboard.CODE_SINGLE_QUOTE == primaryCode) {
+        if (Constants.CODE_SINGLE_QUOTE == primaryCode) {
             ++mTrailingSingleQuotesCount;
         } else {
             mTrailingSingleQuotesCount = 0;
@@ -236,7 +236,7 @@ public final class WordComposer {
             int i = mTypedWord.length();
             while (i > 0) {
                 i = mTypedWord.offsetByCodePoints(i, -1);
-                if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
+                if (Constants.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
                 ++mTrailingSingleQuotesCount;
             }
         }

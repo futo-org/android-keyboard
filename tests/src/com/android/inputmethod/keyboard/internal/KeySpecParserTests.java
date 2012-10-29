@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import static com.android.inputmethod.keyboard.Keyboard.CODE_OUTPUT_TEXT;
-import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
 import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Constants;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -69,8 +69,8 @@ public class KeySpecParserTests extends AndroidTestCase {
                 KeyboardIconsSet.getIconName(expectedIcon),
                 KeyboardIconsSet.getIconName(spec.mIconId));
         assertEquals(message + " [code]",
-                Keyboard.printableCode(expectedCode),
-                Keyboard.printableCode(spec.mCode));
+                Constants.printableCode(expectedCode),
+                Constants.printableCode(spec.mCode));
     }
 
     private void assertParserError(String message, String moreKeySpec, String expectedLabel,

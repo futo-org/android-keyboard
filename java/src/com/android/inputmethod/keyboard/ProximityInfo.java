@@ -172,7 +172,8 @@ public final class ProximityInfo {
                     Log.d(TAG, String.format(
                             "  [%2d] row=%d x/y/r=%7.2f/%7.2f/%5.2f %s code=%s", i, row,
                             sweetSpotCenterXs[i], sweetSpotCenterYs[i], sweetSpotRadii[i],
-                            row < rows ? "correct" : "default", Keyboard.printableCode(key.mCode)));
+                            (row < rows ? "correct" : "default"),
+                            Constants.printableCode(key.mCode)));
                 }
             }
         } else {
@@ -238,7 +239,7 @@ public final class ProximityInfo {
             return;
         }
         int index = 0;
-        if (primaryKeyCode > Keyboard.CODE_SPACE) {
+        if (primaryKeyCode > Constants.CODE_SPACE) {
             dest[index++] = primaryKeyCode;
         }
         final Key[] nearestKeys = getNearestKeys(x, y);
@@ -247,7 +248,7 @@ public final class ProximityInfo {
                 break;
             }
             final int code = key.mCode;
-            if (code <= Keyboard.CODE_SPACE) {
+            if (code <= Constants.CODE_SPACE) {
                 break;
             }
             dest[index++] = code;

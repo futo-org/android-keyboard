@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.StringUtils;
 
 import java.util.Locale;
@@ -35,10 +35,10 @@ public final class MoreKeySpec {
                 KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
         final int code = KeySpecParser.toUpperCaseOfCodeForLocale(
                 KeySpecParser.getCode(moreKeySpec, codesSet), needsToUpperCase, locale);
-        if (code == Keyboard.CODE_UNSPECIFIED) {
+        if (code == Constants.CODE_UNSPECIFIED) {
             // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
             // upper case representation ("SS").
-            mCode = Keyboard.CODE_OUTPUT_TEXT;
+            mCode = Constants.CODE_OUTPUT_TEXT;
             mOutputText = mLabel;
         } else {
             mCode = code;
@@ -75,8 +75,8 @@ public final class MoreKeySpec {
     public String toString() {
         final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
                 : KeySpecParser.PREFIX_ICON + KeyboardIconsSet.getIconName(mIconId));
-        final String output = (mCode == Keyboard.CODE_OUTPUT_TEXT ? mOutputText
-                : Keyboard.printableCode(mCode));
+        final String output = (mCode == Constants.CODE_OUTPUT_TEXT ? mOutputText
+                : Constants.printableCode(mCode));
         if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
             return output;
         } else {

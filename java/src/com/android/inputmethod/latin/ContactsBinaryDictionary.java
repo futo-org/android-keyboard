@@ -24,8 +24,6 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 import java.util.Locale;
 
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
@@ -194,7 +192,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         int cp = 0;
         for (end = startIndex + 1; end < len; end += Character.charCount(cp)) {
             cp = string.codePointAt(end);
-            if (!(cp == Keyboard.CODE_DASH || cp == Keyboard.CODE_SINGLE_QUOTE
+            if (!(cp == Constants.CODE_DASH || cp == Constants.CODE_SINGLE_QUOTE
                     || Character.isLetter(cp))) {
                 break;
             }

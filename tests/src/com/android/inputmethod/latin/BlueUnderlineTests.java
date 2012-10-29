@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 import android.text.style.SuggestionSpan;
 import android.text.style.UnderlineSpan;
 
@@ -67,13 +65,13 @@ public class BlueUnderlineTests extends InputTestsBase {
         type(STRING_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
-        type(Keyboard.CODE_SPACE);
+        type(Constants.CODE_SPACE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
         final SpanGetter suggestionSpan = new SpanGetter(mTextView.getText(), SuggestionSpan.class);

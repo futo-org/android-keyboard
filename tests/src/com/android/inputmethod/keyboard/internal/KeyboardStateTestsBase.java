@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.test.AndroidTestCase;
 
 public class KeyboardStateTestsBase extends AndroidTestCase
-        implements MockKeyboardSwitcher.Constants {
+        implements MockKeyboardSwitcher.MockConstants {
     protected MockKeyboardSwitcher mSwitcher;
 
     private String mLayoutSwitchBackSymbols = "";

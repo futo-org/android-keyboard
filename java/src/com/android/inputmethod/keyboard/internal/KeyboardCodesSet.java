@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 
 import java.util.HashMap;
 
@@ -74,21 +74,21 @@ public final class KeyboardCodesSet {
     private static final int CODE_RIGHT_CURLY_BRACKET = '}';
 
     private static final int[] DEFAULT = {
-        Keyboard.CODE_TAB,
-        Keyboard.CODE_ENTER,
-        Keyboard.CODE_SPACE,
-        Keyboard.CODE_SHIFT,
-        Keyboard.CODE_SWITCH_ALPHA_SYMBOL,
-        Keyboard.CODE_OUTPUT_TEXT,
-        Keyboard.CODE_DELETE,
-        Keyboard.CODE_SETTINGS,
-        Keyboard.CODE_SHORTCUT,
-        Keyboard.CODE_ACTION_ENTER,
-        Keyboard.CODE_ACTION_NEXT,
-        Keyboard.CODE_ACTION_PREVIOUS,
-        Keyboard.CODE_LANGUAGE_SWITCH,
-        Keyboard.CODE_RESEARCH,
-        Keyboard.CODE_UNSPECIFIED,
+        Constants.CODE_TAB,
+        Constants.CODE_ENTER,
+        Constants.CODE_SPACE,
+        Constants.CODE_SHIFT,
+        Constants.CODE_SWITCH_ALPHA_SYMBOL,
+        Constants.CODE_OUTPUT_TEXT,
+        Constants.CODE_DELETE,
+        Constants.CODE_SETTINGS,
+        Constants.CODE_SHORTCUT,
+        Constants.CODE_ACTION_ENTER,
+        Constants.CODE_ACTION_NEXT,
+        Constants.CODE_ACTION_PREVIOUS,
+        Constants.CODE_LANGUAGE_SWITCH,
+        Constants.CODE_RESEARCH,
+        Constants.CODE_UNSPECIFIED,
         CODE_LEFT_PARENTHESIS,
         CODE_RIGHT_PARENTHESIS,
         CODE_LESS_THAN_SIGN,

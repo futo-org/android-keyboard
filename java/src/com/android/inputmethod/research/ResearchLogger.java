@@ -870,7 +870,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final long time = SystemClock.uptimeMillis();
         final ResearchLogger researchLogger = getInstance();
         final Object[] values = {
-            Keyboard.printableCode(scrubDigitFromCodePoint(code)), x, y
+            Constants.printableCode(scrubDigitFromCodePoint(code)), x, y
         };
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
         if (Character.isDigit(code)) {
@@ -1006,7 +1006,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public static void latinIME_sendKeyCodePoint(final int code) {
         final Object[] values = {
-            Keyboard.printableCode(scrubDigitFromCodePoint(code))
+            Constants.printableCode(scrubDigitFromCodePoint(code))
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
@@ -1092,7 +1092,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (key != null) {
             String outputText = key.getOutputText();
             final Object[] values = {
-                Keyboard.printableCode(scrubDigitFromCodePoint(code)), outputText == null ? null
+                Constants.printableCode(scrubDigitFromCodePoint(code)), outputText == null ? null
                         : scrubDigitsFromString(outputText.toString()),
                 x, y, ignoreModifierKey, altersCode, key.isEnabled()
             };
@@ -1109,7 +1109,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final boolean withSliding, final boolean ignoreModifierKey) {
         if (key != null) {
             final Object[] values = {
-                Keyboard.printableCode(scrubDigitFromCodePoint(primaryCode)), withSliding,
+                Constants.printableCode(scrubDigitFromCodePoint(primaryCode)), withSliding,
                 ignoreModifierKey, key.isEnabled()
             };
             getInstance().enqueuePotentiallyPrivateEvent(

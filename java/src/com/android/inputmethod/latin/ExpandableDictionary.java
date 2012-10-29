@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
@@ -472,8 +471,8 @@ public class ExpandableDictionary extends Dictionary {
                     getWordsRec(children, codes, word, depth + 1, true, snr, inputIndex,
                             skipPos, suggestions);
                 }
-            } else if ((c == Keyboard.CODE_SINGLE_QUOTE
-                    && currentChars[0] != Keyboard.CODE_SINGLE_QUOTE) || depth == skipPos) {
+            } else if ((c == Constants.CODE_SINGLE_QUOTE
+                    && currentChars[0] != Constants.CODE_SINGLE_QUOTE) || depth == skipPos) {
                 // Skip the ' and continue deeper
                 word[depth] = c;
                 if (children != null) {

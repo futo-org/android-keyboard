@@ -19,9 +19,9 @@ package com.android.inputmethod.keyboard.internal;
 import android.util.SparseIntArray;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -89,7 +89,7 @@ public class KeyboardParams {
             mKeys.add(key);
             updateHistogram(key);
         }
-        if (key.mCode == Keyboard.CODE_SHIFT) {
+        if (key.mCode == Constants.CODE_SHIFT) {
             mShiftKeys.add(key);
         }
         if (key.altCodeWhileTyping()) {
