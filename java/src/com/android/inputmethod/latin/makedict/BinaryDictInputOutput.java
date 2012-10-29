@@ -77,12 +77,12 @@ public final class BinaryDictInputOutput {
 
         @Override
         public int readUnsignedByte() {
-            return ((int)mBuffer.get()) & 0xFF;
+            return mBuffer.get() & 0xFF;
         }
 
         @Override
         public int readUnsignedShort() {
-            return ((int)mBuffer.getShort()) & 0xFFFF;
+            return mBuffer.getShort() & 0xFFFF;
         }
 
         @Override
@@ -474,11 +474,8 @@ public final class BinaryDictInputOutput {
         }
     }
 
-    private static final int SINT8_MAX = 0x7F;
-    private static final int SINT16_MAX = 0x7FFF;
     private static final int SINT24_MAX = 0x7FFFFF;
     private static final int MSB8 = 0x80;
-    private static final int MSB16 = 0x8000;
     private static final int MSB24 = 0x800000;
 
     // End utility methods.
@@ -1711,7 +1708,7 @@ public final class BinaryDictInputOutput {
      *
      * Concretely this only tests the magic number.
      *
-     * @param filename The name of the file to test.
+     * @param file The file to test.
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final File file) {
@@ -1751,8 +1748,7 @@ public final class BinaryDictInputOutput {
             final int bigramFrequency) {
         final float stepSize = (FormatSpec.MAX_TERMINAL_FREQUENCY - unigramFrequency)
                 / (1.5f + FormatSpec.MAX_BIGRAM_FREQUENCY);
-        final float resultFreqFloat = (float)unigramFrequency
-                + stepSize * (bigramFrequency + 1.0f);
+        final float resultFreqFloat = unigramFrequency + stepSize * (bigramFrequency + 1.0f);
         return (int)resultFreqFloat;
     }
 }

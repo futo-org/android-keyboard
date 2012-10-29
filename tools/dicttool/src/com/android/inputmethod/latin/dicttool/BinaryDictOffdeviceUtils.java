@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.ByteBufferWrapper;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
@@ -33,7 +32,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;

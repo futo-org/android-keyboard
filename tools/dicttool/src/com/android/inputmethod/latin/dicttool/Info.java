@@ -63,7 +63,7 @@ public class Info extends Dicttool.Command {
     }
 
     private static void showWordInfo(final FusionDictionary dict, final String word) {
-        final CharGroup group = dict.findWordInTree(dict.mRoot, word);
+        final CharGroup group = FusionDictionary.findWordInTree(dict.mRoot, word);
         if (null == group) {
             System.out.println(word + " is not in the dictionary");
             return;

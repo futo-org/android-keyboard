@@ -565,6 +565,7 @@ public final class BinaryDictIOUtils {
         return size;
     }
 
+    @SuppressWarnings("unused")
     private static void updateForwardLink(final FusionDictionaryBufferInterface buffer,
             final int nodeOriginAddress, final int newNodeAddress,
             final FormatOptions formatOptions) {

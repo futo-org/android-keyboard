@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 
 import java.util.ArrayList;
@@ -158,16 +157,15 @@ public final class FusionDictionary implements Iterable<Word> {
         public ArrayList<WeightedString> getShortcutTargets() {
             // We don't want write permission to escape outside the package, so we return a copy
             if (null == mShortcutTargets) return null;
-            final ArrayList<WeightedString> copyOfShortcutTargets = new ArrayList<WeightedString>();
-            copyOfShortcutTargets.addAll(mShortcutTargets);
+            final ArrayList<WeightedString> copyOfShortcutTargets =
+                    new ArrayList<WeightedString>(mShortcutTargets);
             return copyOfShortcutTargets;
         }
 
         public ArrayList<WeightedString> getBigrams() {
             // We don't want write permission to escape outside the package, so we return a copy
             if (null == mBigrams) return null;
-            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<WeightedString>();
-            copyOfBigrams.addAll(mBigrams);
+            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<WeightedString>(mBigrams);
             return copyOfBigrams;
         }
 

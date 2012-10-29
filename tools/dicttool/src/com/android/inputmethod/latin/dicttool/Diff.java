@@ -95,7 +95,7 @@ public class Diff extends Dicttool.Command {
                     + dict1.mOptions.mGermanUmlautProcessing);
         }
         final HashMap<String, String> options1 =
-                (HashMap<String, String>)dict1.mOptions.mAttributes.clone();
+                new HashMap<String, String>(dict1.mOptions.mAttributes);
         for (final String optionKey : dict0.mOptions.mAttributes.keySet()) {
             if (!dict0.mOptions.mAttributes.get(optionKey).equals(
                     dict1.mOptions.mAttributes.get(optionKey))) {
@@ -112,7 +112,7 @@ public class Diff extends Dicttool.Command {
 
     private static void diffWords(final FusionDictionary dict0, final FusionDictionary dict1) {
         for (final Word word0 : dict0) {
-            final CharGroup word1 = dict1.findWordInTree(dict1.mRoot, word0.mWord);
+            final CharGroup word1 = FusionDictionary.findWordInTree(dict1.mRoot, word0.mWord);
             if (null == word1) {
                 // This word is not in dict1
                 System.out.println("Deleted: " + word0.mWord + " " + word0.mFrequency);
