@@ -43,18 +43,16 @@ class TerminalAttributes {
             return mHasNextShortcutTarget;
         }
 
-        // Gets the shortcut target itself as a uint16_t string. For parameters and return value
+        // Gets the shortcut target itself as an int string. For parameters and return value
         // see BinaryFormat::getWordAtAddress.
-        // TODO: make the output an uint32_t* to handle the whole unicode range.
-        inline int getNextShortcutTarget(const int maxDepth, uint16_t *outWord, int *outFreq) {
+        inline int getNextShortcutTarget(const int maxDepth, int *outWord, int *outFreq) {
             const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
-            mHasNextShortcutTarget =
-                    0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
+            mHasNextShortcutTarget = 0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
             unsigned int i;
             for (i = 0; i < MAX_WORD_LENGTH_INTERNAL; ++i) {
                 const int codePoint = BinaryFormat::getCodePointAndForwardPointer(mDict, &mPos);
                 if (NOT_A_CODE_POINT == codePoint) break;
-                outWord[i] = (uint16_t)codePoint;
+                outWord[i] = codePoint;
             }
             *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
             return i;

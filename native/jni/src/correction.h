@@ -78,14 +78,13 @@ class Correction {
         return ++mTotalTraverseCount;
     }
 
-    int getFreqForSplitMultipleWords(
-            const int *freqArray, const int *wordLengthArray, const int wordCount,
-            const bool isSpaceProximity, const unsigned short *word);
-    int getFinalProbability(const int probability, unsigned short **word, int *wordLength);
-    int getFinalProbabilityForSubQueue(const int probability, unsigned short **word,
-            int *wordLength, const int inputSize);
+    int getFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
+            const int wordCount, const bool isSpaceProximity, const int *word);
+    int getFinalProbability(const int probability, int **word, int *wordLength);
+    int getFinalProbabilityForSubQueue(const int probability, int **word, int *wordLength,
+            const int inputSize);
 
-    CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
+    CorrectionType processCharAndCalcState(const int c, const bool isTerminal);
 
     /////////////////////////
     // Tree helper methods
@@ -110,28 +109,28 @@ class Correction {
                 const int inputSize);
         static int calcFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
                 const int wordCount, const Correction *correction, const bool isSpaceProximity,
-                const unsigned short *word);
-        static float calcNormalizedScore(const unsigned short *before, const int beforeLength,
-                const unsigned short *after, const int afterLength, const int score);
-        static int editDistance(const unsigned short *before,
-                const int beforeLength, const unsigned short *after, const int afterLength);
+                const int *word);
+        static float calcNormalizedScore(const int *before, const int beforeLength,
+                const int *after, const int afterLength, const int score);
+        static int editDistance(const int *before, const int beforeLength, const int *after,
+                const int afterLength);
      private:
         static const int MAX_INITIAL_SCORE = 255;
     };
 
     // proximity info state
-    void initInputParams(const ProximityInfo *proximityInfo, const int32_t *inputCodes,
+    void initInputParams(const ProximityInfo *proximityInfo, const int *inputCodes,
             const int inputSize, const int *xCoordinates, const int *yCoordinates) {
         mProximityInfoState.initInputParams(0, MAX_POINT_TO_KEY_LENGTH,
                 proximityInfo, inputCodes, inputSize, xCoordinates, yCoordinates, 0, 0, false);
     }
 
-    const unsigned short *getPrimaryInputWord() const {
+    const int *getPrimaryInputWord() const {
         return mProximityInfoState.getPrimaryInputWord();
     }
 
-    unsigned short getPrimaryCharAt(const int index) const {
-        return mProximityInfoState.getPrimaryCharAt(index);
+    int getPrimaryCodePointAt(const int index) const {
+        return mProximityInfoState.getPrimaryCodePointAt(index);
     }
 
  private:
@@ -214,13 +213,13 @@ class Correction {
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline void startToTraverseAllNodes();
-    inline bool isSingleQuote(const unsigned short c);
-    inline CorrectionType processSkipChar(
-            const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
+    inline bool isSingleQuote(const int c);
+    inline CorrectionType processSkipChar(const int c, const bool isTerminal,
+            const bool inputIndexIncremented);
     inline CorrectionType processUnrelatedCorrectionType();
-    inline void addCharToCurrentWord(const int32_t c);
-    inline int getFinalProbabilityInternal(const int probability, unsigned short **word,
-            int *wordLength, const int inputSize);
+    inline void addCharToCurrentWord(const int c);
+    inline int getFinalProbabilityInternal(const int probability, int **word, int *wordLength,
+            const int inputSize);
 
     static const int TYPED_LETTER_MULTIPLIER = 2;
     static const int FULL_WORD_MULTIPLIER = 2;
@@ -240,7 +239,7 @@ class Correction {
     uint8_t mTotalTraverseCount;
 
     // The following arrays are state buffer.
-    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+    int mWord[MAX_WORD_LENGTH_INTERNAL];
     int mDistances[MAX_WORD_LENGTH_INTERNAL];
 
     // Edit distance calculation requires a buffer with (N+1)^2 length for the input length N.

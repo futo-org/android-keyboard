@@ -18,22 +18,23 @@
 #define LATINIME_CHAR_UTILS_H
 
 #include <cctype>
-#include <stdint.h>
+
+#include "defines.h"
 
 namespace latinime {
 
-inline static bool isAsciiUpper(unsigned short c) {
+inline static bool isAsciiUpper(int c) {
     // Note: isupper(...) reports false positives for some Cyrillic characters, causing them to
     // be incorrectly lower-cased using toAsciiLower(...) rather than latin_tolower(...).
     return (c >= 'A' && c <= 'Z');
 }
 
-inline static unsigned short toAsciiLower(unsigned short c) {
+inline static int toAsciiLower(int c) {
     return c - 'A' + 'a';
 }
 
-inline static bool isAscii(unsigned short c) {
-    return isascii(static_cast<int>(c)) != 0;
+inline static bool isAscii(int c) {
+    return isascii(c) != 0;
 }
 
 unsigned short latin_tolower(const unsigned short c);
@@ -44,33 +45,32 @@ unsigned short latin_tolower(const unsigned short c);
  * if c is not a combined character, or the base character if it
  * is combined.
  */
-
 static const int BASE_CHARS_SIZE = 0x0500;
-extern const uint16_t BASE_CHARS[BASE_CHARS_SIZE];
+extern const unsigned short BASE_CHARS[BASE_CHARS_SIZE];
 
-inline static unsigned short toBaseChar(unsigned short c) {
+inline static int toBaseCodePoint(int c) {
     if (c < BASE_CHARS_SIZE) {
-        return BASE_CHARS[c];
+        return static_cast<int>(BASE_CHARS[c]);
     }
     return c;
 }
 
-inline static unsigned short toLowerCase(const unsigned short c) {
+inline static int toLowerCase(const int c) {
     if (isAsciiUpper(c)) {
         return toAsciiLower(c);
     } else if (isAscii(c)) {
         return c;
     }
-    return latin_tolower(c);
+    return static_cast<int>(latin_tolower(static_cast<unsigned short>(c)));
 }
 
-inline static unsigned short toBaseLowerCase(const unsigned short c) {
-    return toLowerCase(toBaseChar(c));
+inline static int toBaseLowerCase(const int c) {
+    return toLowerCase(toBaseCodePoint(c));
 }
 
-inline static bool isSkippableChar(const uint16_t character) {
+inline static bool isSkippableCodePoint(const int codePoint) {
     // TODO: Do not hardcode here
-    return character == '\'' || character == '-';
+    return codePoint == KEYCODE_SINGLE_QUOTE || codePoint == KEYCODE_HYPHEN_MINUS;
 }
 
 } // namespace latinime

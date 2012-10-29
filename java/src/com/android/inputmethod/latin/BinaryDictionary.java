@@ -51,8 +51,7 @@ public final class BinaryDictionary extends Dictionary {
     private long mNativeDict;
     private final Locale mLocale;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
-    // TODO: The below should be int[] mOutputCodePoints
-    private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
+    private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
@@ -88,9 +87,9 @@ public final class BinaryDictionary extends Dictionary {
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @param dictType the dictionary type, as a human-readable string
      */
-    public BinaryDictionary(final Context context,
-            final String filename, final long offset, final long length,
-            final boolean useFullEditDistance, final Locale locale, final String dictType) {
+    public BinaryDictionary(final Context context, final String filename, final long offset,
+            final long length, final boolean useFullEditDistance, final Locale locale,
+            final String dictType) {
         super(dictType);
         mLocale = locale;
         mUseFullEditDistance = useFullEditDistance;
@@ -109,10 +108,10 @@ public final class BinaryDictionary extends Dictionary {
     private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
             int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
             int[] inputCodePoints, int codesSize, int commitPoint, boolean isGesture,
-            int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
+            int[] prevWordCodePointArray, boolean useFullEditDistance, int[] outputCodePoints,
             int[] outputScores, int[] outputIndices, int[] outputTypes);
-    private static native float calcNormalizedScoreNative(char[] before, char[] after, int score);
-    private static native int editDistanceNative(char[] before, char[] after);
+    private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
+    private static native int editDistanceNative(int[] before, int[] after);
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
@@ -153,7 +152,8 @@ public final class BinaryDictionary extends Dictionary {
                 proximityInfo.getNativeProximityInfo(), getTraverseSession(sessionId).getSession(),
                 ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
                 mInputCodePoints, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
-                mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
+                mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
+                mOutputTypes);
         final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
@@ -161,14 +161,14 @@ public final class BinaryDictionary extends Dictionary {
             if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
+            while (len < MAX_WORD_LENGTH && mOutputCodePoints[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
                 final int score = SuggestedWordInfo.KIND_WHITELIST == mOutputTypes[j]
                         ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
-                suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars, start, len), score, mOutputTypes[j], mDictType));
+                suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
+                        score, mOutputTypes[j], mDictType));
             }
         }
         return suggestions;
@@ -180,14 +180,16 @@ public final class BinaryDictionary extends Dictionary {
 
     public static float calcNormalizedScore(final String before, final String after,
             final int score) {
-        return calcNormalizedScoreNative(before.toCharArray(), after.toCharArray(), score);
+        return calcNormalizedScoreNative(StringUtils.toCodePointArray(before),
+                StringUtils.toCodePointArray(after), score);
     }
 
     public static int editDistance(final String before, final String after) {
         if (before == null || after == null) {
             throw new IllegalArgumentException();
         }
-        return editDistanceNative(before.toCharArray(), after.toCharArray());
+        return editDistanceNative(StringUtils.toCodePointArray(before),
+                StringUtils.toCodePointArray(after));
     }
 
     @Override
@@ -206,9 +208,9 @@ public final class BinaryDictionary extends Dictionary {
     // calls when checking for changes in an entire dictionary.
     public boolean isValidBigram(final String word1, final String word2) {
         if (TextUtils.isEmpty(word1) || TextUtils.isEmpty(word2)) return false;
-        final int[] chars1 = StringUtils.toCodePointArray(word1);
-        final int[] chars2 = StringUtils.toCodePointArray(word2);
-        return isValidBigramNative(mNativeDict, chars1, chars2);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        final int[] codePoints2 = StringUtils.toCodePointArray(word2);
+        return isValidBigramNative(mNativeDict, codePoints1, codePoints2);
     }
 
     @Override
