@@ -22,6 +22,8 @@ public class CommandList {
         Dicttool.addCommand("diff", Diff.class);
         Dicttool.addCommand("compress", Compress.Compressor.class);
         Dicttool.addCommand("uncompress", Compress.Uncompressor.class);
+        Dicttool.addCommand("encrypt", Crypt.Encrypter.class);
+        Dicttool.addCommand("decrypt", Crypt.Decrypter.class);
         Dicttool.addCommand("makedict", Makedict.class);
     }
 }

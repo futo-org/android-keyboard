@@ -33,7 +33,6 @@ public class Dicttool {
             new HashMap<String, Class<? extends Command>>();
     static {
         CommandList.populate();
-        AdditionalCommandList.populate();
     }
     public static void addCommand(final String commandName, final Class<? extends Command> cls) {
         sCommands.put(commandName, cls);

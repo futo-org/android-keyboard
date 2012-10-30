@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -28,5 +28,35 @@ public class Crypt {
     public static InputStream getDecryptedStream(final InputStream in) {
         // Decryption is not supported
         return in;
+    }
+
+    static public class Encrypter extends Dicttool.Command {
+        public static final String COMMAND = "encrypt";
+
+        public Encrypter() {
+        }
+
+        public String getHelp() {
+            return COMMAND + " <src_filename> <dst_filename>: Encrypts a file";
+        }
+
+        public void run() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static public class Decrypter extends Dicttool.Command {
+        public static final String COMMAND = "decrypt";
+
+        public Decrypter() {
+        }
+
+        public String getHelp() {
+            return COMMAND + " <src_filename> <dst_filename>: Decrypts a file";
+        }
+
+        public void run() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
