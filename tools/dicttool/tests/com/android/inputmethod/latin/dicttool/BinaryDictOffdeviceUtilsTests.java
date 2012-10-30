@@ -54,6 +54,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         dict.add("fool", 1, null, false /* isNotAWord */);
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
+        dst.deleteOnExit();
         final OutputStream out = Compress.getCompressedStream(
                 Compress.getCompressedStream(
                         Compress.getCompressedStream(
@@ -81,6 +82,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
     public void testGetRawDictFails() throws IOException {
         // Randomly create some 4k file containing garbage
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
+        dst.deleteOnExit();
         final OutputStream out = new BufferedOutputStream(new FileOutputStream(dst));
         for (int i = 0; i < 1024; ++i) {
             out.write(0x12345678);
@@ -92,6 +94,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                 BinaryDictOffdeviceUtils.getRawBinaryDictionaryOrNull(dst));
 
         final File gzDst = File.createTempFile("testGetRawDict", ".tmp");
+        gzDst.deleteOnExit();
         final OutputStream gzOut =
                 Compress.getCompressedStream(new BufferedOutputStream(new FileOutputStream(gzDst)));
         for (int i = 0; i < 1024; ++i) {

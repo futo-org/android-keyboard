@@ -32,7 +32,7 @@ public class Info extends Dicttool.Command {
 
     @Override
     public String getHelp() {
-        return COMMAND + "<filename>: prints various information about a dictionary file";
+        return COMMAND + " <filename>: prints various information about a dictionary file";
     }
 
     private static void showInfo(final FusionDictionary dict) {

@@ -50,6 +50,8 @@ public final class BinaryDictOffdeviceUtils {
     public final static String COMPRESSION = "compressed";
     public final static String ENCRYPTION = "encrypted";
 
+    private final static int MAX_DECODE_DEPTH = 8;
+
     public static class DecoderChainSpec {
         ArrayList<String> mDecoderSpec = new ArrayList<String>();
         File mFile;
@@ -85,12 +87,17 @@ public final class BinaryDictOffdeviceUtils {
      * If this is not a binary dictionary, the method returns null.
      */
     public static DecoderChainSpec getRawBinaryDictionaryOrNull(final File src) {
-        return getRawBinaryDictionaryOrNullInternal(new DecoderChainSpec(), src);
+        return getRawBinaryDictionaryOrNullInternal(new DecoderChainSpec(), src, 0);
     }
 
     private static DecoderChainSpec getRawBinaryDictionaryOrNullInternal(
-            final DecoderChainSpec spec, final File src) {
-        // TODO: arrange for the intermediary files to be deleted
+            final DecoderChainSpec spec, final File src, final int depth) {
+        // Unfortunately the decoding scheme we use can consider any data to be encrypted
+        // and will product some output, meaning it's not possible to reliably detect encrypted
+        // data. Thus, some non-dictionary files (especially small) ones may successfully decrypt
+        // over and over, ending in a stack overflow. Hence we limit the depth at which we try
+        // decoding the file.
+        if (depth > MAX_DECODE_DEPTH) return null;
         if (BinaryDictInputOutput.isBinaryDictionary(src)) {
             spec.mFile = src;
             return spec;
@@ -99,7 +106,7 @@ public final class BinaryDictOffdeviceUtils {
         final File uncompressedFile = tryGetUncompressedFile(src);
         if (null != uncompressedFile) {
             final DecoderChainSpec newSpec =
-                    getRawBinaryDictionaryOrNullInternal(spec, uncompressedFile);
+                    getRawBinaryDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
             if (null == newSpec) return null;
             return newSpec.addStep(COMPRESSION);
         }
@@ -107,7 +114,7 @@ public final class BinaryDictOffdeviceUtils {
         final File decryptedFile = tryGetDecryptedFile(src);
         if (null != decryptedFile) {
             final DecoderChainSpec newSpec =
-                    getRawBinaryDictionaryOrNullInternal(spec, decryptedFile);
+                    getRawBinaryDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
             if (null == newSpec) return null;
             return newSpec.addStep(ENCRYPTION);
         }
@@ -122,6 +129,7 @@ public final class BinaryDictOffdeviceUtils {
     private static File tryGetUncompressedFile(final File src) {
         try {
             final File dst = File.createTempFile(PREFIX, SUFFIX);
+            dst.deleteOnExit();
             final FileOutputStream dstStream = new FileOutputStream(dst);
             copy(Compress.getUncompressedStream(new BufferedInputStream(new FileInputStream(src))),
                     new BufferedOutputStream(dstStream)); // #copy() closes the streams
@@ -140,12 +148,13 @@ public final class BinaryDictOffdeviceUtils {
     private static File tryGetDecryptedFile(final File src) {
         try {
             final File dst = File.createTempFile(PREFIX, SUFFIX);
+            dst.deleteOnExit();
             final FileOutputStream dstStream = new FileOutputStream(dst);
             copy(Crypt.getDecryptedStream(new BufferedInputStream(new FileInputStream(src))),
                     dstStream); // #copy() closes the streams
             return dst;
         } catch (IOException e) {
-            // Could not uncompress the file: presumably the file is simply not a compressed file
+            // Could not decrypt the file: presumably the file is simply not a crypted file
             return null;
         }
     }
