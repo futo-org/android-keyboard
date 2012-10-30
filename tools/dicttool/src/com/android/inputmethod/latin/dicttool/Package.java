@@ -33,6 +33,8 @@ public class Package {
 
     static public class Packager extends Dicttool.Command {
         public static final String COMMAND = "package";
+        private final static String PREFIX = "dicttool";
+        private final static String SUFFIX = ".tmp";
 
         public Packager() {
         }
@@ -41,9 +43,21 @@ public class Package {
             return COMMAND + " <src_filename> <dst_filename>: Package a file for distribution";
         }
 
-        public void run() {
-            // Not implemented yet
-            throw new UnsupportedOperationException();
+        public void run() throws IOException {
+            if (mArgs.length != 2) {
+                throw new RuntimeException("Too many/too few arguments for command " + COMMAND);
+            }
+            final File intermediateFile = File.createTempFile(PREFIX, SUFFIX);
+            try {
+                final Compress.Compressor compressCommand = new Compress.Compressor();
+                compressCommand.setArgs(new String[] { mArgs[0], intermediateFile.getPath() });
+                compressCommand.run();
+                final Crypt.Encrypter cryptCommand = new Crypt.Encrypter();
+                cryptCommand.setArgs(new String[] { intermediateFile.getPath(), mArgs[1] });
+                cryptCommand.run();
+            } finally {
+                intermediateFile.delete();
+            }
         }
     }
 
