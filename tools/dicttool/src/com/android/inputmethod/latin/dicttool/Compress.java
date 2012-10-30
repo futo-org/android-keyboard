@@ -28,6 +28,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Compress {
+    private Compress() {
+        // This container class is not publicly instantiable.
+    }
 
     public static OutputStream getCompressedStream(final OutputStream out)
         throws java.io.IOException {

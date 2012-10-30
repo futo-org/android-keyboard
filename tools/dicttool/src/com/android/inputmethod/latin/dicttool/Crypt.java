@@ -20,6 +20,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Crypt {
+    private Crypt() {
+        // This container class is not publicly instantiable.
+    }
+
     public static OutputStream getCryptedStream(final OutputStream out) {
         // Encryption is not supported
         return out;
