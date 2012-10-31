@@ -908,90 +908,106 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         setPressedKeyGraphics(key, eventTime);
     }
 
-    private void slideFromOldKeyToNewKey(final Key newKey, final int x, final int y,
+    private void processSlidingKeyInput(final Key newKey, final int x, final int y,
+            final long eventTime) {
+        // This onPress call may have changed keyboard layout. Those cases are detected
+        // at {@link #setKeyboard}. In those cases, we should update key according
+        // to the new keyboard layout.
+        Key key = newKey;
+        if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
+            key = onMoveKey(x, y);
+        }
+        onMoveToNewKey(key, x, y);
+        startLongPressTimer(key);
+        setPressedKeyGraphics(key, eventTime);
+    }
+
+    private void processPhantomSuddenMoveHack(final Key key, final int x, final int y,
+            final long eventTime, final Key oldKey, final int lastX, final int lastY) {
+        if (DEBUG_MODE) {
+            Log.w(TAG, String.format("[%d] onMoveEvent:"
+                    + " phantom sudden move event (distance=%d) is translated to "
+                    + "up[%d,%d,%s]/down[%d,%d,%s] events", mPointerId,
+                    getDistance(x, y, lastX, lastY),
+                    lastX, lastY, Constants.printableCode(oldKey.mCode),
+                    x, y, Constants.printableCode(key.mCode)));
+        }
+        // TODO: This should be moved to outside of this nested if-clause?
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
+        }
+        onUpEventInternal(eventTime);
+        onDownEventInternal(x, y, eventTime);
+    }
+
+    private void processProximateBogusDownMoveUpEventHack(final Key key, final int x, final int y,
+            final long eventTime, final Key oldKey, final int lastX, final int lastY) {
+        if (DEBUG_MODE) {
+            final float keyDiagonal = (float)Math.hypot(
+                    mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
+            final float radiusRatio =
+                    mBogusMoveEventDetector.getDistanceFromDownEvent(x, y)
+                    / keyDiagonal;
+            Log.w(TAG, String.format("[%d] onMoveEvent:"
+                    + " bogus down-move-up event (raidus=%.2f key diagonal) is "
+                    + " translated to up[%d,%d,%s]/down[%d,%d,%s] events",
+                    mPointerId, radiusRatio,
+                    lastX, lastY, Constants.printableCode(oldKey.mCode),
+                    x, y, Constants.printableCode(key.mCode)));
+        }
+        onUpEventInternal(eventTime);
+        onDownEventInternal(x, y, eventTime);
+    }
+
+    private void slideFromOldKeyToNewKey(final Key key, final int x, final int y,
             final long eventTime, final Key oldKey, final int lastX, final int lastY) {
         // The pointer has been slid in to the new key from the previous key, we must call
         // onRelease() first to notify that the previous key has been released, then call
         // onPress() to notify that the new key is being pressed.
-        Key key = newKey;
         setReleasedKeyGraphics(oldKey);
         callListenerOnRelease(oldKey, oldKey.mCode, true);
         startSlidingKeyInput(oldKey);
         mTimerProxy.cancelKeyTimers();
         startRepeatKey(key);
         if (mIsAllowedSlidingKeyInput) {
-            // This onPress call may have changed keyboard layout. Those cases are detected
-            // at {@link #setKeyboard}. In those cases, we should update key according
-            // to the new keyboard layout.
-            if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
-                key = onMoveKey(x, y);
-            }
-            onMoveToNewKey(key, x, y);
-            startLongPressTimer(key);
-            setPressedKeyGraphics(key, eventTime);
+            processSlidingKeyInput(key, x, y, eventTime);
         } else {
-            // HACK: On some devices, quick successive touches may be reported as a sudden
-            // move by touch panel firmware. This hack detects such cases and translates the
-            // move event to successive up and down events.
+            // HACK: On some devices, quick successive touches may be reported as a sudden move by
+            // touch panel firmware. This hack detects such cases and translates the move event to
+            // successive up and down events.
             // TODO: Should find a way to balance gesture detection and this hack.
             if (sNeedsPhantomSuddenMoveEventHack
                     && getDistance(x, y, lastX, lastY) >= mPhantonSuddenMoveThreshold) {
-                if (DEBUG_MODE) {
-                    Log.w(TAG, String.format("[%d] onMoveEvent:"
-                            + " phantom sudden move event (distance=%d) is translated to "
-                            + "up[%d,%d,%s]/down[%d,%d,%s] events", mPointerId,
-                            getDistance(x, y, lastX, lastY),
-                            lastX, lastY, Constants.printableCode(oldKey.mCode),
-                            x, y, Constants.printableCode(key.mCode)));
-                }
-                // TODO: This should be moved to outside of this nested if-clause?
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
-                }
-                onUpEventInternal(eventTime);
-                onDownEventInternal(x, y, eventTime);
+                processPhantomSuddenMoveHack(key, x, y, eventTime, oldKey, lastX, lastY);
             }
-            // HACK: On some devices, quick successive proximate touches may be reported as
-            // a bogus down-move-up event by touch panel firmware. This hack detects such
-            // cases and breaks these events into separate up and down events.
+            // HACK: On some devices, quick successive proximate touches may be reported as a bogus
+            // down-move-up event by touch panel firmware. This hack detects such cases and breaks
+            // these events into separate up and down events.
             else if (sNeedsProximateBogusDownMoveUpEventHack
                     && sTimeRecorder.isInFastTyping(eventTime)
                     && mBogusMoveEventDetector.isCloseToActualDownEvent(x, y)) {
-                if (DEBUG_MODE) {
-                    final float keyDiagonal = (float)Math.hypot(
-                            mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
-                    final float radiusRatio =
-                            mBogusMoveEventDetector.getDistanceFromDownEvent(x, y)
-                            / keyDiagonal;
-                    Log.w(TAG, String.format("[%d] onMoveEvent:"
-                            + " bogus down-move-up event (raidus=%.2f key diagonal) is "
-                            + " translated to up[%d,%d,%s]/down[%d,%d,%s] events",
-                            mPointerId, radiusRatio,
-                            lastX, lastY, Constants.printableCode(oldKey.mCode),
-                            x, y, Constants.printableCode(key.mCode)));
-                }
-                onUpEventInternal(eventTime);
-                onDownEventInternal(x, y, eventTime);
-            } else {
-                // HACK: If there are currently multiple touches, register the key even if
-                // the finger slides off the key. This defends against noise from some
-                // touch panels when there are close multiple touches.
-                // Caveat: When in chording input mode with a modifier key, we don't use
-                // this hack.
+                processProximateBogusDownMoveUpEventHack(key, x, y, eventTime, oldKey, lastX, lastY);
+            }
+            else {
+                // HACK: If there are currently multiple touches, register the key even if the
+                // finger slides off the key. This defends against noise from some touch panels
+                // when there are close multiple touches.
+                // Caveat: When in chording input mode with a modifier key, we don't use this hack.
                 if (getActivePointerTrackerCount() > 1 && sPointerTrackerQueue != null
                         && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
                     if (DEBUG_MODE) {
                         Log.w(TAG, String.format("[%d] onMoveEvent:"
-                                + " detected sliding finger while multi touching",
-                                mPointerId));
+                                + " detected sliding finger while multi touching", mPointerId));
                     }
                     onUpEvent(x, y, eventTime);
                     mKeyAlreadyProcessed = true;
+                    setReleasedKeyGraphics(oldKey);
+                } else {
+                    if (!mIsDetectingGesture) {
+                        mKeyAlreadyProcessed = true;
+                    }
+                    setReleasedKeyGraphics(oldKey);
                 }
-                if (!mIsDetectingGesture) {
-                    mKeyAlreadyProcessed = true;
-                }
-                setReleasedKeyGraphics(oldKey);
             }
         }
     }
@@ -1029,10 +1045,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (newKey != null) {
-            if (oldKey == null) {
-                slideInToNewKey(newKey, x, y, eventTime);
-            } else if (isMajorEnoughMoveToBeOnNewKey(x, y, eventTime, newKey)) {
+            if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, eventTime, newKey)) {
                 slideFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, lastX, lastY);
+            } else if (oldKey == null) {
+                slideInToNewKey(newKey, x, y, eventTime);
             }
         } else {
             if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, eventTime, newKey)) {
