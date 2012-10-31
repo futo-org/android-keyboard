@@ -893,21 +893,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         onMoveEventInternal(x, y, eventTime);
     }
 
-    private void slideInToNewKey(final Key newKey, final int x, final int y, final long eventTime) {
-        // The pointer has been slid in to the new key, but the finger was not on any keys.
-        // In this case, we must call onPress() to notify that the new key is being pressed.
-        // This onPress call may have changed keyboard layout. Those cases are detected at
-        // {@link #setKeyboard}. In those cases, we should update key according to the
-        // new keyboard layout.
-        Key key = newKey;
-        if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
-            key = onMoveKey(x, y);
-        }
-        onMoveToNewKey(key, x, y);
-        startLongPressTimer(key);
-        setPressedKeyGraphics(key, eventTime);
-    }
-
     private void processSlidingKeyInput(final Key newKey, final int x, final int y,
             final long eventTime) {
         // This onPress call may have changed keyboard layout. Those cases are detected
@@ -959,15 +944,19 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         onDownEventInternal(x, y, eventTime);
     }
 
+    private void processSildeOutFromOldKey(final Key oldKey) {
+        setReleasedKeyGraphics(oldKey);
+        callListenerOnRelease(oldKey, oldKey.mCode, true);
+        startSlidingKeyInput(oldKey);
+        mTimerProxy.cancelKeyTimers();
+    }
+
     private void slideFromOldKeyToNewKey(final Key key, final int x, final int y,
             final long eventTime, final Key oldKey, final int lastX, final int lastY) {
         // The pointer has been slid in to the new key from the previous key, we must call
         // onRelease() first to notify that the previous key has been released, then call
         // onPress() to notify that the new key is being pressed.
-        setReleasedKeyGraphics(oldKey);
-        callListenerOnRelease(oldKey, oldKey.mCode, true);
-        startSlidingKeyInput(oldKey);
-        mTimerProxy.cancelKeyTimers();
+        processSildeOutFromOldKey(oldKey);
         startRepeatKey(key);
         if (mIsAllowedSlidingKeyInput) {
             processSlidingKeyInput(key, x, y, eventTime);
@@ -1011,10 +1000,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void slideOutFromOldKey(final Key oldKey, final int x, final int y) {
         // The pointer has been slid out from the previous key, we must call onRelease() to
         // notify that the previous key has been released.
-        setReleasedKeyGraphics(oldKey);
-        callListenerOnRelease(oldKey, oldKey.mCode, true);
-        startSlidingKeyInput(oldKey);
-        mTimerProxy.cancelLongPressTimer();
+        processSildeOutFromOldKey(oldKey);
         if (mIsAllowedSlidingKeyInput) {
             onMoveToNewKey(null, x, y);
         } else {
@@ -1044,9 +1030,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, eventTime, newKey)) {
                 slideFromOldKeyToNewKey(newKey, x, y, eventTime, oldKey, lastX, lastY);
             } else if (oldKey == null) {
-                slideInToNewKey(newKey, x, y, eventTime);
+                // The pointer has been slid in to the new key, but the finger was not on any keys.
+                // In this case, we must call onPress() to notify that the new key is being pressed.
+                processSlidingKeyInput(newKey, x, y, eventTime);
             }
-        } else {
+        } else { // newKey == null
             if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, eventTime, newKey)) {
                 slideOutFromOldKey(oldKey, x, y);
             }
