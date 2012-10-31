@@ -971,44 +971,40 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         startRepeatKey(key);
         if (mIsAllowedSlidingKeyInput) {
             processSlidingKeyInput(key, x, y, eventTime);
+        }
+        // HACK: On some devices, quick successive touches may be reported as a sudden move by
+        // touch panel firmware. This hack detects such cases and translates the move event to
+        // successive up and down events.
+        // TODO: Should find a way to balance gesture detection and this hack.
+        else if (sNeedsPhantomSuddenMoveEventHack
+                && getDistance(x, y, lastX, lastY) >= mPhantonSuddenMoveThreshold) {
+            processPhantomSuddenMoveHack(key, x, y, eventTime, oldKey, lastX, lastY);
+        }
+        // HACK: On some devices, quick successive proximate touches may be reported as a bogus
+        // down-move-up event by touch panel firmware. This hack detects such cases and breaks
+        // these events into separate up and down events.
+        else if (sNeedsProximateBogusDownMoveUpEventHack && sTimeRecorder.isInFastTyping(eventTime)
+                && mBogusMoveEventDetector.isCloseToActualDownEvent(x, y)) {
+            processProximateBogusDownMoveUpEventHack(key, x, y, eventTime, oldKey, lastX, lastY);
+        }
+        // HACK: If there are currently multiple touches, register the key even if the finger
+        // slides off the key. This defends against noise from some touch panels when there are
+        // close multiple touches.
+        // Caveat: When in chording input mode with a modifier key, we don't use this hack.
+        else if (getActivePointerTrackerCount() > 1 && sPointerTrackerQueue != null
+                && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
+            if (DEBUG_MODE) {
+                Log.w(TAG, String.format("[%d] onMoveEvent:"
+                        + " detected sliding finger while multi touching", mPointerId));
+            }
+            onUpEvent(x, y, eventTime);
+            mKeyAlreadyProcessed = true;
+            setReleasedKeyGraphics(oldKey);
         } else {
-            // HACK: On some devices, quick successive touches may be reported as a sudden move by
-            // touch panel firmware. This hack detects such cases and translates the move event to
-            // successive up and down events.
-            // TODO: Should find a way to balance gesture detection and this hack.
-            if (sNeedsPhantomSuddenMoveEventHack
-                    && getDistance(x, y, lastX, lastY) >= mPhantonSuddenMoveThreshold) {
-                processPhantomSuddenMoveHack(key, x, y, eventTime, oldKey, lastX, lastY);
+            if (!mIsDetectingGesture) {
+                mKeyAlreadyProcessed = true;
             }
-            // HACK: On some devices, quick successive proximate touches may be reported as a bogus
-            // down-move-up event by touch panel firmware. This hack detects such cases and breaks
-            // these events into separate up and down events.
-            else if (sNeedsProximateBogusDownMoveUpEventHack
-                    && sTimeRecorder.isInFastTyping(eventTime)
-                    && mBogusMoveEventDetector.isCloseToActualDownEvent(x, y)) {
-                processProximateBogusDownMoveUpEventHack(key, x, y, eventTime, oldKey, lastX, lastY);
-            }
-            else {
-                // HACK: If there are currently multiple touches, register the key even if the
-                // finger slides off the key. This defends against noise from some touch panels
-                // when there are close multiple touches.
-                // Caveat: When in chording input mode with a modifier key, we don't use this hack.
-                if (getActivePointerTrackerCount() > 1 && sPointerTrackerQueue != null
-                        && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
-                    if (DEBUG_MODE) {
-                        Log.w(TAG, String.format("[%d] onMoveEvent:"
-                                + " detected sliding finger while multi touching", mPointerId));
-                    }
-                    onUpEvent(x, y, eventTime);
-                    mKeyAlreadyProcessed = true;
-                    setReleasedKeyGraphics(oldKey);
-                } else {
-                    if (!mIsDetectingGesture) {
-                        mKeyAlreadyProcessed = true;
-                    }
-                    setReleasedKeyGraphics(oldKey);
-                }
-            }
+            setReleasedKeyGraphics(oldKey);
         }
     }
 
