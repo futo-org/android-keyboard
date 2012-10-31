@@ -36,13 +36,13 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
 BigramDictionary::~BigramDictionary() {
 }
 
-bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequency,
-        int *bigramFreq, unsigned short *bigramChars, int *outputTypes) const {
+bool BigramDictionary::addWordBigram(int *word, int length, int frequency, int *bigramFreq,
+        int *bigramCodePoints, int *outputTypes) const {
     word[length] = 0;
     if (DEBUG_DICT) {
 #ifdef FLAG_DBG
         char s[length + 1];
-        for (int i = 0; i <= length; i++) s[i] = word[i];
+        for (int i = 0; i <= length; i++) s[i] = static_cast<char>(word[i]);
         AKLOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
 #endif
     }
@@ -51,7 +51,8 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
     int insertAt = 0;
     while (insertAt < MAX_PREDICTIONS) {
         if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
-                && length < Dictionary::wideStrLen(bigramChars + insertAt * MAX_WORD_LENGTH))) {
+                && length < Dictionary::wideStrLen(
+                        bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
             break;
         }
         insertAt++;
@@ -65,10 +66,10 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
                 (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramFreq[0]));
         bigramFreq[insertAt] = frequency;
         outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
-        memmove(bigramChars + (insertAt + 1) * MAX_WORD_LENGTH,
-                bigramChars + insertAt * MAX_WORD_LENGTH,
-                (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramChars[0]) * MAX_WORD_LENGTH);
-        unsigned short *dest = bigramChars + insertAt * MAX_WORD_LENGTH;
+        memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
+                bigramCodePoints + insertAt * MAX_WORD_LENGTH,
+                (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramCodePoints[0]) * MAX_WORD_LENGTH);
+        int *dest = bigramCodePoints + insertAt * MAX_WORD_LENGTH;
         while (length--) {
             *dest++ = *word++;
         }
@@ -86,7 +87,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * prevWordLength: its length.
  * inputCodes: what user typed, in the same format as for UnigramDictionary::getSuggestions.
  * codesSize: the size of the codes array.
- * bigramChars: an array for output, at the same format as outwords for getSuggestions.
+ * bigramCodePoints: an array for output, at the same format as outwords for getSuggestions.
  * bigramFreq: an array to output frequencies.
  * outputTypes: an array to output types.
  * This method returns the number of bigrams this word has, for backward compatibility.
@@ -97,8 +98,8 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * and the bigrams are used to boost unigram result scores, it makes little sense to
  * reduce their scope to the ones that match the first letter.
  */
-int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *inputCodes,
-        int codesSize, unsigned short *bigramChars, int *bigramFreq, int *outputTypes) const {
+int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *inputCodes,
+        int codesSize, int *bigramCodePoints, int *bigramFreq, int *outputTypes) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
@@ -117,7 +118,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     int bigramCount = 0;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        uint16_t bigramBuffer[MAX_WORD_LENGTH];
+        int bigramBuffer[MAX_WORD_LENGTH];
         int unigramFreq = 0;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
@@ -134,7 +135,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
             // here, but it can't get too bad.
             const int frequency =
                     BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreqTemp);
-            if (addWordBigram(bigramBuffer, length, frequency, bigramFreq, bigramChars,
+            if (addWordBigram(bigramBuffer, length, frequency, bigramFreq, bigramCodePoints,
                     outputTypes)) {
                 ++bigramCount;
             }
@@ -190,12 +191,12 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
     } while (0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 
-bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes) const {
+bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodes) const {
     // Checks whether this word starts with same character or neighboring characters of
     // what user typed.
 
     int maxAlt = MAX_ALTERNATIVES;
-    const unsigned short firstBaseChar = toBaseLowerCase(*word);
+    const int firstBaseChar = toBaseLowerCase(*word);
     while (maxAlt > 0) {
         if (toBaseLowerCase(*inputCodes) == firstBaseChar) {
             return true;

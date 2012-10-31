@@ -34,7 +34,7 @@ const float ProximityInfoState::NOT_A_DISTANCE_FLOAT = -1.0f;
 const int ProximityInfoState::NOT_A_CODE = -1;
 
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
-        const ProximityInfo *proximityInfo, const int32_t *const inputCodes, const int inputSize,
+        const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
 
@@ -63,7 +63,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         // - mNormalizedSquaredDistances
         // TODO: Merge
         for (int i = 0; i < inputSize; ++i) {
-            const int32_t primaryKey = inputCodes[i];
+            const int primaryKey = inputCodes[i];
             const int x = xCoordinates[i];
             const int y = yCoordinates[i];
             int *proximities = &mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL];
@@ -146,7 +146,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 AKLOGI("Init ProximityInfoState: (%d)PID = %d", i, pid);
             }
             if (pointerId == pid) {
-                const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCharAt(i);
+                const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCodePointAt(i);
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
                 const int time = times ? times[i] : -1;
@@ -306,12 +306,12 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             && xCoordinates && yCoordinates;
     if (!isGeometric && pointerId == 0) {
         for (int i = 0; i < inputSize; ++i) {
-            mPrimaryInputWord[i] = getPrimaryCharAt(i);
+            mPrimaryInputWord[i] = getPrimaryCodePointAt(i);
         }
 
         for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
-            const int *proximityChars = getProximityCharsAt(i);
-            const int primaryKey = proximityChars[0];
+            const int *proximityCodePoints = getProximityCodePointsAt(i);
+            const int primaryKey = proximityCodePoints[0];
             const int x = xCoordinates[i];
             const int y = yCoordinates[i];
             if (DEBUG_PROXIMITY_CHARS) {
@@ -319,11 +319,12 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 a += 0;
                 AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
             }
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL && proximityChars[j] > 0; ++j) {
-                const int currentChar = proximityChars[j];
+            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL && proximityCodePoints[j] > 0;
+                    ++j) {
+                const int currentCodePoint = proximityCodePoints[j];
                 const float squaredDistance =
                         hasInputCoordinates() ? calculateNormalizedSquaredDistance(
-                                mProximityInfo->getKeyIndexOf(currentChar), i) :
+                                mProximityInfo->getKeyIndexOf(currentCodePoint), i) :
                                 NOT_A_DISTANCE_FLOAT;
                 if (squaredDistance >= 0.0f) {
                     mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
@@ -334,7 +335,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                                     PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
                 }
                 if (DEBUG_PROXIMITY_CHARS) {
-                    AKLOGI("--- Proximity (%d) = %c", j, currentChar);
+                    AKLOGI("--- Proximity (%d) = %c", j, currentCodePoint);
                 }
             }
         }
@@ -449,7 +450,7 @@ float ProximityInfoState::getPointScore(
 
 // Sampling touch point and pushing information to vectors.
 // Returning if previous point is popped or not.
-bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar, int x, int y,
+bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCodePoint, int x, int y,
         const int time, const bool sample, const bool isLastPoint, const float sumAngle,
         NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
@@ -458,7 +459,7 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
 
     size_t size = mInputXs.size();
     bool popped = false;
-    if (nodeChar < 0 && sample) {
+    if (nodeCodePoint < 0 && sample) {
         const float nearest = updateNearKeysDistances(x, y, currentNearKeysDistances);
         const float score = getPointScore(x, y, time, isLastPoint, nearest, sumAngle,
                 currentNearKeysDistances, prevNearKeysDistances, prevPrevNearKeysDistances);
@@ -487,8 +488,8 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
         }
     }
 
-    if (nodeChar >= 0 && (x < 0 || y < 0)) {
-        const int keyId = mProximityInfo->getKeyIndexOf(nodeChar);
+    if (nodeCodePoint >= 0 && (x < 0 || y < 0)) {
+        const int keyId = mProximityInfo->getKeyIndexOf(nodeCodePoint);
         if (keyId >= 0) {
             x = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
             y = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
@@ -543,7 +544,7 @@ float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int co
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
         return min(mDistanceCache[index], mMaxPointToKeyLength);
     }
-    if (isSkippableChar(codePoint)) {
+    if (isSkippableCodePoint(codePoint)) {
         return 0.0f;
     }
     // If the char is not a key on the keyboard then return the max length.
@@ -960,9 +961,9 @@ bool ProximityInfoState::suppressCharProbabilities(const int index0, const int i
     return true;
 }
 
-// Get a word that is detected by tracing highest probability sequence into charBuf and returns
-// probability of generating the word.
-float ProximityInfoState::getHighestProbabilitySequence(uint16_t *const charBuf) const {
+// Get a word that is detected by tracing highest probability sequence into codePointBuf and
+// returns probability of generating the word.
+float ProximityInfoState::getHighestProbabilitySequence(int *const codePointBuf) const {
     static const float DEMOTION_LOG_PROBABILITY = 0.3f;
     int index = 0;
     float sumLogProbability = 0.0f;
@@ -980,12 +981,12 @@ float ProximityInfoState::getHighestProbabilitySequence(uint16_t *const charBuf)
             }
         }
         if (character != NOT_AN_INDEX) {
-            charBuf[index] = mProximityInfo->getCodePointOf(character);
+            codePointBuf[index] = mProximityInfo->getCodePointOf(character);
             index++;
         }
         sumLogProbability += minLogProbability;
     }
-    charBuf[index] = '\0';
+    codePointBuf[index] = '\0';
     return sumLogProbability;
 }
 

@@ -30,17 +30,15 @@
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength) do { \
         dumpResult(words, frequencies, maxWordCount, maxWordLength); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
-#define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while (0)
-// TODO: INTS_TO_CHARS
-#define SHORTS_TO_CHARS(input, length, output) do { \
-        shortArrayToCharArray(input, length, output); } while (0)
+#define INTS_TO_CHARS(input, length, output) do { \
+        intArrayToCharArray(input, length, output); } while (0)
 
-static inline void dumpWordInfo(const unsigned short *word, const int length,
-        const int rank, const int frequency) {
+static inline void dumpWordInfo(const int *word, const int length, const int rank,
+        const int frequency) {
     static char charBuf[50];
     int i = 0;
     for (; i < length; ++i) {
-        const unsigned short c = word[i];
+        const int c = word[i];
         if (c == 0) {
             break;
         }
@@ -53,8 +51,7 @@ static inline void dumpWordInfo(const unsigned short *word, const int length,
     }
 }
 
-static inline void dumpResult(
-        const unsigned short *outWords, const int *frequencies, const int maxWordCounts,
+static inline void dumpResult(const int *outWords, const int *frequencies, const int maxWordCounts,
         const int maxWordLength) {
     AKLOGI("--- DUMP RESULT ---------");
     for (int i = 0; i < maxWordCounts; ++i) {
@@ -63,11 +60,11 @@ static inline void dumpResult(
     AKLOGI("-------------------------");
 }
 
-static inline void dumpWord(const unsigned short *word, const int length) {
+static inline void dumpWord(const int *word, const int length) {
     static char charBuf[50];
     int i = 0;
     for (; i < length; ++i) {
-        const unsigned short c = word[i];
+        const int c = word[i];
         if (c == 0) {
             break;
         }
@@ -80,22 +77,10 @@ static inline void dumpWord(const unsigned short *word, const int length) {
     }
 }
 
-static inline void dumpWordInt(const int *word, const int length) {
-    static char charBuf[50];
-
-    for (int i = 0; i < length; ++i) {
-        charBuf[i] = word[i];
-    }
-    charBuf[length] = 0;
-    AKLOGI("i[ %s ]", charBuf);
-}
-
-// TODO: Change this to intArrayToCharArray
-static inline void shortArrayToCharArray(
-        const unsigned short *input, const int length, char *output) {
+static inline void intArrayToCharArray(const int *input, const int length, char *output) {
     int i = 0;
-    for (;i < length; ++i) {
-        const unsigned short c = input[i];
+    for (; i < length; ++i) {
+        const int c = input[i];
         if (c == 0) {
             break;
         }
@@ -137,11 +122,9 @@ static inline void showStackTrace() {
 #define AKLOGI(fmt, ...)
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
-#define DUMP_WORD_INT(word, length)
 #define ASSERT(success)
 #define SHOW_STACK_TRACE
-// TODO: INTS_TO_CHARS
-#define SHORTS_TO_CHARS(input, length, output)
+#define INTS_TO_CHARS(input, length, output)
 #endif
 
 #ifdef FLAG_DO_PROFILE
@@ -286,6 +269,8 @@ static inline void prof_out(void) {
 #define NOT_A_PROBABILITY (-1)
 
 #define KEYCODE_SPACE ' '
+#define KEYCODE_SINGLE_QUOTE '\''
+#define KEYCODE_HYPHEN_MINUS '-'
 
 #define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
 

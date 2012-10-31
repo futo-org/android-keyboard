@@ -54,11 +54,10 @@ Dictionary::~Dictionary() {
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
-        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds,
-        int *codes, int codesSize, int *prevWordChars,
-        int prevWordLength, int commitPoint, bool isGesture,
-        bool useFullEditDistance, unsigned short *outWords,
-        int *frequencies, int *spaceIndices, int *outputTypes) const {
+        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *codes,
+        int codesSize, int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
+        bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
+        int *outputTypes) const {
     int result = 0;
     if (isGesture) {
         DicTraverseWrapper::initDicTraverseSession(
@@ -83,7 +82,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
 }
 
 int Dictionary::getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-        unsigned short *outWords, int *frequencies, int *outputTypes) const {
+        int *outWords, int *frequencies, int *outputTypes) const {
     if (length <= 0) return 0;
     return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
             outputTypes);
