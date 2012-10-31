@@ -34,7 +34,7 @@ public class Diff extends Dicttool.Command {
     @Override
     public String getHelp() {
         return COMMAND + " [-p] <dict> <dict> : shows differences between two dictionaries.\n"
-                + "  If -p (porcelain) option is given, produce output suitable for a script";
+                + "  If -p (plumbing) option is given, produce output suitable for a script";
     }
 
     @Override
@@ -42,15 +42,15 @@ public class Diff extends Dicttool.Command {
         if (mArgs.length < 2) {
             throw new RuntimeException("Not enough arguments for command " + COMMAND);
         }
-        final boolean porcelain;
+        final boolean plumbing;
         if ("-p".equals(mArgs[0])) {
-            porcelain = true;
+            plumbing = true;
             mArgs = Arrays.copyOfRange(mArgs, 1, mArgs.length);
             if (mArgs.length != 2) { // There should be only 2 arguments left
                 throw new RuntimeException("Wrong number of arguments for command " + COMMAND);
             }
         } else {
-            porcelain = false;
+            plumbing = false;
         }
         final FusionDictionary dict0 =
                 BinaryDictOffdeviceUtils.getDictionary(mArgs[0], false /* report */);
@@ -58,7 +58,7 @@ public class Diff extends Dicttool.Command {
         final FusionDictionary dict1 =
                 BinaryDictOffdeviceUtils.getDictionary(mArgs[1], false /* report */);
         if (null == dict1) throw new RuntimeException("Can't read dictionary " + mArgs[1]);
-        if (!porcelain) {
+        if (!plumbing) {
             System.out.println("Header :");
             diffHeaders(dict0, dict1);
             if (languageDiffers(dict0, dict1)) {

@@ -290,19 +290,23 @@ public final class FusionDictionary implements Iterable<Word> {
         }
         @Override
         public String toString() { // Convenience method
-            return toString(0);
+            return toString(0, false);
         }
-        public String toString(final int indentCount) {
+        public String toString(final int indentCount, final boolean plumbing) {
             final StringBuilder indent = new StringBuilder();
-            for (int i = 0; i < indentCount; ++i) {
-                indent.append(" ");
+            if (plumbing) {
+                indent.append("H:");
+            } else {
+                for (int i = 0; i < indentCount; ++i) {
+                    indent.append(" ");
+                }
             }
             final StringBuilder s = new StringBuilder();
             for (final String optionKey : mAttributes.keySet()) {
                 s.append(indent);
                 s.append(optionKey);
                 s.append(" = ");
-                if ("date".equals(optionKey)) {
+                if ("date".equals(optionKey) && !plumbing) {
                     // Date needs a number of milliseconds, but the dictionary contains seconds
                     s.append(new Date(
                             1000 * Long.parseLong(mAttributes.get(optionKey))).toString());

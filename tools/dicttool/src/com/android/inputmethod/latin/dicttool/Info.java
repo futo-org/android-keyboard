@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Info extends Dicttool.Command {
@@ -35,9 +36,9 @@ public class Info extends Dicttool.Command {
         return COMMAND + " <filename>: prints various information about a dictionary file";
     }
 
-    private static void showInfo(final FusionDictionary dict) {
+    private static void showInfo(final FusionDictionary dict, final boolean plumbing) {
         System.out.println("Header attributes :");
-        System.out.print(dict.mOptions.toString(2));
+        System.out.print(dict.mOptions.toString(2, plumbing));
         int wordCount = 0;
         int bigramCount = 0;
         int shortcutCount = 0;
@@ -62,7 +63,8 @@ public class Info extends Dicttool.Command {
                 + " whitelist entries)");
     }
 
-    private static void showWordInfo(final FusionDictionary dict, final String word) {
+    private static void showWordInfo(final FusionDictionary dict, final String word,
+            final boolean plumbing) {
         final CharGroup group = FusionDictionary.findWordInTree(dict.mRoot, word);
         if (null == group) {
             System.out.println(word + " is not in the dictionary");
@@ -101,15 +103,25 @@ public class Info extends Dicttool.Command {
         if (mArgs.length < 1) {
             throw new RuntimeException("Not enough arguments for command " + COMMAND);
         }
+        final boolean plumbing;
+        if ("-p".equals(mArgs[0])) {
+            plumbing = true;
+            mArgs = Arrays.copyOfRange(mArgs, 1, mArgs.length);
+            if (mArgs.length != 1) { // There should be only 1 argument left
+                throw new RuntimeException("Wrong number of arguments for command " + COMMAND);
+            }
+        } else {
+            plumbing = false;
+        }
         final String filename = mArgs[0];
         final boolean hasWordArguments = (1 == mArgs.length);
         final FusionDictionary dict = BinaryDictOffdeviceUtils.getDictionary(filename,
                 hasWordArguments /* report */);
         if (hasWordArguments) {
-            showInfo(dict);
+            showInfo(dict, plumbing);
         } else {
             for (int i = 1; i < mArgs.length; ++i) {
-                showWordInfo(dict, mArgs[i]);
+                showWordInfo(dict, mArgs[i], plumbing);
             }
         }
     }
