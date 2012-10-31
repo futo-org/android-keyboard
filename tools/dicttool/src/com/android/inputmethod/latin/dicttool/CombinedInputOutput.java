@@ -227,18 +227,18 @@ public class CombinedInputOutput {
         }
         destination.write("\n");
         for (Word word : set) {
-            destination.write("\t" + WORD_TAG + "=" + word.mWord + ","
+            destination.write(" " + WORD_TAG + "=" + word.mWord + ","
                     + FREQUENCY_TAG + "=" + word.mFrequency
                     + (word.mIsNotAWord ? "," + NOT_A_WORD_TAG + "=true\n" : "\n"));
             if (null != word.mShortcutTargets) {
                 for (WeightedString target : word.mShortcutTargets) {
-                    destination.write("\t\t" + SHORTCUT_TAG + "=" + target.mWord + ","
+                    destination.write("  " + SHORTCUT_TAG + "=" + target.mWord + ","
                             + FREQUENCY_TAG + "=" + target.mFrequency + "\n");
                 }
             }
             if (null != word.mBigrams) {
                 for (WeightedString bigram : word.mBigrams) {
-                    destination.write("\t\t" + BIGRAM_TAG + "=" + bigram.mWord + ","
+                    destination.write("  " + BIGRAM_TAG + "=" + bigram.mWord + ","
                             + FREQUENCY_TAG + "=" + bigram.mFrequency + "\n");
                 }
             }
