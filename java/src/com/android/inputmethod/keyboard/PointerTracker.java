@@ -1167,38 +1167,38 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final Key curKey = mCurrentKey;
         if (newKey == curKey) {
             return false;
-        } else if (curKey != null) {
-            final int keyHysteresisDistanceSquared = mKeyDetector.getKeyHysteresisDistanceSquared(
-                    mIsInSlidingKeyInputFromModifier);
-            final int distanceFromKeyEdgeSquared = curKey.squaredDistanceToEdge(x, y);
-            if (distanceFromKeyEdgeSquared >= keyHysteresisDistanceSquared) {
-                if (DEBUG_MODE) {
-                    final float distanceToEdgeRatio = (float)Math.sqrt(distanceFromKeyEdgeSquared)
-                            / mKeyboard.mMostCommonKeyWidth;
-                    Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
-                            +" %.2f key width from key edge",
-                            mPointerId, distanceToEdgeRatio));
-                }
-                return true;
-            }
-            if (sNeedsProximateBogusDownMoveUpEventHack && !mIsAllowedSlidingKeyInput
-                    && sTimeRecorder.isInFastTyping(eventTime)
-                    && mBogusMoveEventDetector.hasTraveledLongDistance(x, y)) {
-                if (DEBUG_MODE) {
-                    final float keyDiagonal = (float)Math.hypot(
-                            mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
-                    final float lengthFromDownRatio =
-                            mBogusMoveEventDetector.mAccumulatedDistanceFromDownKey / keyDiagonal;
-                    Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
-                            + " %.2f key diagonal from virtual down point",
-                            mPointerId, lengthFromDownRatio));
-                }
-                return true;
-            }
-            return false;
-        } else { // curKey == null && newKey != null
+        }
+        if (curKey == null /* && newKey != null */) {
             return true;
         }
+        // Here curKey points to the different key from newKey.
+        final int keyHysteresisDistanceSquared = mKeyDetector.getKeyHysteresisDistanceSquared(
+                mIsInSlidingKeyInputFromModifier);
+        final int distanceFromKeyEdgeSquared = curKey.squaredDistanceToEdge(x, y);
+        if (distanceFromKeyEdgeSquared >= keyHysteresisDistanceSquared) {
+            if (DEBUG_MODE) {
+                final float distanceToEdgeRatio = (float)Math.sqrt(distanceFromKeyEdgeSquared)
+                        / mKeyboard.mMostCommonKeyWidth;
+                Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
+                        +" %.2f key width from key edge", mPointerId, distanceToEdgeRatio));
+            }
+            return true;
+        }
+        if (sNeedsProximateBogusDownMoveUpEventHack && !mIsAllowedSlidingKeyInput
+                && sTimeRecorder.isInFastTyping(eventTime)
+                && mBogusMoveEventDetector.hasTraveledLongDistance(x, y)) {
+            if (DEBUG_MODE) {
+                final float keyDiagonal = (float)Math.hypot(
+                        mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
+                final float lengthFromDownRatio =
+                        mBogusMoveEventDetector.mAccumulatedDistanceFromDownKey / keyDiagonal;
+                Log.d(TAG, String.format("[%d] isMajorEnoughMoveToBeOnNewKey:"
+                        + " %.2f key diagonal from virtual down point",
+                        mPointerId, lengthFromDownRatio));
+            }
+            return true;
+        }
+        return false;
     }
 
     private void startLongPressTimer(final Key key) {
