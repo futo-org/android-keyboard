@@ -157,7 +157,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private static final boolean sNeedsProximateBogusDownMoveUpEventHack = true;
 
     private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
-    private static PointerTrackerQueue sPointerTrackerQueue;
+    private static final PointerTrackerQueue sPointerTrackerQueue = new PointerTrackerQueue();
 
     public final int mPointerId;
 
@@ -326,13 +326,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private final GestureStrokeWithPreviewPoints mGestureStrokeWithPreviewPoints;
 
-    public static void init(boolean hasDistinctMultitouch,
-            boolean needsPhantomSuddenMoveEventHack) {
-        if (hasDistinctMultitouch) {
-            sPointerTrackerQueue = new PointerTrackerQueue();
-        } else {
-            sPointerTrackerQueue = null;
-        }
+    public static void init(final boolean needsPhantomSuddenMoveEventHack) {
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
         sParams = PointerTrackerParams.DEFAULT;
         sGestureStrokeParams = GestureStrokeParams.DEFAULT;
@@ -376,7 +370,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     public static boolean isAnyInSlidingKeyInput() {
-        return sPointerTrackerQueue != null ? sPointerTrackerQueue.isAnyInSlidingKeyInput() : false;
+        return sPointerTrackerQueue.isAnyInSlidingKeyInput();
     }
 
     public static void setKeyboardActionListener(final KeyboardActionListener listener) {
@@ -683,12 +677,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private static int getActivePointerTrackerCount() {
-        return (sPointerTrackerQueue == null) ? 1 : sPointerTrackerQueue.size();
+        return sPointerTrackerQueue.size();
     }
 
     private static boolean isOldestTrackerInQueue(final PointerTracker tracker) {
-        return sPointerTrackerQueue == null
-                || sPointerTrackerQueue.getOldestElement() == tracker;
+        return sPointerTrackerQueue.getOldestElement() == tracker;
     }
 
     private void mayStartBatchInput(final Key key) {
@@ -798,15 +791,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
         final Key key = getKeyOn(x, y);
         mBogusMoveEventDetector.onActualDownEvent(x, y);
-        final PointerTrackerQueue queue = sPointerTrackerQueue;
-        if (queue != null) {
-            if (key != null && key.isModifier()) {
-                // Before processing a down event of modifier key, all pointers already being
-                // tracked should be released.
-                queue.releaseAllPointers(eventTime);
-            }
-            queue.add(this);
+        if (key != null && key.isModifier()) {
+            // Before processing a down event of modifier key, all pointers already being
+            // tracked should be released.
+            sPointerTrackerQueue.releaseAllPointers(eventTime);
         }
+        sPointerTrackerQueue.add(this);
         onDownEventInternal(x, y, eventTime);
         if (!sShouldHandleGesture) {
             return;
@@ -982,7 +972,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // slides off the key. This defends against noise from some touch panels when there are
         // close multiple touches.
         // Caveat: When in chording input mode with a modifier key, we don't use this hack.
-        else if (getActivePointerTrackerCount() > 1 && sPointerTrackerQueue != null
+        else if (getActivePointerTrackerCount() > 1
                 && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
             if (DEBUG_MODE) {
                 Log.w(TAG, String.format("[%d] onMoveEvent:"
@@ -1048,22 +1038,17 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             printTouchEvent("onUpEvent  :", x, y, eventTime);
         }
 
-        final PointerTrackerQueue queue = sPointerTrackerQueue;
-        if (queue != null) {
-            if (!sInGesture) {
-                if (mCurrentKey != null && mCurrentKey.isModifier()) {
-                    // Before processing an up event of modifier key, all pointers already being
-                    // tracked should be released.
-                    queue.releaseAllPointersExcept(this, eventTime);
-                } else {
-                    queue.releaseAllPointersOlderThan(this, eventTime);
-                }
+        if (!sInGesture) {
+            if (mCurrentKey != null && mCurrentKey.isModifier()) {
+                // Before processing an up event of modifier key, all pointers already being
+                // tracked should be released.
+                sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
+            } else {
+                sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
             }
         }
         onUpEventInternal(eventTime);
-        if (queue != null) {
-            queue.remove(this);
-        }
+        sPointerTrackerQueue.remove(this);
     }
 
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
@@ -1116,10 +1101,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     public void onLongPressed() {
         mKeyAlreadyProcessed = true;
         setReleasedKeyGraphics(mCurrentKey);
-        final PointerTrackerQueue queue = sPointerTrackerQueue;
-        if (queue != null) {
-            queue.remove(this);
-        }
+        sPointerTrackerQueue.remove(this);
     }
 
     public void onCancelEvent(final int x, final int y, final long eventTime) {
@@ -1127,11 +1109,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             printTouchEvent("onCancelEvt:", x, y, eventTime);
         }
 
-        final PointerTrackerQueue queue = sPointerTrackerQueue;
-        if (queue != null) {
-            queue.releaseAllPointersExcept(this, eventTime);
-            queue.remove(this);
-        }
+        sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
+        sPointerTrackerQueue.remove(this);
         onCancelEventInternal();
     }
 

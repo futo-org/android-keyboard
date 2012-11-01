@@ -374,7 +374,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
                 ResourceUtils.getDeviceOverrideValue(res,
                         R.array.phantom_sudden_move_event_device_list, "false"));
-        PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
+        PointerTracker.init(needsPhantomSuddenMoveEventHack);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
