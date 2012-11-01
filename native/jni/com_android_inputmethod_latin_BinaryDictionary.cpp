@@ -70,7 +70,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     adjust = static_cast<int>(dictOffset) % pagesize;
     int adjDictOffset = static_cast<int>(dictOffset) - adjust;
     int adjDictSize = static_cast<int>(dictSize) + adjust;
-    dictBuf = mmap(0, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
+    dictBuf = mmap(0, adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
@@ -84,7 +84,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         AKLOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
-    dictBuf = malloc(sizeof(char) * dictSize);
+    dictBuf = malloc(dictSize);
     if (!dictBuf) {
         AKLOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
         return 0;
@@ -94,7 +94,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         AKLOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
         return 0;
     }
-    ret = fread(dictBuf, sizeof(char) * dictSize, 1, file);
+    ret = fread(dictBuf, dictSize, 1, file);
     if (ret != 1) {
         AKLOGE("DICT: Failure in fread. ret=%d errno=%d", ret, errno);
         return 0;

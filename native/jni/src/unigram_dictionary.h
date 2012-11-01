@@ -116,7 +116,6 @@ class UnigramDictionary {
     const int MAX_WORDS;
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;
-    const unsigned int BYTES_IN_ONE_CHAR;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;
 
