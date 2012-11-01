@@ -24,8 +24,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 
-
-
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
  * consists of rows of keys.

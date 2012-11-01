@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-
 public final class Constants {
     public static final class Color {
         /**

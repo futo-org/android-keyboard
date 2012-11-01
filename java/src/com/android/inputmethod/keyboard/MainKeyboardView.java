@@ -207,7 +207,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         private void startKeyRepeatTimer(final PointerTracker tracker, final long delay) {
             final Key key = tracker.getKey();
-            if (key == null) return;
+            if (key == null) {
+                return;
+            }
             sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
         }
 
@@ -416,7 +418,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
-        if (resId == 0) return null;
+        if (resId == 0) {
+            return null;
+        }
         final ObjectAnimator animator = (ObjectAnimator)AnimatorInflater.loadAnimator(
                 getContext(), resId);
         if (animator != null) {
@@ -552,21 +556,25 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         // Check if we are already displaying popup panel.
-        if (mMoreKeysPanel != null)
+        if (mMoreKeysPanel != null) {
             return false;
-        if (parentKey == null)
+        }
+        if (parentKey == null) {
             return false;
+        }
         return onLongPress(parentKey, tracker);
     }
 
     // This default implementation returns a more keys panel.
     protected MoreKeysPanel onCreateMoreKeysPanel(final Key parentKey) {
-        if (parentKey.mMoreKeys == null)
+        if (parentKey.mMoreKeys == null) {
             return null;
+        }
 
         final View container = LayoutInflater.from(getContext()).inflate(mMoreKeysLayout, null);
-        if (container == null)
+        if (container == null) {
             throw new NullPointerException();
+        }
 
         final MoreKeysKeyboardView moreKeysKeyboardView =
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
@@ -627,8 +635,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         MoreKeysPanel moreKeysPanel = mMoreKeysPanelCache.get(parentKey);
         if (moreKeysPanel == null) {
             moreKeysPanel = onCreateMoreKeysPanel(parentKey);
-            if (moreKeysPanel == null)
+            if (moreKeysPanel == null) {
                 return false;
+            }
             mMoreKeysPanelCache.put(parentKey, moreKeysPanel);
         }
         if (mMoreKeysWindow == null) {
@@ -664,9 +673,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public boolean isInSlidingKeyInput() {
         if (mMoreKeysPanel != null) {
             return true;
-        } else {
-            return PointerTracker.isAnyInSlidingKeyInput();
         }
+        return PointerTracker.isAnyInSlidingKeyInput();
     }
 
     public int getPointerCount() {
@@ -839,14 +847,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public boolean dismissMoreKeysPanel() {
-        if (mMoreKeysWindow != null && mMoreKeysWindow.isShowing()) {
-            mMoreKeysWindow.dismiss();
-            mMoreKeysPanel = null;
-            mMoreKeysPanelPointerTrackerId = -1;
-            dimEntireKeyboard(false);
-            return true;
+        if (mMoreKeysWindow == null || !mMoreKeysWindow.isShowing()) {
+            return false;
         }
-        return false;
+        mMoreKeysWindow.dismiss();
+        mMoreKeysPanel = null;
+        mMoreKeysPanelPointerTrackerId = -1;
+        dimEntireKeyboard(false);
+        return true;
     }
 
     /**
@@ -869,16 +877,22 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     public void updateShortcutKey(final boolean available) {
         final Keyboard keyboard = getKeyboard();
-        if (keyboard == null) return;
+        if (keyboard == null) {
+            return;
+        }
         final Key shortcutKey = keyboard.getKey(Constants.CODE_SHORTCUT);
-        if (shortcutKey == null) return;
+        if (shortcutKey == null) {
+            return;
+        }
         shortcutKey.setEnabled(available);
         invalidateKey(shortcutKey);
     }
 
     private void updateAltCodeKeyWhileTyping() {
         final Keyboard keyboard = getKeyboard();
-        if (keyboard == null) return;
+        if (keyboard == null) {
+            return;
+        }
         for (final Key key : keyboard.mAltCodeKeysWhileTyping) {
             invalidateKey(key);
         }
@@ -908,7 +922,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public void updateAutoCorrectionState(final boolean isAutoCorrection) {
-        if (!mAutoCorrectionSpacebarLedEnabled) return;
+        if (!mAutoCorrectionSpacebarLedEnabled) {
+            return;
+        }
         mAutoCorrectionSpacebarLedOn = isAutoCorrection;
         invalidateKey(mSpaceKey);
     }
@@ -936,10 +952,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private boolean fitsTextIntoWidth(final int width, final String text, final Paint paint) {
         paint.setTextScaleX(1.0f);
         final float textWidth = getLabelWidth(text, paint);
-        if (textWidth < width) return true;
+        if (textWidth < width) {
+            return true;
+        }
 
         final float scaleX = width / textWidth;
-        if (scaleX < MINIMUM_XSCALE_OF_LANGUAGE_NAME) return false;
+        if (scaleX < MINIMUM_XSCALE_OF_LANGUAGE_NAME) {
+            return false;
+        }
 
         paint.setTextScaleX(scaleX);
         return getLabelWidth(text, paint) < width;
@@ -949,19 +969,19 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private String layoutLanguageOnSpacebar(final Paint paint, final InputMethodSubtype subtype,
             final int width) {
         // Choose appropriate language name to fit into the width.
-        String text = getFullDisplayName(subtype, getResources());
-        if (fitsTextIntoWidth(width, text, paint)) {
-            return text;
+        final String fullText = getFullDisplayName(subtype, getResources());
+        if (fitsTextIntoWidth(width, fullText, paint)) {
+            return fullText;
         }
 
-        text = getMiddleDisplayName(subtype);
-        if (fitsTextIntoWidth(width, text, paint)) {
-            return text;
+        final String middleText = getMiddleDisplayName(subtype);
+        if (fitsTextIntoWidth(width, middleText, paint)) {
+            return middleText;
         }
 
-        text = getShortDisplayName(subtype);
-        if (fitsTextIntoWidth(width, text, paint)) {
-            return text;
+        final String shortText = getShortDisplayName(subtype);
+        if (fitsTextIntoWidth(width, shortText, paint)) {
+            return shortText;
         }
 
         return "";
