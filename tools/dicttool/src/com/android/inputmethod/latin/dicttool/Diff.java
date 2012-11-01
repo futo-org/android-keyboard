@@ -76,23 +76,26 @@ public class Diff extends Dicttool.Command {
     private static boolean languageDiffers(final FusionDictionary dict0,
             final FusionDictionary dict1) {
         // If either of the dictionaries have no locale, assume it's okay
-        if (null == dict0.mOptions.mAttributes.get("locale")) return true;
-        if (null == dict1.mOptions.mAttributes.get("locale")) return true;
+        if (null == dict0.mOptions.mAttributes.get("locale")) return false;
+        if (null == dict1.mOptions.mAttributes.get("locale")) return false;
         final String dict0Lang = dict0.mOptions.mAttributes.get("locale").split("_", 3)[0];
         final String dict1Lang = dict1.mOptions.mAttributes.get("locale").split("_", 3)[0];
         return !dict0Lang.equals(dict1Lang);
     }
 
     private static void diffHeaders(final FusionDictionary dict0, final FusionDictionary dict1) {
+        boolean hasDifferences = false;
         if (dict0.mOptions.mFrenchLigatureProcessing != dict1.mOptions.mFrenchLigatureProcessing) {
             System.out.println("  French ligature processing : "
                     + dict0.mOptions.mFrenchLigatureProcessing + " <=> "
                     + dict1.mOptions.mFrenchLigatureProcessing);
+            hasDifferences = true;
         }
         else if (dict0.mOptions.mGermanUmlautProcessing != dict1.mOptions.mGermanUmlautProcessing) {
             System.out.println("  German umlaut processing : "
                     + dict0.mOptions.mGermanUmlautProcessing + " <=> "
                     + dict1.mOptions.mGermanUmlautProcessing);
+            hasDifferences = true;
         }
         final HashMap<String, String> options1 =
                 new HashMap<String, String>(dict1.mOptions.mAttributes);
@@ -102,55 +105,72 @@ public class Diff extends Dicttool.Command {
                 System.out.println("  " + optionKey + " : "
                         + dict0.mOptions.mAttributes.get(optionKey) + " <=> "
                         + dict1.mOptions.mAttributes.get(optionKey));
+                hasDifferences = true;
             }
             options1.remove(optionKey);
         }
         for (final String optionKey : options1.keySet()) {
             System.out.println("  " + optionKey + " : null <=> " + options1.get(optionKey));
+            hasDifferences = true;
+        }
+        if (!hasDifferences) {
+            System.out.println("  No differences");
         }
     }
 
     private static void diffWords(final FusionDictionary dict0, final FusionDictionary dict1) {
+        boolean hasDifferences = false;
         for (final Word word0 : dict0) {
             final CharGroup word1 = FusionDictionary.findWordInTree(dict1.mRoot, word0.mWord);
             if (null == word1) {
                 // This word is not in dict1
                 System.out.println("Deleted: " + word0.mWord + " " + word0.mFrequency);
+                hasDifferences = true;
             } else {
                 // We found the word. Compare frequencies, shortcuts, bigrams
                 if (word0.mFrequency != word1.getFrequency()) {
                     System.out.println("Freq changed: " + word0.mWord + " " + word0.mFrequency
                             + " -> " + word1.getFrequency());
+                    hasDifferences = true;
                 }
                 if (word0.mIsNotAWord != word1.getIsNotAWord()) {
                     System.out.println("Not a word: " + word0.mWord + " " + word0.mIsNotAWord
                             + " -> " + word1.getIsNotAWord());
+                    hasDifferences = true;
                 }
                 if (word0.mIsBlacklistEntry != word1.getIsBlacklistEntry()) {
                     System.out.println("Blacklist: " + word0.mWord + " " + word0.mIsBlacklistEntry
                             + " -> " + word1.getIsBlacklistEntry());
+                    hasDifferences = true;
                 }
-                diffAttributes(word0.mWord, word0.mBigrams, word1.getBigrams());
-                diffAttributes(word0.mWord, word0.mShortcutTargets, word1.getShortcutTargets());
+                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
+                        word0.mBigrams, word1.getBigrams());
+                hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
+                        word0.mShortcutTargets, word1.getShortcutTargets());
             }
+        }
+        if (!hasDifferences) {
+            System.out.println("  No differences");
         }
     }
 
-    private static void diffAttributes(final String word, final ArrayList<WeightedString> list0,
-            final ArrayList<WeightedString> list1) {
+    private static boolean hasAttributesDifferencesAndPrintThemIfAny(final String word,
+            final ArrayList<WeightedString> list0, final ArrayList<WeightedString> list1) {
         if (null == list1) {
-            if (null == list0) return;
+            if (null == list0) return false;
             for (final WeightedString attribute0 : list0) {
                 System.out.println("Bigram removed: " + word + " " + attribute0.mWord + " "
                         + attribute0.mFrequency);
             }
-            return;
+            return true;
         }
+        boolean hasDifferences = false;
         if (null != list0) {
             for (final WeightedString attribute0 : list0) {
                 // The following tests with #equals(). The WeightedString#equals() method returns
                 // true if both the string and the frequency are the same.
                 if (!list1.contains(attribute0)) {
+                    hasDifferences = true;
                     // Search for a word with the same string but a different frequency
                     for (final WeightedString attribute1 : list1) {
                         if (attribute0.mWord.equals(attribute1.mWord)) {
@@ -171,8 +191,10 @@ public class Diff extends Dicttool.Command {
         // We removed any matching word that we found, so now list1 only contains words that
         // are not included in list0.
         for (final WeightedString attribute1 : list1) {
+            hasDifferences = true;
             System.out.println("Bigram added: " + word + " " + attribute1.mWord + " "
                     + attribute1.mFrequency);
         }
+        return hasDifferences;
     }
 }
