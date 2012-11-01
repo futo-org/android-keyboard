@@ -686,6 +686,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return (sPointerTrackerQueue == null) ? 1 : sPointerTrackerQueue.size();
     }
 
+    private static boolean isOldestTrackerInQueue(final PointerTracker tracker) {
+        return sPointerTrackerQueue == null
+                || sPointerTrackerQueue.getOldestElement() == tracker;
+    }
+
     private void mayStartBatchInput(final Key key) {
         if (sInGesture || !mGestureStrokeWithPreviewPoints.isStartOfAGesture()) {
             return;
@@ -704,8 +709,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mListener.onStartBatchInput();
         }
         mTimerProxy.cancelLongPressTimer();
-        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
     private void mayUpdateBatchInput(final long eventTime, final Key key) {
@@ -726,8 +730,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 }
             }
         }
-        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
     private void mayEndBatchInput(final long eventTime) {
@@ -743,8 +746,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 mListener.onEndBatchInput(sAggregratedPointers);
             }
         }
-        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
     public void processMotionEvent(final int action, final int x, final int y, final long eventTime,
