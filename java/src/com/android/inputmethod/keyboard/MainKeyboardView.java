@@ -30,7 +30,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -723,39 +722,15 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             x = (int)me.getX(index);
             y = (int)me.getY(index);
         }
-        if (ENABLE_USABILITY_STUDY_LOG) {
-            final String eventTag;
-            switch (action) {
-                case MotionEvent.ACTION_UP:
-                    eventTag = "[Up]";
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    eventTag = "[Down]";
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-                    eventTag = "[PointerUp]";
-                    break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    eventTag = "[PointerDown]";
-                    break;
-                case MotionEvent.ACTION_MOVE: // Skip this as being logged below
-                    eventTag = "";
-                    break;
-                default:
-                    eventTag = "[Action" + action + "]";
-                    break;
-            }
-            if (!TextUtils.isEmpty(eventTag)) {
-                final float size = me.getSize(index);
-                final float pressure = me.getPressure(index);
-                UsabilityStudyLogUtils.getInstance().write(
-                        eventTag + eventTime + "," + id + "," + x + "," + y + ","
-                        + size + "," + pressure);
-            }
+        // TODO: This might be moved to the tracker.processMotionEvent() call below.
+        if (ENABLE_USABILITY_STUDY_LOG && action != MotionEvent.ACTION_MOVE) {
+            writeUsabilityStudyLog(me, action, eventTime, index, id, x, y);
         }
+        // TODO: This should be moved to the tracker.processMotionEvent() call below.
+        // Currently the same "move" event is being logged twice.
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.mainKeyboardView_processMotionEvent(me, action, eventTime, index, id,
-                    x, y);
+            ResearchLogger.mainKeyboardView_processMotionEvent(
+                    me, action, eventTime, index, id, x, y);
         }
 
         if (mKeyTimerHandler.isInKeyRepeat()) {
@@ -781,8 +756,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 final Key newKey = tracker.getKeyOn(x, y);
                 if (mOldKey != newKey) {
                     tracker.onDownEvent(x, y, eventTime, this);
-                    if (action == MotionEvent.ACTION_UP)
+                    if (action == MotionEvent.ACTION_UP) {
                         tracker.onUpEvent(x, y, eventTime);
+                    }
                 }
             } else if (pointerCount == 2 && oldPointerCount == 1) {
                 // Single-touch to multi-touch transition.
@@ -819,15 +795,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 }
                 tracker.onMoveEvent(px, py, eventTime, motionEvent);
                 if (ENABLE_USABILITY_STUDY_LOG) {
-                    final float pointerSize = me.getSize(i);
-                    final float pointerPressure = me.getPressure(i);
-                    UsabilityStudyLogUtils.getInstance().write("[Move]"  + eventTime + ","
-                            + pointerId + "," + px + "," + py + ","
-                            + pointerSize + "," + pointerPressure);
+                    writeUsabilityStudyLog(me, action, eventTime, i, pointerId, px, py);
                 }
                 if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.mainKeyboardView_processMotionEvent(me, action, eventTime,
-                            i, pointerId, px, py);
+                    ResearchLogger.mainKeyboardView_processMotionEvent(
+                            me, action, eventTime, i, pointerId, px, py);
                 }
             }
         } else {
@@ -836,6 +808,35 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         return true;
+    }
+
+    private static void writeUsabilityStudyLog(final MotionEvent me, final int action,
+            final long eventTime, final int index, final int id, final int x, final int y) {
+        final String eventTag;
+        switch (action) {
+        case MotionEvent.ACTION_UP:
+            eventTag = "[Up]";
+            break;
+        case MotionEvent.ACTION_DOWN:
+            eventTag = "[Down]";
+            break;
+        case MotionEvent.ACTION_POINTER_UP:
+            eventTag = "[PointerUp]";
+            break;
+        case MotionEvent.ACTION_POINTER_DOWN:
+            eventTag = "[PointerDown]";
+            break;
+        case MotionEvent.ACTION_MOVE:
+            eventTag = "[Move]";
+            break;
+        default:
+            eventTag = "[Action" + action + "]";
+            break;
+        }
+        final float size = me.getSize(index);
+        final float pressure = me.getPressure(index);
+        UsabilityStudyLogUtils.getInstance().write(
+                eventTag + eventTime + "," + id + "," + x + "," + y + "," + size + "," + pressure);
     }
 
     @Override
