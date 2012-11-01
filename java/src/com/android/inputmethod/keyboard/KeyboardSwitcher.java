@@ -30,7 +30,6 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetExcep
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
-import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
@@ -69,7 +68,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private AudioAndHapticFeedbackManager mFeedbackManager;
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
-    private boolean mForceNonDistinctMultitouch;
 
     private InputView mCurrentInputView;
     private MainKeyboardView mKeyboardView;
@@ -109,8 +107,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
         setContextThemeWrapper(latinIme, getKeyboardTheme(latinIme, prefs));
-        mForceNonDistinctMultitouch = prefs.getBoolean(
-                DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
     }
 
     private static KeyboardTheme getKeyboardTheme(Context context, SharedPreferences prefs) {
@@ -341,10 +337,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return mKeyboardView != null && mKeyboardView.getPointerCount() == 1;
     }
 
-    public boolean hasDistinctMultitouch() {
-        return mKeyboardView != null && mKeyboardView.hasDistinctMultitouch();
-    }
-
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
@@ -371,9 +363,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             // TODO: Should use LAYER_TYPE_SOFTWARE when hardware acceleration is off?
         }
         mKeyboardView.setKeyboardActionListener(mLatinIME);
-        if (mForceNonDistinctMultitouch) {
-            mKeyboardView.setDistinctMultitouch(false);
-        }
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.

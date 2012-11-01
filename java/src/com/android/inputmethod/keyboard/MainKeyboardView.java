@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -28,6 +29,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -47,6 +49,7 @@ import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.SuddenJumpingTouchEventHandler;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -142,7 +145,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
     protected KeyDetector mKeyDetector;
-    private boolean mHasDistinctMultitouch;
+    private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
     private Key mOldKey;
 
@@ -359,8 +362,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
 
-        mHasDistinctMultitouch = context.getPackageManager()
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final boolean forceNonDistinctMultitouch = prefs.getBoolean(
+                DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
+        final boolean hasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
+        mHasDistinctMultitouch = hasDistinctMultitouch && !forceNonDistinctMultitouch;
         final Resources res = getResources();
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
                 ResourceUtils.getDeviceOverrideValue(res,
@@ -508,18 +515,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     public void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {
         PointerTracker.setGestureHandlingEnabledByUser(gestureHandlingEnabledByUser);
-    }
-
-    /**
-     * Returns whether the device has distinct multi-touch panel.
-     * @return true if the device has distinct multi-touch panel.
-     */
-    public boolean hasDistinctMultitouch() {
-        return mHasDistinctMultitouch;
-    }
-
-    public void setDistinctMultitouch(final boolean hasDistinctMultitouch) {
-        mHasDistinctMultitouch = hasDistinctMultitouch;
     }
 
     @Override
