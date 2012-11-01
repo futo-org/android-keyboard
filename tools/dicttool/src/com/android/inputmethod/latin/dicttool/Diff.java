@@ -144,9 +144,17 @@ public class Diff extends Dicttool.Command {
                     hasDifferences = true;
                 }
                 hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
-                        word0.mBigrams, word1.getBigrams());
+                        "Bigram", word0.mBigrams, word1.getBigrams());
                 hasDifferences |= hasAttributesDifferencesAndPrintThemIfAny(word0.mWord,
-                        word0.mShortcutTargets, word1.getShortcutTargets());
+                        "Shortcut", word0.mShortcutTargets, word1.getShortcutTargets());
+            }
+        }
+        for (final Word word1 : dict1) {
+            final CharGroup word0 = FusionDictionary.findWordInTree(dict0.mRoot, word1.mWord);
+            if (null == word0) {
+                // This word is not in dict0
+                System.out.println("Added: " + word1.mWord + " " + word1.mFrequency);
+                hasDifferences = true;
             }
         }
         if (!hasDifferences) {
@@ -155,11 +163,12 @@ public class Diff extends Dicttool.Command {
     }
 
     private static boolean hasAttributesDifferencesAndPrintThemIfAny(final String word,
-            final ArrayList<WeightedString> list0, final ArrayList<WeightedString> list1) {
+            final String type, final ArrayList<WeightedString> list0,
+            final ArrayList<WeightedString> list1) {
         if (null == list1) {
             if (null == list0) return false;
             for (final WeightedString attribute0 : list0) {
-                System.out.println("Bigram removed: " + word + " " + attribute0.mWord + " "
+                System.out.println(type + " removed: " + word + " " + attribute0.mWord + " "
                         + attribute0.mFrequency);
             }
             return true;
@@ -174,14 +183,14 @@ public class Diff extends Dicttool.Command {
                     // Search for a word with the same string but a different frequency
                     for (final WeightedString attribute1 : list1) {
                         if (attribute0.mWord.equals(attribute1.mWord)) {
-                            System.out.println("Bigram freq changed: " + word + " "
+                            System.out.println(type + " freq changed: " + word + " "
                                     + attribute0.mWord + " " + attribute0.mFrequency + " -> "
                                     + attribute1.mFrequency);
                             list1.remove(attribute1);
                             break;
                         }
                         // We come here if we haven't found any matching string.
-                        System.out.println("Bigram removed: " + word + " " + attribute0.mWord);
+                        System.out.println(type + " removed: " + word + " " + attribute0.mWord);
                     }
                 } else {
                     list1.remove(attribute0);
@@ -192,7 +201,7 @@ public class Diff extends Dicttool.Command {
         // are not included in list0.
         for (final WeightedString attribute1 : list1) {
             hasDifferences = true;
-            System.out.println("Bigram added: " + word + " " + attribute1.mWord + " "
+            System.out.println(type + " added: " + word + " " + attribute1.mWord + " "
                     + attribute1.mFrequency);
         }
         return hasDifferences;
