@@ -45,8 +45,7 @@ UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int fullW
         int maxWordLength, int maxWords, const unsigned int flags)
         : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
           FULL_WORD_MULTIPLIER(fullWordMultiplier), // TODO : remove this variable.
-          ROOT_POS(0), BYTES_IN_ONE_CHAR(sizeof(int)),
-          MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
+          ROOT_POS(0), MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
     }
@@ -103,6 +102,9 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
         const digraph_t *const digraphs, const unsigned int digraphsSize) const {
+    assert(sizeof(codesDest[0]) == sizeof(codesSrc[0]));
+    assert(sizeof(xCoordinatesBuffer[0]) == sizeof(xcoordinates[0]));
+    assert(sizeof(yCoordinatesBuffer[0]) == sizeof(ycoordinates[0]));
 
     const int startIndex = static_cast<int>(codesDest - codesBuffer);
     if (currentDepth < MAX_DIGRAPH_SEARCH_DEPTH) {
@@ -123,9 +125,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 // Make i the index of the second char of the digraph for simplicity. Forgetting
                 // to do that results in an infinite recursion so take care!
                 ++i;
-                memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
-                codesDest[(i - 1) * (BYTES_IN_ONE_CHAR / sizeof(codesDest[0]))] =
-                        replacementCodePoint;
+                memcpy(codesDest, codesSrc, i * sizeof(codesDest[0]));
+                codesDest[i - 1] = replacementCodePoint;
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
                         bigramMap, bigramFilter, useFullEditDistance, codesSrc + i + 1,
@@ -135,7 +136,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
                 // In our example, after "pru" in the buffer copy the "e", and continue on "fen"
-                memcpy(codesDest + i, codesSrc + i, BYTES_IN_ONE_CHAR);
+                memcpy(codesDest + i, codesSrc + i, sizeof(codesDest[0]));
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
                         bigramMap, bigramFilter, useFullEditDistance, codesSrc + i, codesRemain - i,
@@ -151,13 +152,13 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
     // If the word contains several digraphs, we'll come it for the product of them.
     // eg. if the word is "ueberpruefen" we'll test, in order, against
     // "uberprufen", "uberpruefen", "ueberprufen", "ueberpruefen".
-    const unsigned int remainingBytes = BYTES_IN_ONE_CHAR * codesRemain;
+    const unsigned int remainingBytes = sizeof(codesDest[0]) * codesRemain;
     if (0 != remainingBytes) {
         memcpy(codesDest, codesSrc, remainingBytes);
         memcpy(&xCoordinatesBuffer[startIndex], &xcoordinates[codesBufferSize - codesRemain],
-                sizeof(int) * codesRemain);
+                sizeof(xCoordinatesBuffer[0]) * codesRemain);
         memcpy(&yCoordinatesBuffer[startIndex], &ycoordinates[codesBufferSize - codesRemain],
-                sizeof(int) * codesRemain);
+                sizeof(yCoordinatesBuffer[0]) * codesRemain);
     }
 
     getWordSuggestions(proximityInfo, xCoordinatesBuffer, yCoordinatesBuffer, codesBuffer,

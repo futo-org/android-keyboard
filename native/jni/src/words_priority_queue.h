@@ -38,7 +38,7 @@ class WordsPriorityQueue {
         void setParams(int score, int *word, int wordLength, int type) {
             mScore = score;
             mWordLength = wordLength;
-            memcpy(mWord, word, sizeof(int) * wordLength);
+            memcpy(mWord, word, sizeof(mWord[0]) * wordLength);
             mUsed = true;
             mType = type;
         }
@@ -127,7 +127,7 @@ class WordsPriorityQueue {
                 }
             }
             if (maxIndex > 0 && nsMaxSw) {
-                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(SuggestedWord *));
+                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(swBuffer[0]));
                 swBuffer[0] = nsMaxSw;
             }
         }
@@ -141,7 +141,7 @@ class WordsPriorityQueue {
             int *targetAddress = outputCodePoints + i * MAX_WORD_LENGTH;
             frequencies[i] = sw->mScore;
             outputTypes[i] = sw->mType;
-            memcpy(targetAddress, sw->mWord, wordLength * sizeof(int));
+            memcpy(targetAddress, sw->mWord, wordLength * sizeof(targetAddress[0]));
             if (wordLength < MAX_WORD_LENGTH) {
                 targetAddress[wordLength] = 0;
             }
