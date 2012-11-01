@@ -144,7 +144,9 @@ public class Diff extends Dicttool.Command {
                 System.out.println("Bigram removed: " + word + " " + attribute0.mWord + " "
                         + attribute0.mFrequency);
             }
-        } else if (null != list0) {
+            return;
+        }
+        if (null != list0) {
             for (final WeightedString attribute0 : list0) {
                 // The following tests with #equals(). The WeightedString#equals() method returns
                 // true if both the string and the frequency are the same.
