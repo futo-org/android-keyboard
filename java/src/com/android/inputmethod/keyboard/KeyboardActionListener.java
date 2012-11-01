@@ -112,13 +112,5 @@ public interface KeyboardActionListener {
         public boolean onCustomRequest(int requestCode) {
             return false;
         }
-
-        // TODO: Remove this method when the vertical correction is removed.
-        public static boolean isInvalidCoordinate(final int coordinate) {
-            // Detect {@link Constants#NOT_A_COORDINATE},
-            // {@link Constants#SUGGESTION_STRIP_COORDINATE}, and
-            // {@link Constants#SPELL_CHECKER_COORDINATE}.
-            return coordinate < 0;
-        }
     }
 }
