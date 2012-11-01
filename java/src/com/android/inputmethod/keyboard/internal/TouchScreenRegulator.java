@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -28,8 +27,8 @@ import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
-public final class SuddenJumpingTouchEventHandler {
-    private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();
+public final class TouchScreenRegulator {
+    private static final String TAG = TouchScreenRegulator.class.getSimpleName();
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
     public interface ProcessMotionEvent {
@@ -50,17 +49,18 @@ public final class SuddenJumpingTouchEventHandler {
     private int mJumpThresholdSquare = Integer.MAX_VALUE;
     private int mLastX;
     private int mLastY;
+    // One-seventh of the keyboard width seems like a reasonable threshold
+    private static final float JUMP_THRESHOLD_RATIO_TO_KEYBOARD_WIDTH = 1.0f / 7.0f;
 
-    public SuddenJumpingTouchEventHandler(Context context, ProcessMotionEvent view) {
+    public TouchScreenRegulator(final Context context, final ProcessMotionEvent view) {
         mView = view;
         mNeedsSuddenJumpingHack = Boolean.parseBoolean(ResourceUtils.getDeviceOverrideValue(
                 context.getResources(), R.array.sudden_jumping_touch_event_device_list, "false"));
     }
 
-    public void setKeyboard(Keyboard newKeyboard) {
-        // One-seventh of the keyboard width seems like a reasonable threshold
-        final int jumpThreshold = newKeyboard.mOccupiedWidth / 7;
-        mJumpThresholdSquare = jumpThreshold * jumpThreshold;
+    public void setKeyboardGeometry(final int keyboardWidth) {
+        final float jumpThreshold = keyboardWidth * JUMP_THRESHOLD_RATIO_TO_KEYBOARD_WIDTH;
+        mJumpThresholdSquare = (int)(jumpThreshold * jumpThreshold);
     }
 
     /**
@@ -74,7 +74,7 @@ public final class SuddenJumpingTouchEventHandler {
      * @return true if the event was consumed, so that it doesn't continue to be handled by
      * {@link MainKeyboardView}.
      */
-    private boolean handleSuddenJumping(MotionEvent me) {
+    private boolean handleSuddenJumping(final MotionEvent me) {
         if (!mNeedsSuddenJumpingHack)
             return false;
         final int action = me.getAction();
@@ -140,7 +140,7 @@ public final class SuddenJumpingTouchEventHandler {
         return result;
     }
 
-    public boolean onTouchEvent(MotionEvent me) {
+    public boolean onTouchEvent(final MotionEvent me) {
         // If there was a sudden jump, return without processing the actual motion event.
         if (handleSuddenJumping(me)) {
             if (DEBUG_MODE)
