@@ -1741,15 +1741,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         if (isComposingWord) {
             final int keyX, keyY;
-            if (KeyboardActionListener.Adapter.isInvalidCoordinate(x)
-                    || KeyboardActionListener.Adapter.isInvalidCoordinate(y)) {
-                keyX = x;
-                keyY = y;
-            } else {
+            if (Constants.isValidCoordinate(x) && Constants.isValidCoordinate(y)) {
                 final KeyDetector keyDetector =
                         mKeyboardSwitcher.getMainKeyboardView().getKeyDetector();
                 keyX = keyDetector.getTouchX(x);
                 keyY = keyDetector.getTouchY(y);
+            } else {
+                keyX = x;
+                keyY = y;
             }
             mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state

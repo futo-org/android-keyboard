@@ -137,10 +137,15 @@ public final class Constants {
 
     public static final int NOT_A_CODE = -1;
 
-    // See {@link KeyboardActionListener.Adapter#isInvalidCoordinate(int)}.
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
     public static final int SPELL_CHECKER_COORDINATE = -3;
+
+    public static boolean isValidCoordinate(final int coordinate) {
+        // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
+        // and {@link SPELL_CHECKER_COORDINATE}.
+        return coordinate >= 0;
+    }
 
     /**
      * Some common keys code. Must be positive.
