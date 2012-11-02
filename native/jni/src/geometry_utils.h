@@ -24,33 +24,39 @@
 #define M_PI_F 3.14159265f
 #define ROUND_FLOAT_10000(f) ((f) < 1000.0f && (f) > 0.001f) \
         ? (floorf((f) * 10000.0f) / 10000.0f) : (f)
-#define SQUARE_FLOAT(x) ((x) * (x))
 
 namespace latinime {
 
-static inline float getSquaredDistanceFloat(float x1, float y1, float x2, float y2) {
-    const float deltaX = x1 - x2;
-    const float deltaY = y1 - y2;
-    return SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY);
+static inline float SQUARE_FLOAT(const float x) { return x * x; }
+
+static inline float getSquaredDistanceFloat(const float x1, const float y1, const float x2,
+        const float y2) {
+    return SQUARE_FLOAT(x1 - x2) + SQUARE_FLOAT(y1 - y2);
 }
 
-static inline float getDistanceFloat(float x1, float y1, float x2, float y2) {
+static inline float getNormalizedSquaredDistanceFloat(const float x1, const float y1,
+        const float x2, const float y2, const float scale) {
+    return getSquaredDistanceFloat(x1, y1, x2, y2) / SQUARE_FLOAT(scale);
+}
+
+static inline float getDistanceFloat(const float x1, const float y1, const float x2,
+        const float y2) {
     return hypotf(x1 - x2, y1 - y2);
 }
 
-static inline int getDistanceInt(int x1, int y1, int x2, int y2) {
+static inline int getDistanceInt(const int x1, const int y1, const int x2, const int y2) {
     return static_cast<int>(getDistanceFloat(static_cast<float>(x1), static_cast<float>(y1),
             static_cast<float>(x2), static_cast<float>(y2)));
 }
 
-static inline float getAngle(int x1, int y1, int x2, int y2) {
+static inline float getAngle(const int x1, const int y1, const int x2, const int y2) {
     const int dx = x1 - x2;
     const int dy = y1 - y2;
     if (dx == 0 && dy == 0) return 0;
     return atan2f(static_cast<float>(dy), static_cast<float>(dx));
 }
 
-static inline float getAngleDiff(float a1, float a2) {
+static inline float getAngleDiff(const float a1, const float a2) {
     const float deltaA = fabsf(a1 - a2);
     const float diff = ROUND_FLOAT_10000(deltaA);
     if (diff > M_PI_F) {
@@ -60,8 +66,8 @@ static inline float getAngleDiff(float a1, float a2) {
     return diff;
 }
 
-static inline float pointToLineSegSquaredDistanceFloat(
-        float x, float y, float x1, float y1, float x2, float y2, bool extend) {
+static inline float pointToLineSegSquaredDistanceFloat(const float x, const float y, const float x1,
+        const float y1, const float x2, const float y2, const bool extend) {
     const float ray1x = x - x1;
     const float ray1y = y - y1;
     const float ray2x = x2 - x1;
@@ -93,16 +99,17 @@ struct NormalDistribution {
               mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * SQUARE_FLOAT(sigma))),
               mPreComputedExponentPart(-1.0f / (2.0f * SQUARE_FLOAT(sigma))) {}
 
-    float getProbabilityDensity(const float x) {
+    float getProbabilityDensity(const float x) const {
         const float shiftedX = x - mU;
         return mPreComputedNonExpPart * expf(mPreComputedExponentPart * SQUARE_FLOAT(shiftedX));
     }
+
 private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
     float mU; // mean value
     float mSigma; // standard deviation
     float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
     float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
-};
+}; // struct NormalDistribution
 } // namespace latinime
 #endif // LATINIME_GEOMETRY_UTILS_H

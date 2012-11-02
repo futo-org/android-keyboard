@@ -127,13 +127,6 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     return false;
 }
 
-static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
-        float scale) {
-    const float deltaX = x1 - x2;
-    const float deltaY = y1 - y2;
-    return (SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY)) / SQUARE_FLOAT(scale);
-}
-
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
         const int keyId, const int x, const int y) const {
     const static float verticalSweetSpotScaleForGeometric = 1.1f;
