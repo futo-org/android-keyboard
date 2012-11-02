@@ -383,6 +383,12 @@ template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 
+#ifdef __GNUC__
+#define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
+#else // __GNUC__
+#define AK_FORCE_INLINE inline
+#endif // __GNUC__
+
 // The ratio of neutral area radius to sweet spot radius.
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f
 

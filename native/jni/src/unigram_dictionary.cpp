@@ -365,7 +365,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     }
 }
 
-inline void UnigramDictionary::onTerminal(const int probability,
+void UnigramDictionary::onTerminal(const int probability,
         const TerminalAttributes& terminalAttributes, Correction *correction,
         WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
         const int currentWordIndex) const {

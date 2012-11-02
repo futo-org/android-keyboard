@@ -60,43 +60,12 @@ inline static void dumpEditDistance10ForDebug(int *editDistanceTable,
     }
 }
 
-inline static void calcEditDistanceOneStep(int *editDistanceTable, const int *input,
-        const int inputSize, const int *output, const int outputLength) {
-    // TODO: Make sure that editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL] is not touched.
-    // Let dp[i][j] be editDistanceTable[i * (inputSize + 1) + j].
-    // Assuming that dp[0][0] ... dp[outputLength - 1][inputSize] are already calculated,
-    // and calculate dp[ouputLength][0] ... dp[outputLength][inputSize].
-    int *const current = editDistanceTable + outputLength * (inputSize + 1);
-    const int *const prev = editDistanceTable + (outputLength - 1) * (inputSize + 1);
-    const int *const prevprev =
-            outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputSize + 1) : 0;
-    current[0] = outputLength;
-    const int co = toBaseLowerCase(output[outputLength - 1]);
-    const int prevCO = outputLength >= 2 ? toBaseLowerCase(output[outputLength - 2]) : 0;
-    for (int i = 1; i <= inputSize; ++i) {
-        const int ci = toBaseLowerCase(input[i - 1]);
-        const uint16_t cost = (ci == co) ? 0 : 1;
-        current[i] = min(current[i - 1] + 1, min(prev[i] + 1, prev[i - 1] + cost));
-        if (i >= 2 && prevprev && ci == prevCO && co == toBaseLowerCase(input[i - 2])) {
-            current[i] = min(current[i], prevprev[i - 2] + 1);
-        }
-    }
-}
-
 inline static int getCurrentEditDistance(int *editDistanceTable, const int editDistanceTableWidth,
         const int outputLength, const int inputSize) {
     if (DEBUG_EDIT_DISTANCE) {
         AKLOGI("getCurrentEditDistance %d, %d", inputSize, outputLength);
     }
     return editDistanceTable[(editDistanceTableWidth + 1) * (outputLength) + inputSize];
-}
-
-//////////////////////
-// inline functions //
-//////////////////////
-inline bool Correction::isSingleQuote(const int c) {
-    const int userTypedChar = mProximityInfoState.getPrimaryCodePointAt(mInputIndex);
-    return (c == KEYCODE_SINGLE_QUOTE && userTypedChar != KEYCODE_SINGLE_QUOTE);
 }
 
 ////////////////
@@ -174,17 +143,6 @@ int Correction::getFinalProbabilityForSubQueue(const int probability, int **word
     return getFinalProbabilityInternal(probability, word, wordLength, inputSize);
 }
 
-int Correction::getFinalProbabilityInternal(const int probability, int **word, int *wordLength,
-        const int inputSize) {
-    const int outputIndex = mTerminalOutputIndex;
-    const int inputIndex = mTerminalInputIndex;
-    *wordLength = outputIndex + 1;
-    *word = mWord;
-    int finalProbability= Correction::RankingAlgorithm::calculateFinalProbability(
-            inputIndex, outputIndex, probability, mEditDistanceTable, this, inputSize);
-    return finalProbability;
-}
-
 bool Correction::initProcessState(const int outputIndex) {
     if (mCorrectionStates[outputIndex].mChildCount <= 0) {
         return false;
@@ -228,42 +186,6 @@ int Correction::getInputIndex() const {
     return mInputIndex;
 }
 
-void Correction::incrementInputIndex() {
-    ++mInputIndex;
-}
-
-void Correction::incrementOutputIndex() {
-    ++mOutputIndex;
-    mCorrectionStates[mOutputIndex].mParentIndex = mCorrectionStates[mOutputIndex - 1].mParentIndex;
-    mCorrectionStates[mOutputIndex].mChildCount = mCorrectionStates[mOutputIndex - 1].mChildCount;
-    mCorrectionStates[mOutputIndex].mSiblingPos = mCorrectionStates[mOutputIndex - 1].mSiblingPos;
-    mCorrectionStates[mOutputIndex].mInputIndex = mInputIndex;
-    mCorrectionStates[mOutputIndex].mNeedsToTraverseAllNodes = mNeedsToTraverseAllNodes;
-
-    mCorrectionStates[mOutputIndex].mEquivalentCharCount = mEquivalentCharCount;
-    mCorrectionStates[mOutputIndex].mProximityCount = mProximityCount;
-    mCorrectionStates[mOutputIndex].mTransposedCount = mTransposedCount;
-    mCorrectionStates[mOutputIndex].mExcessiveCount = mExcessiveCount;
-    mCorrectionStates[mOutputIndex].mSkippedCount = mSkippedCount;
-
-    mCorrectionStates[mOutputIndex].mSkipPos = mSkipPos;
-    mCorrectionStates[mOutputIndex].mTransposedPos = mTransposedPos;
-    mCorrectionStates[mOutputIndex].mExcessivePos = mExcessivePos;
-
-    mCorrectionStates[mOutputIndex].mLastCharExceeded = mLastCharExceeded;
-
-    mCorrectionStates[mOutputIndex].mMatching = mMatching;
-    mCorrectionStates[mOutputIndex].mProximityMatching = mProximityMatching;
-    mCorrectionStates[mOutputIndex].mAdditionalProximityMatching = mAdditionalProximityMatching;
-    mCorrectionStates[mOutputIndex].mTransposing = mTransposing;
-    mCorrectionStates[mOutputIndex].mExceeding = mExceeding;
-    mCorrectionStates[mOutputIndex].mSkipping = mSkipping;
-}
-
-void Correction::startToTraverseAllNodes() {
-    mNeedsToTraverseAllNodes = true;
-}
-
 bool Correction::needsToPrune() const {
     // TODO: use edit distance here
     return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance
@@ -271,39 +193,11 @@ bool Correction::needsToPrune() const {
             || (!mDoAutoCompletion && (mOutputIndex > mInputSize));
 }
 
-void Correction::addCharToCurrentWord(const int c) {
-    mWord[mOutputIndex] = c;
-    const int *primaryInputWord = mProximityInfoState.getPrimaryInputWord();
-    calcEditDistanceOneStep(mEditDistanceTable, primaryInputWord, mInputSize, mWord,
-            mOutputIndex + 1);
-}
-
-Correction::CorrectionType Correction::processSkipChar(const int c, const bool isTerminal,
-        const bool inputIndexIncremented) {
-    addCharToCurrentWord(c);
-    mTerminalInputIndex = mInputIndex - (inputIndexIncremented ? 1 : 0);
-    mTerminalOutputIndex = mOutputIndex;
-    if (mNeedsToTraverseAllNodes && isTerminal) {
-        incrementOutputIndex();
-        return TRAVERSE_ALL_ON_TERMINAL;
-    } else {
-        incrementOutputIndex();
-        return TRAVERSE_ALL_NOT_ON_TERMINAL;
-    }
-}
-
-Correction::CorrectionType Correction::processUnrelatedCorrectionType() {
-    // Needs to set mTerminalInputIndex and mTerminalOutputIndex before returning any CorrectionType
-    mTerminalInputIndex = mInputIndex;
-    mTerminalOutputIndex = mOutputIndex;
-    return UNRELATED;
-}
-
-inline bool isEquivalentChar(ProximityType type) {
+inline static bool isEquivalentChar(ProximityType type) {
     return type == EQUIVALENT_CHAR;
 }
 
-inline bool isProximityCharOrEquivalentChar(ProximityType type) {
+inline static bool isProximityCharOrEquivalentChar(ProximityType type) {
     return type == EQUIVALENT_CHAR || type == NEAR_PROXIMITY_CHAR;
 }
 
@@ -622,29 +516,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         mTerminalInputIndex = mInputIndex - 1;
         mTerminalOutputIndex = mOutputIndex - 1;
         return NOT_ON_TERMINAL;
-    }
-}
-
-/* static */ int Correction::powerIntCapped(const int base, const int n) {
-    if (n <= 0) return 1;
-    if (base == 2) {
-        return n < 31 ? 1 << n : S_INT_MAX;
-    } else {
-        int ret = base;
-        for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
-        return ret;
-    }
-}
-
-/* static */ void Correction::multiplyRate(const int rate, int *freq) {
-    if (*freq != S_INT_MAX) {
-        if (*freq > 1000000) {
-            *freq /= 100;
-            multiplyIntCapped(rate, freq);
-        } else {
-            multiplyIntCapped(rate, freq);
-            *freq /= 100;
-        }
     }
 }
 
