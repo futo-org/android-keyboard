@@ -123,7 +123,7 @@ class BinaryFormat {
     static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
-inline int BinaryFormat::detectFormat(const uint8_t *const dict) {
+AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict) {
     // The magic number is stored big-endian.
     const uint32_t magicNumber = (dict[0] << 24) + (dict[1] << 16) + (dict[2] << 8) + dict[3];
     switch (magicNumber) {
@@ -166,7 +166,8 @@ inline unsigned int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
     }
 }
 
-inline int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos) {
+AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *const dict,
+        int *pos) {
     const int msb = dict[(*pos)++];
     if (msb < 0x80) return msb;
     return ((msb & 0x7F) << 8) | dict[(*pos)++];
@@ -176,7 +177,8 @@ inline uint8_t BinaryFormat::getFlagsAndForwardPointer(const uint8_t *const dict
     return dict[(*pos)++];
 }
 
-inline int BinaryFormat::getCodePointAndForwardPointer(const uint8_t *const dict, int *pos) {
+AK_FORCE_INLINE int BinaryFormat::getCodePointAndForwardPointer(const uint8_t *const dict,
+        int *pos) {
     const int origin = *pos;
     const int codePoint = dict[origin];
     if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
@@ -200,7 +202,7 @@ inline int BinaryFormat::readFrequencyWithoutMovingPointer(const uint8_t *const 
     return dict[pos];
 }
 
-inline int BinaryFormat::skipOtherCharacters(const uint8_t *const dict, const int pos) {
+AK_FORCE_INLINE int BinaryFormat::skipOtherCharacters(const uint8_t *const dict, const int pos) {
     int currentPos = pos;
     int character = dict[currentPos++];
     while (CHARACTER_ARRAY_TERMINATOR != character) {
@@ -226,7 +228,7 @@ static inline int attributeAddressSize(const uint8_t flags) {
     */
 }
 
-static inline int skipExistingBigrams(const uint8_t *const dict, const int pos) {
+static AK_FORCE_INLINE int skipExistingBigrams(const uint8_t *const dict, const int pos) {
     int currentPos = pos;
     uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(dict, &currentPos);
     while (flags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT) {
@@ -255,7 +257,7 @@ inline int BinaryFormat::skipFrequency(const uint8_t flags, const int pos) {
     return FLAG_IS_TERMINAL & flags ? pos + 1 : pos;
 }
 
-inline int BinaryFormat::skipShortcuts(const uint8_t *const dict, const uint8_t flags,
+AK_FORCE_INLINE int BinaryFormat::skipShortcuts(const uint8_t *const dict, const uint8_t flags,
         const int pos) {
     if (FLAG_HAS_SHORTCUT_TARGETS & flags) {
         return pos + shortcutByteSize(dict, pos);
@@ -264,7 +266,7 @@ inline int BinaryFormat::skipShortcuts(const uint8_t *const dict, const uint8_t 
     }
 }
 
-inline int BinaryFormat::skipBigrams(const uint8_t *const dict, const uint8_t flags,
+AK_FORCE_INLINE int BinaryFormat::skipBigrams(const uint8_t *const dict, const uint8_t flags,
         const int pos) {
     if (FLAG_HAS_BIGRAMS & flags) {
         return skipExistingBigrams(dict, pos);
@@ -273,7 +275,7 @@ inline int BinaryFormat::skipBigrams(const uint8_t *const dict, const uint8_t fl
     }
 }
 
-inline int BinaryFormat::skipAllAttributes(const uint8_t *const dict, const uint8_t flags,
+AK_FORCE_INLINE int BinaryFormat::skipAllAttributes(const uint8_t *const dict, const uint8_t flags,
         const int pos) {
     // This function skips all attributes: shortcuts and bigrams.
     int newPos = pos;
@@ -282,7 +284,7 @@ inline int BinaryFormat::skipAllAttributes(const uint8_t *const dict, const uint
     return newPos;
 }
 
-inline int BinaryFormat::skipChildrenPosAndAttributes(const uint8_t *const dict,
+AK_FORCE_INLINE int BinaryFormat::skipChildrenPosAndAttributes(const uint8_t *const dict,
         const uint8_t flags, const int pos) {
     int currentPos = pos;
     currentPos = skipChildrenPosition(flags, currentPos);
@@ -290,8 +292,8 @@ inline int BinaryFormat::skipChildrenPosAndAttributes(const uint8_t *const dict,
     return currentPos;
 }
 
-inline int BinaryFormat::readChildrenPosition(const uint8_t *const dict, const uint8_t flags,
-        const int pos) {
+AK_FORCE_INLINE int BinaryFormat::readChildrenPosition(const uint8_t *const dict,
+        const uint8_t flags, const int pos) {
     int offset = 0;
     switch (MASK_GROUP_ADDRESS_TYPE & flags) {
         case FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
@@ -318,7 +320,7 @@ inline bool BinaryFormat::hasChildrenInFlags(const uint8_t flags) {
     return (FLAG_GROUP_ADDRESS_TYPE_NOADDRESS != (MASK_GROUP_ADDRESS_TYPE & flags));
 }
 
-inline int BinaryFormat::getAttributeAddressAndForwardPointer(const uint8_t *const dict,
+AK_FORCE_INLINE int BinaryFormat::getAttributeAddressAndForwardPointer(const uint8_t *const dict,
         const uint8_t flags, int *pos) {
     int offset = 0;
     const int origin = *pos;
@@ -352,8 +354,8 @@ inline int BinaryFormat::getAttributeFrequencyFromFlags(const int flags) {
 
 // This function gets the byte position of the last chargroup of the exact matching word in the
 // dictionary. If no match is found, it returns NOT_VALID_WORD.
-inline int BinaryFormat::getTerminalPosition(const uint8_t *const root, const int *const inWord,
-        const int length, const bool forceLowerCaseSearch) {
+AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
+        const int *const inWord, const int length, const bool forceLowerCaseSearch) {
     int pos = 0;
     int wordPos = 0;
 
@@ -438,7 +440,7 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t *const root, const in
  * outUnigramFrequency: a pointer to an int to write the frequency into.
  * Return value : the length of the word, of 0 if the word was not found.
  */
-inline int BinaryFormat::getWordAtAddress(const uint8_t *const root, const int address,
+AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, const int address,
         const int maxDepth, int *outWord, int *outUnigramFrequency) {
     int pos = 0;
     int wordPos = 0;

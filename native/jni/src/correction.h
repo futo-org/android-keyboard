@@ -56,7 +56,8 @@ class Correction {
         // No need to initialize it explicitly here.
     }
 
-    virtual ~Correction() {}
+    // Non virtual inline destructor -- never inherit this class
+    ~Correction() {}
     void resetCorrection();
     void initCorrection(
             const ProximityInfo *pi, const int inputSize, const int maxWordLength);

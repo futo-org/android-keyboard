@@ -53,7 +53,8 @@ class WordsPriorityQueue {
         }
     }
 
-    virtual ~WordsPriorityQueue() {
+    // Non virtual inline destructor -- never inherit this class
+    AK_FORCE_INLINE ~WordsPriorityQueue() {
         delete[] mSuggestedWords;
     }
 
@@ -98,7 +99,7 @@ class WordsPriorityQueue {
         return static_cast<int>(mSuggestions.size());
     }
 
-    void clear() {
+    AK_FORCE_INLINE void clear() {
         mHighestSuggestedWord = 0;
         while (!mSuggestions.empty()) {
             SuggestedWord *sw = mSuggestions.top();

@@ -31,8 +31,8 @@ namespace latinime {
 
 /* static */ const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
 
-static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray, jsize len,
-        jint *buffer) {
+static AK_FORCE_INLINE void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray,
+        jsize len, jint *buffer) {
     if (jArray && buffer) {
         env->GetIntArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {
@@ -40,8 +40,8 @@ static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray
     }
 }
 
-static inline void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jArray, jsize len,
-        jfloat *buffer) {
+static AK_FORCE_INLINE void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jArray,
+        jsize len, jfloat *buffer) {
     if (jArray && buffer) {
         env->GetFloatArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {

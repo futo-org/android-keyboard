@@ -19,6 +19,8 @@
 
 #include <cmath>
 
+#include "defines.h"
+
 #define DEBUG_DECODER false
 
 #define M_PI_F 3.14159265f
@@ -44,19 +46,19 @@ static inline float getDistanceFloat(const float x1, const float y1, const float
     return hypotf(x1 - x2, y1 - y2);
 }
 
-static inline int getDistanceInt(const int x1, const int y1, const int x2, const int y2) {
+static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2, const int y2) {
     return static_cast<int>(getDistanceFloat(static_cast<float>(x1), static_cast<float>(y1),
             static_cast<float>(x2), static_cast<float>(y2)));
 }
 
-static inline float getAngle(const int x1, const int y1, const int x2, const int y2) {
+static AK_FORCE_INLINE float getAngle(const int x1, const int y1, const int x2, const int y2) {
     const int dx = x1 - x2;
     const int dy = y1 - y2;
     if (dx == 0 && dy == 0) return 0;
     return atan2f(static_cast<float>(dy), static_cast<float>(dx));
 }
 
-static inline float getAngleDiff(const float a1, const float a2) {
+static AK_FORCE_INLINE float getAngleDiff(const float a1, const float a2) {
     const float deltaA = fabsf(a1 - a2);
     const float diff = ROUND_FLOAT_10000(deltaA);
     if (diff > M_PI_F) {

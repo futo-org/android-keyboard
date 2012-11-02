@@ -39,7 +39,7 @@ class AdditionalProximityChars {
     static const int EN_US_ADDITIONAL_U_SIZE = 4;
     static const int32_t EN_US_ADDITIONAL_U[];
 
-    static bool isEnLocale(const char *localeStr) {
+    AK_FORCE_INLINE static bool isEnLocale(const char *localeStr) {
         const size_t LOCALE_EN_US_SIZE = strlen(LOCALE_EN_US);
         return localeStr && strlen(localeStr) >= LOCALE_EN_US_SIZE
                 && strncmp(localeStr, LOCALE_EN_US, LOCALE_EN_US_SIZE) == 0;

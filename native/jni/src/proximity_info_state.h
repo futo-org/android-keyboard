@@ -50,7 +50,7 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
-    ProximityInfoState()
+    AK_FORCE_INLINE ProximityInfoState()
             : mProximityInfo(0), mMaxPointToKeyLength(0),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
@@ -63,13 +63,14 @@ class ProximityInfoState {
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
     }
 
-    virtual ~ProximityInfoState() {}
+    // Non virtual inline destructor -- never inherit this class
+    AK_FORCE_INLINE ~ProximityInfoState() {}
 
     inline int getPrimaryCodePointAt(const int index) const {
         return getProximityCodePointsAt(index)[0];
     }
 
-    inline bool existsCodePointInProximityAt(const int index, const int c) const {
+    AK_FORCE_INLINE bool existsCodePointInProximityAt(const int index, const int c) const {
         const int *codePoints = getProximityCodePointsAt(index);
         int i = 0;
         while (codePoints[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE_INTERNAL) {

@@ -33,9 +33,7 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
             : mIncrementalDecoderInterface(getGestureDecoderInstance(maxWordLength, maxWords)) {
     }
 
-    virtual ~GestureDecoderWrapper() {
-        delete mIncrementalDecoderInterface;
-    }
+    virtual ~GestureDecoderWrapper();
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *codes, int inputSize, int commitPoint, int *outWords,

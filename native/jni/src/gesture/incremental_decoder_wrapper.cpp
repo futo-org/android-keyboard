@@ -19,4 +19,8 @@
 namespace latinime {
     IncrementalDecoderInterface *
             (*IncrementalDecoderWrapper::sIncrementalDecoderFactoryMethod)(int, int) = 0;
+
+    IncrementalDecoderWrapper::~IncrementalDecoderWrapper() {
+        delete mIncrementalDecoderInterface;
+    }
 } // namespace latinime
