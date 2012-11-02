@@ -168,28 +168,8 @@ class Correction {
         }
     }
 
-    inline static int powerIntCapped(const int base, const int n) {
-        if (n <= 0) return 1;
-        if (base == 2) {
-            return n < 31 ? 1 << n : S_INT_MAX;
-        } else {
-            int ret = base;
-            for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
-            return ret;
-        }
-    }
-
-    inline static void multiplyRate(const int rate, int *freq) {
-        if (*freq != S_INT_MAX) {
-            if (*freq > 1000000) {
-                *freq /= 100;
-                multiplyIntCapped(rate, freq);
-            } else {
-                multiplyIntCapped(rate, freq);
-                *freq /= 100;
-            }
-        }
-    }
+    static int powerIntCapped(const int base, const int n);
+    static void multiplyRate(const int rate, int *freq);
 
     inline int getSpaceProximityPos() const {
         return mSpaceProximityPos;
@@ -214,8 +194,6 @@ class Correction {
     inline void incrementOutputIndex();
     inline void startToTraverseAllNodes();
     inline bool isSingleQuote(const int c);
-    inline CorrectionType processSkipChar(const int c, const bool isTerminal,
-            const bool inputIndexIncremented);
     inline CorrectionType processUnrelatedCorrectionType();
     inline void addCharToCurrentWord(const int c);
     inline int getFinalProbabilityInternal(const int probability, int **word, int *wordLength,
@@ -245,6 +223,9 @@ class Correction {
     // Edit distance calculation requires a buffer with (N+1)^2 length for the input length N.
     // Caveat: Do not create multiple tables per thread as this table eats up RAM a lot.
     int mEditDistanceTable[(MAX_WORD_LENGTH_INTERNAL + 1) * (MAX_WORD_LENGTH_INTERNAL + 1)];
+
+    CorrectionType processSkipChar(const int c, const bool isTerminal,
+            const bool inputIndexIncremented);
 
     CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 

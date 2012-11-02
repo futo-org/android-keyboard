@@ -560,6 +560,68 @@ float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const in
     return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
 }
 
+// In the following function, c is the current character of the dictionary word currently examined.
+// currentChars is an array containing the keys close to the character the user actually typed at
+// the same position. We want to see if c is in it: if so, then the word contains at that position
+// a character close to what the user typed.
+// What the user typed is actually the first character of the array.
+// proximityIndex is a pointer to the variable where getMatchedProximityId returns the index of c
+// in the proximity chars of the input index.
+// Notice : accented characters do not have a proximity list, so they are alone in their list. The
+// non-accented version of the character should be considered "close", but not the other keys close
+// to the non-accented version.
+ProximityType ProximityInfoState::getMatchedProximityId(const int index, const int c,
+        const bool checkProximityChars, int *proximityIndex) const {
+    const int *currentCodePoints = getProximityCodePointsAt(index);
+    const int firstCodePoint = currentCodePoints[0];
+    const int baseLowerC = toBaseLowerCase(c);
+
+    // The first char in the array is what user typed. If it matches right away, that means the
+    // user typed that same char for this pos.
+    if (firstCodePoint == baseLowerC || firstCodePoint == c) {
+        return EQUIVALENT_CHAR;
+    }
+
+    if (!checkProximityChars) return UNRELATED_CHAR;
+
+    // If the non-accented, lowercased version of that first character matches c, then we have a
+    // non-accented version of the accented character the user typed. Treat it as a close char.
+    if (toBaseLowerCase(firstCodePoint) == baseLowerC) {
+        return NEAR_PROXIMITY_CHAR;
+    }
+
+    // Not an exact nor an accent-alike match: search the list of close keys
+    int j = 1;
+    while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+            && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+        const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
+        if (matched) {
+            if (proximityIndex) {
+                *proximityIndex = j;
+            }
+            return NEAR_PROXIMITY_CHAR;
+        }
+        ++j;
+    }
+    if (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+            && currentCodePoints[j] == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+        ++j;
+        while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+                && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+            const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
+            if (matched) {
+                if (proximityIndex) {
+                    *proximityIndex = j;
+                }
+                return ADDITIONAL_PROXIMITY_CHAR;
+            }
+            ++j;
+        }
+    }
+    // Was not included, signal this as an unrelated character.
+    return UNRELATED_CHAR;
+}
+
 int ProximityInfoState::getSpaceY() const {
     const int keyId = mProximityInfo->getKeyIndexOf(KEYCODE_SPACE);
     return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);

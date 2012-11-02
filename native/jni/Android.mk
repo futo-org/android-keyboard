@@ -50,6 +50,7 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \
+    words_priority_queue.cpp \
     gesture/gesture_decoder_wrapper.cpp \
     gesture/incremental_decoder_wrapper.cpp
 

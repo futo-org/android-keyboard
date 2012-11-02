@@ -59,8 +59,7 @@ static inline int getCodesBufferSize(const int *codes, const int codesSize) {
 }
 
 // TODO: This needs to take a const int* and not tinker with its contents
-static inline void addWord(int *word, int length, int frequency, WordsPriorityQueue *queue,
-        int type) {
+static void addWord(int *word, int length, int frequency, WordsPriorityQueue *queue, int type) {
     queue->push(frequency, word, length, type);
 }
 
@@ -690,10 +689,9 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
 
 // Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
 // interface.
-inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
-        const int inputSize, Correction *correction, int *word) const {
+int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex, const int inputSize,
+        Correction *correction, int *word) const {
     int inWord[inputSize];
-
     for (int i = 0; i < inputSize; ++i) {
         inWord[i] = correction->getPrimaryCodePointAt(startInputIndex + i);
     }
@@ -869,7 +867,7 @@ int UnigramDictionary::getBigramPosition(int pos, int *word, int offset, int len
 // there aren't any more nodes at this level, it merely returns the address of the first byte after
 // the current node in nextSiblingPosition. Thus, the caller must keep count of the nodes at any
 // given level, as output into newCount when traversing this level's parent.
-inline bool UnigramDictionary::processCurrentNode(const int initialPos,
+bool UnigramDictionary::processCurrentNode(const int initialPos,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter, Correction *correction,
         int *newCount, int *newChildrenPosition, int *nextSiblingPosition,
         WordsPriorityQueuePool *queuePool, const int currentWordIndex) const {
