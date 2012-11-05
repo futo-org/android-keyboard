@@ -28,10 +28,6 @@ class BinaryFormat {
  public:
     // Mask and flags for children address type selection.
     static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
-    static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
-    static const int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
-    static const int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
-    static const int FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
 
     // Flag for single/multiple char group
     static const int FLAG_HAS_MULTIPLE_CHARS = 0x20;
@@ -61,23 +57,9 @@ class BinaryFormat {
 
     // Mask and flags for attribute address type selection.
     static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
 
-    const static int UNKNOWN_FORMAT = -1;
-    // Originally, format version 1 had a 16-bit magic number, then the version number `01'
-    // then options that must be 0. Hence the first 32-bits of the format are always as follow
-    // and it's okay to consider them a magic number as a whole.
-    const static uint32_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
-    const static unsigned int FORMAT_VERSION_1_HEADER_SIZE = 5;
-    // The versions of Latin IME that only handle format version 1 only test for the magic
-    // number, so we had to change it so that version 2 files would be rejected by older
-    // implementations. On this occasion, we made the magic number 32 bits long.
-    const static uint32_t FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
-
-    const static int CHARACTER_ARRAY_TERMINATOR_SIZE = 1;
-    const static int SHORTCUT_LIST_SIZE_SIZE = 2;
+    static const int UNKNOWN_FORMAT = -1;
+    static const int SHORTCUT_LIST_SIZE_SIZE = 2;
 
     static int detectFormat(const uint8_t *const dict);
     static unsigned int getHeaderSize(const uint8_t *const dict);
@@ -90,7 +72,6 @@ class BinaryFormat {
     static int skipChildrenPosition(const uint8_t flags, const int pos);
     static int skipFrequency(const uint8_t flags, const int pos);
     static int skipShortcuts(const uint8_t *const dict, const uint8_t flags, const int pos);
-    static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipChildrenPosAndAttributes(const uint8_t *const dict, const uint8_t flags,
             const int pos);
     static int readChildrenPosition(const uint8_t *const dict, const uint8_t flags, const int pos);
@@ -113,14 +94,34 @@ class BinaryFormat {
         REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
         REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
     };
-    const static unsigned int NO_FLAGS = 0;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
-    const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
-    const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
-    const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
+    static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
+    static const int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
+    static const int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
+    static const int FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
+
+    // Originally, format version 1 had a 16-bit magic number, then the version number `01'
+    // then options that must be 0. Hence the first 32-bits of the format are always as follow
+    // and it's okay to consider them a magic number as a whole.
+    static const uint32_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
+    static const unsigned int FORMAT_VERSION_1_HEADER_SIZE = 5;
+    // The versions of Latin IME that only handle format version 1 only test for the magic
+    // number, so we had to change it so that version 2 files would be rejected by older
+    // implementations. On this occasion, we made the magic number 32 bits long.
+    static const uint32_t FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+
+    static const int CHARACTER_ARRAY_TERMINATOR_SIZE = 1;
+    static const int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    static const int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
+    static const int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
+    static const unsigned int NO_FLAGS = 0;
     static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
+    static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
 AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict) {
@@ -148,7 +149,7 @@ AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict) {
 inline unsigned int BinaryFormat::getFlags(const uint8_t *const dict) {
     switch (detectFormat(dict)) {
     case 1:
-        return NO_FLAGS;
+        return NO_FLAGS; // TODO: NO_FLAGS is unused anywhere else?
     default:
         return (dict[6] << 8) + dict[7];
     }
