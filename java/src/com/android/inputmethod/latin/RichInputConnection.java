@@ -163,11 +163,7 @@ public final class RichInputConnection {
     }
 
     public void finishComposingText() {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(mComposingText);
         mCurrentCursorPosition += mComposingText.length();
@@ -181,11 +177,7 @@ public final class RichInputConnection {
     }
 
     public void commitText(final CharSequence text, final int i) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
         mCurrentCursorPosition += text.length() - mComposingText.length();
@@ -262,11 +254,7 @@ public final class RichInputConnection {
     }
 
     public void deleteSurroundingText(final int i, final int j) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         final int remainingChars = mComposingText.length() - i;
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
@@ -302,11 +290,7 @@ public final class RichInputConnection {
     }
 
     public void sendKeyEvent(final KeyEvent keyEvent) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
             if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
             // This method is only called for enter or backspace when speaking to old
@@ -354,11 +338,7 @@ public final class RichInputConnection {
     }
 
     public void setComposingText(final CharSequence text, final int i) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCurrentCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
@@ -374,11 +354,7 @@ public final class RichInputConnection {
     }
 
     public void setSelection(final int from, final int to) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         if (null != mIC) {
             mIC.setSelection(from, to);
@@ -392,11 +368,7 @@ public final class RichInputConnection {
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         // This has no effect on the text field and does not change its content. It only makes
         // TextView flash the text for a second based on indices contained in the argument.
@@ -410,11 +382,7 @@ public final class RichInputConnection {
     }
 
     public void commitCompletion(final CompletionInfo completionInfo) {
-<<<<<<< HEAD
-        checkBatchEdit();
-=======
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
->>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         final CharSequence text = completionInfo.getText();
         mCommittedTextBeforeComposingText.append(text);
