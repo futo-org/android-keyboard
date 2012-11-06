@@ -200,6 +200,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState());
     }
 
+    // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
+    // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
+    public void resetKeyboardStateToAlphabet() {
+        mState.onResetKeyboardStateToAlphabet();
+    }
+
     public void onPressKey(int code) {
         if (isVibrateAndSoundFeedbackRequired()) {
             mLatinIME.hapticAndAudioFeedback(code);
