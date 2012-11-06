@@ -16,7 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.suggestions.SuggestionStripView;
+
 public class InputLogicTestsNonEnglish extends InputTestsBase {
+    final String NEXT_WORD_PREDICTION_OPTION = "next_word_prediction";
 
     public void testAutoCorrectForFrench() {
         final String STRING_TO_TYPE = "irq ";
@@ -43,16 +46,40 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         final String WORD_TO_TYPE = "test ";
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "test !!";
+        final boolean defaultNextWordPredictionOption =
+                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_prediction);
+        final boolean previousNextWordPredictionOption =
+                setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, false,
+                        defaultNextWordPredictionOption);
+        try {
+            changeLanguage("fr");
+            type(WORD_TO_TYPE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            runMessages();
+            assertTrue("type word then type space should display punctuation strip",
+                    mLatinIME.isShowingPunctuationList());
+            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            assertEquals("type word then type space then punctuation from strip twice for French",
+                    EXPECTED_RESULT, mTextView.getText().toString());
+        } finally {
+            setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
+                    defaultNextWordPredictionOption);
+        }
+    }
+
+    public void testWordThenSpaceDisplaysPredictions() {
+        final String WORD_TO_TYPE = "beaujolais ";
+        final String EXPECTED_RESULT = "nouveau";
         changeLanguage("fr");
         type(WORD_TO_TYPE);
         sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
         runMessages();
-        assertTrue("type word then type space should display punctuation strip",
-                mLatinIME.isShowingPunctuationList());
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        assertEquals("type word then type space then punctuation from strip twice for French",
-                EXPECTED_RESULT, mTextView.getText().toString());
+        final SuggestionStripView suggestionStripView =
+                (SuggestionStripView)mInputView.findViewById(R.id.suggestion_strip_view);
+        final SuggestedWords suggestedWords = suggestionStripView.getSuggestions();
+        assertEquals("type word then type space yields predictions for French",
+                EXPECTED_RESULT, suggestedWords.getWord(0));
     }
 
     public void testAutoCorrectForGerman() {

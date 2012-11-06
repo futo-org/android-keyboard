@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.Constants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,8 +29,7 @@ import java.util.LinkedList;
 /**
  * A dictionary that can fusion heads and tails of words for more compression.
  */
-public class FusionDictionary implements Iterable<Word> {
-
+public final class FusionDictionary implements Iterable<Word> {
     private static final boolean DBG = MakedictLog.DBG;
 
     /**
@@ -40,7 +40,7 @@ public class FusionDictionary implements Iterable<Word> {
      * This class also contains fields to cache size and address, to help with binary
      * generation.
      */
-    public static class Node {
+    public static final class Node {
         ArrayList<CharGroup> mData;
         // To help with binary generation
         int mCachedSize = Integer.MIN_VALUE;
@@ -60,7 +60,7 @@ public class FusionDictionary implements Iterable<Word> {
      *
      * This represents an "attribute", that is either a bigram or a shortcut.
      */
-    public static class WeightedString {
+    public static final class WeightedString {
         public final String mWord;
         public int mFrequency;
         public WeightedString(String word, int frequency) {
@@ -94,7 +94,7 @@ public class FusionDictionary implements Iterable<Word> {
      * value is the frequency of this terminal. A terminal may have non-null shortcuts and/or
      * bigrams, but a non-terminal may not. Moreover, children, if present, are null.
      */
-    public static class CharGroup {
+    public static final class CharGroup {
         public static final int NOT_A_TERMINAL = -1;
         final int mChars[];
         ArrayList<WeightedString> mShortcutTargets;
@@ -140,6 +140,33 @@ public class FusionDictionary implements Iterable<Word> {
 
         public boolean isTerminal() {
             return NOT_A_TERMINAL != mFrequency;
+        }
+
+        public int getFrequency() {
+            return mFrequency;
+        }
+
+        public boolean getIsNotAWord() {
+            return mIsNotAWord;
+        }
+
+        public boolean getIsBlacklistEntry() {
+            return mIsBlacklistEntry;
+        }
+
+        public ArrayList<WeightedString> getShortcutTargets() {
+            // We don't want write permission to escape outside the package, so we return a copy
+            if (null == mShortcutTargets) return null;
+            final ArrayList<WeightedString> copyOfShortcutTargets =
+                    new ArrayList<WeightedString>(mShortcutTargets);
+            return copyOfShortcutTargets;
+        }
+
+        public ArrayList<WeightedString> getBigrams() {
+            // We don't want write permission to escape outside the package, so we return a copy
+            if (null == mBigrams) return null;
+            final ArrayList<WeightedString> copyOfBigrams = new ArrayList<WeightedString>(mBigrams);
+            return copyOfBigrams;
         }
 
         public boolean hasSeveralChars() {
@@ -250,10 +277,8 @@ public class FusionDictionary implements Iterable<Word> {
 
     /**
      * Options global to the dictionary.
-     *
-     * There are no options at the moment, so this class is empty.
      */
-    public static class DictionaryOptions {
+    public static final class DictionaryOptions {
         public final boolean mGermanUmlautProcessing;
         public final boolean mFrenchLigatureProcessing;
         public final HashMap<String, String> mAttributes;
@@ -262,6 +287,43 @@ public class FusionDictionary implements Iterable<Word> {
             mAttributes = attributes;
             mGermanUmlautProcessing = germanUmlautProcessing;
             mFrenchLigatureProcessing = frenchLigatureProcessing;
+        }
+        @Override
+        public String toString() { // Convenience method
+            return toString(0, false);
+        }
+        public String toString(final int indentCount, final boolean plumbing) {
+            final StringBuilder indent = new StringBuilder();
+            if (plumbing) {
+                indent.append("H:");
+            } else {
+                for (int i = 0; i < indentCount; ++i) {
+                    indent.append(" ");
+                }
+            }
+            final StringBuilder s = new StringBuilder();
+            for (final String optionKey : mAttributes.keySet()) {
+                s.append(indent);
+                s.append(optionKey);
+                s.append(" = ");
+                if ("date".equals(optionKey) && !plumbing) {
+                    // Date needs a number of milliseconds, but the dictionary contains seconds
+                    s.append(new Date(
+                            1000 * Long.parseLong(mAttributes.get(optionKey))).toString());
+                } else {
+                    s.append(mAttributes.get(optionKey));
+                }
+                s.append("\n");
+            }
+            if (mGermanUmlautProcessing) {
+                s.append(indent);
+                s.append("Needs German umlaut processing\n");
+            }
+            if (mFrenchLigatureProcessing) {
+                s.append(indent);
+                s.append("Needs French ligature processing\n");
+            }
+            return s.toString();
         }
     }
 
@@ -280,7 +342,7 @@ public class FusionDictionary implements Iterable<Word> {
     /**
      * Helper method to convert a String to an int array.
      */
-    static private int[] getCodePoints(final String word) {
+    static int[] getCodePoints(final String word) {
         // TODO: this is a copy-paste of the contents of StringUtils.toCodePointArray,
         // which is not visible from the makedict package. Factor this code.
         final char[] characters = word.toCharArray();
@@ -359,6 +421,10 @@ public class FusionDictionary implements Iterable<Word> {
             if (charGroup2 == null) {
                 add(getCodePoints(word2), 0, null, false /* isNotAWord */,
                         false /* isBlacklistEntry */);
+                // The chargroup for the first word may have moved by the above insertion,
+                // if word1 and word2 share a common stem that happens not to have been
+                // a cutting point until now. In this case, we need to refresh charGroup.
+                charGroup = findWordInTree(mRoot, word1);
             }
             charGroup.addBigram(word2, frequency);
         } else {
@@ -511,7 +577,7 @@ public class FusionDictionary implements Iterable<Word> {
      * is ignored.
      * This comparator imposes orderings that are inconsistent with equals.
      */
-    static private class CharGroupComparator implements java.util.Comparator<CharGroup> {
+    static private final class CharGroupComparator implements java.util.Comparator<CharGroup> {
         @Override
         public int compare(CharGroup c1, CharGroup c2) {
             if (c1.mChars[0] == c2.mChars[0]) return 0;
@@ -746,9 +812,8 @@ public class FusionDictionary implements Iterable<Word> {
      *
      * This is purely for convenience.
      */
-    public static class DictionaryIterator implements Iterator<Word> {
-
-        private static class Position {
+    public static final class DictionaryIterator implements Iterator<Word> {
+        private static final class Position {
             public Iterator<CharGroup> pos;
             public int length;
             public Position(ArrayList<CharGroup> groups) {

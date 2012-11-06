@@ -22,7 +22,6 @@ import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -30,14 +29,14 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 
-public class MoreSuggestions extends Keyboard {
+public final class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
 
     MoreSuggestions(final MoreSuggestionsParam params) {
         super(params);
     }
 
-    private static class MoreSuggestionsParam extends KeyboardParams {
+    private static final class MoreSuggestionsParam extends KeyboardParams {
         private final int[] mWidths = new int[SuggestionStripView.MAX_SUGGESTIONS];
         private final int[] mRowNumbers = new int[SuggestionStripView.MAX_SUGGESTIONS];
         private final int[] mColumnOrders = new int[SuggestionStripView.MAX_SUGGESTIONS];
@@ -51,10 +50,11 @@ public class MoreSuggestions extends Keyboard {
             super();
         }
 
+        // TODO: Remove {@link MoreSuggestionsView} argument.
         public int layout(final SuggestedWords suggestions, final int fromPos, final int maxWidth,
                 final int minWidth, final int maxRow, final MoreSuggestionsView view) {
             clearKeys();
-            final Resources res = view.getContext().getResources();
+            final Resources res = view.getResources();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
             final int padding = (int) res.getDimension(
@@ -65,7 +65,7 @@ public class MoreSuggestions extends Keyboard {
             int pos = fromPos, rowStartPos = fromPos;
             final int size = Math.min(suggestions.size(), SuggestionStripView.MAX_SUGGESTIONS);
             while (pos < size) {
-                final String word = suggestions.getWord(pos).toString();
+                final String word = suggestions.getWord(pos);
                 // TODO: Should take care of text x-scaling.
                 mWidths[pos] = (int)view.getLabelWidth(word, paint) + padding;
                 final int numColumn = pos - rowStartPos + 1;
@@ -163,7 +163,7 @@ public class MoreSuggestions extends Keyboard {
         }
     }
 
-    public static class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
+    public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestions;
         private int mFromPos;
@@ -175,12 +175,13 @@ public class MoreSuggestions extends Keyboard {
         }
 
         public Builder layout(final SuggestedWords suggestions, final int fromPos,
-                final int maxWidth, final int minWidth, final int maxRow) {
-            final Keyboard keyboard = KeyboardSwitcher.getInstance().getKeyboard();
+                final int maxWidth, final int minWidth, final int maxRow,
+                final Keyboard parentKeyboard) {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
-            load(xmlId, keyboard.mId);
-            mParams.mVerticalGap = mParams.mTopPadding = keyboard.mVerticalGap / 2;
+            load(xmlId, parentKeyboard.mId);
+            mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
 
+            mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
             final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
                     mPaneView);
             mFromPos = fromPos;
@@ -216,7 +217,7 @@ public class MoreSuggestions extends Keyboard {
         }
     }
 
-    private static class Divider extends Key.Spacer {
+    private static final class Divider extends Key.Spacer {
         private final Drawable mIcon;
 
         public Divider(final KeyboardParams params, final Drawable icon, final int x,

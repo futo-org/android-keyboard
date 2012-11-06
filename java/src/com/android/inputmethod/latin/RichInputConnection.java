@@ -26,7 +26,6 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -41,10 +40,11 @@ import java.util.regex.Pattern;
  * all the time to find out what text is in the buffer, when we need it to determine caps mode
  * for example.
  */
-public class RichInputConnection {
+public final class RichInputConnection {
     private static final String TAG = RichInputConnection.class.getSimpleName();
     private static final boolean DBG = false;
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
+    private static final boolean DEBUG_BATCH_NESTING = false;
     // Provision for a long word pair and a separator
     private static final int LOOKBACK_CHARACTER_NUM = BinaryDictionary.MAX_WORD_LENGTH * 2 + 1;
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
@@ -128,7 +128,7 @@ public class RichInputConnection {
                 Log.e(TAG, "Nest level too deep : " + mNestLevel);
             }
         }
-        checkBatchEdit();
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
@@ -163,7 +163,11 @@ public class RichInputConnection {
     }
 
     public void finishComposingText() {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(mComposingText);
         mCurrentCursorPosition += mComposingText.length();
@@ -177,7 +181,11 @@ public class RichInputConnection {
     }
 
     public void commitText(final CharSequence text, final int i) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
         mCurrentCursorPosition += text.length() - mComposingText.length();
@@ -234,7 +242,14 @@ public class RichInputConnection {
                 hasSpaceBefore);
     }
 
+    public int getCodePointBeforeCursor() {
+        if (mCommittedTextBeforeComposingText.length() < 1) return Constants.NOT_A_CODE;
+        return Character.codePointBefore(mCommittedTextBeforeComposingText,
+                mCommittedTextBeforeComposingText.length());
+    }
+
     public CharSequence getTextBeforeCursor(final int i, final int j) {
+        // TODO: use mCommittedTextBeforeComposingText if possible to improve performance
         mIC = mParent.getCurrentInputConnection();
         if (null != mIC) return mIC.getTextBeforeCursor(i, j);
         return null;
@@ -247,7 +262,11 @@ public class RichInputConnection {
     }
 
     public void deleteSurroundingText(final int i, final int j) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         final int remainingChars = mComposingText.length() - i;
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
@@ -283,7 +302,11 @@ public class RichInputConnection {
     }
 
     public void sendKeyEvent(final KeyEvent keyEvent) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
             if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
             // This method is only called for enter or backspace when speaking to old
@@ -331,7 +354,11 @@ public class RichInputConnection {
     }
 
     public void setComposingText(final CharSequence text, final int i) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCurrentCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
@@ -347,7 +374,11 @@ public class RichInputConnection {
     }
 
     public void setSelection(final int from, final int to) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         if (null != mIC) {
             mIC.setSelection(from, to);
@@ -361,7 +392,11 @@ public class RichInputConnection {
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         // This has no effect on the text field and does not change its content. It only makes
         // TextView flash the text for a second based on indices contained in the argument.
@@ -375,7 +410,11 @@ public class RichInputConnection {
     }
 
     public void commitCompletion(final CompletionInfo completionInfo) {
+<<<<<<< HEAD
         checkBatchEdit();
+=======
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+>>>>>>> goog/master
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         final CharSequence text = completionInfo.getText();
         mCommittedTextBeforeComposingText.append(text);
@@ -390,7 +429,7 @@ public class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public CharSequence getNthPreviousWord(final String sentenceSeperators, final int n) {
+    public String getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -415,7 +454,7 @@ public class RichInputConnection {
     /**
      * Represents a range of text, relative to the current cursor position.
      */
-    public static class Range {
+    public static final class Range {
         /** Characters before selection start */
         public final int mCharsBefore;
 
@@ -458,19 +497,22 @@ public class RichInputConnection {
     // (n = 2) "abc|" -> null
     // (n = 2) "abc |" -> null
     // (n = 2) "abc. def|" -> null
-    public static CharSequence getNthPreviousWord(final CharSequence prev,
+    public static String getNthPreviousWord(final CharSequence prev,
             final String sentenceSeperators, final int n) {
         if (prev == null) return null;
-        String[] w = spaceRegex.split(prev);
+        final String[] w = spaceRegex.split(prev);
 
         // If we can't find n words, or we found an empty word, return null.
-        if (w.length < n || w[w.length - n].length() <= 0) return null;
+        if (w.length < n) return null;
+        final String nthPrevWord = w[w.length - n];
+        final int length = nthPrevWord.length();
+        if (length <= 0) return null;
 
         // If ends in a separator, return null
-        char lastChar = w[w.length - n].charAt(w[w.length - n].length() - 1);
+        final char lastChar = nthPrevWord.charAt(length - 1);
         if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
 
-        return w[w.length - n];
+        return nthPrevWord;
     }
 
     /**
@@ -503,19 +545,20 @@ public class RichInputConnection {
      *   be included in the returned range
      * @return a range containing the text surrounding the cursor
      */
-    public Range getWordRangeAtCursor(String sep, int additionalPrecedingWordsCount) {
+    public Range getWordRangeAtCursor(final String sep, final int additionalPrecedingWordsCount) {
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null || sep == null) {
             return null;
         }
-        CharSequence before = mIC.getTextBeforeCursor(1000, 0);
-        CharSequence after = mIC.getTextAfterCursor(1000, 0);
+        final CharSequence before = mIC.getTextBeforeCursor(1000, 0);
+        final CharSequence after = mIC.getTextAfterCursor(1000, 0);
         if (before == null || after == null) {
             return null;
         }
 
         // Going backward, alternate skipping non-separators and separators until enough words
         // have been read.
+        int count = additionalPrecedingWordsCount;
         int start = before.length();
         boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
         while (true) { // see comments below for why this is guaranteed to halt
@@ -532,7 +575,7 @@ public class RichInputConnection {
             // isStoppingAtWhitespace is true every other time through the loop,
             // so additionalPrecedingWordsCount is guaranteed to become < 0, which
             // guarantees outer loop termination
-            if (isStoppingAtWhitespace && (--additionalPrecedingWordsCount < 0)) {
+            if (isStoppingAtWhitespace && (--count < 0)) {
                 break;  // outer loop
             }
             isStoppingAtWhitespace = !isStoppingAtWhitespace;
@@ -550,7 +593,7 @@ public class RichInputConnection {
             }
         }
 
-        int cursor = getCursorPosition();
+        final int cursor = getCursorPosition();
         if (start >= 0 && cursor + end <= after.length() + before.length()) {
             String word = before.toString().substring(start, before.length())
                     + after.toString().substring(0, end);
@@ -561,8 +604,8 @@ public class RichInputConnection {
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
-        CharSequence before = getTextBeforeCursor(1, 0);
-        CharSequence after = getTextAfterCursor(1, 0);
+        final CharSequence before = getTextBeforeCursor(1, 0);
+        final CharSequence after = getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(before) && !settingsValues.isWordSeparator(before.charAt(0))
                 && !settingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
             return true;
@@ -575,10 +618,10 @@ public class RichInputConnection {
     }
 
     public void removeTrailingSpace() {
-        checkBatchEdit();
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
         final CharSequence lastOne = getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
+                && lastOne.charAt(0) == Constants.CODE_SPACE) {
             deleteSurroundingText(1, 0);
         }
     }
@@ -604,7 +647,7 @@ public class RichInputConnection {
         CharSequence word = getWordAtCursor(settings.mWordSeparators);
         // We don't suggest on leading single quotes, so we have to remove them from the word if
         // it starts with single quotes.
-        while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {
+        while (!TextUtils.isEmpty(word) && Constants.CODE_SINGLE_QUOTE == word.charAt(0)) {
             word = word.subSequence(1, word.length());
         }
         if (TextUtils.isEmpty(word)) return null;
@@ -631,7 +674,7 @@ public class RichInputConnection {
     }
 
     public boolean revertDoubleSpace() {
-        checkBatchEdit();
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
@@ -649,14 +692,14 @@ public class RichInputConnection {
     }
 
     public boolean revertSwapPunctuation() {
-        checkBatchEdit();
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
         // Here we test whether we indeed have a space and something else before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
         // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
         // enter surrogate pairs this code will have been removed.
         if (TextUtils.isEmpty(textBeforeCursor)
-                || (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))) {
+                || (Constants.CODE_SPACE != textBeforeCursor.charAt(1))) {
             // We may only come here if the application is changing the text while we are typing.
             // This is quite a broken case, but not logically impossible, so we shouldn't crash,
             // but some debugging log may be in order.

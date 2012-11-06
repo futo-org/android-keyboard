@@ -26,11 +26,12 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
 
-public class KeyCodeDescriptionMapper {
+public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
 
     // The resource ID of the string spoken for obscured keys
@@ -61,17 +62,19 @@ public class KeyCodeDescriptionMapper {
         mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
 
         // Special non-character codes defined in Keyboard
-        mKeyCodeMap.put(Keyboard.CODE_SPACE, R.string.spoken_description_space);
-        mKeyCodeMap.put(Keyboard.CODE_DELETE, R.string.spoken_description_delete);
-        mKeyCodeMap.put(Keyboard.CODE_ENTER, R.string.spoken_description_return);
-        mKeyCodeMap.put(Keyboard.CODE_SETTINGS, R.string.spoken_description_settings);
-        mKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_shift);
-        mKeyCodeMap.put(Keyboard.CODE_SHORTCUT, R.string.spoken_description_mic);
-        mKeyCodeMap.put(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
-        mKeyCodeMap.put(Keyboard.CODE_TAB, R.string.spoken_description_tab);
-        mKeyCodeMap.put(Keyboard.CODE_LANGUAGE_SWITCH, R.string.spoken_description_language_switch);
-        mKeyCodeMap.put(Keyboard.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
-        mKeyCodeMap.put(Keyboard.CODE_ACTION_PREVIOUS, R.string.spoken_description_action_previous);
+        mKeyCodeMap.put(Constants.CODE_SPACE, R.string.spoken_description_space);
+        mKeyCodeMap.put(Constants.CODE_DELETE, R.string.spoken_description_delete);
+        mKeyCodeMap.put(Constants.CODE_ENTER, R.string.spoken_description_return);
+        mKeyCodeMap.put(Constants.CODE_SETTINGS, R.string.spoken_description_settings);
+        mKeyCodeMap.put(Constants.CODE_SHIFT, R.string.spoken_description_shift);
+        mKeyCodeMap.put(Constants.CODE_SHORTCUT, R.string.spoken_description_mic);
+        mKeyCodeMap.put(Constants.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
+        mKeyCodeMap.put(Constants.CODE_TAB, R.string.spoken_description_tab);
+        mKeyCodeMap.put(Constants.CODE_LANGUAGE_SWITCH,
+                R.string.spoken_description_language_switch);
+        mKeyCodeMap.put(Constants.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
+        mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
+                R.string.spoken_description_action_previous);
     }
 
     /**
@@ -97,17 +100,17 @@ public class KeyCodeDescriptionMapper {
             boolean shouldObscure) {
         final int code = key.mCode;
 
-        if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
+        if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             final String description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
             if (description != null)
                 return description;
         }
 
-        if (code == Keyboard.CODE_SHIFT) {
+        if (code == Constants.CODE_SHIFT) {
             return getDescriptionForShiftKey(context, keyboard);
         }
 
-        if (code == Keyboard.CODE_ACTION_ENTER) {
+        if (code == Constants.CODE_ACTION_ENTER) {
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
@@ -121,7 +124,7 @@ public class KeyCodeDescriptionMapper {
         }
 
         // Just attempt to speak the description.
-        if (key.mCode != Keyboard.CODE_UNSPECIFIED) {
+        if (key.mCode != Constants.CODE_UNSPECIFIED) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
 

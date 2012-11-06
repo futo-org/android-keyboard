@@ -53,6 +53,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
     protected MyTextView mTextView;
+    protected View mInputView;
     protected InputConnection mInputConnection;
     private final HashMap<String, InputMethodSubtype> mSubtypeMap =
             new HashMap<String, InputMethodSubtype>();
@@ -150,9 +151,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         final LayoutInflater inflater =
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
-        final View inputView = inflater.inflate(R.layout.input_view, vg);
+        mInputView = inflater.inflate(R.layout.input_view, vg);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
-        mLatinIME.setInputView(inputView);
+        mLatinIME.setInputView(mInputView);
         mLatinIME.onBindInput();
         mLatinIME.onCreateInputView();
         mLatinIME.onStartInputView(ei, false);
@@ -211,7 +212,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // any subsequent post in this queue. However the queue itself is still fully functional!
         // If we have a way of resetting "queue.mQuiting" then we can continue using it as normal,
         // coming back to this method to run the messages.
-        MessageQueue queue = looper.getQueue();
+        MessageQueue queue = Looper.myQueue();
         try {
             // However there is no way of doing it externally, and mQuiting is private.
             // So... get out the big guns.
@@ -280,7 +281,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         waitForDictionaryToBeLoaded();
     }
 
-    protected void pickSuggestionManually(final int index, final CharSequence suggestion) {
+    protected void pickSuggestionManually(final int index, final String suggestion) {
         mLatinIME.pickSuggestionManually(index, suggestion);
     }
 

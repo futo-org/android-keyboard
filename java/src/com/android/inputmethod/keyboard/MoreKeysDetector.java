@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-public class MoreKeysDetector extends KeyDetector {
+public final class MoreKeysDetector extends KeyDetector {
     private final int mSlideAllowanceSquare;
     private final int mSlideAllowanceSquareTop;
 

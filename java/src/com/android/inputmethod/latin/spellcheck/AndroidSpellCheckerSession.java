@@ -26,7 +26,7 @@ import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.ArrayList;
 
-public class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSession {
+public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSession {
     private static final String TAG = AndroidSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
     private final static String[] EMPTY_STRING_ARRAY = new String[0];

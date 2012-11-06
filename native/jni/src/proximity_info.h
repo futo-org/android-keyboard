@@ -27,11 +27,6 @@ namespace latinime {
 
 class Correction;
 
-inline bool isSkippableChar(const uint16_t character) {
-    // TODO: Do not hardcode here
-    return character == '\'' || character == '-';
-}
-
 class ProximityInfo {
  public:
     ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
@@ -44,7 +39,7 @@ class ProximityInfo {
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
-    float getNormalizedSquaredDistanceFromCenterFloat(
+    float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
     int getKeyIndexOf(const int c) const;
@@ -114,7 +109,7 @@ class ProximityInfo {
     int getKeyCenterYOfCodePointG(int charCode) const;
     int getKeyCenterXOfKeyIdG(int keyId) const;
     int getKeyCenterYOfKeyIdG(int keyId) const;
-    int getKeyKeyDistanceG(int key0, int key1) const;
+    int getKeyKeyDistanceG(int keyId0, int keyId1) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
@@ -123,8 +118,6 @@ class ProximityInfo {
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
-    float calculateSquaredDistanceFromSweetSpotCenter(
-            const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
     int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
     bool isOnKey(const int keyId, const int x, const int y) const {

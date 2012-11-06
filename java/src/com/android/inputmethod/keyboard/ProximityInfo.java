@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.Constants;
@@ -25,15 +26,18 @@ import com.android.inputmethod.latin.JniUtils;
 
 import java.util.Arrays;
 
-public class ProximityInfo {
+public final class ProximityInfo {
+    private static final String TAG = ProximityInfo.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     /** MAX_PROXIMITY_CHARS_SIZE must be the same as MAX_PROXIMITY_CHARS_SIZE_INTERNAL
      * in defines.h */
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
-    private static float SEARCH_DISTANCE = 1.2f;
+    private static final float SEARCH_DISTANCE = 1.2f;
     private static final Key[] EMPTY_KEY_ARRAY = new Key[0];
+    private static final float DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS = 0.15f;
 
-    private final int mKeyHeight;
     private final int mGridWidth;
     private final int mGridHeight;
     private final int mGridSize;
@@ -43,8 +47,8 @@ public class ProximityInfo {
     private final int mKeyboardMinWidth;
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
+    private final int mMostCommonKeyHeight;
     private final Key[] mKeys;
-    private final TouchPositionCorrection mTouchPositionCorrection;
     private final Key[][] mGridNeighbors;
     private final String mLocaleStr;
 
@@ -64,17 +68,16 @@ public class ProximityInfo {
         mCellHeight = (height + mGridHeight - 1) / mGridHeight;
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
-        mKeyHeight = mostCommonKeyHeight;
+        mMostCommonKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
         mKeys = keys;
-        mTouchPositionCorrection = touchPositionCorrection;
         mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
             return;
         }
         computeNearestNeighbors();
-        mNativeProximityInfo = createNativeProximityInfo();
+        mNativeProximityInfo = createNativeProximityInfo(touchPositionCorrection);
     }
 
     public static ProximityInfo createDummyProximityInfo() {
@@ -106,12 +109,12 @@ public class ProximityInfo {
 
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    private final long createNativeProximityInfo() {
+    private final long createNativeProximityInfo(
+            final TouchPositionCorrection touchPositionCorrection) {
         final Key[][] gridNeighborKeys = mGridNeighbors;
         final int keyboardWidth = mKeyboardMinWidth;
         final int keyboardHeight = mKeyboardHeight;
         final Key[] keys = mKeys;
-        final TouchPositionCorrection touchPositionCorrection = mTouchPositionCorrection;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
@@ -141,29 +144,43 @@ public class ProximityInfo {
         }
 
         if (touchPositionCorrection != null && touchPositionCorrection.isValid()) {
+            if (DEBUG) {
+                Log.d(TAG, "touchPositionCorrection: ON");
+            }
             sweetSpotCenterXs = new float[keyCount];
             sweetSpotCenterYs = new float[keyCount];
             sweetSpotRadii = new float[keyCount];
+            final int rows = touchPositionCorrection.getRows();
+            final float defaultRadius = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
+                    * (float)Math.hypot(mMostCommonKeyWidth, mMostCommonKeyHeight);
             for (int i = 0; i < keyCount; i++) {
                 final Key key = keys[i];
                 final Rect hitBox = key.mHitBox;
-                final int row = hitBox.top / mKeyHeight;
-                if (row < touchPositionCorrection.mRadii.length) {
+                sweetSpotCenterXs[i] = hitBox.exactCenterX();
+                sweetSpotCenterYs[i] = hitBox.exactCenterY();
+                sweetSpotRadii[i] = defaultRadius;
+                final int row = hitBox.top / mMostCommonKeyHeight;
+                if (row < rows) {
                     final int hitBoxWidth = hitBox.width();
                     final int hitBoxHeight = hitBox.height();
-                    final float x = touchPositionCorrection.mXs[row];
-                    final float y = touchPositionCorrection.mYs[row];
-                    final float radius = touchPositionCorrection.mRadii[row];
-                    sweetSpotCenterXs[i] = hitBox.exactCenterX() + x * hitBoxWidth;
-                    sweetSpotCenterYs[i] = hitBox.exactCenterY() + y * hitBoxHeight;
-                    // Note that, in recent versions of Android, FloatMath is actually slower than
-                    // java.lang.Math due to the way the JIT optimizes java.lang.Math.
-                    sweetSpotRadii[i] = radius * (float)Math.sqrt(
-                            hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
+                    final float hitBoxDiagonal = (float)Math.hypot(hitBoxWidth, hitBoxHeight);
+                    sweetSpotCenterXs[i] += touchPositionCorrection.getX(row) * hitBoxWidth;
+                    sweetSpotCenterYs[i] += touchPositionCorrection.getY(row) * hitBoxHeight;
+                    sweetSpotRadii[i] = touchPositionCorrection.getRadius(row) * hitBoxDiagonal;
+                }
+                if (DEBUG) {
+                    Log.d(TAG, String.format(
+                            "  [%2d] row=%d x/y/r=%7.2f/%7.2f/%5.2f %s code=%s", i, row,
+                            sweetSpotCenterXs[i], sweetSpotCenterYs[i], sweetSpotRadii[i],
+                            (row < rows ? "correct" : "default"),
+                            Constants.printableCode(key.mCode)));
                 }
             }
         } else {
             sweetSpotCenterXs = sweetSpotCenterYs = sweetSpotRadii = null;
+            if (DEBUG) {
+                Log.d(TAG, "touchPositionCorrection: OFF");
+            }
         }
 
         return setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
@@ -215,13 +232,14 @@ public class ProximityInfo {
         }
     }
 
-    public void fillArrayWithNearestKeyCodes(int x, int y, int primaryKeyCode, int[] dest) {
+    public void fillArrayWithNearestKeyCodes(final int x, final int y, final int primaryKeyCode,
+            final int[] dest) {
         final int destLength = dest.length;
         if (destLength < 1) {
             return;
         }
         int index = 0;
-        if (primaryKeyCode > Keyboard.CODE_SPACE) {
+        if (primaryKeyCode > Constants.CODE_SPACE) {
             dest[index++] = primaryKeyCode;
         }
         final Key[] nearestKeys = getNearestKeys(x, y);
@@ -230,7 +248,7 @@ public class ProximityInfo {
                 break;
             }
             final int code = key.mCode;
-            if (code <= Keyboard.CODE_SPACE) {
+            if (code <= Constants.CODE_SPACE) {
                 break;
             }
             dest[index++] = code;
@@ -240,7 +258,7 @@ public class ProximityInfo {
         }
     }
 
-    public Key[] getNearestKeys(int x, int y) {
+    public Key[] getNearestKeys(final int x, final int y) {
         if (mGridNeighbors == null) {
             return EMPTY_KEY_ARRAY;
         }

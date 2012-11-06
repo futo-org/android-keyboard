@@ -33,20 +33,17 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
             : mIncrementalDecoderInterface(getGestureDecoderInstance(maxWordLength, maxWords)) {
     }
 
-    virtual ~GestureDecoderWrapper() {
-        delete mIncrementalDecoderInterface;
-    }
+    virtual ~GestureDecoderWrapper();
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
-            int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
-            unsigned short *outWords, int *frequencies, int *outputIndices,
-            int *outputTypes) const {
+            int *times, int *pointerIds, int *codes, int inputSize, int commitPoint, int *outWords,
+            int *frequencies, int *outputIndices, int *outputTypes) const {
         if (!mIncrementalDecoderInterface) {
             return 0;
         }
-        return mIncrementalDecoderInterface->getSuggestions(
-                pInfo, traverseSession, inputXs, inputYs, times, pointerIds, codes,
-                inputSize, commitPoint, outWords, frequencies, outputIndices, outputTypes);
+        return mIncrementalDecoderInterface->getSuggestions(pInfo, traverseSession, inputXs,
+                inputYs, times, pointerIds, codes, inputSize, commitPoint, outWords, frequencies,
+                outputIndices, outputTypes);
     }
 
     static void setGestureDecoderFactoryMethod(

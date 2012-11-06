@@ -21,7 +21,6 @@ import android.media.AudioManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.VibratorUtils;
 
 /**
@@ -30,18 +29,16 @@ import com.android.inputmethod.latin.VibratorUtils;
  * It offers a consistent and simple interface that allows LatinIME to forget about the
  * complexity of settings and the like.
  */
-public class AudioAndHapticFeedbackManager {
-    final private SettingsValues mSettingsValues;
-    final private AudioManager mAudioManager;
-    final private VibratorUtils mVibratorUtils;
+public final class AudioAndHapticFeedbackManager {
+    private final AudioManager mAudioManager;
+    private final VibratorUtils mVibratorUtils;
+
+    private SettingsValues mSettingsValues;
     private boolean mSoundOn;
 
-    public AudioAndHapticFeedbackManager(final LatinIME latinIme,
-            final SettingsValues settingsValues) {
-        mSettingsValues = settingsValues;
+    public AudioAndHapticFeedbackManager(final LatinIME latinIme) {
         mVibratorUtils = VibratorUtils.getInstance(latinIme);
         mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
-        mSoundOn = reevaluateIfSoundIsOn();
     }
 
     public void hapticAndAudioFeedback(final int primaryCode,
@@ -51,7 +48,7 @@ public class AudioAndHapticFeedbackManager {
     }
 
     private boolean reevaluateIfSoundIsOn() {
-        if (!mSettingsValues.mSoundOn || mAudioManager == null) {
+        if (mSettingsValues == null || !mSettingsValues.mSoundOn || mAudioManager == null) {
             return false;
         } else {
             return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
@@ -64,13 +61,13 @@ public class AudioAndHapticFeedbackManager {
         if (mSoundOn) {
             final int sound;
             switch (primaryCode) {
-            case Keyboard.CODE_DELETE:
+            case Constants.CODE_DELETE:
                 sound = AudioManager.FX_KEYPRESS_DELETE;
                 break;
-            case Keyboard.CODE_ENTER:
+            case Constants.CODE_ENTER:
                 sound = AudioManager.FX_KEYPRESS_RETURN;
                 break;
-            case Keyboard.CODE_SPACE:
+            case Constants.CODE_SPACE:
                 sound = AudioManager.FX_KEYPRESS_SPACEBAR;
                 break;
             default:
@@ -81,8 +78,7 @@ public class AudioAndHapticFeedbackManager {
         }
     }
 
-    // TODO: make this private when LatinIME does not call it any more
-    public void vibrate(final View viewToPerformHapticFeedbackOn) {
+    private void vibrate(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
@@ -96,6 +92,11 @@ public class AudioAndHapticFeedbackManager {
         } else if (mVibratorUtils != null) {
             mVibratorUtils.vibrate(mSettingsValues.mKeypressVibrationDuration);
         }
+    }
+
+    public void onSettingsChanged(final SettingsValues settingsValues) {
+        mSettingsValues = settingsValues;
+        mSoundOn = reevaluateIfSoundIsOn();
     }
 
     public void onRingerModeChanged() {

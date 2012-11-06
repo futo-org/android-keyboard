@@ -33,7 +33,7 @@ import com.android.inputmethod.latin.R;
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
  * detecting key presses and touch movements.
  */
-public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
+public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;
@@ -48,7 +48,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final KeyboardActionListener mMoreKeysKeyboardListener =
             new KeyboardActionListener.Adapter() {
         @Override
-        public void onCodeInput(int primaryCode, int x, int y) {
+        public void onCodeInput(final int primaryCode, final int x, final int y) {
             // Because a more keys keyboard doesn't need proximity characters correction, we don't
             // send touch event coordinates.
             mListener.onCodeInput(
@@ -56,7 +56,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
 
         @Override
-        public void onTextInput(CharSequence text) {
+        public void onTextInput(final String text) {
             mListener.onTextInput(text);
         }
 
@@ -66,12 +66,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
 
         @Override
-        public void onUpdateBatchInput(InputPointers batchPointers) {
+        public void onUpdateBatchInput(final InputPointers batchPointers) {
             mListener.onUpdateBatchInput(batchPointers);
         }
 
         @Override
-        public void onEndBatchInput(InputPointers batchPointers) {
+        public void onEndBatchInput(final InputPointers batchPointers) {
             mListener.onEndBatchInput(batchPointers);
         }
 
@@ -81,21 +81,22 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
 
         @Override
-        public void onPressKey(int primaryCode) {
+        public void onPressKey(final int primaryCode) {
             mListener.onPressKey(primaryCode);
         }
 
         @Override
-        public void onReleaseKey(int primaryCode, boolean withSliding) {
+        public void onReleaseKey(final int primaryCode, final boolean withSliding) {
             mListener.onReleaseKey(primaryCode, withSliding);
         }
     };
 
-    public MoreKeysKeyboardView(Context context, AttributeSet attrs) {
+    public MoreKeysKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
     }
 
-    public MoreKeysKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public MoreKeysKeyboardView(final Context context, final AttributeSet attrs,
+            final int defStyle) {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
@@ -105,7 +106,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
             final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
@@ -117,7 +118,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     @Override
-    public void setKeyboard(Keyboard keyboard) {
+    public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
@@ -144,15 +145,16 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     @Override
-    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+    public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
         // More keys keyboard needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
         super.setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
-    public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
-            PopupWindow window, KeyboardActionListener listener) {
+    public void showMoreKeysPanel(final View parentView, final Controller controller,
+            final int pointX, final int pointY, final PopupWindow window,
+            final KeyboardActionListener listener) {
         mController = controller;
         mListener = listener;
         final View container = (View)getParent();
@@ -185,12 +187,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     @Override
-    public int translateX(int x) {
+    public int translateX(final int x) {
         return x - mOriginX;
     }
 
     @Override
-    public int translateY(int y) {
+    public int translateY(final int y) {
         return y - mOriginY;
     }
 }

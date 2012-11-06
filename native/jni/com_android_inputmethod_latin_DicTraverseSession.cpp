@@ -17,6 +17,7 @@
 #define LOG_TAG "LatinIME: jni: Session"
 
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
+#include "defines.h"
 #include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "jni_common.h"
@@ -57,7 +58,6 @@ static JNINativeMethod sMethods[] = {
 
 int register_DicTraverseSession(JNIEnv *env) {
     const char *const kClassPathName = "com/android/inputmethod/latin/DicTraverseSession";
-    return registerNativeMethods(env, kClassPathName, sMethods,
-            sizeof(sMethods) / sizeof(sMethods[0]));
+    return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime

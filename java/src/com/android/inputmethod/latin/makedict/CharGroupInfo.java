@@ -23,7 +23,7 @@ import java.util.ArrayList;
 /**
  * Raw char group info straight out of a file. This will contain numbers for addresses.
  */
-public class CharGroupInfo {
+public final class CharGroupInfo {
 
     public final int mOriginalAddress;
     public final int mEndAddress;

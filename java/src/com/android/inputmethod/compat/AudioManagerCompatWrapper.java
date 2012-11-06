@@ -20,7 +20,7 @@ import android.media.AudioManager;
 
 import java.lang.reflect.Method;
 
-public class AudioManagerCompatWrapper {
+public final class AudioManagerCompatWrapper {
     private static final Method METHOD_isWiredHeadsetOn = CompatUtils.getMethod(
             AudioManager.class, "isWiredHeadsetOn");
     private static final Method METHOD_isBluetoothA2dpOn = CompatUtils.getMethod(

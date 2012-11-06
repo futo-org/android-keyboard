@@ -19,4 +19,8 @@
 namespace latinime {
     IncrementalDecoderInterface *
             (*GestureDecoderWrapper::sGestureDecoderFactoryMethod)(int, int) = 0;
+
+    GestureDecoderWrapper::~GestureDecoderWrapper() {
+        delete mIncrementalDecoderInterface;
+    }
 } // namespace latinime

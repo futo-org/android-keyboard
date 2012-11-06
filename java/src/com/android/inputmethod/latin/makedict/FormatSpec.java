@@ -42,32 +42,43 @@ public final class FormatSpec {
      * ps
      *
      * f |
-     * o | IF HAS_LINKEDLIST_NODE (defined in the file header)
+     * o | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
      * r |     forward link address, 3byte
-     * w | the address must be positive.
-     * a |
-     * rdlinkaddress
+     * w | 1 byte = bbbbbbbb match
+     * a |   case 1xxxxxxx => -((xxxxxxx << 16) + (next byte << 8) + next byte)
+     * r |   otherwise => (xxxxxxx << 16) + (next byte << 8) + next byte
+     * d |
+     * linkaddress
      */
 
     /* Node(CharGroup) layout is as follows:
-     *   | addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
-     *                                 2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
-     * f |                                     01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
-     * l |                                     10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
-     * a |                                     11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
-     * g | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
-     * s | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
+     *   | IF !SUPPORTS_DYNAMIC_UPDATE
+     *   |   addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
+     *   |                           2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
+     * f |                                   01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
+     * l |                                   10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
+     * a |                                   11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
+     * g | ELSE
+     * s |   is moved ?              2 bits, 11 = no          : FLAG_IS_NOT_MOVED
+     *   |                              This must be the same as FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
+     *   |                                   01 = yes         : FLAG_IS_MOVED
+     *   |                        the new address is stored in the same place as the parent address
+     *   |   is deleted?                     10 = yes         : FLAG_IS_DELETED
+     *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
+     *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
      *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
      *
      * p |
-     * a | IF HAS_PARENT_ADDRESS (defined in the file header)
+     * a | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
      * r |     parent address, 3byte
-     * e | the address must be negative, so the absolute value of the address is stored.
-     * n |
-     * taddress
+     * e | 1 byte = bbbbbbbb match
+     * n |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
+     * t |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
+     * a |
+     * ddress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -145,17 +156,14 @@ public final class FormatSpec {
     static final int MAXIMUM_SUPPORTED_VERSION = 3;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
-    static final int FIRST_VERSION_WITH_PARENT_ADDRESS = 3;
-    static final int FIRST_VERSION_WITH_LINKEDLIST_NODE = 3;
+    static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
     // TODO: Make the native reading code read this variable.
-    static final int HAS_PARENT_ADDRESS = 0x2;
+    static final int SUPPORTS_DYNAMIC_UPDATE = 0x2;
     static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     static final int CONTAINS_BIGRAMS_FLAG = 0x8;
-    // TODO: Make the native reading code read this variable.
-    static final int HAS_LINKEDLIST_NODE = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
@@ -164,6 +172,7 @@ public final class FormatSpec {
     static final int PARENT_ADDRESS_SIZE = 3;
     static final int FORWARD_LINK_ADDRESS_SIZE = 3;
 
+    // These flags are used only in the static dictionary.
     static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
     static final int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
@@ -177,6 +186,13 @@ public final class FormatSpec {
     static final int FLAG_HAS_BIGRAMS = 0x04;
     static final int FLAG_IS_NOT_A_WORD = 0x02;
     static final int FLAG_IS_BLACKLISTED = 0x01;
+
+    // These flags are used only in the dynamic dictionary.
+    static final int MASK_MOVE_AND_DELETE_FLAG = 0xC0;
+    static final int FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE = 0x40;
+    static final int FLAG_IS_MOVED = 0x00 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
+    static final int FLAG_IS_NOT_MOVED = 0x80 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
+    static final int FLAG_IS_DELETED = 0x80;
 
     static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
@@ -203,43 +219,33 @@ public final class FormatSpec {
 
     static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
     static final int MAX_CHARGROUPS_IN_A_NODE = 0x7FFF; // 32767
+    static final int MAX_BIGRAMS_IN_A_GROUP = 10000;
 
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
 
+    public static final int SHORTCUT_WHITELIST_FREQUENCY = 15;
+
     // This option needs to be the same numeric value as the one in binary_format.h.
     static final int NOT_VALID_WORD = -99;
+    static final int SIGNED_CHILDREN_ADDRESS_SIZE = 3;
 
     /**
      * Options about file format.
      */
-    public static class FormatOptions {
+    public static final class FormatOptions {
         public final int mVersion;
-        public final boolean mHasParentAddress;
-        public final boolean mHasLinkedListNode;
+        public final boolean mSupportsDynamicUpdate;
         public FormatOptions(final int version) {
             this(version, false);
         }
-        public FormatOptions(final int version, final boolean hasParentAddress) {
-            this(version, hasParentAddress, false);
-        }
-        public FormatOptions(final int version, final boolean hasParentAddress,
-                final boolean hasLinkedListNode) {
+        public FormatOptions(final int version, final boolean supportsDynamicUpdate) {
             mVersion = version;
-            if (version < FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
-                throw new RuntimeException("Parent addresses are only supported with versions "
-                        + FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
+            if (version < FIRST_VERSION_WITH_DYNAMIC_UPDATE && supportsDynamicUpdate) {
+                throw new RuntimeException("Dynamic updates are only supported with versions "
+                        + FIRST_VERSION_WITH_DYNAMIC_UPDATE + " and ulterior.");
             }
-            mHasParentAddress = hasParentAddress;
-
-            if (version < FIRST_VERSION_WITH_LINKEDLIST_NODE && hasLinkedListNode) {
-                throw new RuntimeException("Linked list nodes are only supported with versions "
-                        + FIRST_VERSION_WITH_LINKEDLIST_NODE + " and ulterior.");
-            }
-            if (!hasParentAddress && hasLinkedListNode) {
-                throw new RuntimeException("Linked list nodes need parent addresses.");
-            }
-            mHasLinkedListNode = hasLinkedListNode;
+            mSupportsDynamicUpdate = supportsDynamicUpdate;
         }
     }
 

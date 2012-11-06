@@ -20,6 +20,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -27,7 +28,7 @@ import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 
-public class MoreKeysKeyboard extends Keyboard {
+public final class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
     MoreKeysKeyboard(final MoreKeysKeyboardParams params) {
@@ -39,7 +40,7 @@ public class MoreKeysKeyboard extends Keyboard {
         return mDefaultKeyCoordX;
     }
 
-    /* package for test */
+    @UsedForTesting
     static class MoreKeysKeyboardParams extends KeyboardParams {
         public boolean mIsFixedOrder;
         /* package */int mTopRowAdjustment;

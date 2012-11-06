@@ -28,7 +28,9 @@ LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
 LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
 
-LOCAL_CFLAGS += -Werror -Wall
+LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
+    -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls \
+    -Winline -Wno-system-headers
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
@@ -50,6 +52,7 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \
+    words_priority_queue.cpp \
     gesture/gesture_decoder_wrapper.cpp \
     gesture/incremental_decoder_wrapper.cpp
 

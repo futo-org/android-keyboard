@@ -39,14 +39,14 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
-    UnigramDictionary(const uint8_t *const streamStart, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
-    int getFrequency(const int32_t *const inWord, const int length) const;
-    int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
+    UnigramDictionary(const uint8_t *const streamStart, int fullWordMultiplier, int maxWordLength,
+            int maxWords, const unsigned int flags);
+    int getFrequency(const int *const inWord, const int length) const;
+    int getBigramPosition(int pos, int *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
-            const bool useFullEditDistance, unsigned short *outWords, int *frequencies,
+            const bool useFullEditDistance, int *outWords, int *frequencies,
             int *outputTypes) const;
     virtual ~UnigramDictionary();
 
@@ -93,9 +93,9 @@ class UnigramDictionary {
             int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
             const int currentWordIndex) const;
     int getMostFrequentWordLike(const int startInputIndex, const int inputSize,
-            Correction *correction, unsigned short *word) const;
-    int getMostFrequentWordLikeInner(const uint16_t *const inWord, const int inputSize,
-            short unsigned int *outWord) const;
+            Correction *correction, int *word) const;
+    int getMostFrequentWordLikeInner(const int *const inWord, const int inputSize,
+            int *outWord) const;
     int getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const bool useFullEditDistance, Correction *correction,
@@ -103,22 +103,19 @@ class UnigramDictionary {
             const bool hasAutoCorrectionCandidate, const int currentWordIndex,
             const int inputWordStartPos, const int inputWordLength,
             const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
-            int *wordLengthArray, unsigned short *outputWord, int *outputWordLength) const;
-    void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
-            const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputSize,
-            Correction *correction, WordsPriorityQueuePool *queuePool,
+            int *wordLengthArray, int *outputWord, int *outputWordLength) const;
+    void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            const int inputSize, Correction *correction, WordsPriorityQueuePool *queuePool,
             const bool hasAutoCorrectionCandidate, const int startPos, const int startWordIndex,
             const int outputWordLength, int *freqArray, int *wordLengthArray,
-            unsigned short *outputWord) const;
+            int *outputWord) const;
 
     const uint8_t *const DICT_ROOT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;
-    const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;
-    const unsigned int BYTES_IN_ONE_CHAR;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;
 

@@ -37,7 +37,7 @@ import java.util.Locale;
 /**
  * Helper class to get the address of a mmap'able dictionary file.
  */
-class BinaryDictionaryGetter {
+final class BinaryDictionaryGetter {
 
     /**
      * Used for Log actions from this class
@@ -164,6 +164,13 @@ class BinaryDictionaryGetter {
     }
 
     /**
+     * Generates a unique temporary file name in the app cache directory.
+     */
+    public static String getTempFileName(String id, Context context) throws IOException {
+        return File.createTempFile(replaceFileNameDangerousCharacters(id), null).getAbsolutePath();
+    }
+
+    /**
      * Returns a file address from a resource, or null if it cannot be opened.
      */
     private static AssetFileAddress loadFallbackResource(final Context context,
@@ -178,7 +185,7 @@ class BinaryDictionaryGetter {
                 context.getApplicationInfo().sourceDir, afd.getStartOffset(), afd.getLength());
     }
 
-    static private class DictPackSettings {
+    private static final class DictPackSettings {
         final SharedPreferences mDictPreferences;
         public DictPackSettings(final Context context) {
             Context dictPackContext = null;
@@ -237,7 +244,7 @@ class BinaryDictionaryGetter {
     /**
      * Utility class for the {@link #getCachedWordLists} method
      */
-    private static class FileAndMatchLevel {
+    private static final class FileAndMatchLevel {
         final File mFile;
         final int mMatchLevel;
         public FileAndMatchLevel(final File file, final int matchLevel) {
@@ -350,7 +357,7 @@ class BinaryDictionaryGetter {
     // of the dictionary would lose whitelist functionality.
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
         // Only for English - other languages didn't have a whitelist, hence this
-        // ad-hock ## HACK ##
+        // ad-hoc ## HACK ##
         if (!Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) return true;
 
         FileInputStream inStream = null;

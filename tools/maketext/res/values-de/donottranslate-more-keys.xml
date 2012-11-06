@@ -27,8 +27,12 @@
          U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
          U+0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
     <string name="more_keys_for_a">&#x00E4;,&#x00E2;,&#x00E0;,&#x00E1;,&#x00E6;,&#x00E3;,&#x00E5;,&#x0101;</string>
-    <!-- U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE -->
-    <string name="more_keys_for_e">&#x0117;</string>
+    <!-- U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+         U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
+         U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+         U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+         U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE -->
+    <string name="more_keys_for_e">&#x00E9;,&#x00E8;,&#x00EA;,&#x00EB;,&#x0117;</string>
     <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
          U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
          U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE

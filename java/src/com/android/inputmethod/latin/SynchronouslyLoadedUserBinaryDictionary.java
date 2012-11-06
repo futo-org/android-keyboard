@@ -23,7 +23,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 
-public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
+public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale) {
         this(context, locale, false);
@@ -36,13 +36,13 @@ public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionar
 
     @Override
     public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+            final String prevWordForBigrams, final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
         return super.getSuggestions(codes, prevWordForBigrams, proximityInfo);
     }
 
     @Override
-    public synchronized boolean isValidWord(CharSequence word) {
+    public synchronized boolean isValidWord(final String word) {
         syncReloadDictionaryIfRequired();
         return isValidWordInner(word);
     }

@@ -31,21 +31,21 @@ namespace latinime {
 
 /* static */ const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
 
-static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray, jsize len,
-        jint *buffer) {
+static AK_FORCE_INLINE void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray,
+        jsize len, jint *buffer) {
     if (jArray && buffer) {
         env->GetIntArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {
-        memset(buffer, 0, len * sizeof(jint));
+        memset(buffer, 0, len * sizeof(buffer[0]));
     }
 }
 
-static inline void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jArray, jsize len,
-        jfloat *buffer) {
+static AK_FORCE_INLINE void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jArray,
+        jsize len, jfloat *buffer) {
     if (jArray && buffer) {
         env->GetFloatArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {
-        memset(buffer, 0, len * sizeof(jfloat));
+        memset(buffer, 0, len * sizeof(buffer[0]));
     }
 }
 
@@ -127,17 +127,22 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     return false;
 }
 
-static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
-        float scale) {
-    const float deltaX = x1 - x2;
-    const float deltaY = y1 - y2;
-    return (SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY)) / SQUARE_FLOAT(scale);
-}
-
-float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloat(
+float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
         const int keyId, const int x, const int y) const {
-    const float centerX = static_cast<float>(getKeyCenterXOfKeyIdG(keyId));
-    const float centerY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
+    const static float verticalSweetSpotScaleForGeometric = 1.1f;
+    const bool correctTouchPosition = hasTouchPositionCorrectionData();
+    const float centerX = static_cast<float>(correctTouchPosition
+            ? getSweetSpotCenterXAt(keyId)
+            : getKeyCenterXOfKeyIdG(keyId));
+    const float visualKeyCenterY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
+    float centerY;
+    if (correctTouchPosition) {
+        const float sweetSpotCenterY = static_cast<float>(getSweetSpotCenterYAt(keyId));
+        const float gapY = sweetSpotCenterY - visualKeyCenterY;
+        centerY = visualKeyCenterY + gapY * verticalSweetSpotScaleForGeometric;
+    } else {
+        centerY = visualKeyCenterY;
+    }
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
@@ -227,8 +232,11 @@ int ProximityInfo::getKeyIndexOf(const int c) const {
         // We do not have the coordinate data
         return NOT_AN_INDEX;
     }
-    const int baseLowerC = static_cast<int>(toBaseLowerCase(c));
-    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(baseLowerC);
+    if (c == NOT_A_CODE_POINT) {
+        return NOT_AN_INDEX;
+    }
+    const int lowerCode = static_cast<int>(toLowerCase(c));
+    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(lowerCode);
     if (mapPos != mCodeToKeyMap.end()) {
         return mapPos->second;
     }
@@ -246,7 +254,7 @@ void ProximityInfo::initializeG() {
     // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCodePoints[i];
-        const int lowerCode = toBaseLowerCase(code);
+        const int lowerCode = static_cast<int>(toLowerCase(code));
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
         mCodeToKeyMap[lowerCode] = i;
@@ -284,9 +292,7 @@ int ProximityInfo::getKeyCenterYOfKeyIdG(int keyId) const {
     return 0;
 }
 
-int ProximityInfo::getKeyKeyDistanceG(int key0, int key1) const {
-    const int keyId0 = getKeyIndexOf(key0);
-    const int keyId1 = getKeyIndexOf(key1);
+int ProximityInfo::getKeyKeyDistanceG(const int keyId0, const int keyId1) const {
     if (keyId0 >= 0 && keyId1 >= 0) {
         return mKeyKeyDistancesG[keyId0][keyId1];
     }

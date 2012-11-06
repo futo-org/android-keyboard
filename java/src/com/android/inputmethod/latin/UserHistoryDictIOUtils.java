@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
@@ -38,7 +39,7 @@ import java.util.Map;
  *
  * All the methods in this class are static.
  */
-public class UserHistoryDictIOUtils {
+public final class UserHistoryDictIOUtils {
     private static final String TAG = UserHistoryDictIOUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -100,6 +101,11 @@ public class UserHistoryDictIOUtils {
 
         @Override
         public int limit() {
+            return mBuffer.length - 1;
+        }
+
+        @Override
+        public int capacity() {
             return mBuffer.length;
         }
     }
@@ -110,11 +116,10 @@ public class UserHistoryDictIOUtils {
     public static void writeDictionaryBinary(final OutputStream destination,
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
             final FormatOptions formatOptions) {
-
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
-
         try {
             BinaryDictInputOutput.writeDictionaryBinary(destination, fusionDict, formatOptions);
+            Log.d(TAG, "end writing");
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file: " + e);
         } catch (UnsupportedFormatException e) {
@@ -125,18 +130,21 @@ public class UserHistoryDictIOUtils {
     /**
      * Constructs a new FusionDictionary from BigramDictionaryInterface.
      */
-    /* packages for test */ static FusionDictionary constructFusionDictionary(
+    @UsedForTesting
+    static FusionDictionary constructFusionDictionary(
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams) {
-
         final FusionDictionary fusionDict = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String,String>(), false, false));
-
+                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
+                        false));
+        int profTotal = 0;
         for (final String word1 : bigrams.keySet()) {
             final HashMap<String, Byte> word1Bigrams = bigrams.getBigrams(word1);
             for (final String word2 : word1Bigrams.keySet()) {
                 final int freq = dict.getFrequency(word1, word2);
-
+                if (freq == -1) {
+                    // don't add this bigram.
+                    continue;
+                }
                 if (DEBUG) {
                     if (word1 == null) {
                         Log.d(TAG, "add unigram: " + word2 + "," + Integer.toString(freq));
@@ -144,17 +152,22 @@ public class UserHistoryDictIOUtils {
                         Log.d(TAG, "add bigram: " + word1
                                 + "," + word2 + "," + Integer.toString(freq));
                     }
+                    profTotal++;
                 }
-
                 if (word1 == null) { // unigram
                     fusionDict.add(word2, freq, null, false /* isNotAWord */);
                 } else { // bigram
+                    if (FusionDictionary.findWordInTree(fusionDict.mRoot, word1) == null) {
+                        fusionDict.add(word1, 2, null, false /* isNotAWord */);
+                    }
                     fusionDict.setBigram(word1, word2, freq);
                 }
                 bigrams.updateBigram(word1, word2, (byte)freq);
             }
         }
-
+        if (DEBUG) {
+            Log.d(TAG, "add " + profTotal + "words");
+        }
         return fusionDict;
     }
 
@@ -166,32 +179,31 @@ public class UserHistoryDictIOUtils {
         final Map<Integer, String> unigrams = CollectionUtils.newTreeMap();
         final Map<Integer, Integer> frequencies = CollectionUtils.newTreeMap();
         final Map<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
-
         try {
             BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
                     bigrams);
-            addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while reading file: " + e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format: " + e);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Log.e(TAG, "ArrayIndexOutOfBoundsException while reading file: " + e);
         }
+        addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
     }
 
     /**
      * Adds all unigrams and bigrams in maps to OnAddWordListener.
      */
-    /* package for test */ static void addWordsFromWordMap(final Map<Integer, String> unigrams,
+    @UsedForTesting
+    static void addWordsFromWordMap(final Map<Integer, String> unigrams,
             final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams, final OnAddWordListener to) {
-
         for (Map.Entry<Integer, String> entry : unigrams.entrySet()) {
             final String word1 = entry.getValue();
             final int unigramFrequency = frequencies.get(entry.getKey());
             to.setUnigram(word1, null, unigramFrequency);
-
             final ArrayList<PendingAttribute> attrList = bigrams.get(entry.getKey());
-
             if (attrList != null) {
                 for (final PendingAttribute attr : attrList) {
                     to.setBigram(word1, unigrams.get(attr.mAddress),

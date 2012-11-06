@@ -36,28 +36,28 @@ public final class XmlParseUtils {
     }
 
     @SuppressWarnings("serial")
-    public static class IllegalStartTag extends ParseException {
+    public static final class IllegalStartTag extends ParseException {
         public IllegalStartTag(XmlPullParser parser, String parent) {
             super("Illegal start tag " + parser.getName() + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
-    public static class IllegalEndTag extends ParseException {
+    public static final class IllegalEndTag extends ParseException {
         public IllegalEndTag(XmlPullParser parser, String parent) {
             super("Illegal end tag " + parser.getName() + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
-    public static class IllegalAttribute extends ParseException {
+    public static final class IllegalAttribute extends ParseException {
         public IllegalAttribute(XmlPullParser parser, String attribute) {
             super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
         }
     }
 
     @SuppressWarnings("serial")
-    public static class NonEmptyTag extends ParseException{
+    public static final class NonEmptyTag extends ParseException{
         public NonEmptyTag(String tag, XmlPullParser parser) {
             super(tag + " must be empty tag", parser);
         }

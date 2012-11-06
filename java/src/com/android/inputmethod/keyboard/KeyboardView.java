@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -104,7 +105,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
 
     // XML attributes
-    private final KeyVisualAttributes mKeyVisualAttributes;
+    protected final KeyVisualAttributes mKeyVisualAttributes;
     private final int mKeyLabelHorizontalPadding;
     private final float mKeyHintLetterPadding;
     private final float mKeyPopupHintLetterPadding;
@@ -732,6 +733,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return width;
     }
 
+    // TODO: Remove this method.
     public float getLabelWidth(final String label, final Paint paint) {
         paint.getTextBounds(label, 0, label.length(), mTextBounds);
         return mTextBounds.width();
@@ -781,9 +783,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     public void cancelAllMessages() {
         mDrawingHandler.cancelAllMessages();
-        if (mPreviewPlacerView != null) {
-            mPreviewPlacerView.cancelAllMessages();
-        }
     }
 
     private TextView getKeyPreviewText(final int pointerId) {
@@ -827,9 +826,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mPreviewPlacerView.getParent() != null) {
             return;
         }
+        final int width = getWidth();
+        final int height = getHeight();
+        if (width == 0 || height == 0) {
+            // In transient state.
+            return;
+        }
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
-        mPreviewPlacerView.setOrigin(viewOrigin[0], viewOrigin[1]);
+        final DisplayMetrics dm = getResources().getDisplayMetrics();
+        if (viewOrigin[1] < dm.heightPixels / 4) {
+            // In transient state.
+            return;
+        }
         final View rootView = getRootView();
         if (rootView == null) {
             Log.w(TAG, "Cannot find root view");
@@ -841,6 +850,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
         } else {
             windowContentView.addView(mPreviewPlacerView);
+            mPreviewPlacerView.setKeyboardViewGeometry(viewOrigin[0], viewOrigin[1], width, height);
         }
     }
 

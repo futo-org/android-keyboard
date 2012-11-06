@@ -16,12 +16,13 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
+import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.StringUtils;
 
@@ -46,7 +47,7 @@ import java.util.Locale;
  * Note that the '\' is also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
  */
-public class KeySpecParser {
+public final class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
@@ -172,7 +173,7 @@ public class KeySpecParser {
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
                 throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             }
-            return parseCode(moreKeySpec.substring(end + 1), codesSet, Keyboard.CODE_UNSPECIFIED);
+            return parseCode(moreKeySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
         }
         final String outputText = getOutputTextInternal(moreKeySpec);
         if (outputText != null) {
@@ -181,14 +182,14 @@ public class KeySpecParser {
             if (StringUtils.codePointCount(outputText) == 1) {
                 return outputText.codePointAt(0);
             }
-            return Keyboard.CODE_OUTPUT_TEXT;
+            return CODE_OUTPUT_TEXT;
         }
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
         if (StringUtils.codePointCount(label) == 1) {
             return label.codePointAt(0);
         }
-        return Keyboard.CODE_OUTPUT_TEXT;
+        return CODE_OUTPUT_TEXT;
     }
 
     public static int parseCode(final String text, final KeyboardCodesSet codesSet,
@@ -318,7 +319,7 @@ public class KeySpecParser {
     }
 
     @SuppressWarnings("serial")
-    public static class KeySpecParserError extends RuntimeException {
+    public static final class KeySpecParserError extends RuntimeException {
         public KeySpecParserError(final String message) {
             super(message);
         }
@@ -468,7 +469,7 @@ public class KeySpecParser {
 
     public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
             final Locale locale) {
-        if (!Keyboard.isLetterCode(code) || !needsToUpperCase) return code;
+        if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
                 text, needsToUpperCase, locale);

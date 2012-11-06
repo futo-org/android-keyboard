@@ -56,11 +56,11 @@ public interface KeyboardActionListener {
     public void onCodeInput(int primaryCode, int x, int y);
 
     /**
-     * Sends a sequence of characters to the listener.
+     * Sends a string of characters to the listener.
      *
-     * @param text the sequence of characters to be displayed.
+     * @param text the string of characters to be registered.
      */
-    public void onTextInput(CharSequence text);
+    public void onTextInput(String text);
 
     /**
      * Called when user started batch input.
@@ -99,7 +99,7 @@ public interface KeyboardActionListener {
         @Override
         public void onCodeInput(int primaryCode, int x, int y) {}
         @Override
-        public void onTextInput(CharSequence text) {}
+        public void onTextInput(String text) {}
         @Override
         public void onStartBatchInput() {}
         @Override
@@ -111,14 +111,6 @@ public interface KeyboardActionListener {
         @Override
         public boolean onCustomRequest(int requestCode) {
             return false;
-        }
-
-        // TODO: Remove this method when the vertical correction is removed.
-        public static boolean isInvalidCoordinate(int coordinate) {
-            // Detect {@link Constants#NOT_A_COORDINATE},
-            // {@link Constants#SUGGESTION_STRIP_COORDINATE}, and
-            // {@link Constants#SPELL_CHECKER_COORDINATE}.
-            return coordinate < 0;
         }
     }
 }

@@ -16,14 +16,15 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 
 import java.util.TreeMap;
 
-public class SpellCheckerProximityInfo {
-    /* public for test */
+public final class SpellCheckerProximityInfo {
+    @UsedForTesting
     final public static int NUL = Constants.NOT_A_CODE;
 
     // This must be the same as MAX_PROXIMITY_CHARS_SIZE else it will not work inside
@@ -53,7 +54,7 @@ public class SpellCheckerProximityInfo {
         return result;
     }
 
-    private static class Latin {
+    private static final class Latin {
         // This is a map from the code point to the index in the PROXIMITY array.
         // At the time the native code to read the binary dictionary needs the proximity info be
         // passed as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input
@@ -122,7 +123,7 @@ public class SpellCheckerProximityInfo {
         }
     }
 
-    private static class Cyrillic {
+    private static final class Cyrillic {
         final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.

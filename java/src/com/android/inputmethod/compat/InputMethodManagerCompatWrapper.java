@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
 // performance.
-public class InputMethodManagerCompatWrapper {
+public final class InputMethodManagerCompatWrapper {
     private static final String TAG = InputMethodManagerCompatWrapper.class.getSimpleName();
     private static final Method METHOD_switchToNextInputMethod = CompatUtils.getMethod(
             InputMethodManager.class, "switchToNextInputMethod", IBinder.class, Boolean.TYPE);

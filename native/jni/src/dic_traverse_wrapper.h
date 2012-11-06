@@ -62,6 +62,5 @@ class DicTraverseWrapper {
             void *, const Dictionary *const, const int *, const int);
     static void (*sDicTraverseSessionReleaseMethod)(void *);
 };
-int register_DicTraverseSession(JNIEnv *env);
 } // namespace latinime
 #endif // LATINIME_DIC_TRAVERSE_WRAPPER_H

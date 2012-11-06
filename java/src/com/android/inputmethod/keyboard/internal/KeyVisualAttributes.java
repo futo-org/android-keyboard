@@ -23,7 +23,7 @@ import android.util.SparseIntArray;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
 
-public class KeyVisualAttributes {
+public final class KeyVisualAttributes {
     public final Typeface mTypeface;
 
     public final float mLetterRatio;

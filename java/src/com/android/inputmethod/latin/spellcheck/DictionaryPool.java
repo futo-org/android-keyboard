@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * the client code, but may help with sloppy clients.
  */
 @SuppressWarnings("serial")
-public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
+public final class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
     private final static String TAG = DictionaryPool.class.getSimpleName();
     // How many seconds we wait for a dictionary to become available. Past this delay, we give up in
     // fear some bug caused a deadlock, and reset the whole pool.
@@ -51,11 +51,11 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
             new Dictionary(Dictionary.TYPE_MAIN) {
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                        final CharSequence prevWord, final ProximityInfo proximityInfo) {
+                        final String prevWord, final ProximityInfo proximityInfo) {
                     return noSuggestions;
                 }
                 @Override
-                public boolean isValidWord(CharSequence word) {
+                public boolean isValidWord(final String word) {
                     // This is never called. However if for some strange reason it ever gets
                     // called, returning true is less destructive (it will not underline the
                     // word in red).

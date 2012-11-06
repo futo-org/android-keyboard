@@ -50,7 +50,7 @@ import java.util.TreeMap;
 /**
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
  */
-public class AndroidSpellCheckerService extends SpellCheckerService
+public final class AndroidSpellCheckerService extends SpellCheckerService
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = AndroidSpellCheckerService.class.getSimpleName();
     private static final boolean DBG = false;
@@ -201,8 +201,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     // TODO: remove this class and replace it by storage local to the session.
-    public static class SuggestionsGatherer {
-        public static class Result {
+    public static final class SuggestionsGatherer {
+        public static final class Result {
             public final String[] mSuggestions;
             public final boolean mHasRecommendedSuggestions;
             public Result(final String[] gatheredSuggestions,
@@ -212,7 +212,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             }
         }
 
-        private final ArrayList<CharSequence> mSuggestions;
+        private final ArrayList<String> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;
         private final float mSuggestionThreshold;
@@ -335,7 +335,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
 
                 final int bestScore = mScores[mLength - 1];
-                final CharSequence bestSuggestion = mSuggestions.get(0);
+                final String bestSuggestion = mSuggestions.get(0);
                 final float normalizedScore =
                         BinaryDictionary.calcNormalizedScore(
                                 mOriginalText, bestSuggestion.toString(), bestScore);

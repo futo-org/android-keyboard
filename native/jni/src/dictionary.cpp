@@ -30,13 +30,12 @@ namespace latinime {
 
 // TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
-        int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
-        int maxPredictions)
+        int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions)
         : mDict(static_cast<unsigned char *>(dict)),
           mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mUnigramDictionary(new UnigramDictionary(mOffsetDict, typedLetterMultiplier,
-                  fullWordMultiplier, maxWordLength, maxWords, BinaryFormat::getFlags(mDict))),
+          mUnigramDictionary(new UnigramDictionary(mOffsetDict, fullWordMultiplier, maxWordLength,
+                  maxWords, BinaryFormat::getFlags(mDict))),
           mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions)),
           mGestureDecoder(new GestureDecoderWrapper(maxWordLength, maxWords)) {
     if (DEBUG_DICT) {
@@ -55,11 +54,10 @@ Dictionary::~Dictionary() {
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
-        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds,
-        int *codes, int codesSize, int *prevWordChars,
-        int prevWordLength, int commitPoint, bool isGesture,
-        bool useFullEditDistance, unsigned short *outWords,
-        int *frequencies, int *spaceIndices, int *outputTypes) const {
+        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *codes,
+        int codesSize, int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
+        bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
+        int *outputTypes) const {
     int result = 0;
     if (isGesture) {
         DicTraverseWrapper::initDicTraverseSession(
@@ -84,7 +82,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
 }
 
 int Dictionary::getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-        unsigned short *outWords, int *frequencies, int *outputTypes) const {
+        int *outWords, int *frequencies, int *outputTypes) const {
     if (length <= 0) return 0;
     return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
             outputTypes);

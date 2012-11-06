@@ -1,64 +1,11 @@
--keep class com.android.inputmethod.latin.BinaryDictionary {
-  int mDictLength;
-  <init>(...);
+# Keep classes and methods that have the @UsedForTesting annotation
+-keep @com.android.inputmethod.annotations.UsedForTesting class *
+-keepclassmembers class * {
+@com.android.inputmethod.annotations.UsedForTesting *;
 }
 
--keep class com.android.inputmethod.keyboard.ProximityInfo {
-  <init>(com.android.inputmethod.keyboard.ProximityInfo);
+# Keep classes and methods that have the @ExternallyReferenced annotation
+-keep @com.android.inputmethod.annotations.ExternallyReferenced class *
+-keepclassmembers class * {
+@com.android.inputmethod.annotations.ExternallyReferenced *;
 }
-
--keep class com.android.inputmethod.latin.Suggest {
-  <init>(...);
-  com.android.inputmethod.latin.SuggestedWords getSuggestions(...);
-}
-
--keep class com.android.inputmethod.latin.AutoCorrection {
-  java.lang.CharSequence getAutoCorrectionWord();
-}
-
--keep class com.android.inputmethod.latin.Utils {
-  boolean equalsIgnoreCase(...);
-}
-
--keep class com.android.inputmethod.latin.InputPointers {
-  *;
-}
-
--keep class com.android.inputmethod.latin.ResizableIntArray {
-  *;
-}
-
--keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
-  *;
-}
-
--keep class com.android.inputmethod.keyboard.MainKeyboardView {
-  # Keep getter/setter methods for ObjectAnimator
-  int getLanguageOnSpacebarAnimAlpha();
-  void setLanguageOnSpacebarAnimAlpha(int);
-  int getAltCodeKeyWhileTypingAnimAlpha();
-  void setAltCodeKeyWhileTypingAnimAlpha(int);
-}
-
--keep class com.android.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
-  <init>(...);
-}
-
--keepclasseswithmembernames class * {
-    native <methods>;
-}
-
--keep class com.android.inputmethod.research.ResearchLogger {
-  void flush();
-  void publishCurrentLogUnit(...);
-}
-
--keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
-  void setTouchPositionCorrectionEnabled(...);
-}
-
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.v4.**
--dontwarn android.support.v13.**

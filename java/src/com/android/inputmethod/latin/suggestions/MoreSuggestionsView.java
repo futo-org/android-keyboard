@@ -40,7 +40,7 @@ import com.android.inputmethod.latin.R;
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
+public final class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     final KeyDetector mModalPanelKeyDetector;
@@ -56,17 +56,17 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     final KeyboardActionListener mSuggestionsPaneListener =
             new KeyboardActionListener.Adapter() {
         @Override
-        public void onPressKey(int primaryCode) {
+        public void onPressKey(final int primaryCode) {
             mListener.onPressKey(primaryCode);
         }
 
         @Override
-        public void onReleaseKey(int primaryCode, boolean withSliding) {
+        public void onReleaseKey(final int primaryCode, final boolean withSliding) {
             mListener.onReleaseKey(primaryCode, withSliding);
         }
 
         @Override
-        public void onCodeInput(int primaryCode, int x, int y) {
+        public void onCodeInput(final int primaryCode, final int x, final int y) {
             final int index = primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE;
             if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
                 mListener.onCustomRequest(index);
@@ -79,11 +79,12 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         }
     };
 
-    public MoreSuggestionsView(Context context, AttributeSet attrs) {
+    public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreSuggestionsViewStyle);
     }
 
-    public MoreSuggestionsView(Context context, AttributeSet attrs, int defStyle) {
+    public MoreSuggestionsView(final Context context, final AttributeSet attrs,
+            final int defStyle) {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
@@ -94,7 +95,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
             final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
@@ -105,8 +106,12 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         }
     }
 
+    public void updateKeyboardGeometry(final int keyHeight) {
+        mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
+    }
+
     @Override
-    public void setKeyboard(Keyboard keyboard) {
+    public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mModalPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), -getPaddingTop());
         mSlidingPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
@@ -134,15 +139,16 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     }
 
     @Override
-    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+    public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
         // Suggestions pane needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
         super.setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
-    public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
-            PopupWindow window, KeyboardActionListener listener) {
+    public void showMoreKeysPanel(final View parentView, final Controller controller,
+            final int pointX, final int pointY, final PopupWindow window,
+            final KeyboardActionListener listener) {
         mController = controller;
         mListener = listener;
         final View container = (View)getParent();
@@ -175,12 +181,12 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     }
 
     @Override
-    public int translateX(int x) {
+    public int translateX(final int x) {
         return x - mOriginX;
     }
 
     @Override
-    public int translateY(int y) {
+    public int translateY(final int y) {
         return y - mOriginY;
     }
 
@@ -207,7 +213,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     };
 
     @Override
-    public boolean onTouchEvent(MotionEvent me) {
+    public boolean onTouchEvent(final MotionEvent me) {
         final int action = me.getAction();
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();

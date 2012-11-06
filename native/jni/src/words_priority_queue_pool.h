@@ -36,7 +36,8 @@ class WordsPriorityQueuePool {
         }
     }
 
-    virtual ~WordsPriorityQueuePool() {
+    // Non virtual inline destructor -- never inherit this class
+    ~WordsPriorityQueuePool() {
         // Note: these explicit calls to the destructor match the calls to placement new() above.
         if (mMasterQueue) mMasterQueue->~WordsPriorityQueue();
         for (int i = 0; i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT; ++i) {
@@ -68,7 +69,7 @@ class WordsPriorityQueuePool {
         }
     }
 
-    inline void clearSubQueue(const int wordIndex) {
+    AK_FORCE_INLINE void clearSubQueue(const int wordIndex) {
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
             WordsPriorityQueue *queue = getSubQueue(wordIndex, i);
             if (queue) {

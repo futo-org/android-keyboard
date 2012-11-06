@@ -39,7 +39,11 @@ import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
-public class PreviewPlacerView extends RelativeLayout {
+public final class PreviewPlacerView extends RelativeLayout {
+    // The height of extra area above the keyboard to draw gesture trails.
+    // Proportional to the keyboard height.
+    private static final float EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO = 0.25f;
+
     private final int mGestureFloatingPreviewTextColor;
     private final int mGestureFloatingPreviewTextOffset;
     private final int mGestureFloatingPreviewColor;
@@ -47,14 +51,17 @@ public class PreviewPlacerView extends RelativeLayout {
     private final float mGestureFloatingPreviewVerticalPadding;
     private final float mGestureFloatingPreviewRoundRadius;
 
-    private int mXOrigin;
-    private int mYOrigin;
+    private int mKeyboardViewOriginX;
+    private int mKeyboardViewOriginY;
 
     private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
             CollectionUtils.newSparseArray();
     private final Params mGesturePreviewTrailParams;
     private final Paint mGesturePaint;
     private boolean mDrawsGesturePreviewTrail;
+    private int mOffscreenWidth;
+    private int mOffscreenHeight;
+    private int mOffscreenOffsetY;
     private Bitmap mOffscreenBuffer;
     private final Canvas mOffscreenCanvas = new Canvas();
     private final Rect mOffscreenDirtyRect = new Rect();
@@ -72,7 +79,7 @@ public class PreviewPlacerView extends RelativeLayout {
 
     private final DrawingHandler mDrawingHandler;
 
-    private static class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
+    private static final class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
         private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
         private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
 
@@ -101,28 +108,16 @@ public class PreviewPlacerView extends RelativeLayout {
             }
         }
 
-        private void cancelDismissGestureFloatingPreviewText() {
-            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
-        }
-
         public void dismissGestureFloatingPreviewText() {
-            cancelDismissGestureFloatingPreviewText();
+            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
             sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
                     mGestureFloatingPreviewTextLingerTimeout);
         }
 
-        private void cancelUpdateGestureTrailPreview() {
-            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
-        }
-
         public void postUpdateGestureTrailPreview() {
-            cancelUpdateGestureTrailPreview();
+            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_TRAIL),
                     mGesturePreviewTrailParams.mUpdateInterval);
-        }
-
-        public void cancelAllMessages() {
-            cancelUpdateGestureTrailPreview();
         }
     }
 
@@ -177,9 +172,12 @@ public class PreviewPlacerView extends RelativeLayout {
         setLayerType(LAYER_TYPE_HARDWARE, layerPaint);
     }
 
-    public void setOrigin(final int x, final int y) {
-        mXOrigin = x;
-        mYOrigin = y;
+    public void setKeyboardViewGeometry(final int x, final int y, final int w, final int h) {
+        mKeyboardViewOriginX = x;
+        mKeyboardViewOriginY = y;
+        mOffscreenOffsetY = (int)(h * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
+        mOffscreenWidth = w;
+        mOffscreenHeight = mOffscreenOffsetY + h;
     }
 
     public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
@@ -216,45 +214,42 @@ public class PreviewPlacerView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
+        freeOffscreenBuffer();
+    }
+
+    private void freeOffscreenBuffer() {
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;
         }
     }
 
+    private void mayAllocateOffscreenBuffer() {
+        if (mOffscreenBuffer != null && mOffscreenBuffer.getWidth() == mOffscreenWidth
+                && mOffscreenBuffer.getHeight() == mOffscreenHeight) {
+            return;
+        }
+        freeOffscreenBuffer();
+        mOffscreenBuffer = Bitmap.createBitmap(
+                mOffscreenWidth, mOffscreenHeight, Bitmap.Config.ARGB_8888);
+        mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+    }
+
     @Override
     public void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
-        canvas.translate(mXOrigin, mYOrigin);
         if (mDrawsGesturePreviewTrail) {
-            if (mOffscreenBuffer == null) {
-                mOffscreenBuffer = Bitmap.createBitmap(
-                        getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-                mOffscreenCanvas.setBitmap(mOffscreenBuffer);
-            }
+            mayAllocateOffscreenBuffer();
+            // Draw gesture trails to offscreen buffer.
+            final boolean needsUpdatingGesturePreviewTrail = drawGestureTrails(
+                    mOffscreenCanvas, mGesturePaint, mOffscreenDirtyRect);
+            // Transfer offscreen buffer to screen.
             if (!mOffscreenDirtyRect.isEmpty()) {
-                // Clear previous dirty rectangle.
-                mGesturePaint.setColor(Color.TRANSPARENT);
-                mGesturePaint.setStyle(Paint.Style.FILL);
-                mOffscreenCanvas.drawRect(mOffscreenDirtyRect, mGesturePaint);
-                mOffscreenDirtyRect.setEmpty();
-            }
-            boolean needsUpdatingGesturePreviewTrail = false;
-            synchronized (mGesturePreviewTrails) {
-                // Trails count == fingers count that have ever been active.
-                final int trailsCount = mGesturePreviewTrails.size();
-                for (int index = 0; index < trailsCount; index++) {
-                    final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
-                    needsUpdatingGesturePreviewTrail |=
-                            trail.drawGestureTrail(mOffscreenCanvas, mGesturePaint,
-                                    mGesturePreviewTrailBoundsRect, mGesturePreviewTrailParams);
-                    // {@link #mGesturePreviewTrailBoundsRect} has bounding box of the trail.
-                    mOffscreenDirtyRect.union(mGesturePreviewTrailBoundsRect);
-                }
-            }
-            if (!mOffscreenDirtyRect.isEmpty()) {
+                final int offsetY = mKeyboardViewOriginY - mOffscreenOffsetY;
+                canvas.translate(mKeyboardViewOriginX, offsetY);
                 canvas.drawBitmap(mOffscreenBuffer, mOffscreenDirtyRect, mOffscreenDirtyRect,
                         mGesturePaint);
+                canvas.translate(-mKeyboardViewOriginX, -offsetY);
                 // Note: Defer clearing the dirty rectangle here because we will get cleared
                 // rectangle on the canvas.
             }
@@ -263,9 +258,49 @@ public class PreviewPlacerView extends RelativeLayout {
             }
         }
         if (mDrawsGestureFloatingPreviewText) {
+            canvas.translate(mKeyboardViewOriginX, mKeyboardViewOriginY);
             drawGestureFloatingPreviewText(canvas, mGestureFloatingPreviewText);
+            canvas.translate(-mKeyboardViewOriginX, -mKeyboardViewOriginY);
         }
-        canvas.translate(-mXOrigin, -mYOrigin);
+    }
+
+    private boolean drawGestureTrails(final Canvas offscreenCanvas, final Paint paint,
+            final Rect dirtyRect) {
+        // Clear previous dirty rectangle.
+        if (!dirtyRect.isEmpty()) {
+            paint.setColor(Color.TRANSPARENT);
+            paint.setStyle(Paint.Style.FILL);
+            offscreenCanvas.drawRect(dirtyRect, paint);
+        }
+        dirtyRect.setEmpty();
+
+        // Draw gesture trails to offscreen buffer.
+        offscreenCanvas.translate(0, mOffscreenOffsetY);
+        boolean needsUpdatingGesturePreviewTrail = false;
+        synchronized (mGesturePreviewTrails) {
+            // Trails count == fingers count that have ever been active.
+            final int trailsCount = mGesturePreviewTrails.size();
+            for (int index = 0; index < trailsCount; index++) {
+                final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
+                needsUpdatingGesturePreviewTrail |=
+                        trail.drawGestureTrail(offscreenCanvas, paint,
+                                mGesturePreviewTrailBoundsRect, mGesturePreviewTrailParams);
+                // {@link #mGesturePreviewTrailBoundsRect} has bounding box of the trail.
+                dirtyRect.union(mGesturePreviewTrailBoundsRect);
+            }
+        }
+        offscreenCanvas.translate(0, -mOffscreenOffsetY);
+
+        // Clip dirty rectangle with offscreen buffer width/height.
+        dirtyRect.offset(0, mOffscreenOffsetY);
+        clipRect(dirtyRect, 0, 0, mOffscreenWidth, mOffscreenHeight);
+        return needsUpdatingGesturePreviewTrail;
+    }
+
+    private static void clipRect(final Rect out, final int left, final int top, final int right,
+            final int bottom) {
+        out.set(Math.max(out.left, left), Math.max(out.top, top), Math.min(out.right, right),
+                Math.min(out.bottom, bottom));
     }
 
     public void setGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
@@ -276,10 +311,6 @@ public class PreviewPlacerView extends RelativeLayout {
 
     public void dismissGestureFloatingPreviewText() {
         mDrawingHandler.dismissGestureFloatingPreviewText();
-    }
-
-    public void cancelAllMessages() {
-        mDrawingHandler.cancelAllMessages();
     }
 
     private void drawGestureFloatingPreviewText(final Canvas canvas,

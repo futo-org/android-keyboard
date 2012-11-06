@@ -30,17 +30,15 @@
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength) do { \
         dumpResult(words, frequencies, maxWordCount, maxWordLength); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
-#define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while (0)
-// TODO: INTS_TO_CHARS
-#define SHORTS_TO_CHARS(input, length, output) do { \
-        shortArrayToCharArray(input, length, output); } while (0)
+#define INTS_TO_CHARS(input, length, output) do { \
+        intArrayToCharArray(input, length, output); } while (0)
 
-static inline void dumpWordInfo(const unsigned short *word, const int length,
-        const int rank, const int frequency) {
+static inline void dumpWordInfo(const int *word, const int length, const int rank,
+        const int frequency) {
     static char charBuf[50];
     int i = 0;
     for (; i < length; ++i) {
-        const unsigned short c = word[i];
+        const int c = word[i];
         if (c == 0) {
             break;
         }
@@ -53,8 +51,7 @@ static inline void dumpWordInfo(const unsigned short *word, const int length,
     }
 }
 
-static inline void dumpResult(
-        const unsigned short *outWords, const int *frequencies, const int maxWordCounts,
+static inline void dumpResult(const int *outWords, const int *frequencies, const int maxWordCounts,
         const int maxWordLength) {
     AKLOGI("--- DUMP RESULT ---------");
     for (int i = 0; i < maxWordCounts; ++i) {
@@ -63,11 +60,11 @@ static inline void dumpResult(
     AKLOGI("-------------------------");
 }
 
-static inline void dumpWord(const unsigned short *word, const int length) {
+static inline void dumpWord(const int *word, const int length) {
     static char charBuf[50];
     int i = 0;
     for (; i < length; ++i) {
-        const unsigned short c = word[i];
+        const int c = word[i];
         if (c == 0) {
             break;
         }
@@ -80,22 +77,10 @@ static inline void dumpWord(const unsigned short *word, const int length) {
     }
 }
 
-static inline void dumpWordInt(const int *word, const int length) {
-    static char charBuf[50];
-
-    for (int i = 0; i < length; ++i) {
-        charBuf[i] = word[i];
-    }
-    charBuf[length] = 0;
-    AKLOGI("i[ %s ]", charBuf);
-}
-
-// TODO: Change this to intArrayToCharArray
-static inline void shortArrayToCharArray(
-        const unsigned short *input, const int length, char *output) {
+static inline void intArrayToCharArray(const int *input, const int length, char *output) {
     int i = 0;
-    for (;i < length; ++i) {
-        const unsigned short c = input[i];
+    for (; i < length; ++i) {
+        const int c = input[i];
         if (c == 0) {
             break;
         }
@@ -137,11 +122,9 @@ static inline void showStackTrace() {
 #define AKLOGI(fmt, ...)
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
-#define DUMP_WORD_INT(word, length)
 #define ASSERT(success)
 #define SHOW_STACK_TRACE
-// TODO: INTS_TO_CHARS
-#define SHORTS_TO_CHARS(input, length, output)
+#define INTS_TO_CHARS(input, length, output)
 #endif
 
 #ifdef FLAG_DO_PROFILE
@@ -219,6 +202,8 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
+#define DEBUG_SAMPLING_POINTS true
+#define DEBUG_POINTS_PROBABILITY true
 
 #ifdef FLAG_FULL_DBG
 #define DEBUG_GEO_FULL true
@@ -239,6 +224,8 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
+#define DEBUG_SAMPLING_POINTS false
+#define DEBUG_POINTS_PROBABILITY false
 
 #define DEBUG_GEO_FULL false
 
@@ -282,6 +269,8 @@ static inline void prof_out(void) {
 #define NOT_A_PROBABILITY (-1)
 
 #define KEYCODE_SPACE ' '
+#define KEYCODE_SINGLE_QUOTE '\''
+#define KEYCODE_HYPHEN_MINUS '-'
 
 #define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
 
@@ -344,8 +333,8 @@ static inline void prof_out(void) {
 #define MULTIPLE_WORDS_DEMOTION_RATE 80
 #define MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION 6
 
-#define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35
-#define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185
+#define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35f
+#define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185f
 /* heuristic... This should be changed if we change the unit of the frequency. */
 #define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_FREQ * 58 / 100)
 
@@ -368,6 +357,9 @@ static inline void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
+// TODO: Remove
+#define MAX_POINTER_COUNT_FOR_G 2
+
 // Size, in bytes, of the bloom filter index for bigrams
 // 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
 // where k is the number of hash functions, n the number of bigrams, and m the number of
@@ -388,6 +380,14 @@ static inline void prof_out(void) {
 
 template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
 template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
+
+#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+#ifdef __GNUC__
+#define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
+#else // __GNUC__
+#define AK_FORCE_INLINE inline
+#endif // __GNUC__
 
 // The ratio of neutral area radius to sweet spot radius.
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f

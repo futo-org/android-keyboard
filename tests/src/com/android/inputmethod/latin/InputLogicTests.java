@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 public class InputLogicTests extends InputTestsBase {
 
     public void testTypeWord() {
@@ -32,7 +30,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         pickSuggestionManually(0, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("press suggestion then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -48,7 +46,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
                 mTextView.getText().toString());
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -63,7 +61,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
                 mTextView.getText().toString());
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -79,13 +77,14 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
                 mTextView.getText().toString());
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("pick different suggestion then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
 
     public void testDeleteSelection() {
         final String STRING_TO_TYPE = "some text delete me some text";
+        final int typedLength = STRING_TO_TYPE.length();
         final int SELECTION_START = 10;
         final int SELECTION_END = 19;
         final String EXPECTED_RESULT = "some text  some text";
@@ -94,11 +93,12 @@ public class InputLogicTests extends InputTestsBase {
         // Send once to simulate the cursor actually responding to the move caused by typing.
         // This is necessary because LatinIME is bookkeeping to avoid confusing a real cursor
         // move with a move triggered by LatinIME inputting stuff.
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         mInputConnection.setSelection(SELECTION_START, SELECTION_END);
         // And now we simulate the user actually selecting some text.
-        mLatinIME.onUpdateSelection(0, 0, SELECTION_START, SELECTION_END, -1, -1);
-        type(Keyboard.CODE_DELETE);
+        mLatinIME.onUpdateSelection(typedLength, typedLength,
+                SELECTION_START, SELECTION_END, -1, -1);
+        type(Constants.CODE_DELETE);
         assertEquals("delete selection", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
@@ -121,7 +121,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "tgis.";
         type(STRING_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("auto-correct with period then revert", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -131,7 +131,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "tgis ";
         type(STRING_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space then revert", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -141,7 +141,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "this";
         type(STRING_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space does not revert", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -157,32 +157,36 @@ public class InputLogicTests extends InputTestsBase {
         final String STRING_TO_TYPE = "this  ";
         final String EXPECTED_RESULT = "this  ";
         type(STRING_TO_TYPE);
-        type(Keyboard.CODE_DELETE);
+        type(Constants.CODE_DELETE);
         assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
     public void testBackspaceAtStartAfterAutocorrect() {
         final String STRING_TO_TYPE = "tgis ";
+        final int typedLength = STRING_TO_TYPE.length();
         final String EXPECTED_RESULT = "this ";
         final int NEW_CURSOR_POSITION = 0;
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
-        type(Keyboard.CODE_DELETE);
+        mLatinIME.onUpdateSelection(typedLength, typedLength,
+                NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor to start of line then backspace",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
 
     public void testAutoCorrectThenMoveCursorThenBackspace() {
         final String STRING_TO_TYPE = "and tgis ";
+        final int typedLength = STRING_TO_TYPE.length();
         final String EXPECTED_RESULT = "andthis ";
         final int NEW_CURSOR_POSITION = STRING_TO_TYPE.indexOf('t');
         type(STRING_TO_TYPE);
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
-        type(Keyboard.CODE_DELETE);
+        mLatinIME.onUpdateSelection(typedLength, typedLength,
+                NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor then backspace",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
@@ -258,7 +262,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "this";
         type(WORD_TO_TYPE);
         for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
-            type(Keyboard.CODE_DELETE);
+            type(Constants.CODE_DELETE);
         }
         assertEquals("delete whole composing word", "", mTextView.getText().toString());
     }

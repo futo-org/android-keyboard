@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class SuggestionSpanPickedNotificationReceiver extends BroadcastReceiver {
+public final class SuggestionSpanPickedNotificationReceiver extends BroadcastReceiver {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG =
             SuggestionSpanPickedNotificationReceiver.class.getSimpleName();

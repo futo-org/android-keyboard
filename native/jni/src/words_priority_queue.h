@@ -30,15 +30,15 @@ class WordsPriorityQueue {
     class SuggestedWord {
     public:
         int mScore;
-        unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+        int mWord[MAX_WORD_LENGTH_INTERNAL];
         int mWordLength;
         bool mUsed;
         int mType;
 
-        void setParams(int score, unsigned short *word, int wordLength, int type) {
+        void setParams(int score, int *word, int wordLength, int type) {
             mScore = score;
             mWordLength = wordLength;
-            memcpy(mWord, word, sizeof(unsigned short) * wordLength);
+            memcpy(mWord, word, sizeof(mWord[0]) * wordLength);
             mUsed = true;
             mType = type;
         }
@@ -53,13 +53,14 @@ class WordsPriorityQueue {
         }
     }
 
-    virtual ~WordsPriorityQueue() {
+    // Non virtual inline destructor -- never inherit this class
+    AK_FORCE_INLINE ~WordsPriorityQueue() {
         delete[] mSuggestedWords;
     }
 
-    void push(int score, unsigned short *word, int wordLength, int type) {
+    void push(int score, int *word, int wordLength, int type) {
         SuggestedWord *sw = 0;
-        if (mSuggestions.size() >= MAX_WORDS) {
+        if (size() >= MAX_WORDS) {
             sw = mSuggestions.top();
             const int minScore = sw->mScore;
             if (minScore >= score) {
@@ -94,68 +95,11 @@ class WordsPriorityQueue {
         return sw;
     }
 
-    int outputSuggestions(const unsigned short *before, const int beforeLength,
-            int *frequencies, unsigned short *outputChars, int* outputTypes) {
-        mHighestSuggestedWord = 0;
-        const unsigned int size = min(
-              MAX_WORDS, static_cast<unsigned int>(mSuggestions.size()));
-        SuggestedWord *swBuffer[size];
-        int index = size - 1;
-        while (!mSuggestions.empty() && index >= 0) {
-            SuggestedWord *sw = mSuggestions.top();
-            if (DEBUG_WORDS_PRIORITY_QUEUE) {
-                AKLOGI("dump word. %d", sw->mScore);
-                DUMP_WORD(sw->mWord, sw->mWordLength);
-            }
-            swBuffer[index] = sw;
-            mSuggestions.pop();
-            --index;
-        }
-        if (size >= 2) {
-            SuggestedWord *nsMaxSw = 0;
-            unsigned int maxIndex = 0;
-            float maxNs = 0;
-            for (unsigned int i = 0; i < size; ++i) {
-                SuggestedWord *tempSw = swBuffer[i];
-                if (!tempSw) {
-                    continue;
-                }
-                const float tempNs = getNormalizedScore(tempSw, before, beforeLength, 0, 0, 0);
-                if (tempNs >= maxNs) {
-                    maxNs = tempNs;
-                    maxIndex = i;
-                    nsMaxSw = tempSw;
-                }
-            }
-            if (maxIndex > 0 && nsMaxSw) {
-                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(SuggestedWord *));
-                swBuffer[0] = nsMaxSw;
-            }
-        }
-        for (unsigned int i = 0; i < size; ++i) {
-            SuggestedWord *sw = swBuffer[i];
-            if (!sw) {
-                AKLOGE("SuggestedWord is null %d", i);
-                continue;
-            }
-            const unsigned int wordLength = sw->mWordLength;
-            unsigned short *targetAddress = outputChars + i * MAX_WORD_LENGTH;
-            frequencies[i] = sw->mScore;
-            outputTypes[i] = sw->mType;
-            memcpy(targetAddress, sw->mWord, wordLength * sizeof(unsigned short));
-            if (wordLength < MAX_WORD_LENGTH) {
-                targetAddress[wordLength] = 0;
-            }
-            sw->mUsed = false;
-        }
-        return size;
-    }
-
     int size() const {
-        return mSuggestions.size();
+        return static_cast<int>(mSuggestions.size());
     }
 
-    void clear() {
+    AK_FORCE_INLINE void clear() {
         mHighestSuggestedWord = 0;
         while (!mSuggestions.empty()) {
             SuggestedWord *sw = mSuggestions.top();
@@ -175,14 +119,17 @@ class WordsPriorityQueue {
         DUMP_WORD(mHighestSuggestedWord->mWord, mHighestSuggestedWord->mWordLength);
     }
 
-    float getHighestNormalizedScore(const unsigned short *before, const int beforeLength,
-            unsigned short **outWord, int *outScore, int *outLength) {
+    float getHighestNormalizedScore(const int *before, const int beforeLength, int **outWord,
+            int *outScore, int *outLength) {
         if (!mHighestSuggestedWord) {
             return 0.0;
         }
-        return getNormalizedScore(
-                mHighestSuggestedWord, before, beforeLength, outWord, outScore, outLength);
+        return getNormalizedScore(mHighestSuggestedWord, before, beforeLength, outWord, outScore,
+                outLength);
     }
+
+    int outputSuggestions(const int *before, const int beforeLength, int *frequencies,
+            int *outputCodePoints, int* outputTypes);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(WordsPriorityQueue);
@@ -192,9 +139,8 @@ class WordsPriorityQueue {
         }
     };
 
-    SuggestedWord *getFreeSuggestedWord(int score, unsigned short *word,
-            int wordLength, int type) {
-        for (unsigned int i = 0; i < MAX_WORD_LENGTH; ++i) {
+    SuggestedWord *getFreeSuggestedWord(int score, int *word, int wordLength, int type) {
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
             if (!mSuggestedWords[i].mUsed) {
                 mSuggestedWords[i].setParams(score, word, wordLength, type);
                 return &mSuggestedWords[i];
@@ -203,10 +149,10 @@ class WordsPriorityQueue {
         return 0;
     }
 
-    static float getNormalizedScore(SuggestedWord *sw, const unsigned short *before,
-            const int beforeLength, unsigned short **outWord, int *outScore, int *outLength) {
+    static float getNormalizedScore(SuggestedWord *sw, const int *before, const int beforeLength,
+            int **outWord, int *outScore, int *outLength) {
         const int score = sw->mScore;
-        unsigned short *word = sw->mWord;
+        int *word = sw->mWord;
         const int wordLength = sw->mWordLength;
         if (outScore) {
             *outScore = score;
@@ -217,15 +163,15 @@ class WordsPriorityQueue {
         if (outLength) {
             *outLength = wordLength;
         }
-        return Correction::RankingAlgorithm::calcNormalizedScore(
-                before, beforeLength, word, wordLength, score);
+        return Correction::RankingAlgorithm::calcNormalizedScore(before, beforeLength, word,
+                wordLength, score);
     }
 
     typedef std::priority_queue<SuggestedWord *, std::vector<SuggestedWord *>,
             wordComparator> Suggestions;
     Suggestions mSuggestions;
-    const unsigned int MAX_WORDS;
-    const unsigned int MAX_WORD_LENGTH;
+    const int MAX_WORDS;
+    const int MAX_WORD_LENGTH;
     SuggestedWord *mSuggestedWords;
     SuggestedWord *mHighestSuggestedWord;
 };

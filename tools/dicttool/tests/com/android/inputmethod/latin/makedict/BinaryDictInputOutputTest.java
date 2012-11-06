@@ -19,24 +19,15 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 
+import junit.framework.TestCase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import junit.framework.TestCase;
 
 /**
  * Unit tests for BinaryDictInputOutput.
  */
 public class BinaryDictInputOutputTest extends TestCase {
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     // Test the flattened array contains the expected number of nodes, and
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
@@ -55,5 +46,4 @@ public class BinaryDictInputOutputTest extends TestCase {
             assertFalse("Flattened array contained the same node twice", result.contains(n));
         }
     }
-
 }

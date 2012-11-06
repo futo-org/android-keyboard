@@ -23,17 +23,20 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.research.ResearchLogger;
 
-public class DebugSettings extends PreferenceFragment
+public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DebugSettings.class.getSimpleName();
     private static final String DEBUG_MODE_KEY = "debug_mode";
     public static final String FORCE_NON_DISTINCT_MULTITOUCH_KEY = "force_non_distinct_multitouch";
+    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
@@ -44,6 +47,14 @@ public class DebugSettings extends PreferenceFragment
         addPreferencesFromResource(R.xml.prefs_for_debug);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
+        if (usabilityStudyPref instanceof CheckBoxPreference) {
+            final CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
+            checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
+                    ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
+            checkbox.setSummary(R.string.settings_warning_researcher_mode);
+        }
 
         mServiceNeedsRestart = false;
         mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);

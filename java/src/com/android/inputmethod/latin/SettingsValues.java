@@ -178,7 +178,7 @@ public final class SettingsValues {
                 && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
         mGesturePreviewTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
-                Settings.PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT, false);
+                Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
@@ -254,11 +254,13 @@ public final class SettingsValues {
         return mSymbolsExcludedFromWordSeparators.contains(String.valueOf((char)code));
     }
 
+    // TODO: use "Phantom" instead of "Weak" in this method name
     public boolean isWeakSpaceStripper(final int code) {
         // TODO: this does not work if the code does not fit in a char
         return mWeakSpaceStrippers.contains(String.valueOf((char)code));
     }
 
+    // TODO: use "Phantom" instead of "Weak" in this method name
     public boolean isWeakSpaceSwapper(final int code) {
         // TODO: this does not work if the code does not fit in a char
         return mWeakSpaceSwappers.contains(String.valueOf((char)code));
@@ -410,7 +412,7 @@ public final class SettingsValues {
     // Likewise
     public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
         // TODO: use mUsabilityStudyMode instead of reading it again here
-        return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
+        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
     }
 
     public static long getLastUserHistoryWriteTime(final SharedPreferences prefs,

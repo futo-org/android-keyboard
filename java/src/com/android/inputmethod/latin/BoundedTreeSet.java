@@ -25,7 +25,7 @@ import java.util.TreeSet;
 /**
  * A TreeSet that is bounded in size and throws everything that's smaller than its limit
  */
-public class BoundedTreeSet extends TreeSet<SuggestedWordInfo> {
+public final class BoundedTreeSet extends TreeSet<SuggestedWordInfo> {
     private final int mCapacity;
     public BoundedTreeSet(final Comparator<SuggestedWordInfo> comparator, final int capacity) {
         super(comparator);

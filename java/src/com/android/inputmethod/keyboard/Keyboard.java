@@ -16,15 +16,13 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.CollectionUtils;
-
-
+import com.android.inputmethod.latin.Constants;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -45,46 +43,6 @@ import com.android.inputmethod.latin.CollectionUtils;
  * </pre>
  */
 public class Keyboard {
-    private static final String TAG = Keyboard.class.getSimpleName();
-
-    /** Some common keys code. Must be positive.
-     * These should be aligned with values/keycodes.xml
-     */
-    public static final int CODE_ENTER = '\n';
-    public static final int CODE_TAB = '\t';
-    public static final int CODE_SPACE = ' ';
-    public static final int CODE_PERIOD = '.';
-    public static final int CODE_DASH = '-';
-    public static final int CODE_SINGLE_QUOTE = '\'';
-    public static final int CODE_DOUBLE_QUOTE = '"';
-    public static final int CODE_QUESTION_MARK = '?';
-    public static final int CODE_EXCLAMATION_MARK = '!';
-    // TODO: Check how this should work for right-to-left languages. It seems to stand
-    // that for rtl languages, a closing parenthesis is a left parenthesis. Is this
-    // managed by the font? Or is it a different char?
-    public static final int CODE_CLOSING_PARENTHESIS = ')';
-    public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
-    public static final int CODE_CLOSING_CURLY_BRACKET = '}';
-    public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
-
-    /** Special keys code. Must be negative.
-     * These should be aligned with KeyboardCodesSet.ID_TO_NAME[],
-     * KeyboardCodesSet.DEFAULT[] and KeyboardCodesSet.RTL[]
-     */
-    public static final int CODE_SHIFT = -1;
-    public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
-    public static final int CODE_OUTPUT_TEXT = -3;
-    public static final int CODE_DELETE = -4;
-    public static final int CODE_SETTINGS = -5;
-    public static final int CODE_SHORTCUT = -6;
-    public static final int CODE_ACTION_ENTER = -7;
-    public static final int CODE_ACTION_NEXT = -8;
-    public static final int CODE_ACTION_PREVIOUS = -9;
-    public static final int CODE_LANGUAGE_SWITCH = -10;
-    public static final int CODE_RESEARCH = -11;
-    // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -12;
-
     public final KeyboardId mId;
     public final int mThemeId;
 
@@ -163,7 +121,7 @@ public class Keyboard {
     }
 
     public Key getKey(final int code) {
-        if (code == CODE_UNSPECIFIED) {
+        if (code == Constants.CODE_UNSPECIFIED) {
             return null;
         }
         synchronized (mKeyCache) {
@@ -197,10 +155,6 @@ public class Keyboard {
         return false;
     }
 
-    public static boolean isLetterCode(final int code) {
-        return code >= CODE_SPACE;
-    }
-
     @Override
     public String toString() {
         return mId.toString();
@@ -218,28 +172,5 @@ public class Keyboard {
         final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
         final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));
         return mProximityInfo.getNearestKeys(adjustedX, adjustedY);
-    }
-
-    public static String printableCode(final int code) {
-        switch (code) {
-        case CODE_SHIFT: return "shift";
-        case CODE_SWITCH_ALPHA_SYMBOL: return "symbol";
-        case CODE_OUTPUT_TEXT: return "text";
-        case CODE_DELETE: return "delete";
-        case CODE_SETTINGS: return "settings";
-        case CODE_SHORTCUT: return "shortcut";
-        case CODE_ACTION_ENTER: return "actionEnter";
-        case CODE_ACTION_NEXT: return "actionNext";
-        case CODE_ACTION_PREVIOUS: return "actionPrevious";
-        case CODE_LANGUAGE_SWITCH: return "languageSwitch";
-        case CODE_UNSPECIFIED: return "unspec";
-        case CODE_TAB: return "tab";
-        case CODE_ENTER: return "enter";
-        default:
-            if (code <= 0) Log.w(TAG, "Unknown non-positive key code=" + code);
-            if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
-            if (code < 0x100) return String.format("'%c'", code);
-            return String.format("'\\u%04x'", code);
-        }
     }
 }

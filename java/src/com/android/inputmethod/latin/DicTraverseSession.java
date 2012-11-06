@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import java.util.Locale;
 
-public class DicTraverseSession {
+public final class DicTraverseSession {
     static {
         JniUtils.loadNativeLibrary();
     }

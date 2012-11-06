@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
+public final class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
     private boolean mClosed;
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
@@ -33,13 +33,13 @@ public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryD
 
     @Override
     public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+            final String prevWordForBigrams, final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
         return super.getSuggestions(codes, prevWordForBigrams, proximityInfo);
     }
 
     @Override
-    public synchronized boolean isValidWord(CharSequence word) {
+    public synchronized boolean isValidWord(final String word) {
         syncReloadDictionaryIfRequired();
         return isValidWordInner(word);
     }

@@ -39,12 +39,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final boolean ENABLE_INTERNAL_SETTINGS = ProductionFlag.IS_INTERNAL;
 
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
@@ -58,7 +56,6 @@ public final class Settings extends InputMethodSettingsFragment
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_MISC_SETTINGS = "misc_settings";
-    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     public static final String PREF_LAST_USER_DICTIONARY_WRITE_TIME =
             "last_user_dictionary_write_time";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
@@ -77,8 +74,8 @@ public final class Settings extends InputMethodSettingsFragment
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
     public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
-    public static final String PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT =
-            "pref_show_gesture_floating_preview_text";
+    public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
+            "pref_gesture_floating_preview_text";
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
@@ -133,14 +130,6 @@ public final class Settings extends InputMethodSettingsFragment
         mAutoCorrectionThresholdPreference =
                 (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramPrediction = (CheckBoxPreference) findPreference(PREF_BIGRAM_PREDICTIONS);
-        mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
-        if (mDebugSettingsPreference != null) {
-            final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
-            debugSettingsIntent.setClassName(
-                    context.getPackageName(), DebugSettings.class.getName());
-            mDebugSettingsPreference.setIntent(debugSettingsIntent);
-        }
-
         ensureConsistencyOfAutoCorrectionSettings();
 
         final PreferenceGroup generalSettings =
@@ -149,6 +138,18 @@ public final class Settings extends InputMethodSettingsFragment
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS);
         final PreferenceGroup miscSettings =
                 (PreferenceGroup) findPreference(PREF_MISC_SETTINGS);
+
+        mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
+        if (mDebugSettingsPreference != null) {
+            if (ProductionFlag.IS_INTERNAL) {
+                final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
+                debugSettingsIntent.setClassName(
+                        context.getPackageName(), DebugSettingsActivity.class.getName());
+                mDebugSettingsPreference.setIntent(debugSettingsIntent);
+            } else {
+                miscSettings.removePreference(mDebugSettingsPreference);
+            }
+        }
 
         final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);
@@ -207,7 +208,7 @@ public final class Settings extends InputMethodSettingsFragment
                 R.bool.config_gesture_input_enabled_by_build_config);
         final Preference gesturePreviewTrail = findPreference(PREF_GESTURE_PREVIEW_TRAIL);
         final Preference gestureFloatingPreviewText = findPreference(
-                PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT);
+                PREF_GESTURE_FLOATING_PREVIEW_TEXT);
         if (!gestureInputEnabledByBuildConfig) {
             miscSettings.removePreference(findPreference(PREF_GESTURE_INPUT));
             miscSettings.removePreference(gesturePreviewTrail);
@@ -216,24 +217,6 @@ public final class Settings extends InputMethodSettingsFragment
             final boolean gestureInputEnabledByUser = prefs.getBoolean(PREF_GESTURE_INPUT, true);
             setPreferenceEnabled(gesturePreviewTrail, gestureInputEnabledByUser);
             setPreferenceEnabled(gestureFloatingPreviewText, gestureInputEnabledByUser);
-        }
-
-        final boolean showUsabilityStudyModeOption =
-                res.getBoolean(R.bool.config_enable_usability_study_mode_option)
-                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_INTERNAL_SETTINGS;
-        final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
-        if (!showUsabilityStudyModeOption) {
-            if (usabilityStudyPref != null) {
-                miscSettings.removePreference(usabilityStudyPref);
-            }
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            if (usabilityStudyPref instanceof CheckBoxPreference) {
-                CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
-                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
-                        ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
-                checkbox.setSummary(R.string.settings_warning_researcher_mode);
-            }
         }
 
         mKeypressVibrationDurationSettingsPref =
@@ -304,7 +287,7 @@ public final class Settings extends InputMethodSettingsFragment
                         PREF_GESTURE_INPUT, true);
                 setPreferenceEnabled(findPreference(PREF_GESTURE_PREVIEW_TRAIL),
                         gestureInputEnabledByUser);
-                setPreferenceEnabled(findPreference(PREF_SHOW_GESTURE_FLOATING_PREVIEW_TEXT),
+                setPreferenceEnabled(findPreference(PREF_GESTURE_FLOATING_PREVIEW_TEXT),
                         gestureInputEnabledByUser);
             }
         }

@@ -27,6 +27,7 @@ import android.util.TypedValue;
 import android.util.Xml;
 import android.view.InflateException;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -177,9 +178,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return this;
     }
 
-    // TODO: Remove this method.
-    public void setTouchPositionCorrectionEnabled(final boolean enabled) {
-        mParams.mTouchPositionCorrection.setEnabled(enabled);
+    @UsedForTesting
+    public void disableTouchPositionCorrectionDataForTest() {
+        mParams.mTouchPositionCorrection.setEnabled(false);
     }
 
     public void setProximityCharsCorrectionEnabled(final boolean enabled) {
@@ -314,7 +315,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
-            params.mTouchPositionCorrection.setEnabled(resourceId != 0);
             if (resourceId != 0) {
                 final String[] data = mResources.getStringArray(resourceId);
                 params.mTouchPositionCorrection.load(data);

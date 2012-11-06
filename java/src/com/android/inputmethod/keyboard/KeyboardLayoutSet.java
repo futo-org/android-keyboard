@@ -34,6 +34,7 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -61,7 +62,7 @@ import java.util.HashMap;
  * A {@link KeyboardLayoutSet} needs to be created for each
  * {@link android.view.inputmethod.EditorInfo}.
  */
-public class KeyboardLayoutSet {
+public final class KeyboardLayoutSet {
     private static final String TAG = KeyboardLayoutSet.class.getSimpleName();
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
 
@@ -77,7 +78,7 @@ public class KeyboardLayoutSet {
             CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
 
-    public static class KeyboardLayoutSetException extends RuntimeException {
+    public static final class KeyboardLayoutSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
 
         public KeyboardLayoutSetException(final Throwable cause, final KeyboardId keyboardId) {
@@ -86,17 +87,17 @@ public class KeyboardLayoutSet {
         }
     }
 
-    private static class ElementParams {
+    private static final class ElementParams {
         int mKeyboardXmlId;
         boolean mProximityCharsCorrectionEnabled;
         public ElementParams() {}
     }
 
-    private static class Params {
+    private static final class Params {
         String mKeyboardLayoutSetName;
         int mMode;
         EditorInfo mEditorInfo;
-        boolean mTouchPositionCorrectionEnabled;
+        boolean mDisableTouchPositionCorrectionDataForTest;
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
@@ -167,7 +168,9 @@ public class KeyboardLayoutSet {
             }
             final int keyboardXmlId = elementParams.mKeyboardXmlId;
             builder.load(keyboardXmlId, id);
-            builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
+            if (mParams.mDisableTouchPositionCorrectionDataForTest) {
+                builder.disableTouchPositionCorrectionDataForTest();
+            }
             builder.setProximityCharsCorrectionEnabled(
                     elementParams.mProximityCharsCorrectionEnabled);
             keyboard = builder.build();
@@ -192,16 +195,15 @@ public class KeyboardLayoutSet {
         final Params params = mParams;
         final boolean isSymbols = (keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS
                 || keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean noLanguage = SubtypeLocale.isNoLanguage(params.mSubtype);
-        final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !noLanguage;
-        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
+        final boolean hasShortcutKey = params.mVoiceKeyEnabled
+                && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mDeviceFormFactor,
                 params.mOrientation, params.mWidth, params.mMode, params.mEditorInfo,
-                params.mNoSettingsKey, voiceKeyEnabled, hasShortcutKey,
+                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey,
                 params.mLanguageSwitchKeyEnabled);
     }
 
-    public static class Builder {
+    public static final class Builder {
         private final Context mContext;
         private final String mPackageName;
         private final Resources mResources;
@@ -264,8 +266,9 @@ public class KeyboardLayoutSet {
             return this;
         }
 
-        public void setTouchPositionCorrectionEnabled(final boolean enabled) {
-            mParams.mTouchPositionCorrectionEnabled = enabled;
+        @UsedForTesting
+        public void disableTouchPositionCorrectionDataForTest() {
+            mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }
 
         public KeyboardLayoutSet build() {

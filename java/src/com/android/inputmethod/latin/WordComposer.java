@@ -24,7 +24,7 @@ import java.util.Arrays;
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
-public class WordComposer {
+public final class WordComposer {
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     public static final int CAPS_MODE_OFF = 0;
@@ -38,7 +38,7 @@ public class WordComposer {
     private int[] mPrimaryKeyCodes;
     private final InputPointers mInputPointers = new InputPointers(N);
     private final StringBuilder mTypedWord;
-    private CharSequence mAutoCorrection;
+    private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
 
@@ -64,7 +64,7 @@ public class WordComposer {
         refreshSize();
     }
 
-    public WordComposer(WordComposer source) {
+    public WordComposer(final WordComposer source) {
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);
@@ -121,7 +121,8 @@ public class WordComposer {
         return mInputPointers;
     }
 
-    private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
+    private static boolean isFirstCharCapitalized(final int index, final int codePoint,
+            final boolean previous) {
         if (index == 0) return Character.isUpperCase(codePoint);
         return previous && !Character.isUpperCase(codePoint);
     }
@@ -129,12 +130,12 @@ public class WordComposer {
     /**
      * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
      */
-    public void add(int primaryCode, int keyX, int keyY) {
+    public void add(final int primaryCode, final int keyX, final int keyY) {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
-            mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE
+            mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
             // In the batch input mode, the {@code mInputPointers} holds batch input points and
             // shouldn't be overridden by the "typed key" coordinates
@@ -148,7 +149,7 @@ public class WordComposer {
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
         if (Character.isDigit(primaryCode)) mDigitsCount++;
-        if (Keyboard.CODE_SINGLE_QUOTE == primaryCode) {
+        if (Constants.CODE_SINGLE_QUOTE == primaryCode) {
             ++mTrailingSingleQuotesCount;
         } else {
             mTrailingSingleQuotesCount = 0;
@@ -156,12 +157,12 @@ public class WordComposer {
         mAutoCorrection = null;
     }
 
-    public void setBatchInputPointers(InputPointers batchPointers) {
+    public void setBatchInputPointers(final InputPointers batchPointers) {
         mInputPointers.set(batchPointers);
         mIsBatchMode = true;
     }
 
-    public void setBatchInputWord(CharSequence word) {
+    public void setBatchInputWord(final String word) {
         reset();
         mIsBatchMode = true;
         final int length = word.length();
@@ -177,14 +178,16 @@ public class WordComposer {
      * Internal method to retrieve reasonable proximity info for a character.
      */
     private void addKeyInfo(final int codePoint, final Keyboard keyboard) {
-        final Key key = keyboard.getKey(codePoint);
-        if (key != null) {
-            final int x = key.mX + key.mWidth / 2;
-            final int y = key.mY + key.mHeight / 2;
-            add(codePoint, x, y);
-            return;
+        final int x, y;
+        final Key key;
+        if (keyboard != null && (key = keyboard.getKey(codePoint)) != null) {
+            x = key.mX + key.mWidth / 2;
+            y = key.mY + key.mHeight / 2;
+        } else {
+            x = Constants.NOT_A_COORDINATE;
+            y = Constants.NOT_A_COORDINATE;
         }
-        add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+        add(codePoint, x, y);
     }
 
     /**
@@ -195,7 +198,7 @@ public class WordComposer {
         reset();
         final int length = word.length();
         for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
-            int codePoint = Character.codePointAt(word, i);
+            final int codePoint = Character.codePointAt(word, i);
             addKeyInfo(codePoint, keyboard);
         }
         mIsResumed = true;
@@ -233,7 +236,7 @@ public class WordComposer {
             int i = mTypedWord.length();
             while (i > 0) {
                 i = mTypedWord.offsetByCodePoints(i, -1);
-                if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
+                if (Constants.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
                 ++mTrailingSingleQuotesCount;
             }
         }
@@ -319,14 +322,14 @@ public class WordComposer {
     /**
      * Sets the auto-correction for this word.
      */
-    public void setAutoCorrection(final CharSequence correction) {
+    public void setAutoCorrection(final String correction) {
         mAutoCorrection = correction;
     }
 
     /**
      * @return the auto-correction for this word, or null if none.
      */
-    public CharSequence getAutoCorrectionOrNull() {
+    public String getAutoCorrectionOrNull() {
         return mAutoCorrection;
     }
 
@@ -339,7 +342,7 @@ public class WordComposer {
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
-            final String separatorString, final CharSequence prevWord) {
+            final String separatorString, final String prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.

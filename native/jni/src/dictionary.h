@@ -41,17 +41,17 @@ class Dictionary {
     const static int KIND_SHORTCUT = 7; // A shortcut
     const static int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
 
-    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
+    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int fullWordMultiplier,
+            int maxWordLength, int maxWords, int maxPredictions);
 
     int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
             int *ycoordinates, int *times, int *pointerIds, int *codes, int codesSize,
             int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
-            bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *spaceIndices, int *outputTypes) const;
+            bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
+            int *outputTypes) const;
 
-    int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int *outputTypes) const;
+    int getBigrams(const int32_t *word, int length, int *codes, int codesSize, int *outWords,
+            int *frequencies, int *outputTypes) const;
 
     int getFrequency(const int32_t *word, int length) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
@@ -68,7 +68,7 @@ class Dictionary {
 
     // public static utility methods
     // static inline methods should be defined in the header file
-    static int wideStrLen(unsigned short *str);
+    static int wideStrLen(int *str);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
@@ -88,7 +88,7 @@ class Dictionary {
 
 // public static utility methods
 // static inline methods should be defined in the header file
-inline int Dictionary::wideStrLen(unsigned short *str) {
+inline int Dictionary::wideStrLen(int *str) {
     if (!str) return 0;
     int length = 0;
     while (*str) {

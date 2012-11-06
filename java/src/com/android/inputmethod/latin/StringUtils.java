@@ -16,9 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.InputType;
 import android.text.TextUtils;
-
-import com.android.inputmethod.keyboard.Keyboard; // For character constants
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,30 +27,30 @@ public final class StringUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static int codePointCount(String text) {
+    public static int codePointCount(final String text) {
         if (TextUtils.isEmpty(text)) return 0;
         return text.codePointCount(0, text.length());
     }
 
-    public static boolean containsInArray(String key, String[] array) {
+    public static boolean containsInArray(final String key, final String[] array) {
         for (final String element : array) {
             if (key.equals(element)) return true;
         }
         return false;
     }
 
-    public static boolean containsInCsv(String key, String csv) {
+    public static boolean containsInCsv(final String key, final String csv) {
         if (TextUtils.isEmpty(csv)) return false;
         return containsInArray(key, csv.split(","));
     }
 
-    public static String appendToCsvIfNotExists(String key, String csv) {
+    public static String appendToCsvIfNotExists(final String key, final String csv) {
         if (TextUtils.isEmpty(csv)) return key;
         if (containsInCsv(key, csv)) return csv;
         return csv + "," + key;
     }
 
-    public static String removeFromCsvIfExists(String key, String csv) {
+    public static String removeFromCsvIfExists(final String key, final String csv) {
         if (TextUtils.isEmpty(csv)) return "";
         final String[] elements = csv.split(",");
         if (!containsInArray(key, elements)) return csv;
@@ -63,82 +62,20 @@ public final class StringUtils {
     }
 
     /**
-     * Returns true if a and b are equal ignoring the case of the character.
-     * @param a first character to check
-     * @param b second character to check
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     */
-    public static boolean equalsIgnoreCase(char a, char b) {
-        // Some language, such as Turkish, need testing both cases.
-        return a == b
-                || Character.toLowerCase(a) == Character.toLowerCase(b)
-                || Character.toUpperCase(a) == Character.toUpperCase(b);
-    }
-
-    /**
-     * Returns true if a and b are equal ignoring the case of the characters, including if they are
-     * both null.
-     * @param a first CharSequence to check
-     * @param b second CharSequence to check
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     */
-    public static boolean equalsIgnoreCase(CharSequence a, CharSequence b) {
-        if (a == b)
-            return true;  // including both a and b are null.
-        if (a == null || b == null)
-            return false;
-        final int length = a.length();
-        if (length != b.length())
-            return false;
-        for (int i = 0; i < length; i++) {
-            if (!equalsIgnoreCase(a.charAt(i), b.charAt(i)))
-                return false;
-        }
-        return true;
-    }
-
-    /**
-     * Returns true if a and b are equal ignoring the case of the characters, including if a is null
-     * and b is zero length.
-     * @param a CharSequence to check
-     * @param b character array to check
-     * @param offset start offset of array b
-     * @param length length of characters in array b
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     * @throws IndexOutOfBoundsException
-     *   if {@code offset < 0 || length < 0 || offset + length > data.length}.
-     * @throws NullPointerException if {@code b == null}.
-     */
-    public static boolean equalsIgnoreCase(CharSequence a, char[] b, int offset, int length) {
-        if (offset < 0 || length < 0 || length > b.length - offset)
-            throw new IndexOutOfBoundsException("array.length=" + b.length + " offset=" + offset
-                    + " length=" + length);
-        if (a == null)
-            return length == 0;  // including a is null and b is zero length.
-        if (a.length() != length)
-            return false;
-        for (int i = 0; i < length; i++) {
-            if (!equalsIgnoreCase(a.charAt(i), b[offset + i]))
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Remove duplicates from an array of strings.
      *
      * This method will always keep the first occurrence of all strings at their position
      * in the array, removing the subsequent ones.
      */
-    public static void removeDupes(final ArrayList<CharSequence> suggestions) {
+    public static void removeDupes(final ArrayList<String> suggestions) {
         if (suggestions.size() < 2) return;
         int i = 1;
         // Don't cache suggestions.size(), since we may be removing items
         while (i < suggestions.size()) {
-            final CharSequence cur = suggestions.get(i);
+            final String cur = suggestions.get(i);
             // Compare each suggestion with each previous suggestion
             for (int j = 0; j < i; j++) {
-                CharSequence previous = suggestions.get(j);
+                final String previous = suggestions.get(j);
                 if (TextUtils.equals(cur, previous)) {
                     suggestions.remove(i);
                     i--;
@@ -149,7 +86,7 @@ public final class StringUtils {
         }
     }
 
-    public static String toTitleCase(String s, Locale locale) {
+    public static String toTitleCase(final String s, final Locale locale) {
         if (s.length() <= 1) {
             // TODO: is this really correct? Shouldn't this be s.toUpperCase()?
             return s;
@@ -165,21 +102,19 @@ public final class StringUtils {
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
 
+    private static final int[] EMPTY_CODEPOINTS = {};
+
     public static int[] toCodePointArray(final String string) {
-        final char[] characters = string.toCharArray();
-        final int length = characters.length;
-        final int[] codePoints = new int[Character.codePointCount(characters, 0, length)];
+        final int length = string.length();
         if (length <= 0) {
-            return new int[0];
+            return EMPTY_CODEPOINTS;
         }
-        int codePoint = Character.codePointAt(characters, 0);
-        int dsti = 0;
-        for (int srci = Character.charCount(codePoint);
-                srci < length; srci += Character.charCount(codePoint), ++dsti) {
-            codePoints[dsti] = codePoint;
-            codePoint = Character.codePointAt(characters, srci);
+        final int[] codePoints = new int[string.codePointCount(0, length)];
+        int destIndex = 0;
+        for (int index = 0; index < length; index = string.offsetByCodePoints(index, 1)) {
+            codePoints[destIndex] = string.codePointAt(index);
+            destIndex++;
         }
-        codePoints[dsti] = codePoint;
         return codePoints;
     }
 
@@ -237,7 +172,7 @@ public final class StringUtils {
         } else {
             for (i = cs.length(); i > 0; i--) {
                 final char c = cs.charAt(i - 1);
-                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                if (c != Constants.CODE_DOUBLE_QUOTE && c != Constants.CODE_SINGLE_QUOTE
                         && Character.getType(c) != Character.START_PUNCTUATION) {
                     break;
                 }
@@ -250,15 +185,19 @@ public final class StringUtils {
 
         // Step 3 : Search for the start of a paragraph. From the starting point computed in step 2,
         // we go back over any space or tab char sitting there. We find the start of a paragraph
-        // if the first char that's not a space or tab is a start of line (as in, either \n or
-        // start of text).
+        // if the first char that's not a space or tab is a start of line (as in \n, start of text,
+        // or some other similar characters).
         int j = i;
+        char prevChar = Constants.CODE_SPACE;
         if (hasSpaceBefore) --j;
-        while (j > 0 && Character.isWhitespace(cs.charAt(j - 1))) {
+        while (j > 0) {
+            prevChar = cs.charAt(j - 1);
+            if (!Character.isSpaceChar(prevChar) && prevChar != Constants.CODE_TAB) break;
             j--;
         }
-        if (j == 0) {
-            // There is only whitespace between the start of the text and the cursor. Both
+        if (j <= 0 || Character.isWhitespace(prevChar)) {
+            // There are only spacing chars between the start of the paragraph and the cursor,
+            // defined as a isWhitespace() char that is neither a isSpaceChar() nor a tab. Both
             // MODE_WORDS and MODE_SENTENCES should be active.
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
                     | TextUtils.CAP_MODE_SENTENCES) & reqModes;
@@ -292,7 +231,7 @@ public final class StringUtils {
                 // variants of English, the final period is placed within double quotes and maybe
                 // other closing punctuation signs. This is generally not true in other languages.
                 final char c = cs.charAt(j - 1);
-                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                if (c != Constants.CODE_DOUBLE_QUOTE && c != Constants.CODE_SINGLE_QUOTE
                         && Character.getType(c) != Character.END_PUNCTUATION) {
                     break;
                 }
@@ -306,10 +245,10 @@ public final class StringUtils {
         // end of a sentence. If we have a question mark or an exclamation mark, it's the end of
         // a sentence. If it's neither, the only remaining case is the period so we get the opposite
         // case out of the way.
-        if (c == Keyboard.CODE_QUESTION_MARK || c == Keyboard.CODE_EXCLAMATION_MARK) {
+        if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        if (c != Keyboard.CODE_PERIOD || j <= 0) {
+        if (c != Constants.CODE_PERIOD || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
 
@@ -359,7 +298,7 @@ public final class StringUtils {
             case WORD:
                 if (Character.isLetter(c)) {
                     state = WORD;
-                } else if (c == Keyboard.CODE_PERIOD) {
+                } else if (c == Constants.CODE_PERIOD) {
                     state = PERIOD;
                 } else {
                     return caps;
@@ -375,7 +314,7 @@ public final class StringUtils {
             case LETTER:
                 if (Character.isLetter(c)) {
                     state = LETTER;
-                } else if (c == Keyboard.CODE_PERIOD) {
+                } else if (c == Constants.CODE_PERIOD) {
                     state = PERIOD;
                 } else {
                     return noCaps;

@@ -32,7 +32,7 @@ import org.xmlpull.v1.XmlPullParser;
  * Some of the key size defaults can be overridden per row from what the {@link Keyboard}
  * defines.
  */
-public class KeyboardRow {
+public final class KeyboardRow {
     // keyWidth enum constants
     private static final int KEYWIDTH_NOT_ENUM = 0;
     private static final int KEYWIDTH_FILL_RIGHT = -1;

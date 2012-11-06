@@ -16,15 +16,16 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.LatinImeLogger;
 
-public class TouchPositionCorrection {
+public final class TouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
 
-    public boolean mEnabled;
-    public float[] mXs;
-    public float[] mYs;
-    public float[] mRadii;
+    private boolean mEnabled;
+    private float[] mXs;
+    private float[] mYs;
+    private float[] mRadii;
 
     public void load(final String[] data) {
         final int dataLength = data.length;
@@ -53,24 +54,43 @@ public class TouchPositionCorrection {
                     mRadii[index] = value;
                 }
             }
+            mEnabled = dataLength > 0;
         } catch (NumberFormatException e) {
             if (LatinImeLogger.sDBG) {
                 throw new RuntimeException(
                         "the number format for touch position correction data is invalid");
             }
+            mEnabled = false;
             mXs = null;
             mYs = null;
             mRadii = null;
         }
     }
 
-    // TODO: Remove this method.
+    @UsedForTesting
     public void setEnabled(final boolean enabled) {
         mEnabled = enabled;
     }
 
     public boolean isValid() {
-        return mEnabled && mXs != null && mYs != null && mRadii != null
-                && mXs.length > 0 && mYs.length > 0 && mRadii.length > 0;
+        return mEnabled;
+    }
+
+    public int getRows() {
+        return mRadii.length;
+    }
+
+    public float getX(final int row) {
+        return 0.0f;
+        // Touch position correction data for X coordinate is obsolete.
+        // return mXs[row];
+    }
+
+    public float getY(final int row) {
+        return mYs[row];
+    }
+
+    public float getRadius(final int row) {
+        return mRadii[row];
     }
 }
