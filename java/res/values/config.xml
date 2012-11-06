@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <!-- Device form factor. This value must be aligned with {@link KeyboardId.DEVICE_FORM_FACTOR_PHONE} -->
+    <integer name="config_device_form_factor">0</integer>
+    <bool name="config_use_fullscreen_mode">false</bool>
+    <bool name="config_enable_show_voice_key_option">true</bool>
+    <bool name="config_enable_show_popup_on_keypress_option">true</bool>
+    <!-- TODO: Disable the following configuration for production. -->
+    <bool name="config_enable_usability_study_mode_option">true</bool>
+    <!-- Whether or not Popup on key press is enabled by default -->
+    <bool name="config_default_popup_preview">true</bool>
+    <!-- Default value for next word prediction: after entering a word and a space only, should we look
+         at input history to suggest a hopefully helpful suggestions for the next word? -->
+    <bool name="config_default_next_word_prediction">true</bool>
+    <bool name="config_default_sound_enabled">false</bool>
+    <bool name="config_default_vibration_enabled">true</bool>
+    <integer name="config_delay_update_suggestions">100</integer>
+    <integer name="config_delay_update_old_suggestions">300</integer>
+    <integer name="config_delay_update_shift_state">100</integer>
+    <integer name="config_language_on_spacebar_final_alpha">128</integer>
+    <integer name="config_more_keys_keyboard_fadein_anim_time">0</integer>
+    <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
+    <integer name="config_keyboard_grid_width">32</integer>
+    <integer name="config_keyboard_grid_height">16</integer>
+    <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
+    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
+    <string name="config_default_keyboard_theme_index" translatable="false">5</string>
+    <integer name="config_max_more_keys_column">5</integer>
+    <!--
+         Configuration for KeyboardView
+    -->
+    <integer name="config_key_preview_linger_timeout">70</integer>
+    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
+    <integer name="config_gesture_preview_trail_fadeout_start_delay">100</integer>
+    <integer name="config_gesture_preview_trail_fadeout_duration">800</integer>
+    <integer name="config_gesture_preview_trail_update_interval">20</integer>
+    <!--
+         Configuration for MainKeyboardView
+    -->
+    <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
+    <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
+    <integer name="config_touch_noise_threshold_time">40</integer>
+    <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+    <bool name="config_sliding_key_input_enabled">true</bool>
+    <integer name="config_key_repeat_start_timeout">400</integer>
+    <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_long_press_key_timeout">400</integer>
+    <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
+    <integer name="config_long_press_shift_key_timeout">1200</integer>
+    <integer name="config_ignore_alt_code_key_timeout">350</integer>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <!-- Static threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_static_time_threshold_after_fast_typing">500</integer>
+    <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
+    <!-- Dynamic threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
+    <!-- Time based threshold values for gesture detection (msec) -->
+    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
+    <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
+    <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_to">50%</fraction>
+    <!-- Parameter for gesture sampling (keyWidth%/sec) -->
+    <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
+    <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
+    <integer name="config_gesture_recognition_minimum_time">100</integer>
+    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
+    <!-- Suppress showing key preview duration after batch input in millisecond -->
+    <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>
+    <!--
+        Configuration for auto correction
+     -->
+    <string-array name="auto_correction_threshold_values" translatable="false">
+        <!-- Off, When auto correction setting is Off, this value is not used. -->
+        <item></item>
+        <!-- Modest : Suggestion whose normalized score is greater than this value
+             will be subject to auto-correction. -->
+        <item>0.185</item>
+        <!-- Aggressive -->
+        <item>0.067</item>
+        <!-- Very Aggressive : Suggestion whose normalized score is greater than this value
+             will be subject to auto-correction. -->
+        <item>0</item>
+    </string-array>
+    <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
+         a word to be "recommended" -->
+    <string name="spellchecker_recommended_threshold_value" translatable="false">0.11</string>
+    <!-- Threshold of the normalized score of any dictionary lookup to be offered as a suggestion
+         by the spell checker -->
+    <string name="spellchecker_suggestion_threshold_value" translatable="false">0.03</string>
+    <!--  Screen metrics for logging.
+            0 = "mdpi phone screen"
+            1 = "hdpi phone screen"
+            2 = "mdpi 11 inch tablet screen"
+            3 = "xhdpi phone screen?"
+            4 = ?
+    -->
+    <integer name="log_screen_metrics">0</integer>
+</resources>

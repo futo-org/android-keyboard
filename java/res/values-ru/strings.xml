@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавиатура Android (AOSP)"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Настройки"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Все команды"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Проверка правописания Android (AOSP)"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Поиск контактов"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Обращаться к списку контактов при проверке правописания"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
+    <string name="general_category" msgid="1859088467017573195">"Общие"</string>
+    <string name="correction_category" msgid="2236750915056607613">"Исправление текста"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Непрерывный ввод"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Другие варианты"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Расширенные настройки"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Для опытных пользователей"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Другой способ ввода"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавиша переключения языков также служит для смены способа ввода"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Клавиша переключения языков"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Показывать, когда включено несколько раскладок"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Задержка закрытия"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без задержки"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По умолчанию"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Подсказывать имена"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Подсказывать исправления на основе имен из списка контактов"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Основной словарь"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Предлагать варианты слов во время ввода"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда показывать"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Показать вертикально"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Всегда скрывать"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"Автоисправление"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Активное"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Очень активно"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Подсказка следующего слова"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Предлагать подсказки на основе предыдущего слова"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Включить функцию"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Вводите слова, не отрывая пальца от клавиатуры"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Рисовать линию"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Показывать подсказки"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Показывать подсказки при вводе текста"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: сохранено"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Поиск"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Далее"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Пред."</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Отправить"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"АБВ"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Ждать"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Подключите гарнитуру, чтобы услышать пароль."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Введенный текст: %s."</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст не введен"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Код клавиши:%d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Клавиша верхнего регистра"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Верхний регистр включен (нажмите, чтобы отключить)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock включен (нажмите, чтобы отключить)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Клавиша удаления"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Клавиша символов"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Буквы"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Цифры"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Настройки"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Клавиша табуляции"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Пробел"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Голосовой ввод"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Смайлик"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Клавиша \"Ввод\""</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Поиск"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Точка"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Сменить язык"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Далее"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Назад"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Верхний регистр включен"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock включен"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Верхний регистр отключен"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Режим добавления символов"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Режим ввода текста"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Режим набора номера"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Режим телефонных символов"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Ключ голосового ввода"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Значок на основной клавиатуре"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Значок на клавиатуре символов"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Выкл."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Значок на основной клавиатуре"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Значок на клавиатуре символов"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Настройка способов ввода"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
+    <string name="select_language" msgid="3693815588777926848">"Языки ввода"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Нажмите, чтобы сохранить"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавиатуры"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"английский (Великобритания)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"английский (США)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Английская (Великобр.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Английская (США) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"Язык не указан"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"QWERTY-клавиатура"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Язык не задан (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Язык не задан (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Язык не задан (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Яз. не задан (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Язык не задан (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Персонализированные стили"</string>
+    <string name="add_style" msgid="6163126614514489951">"Добавить стиль"</string>
+    <string name="add" msgid="8299699805688017798">"Добавить"</string>
+    <string name="remove" msgid="4486081658752944606">"Удалить"</string>
+    <string name="save" msgid="7646738597196767214">"Сохранить"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Язык"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Раскладка"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Необходимо включить персонализированный стиль ввода."</string>
+    <string name="enable" msgid="5031294444630523247">"Включить"</string>
+    <string name="not_now" msgid="6172462888202790482">"Не сейчас"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Такой стиль ввода уже существует: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим проверки удобства использования"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки вибросигнала при нажатии клавиш"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки громкости звука при нажатии клавиш"</string>
+</resources>

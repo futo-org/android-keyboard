@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"የAndroid ቁልፍ ሰሌዳ (AOSP)"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"ግቤት አማራጮች"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"የጥናት የምዝግብ ማስታወሻ ትዕዛዞች"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android የፊደል ማረሚያ (AOSP)"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"የእውቅያ ስሞችን ተመልከት"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ፊደል አራሚ ከእውቅያ ዝርዝርህ የገቡትን ይጠቀማል"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"በቁልፍመጫንጊዜ አንዝር"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"በቁልፍ መጫን ላይ የሚወጣ ድምፅ"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"ቁልፍ ጫን ላይ ብቅ ባይ"</string>
+    <string name="general_category" msgid="1859088467017573195">"አጠቃላይ"</string>
+    <string name="correction_category" msgid="2236750915056607613">"ፅሁፍ አስተካክል"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"በምልክት መተየብ"</string>
+    <string name="misc_category" msgid="6894192814868233453">"ሌሎች አማራጮች"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"የላቁ ቅንብሮች"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"ለብቁ ተጠቃሚዎች አማራጮች"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"ወደ ሌሎች የግቤት ስልቶች ቀይር"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"የቋንቋ መቀየሪያ ቁልፍ ሌሎች የግቤት ስልቶችንም ይሸፍናል"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"የቋንቋ መቀየሪያ ቁልፍ"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"በርካታ የግቤት ቋንቋዎች ሲነቁ አሳይ"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"የቁልፍ ብቅ ባይ መዘግየትን ያስወገዳል"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"የዘገየ የለም"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ነባሪ"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"የዕውቂያ ስም ጠቁም"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ከዕውቂያዎች ለጥቆማዎች እና ማስተካከያዎች ስሞች ተጠቀም"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"ራስ-ሰር አቢይ ማድረግ"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"የእያንዳንዱ ዓረፍተ ነገር የመጀመሪያ ቃል በአቢይ ሆሄ ያስቀምጡ"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"መዝገበ ቃላቶች ጨምር"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"ዋና መዝገበ ቃላት"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"የማስተካከያ ጥቆማዎች አሳይ"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"እየተየብክ ተመራጭ ቃላትን አሳይ"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ሁልጊዜ አሳይ"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"በቁም አቀማመጥ ሁነታ አሳይ"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ሁልጊዜ ደብቅ"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"በራስ-ማስተካከል"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"የቦታ ቁልፍ እና ሥርዓተ ነጥብ በስህተት የተተየቡ ቃላትን  በራስሰር ያስተካክላሉ ።"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ውጪ"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"መጠነኛ"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"ኃይለኛ"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"በጣም ቁጡ"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"የቀጣይ ቃል አስተያየቶች"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"አስተያየቶች መስጠት ላይ ቀዳሚውን ቃል ተጠቀም"</string>
+    <string name="gesture_input" msgid="826951152254563827">"በምልክት መተየብ ያንቁ"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"በፊደሎች መካከል በማንሸራተት ቃል ያስገቡ"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"ምልክት የሚሄድበት መንገድ አሳይ"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"ተለዋዋጭ ተንሳፋፊ ቅድመ-እይታ"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ምልክት እየሰጡ ሳሉ በአስተያየት የተጠቆመው ቃል ይመልከቱ"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ተቀምጧል"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"ሂድ"</string>
+    <string name="label_next_key" msgid="362972844525672568">"በመቀጠል"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"ቀዳሚ"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"ተከናውኗል"</string>
+    <string name="label_send_key" msgid="2815056534433717444">" ይላኩ"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"ላፍታ አቁም"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"ቆይ"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"የይለፍቃል ቁልፎች ጮክ በለው ሲነገሩ ለመስማት የጆሮ ማዳመጫ ሰካ::"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"የአሁኑ ፅሁፍ %s ነው"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"ምንም ፅሁፍ አልገባም"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"የቁልፍ ኮድ%d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"ቀይር"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"ቅያር በርቷል (ለማሰናክል ንካ)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"አቢያት ማድረጊያ ቁልጥ በርቷል (ለማሰናክል ንካ)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"ሰርዝ"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"ምልክቶች"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"ደብዳቤዎች"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"ቁጥሮች"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"ቅንብሮች"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"ትር"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"ባዶ ቦታ"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"የድምፅ ግቤ ት"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"የፈገግታ ፊት"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"ተመለስ"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"ፍለጋ"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"ነጥብ"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"ቋንቋ ቀይር"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"ቀጣይ"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"ቀዳሚ"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"ቅያር ቁልፍ ነቅቷል"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"አቢያት ማድረጊያ ነቅቷል"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"ቅያር ተሰናክሏል"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"የምልክቶች ሁኔታ ላይ"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"የደብዳቤዎች ሁኔታ ላይ"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"የስልክ ሁኔታ ላይ"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"የስልክ ምልክቶች ሁኔታ ላይ"</string>
+    <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"በዋናቁልፍ ሰሌዳ ላይ"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"በምልክቶች ቁልፍ ሰሌዳ ላይ"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"ውጪ"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ድምፅ ማጉያ በዋናው ቁልፍሰሌዳው ላይ"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"የድምፅ ማጉያ ምልክትበቁልፍ ሰሌዳላይ"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"የድምፅ ግቤት ቦዝኗል"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
+    <string name="select_language" msgid="3693815588777926848">"ቋንቋዎች አግቤት"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ለማስቀመጥ እንደገና ንካ"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"መዝገበ ቃላት አለ"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"የተጠቃሚ ግብረ ምላሽ አንቃ"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"ወደ Google የተሰናከለ ሪፖርቶች እና አጠቃቀም ስታስቲክስ በራስ ሰር በመላክ ይህን ግቤት ሜተድ አርትኢ እገዛ ያሻሽላል።"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"የቁልፍ ሰሌዳ ገጽታ"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"እንግሊዘኛ (የታላቋ ብሪታንያ)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"እንግሊዘኛ (ዩ.ኤስ)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"እንግሊዘኛ (ዩናይትድ ኪንግደም) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"እንግሊዘኛ (አሜሪካ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"ምንም ቋንቋ"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"ቋንቋ አልባ (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"ቋንቋ አልባ (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"ቋንቋ አልባ (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"ቋንቋ አልባ (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"ቋንቋ አልባ (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"ቋንቋ አልባ (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"የተበጁ የግቤት ስታይሎች"</string>
+    <string name="add_style" msgid="6163126614514489951">"ስታይል አክል"</string>
+    <string name="add" msgid="8299699805688017798">"አክል"</string>
+    <string name="remove" msgid="4486081658752944606">"አስወግድ"</string>
+    <string name="save" msgid="7646738597196767214">"አስቀምጥ"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"ቋንቋ"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"አቀማመጥ"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"የተበጀው የግብዓት ቅጥህን ከመጠቀምህ በፊት መንቃት አለበት። አሁን ማንቃት ትፈልጋለህ?"</string>
+    <string name="enable" msgid="5031294444630523247">"አንቃ"</string>
+    <string name="not_now" msgid="6172462888202790482">"አሁን አልፈልግም"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ተመሳሳዩ የግብዓት ቅጥ አስቀድሞ አለ፦ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"ቁልፍ ተጫን በቅንጅቶች ወቅት ንዝረት"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"ቁልፍ ተጫን የድምጽ መጠን ቅንብሮች"</string>
+</resources>

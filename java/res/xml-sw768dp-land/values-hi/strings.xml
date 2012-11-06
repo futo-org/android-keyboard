@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android कीबोर्ड (AOSP)"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट विकल्‍प"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"लॉग आदेशों का शोध करें"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android वर्तनी परीक्षक (AOSP)"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"संपर्क नामों को खोजें"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"वर्तनी परीक्षक आपकी संपर्क सूची की प्रविष्टियों का उपयोग करता है"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"कुंजी दबाने पर कंपन करता है"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"कुंजी दबाने पर आवाज"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
+    <string name="general_category" msgid="1859088467017573195">"सामान्य"</string>
+    <string name="correction_category" msgid="2236750915056607613">"पाठ सुधार"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"जेस्चर लिखना"</string>
+    <string name="misc_category" msgid="6894192814868233453">"अन्य विकल्प"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"उन्नत सेटिंग"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"विशेषज्ञों के लिए विकल्‍प"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"एकाधिक इनपुट भाषाएं सक्षम होने पर दिखाएं"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"संपर्क नाम सुझाएं"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव और सुधार के लिए संपर्क से नामों का उपयोग करें"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्य के पहले शब्द को बड़ा लिखें"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन डिक्शनरी"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"मुख्‍य डिक्‍शनरी"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझाव दिखाएं"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द दिखाएं"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"हमेशा दिखाएं"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"पोर्ट्रेट मोड में दिखाएं"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"हमेशा छुपाएं"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"स्‍वत: सुधार"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar और विराम चिह्न गलत लिखे गए शब्‍दों को स्‍वचालित रूप से ठीक करते हैं"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"बंद"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"तीव्र"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"बहुत तीव्र"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
+    <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"अक्षरों से स्लाइड करते हुए शब्द इनपुट करें"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"जेस्चर ट्रेल दिखाएं"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"गतिशील फ़्लोटिंग पूर्वावलोकन"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"जेस्‍चर बनाते समय सुझाया गया शब्द देखें"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: सहेजा गया"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"जाएं"</string>
+    <string name="label_next_key" msgid="362972844525672568">"अगला"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"पिछला"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"पूर्ण"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"भेजें"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"कखग"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?१२३"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"१२३"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"पॉज़ करें"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"प्रतीक्षा करें"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"ज़ोर से बोली गई पासवर्ड कुंजियां सुनने के लिए हेडसेट प्‍लग इन करें."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s है"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"कोई पाठ दर्ज नहीं किया गया"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"कुंजी कोड %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"शिफ़्ट"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift चालू (अक्षम करने के लिए टैप करें)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock चालू (अक्षम करने के लिए टैप करें)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"डिलीट"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"प्रतीक"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"अक्षर"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"संख्‍याएं"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"सेटिंग"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"टैब"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"स्पेस"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"ध्‍वनि इनपुट"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"खोजें"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"भाषा स्विच करें"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"अगला"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"पिछला"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift सक्षम किया गया"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock सक्षम किया गया"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift अक्षम किया गया"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"प्रतीक मोड"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"अक्षर मोड"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"फ़ोन मोड"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"फ़ोन प्रतीक मोड"</string>
+    <string name="voice_input" msgid="3583258583521397548">"ध्‍वनि‍ इनपुट कुंजी"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"मुख्‍य कीबोर्ड पर"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"प्रतीक कीबोर्ड पर"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"बंद"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"मुख्‍य कीबोर्ड पर माइक"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"प्रतीक कीबोर्ड पर माइक"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ध्‍वनि इनपुट अक्षम है"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
+    <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"सहेजने के लिए पुन: स्‍पर्श करें"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"उपयोगकर्ता फ़ीडबैक सक्षम करें"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को अपने आप भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"अंग्रेज़ी (यूके) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"अंग्रेज़ी (यूएस) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"कोई भाषा नहीं"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"कोई भाषा नहीं (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"कोई भाषा नहीं (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"कोई भाषा नहीं (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"कोई भाषा नहीं (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"कोई भाषा नहीं (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"कोई भाषा नहीं (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"कस्‍टम इनपुट शैलियां"</string>
+    <string name="add_style" msgid="6163126614514489951">"शैली जोड़ें"</string>
+    <string name="add" msgid="8299699805688017798">"जोड़ें"</string>
+    <string name="remove" msgid="4486081658752944606">"निकालें"</string>
+    <string name="save" msgid="7646738597196767214">"सहेजें"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"भाषा"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"लेआउट"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"कस्‍टम इनपुट शैली का उपयोग करने से पहले सक्षम करना होगा. उसे सक्षम करना चाहते हैं?"</string>
+    <string name="enable" msgid="5031294444630523247">"सक्षम करें"</string>
+    <string name="not_now" msgid="6172462888202790482">"अभी नहीं"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"कुंजी-स्‍पर्श कंपन अवधि सेटिंग"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"कुंजी-स्‍पर्श ध्‍वनि वॉल्‍यूम सेटिंग"</string>
+</resources>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"لوحة مفاتيح Android ‏(AOSP)"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"خيارات الإرسال"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"أوامر سجلات البحث"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"التدقيق الإملائي في Android‏ (AOSP)"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"بحث في أسماء جهات الاتصال"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"يستخدم المدقق الإملائي إدخالات من قائمة جهات الاتصال"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"اهتزاز عند ضغط مفتاح"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"صوت عند الضغط على مفتاح"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"انبثاق عند ضغط مفتاح"</string>
+    <string name="general_category" msgid="1859088467017573195">"عام"</string>
+    <string name="correction_category" msgid="2236750915056607613">"تصحيح النص"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"الكتابة بالإيماءة"</string>
+    <string name="misc_category" msgid="6894192814868233453">"خيارات أخرى"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"الإعدادات المتقدمة"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"خيارات للخبراء"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"التبديل إلى أسلوب إدخال آخر"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"يغطي مفتاح تبديل اللغات أساليب الإدخال الأخرى أيضًا"</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"مفتاح تبديل اللغة"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"يظهر عندما يتم تمكين لغات الإدخال متعددة"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخير إزالة النافذة المنبثقة الأساسية"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بلا تأخير"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"افتراضي"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"اقتراح أسماء جهات الاتصال"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"استخدام الأسماء من جهات الاتصال للاقتراحات والتصحيحات"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"كتابة الحرف الأول من كل جملة بحرف كبير."</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"القاموس الرئيسي"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"عرض اقتراحات التصحيح"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"عرض الكلمات المقترحة أثناء الكتابة"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"عرض دومًا"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"العرض في وضع رأسي"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"إخفاء دومًا"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"التصحيح التلقائي"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"تؤدي المسافة والترقيم إلى تصحيح الكلمات المكتوبة بشكل غير صحيح"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"إيقاف"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"معتدل"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"حاد"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"شديد الصرامة"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"اقتراحات الكلمات التالية"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"استخدام الكلمة السابقة في تقديم الاقتراحات"</string>
+    <string name="gesture_input" msgid="826951152254563827">"تمكين الكتابة بالإيماءة"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"إدخال كلمة من خلال التمرير على الأحرف"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"عرض مسار الإيماءة"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"معاينة نصوص متحركة ديناميكية"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"مشاهدة الكلمة المقترحة أثناء الإيماءة"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : تم الحفظ"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"تنفيذ"</string>
+    <string name="label_next_key" msgid="362972844525672568">"التالي"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"السابق"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"تم"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"إرسال"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"أ ب ج"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"٣٢١؟"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"٣٢١"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"توقف مؤقت"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"انتظار"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"يمكنك توصيل سماعة رأس لسماع مفاتيح كلمة المرور منطوقة بصوت عالٍ."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"النص الحالي هو %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"لم يتم إدخال نص"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"رمز المفتاح %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"العالي"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift يعمل (انقر للتعطيل)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock يعمل (انقر للتعطيل)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"حذف"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"الرموز"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"أحرف"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"أرقام"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"الإعدادات"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"علامة تبويب"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"مسافة"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"إدخال صوتي"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"وجه مبتسم"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"رجوع"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"بحث"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"نقطة"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"تبديل اللغة"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"التالي"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"السابق"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"تم تمكين Shift"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"تم تمكين Caps lock"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"تم تعطيل Shift"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"وضع الرموز"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"وضع الأحرف"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"وضع الهاتف"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"وضع رموز الهاتف"</string>
+    <string name="voice_input" msgid="3583258583521397548">"مفتاح الإدخال الصوتي"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"لوحة مفاتيح رئيسية"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"لوحة مفاتيح الرموز"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"إيقاف"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ميكروفون على لوحة مفاتيح رئيسية"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"ميكروفون على لوحة مفاتيح الرموز"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"الإدخال الصوتي مُعطل"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"تهيئة طرق الإدخال"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"لغات الإدخال"</string>
+    <string name="select_language" msgid="3693815588777926848">"لغات الإدخال"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"المس مرة أخرى للحفظ"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"القاموس متاح"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"تمكين ملاحظات المستخدم"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"المساعدة في تحسين محرر طريقة الإرسال هذا من خلال إرسال إحصاءات الاستخدام وتقارير الأعطال تلقائيًا إلى Google."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"مظهر لوحة المفاتيح"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"الإنجليزية (المملكة المتحدة)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"الإنجليزية (الولايات المتحدة)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"الإنجليزية (المملكة المتحدة) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"الإنجليزية (الولايات المتحدة) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"بدون لغة"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"بدون لغة (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"بدون لغة (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"بدون لغة (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"بدون لغة (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"بدون لغة (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"بدون لغة (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"أنماط الإدخال المخصصة"</string>
+    <string name="add_style" msgid="6163126614514489951">"إضافة نمط"</string>
+    <string name="add" msgid="8299699805688017798">"إضافة"</string>
+    <string name="remove" msgid="4486081658752944606">"إزالة"</string>
+    <string name="save" msgid="7646738597196767214">"حفظ"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"اللغة"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"التخطيط"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"يجب تمكين نمط الإدخال المخصص قبل استخدامه. هل تريد تمكينه الآن؟"</string>
+    <string name="enable" msgid="5031294444630523247">"تمكين"</string>
+    <string name="not_now" msgid="6172462888202790482">"ليس الآن"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"نمط الإدخال ذاته موجود من قبل: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"وضع سهولة الاستخدام"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"إعدادات مدة اهتزاز الضغط على المفاتيح"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"إعدادات مستوى صوت الضغط على المفاتيح"</string>
+</resources>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Tastatură Android (AOSP)"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Opţiuni de introducere text"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Comenzi jurnal cercetare"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Verificator ortografic Android (AOSP)"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Verificare nume în agendă"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Verificatorul ortografic utilizează intrări din lista de contacte"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Fereastră pop-up la apăsarea tastei"</string>
+    <string name="general_category" msgid="1859088467017573195">"General"</string>
+    <string name="correction_category" msgid="2236750915056607613">"Corectare text"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Tastare gestuală"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Alte opţiuni"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Setări avansate"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Opţiuni pentru experţi"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Comut. alte metode de introd."</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasta de comutare între limbi include şi alte metode de introd."</string>
+    <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Afişaţi când sunt activate mai multe limbi de intrare"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Înt. înch. pop-up esenţ."</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fără întârziere"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Sugeraţi nume din Agendă"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizaţi numele din Agendă pentru sugestii şi corecţii"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalizare"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Scrie cu majusculă primul cuvânt din fiecare propoziţie"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicţionare suplimentare"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Dicţionar principal"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afişaţi sugestii de corectare"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afişaţi sugestii de cuvinte în timpul introducerii textului"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Afişaţi întotdeauna"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Afişaţi în modul Portret"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ascundeţi întotdeauna"</string>
+    <string name="auto_correction" msgid="7630720885194996950">"Autocorectare"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spaţiu/semne punctuaţie"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dezactivată"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderată"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivă"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Foarte exigentă"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Sugestii pentru cuvântul următor"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilizează cuvântul anterior pentru sugestii"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Activați tastarea gestuală"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"Introduceţi un cuvânt glisând uşor între litere"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Se afişează urma gestului"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Sugestie flotantă dinamică"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Afişaţi cuvântul sugerat când utilizaţi gesturi"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: salvat"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Înainte"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Înapoi"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Terminat"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Trimiteţi"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Pauză"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Aşt."</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Conectaţi un set căşti-microfon pentru a auzi tastele apăsate când introduceţi parola."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Textul curent este %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nu a fost introdus text"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Tasta cu codul %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Tasta Shift este activată (apăsaţi pentru a o dezactiva)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Tasta Caps Lock este activată (apăsaţi pentru a o dezactiva)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simboluri"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Litere"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Cifre"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Setări"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Spaţiu"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Intrare vocală"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Faţă zâmbitoare"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Căutaţi"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Punct"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Schimbaţi limba"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Înainte"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Înapoi"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Tasta Shift a fost activată"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Tasta Caps Lock a fost activată"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Tasta Shift a fost dezactivată"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Modul Simboluri"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modul Alfanumeric"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modul Telefon"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modul Telefon cu simboluri"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pe tastat. princip."</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pe tastat. simbol."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Dezactivată"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. pe tast. princ."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micr. pe tast. simb."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Intr. vocală dezact."</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
+    <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Activaţi feedback de la utilizatori"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Ajutaţi la îmbunătăţirea acestui instrument de editare a metodelor de introducere a textului trimiţând în mod automat la Google statistici de utilizare şi rapoarte de blocare."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Temă pentru tastatură"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Engleză (Marea Britanie)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Engleză (S.U.A.)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engleză (Regatul Unit) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engleză (S.U.A.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"Nicio limbă"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nicio limbă (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Nicio limbă (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Nicio limbă (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Nicio limbă (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Nicio limbă (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Nicio limbă (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Stiluri personalizate"</string>
+    <string name="add_style" msgid="6163126614514489951">"Stil"</string>
+    <string name="add" msgid="8299699805688017798">"Adăugaţi"</string>
+    <string name="remove" msgid="4486081658752944606">"Eliminaţi"</string>
+    <string name="save" msgid="7646738597196767214">"Salvaţi"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Limbă"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Aspect"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Stilul de introducere personalizat trebuie să fie activat pentru a-l utiliza. Îl activaţi acum?"</string>
+    <string name="enable" msgid="5031294444630523247">"Activaţi"</string>
+    <string name="not_now" msgid="6172462888202790482">"Nu acum"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Acelaşi stil de introducere există deja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modul Studiu privind utilizarea"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Setări pentru durata vibrării la apăsarea tastei"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Setări pentru volumul sunetului la apăsarea tastei"</string>
+</resources>
