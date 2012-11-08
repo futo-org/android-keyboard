@@ -181,16 +181,21 @@ public class Diff extends Dicttool.Command {
                 if (!list1.contains(attribute0)) {
                     hasDifferences = true;
                     // Search for a word with the same string but a different frequency
+                    boolean foundString = false;
                     for (final WeightedString attribute1 : list1) {
                         if (attribute0.mWord.equals(attribute1.mWord)) {
                             System.out.println(type + " freq changed: " + word + " "
                                     + attribute0.mWord + " " + attribute0.mFrequency + " -> "
                                     + attribute1.mFrequency);
                             list1.remove(attribute1);
+                            foundString = true;
                             break;
                         }
+                    }
+                    if (!foundString) {
                         // We come here if we haven't found any matching string.
-                        System.out.println(type + " removed: " + word + " " + attribute0.mWord);
+                        System.out.println(type + " removed: " + word + " " + attribute0.mWord + " "
+                                + attribute0.mFrequency);
                     }
                 } else {
                     list1.remove(attribute0);
