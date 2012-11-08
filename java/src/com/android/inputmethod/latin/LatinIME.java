@@ -730,6 +730,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
 
             switcher.loadKeyboard(editorInfo, mCurrentSettings);
+        } else if (restarting) {
+            // TODO: Come up with a more comprehensive way to reset the keyboard layout when
+            // a keyboard layout set doesn't get reloaded in this method.
+            switcher.resetKeyboardStateToAlphabet();
         }
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
