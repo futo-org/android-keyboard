@@ -68,6 +68,7 @@ public final class Settings extends InputMethodSettingsFragment
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
+    public static final String PREF_GESTURE_SETTINGS = "gesture_typing_settings";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
@@ -136,6 +137,8 @@ public final class Settings extends InputMethodSettingsFragment
                 (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS);
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS);
+        final PreferenceGroup gestureTypingSettings =
+                (PreferenceGroup) findPreference(PREF_GESTURE_SETTINGS);
         final PreferenceGroup miscSettings =
                 (PreferenceGroup) findPreference(PREF_MISC_SETTINGS);
 
@@ -200,23 +203,15 @@ public final class Settings extends InputMethodSettingsFragment
         final Intent intent = dictionaryLink.getIntent();
 
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        if (0 >= number) {
+        // TODO: The experimental version is not supported by the Dictionary Pack Service yet
+        if (ProductionFlag.IS_EXPERIMENTAL || 0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
         final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
                 R.bool.config_gesture_input_enabled_by_build_config);
-        final Preference gesturePreviewTrail = findPreference(PREF_GESTURE_PREVIEW_TRAIL);
-        final Preference gestureFloatingPreviewText = findPreference(
-                PREF_GESTURE_FLOATING_PREVIEW_TEXT);
         if (!gestureInputEnabledByBuildConfig) {
-            miscSettings.removePreference(findPreference(PREF_GESTURE_INPUT));
-            miscSettings.removePreference(gesturePreviewTrail);
-            miscSettings.removePreference(gestureFloatingPreviewText);
-        } else {
-            final boolean gestureInputEnabledByUser = prefs.getBoolean(PREF_GESTURE_INPUT, true);
-            setPreferenceEnabled(gesturePreviewTrail, gestureInputEnabledByUser);
-            setPreferenceEnabled(gestureFloatingPreviewText, gestureInputEnabledByUser);
+            getPreferenceScreen().removePreference(gestureTypingSettings);
         }
 
         mKeypressVibrationDurationSettingsPref =

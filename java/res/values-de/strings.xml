@@ -69,7 +69,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: gespeichert"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Los"</string>
     <string name="label_next_key" msgid="362972844525672568">"Weiter"</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Vorh."</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Zurück"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Fertig"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Senden"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
@@ -121,7 +121,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Nutzer-Feedback aktivieren"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tragen Sie zur Verbesserung dieses Eingabemethodeneditors bei, indem Sie automatisch Nutzungsstatistiken und Absturzberichte an Google senden."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturdesign"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Englisch (Großbritannien)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Englisch (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Englisch (USA)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Englisch (GB) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Englisch (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>

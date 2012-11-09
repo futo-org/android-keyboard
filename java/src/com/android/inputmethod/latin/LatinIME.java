@@ -168,8 +168,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private int mDisplayOrientation;
 
     // Object for reacting to adding/removing a dictionary pack.
+    // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
-            new DictionaryPackInstallBroadcastReceiver(this);
+            ProductionFlag.IS_EXPERIMENTAL
+                    ? null : new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
@@ -410,16 +412,19 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
 
-        final IntentFilter packageFilter = new IntentFilter();
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        packageFilter.addDataScheme(SCHEME_PACKAGE);
-        registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
+        // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
+        if (!ProductionFlag.IS_EXPERIMENTAL) {
+            final IntentFilter packageFilter = new IntentFilter();
+            packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+            packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            packageFilter.addDataScheme(SCHEME_PACKAGE);
+            registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
 
-        final IntentFilter newDictFilter = new IntentFilter();
-        newDictFilter.addAction(
-                DictionaryPackInstallBroadcastReceiver.NEW_DICTIONARY_INTENT_ACTION);
-        registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+            final IntentFilter newDictFilter = new IntentFilter();
+            newDictFilter.addAction(
+                    DictionaryPackInstallBroadcastReceiver.NEW_DICTIONARY_INTENT_ACTION);
+            registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+        }
     }
 
     // Has to be package-visible for unit tests
@@ -539,7 +544,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mSuggest = null;
         }
         unregisterReceiver(mReceiver);
-        unregisterReceiver(mDictionaryPackInstallReceiver);
+        // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
+        if (!ProductionFlag.IS_EXPERIMENTAL) {
+            unregisterReceiver(mDictionaryPackInstallReceiver);
+        }
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();
@@ -730,6 +738,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
 
             switcher.loadKeyboard(editorInfo, mCurrentSettings);
+        } else if (restarting) {
+            // TODO: Come up with a more comprehensive way to reset the keyboard layout when
+            // a keyboard layout set doesn't get reloaded in this method.
+            switcher.resetKeyboardStateToAlphabet();
         }
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);

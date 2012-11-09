@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 
@@ -422,8 +423,11 @@ final class BinaryDictionaryGetter {
         // cacheWordListsFromContentProvider returns the list of files it copied to local
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
-        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
-                hasDefaultWordList);
+        // TODO: The experimental version is not supported by the Dictionary Pack Service yet
+        if (!ProductionFlag.IS_EXPERIMENTAL) {
+            BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
+                    hasDefaultWordList);
+        }
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
         final String mainDictId = getMainDictId(locale);
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
