@@ -43,7 +43,7 @@ public final class SubtypeSwitcher {
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
-    private /* final */ InputMethodManager mImm;
+    private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
 
@@ -84,7 +84,7 @@ public final class SubtypeSwitcher {
     public static void init(final Context context) {
         SubtypeLocale.init(context);
         sInstance.initialize(context);
-        sInstance.updateAllParameters(context);
+        sInstance.updateAllParameters();
     }
 
     private SubtypeSwitcher() {
@@ -93,13 +93,13 @@ public final class SubtypeSwitcher {
 
     private void initialize(final Context service) {
         mResources = service.getResources();
-        mImm = ImfUtils.getInputMethodManager(service);
+        mRichImm = RichInputMethodManager.getInstance();
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mCurrentSystemLocale = mResources.getConfiguration().locale;
-        mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                service, SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
-        mCurrentSubtype = ImfUtils.getCurrentInputMethodSubtype(service, mNoLanguageSubtype);
+        mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
+        mCurrentSubtype = mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype);
         if (mNoLanguageSubtype == null) {
             throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
         }
@@ -110,9 +110,9 @@ public final class SubtypeSwitcher {
 
     // Update all parameters stored in SubtypeSwitcher.
     // Only configuration changed event is allowed to call this because this is heavy.
-    private void updateAllParameters(final Context context) {
+    private void updateAllParameters() {
         mCurrentSystemLocale = mResources.getConfiguration().locale;
-        updateSubtype(ImfUtils.getCurrentInputMethodSubtype(context, mNoLanguageSubtype));
+        updateSubtype(mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype));
         updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
     }
 
@@ -137,7 +137,7 @@ public final class SubtypeSwitcher {
      */
     private boolean updateEnabledSubtypesAndReturnIfEnabled(final InputMethodSubtype subtype) {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
-                mImm.getEnabledInputMethodSubtypeList(null, true);
+                mRichImm.getInputMethodManager().getEnabledInputMethodSubtypeList(null, true);
         mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
 
         for (final InputMethodSubtype ims : enabledSubtypesOfThisIme) {
@@ -162,7 +162,7 @@ public final class SubtypeSwitcher {
         }
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
-                mImm.getShortcutInputMethodsAndSubtypes();
+                mRichImm.getInputMethodManager().getShortcutInputMethodsAndSubtypes();
         mShortcutInputMethodInfo = null;
         mShortcutSubtype = null;
         for (final InputMethodInfo imi : shortcuts.keySet()) {
@@ -221,7 +221,7 @@ public final class SubtypeSwitcher {
         if (token == null) {
             return;
         }
-        final InputMethodManager imm = mImm;
+        final InputMethodManager imm = mRichImm.getInputMethodManager();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -238,14 +238,8 @@ public final class SubtypeSwitcher {
         if (mShortcutSubtype == null) {
             return true;
         }
-        final boolean allowsImplicitlySelectedSubtypes = true;
-        for (final InputMethodSubtype enabledSubtype : mImm.getEnabledInputMethodSubtypeList(
-                mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
-            if (enabledSubtype.equals(mShortcutSubtype)) {
-                return true;
-            }
-        }
-        return false;
+        return mRichImm.checkIfSubtypeBelongsToImeAndEnabled(
+                mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
     public boolean isShortcutImeReady() {
@@ -285,12 +279,12 @@ public final class SubtypeSwitcher {
         return SubtypeLocale.getSubtypeLocale(mCurrentSubtype);
     }
 
-    public boolean onConfigurationChanged(final Configuration conf, final Context context) {
+    public boolean onConfigurationChanged(final Configuration conf) {
         final Locale systemLocale = conf.locale;
         final boolean systemLocaleChanged = !systemLocale.equals(mCurrentSystemLocale);
         // If system configuration was changed, update all parameters.
         if (systemLocaleChanged) {
-            updateAllParameters(context);
+            updateAllParameters();
         }
         return systemLocaleChanged;
     }

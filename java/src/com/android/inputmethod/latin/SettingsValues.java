@@ -355,16 +355,15 @@ public final class SettingsValues {
         return prefs.getBoolean(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
     }
 
-    public boolean isLanguageSwitchKeyEnabled(final Context context) {
+    public boolean isLanguageSwitchKeyEnabled() {
         if (!mShowsLanguageSwitchKey) {
             return false;
         }
+        final RichInputMethodManager imm = RichInputMethodManager.getInstance();
         if (mIncludesOtherImesInLanguageSwitchList) {
-            return ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
-                    context, /* include aux subtypes */false);
+            return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
         } else {
-            return ImfUtils.hasMultipleEnabledSubtypesInThisIme(
-                    context, /* include aux subtypes */false);
+            return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
         }
     }
 
