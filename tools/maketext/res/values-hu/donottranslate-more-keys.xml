@@ -59,4 +59,8 @@
          U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
          U+016B: "ū" LATIN SMALL LETTER U WITH MACRON -->
     <string name="more_keys_for_u">&#x00FA;,&#x00FC;,&#x0171;,&#x00FB;,&#x00F9;,&#x016B;</string>
+    <string name="single_quotes">!text/single_9qm_rqm</string>
+    <string name="double_quotes">!text/double_9qm_rqm</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>

@@ -70,4 +70,6 @@
     <string name="keylabel_for_nordic_row2_10">&#x00E6;</string>
     <!-- U+00FE: "þ" LATIN SMALL LETTER THORN -->
     <string name="keylabel_for_nordic_row2_11">&#x00FE;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

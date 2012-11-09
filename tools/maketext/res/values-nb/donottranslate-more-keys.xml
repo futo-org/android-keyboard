@@ -57,4 +57,6 @@
     <string name="more_keys_for_nordic_row2_10">&#x00F6;</string>
     <!-- U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS -->
     <string name="more_keys_for_nordic_row2_11">&#x00E4;</string>
+    <string name="single_quotes">!text/single_9qm_rqm</string>
+    <string name="double_quotes">!text/double_9qm_rqm</string>
 </resources>

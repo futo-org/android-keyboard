@@ -51,4 +51,6 @@
     <string name="more_keys_for_nordic_row2_10">&#x00F8;</string>
     <!-- U+00E6: "æ" LATIN SMALL LETTER AE -->
     <string name="more_keys_for_nordic_row2_11">&#x00E6;</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>

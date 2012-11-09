@@ -68,4 +68,8 @@
     <string name="more_keys_for_nordic_row2_10">&#x00E4;</string>
     <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS -->
     <string name="more_keys_for_nordic_row2_11">&#x00F6;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>

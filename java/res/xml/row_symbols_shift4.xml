@@ -27,13 +27,11 @@
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyWidth="15%p" />
-        <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-        <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
-        <!-- latin:keyLabelFlags="hasPopupHint" -->
-        <!-- latin:moreKeys="&#x201F;" -->
-        <!-- U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
+        <!-- U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
+             U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
         <Key
             latin:keyLabel="&#x201E;"
+            latin:moreKeys="&#x201A;"
             latin:backgroundType="functional" />
         <include
             latin:keyXPos="25%p"

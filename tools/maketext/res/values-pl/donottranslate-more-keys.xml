@@ -62,4 +62,6 @@
     <string name="more_keys_for_z">&#x017C;,&#x017A;,&#x017E;</string>
     <!-- U+0142: "ł" LATIN SMALL LETTER L WITH STROKE -->
     <string name="more_keys_for_l">&#x0142;</string>
+    <string name="single_quotes">!text/single_9qm_rqm</string>
+    <string name="double_quotes">!text/double_9qm_rqm</string>
 </resources>

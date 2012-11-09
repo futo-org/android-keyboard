@@ -84,4 +84,8 @@
          U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
          U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE -->
     <string name="more_keys_for_z">&#x017E;,&#x017A;,&#x017C;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>
