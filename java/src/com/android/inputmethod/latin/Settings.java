@@ -203,7 +203,8 @@ public final class Settings extends InputMethodSettingsFragment
         final Intent intent = dictionaryLink.getIntent();
 
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        if (0 >= number) {
+        // TODO: The experimental version is not supported by the Dictionary Pack Service yet
+        if (ProductionFlag.IS_EXPERIMENTAL || 0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
