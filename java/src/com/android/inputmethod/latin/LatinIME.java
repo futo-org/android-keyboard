@@ -1619,8 +1619,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
-                // Immediately after a batch input.
-                if (SPACE_STATE_PHANTOM == spaceState) {
+                if (mWordComposer.isBatchMode()) {
                     mWordComposer.reset();
                 } else {
                     mWordComposer.deleteLast();
