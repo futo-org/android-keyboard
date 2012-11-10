@@ -46,7 +46,6 @@ LATIN_IME_JNI_SRC_FILES := \
 
 LATIN_IME_CORE_SRC_FILES := \
     additional_proximity_chars.cpp \
-    basechars.cpp \
     bigram_dictionary.cpp \
     char_utils.cpp \
     correction.cpp \
