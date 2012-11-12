@@ -54,6 +54,7 @@
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
+    mn: Mongolian/mongolian
     ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
     nl: Dutch/qwerty
@@ -310,6 +311,13 @@
             android:imeSubtypeLocale="mk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=south_slavic"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xcdcfc3ab"
+            android:imeSubtypeLocale="mn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=mongolian"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
