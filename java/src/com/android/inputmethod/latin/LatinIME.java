@@ -56,13 +56,13 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CompatUtils;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.KeyDetector;
@@ -137,7 +137,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private CompletionInfo[] mApplicationSpecifiedCompletions;
     private ApplicationInfo mTargetApplicationInfo;
 
-    private InputMethodManagerCompatWrapper mImm;
+    private RichInputMethodManager mRichImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -383,14 +383,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.getInstance().init(this, prefs);
         }
-        InputMethodManagerCompatWrapper.init(this);
+        RichInputMethodManager.init(this);
         SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this);
 
         super.onCreate();
 
-        mImm = InputMethodManagerCompatWrapper.getInstance();
+        mRichImm = RichInputMethodManager.getInstance();
         mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
 
@@ -399,7 +399,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         loadSettings();
 
-        ImfUtils.setAdditionalInputMethodSubtypes(this, mCurrentSettings.getAdditionalSubtypes());
+        mRichImm.setAdditionalInputMethodSubtypes(mCurrentSettings.getAdditionalSubtypes());
 
         initSuggest();
 
@@ -556,7 +556,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     @Override
     public void onConfigurationChanged(final Configuration conf) {
         // System locale has been changed. Needs to reload keyboard.
-        if (mSubtypeSwitcher.onConfigurationChanged(conf, this)) {
+        if (mSubtypeSwitcher.onConfigurationChanged(conf)) {
             loadKeyboard();
         }
         // If orientation changed while predicting, commit the change
@@ -698,8 +698,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
             if (!currentSubtypeEnabled) {
                 // Current subtype is disabled. Needs to update subtype and keyboard.
-                final InputMethodSubtype newSubtype = ImfUtils.getCurrentInputMethodSubtype(
-                        this, mSubtypeSwitcher.getNoLanguageSubtype());
+                final InputMethodSubtype newSubtype = mRichImm.getCurrentInputMethodSubtype(
+                        mSubtypeSwitcher.getNoLanguageSubtype());
                 mSubtypeSwitcher.updateSubtype(newSubtype);
                 loadKeyboard();
             }
@@ -1216,9 +1216,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
-            if (ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
-                    this, true /* include aux subtypes */)) {
-                mImm.showInputMethodPicker();
+            if (mRichImm.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+                mRichImm.getInputMethodManager().showInputMethodPicker();
                 return true;
             }
             return false;
@@ -1242,21 +1241,22 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private void handleLanguageSwitchKey() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mCurrentSettings.mIncludesOtherImesInLanguageSwitchList) {
-            mImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
+            mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
             return;
         }
         if (mShouldSwitchToLastSubtype) {
-            final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
+            final InputMethodManager imm = mRichImm.getInputMethodManager();
+            final InputMethodSubtype lastSubtype = imm.getLastInputMethodSubtype();
             final boolean lastSubtypeBelongsToThisIme =
-                    ImfUtils.checkIfSubtypeBelongsToThisImeAndEnabled(this, lastSubtype);
-            if (lastSubtypeBelongsToThisIme && mImm.switchToLastInputMethod(token)) {
+                    mRichImm.checkIfSubtypeBelongsToThisImeAndEnabled(lastSubtype);
+            if (lastSubtypeBelongsToThisIme && imm.switchToLastInputMethod(token)) {
                 mShouldSwitchToLastSubtype = false;
             } else {
-                mImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
+                mRichImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
                 mShouldSwitchToLastSubtype = true;
             }
         } else {
-            mImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
+            mRichImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
         }
     }
 
@@ -2352,7 +2352,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 getString(R.string.language_selection_title),
                 getString(R.string.english_ime_settings),
         };
-        final Context context = this;
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
@@ -2360,7 +2359,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 switch (position) {
                 case 0:
                     Intent intent = CompatUtils.getInputLanguageSelectionIntent(
-                            ImfUtils.getInputMethodIdOfThisIme(context),
+                            mRichImm.getInputMethodIdOfThisIme(),
                             Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);

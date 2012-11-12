@@ -30,11 +30,11 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetExcep
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
-import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
@@ -142,7 +142,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
                 settingsValues.isVoiceKeyOnMain(),
-                settingsValues.isLanguageSwitchKeyEnabled(mThemeContext));
+                settingsValues.isLanguageSwitchKeyEnabled());
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
@@ -187,7 +187,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
                 keyboard.mId.mLocale);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
-                ImfUtils.hasMultipleEnabledIMEsOrSubtypes(mLatinIME, true));
+                RichInputMethodManager.getInstance().hasMultipleEnabledIMEsOrSubtypes(true));
     }
 
     public Keyboard getKeyboard() {
