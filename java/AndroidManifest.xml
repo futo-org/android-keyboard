@@ -27,7 +27,6 @@
 
     <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@mipmap/ic_ime_settings"
-            android:backupAgent="BackupAgent"
             android:killAfterRestore="false"
             android:supportsRtl="true">
 
