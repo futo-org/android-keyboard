@@ -30,12 +30,15 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     // Locale to subtypes list.
     private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
 
+    private RichInputMethodManager mRichImm;
     private Resources mRes;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
+        RichInputMethodManager.init(context);
+        mRichImm = RichInputMethodManager.getInstance();
         mRes = context.getResources();
         SubtypeLocale.init(context);
     }
@@ -70,19 +73,18 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     //  zz    azerty T  No language (AZERTY)    in system locale
 
     public void testPredefinedSubtypesInEnglish() {
-        final Context context = getContext();
-        final InputMethodSubtype EN_US = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.US.toString(), "qwerty");
-        final InputMethodSubtype EN_GB = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.UK.toString(), "qwerty");
-        final InputMethodSubtype FR = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.FRENCH.toString(), "azerty");
-        final InputMethodSubtype FR_CA = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.CANADA_FRENCH.toString(), "qwerty");
-        final InputMethodSubtype DE = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.GERMAN.toString(), "qwertz");
-        final InputMethodSubtype ZZ = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, SubtypeLocale.NO_LANGUAGE, "qwerty");
+        final InputMethodSubtype EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.US.toString(), "qwerty");
+        final InputMethodSubtype EN_GB = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.UK.toString(), "qwerty");
+        final InputMethodSubtype FR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.FRENCH.toString(), "azerty");
+        final InputMethodSubtype FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.CANADA_FRENCH.toString(), "qwerty");
+        final InputMethodSubtype DE = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.GERMAN.toString(), "qwertz");
+        final InputMethodSubtype ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                SubtypeLocale.NO_LANGUAGE, "qwerty");
 
         assertEquals("en_US", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_US));
         assertEquals("en_GB", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_GB));
@@ -140,19 +142,18 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     }
 
     public void testPredefinedSubtypesInFrench() {
-        final Context context = getContext();
-        final InputMethodSubtype EN_US = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.US.toString(), "qwerty");
-        final InputMethodSubtype EN_GB = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.UK.toString(), "qwerty");
-        final InputMethodSubtype FR = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.FRENCH.toString(), "azerty");
-        final InputMethodSubtype FR_CA = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.CANADA_FRENCH.toString(), "qwerty");
-        final InputMethodSubtype DE = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.GERMAN.toString(), "qwertz");
-        final InputMethodSubtype ZZ = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, SubtypeLocale.NO_LANGUAGE, "qwerty");
+        final InputMethodSubtype EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.US.toString(), "qwerty");
+        final InputMethodSubtype EN_GB = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.UK.toString(), "qwerty");
+        final InputMethodSubtype FR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.FRENCH.toString(), "azerty");
+        final InputMethodSubtype FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.CANADA_FRENCH.toString(), "qwerty");
+        final InputMethodSubtype DE = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                Locale.GERMAN.toString(), "qwertz");
+        final InputMethodSubtype ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                SubtypeLocale.NO_LANGUAGE, "qwerty");
 
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
