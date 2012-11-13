@@ -27,8 +27,7 @@
         latin:keyWidth="8.182%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_east_slavic1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_east_slavic1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />

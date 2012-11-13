@@ -27,10 +27,6 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/key_apostrophe" />
-        <include
-            latin:keyboardLayout="@xml/key_dash" />
-        <include
             latin:keyboardLayout="@xml/rowkeys_hebrew1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
