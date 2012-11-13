@@ -710,21 +710,17 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         updateFullscreenMode();
         mApplicationSpecifiedCompletions = null;
 
-        if (isDifferentTextField || selectionChanged) {
-            // If the selection changed, we reset the input state. Essentially, we come here with
-            // restarting == true when the app called setText() or similar. We should reset the
-            // state if the app set the text to something else, but keep it if it set a suggestion
-            // or something.
-            mEnteredText = null;
-            resetComposingState(true /* alsoResetLastComposedWord */);
-            mDeleteCount = 0;
-            mSpaceState = SPACE_STATE_NONE;
+        // The app calling setText() has the effect of clearing the composing
+        // span, so we should reset our state unconditionally, even if restarting is true.
+        mEnteredText = null;
+        resetComposingState(true /* alsoResetLastComposedWord */);
+        mDeleteCount = 0;
+        mSpaceState = SPACE_STATE_NONE;
 
-            if (mSuggestionStripView != null) {
-                // This will set the punctuation suggestions if next word suggestion is off;
-                // otherwise it will clear the suggestion strip.
-                setPunctuationSuggestions();
-            }
+        if (mSuggestionStripView != null) {
+            // This will set the punctuation suggestions if next word suggestion is off;
+            // otherwise it will clear the suggestion strip.
+            setPunctuationSuggestions();
         }
 
         mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart);
