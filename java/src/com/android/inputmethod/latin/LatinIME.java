@@ -1411,7 +1411,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.postUpdateSuggestionStrip();
         final String text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         mConnection.commitText(text, 1);
         mConnection.endBatchEdit();
@@ -1574,7 +1574,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mWordComposer.setBatchInputWord(batchInputText);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
@@ -1729,7 +1729,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
 
         // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
@@ -1806,7 +1806,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         sendKeyCodePoint(primaryCode);
 
@@ -2070,7 +2070,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
                     && (!mCurrentSettings.isWeakSpaceSwapper(firstChar))) {
-                sendKeyCodePoint(Constants.CODE_SPACE);
+                promotePhantomSpace();
             }
         }
 
@@ -2245,6 +2245,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         mHandler.postUpdateSuggestionStrip();
+    }
+
+    // This essentially inserts a space, and that's it.
+    public void promotePhantomSpace() {
+        sendKeyCodePoint(Constants.CODE_SPACE);
     }
 
     // Used by the RingCharBuffer
