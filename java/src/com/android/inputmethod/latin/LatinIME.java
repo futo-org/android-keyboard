@@ -710,21 +710,17 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         updateFullscreenMode();
         mApplicationSpecifiedCompletions = null;
 
-        if (isDifferentTextField || selectionChanged) {
-            // If the selection changed, we reset the input state. Essentially, we come here with
-            // restarting == true when the app called setText() or similar. We should reset the
-            // state if the app set the text to something else, but keep it if it set a suggestion
-            // or something.
-            mEnteredText = null;
-            resetComposingState(true /* alsoResetLastComposedWord */);
-            mDeleteCount = 0;
-            mSpaceState = SPACE_STATE_NONE;
+        // The app calling setText() has the effect of clearing the composing
+        // span, so we should reset our state unconditionally, even if restarting is true.
+        mEnteredText = null;
+        resetComposingState(true /* alsoResetLastComposedWord */);
+        mDeleteCount = 0;
+        mSpaceState = SPACE_STATE_NONE;
 
-            if (mSuggestionStripView != null) {
-                // This will set the punctuation suggestions if next word suggestion is off;
-                // otherwise it will clear the suggestion strip.
-                setPunctuationSuggestions();
-            }
+        if (mSuggestionStripView != null) {
+            // This will set the punctuation suggestions if next word suggestion is off;
+            // otherwise it will clear the suggestion strip.
+            setPunctuationSuggestions();
         }
 
         mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart);
@@ -1411,7 +1407,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.postUpdateSuggestionStrip();
         final String text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         mConnection.commitText(text, 1);
         mConnection.endBatchEdit();
@@ -1574,7 +1570,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mWordComposer.setBatchInputWord(batchInputText);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
@@ -1729,7 +1725,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
 
         // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
@@ -1806,7 +1802,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
+            promotePhantomSpace();
         }
         sendKeyCodePoint(primaryCode);
 
@@ -2070,7 +2066,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
                     && (!mCurrentSettings.isWeakSpaceSwapper(firstChar))) {
-                sendKeyCodePoint(Constants.CODE_SPACE);
+                promotePhantomSpace();
             }
         }
 
@@ -2245,6 +2241,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
         mHandler.postUpdateSuggestionStrip();
+    }
+
+    // This essentially inserts a space, and that's it.
+    public void promotePhantomSpace() {
+        sendKeyCodePoint(Constants.CODE_SPACE);
     }
 
     // Used by the RingCharBuffer
