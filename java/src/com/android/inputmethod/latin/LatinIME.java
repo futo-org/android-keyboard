@@ -2251,7 +2251,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // This essentially inserts a space, and that's it.
     public void promotePhantomSpace() {
-        sendKeyCodePoint(Keyboard.CODE_SPACE);
+        if (mCurrentSettings.shouldInsertSpacesAutomatically()) {
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
+        }
     }
 
     // Used by the RingCharBuffer
