@@ -37,6 +37,8 @@ public final class DebugSettings extends PreferenceFragment
     private static final String DEBUG_MODE_KEY = "debug_mode";
     public static final String FORCE_NON_DISTINCT_MULTITOUCH_KEY = "force_non_distinct_multitouch";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    private static final String PREF_STATISTICS_LOGGING_KEY = "enable_logging";
+    private static final boolean SHOW_STATISTICS_LOGGING = false;
 
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
@@ -54,6 +56,12 @@ public final class DebugSettings extends PreferenceFragment
             checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
                     ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
             checkbox.setSummary(R.string.settings_warning_researcher_mode);
+        }
+        final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING_KEY);
+        if (statisticsLoggingPref instanceof CheckBoxPreference) {
+            if (!SHOW_STATISTICS_LOGGING) {
+                getPreferenceScreen().removePreference(statisticsLoggingPref);
+            }
         }
 
         mServiceNeedsRestart = false;
