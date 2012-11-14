@@ -154,6 +154,9 @@ public final class BinaryDictionaryFileDumper {
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
             InputStream originalSourceStream = null;
             InputStream inputStream = null;
+            InputStream uncompressedStream = null;
+            InputStream decryptedStream = null;
+            BufferedInputStream bufferedStream = null;
             File outputFile = null;
             FileOutputStream outputStream = null;
             AssetFileDescriptor afd = null;
@@ -173,18 +176,19 @@ public final class BinaryDictionaryFileDumper {
                 // Get the appropriate decryption method for this try
                 switch (mode) {
                     case COMPRESSED_CRYPTED_COMPRESSED:
-                        inputStream = FileTransforms.getUncompressedStream(
-                                FileTransforms.getDecryptedStream(
-                                        FileTransforms.getUncompressedStream(
-                                                originalSourceStream)));
+                        uncompressedStream =
+                                FileTransforms.getUncompressedStream(originalSourceStream);
+                        decryptedStream = FileTransforms.getDecryptedStream(uncompressedStream);
+                        inputStream = FileTransforms.getUncompressedStream(decryptedStream);
                         break;
                     case CRYPTED_COMPRESSED:
-                        inputStream = FileTransforms.getUncompressedStream(
-                                FileTransforms.getDecryptedStream(originalSourceStream));
+                        decryptedStream = FileTransforms.getDecryptedStream(originalSourceStream);
+                        inputStream = FileTransforms.getUncompressedStream(decryptedStream);
                         break;
                     case COMPRESSED_CRYPTED:
-                        inputStream = FileTransforms.getDecryptedStream(
-                                FileTransforms.getUncompressedStream(originalSourceStream));
+                        uncompressedStream =
+                                FileTransforms.getUncompressedStream(originalSourceStream);
+                        inputStream = FileTransforms.getDecryptedStream(uncompressedStream);
                         break;
                     case COMPRESSED_ONLY:
                         inputStream = FileTransforms.getUncompressedStream(originalSourceStream);
@@ -195,8 +199,9 @@ public final class BinaryDictionaryFileDumper {
                     case NONE:
                         inputStream = originalSourceStream;
                         break;
-                    }
-                checkMagicAndCopyFileTo(new BufferedInputStream(inputStream), outputStream);
+                }
+                bufferedStream = new BufferedInputStream(inputStream);
+                checkMagicAndCopyFileTo(bufferedStream, outputStream);
                 outputStream.flush();
                 outputStream.close();
                 final File finalFile = new File(finalFileName);
@@ -228,8 +233,11 @@ public final class BinaryDictionaryFileDumper {
                 try {
                     // inputStream.close() will close afd, we should not call afd.close().
                     if (null != inputStream) inputStream.close();
+                    if (null != uncompressedStream) uncompressedStream.close();
+                    if (null != decryptedStream) decryptedStream.close();
+                    if (null != bufferedStream) bufferedStream.close();
                 } catch (Exception e) {
-                    Log.e(TAG, "Exception while closing a cross-process file descriptor : " + e);
+                    Log.e(TAG, "Exception while closing a file descriptor : " + e);
                 }
                 try {
                     if (null != outputStream) outputStream.close();
