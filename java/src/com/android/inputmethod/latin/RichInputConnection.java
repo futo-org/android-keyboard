@@ -145,7 +145,8 @@ public final class RichInputConnection {
         mCurrentCursorPosition = newCursorPosition;
         mComposingText.setLength(0);
         mCommittedTextBeforeComposingText.setLength(0);
-        mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
+        final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
+        if (null != textBeforeCursor) mCommittedTextBeforeComposingText.append(textBeforeCursor);
         mCharAfterTheCursor = getTextAfterCursor(1, 0);
         if (null != mIC) {
             mIC.finishComposingText();
