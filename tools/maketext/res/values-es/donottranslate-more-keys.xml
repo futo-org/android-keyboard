@@ -74,4 +74,7 @@
     <string name="more_keys_for_tablet_comma">"!,&#x00A1;"</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
     <string name="more_keys_for_tablet_period">"\?,&#x00BF;"</string>
+    <string name="keylabel_for_apostrophe">\"</string>
+    <string name="keyhintlabel_for_apostrophe">\'</string>
+    <string name="more_keys_for_apostrophe">\'</string>
 </resources>

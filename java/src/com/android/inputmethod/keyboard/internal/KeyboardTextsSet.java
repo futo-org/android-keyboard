@@ -1086,6 +1086,9 @@ public final class KeyboardTextsSet {
         /* 101 */ null,
         // U+00BF: "¿" INVERTED QUESTION MARK
         /* 102 */ "?,\u00BF",
+        /* 103 */ "\"",
+        /* 104 */ "\'",
+        /* 105 */ "\'",
     };
 
     /* Language et: Estonian */
