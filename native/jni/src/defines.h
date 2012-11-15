@@ -19,6 +19,12 @@
 
 #include <stdint.h>
 
+#ifdef __GNUC__
+#define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
+#else // __GNUC__
+#define AK_FORCE_INLINE inline
+#endif // __GNUC__
+
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <android/log.h>
 #ifndef LOG_TAG
@@ -60,7 +66,7 @@ static inline void dumpResult(const int *outWords, const int *frequencies, const
     AKLOGI("-------------------------");
 }
 
-static inline void dumpWord(const int *word, const int length) {
+static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
     static char charBuf[50];
     int i = 0;
     for (; i < length; ++i) {
@@ -382,12 +388,6 @@ template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
 template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
-
-#ifdef __GNUC__
-#define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
-#else // __GNUC__
-#define AK_FORCE_INLINE inline
-#endif // __GNUC__
 
 // The ratio of neutral area radius to sweet spot radius.
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f
