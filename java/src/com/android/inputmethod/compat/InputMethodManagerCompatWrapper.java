@@ -52,6 +52,10 @@ public final class InputMethodManagerCompatWrapper {
         sInstance.mImm = ImfUtils.getInputMethodManager(context);
     }
 
+    public InputMethodSubtype getCurrentInputMethodSubtype() {
+        return mImm.getCurrentInputMethodSubtype();
+    }
+
     public InputMethodSubtype getLastInputMethodSubtype() {
         return mImm.getLastInputMethodSubtype();
     }
@@ -63,6 +67,10 @@ public final class InputMethodManagerCompatWrapper {
     public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToNextInputMethod, token,
                 onlyCurrentIme);
+    }
+
+    public void setInputMethodAndSubtype(IBinder token, String id, InputMethodSubtype subtype) {
+        mImm.setInputMethodAndSubtype(token, id, subtype);
     }
 
     public void showInputMethodPicker() {
