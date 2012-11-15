@@ -112,15 +112,15 @@ class WordsPriorityQueue {
         }
     }
 
-    void dumpTopWord() {
+    AK_FORCE_INLINE void dumpTopWord() {
         if (size() <= 0) {
             return;
         }
         DUMP_WORD(mHighestSuggestedWord->mWord, mHighestSuggestedWord->mWordLength);
     }
 
-    float getHighestNormalizedScore(const int *before, const int beforeLength, int **outWord,
-            int *outScore, int *outLength) {
+    AK_FORCE_INLINE float getHighestNormalizedScore(const int *before, const int beforeLength,
+            int **outWord, int *outScore, int *outLength) {
         if (!mHighestSuggestedWord) {
             return 0.0;
         }
