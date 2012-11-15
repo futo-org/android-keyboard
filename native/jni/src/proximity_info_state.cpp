@@ -294,8 +294,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 sampledY << ";";
             }
         }
-        AKLOGI("\n%s, %s,\n%s, %s,\n", originalX.str().c_str(), originalY.str().c_str(),
-                sampledX.str().c_str(), sampledY.str().c_str());
+        AKLOGI("original points:\n%s, %s,\nsampled points:\n%s, %s,\n",
+                originalX.str().c_str(), originalY.str().c_str(), sampledX.str().c_str(),
+                sampledY.str().c_str());
     }
     // end
     ///////////////////////
@@ -925,8 +926,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
         for (int i = 0; i < mInputSize; ++i) {
             std::stringstream sstream;
             sstream << i << ", ";
-            sstream << "("<< mInputXs[i] << ", ";
-            sstream << ", "<< mInputYs[i] << "), ";
+            sstream << "(" << mInputXs[i] << ", " << mInputYs[i] << "), ";
             sstream << "Speed: "<< getRelativeSpeed(i) << ", ";
             sstream << "Angle: "<< getPointAngle(i) << ", \n";
 
