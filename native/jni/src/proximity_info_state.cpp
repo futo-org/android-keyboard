@@ -95,11 +95,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         pushTouchPointStartIndex = mInputIndice[mInputIndice.size() - 2];
         popInputData();
         popInputData();
-        lastSavedInputSize = mInputXs.size();
+        lastSavedInputSize = mSampledInputXs.size();
     } else {
         // Clear all data.
-        mInputXs.clear();
-        mInputYs.clear();
+        mSampledInputXs.clear();
+        mSampledInputYs.clear();
         mTimes.clear();
         mInputIndice.clear();
         mLengthCache.clear();
@@ -114,7 +114,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
                 pushTouchPointStartIndex, lastSavedInputSize);
     }
-    mInputSize = 0;
+    mSampledInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
@@ -175,77 +175,33 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 }
             }
         }
-        mInputSize = mInputXs.size();
+        mSampledInputSize = mSampledInputXs.size();
     }
 
-    if (mInputSize > 0 && isGeometric) {
-        // Relative speed calculation.
-        const int sumDuration = mTimes.back() - mTimes.front();
-        const int sumLength = mLengthCache.back() - mLengthCache.front();
-        const float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
-        mRelativeSpeeds.resize(mInputSize);
-        for (int i = lastSavedInputSize; i < mInputSize; ++i) {
-            const int index = mInputIndice[i];
-            int length = 0;
-            int duration = 0;
-
-            // Calculate velocity by using distances and durations of
-            // NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and backward.
-            static const int NUM_POINTS_FOR_SPEED_CALCULATION = 2;
-            for (int j = index; j < min(inputSize - 1, index + NUM_POINTS_FOR_SPEED_CALCULATION);
-                    ++j) {
-                if (i < mInputSize - 1 && j >= mInputIndice[i + 1]) {
-                    break;
-                }
-                length += getDistanceInt(xCoordinates[j], yCoordinates[j],
-                        xCoordinates[j + 1], yCoordinates[j + 1]);
-                duration += times[j + 1] - times[j];
-            }
-            for (int j = index - 1; j >= max(0, index - NUM_POINTS_FOR_SPEED_CALCULATION); --j) {
-                if (i > 0 && j < mInputIndice[i - 1]) {
-                    break;
-                }
-                length += getDistanceInt(xCoordinates[j], yCoordinates[j],
-                        xCoordinates[j + 1], yCoordinates[j + 1]);
-                duration += times[j + 1] - times[j];
-            }
-            if (duration == 0 || sumDuration == 0) {
-                // Cannot calculate speed; thus, it gives an average value (1.0);
-                mRelativeSpeeds[i] = 1.0f;
-            } else {
-                const float speed = static_cast<float>(length) / static_cast<float>(duration);
-                mRelativeSpeeds[i] = speed / averageSpeed;
-            }
-        }
-
-        // Direction calculation.
-        mDirections.resize(mInputSize - 1);
-        for (int i = max(0, lastSavedInputSize - 1); i < mInputSize - 1; ++i) {
-            mDirections[i] = getDirection(i, i + 1);
-        }
-
+    if (mSampledInputSize > 0 && isGeometric) {
+        refreshRelativeSpeed(inputSize, xCoordinates, yCoordinates, times, lastSavedInputSize);
     }
 
     if (DEBUG_GEO_FULL) {
-        for (int i = 0; i < mInputSize; ++i) {
-            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mInputXs[i], mInputYs[i],
-                    mTimes[i]);
+        for (int i = 0; i < mSampledInputSize; ++i) {
+            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mSampledInputXs[i],
+                    mSampledInputYs[i], mTimes[i]);
         }
     }
 
-    if (mInputSize > 0) {
+    if (mSampledInputSize > 0) {
         const int keyCount = mProximityInfo->getKeyCount();
-        mNearKeysVector.resize(mInputSize);
-        mSearchKeysVector.resize(mInputSize);
-        mDistanceCache.resize(mInputSize * keyCount);
-        for (int i = lastSavedInputSize; i < mInputSize; ++i) {
+        mNearKeysVector.resize(mSampledInputSize);
+        mSearchKeysVector.resize(mSampledInputSize);
+        mDistanceCache.resize(mSampledInputSize * keyCount);
+        for (int i = lastSavedInputSize; i < mSampledInputSize; ++i) {
             mNearKeysVector[i].reset();
             mSearchKeysVector[i].reset();
             static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
             for (int k = 0; k < keyCount; ++k) {
                 const int index = i * keyCount + k;
-                const int x = mInputXs[i];
-                const int y = mInputYs[i];
+                const int x = mSampledInputXs[i];
+                const int y = mSampledInputYs[i];
                 const float normalizedSquaredDistance =
                         mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
                 mDistanceCache[index] = normalizedSquaredDistance;
@@ -262,11 +218,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             const int readForwordLength = static_cast<int>(
                     hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
                             * READ_FORWORD_LENGTH_SCALE);
-            for (int i = 0; i < mInputSize; ++i) {
+            for (int i = 0; i < mSampledInputSize; ++i) {
                 if (i >= lastSavedInputSize) {
                     mSearchKeysVector[i].reset();
                 }
-                for (int j = max(i, lastSavedInputSize); j < mInputSize; ++j) {
+                for (int j = max(i, lastSavedInputSize); j < mSampledInputSize; ++j) {
                     if (mLengthCache[j] - mLengthCache[i] >= readForwordLength) {
                         break;
                     }
@@ -286,10 +242,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 originalY << ";";
             }
         }
-        for (int i = 0; i < mInputSize; ++i) {
-            sampledX << mInputXs[i];
-            sampledY << mInputYs[i];
-            if (i != mInputSize - 1) {
+        for (int i = 0; i < mSampledInputSize; ++i) {
+            sampledX << mSampledInputXs[i];
+            sampledY << mSampledInputYs[i];
+            if (i != mSampledInputSize - 1) {
                 sampledX << ";";
                 sampledY << ";";
             }
@@ -303,14 +259,14 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     memset(mNormalizedSquaredDistances, NOT_A_DISTANCE, sizeof(mNormalizedSquaredDistances));
     memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
-    mTouchPositionCorrectionEnabled = mInputSize > 0 && mHasTouchPositionCorrectionData
+    mTouchPositionCorrectionEnabled = mSampledInputSize > 0 && mHasTouchPositionCorrectionData
             && xCoordinates && yCoordinates;
     if (!isGeometric && pointerId == 0) {
         for (int i = 0; i < inputSize; ++i) {
             mPrimaryInputWord[i] = getPrimaryCodePointAt(i);
         }
 
-        for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
+        for (int i = 0; i < mSampledInputSize && mTouchPositionCorrectionEnabled; ++i) {
             const int *proximityCodePoints = getProximityCodePointsAt(i);
             const int primaryKey = proximityCodePoints[0];
             const int x = xCoordinates[i];
@@ -343,16 +299,64 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 
     if (DEBUG_GEO_FULL) {
-        AKLOGI("ProximityState init finished: %d points out of %d", mInputSize, inputSize);
+        AKLOGI("ProximityState init finished: %d points out of %d", mSampledInputSize, inputSize);
+    }
+}
+
+void ProximityInfoState::refreshRelativeSpeed(const int inputSize, const int *const xCoordinates,
+        const int *const yCoordinates, const int *const times, const int lastSavedInputSize) {
+    // Relative speed calculation.
+    const int sumDuration = mTimes.back() - mTimes.front();
+    const int sumLength = mLengthCache.back() - mLengthCache.front();
+    const float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
+    mRelativeSpeeds.resize(mSampledInputSize);
+    for (int i = lastSavedInputSize; i < mSampledInputSize; ++i) {
+        const int index = mInputIndice[i];
+        int length = 0;
+        int duration = 0;
+
+        // Calculate velocity by using distances and durations of
+        // NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and backward.
+        static const int NUM_POINTS_FOR_SPEED_CALCULATION = 2;
+        for (int j = index; j < min(inputSize - 1, index + NUM_POINTS_FOR_SPEED_CALCULATION);
+                ++j) {
+            if (i < mSampledInputSize - 1 && j >= mInputIndice[i + 1]) {
+                break;
+            }
+            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+                    xCoordinates[j + 1], yCoordinates[j + 1]);
+            duration += times[j + 1] - times[j];
+        }
+        for (int j = index - 1; j >= max(0, index - NUM_POINTS_FOR_SPEED_CALCULATION); --j) {
+            if (i > 0 && j < mInputIndice[i - 1]) {
+                break;
+            }
+            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+                    xCoordinates[j + 1], yCoordinates[j + 1]);
+            duration += times[j + 1] - times[j];
+        }
+        if (duration == 0 || sumDuration == 0) {
+            // Cannot calculate speed; thus, it gives an average value (1.0);
+            mRelativeSpeeds[i] = 1.0f;
+        } else {
+            const float speed = static_cast<float>(length) / static_cast<float>(duration);
+            mRelativeSpeeds[i] = speed / averageSpeed;
+        }
+    }
+
+    // Direction calculation.
+    mDirections.resize(mSampledInputSize - 1);
+    for (int i = max(0, lastSavedInputSize - 1); i < mSampledInputSize - 1; ++i) {
+        mDirections[i] = getDirection(i, i + 1);
     }
 }
 
 bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times) {
-    for (int i = 0; i < mInputSize; ++i) {
+    for (int i = 0; i < mSampledInputSize; ++i) {
         const int index = mInputIndice[i];
-        if (index > inputSize || xCoordinates[index] != mInputXs[i] ||
-                yCoordinates[index] != mInputYs[i] || times[index] != mTimes[i]) {
+        if (index > inputSize || xCoordinates[index] != mSampledInputXs[i] ||
+                yCoordinates[index] != mSampledInputYs[i] || times[index] != mTimes[i]) {
             return false;
         }
     }
@@ -413,7 +417,7 @@ float ProximityInfoState::getPointScore(
     static const float CORNER_SUM_ANGLE_THRESHOLD = M_PI_F / 4.0f;
     static const float CORNER_SCORE = 1.0f;
 
-    const size_t size = mInputXs.size();
+    const size_t size = mSampledInputXs.size();
     // If there is only one point, add this point. Besides, if the previous point's distance map
     // is empty, we re-compute nearby keys distances from the current point.
     // Note that the current point is the first point in the incremental input that needs to
@@ -423,8 +427,8 @@ float ProximityInfoState::getPointScore(
     }
 
     const int baseSampleRate = mProximityInfo->getMostCommonKeyWidth();
-    const int distPrev = getDistanceInt(mInputXs.back(), mInputYs.back(),
-            mInputXs[size - 2], mInputYs[size - 2]) * DISTANCE_BASE_SCALE;
+    const int distPrev = getDistanceInt(mSampledInputXs.back(), mSampledInputYs.back(),
+            mSampledInputXs[size - 2], mSampledInputYs[size - 2]) * DISTANCE_BASE_SCALE;
     float score = 0.0f;
 
     // Location
@@ -436,9 +440,9 @@ float ProximityInfoState::getPointScore(
         score += LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
     }
     // Angle
-    const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
-    const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
-            mInputXs[size - 2], mInputYs[size - 2]);
+    const float angle1 = getAngle(x, y, mSampledInputXs.back(), mSampledInputYs.back());
+    const float angle2 = getAngle(mSampledInputXs.back(), mSampledInputYs.back(),
+            mSampledInputXs[size - 2], mSampledInputYs[size - 2]);
     const float angleDiff = getAngleDiff(angle1, angle2);
 
     // Save corner
@@ -458,7 +462,7 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCode
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
     static const int LAST_POINT_SKIP_DISTANCE_SCALE = 4;
 
-    size_t size = mInputXs.size();
+    size_t size = mSampledInputXs.size();
     bool popped = false;
     if (nodeCodePoint < 0 && sample) {
         const float nearest = updateNearKeysDistances(x, y, currentNearKeysDistances);
@@ -467,20 +471,20 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCode
         if (score < 0) {
             // Pop previous point because it would be useless.
             popInputData();
-            size = mInputXs.size();
+            size = mSampledInputXs.size();
             popped = true;
         } else {
             popped = false;
         }
         // Check if the last point should be skipped.
         if (isLastPoint && size > 0) {
-            if (getDistanceInt(x, y, mInputXs.back(), mInputYs.back())
+            if (getDistanceInt(x, y, mSampledInputXs.back(), mSampledInputYs.back())
                     * LAST_POINT_SKIP_DISTANCE_SCALE < mProximityInfo->getMostCommonKeyWidth()) {
                 // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
                     AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
-                           "width = %d", size, x, y, mInputXs.back(), mInputYs.back(),
-                           getDistanceInt(x, y, mInputXs.back(), mInputYs.back()),
+                           "width = %d", size, x, y, mSampledInputXs.back(), mSampledInputYs.back(),
+                           getDistanceInt(x, y, mSampledInputXs.back(), mSampledInputYs.back()),
                            mProximityInfo->getMostCommonKeyWidth()
                                    / LAST_POINT_SKIP_DISTANCE_SCALE);
                 }
@@ -500,12 +504,13 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCode
     // Pushing point information.
     if (size > 0) {
         mLengthCache.push_back(
-                mLengthCache.back() + getDistanceInt(x, y, mInputXs.back(), mInputYs.back()));
+                mLengthCache.back() + getDistanceInt(
+                        x, y, mSampledInputXs.back(), mSampledInputYs.back()));
     } else {
         mLengthCache.push_back(0);
     }
-    mInputXs.push_back(x);
-    mInputYs.push_back(y);
+    mSampledInputXs.push_back(x);
+    mSampledInputYs.push_back(y);
     mTimes.push_back(time);
     mInputIndice.push_back(inputIndex);
     if (DEBUG_GEO_FULL) {
@@ -523,7 +528,7 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
     if (!mProximityInfo->hasSweetSpotData(keyIndex)) {
         return NOT_A_DISTANCE_FLOAT;
     }
-    if (NOT_A_COORDINATE == mInputXs[inputIndex]) {
+    if (NOT_A_COORDINATE == mSampledInputXs[inputIndex]) {
         return NOT_A_DISTANCE_FLOAT;
     }
     const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(
@@ -533,7 +538,7 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (index >= 0 && index < mInputSize - 1) {
+    if (index >= 0 && index < mSampledInputSize - 1) {
         return mTimes[index + 1] - mTimes[index];
     }
     return 0;
@@ -632,15 +637,15 @@ float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
         const int keyIndex, const int inputIndex) const {
     const float sweetSpotCenterX = mProximityInfo->getSweetSpotCenterXAt(keyIndex);
     const float sweetSpotCenterY = mProximityInfo->getSweetSpotCenterYAt(keyIndex);
-    const float inputX = static_cast<float>(mInputXs[inputIndex]);
-    const float inputY = static_cast<float>(mInputYs[inputIndex]);
+    const float inputX = static_cast<float>(mSampledInputXs[inputIndex]);
+    const float inputY = static_cast<float>(mSampledInputYs[inputIndex]);
     return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
 }
 
 // Puts possible characters into filter and returns new filter size.
 int32_t ProximityInfoState::getAllPossibleChars(
         const size_t index, int32_t *const filter, const int32_t filterSize) const {
-    if (index >= mInputXs.size()) {
+    if (index >= mSampledInputXs.size()) {
         return filterSize;
     }
     int newFilterSize = filterSize;
@@ -666,34 +671,34 @@ int32_t ProximityInfoState::getAllPossibleChars(
 
 bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int keyId) const {
     ASSERT(keyId >= 0);
-    ASSERT(index >= 0 && index < mInputSize);
+    ASSERT(index >= 0 && index < mSampledInputSize);
     return mSearchKeysVector[index].test(keyId);
 }
 
 void ProximityInfoState::popInputData() {
-    mInputXs.pop_back();
-    mInputYs.pop_back();
+    mSampledInputXs.pop_back();
+    mSampledInputYs.pop_back();
     mTimes.pop_back();
     mLengthCache.pop_back();
     mInputIndice.pop_back();
 }
 
 float ProximityInfoState::getDirection(const int index0, const int index1) const {
-    if (index0 < 0 || index0 > mInputSize - 1) {
+    if (index0 < 0 || index0 > mSampledInputSize - 1) {
         return 0.0f;
     }
-    if (index1 < 0 || index1 > mInputSize - 1) {
+    if (index1 < 0 || index1 > mSampledInputSize - 1) {
         return 0.0f;
     }
-    const int x1 = mInputXs[index0];
-    const int y1 = mInputYs[index0];
-    const int x2 = mInputXs[index1];
-    const int y2 = mInputYs[index1];
+    const int x1 = mSampledInputXs[index0];
+    const int y1 = mSampledInputYs[index0];
+    const int x2 = mSampledInputXs[index1];
+    const int y2 = mSampledInputYs[index1];
     return getAngle(x1, y1, x2, y2);
 }
 
 float ProximityInfoState::getPointAngle(const int index) const {
-    if (index <= 0 || index >= mInputSize - 1) {
+    if (index <= 0 || index >= mSampledInputSize - 1) {
         return 0.0f;
     }
     const float previousDirection = getDirection(index - 1, index);
@@ -704,13 +709,13 @@ float ProximityInfoState::getPointAngle(const int index) const {
 
 float ProximityInfoState::getPointsAngle(
         const int index0, const int index1, const int index2) const {
-    if (index0 < 0 || index0 > mInputSize - 1) {
+    if (index0 < 0 || index0 > mSampledInputSize - 1) {
         return 0.0f;
     }
-    if (index1 < 0 || index1 > mInputSize - 1) {
+    if (index1 < 0 || index1 > mSampledInputSize - 1) {
         return 0.0f;
     }
-    if (index2 < 0 || index2 > mInputSize - 1) {
+    if (index2 < 0 || index2 > mSampledInputSize - 1) {
         return 0.0f;
     }
     const float previousDirection = getDirection(index0, index1);
@@ -720,16 +725,16 @@ float ProximityInfoState::getPointsAngle(
 
 float ProximityInfoState::getLineToKeyDistance(
         const int from, const int to, const int keyId, const bool extend) const {
-    if (from < 0 || from > mInputSize - 1) {
+    if (from < 0 || from > mSampledInputSize - 1) {
         return 0.0f;
     }
-    if (to < 0 || to > mInputSize - 1) {
+    if (to < 0 || to > mSampledInputSize - 1) {
         return 0.0f;
     }
-    const int x0 = mInputXs[from];
-    const int y0 = mInputYs[from];
-    const int x1 = mInputXs[to];
-    const int y1 = mInputYs[to];
+    const int x0 = mSampledInputXs[from];
+    const int y0 = mSampledInputYs[from];
+    const int x1 = mSampledInputXs[to];
+    const int y1 = mSampledInputYs[to];
 
     const int keyX = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
     const int keyY = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
@@ -762,10 +767,10 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
     static const float CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION = 0.0f;
 
     const int keyCount = mProximityInfo->getKeyCount();
-    mCharProbabilities.resize(mInputSize);
+    mCharProbabilities.resize(mSampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
     // for each point.
-    for (int i = start; i < mInputSize; ++i) {
+    for (int i = start; i < mSampledInputSize; ++i) {
         mCharProbabilities[i].clear();
         // First, calculates skip probability. Starts form MIN_SKIP_PROBABILITY.
         // Note that all values that are multiplied to this probability should be in [0.0, 1.0];
@@ -789,7 +794,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
                     + NEAREST_DISTANCE_BIAS);
             // Promote the first point
             skipProbability *= SKIP_FIRST_POINT_PROBABILITY;
-        } else if (i == mInputSize - 1) {
+        } else if (i == mSampledInputSize - 1) {
             skipProbability *= min(1.0f, nearestKeyDistance * NEAREST_DISTANCE_WEIGHT_FOR_LAST
                     + NEAREST_DISTANCE_BIAS_FOR_LAST);
             // Promote the last point
@@ -861,7 +866,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
         for (int j = 0; j < keyCount; ++j) {
             if (mNearKeysVector[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(i, j));
-                if (i == 0 && i != mInputSize - 1) {
+                if (i == 0 && i != mSampledInputSize - 1) {
                     // For the first point, weighted average of distances from first point and the
                     // next point to the key is used as a point to key distance.
                     const float nextDistance = sqrtf(getPointToKeyByIdLength(i + 1, j));
@@ -873,7 +878,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
                         distance = (distance + nextDistance * NEXT_DISTANCE_WEIGHT)
                                 / (1.0f + NEXT_DISTANCE_WEIGHT);
                     }
-                } else if (i != 0 && i == mInputSize - 1) {
+                } else if (i != 0 && i == mSampledInputSize - 1) {
                     // For the first point, weighted average of distances from last point and
                     // the previous point to the key is used as a point to key distance.
                     const float previousDistance = sqrtf(getPointToKeyByIdLength(i - 1, j));
@@ -896,7 +901,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
         for (int j = 0; j < keyCount; ++j) {
             if (mNearKeysVector[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(i, j));
-                if (i == 0 && i != mInputSize - 1) {
+                if (i == 0 && i != mSampledInputSize - 1) {
                     // For the first point, weighted average of distances from the first point and
                     // the next point to the key is used as a point to key distance.
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(i + 1, j));
@@ -904,7 +909,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
                         distance = (distance + prevDistance * NEXT_DISTANCE_WEIGHT)
                                 / (1.0f + NEXT_DISTANCE_WEIGHT);
                     }
-                } else if (i != 0 && i == mInputSize - 1) {
+                } else if (i != 0 && i == mSampledInputSize - 1) {
                     // For the first point, weighted average of distances from last point and
                     // the previous point to the key is used as a point to key distance.
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(i - 1, j));
@@ -923,10 +928,10 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
 
 
     if (DEBUG_POINTS_PROBABILITY) {
-        for (int i = 0; i < mInputSize; ++i) {
+        for (int i = 0; i < mSampledInputSize; ++i) {
             std::stringstream sstream;
             sstream << i << ", ";
-            sstream << "(" << mInputXs[i] << ", " << mInputYs[i] << "), ";
+            sstream << "(" << mSampledInputXs[i] << ", " << mSampledInputYs[i] << "), ";
             sstream << "Speed: "<< getRelativeSpeed(i) << ", ";
             sstream << "Angle: "<< getPointAngle(i) << ", \n";
 
@@ -952,8 +957,8 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
 
     // Decrease key probabilities of points which don't have the highest probability of that key
     // among nearby points. Probabilities of the first point and the last point are not suppressed.
-    for (int i = max(start, 1); i < mInputSize; ++i) {
-        for (int j = i + 1; j < mInputSize; ++j) {
+    for (int i = max(start, 1); i < mSampledInputSize; ++i) {
+        for (int j = i + 1; j < mSampledInputSize; ++j) {
             if (!suppressCharProbabilities(i, j)) {
                 break;
             }
@@ -966,7 +971,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
     }
 
     // Converting from raw probabilities to log probabilities to calculate spatial distance.
-    for (int i = start; i < mInputSize; ++i) {
+    for (int i = start; i < mSampledInputSize; ++i) {
         for (int j = 0; j < keyCount; ++j) {
             hash_map_compat<int, float>::iterator it = mCharProbabilities[i].find(j);
             if (it == mCharProbabilities[i].end()){
@@ -986,8 +991,8 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
 // Decreases char probabilities of index0 by checking probabilities of a near point (index1) and
 // increases char probabilities of index1 by checking probabilities of index0.
 bool ProximityInfoState::suppressCharProbabilities(const int index0, const int index1) {
-    ASSERT(0 <= index0 && index0 < mInputSize);
-    ASSERT(0 <= index1 && index1 < mInputSize);
+    ASSERT(0 <= index0 && index0 < mSampledInputSize);
+    ASSERT(0 <= index1 && index1 < mSampledInputSize);
 
     static const float SUPPRESSION_LENGTH_WEIGHT = 1.5f;
     static const float MIN_SUPPRESSION_RATE = 0.1f;
@@ -1030,7 +1035,7 @@ float ProximityInfoState::getHighestProbabilitySequence(int *const codePointBuf)
     int index = 0;
     float sumLogProbability = 0.0f;
     // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
-    for (int i = 0; i < mInputSize && index < MAX_WORD_LENGTH_INTERNAL - 1; ++i) {
+    for (int i = 0; i < mSampledInputSize && index < MAX_WORD_LENGTH_INTERNAL - 1; ++i) {
         float minLogProbability = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
         int character = NOT_AN_INDEX;
         for (hash_map_compat<int, float>::const_iterator it = mCharProbabilities[i].begin();
@@ -1054,7 +1059,7 @@ float ProximityInfoState::getHighestProbabilitySequence(int *const codePointBuf)
 
 // Returns a probability of mapping index to keyIndex.
 float ProximityInfoState::getProbability(const int index, const int keyIndex) const {
-    ASSERT(0 <= index && index < mInputSize);
+    ASSERT(0 <= index && index < mSampledInputSize);
     hash_map_compat<int, float>::const_iterator it = mCharProbabilities[index].find(keyIndex);
     if (it != mCharProbabilities[index].end()) {
         return it->second;
