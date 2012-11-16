@@ -31,6 +31,10 @@ import java.util.LinkedList;
  * be searched for suggestions and valid words.
  */
 public class ExpandableDictionary extends Dictionary {
+    /**
+     * The weight to give to a word if it's length is the same as the number of typed characters.
+     */
+    private static final int FULL_WORD_SCORE_MULTIPLIER = 2;
 
     // Bigram frequency is a fixed point number with 1 meaning 1.2 and 255 meaning 1.8.
     protected static final int BIGRAM_MAX_FREQUENCY = 255;

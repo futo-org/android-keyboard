@@ -101,7 +101,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
+            int maxWordLength, int maxWords, int maxPredictions);
     private native void closeNative(long dict);
     private native int getFrequencyNative(long dict, int[] word);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
@@ -116,8 +116,8 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
             final long length) {
-        mNativeDict = openNative(path, startOffset, length, FULL_WORD_SCORE_MULTIPLIER,
-                MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
+        mNativeDict = openNative(path, startOffset, length, MAX_WORD_LENGTH, MAX_WORDS,
+                MAX_PREDICTIONS);
     }
 
     @Override

@@ -26,11 +26,6 @@ import java.util.ArrayList;
  * strokes.
  */
 public abstract class Dictionary {
-    /**
-     * The weight to give to a word if it's length is the same as the number of typed characters.
-     */
-    protected static final int FULL_WORD_SCORE_MULTIPLIER = 2;
-
     public static final int NOT_A_PROBABILITY = -1;
 
     public static final String TYPE_USER_TYPED = "user_typed";
