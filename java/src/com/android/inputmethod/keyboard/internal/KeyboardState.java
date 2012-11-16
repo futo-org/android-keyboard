@@ -633,7 +633,7 @@ public final class KeyboardState {
     @Override
     public String toString() {
         return "[keyboard=" + (mIsAlphabetMode ? mAlphabetShiftState.toString()
-                        : (mIsSymbolShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS"))
+                : (mIsSymbolShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS"))
                 + " shift=" + mShiftKeyState
                 + " symbol=" + mSymbolKeyState
                 + " switch=" + switchStateToString(mSwitchState) + "]";

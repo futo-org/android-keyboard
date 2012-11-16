@@ -54,10 +54,10 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
-              mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mDirections(),
+              mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mTimes(),
+              mInputIndice(), mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mDirections(),
               mCharProbabilities(), mNearKeysVector(), mSearchKeysVector(),
-              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
+              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -82,14 +82,15 @@ class ProximityInfoState {
     }
 
     inline bool existsAdjacentProximityChars(const int index) const {
-        if (index < 0 || index >= mInputSize) return false;
+        if (index < 0 || index >= mSampledInputSize) return false;
         const int currentCodePoint = getPrimaryCodePointAt(index);
         const int leftIndex = index - 1;
         if (leftIndex >= 0 && existsCodePointInProximityAt(leftIndex, currentCodePoint)) {
             return true;
         }
         const int rightIndex = index + 1;
-        if (rightIndex < mInputSize && existsCodePointInProximityAt(rightIndex, currentCodePoint)) {
+        if (rightIndex < mSampledInputSize
+                && existsCodePointInProximityAt(rightIndex, currentCodePoint)) {
             return true;
         }
         return false;
@@ -110,7 +111,7 @@ class ProximityInfoState {
     }
 
     inline bool sameAsTyped(const int *word, int length) const {
-        if (length != mInputSize) {
+        if (length != mSampledInputSize) {
             return false;
         }
         const int *inputCodes = mInputCodes;
@@ -127,19 +128,19 @@ class ProximityInfoState {
     int getDuration(const int index) const;
 
     bool isUsed() const {
-        return mInputSize > 0;
+        return mSampledInputSize > 0;
     }
 
     uint32_t size() const {
-        return mInputSize;
+        return mSampledInputSize;
     }
 
     int getInputX(const int index) const {
-        return mInputXs[index];
+        return mSampledInputXs[index];
     }
 
     int getInputY(const int index) const {
-        return mInputYs[index];
+        return mSampledInputYs[index];
     }
 
     int getLengthCache(const int index) const {
@@ -205,7 +206,7 @@ class ProximityInfoState {
     inline float square(const float x) const { return x * x; }
 
     bool hasInputCoordinates() const {
-        return mInputXs.size() > 0 && mInputYs.size() > 0;
+        return mSampledInputXs.size() > 0 && mSampledInputYs.size() > 0;
     }
 
     inline const int *getProximityCodePointsAt(const int index) const {
@@ -227,6 +228,8 @@ class ProximityInfoState {
     void popInputData();
     void updateAlignPointProbabilities(const int start);
     bool suppressCharProbabilities(const int index1, const int index2);
+    void refreshRelativeSpeed(const int inputSize, const int *const xCoordinates,
+            const int *const yCoordinates, const int *const times, const int lastSavedInputSize);
 
     // const
     const ProximityInfo *mProximityInfo;
@@ -241,8 +244,8 @@ class ProximityInfoState {
     int mGridWidth;
     bool mIsContinuationPossible;
 
-    std::vector<int> mInputXs;
-    std::vector<int> mInputYs;
+    std::vector<int> mSampledInputXs;
+    std::vector<int> mSampledInputYs;
     std::vector<int> mTimes;
     std::vector<int> mInputIndice;
     std::vector<float> mDistanceCache;
@@ -263,7 +266,7 @@ class ProximityInfoState {
     bool mTouchPositionCorrectionEnabled;
     int mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
-    int mInputSize;
+    int mSampledInputSize;
     int mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
 };
 } // namespace latinime

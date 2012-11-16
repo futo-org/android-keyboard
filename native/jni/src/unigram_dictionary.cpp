@@ -41,10 +41,9 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
         { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int fullWordMultiplier,
-        int maxWordLength, int maxWords, const unsigned int flags)
+UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int maxWordLength,
+        int maxWords, const unsigned int flags)
         : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
-          FULL_WORD_MULTIPLIER(fullWordMultiplier), // TODO : remove this variable.
           ROOT_POS(0), MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");

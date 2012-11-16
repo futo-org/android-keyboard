@@ -43,9 +43,8 @@ class ProximityInfo;
 
 static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
 
-static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
-        jstring sourceDir, jlong dictOffset, jlong dictSize, jint fullWordMultiplier,
-        jint maxWordLength, jint maxWords, jint maxPredictions) {
+static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object, jstring sourceDir,
+        jlong dictOffset, jlong dictSize, jint maxWordLength, jint maxWords, jint maxPredictions) {
     PROF_OPEN;
     PROF_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
@@ -119,8 +118,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         releaseDictBuf(dictBuf, 0, 0);
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
-        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust,
-                fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
+        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust, maxWordLength,
+                maxWords, maxPredictions);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -272,7 +271,7 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIIII)J",
+    {"openNative", "(Ljava/lang/String;JJIII)J",
             reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
     {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I",
