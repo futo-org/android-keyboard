@@ -117,20 +117,19 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         if (IS_LOGGING_EVERYTHING) {
             if (mIsStopping) {
                 return true;
-            } else {
-                // Only check that it is the right length.  If not, wait for later words to make
-                // complete n-grams.
-                int numWordsInLogUnitList = 0;
-                final int length = logUnits.size();
-                for (int i = 0; i < length; i++) {
-                    final LogUnit logUnit = logUnits.get(i);
-                    final String word = logUnit.getWord();
-                    if (word != null) {
-                        numWordsInLogUnitList++;
-                    }
-                }
-                return numWordsInLogUnitList >= minNGramSize;
             }
+            // Only check that it is the right length.  If not, wait for later words to make
+            // complete n-grams.
+            int numWordsInLogUnitList = 0;
+            final int length = logUnits.size();
+            for (int i = 0; i < length; i++) {
+                final LogUnit logUnit = logUnits.get(i);
+                final String word = logUnit.getWord();
+                if (word != null) {
+                    numWordsInLogUnitList++;
+                }
+            }
+            return numWordsInLogUnitList >= minNGramSize;
         }
 
         // Check that we are not sampling too frequently.  Having sampled recently might disclose
@@ -157,14 +156,14 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         final int length = logUnits.size();
         for (int i = 0; i < length; i++) {
             final LogUnit logUnit = logUnits.get(i);
-            final String word = logUnit.getWord();
-            if (word == null) {
+            if (!logUnit.hasWord()) {
                 // Digits outside words are a privacy threat.
                 if (logUnit.mayContainDigit()) {
                     return false;
                 }
             } else {
                 numWordsInLogUnitList++;
+                final String word = logUnit.getWord();
                 // Words not in the dictionary are a privacy threat.
                 if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
                     if (DEBUG) {
