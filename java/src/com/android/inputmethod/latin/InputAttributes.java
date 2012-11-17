@@ -65,7 +65,6 @@ public final class InputAttributes {
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
-            // TODO: Have a helper method in InputTypeUtils
             // Make sure that passwords are not displayed in {@link SuggestionStripView}.
             if (InputTypeUtils.isPasswordInputType(inputType)
                     || InputTypeUtils.isVisiblePasswordInputType(inputType)
@@ -160,10 +159,6 @@ public final class InputAttributes {
             Log.i(TAG, "  TYPE_TEXT_FLAG_AUTO_CORRECT");
         if (0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             Log.i(TAG, "  TYPE_TEXT_FLAG_AUTO_COMPLETE");
-    }
-
-    public boolean shouldInsertSpacesAutomatically() {
-        return InputTypeUtils.isAutoSpaceFriendlyType(mInputType);
     }
 
     // Pretty print
