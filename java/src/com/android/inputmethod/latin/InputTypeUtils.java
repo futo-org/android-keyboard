@@ -29,37 +29,31 @@ public final class InputTypeUtils implements InputType {
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_PASSWORD;
     private static final int TEXT_VISIBLE_PASSWORD_INPUT_TYPE =
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
-    private static final int SUPPRESSING_AUTO_SPACES_FIELD_TYPE =
-            InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-            | InputType.TYPE_TEXT_VARIATION_PASSWORD
-            | InputType.TYPE_TEXT_VARIATION_URI
-            | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD;
 
     private InputTypeUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    private static boolean isWebEditTextInputType(final int inputType) {
+    private static boolean isWebEditTextInputType(int inputType) {
         return inputType == (TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
     }
 
-    private static boolean isWebPasswordInputType(final int inputType) {
+    private static boolean isWebPasswordInputType(int inputType) {
         return WEB_TEXT_PASSWORD_INPUT_TYPE != 0
                 && inputType == WEB_TEXT_PASSWORD_INPUT_TYPE;
     }
 
-    private static boolean isWebEmailAddressInputType(final int inputType) {
+    private static boolean isWebEmailAddressInputType(int inputType) {
         return WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE != 0
                 && inputType == WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE;
     }
 
-    private static boolean isNumberPasswordInputType(final int inputType) {
+    private static boolean isNumberPasswordInputType(int inputType) {
         return NUMBER_PASSWORD_INPUT_TYPE != 0
                 && inputType == NUMBER_PASSWORD_INPUT_TYPE;
     }
 
-    private static boolean isTextPasswordInputType(final int inputType) {
+    private static boolean isTextPasswordInputType(int inputType) {
         return inputType == TEXT_PASSWORD_INPUT_TYPE;
     }
 
@@ -67,12 +61,12 @@ public final class InputTypeUtils implements InputType {
         return variation == TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
     }
 
-    public static boolean isEmailVariation(final int variation) {
+    public static boolean isEmailVariation(int variation) {
         return variation == TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 || isWebEmailAddressVariation(variation);
     }
 
-    public static boolean isWebInputType(final int inputType) {
+    public static boolean isWebInputType(int inputType) {
         final int maskedInputType =
                 inputType & (TYPE_MASK_CLASS | TYPE_MASK_VARIATION);
         return isWebEditTextInputType(maskedInputType) || isWebPasswordInputType(maskedInputType)
@@ -80,7 +74,7 @@ public final class InputTypeUtils implements InputType {
     }
 
     // Please refer to TextView.isPasswordInputType
-    public static boolean isPasswordInputType(final int inputType) {
+    public static boolean isPasswordInputType(int inputType) {
         final int maskedInputType =
                 inputType & (TYPE_MASK_CLASS | TYPE_MASK_VARIATION);
         return isTextPasswordInputType(maskedInputType) || isWebPasswordInputType(maskedInputType)
@@ -88,13 +82,9 @@ public final class InputTypeUtils implements InputType {
     }
 
     // Please refer to TextView.isVisiblePasswordInputType
-    public static boolean isVisiblePasswordInputType(final int inputType) {
+    public static boolean isVisiblePasswordInputType(int inputType) {
         final int maskedInputType =
                 inputType & (TYPE_MASK_CLASS | TYPE_MASK_VARIATION);
         return maskedInputType == TEXT_VISIBLE_PASSWORD_INPUT_TYPE;
-    }
-
-    public static boolean isAutoSpaceFriendlyType(final int inputType) {
-        return 0 == (inputType & SUPPRESSING_AUTO_SPACES_FIELD_TYPE);
     }
 }
