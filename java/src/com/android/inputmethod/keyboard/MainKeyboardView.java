@@ -1029,18 +1029,19 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     // InputMethodSubtype's display name for spacebar text in its locale.
     //        isAdditionalSubtype (T=true, F=false)
-    // locale layout | Short  Middle      Full
-    // ------ ------ - ---- --------- ----------------------
-    //  en_US qwerty F  En  English   English (US)           exception
-    //  en_GB qwerty F  En  English   English (UK)           exception
-    //  fr    azerty F  Fr  Français  Français
-    //  fr_CA qwerty F  Fr  Français  Français (Canada)
-    //  de    qwertz F  De  Deutsch   Deutsch
-    //  zz    qwerty F      QWERTY    QWERTY
-    //  fr    qwertz T  Fr  Français  Français (QWERTZ)
-    //  de    qwerty T  De  Deutsch   Deutsch (QWERTY)
-    //  en_US azerty T  En  English   English (US) (AZERTY)
-    //  zz    azerty T      AZERTY    AZERTY
+    // locale layout  | Short  Middle      Full
+    // ------ ------- - ---- --------- ----------------------
+    //  en_US qwerty  F  En  English   English (US)           exception
+    //  en_GB qwerty  F  En  English   English (UK)           exception
+    //  es_US spanish F  Es  Español   Español (EE.UU.)       exception
+    //  fr    azerty  F  Fr  Français  Français
+    //  fr_CA qwerty  F  Fr  Français  Français (Canada)
+    //  de    qwertz  F  De  Deutsch   Deutsch
+    //  zz    qwerty  F      QWERTY    QWERTY
+    //  fr    qwertz  T  Fr  Français  Français (QWERTZ)
+    //  de    qwerty  T  De  Deutsch   Deutsch (QWERTY)
+    //  en_US azerty  T  En  English   English (US) (AZERTY)
+    //  zz    azerty  T      AZERTY    AZERTY
 
     // Get InputMethodSubtype's full display name in its locale.
     static String getFullDisplayName(final InputMethodSubtype subtype, final Resources res) {

@@ -193,8 +193,13 @@ public final class SubtypeSwitcher {
         }
 
         final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
+        final boolean sameLocale = mCurrentSystemLocale.equals(newLocale);
+        final boolean sameLanguage = mCurrentSystemLocale.getLanguage().equals(
+                newLocale.getLanguage());
+        final boolean implicitlyEnabled =
+                mRichImm.checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
         mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
-                mCurrentSystemLocale.equals(newLocale));
+                sameLocale || (sameLanguage && implicitlyEnabled));
 
         if (newSubtype.equals(mCurrentSubtype)) return;
 

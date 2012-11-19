@@ -151,18 +151,19 @@ public final class SubtypeLocale {
 
     // InputMethodSubtype's display name in its locale.
     //        isAdditionalSubtype (T=true, F=false)
-    // locale layout |  display name
-    // ------ ------ - ----------------------
-    //  en_US qwerty F  English (US)            exception
-    //  en_GB qwerty F  English (UK)            exception
-    //  fr    azerty F  Français
-    //  fr_CA qwerty F  Français (Canada)
-    //  de    qwertz F  Deutsch
-    //  zz    qwerty F  No language (QWERTY)    in system locale
-    //  fr    qwertz T  Français (QWERTZ)
-    //  de    qwerty T  Deutsch (QWERTY)
-    //  en_US azerty T  English (US) (AZERTY)
-    //  zz    azerty T  No language (AZERTY)    in system locale
+    // locale layout  |  display name
+    // ------ ------- - ----------------------
+    //  en_US qwerty  F  English (US)            exception
+    //  en_GB qwerty  F  English (UK)            exception
+    //  es_US spanish F  Español (EE.UU.)        exception
+    //  fr    azerty  F  Français
+    //  fr_CA qwerty  F  Français (Canada)
+    //  de    qwertz  F  Deutsch
+    //  zz    qwerty  F  No language (QWERTY)    in system locale
+    //  fr    qwertz  T  Français (QWERTZ)
+    //  de    qwerty  T  Deutsch (QWERTY)
+    //  en_US azerty  T  English (US) (AZERTY)
+    //  zz    azerty  T  No language (AZERTY)    in system locale
 
     public static String getSubtypeDisplayName(final InputMethodSubtype subtype, Resources res) {
         final String replacementString = (Build.VERSION.SDK_INT >= /* JELLY_BEAN */ 15
