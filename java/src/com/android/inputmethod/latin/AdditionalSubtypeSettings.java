@@ -85,6 +85,9 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
     }
 
     static final class SubtypeLocaleAdapter extends ArrayAdapter<SubtypeLocaleItem> {
+        private static final String TAG = SubtypeLocaleAdapter.class.getSimpleName();
+        private static final boolean DEBUG_SUBTYPE_ID = false;
+
         public SubtypeLocaleAdapter(final Context context) {
             super(context, android.R.layout.simple_spinner_item);
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -94,6 +97,11 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
             final int count = imi.getSubtypeCount();
             for (int i = 0; i < count; i++) {
                 final InputMethodSubtype subtype = imi.getSubtypeAt(i);
+                if (DEBUG_SUBTYPE_ID) {
+                    android.util.Log.d(TAG, String.format("%-6s 0x%08x %11d %s",
+                            subtype.getLocale(), subtype.hashCode(), subtype.hashCode(),
+                            SubtypeLocale.getSubtypeDisplayName(subtype, context.getResources())));
+                }
                 if (subtype.containsExtraValueKey(ASCII_CAPABLE)) {
                     items.add(createItem(context, subtype.getLocale()));
                 }
