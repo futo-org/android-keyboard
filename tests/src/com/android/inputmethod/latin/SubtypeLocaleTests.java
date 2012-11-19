@@ -59,24 +59,27 @@ public class SubtypeLocaleTests extends AndroidTestCase {
 
     // InputMethodSubtype's display name in its locale.
     //        isAdditionalSubtype (T=true, F=false)
-    // locale layout |  display name
-    // ------ ------ - ----------------------
-    //  en_US qwerty F  English (US)            exception
-    //  en_GB qwerty F  English (UK)            exception
-    //  fr    azerty F  Français
-    //  fr_CA qwerty F  Français (Canada)
-    //  de    qwertz F  Deutsch
-    //  zz    qwerty F  No language (QWERTY)    in system locale
-    //  fr    qwertz T  Français (QWERTZ)
-    //  de    qwerty T  Deutsch (QWERTY)
-    //  en_US azerty T  English (US) (AZERTY)
-    //  zz    azerty T  No language (AZERTY)    in system locale
+    // locale layout  |  display name
+    // ------ ------- - ----------------------
+    //  en_US qwerty  F  English (US)            exception
+    //  en_GB qwerty  F  English (UK)            exception
+    //  es_US spanish F  Español (EE.UU.)        exception
+    //  fr    azerty  F  Français
+    //  fr_CA qwerty  F  Français (Canada)
+    //  de    qwertz  F  Deutsch
+    //  zz    qwerty  F  No language (QWERTY)    in system locale
+    //  fr    qwertz  T  Français (QWERTZ)
+    //  de    qwerty  T  Deutsch (QWERTY)
+    //  en_US azerty  T  English (US) (AZERTY)
+    //  zz    azerty  T  No language (AZERTY)    in system locale
 
     public void testPredefinedSubtypesInEnglish() {
         final InputMethodSubtype EN_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.US.toString(), "qwerty");
         final InputMethodSubtype EN_GB = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.UK.toString(), "qwerty");
+        final InputMethodSubtype ES_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "es_US", "spanish");
         final InputMethodSubtype FR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.FRENCH.toString(), "azerty");
         final InputMethodSubtype FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
@@ -88,6 +91,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
 
         assertEquals("en_US", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_US));
         assertEquals("en_GB", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_GB));
+        assertEquals("es_US", "spanish", SubtypeLocale.getKeyboardLayoutSetName(ES_US));
         assertEquals("fr   ", "azerty", SubtypeLocale.getKeyboardLayoutSetName(FR));
         assertEquals("fr_CA", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(FR_CA));
         assertEquals("de   ", "qwertz", SubtypeLocale.getKeyboardLayoutSetName(DE));
@@ -100,6 +104,8 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                         SubtypeLocale.getSubtypeDisplayName(EN_US, res));
                 assertEquals("en_GB", "English (UK)",
                         SubtypeLocale.getSubtypeDisplayName(EN_GB, res));
+                assertEquals("es_US", "Español (EE.UU.)",
+                        SubtypeLocale.getSubtypeDisplayName(ES_US, res));
                 assertEquals("fr   ", "Français",
                         SubtypeLocale.getSubtypeDisplayName(FR, res));
                 assertEquals("fr_CA", "Français (Canada)",
@@ -146,6 +152,8 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 Locale.US.toString(), "qwerty");
         final InputMethodSubtype EN_GB = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.UK.toString(), "qwerty");
+        final InputMethodSubtype ES_US = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                "es_US", "spanish");
         final InputMethodSubtype FR = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.FRENCH.toString(), "azerty");
         final InputMethodSubtype FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
@@ -162,6 +170,8 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                         SubtypeLocale.getSubtypeDisplayName(EN_US, res));
                 assertEquals("en_GB", "English (UK)",
                         SubtypeLocale.getSubtypeDisplayName(EN_GB, res));
+                assertEquals("es_US", "Español (EE.UU.)",
+                        SubtypeLocale.getSubtypeDisplayName(ES_US, res));
                 assertEquals("fr   ", "Français",
                         SubtypeLocale.getSubtypeDisplayName(FR, res));
                 assertEquals("fr_CA", "Français (Canada)",
