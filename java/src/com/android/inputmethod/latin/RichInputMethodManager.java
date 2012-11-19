@@ -96,28 +96,42 @@ public final class RichInputMethodManager {
         return mInputMethodInfoOfThisIme.getId();
     }
 
-    public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype ims) {
-        return checkIfSubtypeBelongsToImeAndEnabled(mInputMethodInfoOfThisIme, ims);
+    public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype subtype) {
+        return checkIfSubtypeBelongsToImeAndEnabled(mInputMethodInfoOfThisIme, subtype);
+    }
+
+    public boolean checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(
+            final InputMethodSubtype subtype) {
+        final boolean subtypeEnabled = checkIfSubtypeBelongsToThisImeAndEnabled(subtype);
+        final boolean subtypeExplicitlyEnabled = checkIfSubtypeBelongsToList(
+                subtype, mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
+                        mInputMethodInfoOfThisIme, false /* allowsImplicitlySelectedSubtypes */));
+        return subtypeEnabled && !subtypeExplicitlyEnabled;
     }
 
     public boolean checkIfSubtypeBelongsToImeAndEnabled(final InputMethodInfo imi,
-            final InputMethodSubtype ims) {
-        final List<InputMethodSubtype> subtypes = mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
-                imi, true /* allowsImplicitlySelectedSubtypes */);
-        for (final InputMethodSubtype subtype : subtypes) {
-            if (subtype.equals(ims)) {
+            final InputMethodSubtype subtype) {
+        return checkIfSubtypeBelongsToList(
+                subtype, mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
+                        imi, true /* allowsImplicitlySelectedSubtypes */));
+    }
+
+    private static boolean checkIfSubtypeBelongsToList(final InputMethodSubtype subtype,
+            final List<InputMethodSubtype> subtypes) {
+        for (final InputMethodSubtype ims : subtypes) {
+            if (ims.equals(subtype)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean checkIfSubtypeBelongsToThisIme(final InputMethodSubtype ims) {
+    public boolean checkIfSubtypeBelongsToThisIme(final InputMethodSubtype subtype) {
         final InputMethodInfo myImi = mInputMethodInfoOfThisIme;
         final int count = myImi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
-            final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
-            if (subtype.equals(ims)) {
+            final InputMethodSubtype ims = myImi.getSubtypeAt(i);
+            if (ims.equals(subtype)) {
                 return true;
             }
         }

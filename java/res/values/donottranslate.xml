@@ -140,10 +140,12 @@
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
+        <item>es_US</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
         <item>English (UK)</item>
+        <item>Español (EE.UU.)</item>
     </string-array>
 
     <!-- Generic subtype label -->
