@@ -32,8 +32,10 @@ LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-ali
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
 
 ifeq ($(TARGET_ARCH), arm)
+ifneq ($(TARGET_GCC_VERSION), 4.7)
 LOCAL_CFLAGS += -Winline
-endif
+endif # TARGET_GCC_VERSION
+endif # TARGET_ARCH
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
