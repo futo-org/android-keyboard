@@ -48,4 +48,6 @@
     <string name="additional_more_keys_for_symbols_8">8</string>
     <string name="additional_more_keys_for_symbols_9">9</string>
     <string name="additional_more_keys_for_symbols_0">0</string>
+    <!-- U+20B9: "₹" INDIAN RUPEE SIGN -->
+    <string name="keylabel_for_currency_generic">&#x20B9;</string>
 </resources>

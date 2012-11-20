@@ -112,6 +112,15 @@
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
     <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+    <!-- U+FDFC: "﷼" RIAL SIGN
+         U+060B: "؋" AFGHANI SIGN
+         U+00A2: "¢" CENT SIGN
+         U+00A3: "£" POUND SIGN
+         U+20AC: "€" EURO SIGN
+         U+00A5: "¥" YEN SIGN
+         U+20B1: "₱" PESO SIGN -->
+    <string name="keylabel_for_currency_generic">&#xFDFC;</string>
+    <string name="more_keys_for_currency_generic">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;,&#x060B;</string>
     <!-- U+0655: "ٕ" ARABIC HAMZA BELOW
          U+0652: "ْ" ARABIC SUKUN
          U+0651: "ّ" ARABIC SHADDA

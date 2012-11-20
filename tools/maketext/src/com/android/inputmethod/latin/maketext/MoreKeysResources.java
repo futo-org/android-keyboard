@@ -158,6 +158,12 @@ public class MoreKeysResources {
             out.format("    private static final String[] " + ARRAY_NAME_FOR_LANGUAGE + " = {\n",
                     language);
             final StringResourceMap resMap = mResourcesMap.get(language);
+            for (final StringResource res : resMap.getResources()) {
+                if (!defaultResMap.contains(res.mName)) {
+                    throw new RuntimeException(res.mName + " in " + language
+                            + " doesn't have default resource");
+                }
+            }
             dumpTextsInternal(out, resMap, defaultResMap);
             out.format("    };\n\n");
         }
