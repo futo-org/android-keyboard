@@ -73,9 +73,8 @@
          U+00A5: "¥" YEN SIGN
          U+20B1: "₱" PESO SIGN -->
     <string name="more_keys_for_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_currency_euro">&#x00A2;,&#x00A3;,$,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_currency_pound">&#x00A2;,$,&#x20AC;,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_currency_general">&#x00A2;,$,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
+    <string name="keylabel_for_currency_generic">$</string>
+    <string name="more_keys_for_currency_generic">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,\\,,\?,\@,&amp;,\\%,+,;,/,(,)"</string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER

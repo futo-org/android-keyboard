@@ -50,4 +50,6 @@
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
     <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+    <!-- U+20AA: "₪" NEW SHEQEL SIGN -->
+    <string name="keylabel_for_currency_generic">&#x20AA;</string>
 </resources>

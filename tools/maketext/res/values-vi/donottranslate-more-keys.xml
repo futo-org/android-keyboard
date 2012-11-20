@@ -92,4 +92,6 @@
     <string name="more_keys_for_y">&#x1EF3;,&#x00FD;,&#x1EF7;,&#x1EF9;,&#x1EF5;</string>
     <!-- U+0111: "đ" LATIN SMALL LETTER D WITH STROKE -->
     <string name="more_keys_for_d">&#x0111;</string>
+    <!-- U+20AB: "₫" DONG SIGN -->
+    <string name="keylabel_for_currency_generic">&#x20AB;</string>
 </resources>
