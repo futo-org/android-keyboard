@@ -112,36 +112,56 @@ public final class InputAttributes {
         if (inputClass == InputType.TYPE_CLASS_DATETIME)
             Log.i(TAG, "  TYPE_CLASS_DATETIME");
         Log.i(TAG, "Variation:");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_SUBJECT");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_FILTER))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_FILTER");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_LONG_MESSAGE");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_NORMAL))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_NORMAL");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PASSWORD");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PERSON_NAME))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PERSON_NAME");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PHONETIC))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PHONETIC");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_POSTAL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_SHORT_MESSAGE");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_URI))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_URI");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_VISIBLE_PASSWORD");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EDIT_TEXT");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_PASSWORD");
+        switch (InputType.TYPE_MASK_VARIATION & inputType) {
+            case InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_SUBJECT");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_FILTER:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_FILTER");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_LONG_MESSAGE");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_NORMAL:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_NORMAL");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PASSWORD");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PERSON_NAME:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PERSON_NAME");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PHONETIC:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PHONETIC");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_POSTAL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_SHORT_MESSAGE");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_URI:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_URI");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_VISIBLE_PASSWORD");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EDIT_TEXT");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_PASSWORD");
+                break;
+            default:
+                Log.i(TAG, "  Unknown variation");
+                break;
+        }
         Log.i(TAG, "Flags:");
         if (0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS))
             Log.i(TAG, "  TYPE_TEXT_FLAG_NO_SUGGESTIONS");
