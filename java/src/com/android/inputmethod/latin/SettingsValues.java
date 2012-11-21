@@ -271,6 +271,10 @@ public final class SettingsValues {
         return mPhantomSpacePromotingSymbols.contains(String.valueOf((char)code));
     }
 
+    public boolean shouldInsertSpacesAutomatically() {
+        return mInputAttributes.mShouldInsertSpacesAutomatically;
+    }
+
     private static boolean isAutoCorrectEnabled(final Resources res,
             final String currentAutoCorrectionSetting) {
         final String autoCorrectionOff = res.getString(
