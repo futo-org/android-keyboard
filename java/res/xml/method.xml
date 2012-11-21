@@ -36,6 +36,7 @@
     en_GB: English Great Britain/qwerty
     eo: Esperanto/spanish
     es: Spanish/spanish
+    es_US: Spanish United States/spanish
     et: Estonian/nordic
     fa: Persian/arabic
     fi: Finnish/nordic
@@ -181,6 +182,13 @@
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="-2066550842"
+            android:imeSubtypeLocale="es_US"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
