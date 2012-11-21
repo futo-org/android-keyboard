@@ -21,9 +21,10 @@
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
     <!-- Symbols that should be swapped with a weak space -->
-    <string name="weak_space_swapping_symbols">.,;:!?)]}\"</string>
+    <string name="weak_space_swapping_symbols">.,;:!?)]}</string>
     <!-- Symbols that should strip a weak space -->
-    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\n/_\'-"@</string>
+    <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
+    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\n"/_\'-@\"</string>
     <!-- Symbols that should convert weak spaces into real space -->
     <string name="phantom_space_promoting_symbols">([*&amp;{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
