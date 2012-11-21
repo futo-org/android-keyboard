@@ -250,6 +250,12 @@ static inline void prof_out(void) {
 #ifndef S_INT_MAX
 #define S_INT_MAX 2147483647 // ((1 << 31) - 1)
 #endif
+#ifndef S_INT_MIN
+// The literal constant -2147483648 does not work in C prior C90, because
+// the compiler tries to fit the positive number into an int and then negate it.
+// GCC warns about this.
+#define S_INT_MIN (-2147483647 - 1) // -(1 << 31)
+#endif
 
 // Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().
 // We measured and compared performance of both, and found mmap() is fairly good in terms of
