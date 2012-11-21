@@ -104,4 +104,20 @@ public class BlueUnderlineTests extends InputTestsBase {
         final SpanGetter span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
         assertNull("blue underline removed when cursor is moved", span.mSpan);
     }
+
+    public void testComposingStopsOnSpace() {
+        final String STRING_TO_TYPE = "this ";
+        type(STRING_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        // Simulate the onUpdateSelection() event
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        runMessages();
+        // Here the blue underline has been set. testBlueUnderline() is testing for this already,
+        // so let's not test it here again.
+        // Now simulate the user moving the cursor.
+        SpanGetter span = new SpanGetter(mTextView.getText(), UnderlineSpan.class);
+        assertNull("should not be composing, so should not have an underline span", span.mSpan);
+        span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
+        assertNull("should not be composing, so should not have an underline span", span.mSpan);
+    }
 }
