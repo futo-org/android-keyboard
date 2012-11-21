@@ -29,6 +29,7 @@ public final class InputAttributes {
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
+    final public boolean mShouldInsertSpacesAutomatically;
     final private int mInputType;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
@@ -54,6 +55,7 @@ public final class InputAttributes {
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
+            mShouldInsertSpacesAutomatically = false;
         } else {
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             final boolean flagNoSuggestions =
@@ -65,6 +67,7 @@ public final class InputAttributes {
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
+            // TODO: Have a helper method in InputTypeUtils
             // Make sure that passwords are not displayed in {@link SuggestionStripView}.
             if (InputTypeUtils.isPasswordInputType(inputType)
                     || InputTypeUtils.isVisiblePasswordInputType(inputType)
@@ -77,6 +80,8 @@ public final class InputAttributes {
             } else {
                 mIsSettingsSuggestionStripOn = true;
             }
+
+            mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
 
             // If it's a browser edit field and auto correct is not ON explicitly, then
             // disable auto correction, but keep suggestions on.
