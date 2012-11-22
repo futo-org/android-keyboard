@@ -21,7 +21,6 @@
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
 #include "defines.h"
-#include "geometry_utils.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
 
@@ -37,7 +36,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
-
     if (isGeometric) {
         mIsContinuationPossible = checkAndReturnIsContinuationPossible(
                 inputSize, xCoordinates, yCoordinates, times);
@@ -106,7 +104,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mDistanceCache.clear();
         mNearKeysVector.clear();
         mSearchKeysVector.clear();
-        mRelativeSpeeds.clear();
+        mSpeedRates.clear();
+        mBeelineSpeedRates.clear();
         mCharProbabilities.clear();
         mDirections.clear();
     }
@@ -117,6 +116,14 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mSampledInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
+        if (DEBUG_SAMPLING_POINTS) {
+            if (isGeometric) {
+                for (int i = 0; i < inputSize; ++i) {
+                    AKLOGI("(%d) x %d, y %d, time %d",
+                            i, xCoordinates[i], yCoordinates[i], times[i]);
+                }
+            }
+        }
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
         int lastInputIndex = pushTouchPointStartIndex;
         for (int i = lastInputIndex; i < inputSize; ++i) {
@@ -179,7 +186,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 
     if (mSampledInputSize > 0 && isGeometric) {
-        refreshRelativeSpeed(inputSize, xCoordinates, yCoordinates, times, lastSavedInputSize);
+        refreshSpeedRates(inputSize, xCoordinates, yCoordinates, times, lastSavedInputSize);
+        refreshBeelineSpeedRates(inputSize, xCoordinates, yCoordinates, times);
     }
 
     if (DEBUG_GEO_FULL) {
@@ -242,7 +250,13 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 originalY << ";";
             }
         }
+        AKLOGI("===== sampled points =====");
         for (int i = 0; i < mSampledInputSize; ++i) {
+            if (isGeometric) {
+                AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %.4f",
+                        i, mSampledInputXs[i], mSampledInputYs[i], mTimes[i], mSpeedRates[i],
+                        getBeelineSpeedRate(i));
+            }
             sampledX << mSampledInputXs[i];
             sampledY << mSampledInputYs[i];
             if (i != mSampledInputSize - 1) {
@@ -303,13 +317,13 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 }
 
-void ProximityInfoState::refreshRelativeSpeed(const int inputSize, const int *const xCoordinates,
+void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const xCoordinates,
         const int *const yCoordinates, const int *const times, const int lastSavedInputSize) {
     // Relative speed calculation.
     const int sumDuration = mTimes.back() - mTimes.front();
     const int sumLength = mLengthCache.back() - mLengthCache.front();
-    const float averageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
-    mRelativeSpeeds.resize(mSampledInputSize);
+    mAverageSpeed = static_cast<float>(sumLength) / static_cast<float>(sumDuration);
+    mSpeedRates.resize(mSampledInputSize);
     for (int i = lastSavedInputSize; i < mSampledInputSize; ++i) {
         const int index = mInputIndice[i];
         int length = 0;
@@ -331,16 +345,17 @@ void ProximityInfoState::refreshRelativeSpeed(const int inputSize, const int *co
             if (i > 0 && j < mInputIndice[i - 1]) {
                 break;
             }
+            // TODO: use mLengthCache instead?
             length += getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
         if (duration == 0 || sumDuration == 0) {
             // Cannot calculate speed; thus, it gives an average value (1.0);
-            mRelativeSpeeds[i] = 1.0f;
+            mSpeedRates[i] = 1.0f;
         } else {
             const float speed = static_cast<float>(length) / static_cast<float>(duration);
-            mRelativeSpeeds[i] = speed / averageSpeed;
+            mSpeedRates[i] = speed / mAverageSpeed;
         }
     }
 
@@ -349,6 +364,69 @@ void ProximityInfoState::refreshRelativeSpeed(const int inputSize, const int *co
     for (int i = max(0, lastSavedInputSize - 1); i < mSampledInputSize - 1; ++i) {
         mDirections[i] = getDirection(i, i + 1);
     }
+}
+
+void ProximityInfoState::refreshBeelineSpeedRates(const int inputSize,
+        const int *const xCoordinates, const int *const yCoordinates, const int * times) {
+    mBeelineSpeedRates.resize(mSampledInputSize);
+    for (int i = 0; i < mSampledInputSize; ++i) {
+        mBeelineSpeedRates[i] = calculateBeelineSpeedRate(
+                i, inputSize, xCoordinates, yCoordinates, times);
+    }
+}
+
+float ProximityInfoState::calculateBeelineSpeedRate(
+        const int id, const int inputSize, const int *const xCoordinates,
+        const int *const yCoordinates, const int * times) const {
+    static const int MAX_PERCENTILE = 100;
+    static const int LOOKUP_TIME_PERCENTILE = 30;
+    static const int LOOKUP_RADIUS_PERCENTILE = 50;
+    if (mSampledInputSize <= 0 || mAverageSpeed < 0.1f) {
+        return 1.0f;
+    }
+    const int lookupRadius =
+            mProximityInfo->getMostCommonKeyWidth() * LOOKUP_RADIUS_PERCENTILE / MAX_PERCENTILE;
+    const int x0 = mSampledInputXs[id];
+    const int y0 = mSampledInputYs[id];
+    const int lookupTime =
+            (mTimes.back() - mTimes.front()) * LOOKUP_TIME_PERCENTILE / MAX_PERCENTILE;
+    if (lookupTime <= 0) {
+        return 1.0f;
+    }
+    int tempTime = 0;
+    int tempBeelineDistance = 0;
+    int start = mInputIndice[id];
+    // lookup forward
+    while (start > 0 && tempTime < lookupTime && tempBeelineDistance < lookupRadius) {
+        tempTime += times[start] - times[start - 1];
+        --start;
+        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
+    }
+    tempTime= 0;
+    tempBeelineDistance = 0;
+    int end = mInputIndice[id];
+    // lookup backward
+    while (end < static_cast<int>(inputSize - 1) && tempTime < lookupTime
+            && tempBeelineDistance < lookupRadius) {
+        tempTime += times[end + 1] - times[end];
+        ++end;
+        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
+    }
+
+    if (start == end) {
+        return 1.0f;
+    }
+
+    const int x2 = xCoordinates[start];
+    const int y2 = yCoordinates[start];
+    const int x3 = xCoordinates[end];
+    const int y3 = yCoordinates[end];
+    const int beelineDistance = getDistanceInt(x2, y2, x3, y3);
+    const int time = times[end] - times[start];
+    if (time <= 0) {
+        return 1.0f;
+    }
+    return (static_cast<float>(beelineDistance) / static_cast<float>(time)) / mAverageSpeed;
 }
 
 bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
@@ -777,7 +855,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
         float skipProbability = MAX_SKIP_PROBABILITY;
 
         const float currentAngle = getPointAngle(i);
-        const float relativeSpeed = getRelativeSpeed(i);
+        const float speedRate = getSpeedRate(i);
 
         float nearestKeyDistance = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
         for (int j = 0; j < keyCount; ++j) {
@@ -801,19 +879,19 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
             skipProbability *= SKIP_LAST_POINT_PROBABILITY;
         } else {
             // If the current speed is relatively slower than adjacent keys, we promote this point.
-            if (getRelativeSpeed(i - 1) - SPEED_MARGIN > relativeSpeed
-                    && relativeSpeed < getRelativeSpeed(i + 1) - SPEED_MARGIN) {
+            if (getSpeedRate(i - 1) - SPEED_MARGIN > speedRate
+                    && speedRate < getSpeedRate(i + 1) - SPEED_MARGIN) {
                 if (currentAngle < CORNER_ANGLE_THRESHOLD) {
-                    skipProbability *= min(1.0f, relativeSpeed
+                    skipProbability *= min(1.0f, speedRate
                             * SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY);
                 } else {
                     // If the angle is small enough, we promote this point more. (e.g. pit vs put)
-                    skipProbability *= min(1.0f, relativeSpeed * SPEED_WEIGHT_FOR_SKIP_PROBABILITY
+                    skipProbability *= min(1.0f, speedRate * SPEED_WEIGHT_FOR_SKIP_PROBABILITY
                             + MIN_SPEED_RATE_FOR_SKIP_PROBABILITY);
                 }
             }
 
-            skipProbability *= min(1.0f, relativeSpeed * nearestKeyDistance *
+            skipProbability *= min(1.0f, speedRate * nearestKeyDistance *
                     NEAREST_DISTANCE_WEIGHT + NEAREST_DISTANCE_BIAS);
 
             // Adjusts skip probability by a rate depending on angle.
@@ -850,10 +928,10 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
         static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION = 0.15f;
         static const float MIN_STANDERD_DIVIATION = 0.37f;
 
-        const float speedxAngleRate = min(relativeSpeed * currentAngle / M_PI_F
+        const float speedxAngleRate = min(speedRate * currentAngle / M_PI_F
                 * SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION,
                         MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION);
-        const float speedxNearestKeyDistanceRate = min(relativeSpeed * nearestKeyDistance
+        const float speedxNearestKeyDistanceRate = min(speedRate * nearestKeyDistance
                 * SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION,
                         MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION);
         const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate + MIN_STANDERD_DIVIATION;
@@ -932,7 +1010,7 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
             std::stringstream sstream;
             sstream << i << ", ";
             sstream << "(" << mSampledInputXs[i] << ", " << mSampledInputYs[i] << "), ";
-            sstream << "Speed: "<< getRelativeSpeed(i) << ", ";
+            sstream << "Speed: "<< getSpeedRate(i) << ", ";
             sstream << "Angle: "<< getPointAngle(i) << ", \n";
 
             for (hash_map_compat<int, float>::iterator it = mCharProbabilities[i].begin();
@@ -1066,5 +1144,4 @@ float ProximityInfoState::getProbability(const int index, const int keyIndex) co
     }
     return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
 }
-
 } // namespace latinime

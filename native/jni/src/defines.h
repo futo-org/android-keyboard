@@ -210,6 +210,7 @@ static inline void prof_out(void) {
 #define DEBUG_WORDS_PRIORITY_QUEUE false
 #define DEBUG_SAMPLING_POINTS true
 #define DEBUG_POINTS_PROBABILITY true
+#define DEBUG_DOUBLE_LETTER true
 
 #ifdef FLAG_FULL_DBG
 #define DEBUG_GEO_FULL true
@@ -232,6 +233,7 @@ static inline void prof_out(void) {
 #define DEBUG_WORDS_PRIORITY_QUEUE false
 #define DEBUG_SAMPLING_POINTS false
 #define DEBUG_POINTS_PROBABILITY false
+#define DEBUG_DOUBLE_LETTER false
 
 #define DEBUG_GEO_FULL false
 

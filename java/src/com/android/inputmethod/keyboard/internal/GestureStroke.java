@@ -27,6 +27,10 @@ public class GestureStroke {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_SPEED = false;
 
+    // The height of extra area above the keyboard to draw gesture trails.
+    // Proportional to the keyboard height.
+    public static final float EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO = 0.25f;
+
     public static final int DEFAULT_CAPACITY = 128;
 
     private final int mPointerId;
@@ -37,6 +41,8 @@ public class GestureStroke {
     private final GestureStrokeParams mParams;
 
     private int mKeyWidth; // pixel
+    private int mMinYCoordinate; // pixel
+    private int mMaxYCoordinate; // pixel
     // Static threshold for starting gesture detection
     private int mDetectFastMoveSpeedThreshold; // pixel /sec
     private int mDetectFastMoveTime;
@@ -135,8 +141,10 @@ public class GestureStroke {
         mParams = params;
     }
 
-    public void setKeyboardGeometry(final int keyWidth) {
+    public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         mKeyWidth = keyWidth;
+        mMinYCoordinate = -(int)(keyboardHeight * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
+        mMaxYCoordinate = keyboardHeight - 1;
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mDetectFastMoveSpeedThreshold = (int)(keyWidth * mParams.mDetectFastMoveSpeedThreshold);
         mGestureDynamicDistanceThresholdFrom =
@@ -167,7 +175,7 @@ public class GestureStroke {
                     elapsedTimeAfterTyping, mAfterFastTyping ? " afterFastTyping" : ""));
         }
         final int elapsedTimeFromFirstDown = (int)(downTime - gestureFirstDownTime);
-        addPoint(x, y, elapsedTimeFromFirstDown, true /* isMajorEvent */);
+        addPointOnKeyboard(x, y, elapsedTimeFromFirstDown, true /* isMajorEvent */);
     }
 
     private int getGestureDynamicDistanceThreshold(final int deltaTime) {
@@ -277,7 +285,17 @@ public class GestureStroke {
         return dist;
     }
 
-    public void addPoint(final int x, final int y, final int time, final boolean isMajorEvent) {
+    /**
+     * Add a touch event as a gesture point. Returns true if the touch event is on the valid
+     * gesture area.
+     * @param x the x-coordinate of the touch event
+     * @param y the y-coordinate of the touch event
+     * @param time the elapsed time in millisecond from the first gesture down
+     * @param isMajorEvent false if this is a historical move event
+     * @return true if the touch event is on the valid gesture area
+     */
+    public boolean addPointOnKeyboard(final int x, final int y, final int time,
+            final boolean isMajorEvent) {
         final int size = mEventTimes.getLength();
         if (size <= 0) {
             // Down event
@@ -293,6 +311,7 @@ public class GestureStroke {
             updateIncrementalRecognitionSize(x, y, time);
             updateMajorEvent(x, y, time);
         }
+        return y >= mMinYCoordinate && y < mMaxYCoordinate;
     }
 
     private void updateIncrementalRecognitionSize(final int x, final int y, final int time) {

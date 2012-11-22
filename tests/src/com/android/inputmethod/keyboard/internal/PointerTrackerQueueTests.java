@@ -49,6 +49,9 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         }
 
         @Override
+        public void cancelTracking() {}
+
+        @Override
         public String toString() {
             return Integer.toString(mId);
         }

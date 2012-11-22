@@ -25,6 +25,7 @@
 
 #include "char_utils.h"
 #include "defines.h"
+#include "geometry_utils.h"
 #include "hash_map_compat.h"
 
 namespace latinime {
@@ -51,13 +52,13 @@ class ProximityInfoState {
     // Defined here                        //
     /////////////////////////////////////////
     AK_FORCE_INLINE ProximityInfoState()
-            : mProximityInfo(0), mMaxPointToKeyLength(0),
+            : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mTimes(),
-              mInputIndice(), mDistanceCache(), mLengthCache(), mRelativeSpeeds(), mDirections(),
-              mCharProbabilities(), mNearKeysVector(), mSearchKeysVector(),
-              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
+              mInputIndice(), mLengthCache(), mDistanceCache(), mSpeedRates(),
+              mDirections(), mBeelineSpeedRates(), mCharProbabilities(), mNearKeysVector(),
+              mSearchKeysVector(), mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -162,8 +163,12 @@ class ProximityInfoState {
     int32_t getAllPossibleChars(
             const size_t startIndex, int32_t *const filter, const int32_t filterSize) const;
 
-    float getRelativeSpeed(const int index) const {
-        return mRelativeSpeeds[index];
+    float getSpeedRate(const int index) const {
+        return mSpeedRates[index];
+    }
+
+    AK_FORCE_INLINE float getBeelineSpeedRate(const int id) const {
+        return mBeelineSpeedRates[id];
     }
 
     float getDirection(const int index) const {
@@ -228,12 +233,17 @@ class ProximityInfoState {
     void popInputData();
     void updateAlignPointProbabilities(const int start);
     bool suppressCharProbabilities(const int index1, const int index2);
-    void refreshRelativeSpeed(const int inputSize, const int *const xCoordinates,
+    void refreshSpeedRates(const int inputSize, const int *const xCoordinates,
             const int *const yCoordinates, const int *const times, const int lastSavedInputSize);
+    void refreshBeelineSpeedRates(const int inputSize,
+            const int *const xCoordinates, const int *const yCoordinates, const int * times);
+    float calculateBeelineSpeedRate(const int id, const int inputSize,
+            const int *const xCoordinates, const int *const yCoordinates, const int * times) const;
 
     // const
     const ProximityInfo *mProximityInfo;
     float mMaxPointToKeyLength;
+    float mAverageSpeed;
     bool mHasTouchPositionCorrectionData;
     int mMostCommonKeyWidthSquare;
     std::string mLocaleStr;
@@ -248,10 +258,11 @@ class ProximityInfoState {
     std::vector<int> mSampledInputYs;
     std::vector<int> mTimes;
     std::vector<int> mInputIndice;
+    std::vector<int> mLengthCache;
     std::vector<float> mDistanceCache;
-    std::vector<int>  mLengthCache;
-    std::vector<float> mRelativeSpeeds;
+    std::vector<float> mSpeedRates;
     std::vector<float> mDirections;
+    std::vector<float> mBeelineSpeedRates;
     // probabilities of skipping or mapping to a key for each point.
     std::vector<hash_map_compat<int, float> > mCharProbabilities;
     // The vector for the key code set which holds nearby keys for each sampled input point
