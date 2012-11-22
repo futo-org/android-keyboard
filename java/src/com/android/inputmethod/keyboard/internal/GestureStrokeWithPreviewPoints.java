@@ -56,8 +56,8 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     }
 
     @Override
-    public void setKeyboardGeometry(final int keyWidth) {
-        super.setKeyboardGeometry(keyWidth);
+    public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
+        super.setKeyboardGeometry(keyWidth, keyboardHeight);
         final float sampleLength = keyWidth * MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH;
         mMinPreviewSampleLengthSquare = (int)(sampleLength * sampleLength);
     }
@@ -69,8 +69,9 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     }
 
     @Override
-    public void addPoint(final int x, final int y, final int time, final boolean isMajorEvent) {
-        super.addPoint(x, y, time, isMajorEvent);
+    public boolean addPointOnKeyboard(final int x, final int y, final int time,
+            final boolean isMajorEvent) {
+        final boolean onValidArea = super.addPointOnKeyboard(x, y, time, isMajorEvent);
         if (isMajorEvent || needsSampling(x, y)) {
             mPreviewEventTimes.add(time);
             mPreviewXCoordinates.add(x);
@@ -78,6 +79,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
             mLastX = x;
             mLastY = y;
         }
+        return onValidArea;
     }
 
     public void appendPreviewStroke(final ResizableIntArray eventTimes,

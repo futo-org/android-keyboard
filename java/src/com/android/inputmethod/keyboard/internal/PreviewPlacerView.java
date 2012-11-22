@@ -40,10 +40,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 public final class PreviewPlacerView extends RelativeLayout {
-    // The height of extra area above the keyboard to draw gesture trails.
-    // Proportional to the keyboard height.
-    private static final float EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO = 0.25f;
-
     private final int mGestureFloatingPreviewTextColor;
     private final int mGestureFloatingPreviewTextOffset;
     private final int mGestureFloatingPreviewColor;
@@ -175,7 +171,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     public void setKeyboardViewGeometry(final int x, final int y, final int w, final int h) {
         mKeyboardViewOriginX = x;
         mKeyboardViewOriginY = y;
-        mOffscreenOffsetY = (int)(h * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
+        mOffscreenOffsetY = (int)(h * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mOffscreenWidth = w;
         mOffscreenHeight = mOffscreenOffsetY + h;
     }
