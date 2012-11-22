@@ -423,4 +423,10 @@ typedef enum {
     // Additional proximity char which can differ by language.
     ADDITIONAL_PROXIMITY_CHAR
 } ProximityType;
+
+typedef enum {
+    NOT_A_DOUBLE_LETTER,
+    A_DOUBLE_LETTER,
+    A_STRONG_DOUBLE_LETTER
+} DoubleLetterLevel;
 #endif // LATINIME_DEFINES_H
