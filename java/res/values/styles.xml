@@ -104,6 +104,7 @@
         <item name="gestureDynamicDistanceThresholdTo">@fraction/config_gesture_dynamic_distance_threshold_to</item>
         <item name="gestureSamplingMinimumDistance">@fraction/config_gesture_sampling_minimum_distance</item>
         <item name="gestureRecognitionMinimumTime">@integer/config_gesture_recognition_minimum_time</item>
+        <item name="gestureRecognitionUpdateTime">@integer/config_gesture_recognition_update_time</item>
         <item name="gestureRecognitionSpeedThreshold">@fraction/config_gesture_recognition_speed_threshold</item>
         <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
     </style>

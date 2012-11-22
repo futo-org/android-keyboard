@@ -228,6 +228,17 @@ public class GestureStroke {
         return isStartOfAGesture;
     }
 
+    public void duplicateLastPointWith(final int time) {
+        final int lastIndex = mEventTimes.getLength() - 1;
+        if (lastIndex >= 0) {
+            final int x = mXCoordinates.get(lastIndex);
+            final int y = mYCoordinates.get(lastIndex);
+            // TODO: Have appendMajorPoint()
+            appendPoint(x, y, time);
+            updateIncrementalRecognitionSize(x, y, time);
+        }
+    }
+
     protected void reset() {
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;

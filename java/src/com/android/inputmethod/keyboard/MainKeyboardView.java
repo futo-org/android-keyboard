@@ -29,6 +29,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -156,12 +157,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_DOUBLE_TAP = 3;
+        private static final int MSG_UPDATE_BATCH_INPUT = 4;
 
         private final int mKeyRepeatStartTimeout;
         private final int mKeyRepeatInterval;
         private final int mLongPressKeyTimeout;
         private final int mLongPressShiftKeyTimeout;
         private final int mIgnoreAltCodeKeyTimeout;
+        private final int mGestureRecognitionUpdateTime;
 
         public KeyTimerHandler(final MainKeyboardView outerInstance,
                 final TypedArray mainKeyboardViewAttr) {
@@ -177,6 +180,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                     R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
             mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
+            mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
         }
 
         @Override
@@ -200,6 +205,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
                 }
+                break;
+            case MSG_UPDATE_BATCH_INPUT:
+                tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
+                startUpdateBatchInputTimer(tracker);
                 break;
             }
         }
@@ -349,8 +358,24 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             cancelLongPressTimer();
         }
 
+        @Override
+        public void startUpdateBatchInputTimer(final PointerTracker tracker) {
+            if (mGestureRecognitionUpdateTime <= 0) {
+                return;
+            }
+            removeMessages(MSG_UPDATE_BATCH_INPUT, tracker);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_BATCH_INPUT, tracker),
+                    mGestureRecognitionUpdateTime);
+        }
+
+        @Override
+        public void cancelAllUpdateBatchInputTimer() {
+            removeMessages(MSG_UPDATE_BATCH_INPUT);
+        }
+
         public void cancelAllMessages() {
             cancelKeyTimers();
+            cancelAllUpdateBatchInputTimer();
         }
     }
 
