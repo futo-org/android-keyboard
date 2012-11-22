@@ -1528,6 +1528,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
+        public void onCancelBatchInput(final LatinIME latinIme) {
+            mInBatchInput = false;
+            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                    SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
+        }
+
         // Run in the UI thread.
         public synchronized SuggestedWords onEndBatchInput(final InputPointers batchPointers,
                 final LatinIME latinIme) {
@@ -1611,6 +1617,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void onCancelInput() {
         // User released a finger outside any key
         mKeyboardSwitcher.onCancelInput();
+    }
+
+    @Override
+    public void onCancelBatchInput() {
+        BatchInputUpdater.getInstance().onCancelBatchInput(this);
     }
 
     private void handleBackspace(final int spaceState) {

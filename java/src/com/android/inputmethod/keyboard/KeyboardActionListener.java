@@ -80,6 +80,8 @@ public interface KeyboardActionListener {
      */
     public void onEndBatchInput(InputPointers batchPointers);
 
+    public void onCancelBatchInput();
+
     /**
      * Called when user released a finger outside any key.
      */
@@ -106,6 +108,8 @@ public interface KeyboardActionListener {
         public void onUpdateBatchInput(InputPointers batchPointers) {}
         @Override
         public void onEndBatchInput(InputPointers batchPointers) {}
+        @Override
+        public void onCancelBatchInput() {}
         @Override
         public void onCancelInput() {}
         @Override
