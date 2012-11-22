@@ -125,7 +125,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setContextThemeWrapper(Context context, KeyboardTheme keyboardTheme) {
-        if (mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
+        if (mThemeContext == null || mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardLayoutSet.clearKeyboardCache();
