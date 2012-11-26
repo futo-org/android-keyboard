@@ -77,14 +77,8 @@ extern "C" int main() {
  *    $
  */
 static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
-    { 0x00C4, 0x00E4 },  // LATIN CAPITAL LETTER A WITH DIAERESIS
-    { 0x00C5, 0x00E5 },  // LATIN CAPITAL LETTER A WITH RING ABOVE
     { 0x00C6, 0x00E6 },  // LATIN CAPITAL LETTER AE
     { 0x00D0, 0x00F0 },  // LATIN CAPITAL LETTER ETH
-    { 0x00D5, 0x00F5 },  // LATIN CAPITAL LETTER O WITH TILDE
-    { 0x00D6, 0x00F6 },  // LATIN CAPITAL LETTER O WITH DIAERESIS
-    { 0x00D8, 0x00F8 },  // LATIN CAPITAL LETTER O WITH STROKE
-    { 0x00DC, 0x00FC },  // LATIN CAPITAL LETTER U WITH DIAERESIS
     { 0x00DE, 0x00FE },  // LATIN CAPITAL LETTER THORN
     { 0x0110, 0x0111 },  // LATIN CAPITAL LETTER D WITH STROKE
     { 0x0126, 0x0127 },  // LATIN CAPITAL LETTER H WITH STROKE
@@ -126,15 +120,12 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0x01B8, 0x01B9 },  // LATIN CAPITAL LETTER EZH REVERSED
     { 0x01BC, 0x01BD },  // LATIN CAPITAL LETTER TONE FIVE
     { 0x01E4, 0x01E5 },  // LATIN CAPITAL LETTER G WITH STROKE
-    { 0x01EA, 0x01EB },  // LATIN CAPITAL LETTER O WITH OGONEK
     { 0x01F6, 0x0195 },  // LATIN CAPITAL LETTER HWAIR
     { 0x01F7, 0x01BF },  // LATIN CAPITAL LETTER WYNN
     { 0x021C, 0x021D },  // LATIN CAPITAL LETTER YOGH
     { 0x0220, 0x019E },  // LATIN CAPITAL LETTER N WITH LONG RIGHT LEG
     { 0x0222, 0x0223 },  // LATIN CAPITAL LETTER OU
     { 0x0224, 0x0225 },  // LATIN CAPITAL LETTER Z WITH HOOK
-    { 0x0226, 0x0227 },  // LATIN CAPITAL LETTER A WITH DOT ABOVE
-    { 0x022E, 0x022F },  // LATIN CAPITAL LETTER O WITH DOT ABOVE
     { 0x023A, 0x2C65 },  // LATIN CAPITAL LETTER A WITH STROKE
     { 0x023B, 0x023C },  // LATIN CAPITAL LETTER C WITH STROKE
     { 0x023D, 0x019A },  // LATIN CAPITAL LETTER L WITH BAR
@@ -941,12 +932,14 @@ const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
     /* U+00D0 */ 0x00D0, 0x004E, 0x004F, 0x004F, 0x004F, 0x004F, 0x004F, 0x00D7,
     /* U+00D8 */ 0x004F, 0x0055, 0x0055, 0x0055, 0x0055, 0x0059, 0x00DE, 0x0073,
         // U+00D8: Manually changed from 00D8 to 004F
+          // TODO: Check if it's really acceptable to consider Ø a diacritical variant of O
         // U+00DF: Manually changed from 00DF to 0073
     /* U+00E0 */ 0x0061, 0x0061, 0x0061, 0x0061, 0x0061, 0x0061, 0x00E6, 0x0063,
     /* U+00E8 */ 0x0065, 0x0065, 0x0065, 0x0065, 0x0069, 0x0069, 0x0069, 0x0069,
     /* U+00F0 */ 0x00F0, 0x006E, 0x006F, 0x006F, 0x006F, 0x006F, 0x006F, 0x00F7,
     /* U+00F8 */ 0x006F, 0x0075, 0x0075, 0x0075, 0x0075, 0x0079, 0x00FE, 0x0079,
         // U+00F8: Manually changed from 00F8 to 006F
+          // TODO: Check if it's really acceptable to consider ø a diacritical variant of o
     /* U+0100 */ 0x0041, 0x0061, 0x0041, 0x0061, 0x0041, 0x0061, 0x0043, 0x0063,
     /* U+0108 */ 0x0043, 0x0063, 0x0043, 0x0063, 0x0043, 0x0063, 0x0044, 0x0064,
     /* U+0110 */ 0x0110, 0x0111, 0x0045, 0x0065, 0x0045, 0x0065, 0x0045, 0x0065,
@@ -975,19 +968,45 @@ const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
     /* U+01B8 */ 0x01B8, 0x01B9, 0x01BA, 0x01BB, 0x01BC, 0x01BD, 0x01BE, 0x01BF,
     /* U+01C0 */ 0x01C0, 0x01C1, 0x01C2, 0x01C3, 0x0044, 0x0044, 0x0064, 0x004C,
     /* U+01C8 */ 0x004C, 0x006C, 0x004E, 0x004E, 0x006E, 0x0041, 0x0061, 0x0049,
-    /* U+01D0 */ 0x0069, 0x004F, 0x006F, 0x0055, 0x0075, 0x00DC, 0x00FC, 0x00DC,
-    /* U+01D8 */ 0x00FC, 0x00DC, 0x00FC, 0x00DC, 0x00FC, 0x01DD, 0x00C4, 0x00E4,
-    /* U+01E0 */ 0x0226, 0x0227, 0x00C6, 0x00E6, 0x01E4, 0x01E5, 0x0047, 0x0067,
-    /* U+01E8 */ 0x004B, 0x006B, 0x004F, 0x006F, 0x01EA, 0x01EB, 0x01B7, 0x0292,
+    /* U+01D0 */ 0x0069, 0x004F, 0x006F, 0x0055, 0x0075, 0x0055, 0x0075, 0x0055,
+        // U+01D5: Manually changed from 00DC to 0055
+        // U+01D6: Manually changed from 00FC to 0075
+        // U+01D7: Manually changed from 00DC to 0055
+    /* U+01D8 */ 0x0075, 0x0055, 0x0075, 0x0055, 0x0075, 0x01DD, 0x0041, 0x0061,
+        // U+01D8: Manually changed from 00FC to 0075
+        // U+01D9: Manually changed from 00DC to 0055
+        // U+01DA: Manually changed from 00FC to 0075
+        // U+01DB: Manually changed from 00DC to 0055
+        // U+01DC: Manually changed from 00FC to 0075
+        // U+01DE: Manually changed from 00C4 to 0041
+        // U+01DF: Manually changed from 00E4 to 0061
+    /* U+01E0 */ 0x0041, 0x0061, 0x00C6, 0x00E6, 0x01E4, 0x01E5, 0x0047, 0x0067,
+        // U+01E0: Manually changed from 0226 to 0041
+        // U+01E1: Manually changed from 0227 to 0061
+    /* U+01E8 */ 0x004B, 0x006B, 0x004F, 0x006F, 0x004F, 0x006F, 0x01B7, 0x0292,
+        // U+01EC: Manually changed from 01EA to 004F
+        // U+01ED: Manually changed from 01EB to 006F
     /* U+01F0 */ 0x006A, 0x0044, 0x0044, 0x0064, 0x0047, 0x0067, 0x01F6, 0x01F7,
-    /* U+01F8 */ 0x004E, 0x006E, 0x00C5, 0x00E5, 0x00C6, 0x00E6, 0x00D8, 0x00F8,
+    /* U+01F8 */ 0x004E, 0x006E, 0x0041, 0x0061, 0x00C6, 0x00E6, 0x004F, 0x006F,
+        // U+01FA: Manually changed from 00C5 to 0041
+        // U+01FB: Manually changed from 00E5 to 0061
+        // U+01FE: Manually changed from 00D8 to 004F
+          // TODO: Check if it's really acceptable to consider Ø a diacritical variant of O
+        // U+01FF: Manually changed from 00F8 to 006F
+          // TODO: Check if it's really acceptable to consider ø a diacritical variant of o
     /* U+0200 */ 0x0041, 0x0061, 0x0041, 0x0061, 0x0045, 0x0065, 0x0045, 0x0065,
     /* U+0208 */ 0x0049, 0x0069, 0x0049, 0x0069, 0x004F, 0x006F, 0x004F, 0x006F,
     /* U+0210 */ 0x0052, 0x0072, 0x0052, 0x0072, 0x0055, 0x0075, 0x0055, 0x0075,
     /* U+0218 */ 0x0053, 0x0073, 0x0054, 0x0074, 0x021C, 0x021D, 0x0048, 0x0068,
     /* U+0220 */ 0x0220, 0x0221, 0x0222, 0x0223, 0x0224, 0x0225, 0x0041, 0x0061,
-    /* U+0228 */ 0x0045, 0x0065, 0x00D6, 0x00F6, 0x00D5, 0x00F5, 0x004F, 0x006F,
-    /* U+0230 */ 0x022E, 0x022F, 0x0059, 0x0079, 0x0234, 0x0235, 0x0236, 0x0237,
+    /* U+0228 */ 0x0045, 0x0065, 0x004F, 0x006F, 0x004F, 0x006F, 0x004F, 0x006F,
+        // U+022A: Manually changed from 00D6 to 004F
+        // U+022B: Manually changed from 00F6 to 006F
+        // U+022C: Manually changed from 00D5 to 004F
+        // U+022D: Manually changed from 00F5 to 006F
+    /* U+0230 */ 0x004F, 0x006F, 0x0059, 0x0079, 0x0234, 0x0235, 0x0236, 0x0237,
+        // U+0230: Manually changed from 022E to 004F
+        // U+0231: Manually changed from 022F to 006F
     /* U+0238 */ 0x0238, 0x0239, 0x023A, 0x023B, 0x023C, 0x023D, 0x023E, 0x023F,
     /* U+0240 */ 0x0240, 0x0241, 0x0242, 0x0243, 0x0244, 0x0245, 0x0246, 0x0247,
     /* U+0248 */ 0x0248, 0x0249, 0x024A, 0x024B, 0x024C, 0x024D, 0x024E, 0x024F,
