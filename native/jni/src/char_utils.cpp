@@ -26,79 +26,62 @@ struct LatinCapitalSmallPair {
   unsigned short small;
 };
 
-// Generated from http://unicode.org/Public/UNIDATA/UnicodeData.txt
-//
-// 1. Run the following code.  Bascially taken from
-//    Dictionary::toLowerCase(unsigned short c) in dictionary.cpp.
-//    Then, get the list of chars where cc != ccc.
-//
-//    unsigned short c, cc, ccc, ccc2;
-//    for (c = 0; c < 0xFFFF ; c++) {
-//        if (c < NELEMS(BASE_CHARS)) {
-//            cc = BASE_CHARS[c];
-//        } else {
-//            cc = c;
-//        }
-//
-//        // tolower
-//        int isBase = 0;
-//        if (cc >='A' && cc <= 'Z') {
-//            ccc = (cc | 0x20);
-//            ccc2 = ccc;
-//            isBase = 1;
-//        } else if (cc > 0x7F) {
-//            ccc = u_tolower(cc);
-//            ccc2 = latin_tolower(cc);
-//        } else {
-//            ccc = cc;
-//            ccc2 = ccc;
-//        }
-//        if (!isBase && cc != ccc) {
-//            wprintf(L" 0x%04X => 0x%04X => 0x%04X  %lc => %lc => %lc \n",
-//                    c, cc, ccc, c, cc, ccc);
-//            //assert(ccc == ccc2);
-//        }
-//    }
-//
-//    Initially, started with an empty latin_tolower() as below.
-//
-//    unsigned short latin_tolower(unsigned short c) {
-//        return c;
-//    }
-//
-//
-// 2. Process the list obtained by 1 by the following perl script and apply
-//    'sort -u' as well.  Get the SORTED_CHAR_MAP[].
-//    Note that '$1' in the perl script is 'cc' in the above C code.
-//
-//    while(<>) {
-//        / 0x\w* => 0x(\w*) =/;
-//        open(HDL, "grep -iw ^" . $1 . " UnicodeData.txt | ");
-//        $line = <HDL>;
-//        chomp $line;
-//        @cols = split(/;/, $line);
-//        print "    { 0x$1, 0x$cols[13] },  // $cols[1]\n";
-//    }
-//
-//
-// 3. Update the latin_tolower() function above with SORTED_CHAR_MAP.  Enable
-//    the assert(ccc == ccc2) above and confirm the function exits successfully.
-//
-// TODO: Regenerate this map by using the updated BASE_CHARS table in this file.
+/*
+ * How to update the SORTED_CHAR_MAP[] array.
+ *
+ * 1. Download http://unicode.org/Public/UNIDATA/UnicodeData.txt
+ *
+ * 2. Have a latest version of ICU4C dev package installed
+ *    (Note: the current data has been generated with version 4.8)
+ *    $ apt-get install libicu-dev
+ *
+ * 3. Build the following code
+ *    (You need this file, char_utils.h, and defines.h)
+ *    $ g++ -o char_utils -DUPDATING_CHAR_UTILS char_utils.cpp -licuuc
+ */
+#ifdef UPDATING_CHAR_UTILS
+#include <stdio.h>
+#include <unicode/uchar.h> // ICU4C
+
+extern "C" int main() {
+    for (unsigned short c = 0; c < 0xFFFF; c++) {
+        const unsigned short baseC = c < NELEMS(BASE_CHARS) ? BASE_CHARS[c] : c;
+        if (baseC <= 0x7F) continue;
+        const unsigned short icu4cLowerBaseC = u_tolower(baseC);
+        const unsigned short myLowerBaseC = latin_tolower(baseC);
+        if (baseC != icu4cLowerBaseC) {
+#ifdef CONFIRMING_CHAR_UTILS
+            if (icu4cLowerBaseC != myLowerBaseC) {
+                fprintf(stderr, "icu4cLowerBaseC != myLowerBaseC, 0x%04X, 0x%04X\n",
+                        icu4cLowerBaseC, myLowerBaseC);
+            }
+#else // CONFIRMING_CHAR_UTILS
+            printf("0x%04X, 0x%04X\n", baseC, icu4cLowerBaseC);
+#endif // CONFIRMING_CHAR_UTILS
+        }
+    }
+}
+#endif // UPDATING_CHAR_UTILS
+/*
+ * 4. Process the list with UnicodeData.txt
+ *    (You need UnicodeData.txt in the current directory)
+ *    $ ./char_utils | sort -u | \
+ *      perl -e 'open(FH, "UnicodeData.txt"); @buf = <FH>; close(FH); \
+ *      while(<>){/0x(\w*), 0x(\w*)/; @lines = grep(/^$1/, @buf); @cols = split(/;/, $lines[0]); \
+ *      print "    { 0x$1, 0x$cols[13] },  // $cols[1]\n";}'
+ *
+ * 5. Update the SORTED_CHAR_MAP[] array below with the output above.
+ *    Then, rebuild with -DCONFIRMING_CHAR_UTILS and confirm the program exits successfully.
+ *    $ g++ -o char_utils -DUPDATING_CHAR_UTILS -DCONFIRMING_CHAR_UTILS char_utils.cpp -licuuc
+ *    $ ./char_utils
+ *    $
+ */
 static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
-    { 0x00C4, 0x00E4 },  // LATIN CAPITAL LETTER A WITH DIAERESIS
-    { 0x00C5, 0x00E5 },  // LATIN CAPITAL LETTER A WITH RING ABOVE
     { 0x00C6, 0x00E6 },  // LATIN CAPITAL LETTER AE
     { 0x00D0, 0x00F0 },  // LATIN CAPITAL LETTER ETH
-    { 0x00D1, 0x00F1 },  // LATIN CAPITAL LETTER N WITH TILDE
-    { 0x00D5, 0x00F5 },  // LATIN CAPITAL LETTER O WITH TILDE
-    { 0x00D6, 0x00F6 },  // LATIN CAPITAL LETTER O WITH DIAERESIS
-    { 0x00D8, 0x00F8 },  // LATIN CAPITAL LETTER O WITH STROKE
-    { 0x00DC, 0x00FC },  // LATIN CAPITAL LETTER U WITH DIAERESIS
     { 0x00DE, 0x00FE },  // LATIN CAPITAL LETTER THORN
     { 0x0110, 0x0111 },  // LATIN CAPITAL LETTER D WITH STROKE
     { 0x0126, 0x0127 },  // LATIN CAPITAL LETTER H WITH STROKE
-    { 0x0141, 0x0142 },  // LATIN CAPITAL LETTER L WITH STROKE
     { 0x014A, 0x014B },  // LATIN CAPITAL LETTER ENG
     { 0x0152, 0x0153 },  // LATIN CAPITAL LIGATURE OE
     { 0x0166, 0x0167 },  // LATIN CAPITAL LETTER T WITH STROKE
@@ -137,15 +120,12 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0x01B8, 0x01B9 },  // LATIN CAPITAL LETTER EZH REVERSED
     { 0x01BC, 0x01BD },  // LATIN CAPITAL LETTER TONE FIVE
     { 0x01E4, 0x01E5 },  // LATIN CAPITAL LETTER G WITH STROKE
-    { 0x01EA, 0x01EB },  // LATIN CAPITAL LETTER O WITH OGONEK
     { 0x01F6, 0x0195 },  // LATIN CAPITAL LETTER HWAIR
     { 0x01F7, 0x01BF },  // LATIN CAPITAL LETTER WYNN
     { 0x021C, 0x021D },  // LATIN CAPITAL LETTER YOGH
     { 0x0220, 0x019E },  // LATIN CAPITAL LETTER N WITH LONG RIGHT LEG
     { 0x0222, 0x0223 },  // LATIN CAPITAL LETTER OU
     { 0x0224, 0x0225 },  // LATIN CAPITAL LETTER Z WITH HOOK
-    { 0x0226, 0x0227 },  // LATIN CAPITAL LETTER A WITH DOT ABOVE
-    { 0x022E, 0x022F },  // LATIN CAPITAL LETTER O WITH DOT ABOVE
     { 0x023A, 0x2C65 },  // LATIN CAPITAL LETTER A WITH STROKE
     { 0x023B, 0x023C },  // LATIN CAPITAL LETTER C WITH STROKE
     { 0x023D, 0x019A },  // LATIN CAPITAL LETTER L WITH BAR
@@ -322,6 +302,7 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0x0520, 0x0521 },  // CYRILLIC CAPITAL LETTER EL WITH MIDDLE HOOK
     { 0x0522, 0x0523 },  // CYRILLIC CAPITAL LETTER EN WITH MIDDLE HOOK
     { 0x0524, 0x0525 },  // CYRILLIC CAPITAL LETTER PE WITH DESCENDER
+    { 0x0526, 0x0527 },  // CYRILLIC CAPITAL LETTER SHHA WITH DESCENDER
     { 0x0531, 0x0561 },  // ARMENIAN CAPITAL LETTER AYB
     { 0x0532, 0x0562 },  // ARMENIAN CAPITAL LETTER BEN
     { 0x0533, 0x0563 },  // ARMENIAN CAPITAL LETTER GIM
@@ -795,6 +776,7 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0xA65A, 0xA65B },  // CYRILLIC CAPITAL LETTER BLENDED YUS
     { 0xA65C, 0xA65D },  // CYRILLIC CAPITAL LETTER IOTIFIED CLOSED LITTLE YUS
     { 0xA65E, 0xA65F },  // CYRILLIC CAPITAL LETTER YN
+    { 0xA660, 0xA661 },  // CYRILLIC CAPITAL LETTER REVERSED TSE
     { 0xA662, 0xA663 },  // CYRILLIC CAPITAL LETTER SOFT DE
     { 0xA664, 0xA665 },  // CYRILLIC CAPITAL LETTER SOFT EL
     { 0xA666, 0xA667 },  // CYRILLIC CAPITAL LETTER SOFT EM
@@ -860,6 +842,13 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0xA784, 0xA785 },  // LATIN CAPITAL LETTER INSULAR S
     { 0xA786, 0xA787 },  // LATIN CAPITAL LETTER INSULAR T
     { 0xA78B, 0xA78C },  // LATIN CAPITAL LETTER SALTILLO
+    { 0xA78D, 0x0265 },  // LATIN CAPITAL LETTER TURNED H
+    { 0xA790, 0xA791 },  // LATIN CAPITAL LETTER N WITH DESCENDER
+    { 0xA7A0, 0xA7A1 },  // LATIN CAPITAL LETTER G WITH OBLIQUE STROKE
+    { 0xA7A2, 0xA7A3 },  // LATIN CAPITAL LETTER K WITH OBLIQUE STROKE
+    { 0xA7A4, 0xA7A5 },  // LATIN CAPITAL LETTER N WITH OBLIQUE STROKE
+    { 0xA7A6, 0xA7A7 },  // LATIN CAPITAL LETTER R WITH OBLIQUE STROKE
+    { 0xA7A8, 0xA7A9 },  // LATIN CAPITAL LETTER S WITH OBLIQUE STROKE
     { 0xFF21, 0xFF41 },  // FULLWIDTH LATIN CAPITAL LETTER A
     { 0xFF22, 0xFF42 },  // FULLWIDTH LATIN CAPITAL LETTER B
     { 0xFF23, 0xFF43 },  // FULLWIDTH LATIN CAPITAL LETTER C
@@ -943,12 +932,14 @@ const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
     /* U+00D0 */ 0x00D0, 0x004E, 0x004F, 0x004F, 0x004F, 0x004F, 0x004F, 0x00D7,
     /* U+00D8 */ 0x004F, 0x0055, 0x0055, 0x0055, 0x0055, 0x0059, 0x00DE, 0x0073,
         // U+00D8: Manually changed from 00D8 to 004F
+          // TODO: Check if it's really acceptable to consider Ø a diacritical variant of O
         // U+00DF: Manually changed from 00DF to 0073
     /* U+00E0 */ 0x0061, 0x0061, 0x0061, 0x0061, 0x0061, 0x0061, 0x00E6, 0x0063,
     /* U+00E8 */ 0x0065, 0x0065, 0x0065, 0x0065, 0x0069, 0x0069, 0x0069, 0x0069,
     /* U+00F0 */ 0x00F0, 0x006E, 0x006F, 0x006F, 0x006F, 0x006F, 0x006F, 0x00F7,
     /* U+00F8 */ 0x006F, 0x0075, 0x0075, 0x0075, 0x0075, 0x0079, 0x00FE, 0x0079,
         // U+00F8: Manually changed from 00F8 to 006F
+          // TODO: Check if it's really acceptable to consider ø a diacritical variant of o
     /* U+0100 */ 0x0041, 0x0061, 0x0041, 0x0061, 0x0041, 0x0061, 0x0043, 0x0063,
     /* U+0108 */ 0x0043, 0x0063, 0x0043, 0x0063, 0x0043, 0x0063, 0x0044, 0x0064,
     /* U+0110 */ 0x0110, 0x0111, 0x0045, 0x0065, 0x0045, 0x0065, 0x0045, 0x0065,
@@ -977,19 +968,45 @@ const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
     /* U+01B8 */ 0x01B8, 0x01B9, 0x01BA, 0x01BB, 0x01BC, 0x01BD, 0x01BE, 0x01BF,
     /* U+01C0 */ 0x01C0, 0x01C1, 0x01C2, 0x01C3, 0x0044, 0x0044, 0x0064, 0x004C,
     /* U+01C8 */ 0x004C, 0x006C, 0x004E, 0x004E, 0x006E, 0x0041, 0x0061, 0x0049,
-    /* U+01D0 */ 0x0069, 0x004F, 0x006F, 0x0055, 0x0075, 0x00DC, 0x00FC, 0x00DC,
-    /* U+01D8 */ 0x00FC, 0x00DC, 0x00FC, 0x00DC, 0x00FC, 0x01DD, 0x00C4, 0x00E4,
-    /* U+01E0 */ 0x0226, 0x0227, 0x00C6, 0x00E6, 0x01E4, 0x01E5, 0x0047, 0x0067,
-    /* U+01E8 */ 0x004B, 0x006B, 0x004F, 0x006F, 0x01EA, 0x01EB, 0x01B7, 0x0292,
+    /* U+01D0 */ 0x0069, 0x004F, 0x006F, 0x0055, 0x0075, 0x0055, 0x0075, 0x0055,
+        // U+01D5: Manually changed from 00DC to 0055
+        // U+01D6: Manually changed from 00FC to 0075
+        // U+01D7: Manually changed from 00DC to 0055
+    /* U+01D8 */ 0x0075, 0x0055, 0x0075, 0x0055, 0x0075, 0x01DD, 0x0041, 0x0061,
+        // U+01D8: Manually changed from 00FC to 0075
+        // U+01D9: Manually changed from 00DC to 0055
+        // U+01DA: Manually changed from 00FC to 0075
+        // U+01DB: Manually changed from 00DC to 0055
+        // U+01DC: Manually changed from 00FC to 0075
+        // U+01DE: Manually changed from 00C4 to 0041
+        // U+01DF: Manually changed from 00E4 to 0061
+    /* U+01E0 */ 0x0041, 0x0061, 0x00C6, 0x00E6, 0x01E4, 0x01E5, 0x0047, 0x0067,
+        // U+01E0: Manually changed from 0226 to 0041
+        // U+01E1: Manually changed from 0227 to 0061
+    /* U+01E8 */ 0x004B, 0x006B, 0x004F, 0x006F, 0x004F, 0x006F, 0x01B7, 0x0292,
+        // U+01EC: Manually changed from 01EA to 004F
+        // U+01ED: Manually changed from 01EB to 006F
     /* U+01F0 */ 0x006A, 0x0044, 0x0044, 0x0064, 0x0047, 0x0067, 0x01F6, 0x01F7,
-    /* U+01F8 */ 0x004E, 0x006E, 0x00C5, 0x00E5, 0x00C6, 0x00E6, 0x00D8, 0x00F8,
+    /* U+01F8 */ 0x004E, 0x006E, 0x0041, 0x0061, 0x00C6, 0x00E6, 0x004F, 0x006F,
+        // U+01FA: Manually changed from 00C5 to 0041
+        // U+01FB: Manually changed from 00E5 to 0061
+        // U+01FE: Manually changed from 00D8 to 004F
+          // TODO: Check if it's really acceptable to consider Ø a diacritical variant of O
+        // U+01FF: Manually changed from 00F8 to 006F
+          // TODO: Check if it's really acceptable to consider ø a diacritical variant of o
     /* U+0200 */ 0x0041, 0x0061, 0x0041, 0x0061, 0x0045, 0x0065, 0x0045, 0x0065,
     /* U+0208 */ 0x0049, 0x0069, 0x0049, 0x0069, 0x004F, 0x006F, 0x004F, 0x006F,
     /* U+0210 */ 0x0052, 0x0072, 0x0052, 0x0072, 0x0055, 0x0075, 0x0055, 0x0075,
     /* U+0218 */ 0x0053, 0x0073, 0x0054, 0x0074, 0x021C, 0x021D, 0x0048, 0x0068,
     /* U+0220 */ 0x0220, 0x0221, 0x0222, 0x0223, 0x0224, 0x0225, 0x0041, 0x0061,
-    /* U+0228 */ 0x0045, 0x0065, 0x00D6, 0x00F6, 0x00D5, 0x00F5, 0x004F, 0x006F,
-    /* U+0230 */ 0x022E, 0x022F, 0x0059, 0x0079, 0x0234, 0x0235, 0x0236, 0x0237,
+    /* U+0228 */ 0x0045, 0x0065, 0x004F, 0x006F, 0x004F, 0x006F, 0x004F, 0x006F,
+        // U+022A: Manually changed from 00D6 to 004F
+        // U+022B: Manually changed from 00F6 to 006F
+        // U+022C: Manually changed from 00D5 to 004F
+        // U+022D: Manually changed from 00F5 to 006F
+    /* U+0230 */ 0x004F, 0x006F, 0x0059, 0x0079, 0x0234, 0x0235, 0x0236, 0x0237,
+        // U+0230: Manually changed from 022E to 004F
+        // U+0231: Manually changed from 022F to 006F
     /* U+0238 */ 0x0238, 0x0239, 0x023A, 0x023B, 0x023C, 0x023D, 0x023E, 0x023F,
     /* U+0240 */ 0x0240, 0x0241, 0x0242, 0x0243, 0x0244, 0x0245, 0x0246, 0x0247,
     /* U+0248 */ 0x0248, 0x0249, 0x024A, 0x024B, 0x024C, 0x024D, 0x024E, 0x024F,
