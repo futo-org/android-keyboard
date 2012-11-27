@@ -86,6 +86,7 @@
     <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
     <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
     <integer name="config_gesture_recognition_minimum_time">100</integer>
+    <integer name="config_gesture_recognition_update_time">300</integer>
     <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
     <!-- Suppress showing key preview duration after batch input in millisecond -->
     <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>

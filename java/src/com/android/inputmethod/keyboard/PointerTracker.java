@@ -94,6 +94,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void cancelDoubleTapTimer();
         public boolean isInDoubleTapTimeout();
         public void cancelKeyTimers();
+        public void startUpdateBatchInputTimer(PointerTracker tracker);
+        public void cancelAllUpdateBatchInputTimer();
 
         public static class Adapter implements TimerProxy {
             @Override
@@ -116,6 +118,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             public boolean isInDoubleTapTimeout() { return false; }
             @Override
             public void cancelKeyTimers() {}
+            @Override
+            public void startUpdateBatchInputTimer(PointerTracker tracker) {}
+            @Override
+            public void cancelAllUpdateBatchInputTimer() {}
         }
     }
 
@@ -705,25 +711,36 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
+    public void updateBatchInputByTimer(final long eventTime) {
+        final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
+        mGestureStrokeWithPreviewPoints.duplicateLastPointWith(gestureTime);
+        updateBatchInput(eventTime);
+    }
+
     private void mayUpdateBatchInput(final long eventTime, final Key key) {
         if (key != null) {
-            synchronized (sAggregratedPointers) {
-                final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
-                stroke.appendIncrementalBatchPoints(sAggregratedPointers);
-                final int size = sAggregratedPointers.getPointerSize();
-                if (size > sLastRecognitionPointSize
-                        && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
-                    sLastRecognitionPointSize = size;
-                    sLastRecognitionTime = eventTime;
-                    if (DEBUG_LISTENER) {
-                        Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d",
-                                mPointerId, size));
-                    }
-                    mListener.onUpdateBatchInput(sAggregratedPointers);
-                }
-            }
+            updateBatchInput(eventTime);
         }
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
+    }
+
+    private void updateBatchInput(final long eventTime) {
+        synchronized (sAggregratedPointers) {
+            final GestureStroke stroke = mGestureStrokeWithPreviewPoints;
+            stroke.appendIncrementalBatchPoints(sAggregratedPointers);
+            final int size = sAggregratedPointers.getPointerSize();
+            if (size > sLastRecognitionPointSize
+                    && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
+                sLastRecognitionPointSize = size;
+                sLastRecognitionTime = eventTime;
+                if (DEBUG_LISTENER) {
+                    Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
+                            size));
+                }
+                mTimerProxy.startUpdateBatchInputTimer(this);
+                mListener.onUpdateBatchInput(sAggregratedPointers);
+            }
+        }
     }
 
     private void mayEndBatchInput(final long eventTime) {
@@ -737,6 +754,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                         Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
                                 mPointerId, sAggregratedPointers.getPointerSize()));
                     }
+                    mTimerProxy.cancelAllUpdateBatchInputTimer();
                     mListener.onEndBatchInput(sAggregratedPointers);
                 }
             }

@@ -167,15 +167,15 @@ static inline void prof_out(void) {
     }
     AKLOGI("Total time is %6.3f ms.",
             profile_buf[PROF_BUF_SIZE - 1] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC));
-    float all = 0;
+    float all = 0.0f;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
         all += profile_buf[i];
     }
-    if (all == 0) all = 1;
+    if (all < 1.0f) all = 1.0f;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
-        if (profile_buf[i]) {
+        if (profile_buf[i] > 0.0f) {
             AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
-                    i, (profile_buf[i] * 100 / all),
+                    i, (profile_buf[i] * 100.0f / all),
                     profile_buf[i] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC),
                     profile_counter[i]);
         }
