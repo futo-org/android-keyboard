@@ -89,11 +89,11 @@ LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_common_static
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
-    LOCAL_SHARED_LIBRARIES += liblog
+    LOCAL_LDFLAGS += -llog
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
-    LOCAL_SHARED_LIBRARIES += liblog
+    LOCAL_LDFLAGS += -llog
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 
