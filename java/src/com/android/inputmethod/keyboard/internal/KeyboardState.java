@@ -487,6 +487,11 @@ public final class KeyboardState {
                     // After chording input while normal state.
                     setShifted(UNSHIFT);
                 }
+                // After chording input, automatic shift state may have been changed depending on
+                // what characters were input.
+                mShiftKeyState.onRelease();
+                mSwitchActions.requestUpdatingShiftState();
+                return;
             } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
                 // In shift locked state, shift has been pressed and slid out to other key.
                 setShiftLocked(true);
