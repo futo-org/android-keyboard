@@ -246,7 +246,7 @@ static inline int childrenAddressSize(const uint8_t flags) {
     /* See the note in attributeAddressSize. The same applies here */
 }
 
-static inline int shortcutByteSize(const uint8_t *const dict, const int pos) {
+static AK_FORCE_INLINE int shortcutByteSize(const uint8_t *const dict, const int pos) {
     return ((int)(dict[pos] << 8)) + (dict[pos + 1]);
 }
 
