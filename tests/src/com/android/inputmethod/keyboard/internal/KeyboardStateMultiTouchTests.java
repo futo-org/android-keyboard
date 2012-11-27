@@ -50,7 +50,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
         // Press/release symbol letter key.
         chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Release "123?" key, switch back to alphabet shift unshifted.
+        // Release "123?" key, switch back to alphabet unshifted.
         releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
 
@@ -330,7 +330,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         releaseKey('X', ALPHABET_MANUAL_SHIFTED);
         // Release 'Z' key
         releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
-        // Release shift key.
+        // Release shift key, switch back to alphabet shifted.
         releaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
     }
 
@@ -351,8 +351,24 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         releaseKey('X', ALPHABET_MANUAL_SHIFTED);
         // Release 'Z' key
         releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
-        // Release shift key.
+        // Release shift key, updated to alphabet unshifted.
         releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+
+        // Update shift state with auto caps enabled.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+
+        // Press shift key and hold, switch to alphabet shifted.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press 'X' key and hold
+        chordingPressKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Press  key and hold, stays in alphabet shifted.
+        chordingPressKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_MANUAL_SHIFTED);
+        // Release 'Z' key
+        releaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key, updated to alphabet automatic shifted.
+        releaseKey(CODE_SHIFT, ALPHABET_AUTOMATIC_SHIFTED);
     }
 
     // Multi touch shift chording input in capitalize character mode.
@@ -372,8 +388,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         releaseKey('X', ALPHABET_MANUAL_SHIFTED);
         // Release 'Z' key
         releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
-        // Release shift key.
-        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+        // Release shift key, updated to alphabet automatic shifted.
+        releaseKey(CODE_SHIFT, ALPHABET_AUTOMATIC_SHIFTED);
     }
 
     public void testLongPressShiftAndChording() {
