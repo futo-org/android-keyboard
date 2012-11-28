@@ -95,7 +95,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public boolean isInDoubleTapTimeout();
         public void cancelKeyTimers();
         public void startUpdateBatchInputTimer(PointerTracker tracker);
-        public void cancelAllUpdateBatchInputTimer();
+        public void cancelAllUpdateBatchInputTimers();
 
         public static class Adapter implements TimerProxy {
             @Override
@@ -121,7 +121,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             @Override
             public void startUpdateBatchInputTimer(PointerTracker tracker) {}
             @Override
-            public void cancelAllUpdateBatchInputTimer() {}
+            public void cancelAllUpdateBatchInputTimers() {}
         }
     }
 
@@ -754,7 +754,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                         Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
                                 mPointerId, sAggregratedPointers.getPointerSize()));
                     }
-                    mTimerProxy.cancelAllUpdateBatchInputTimer();
+                    mTimerProxy.cancelAllUpdateBatchInputTimers();
                     mListener.onEndBatchInput(sAggregratedPointers);
                 }
             }
