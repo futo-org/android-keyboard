@@ -36,6 +36,7 @@ import android.widget.RelativeLayout;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.internal.GesturePreviewTrail.Params;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -47,8 +48,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     private final float mGestureFloatingPreviewVerticalPadding;
     private final float mGestureFloatingPreviewRoundRadius;
 
-    private int mKeyboardViewOriginX;
-    private int mKeyboardViewOriginY;
+    private final int[] mKeyboardViewOrigin = CoordinateUtils.newInstance();
 
     private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
             CollectionUtils.newSparseArray();
@@ -68,10 +68,13 @@ public final class PreviewPlacerView extends RelativeLayout {
     private final int mGestureFloatingPreviewTextHeight;
     // {@link RectF} is needed for {@link Canvas#drawRoundRect(RectF, float, float, Paint)}.
     private final RectF mGestureFloatingPreviewRectangle = new RectF();
-    private int mLastPointerX;
-    private int mLastPointerY;
+    private final int[] mLastPointerCoords = CoordinateUtils.newInstance();
     private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
     private boolean mDrawsGestureFloatingPreviewText;
+
+    private boolean mShowSlidingKeyInputPreview;
+    private final int[] mRubberBandFrom = CoordinateUtils.newInstance();
+    private final int[] mRubberBandTo = CoordinateUtils.newInstance();
 
     private final DrawingHandler mDrawingHandler;
 
@@ -168,9 +171,8 @@ public final class PreviewPlacerView extends RelativeLayout {
         setLayerType(LAYER_TYPE_HARDWARE, layerPaint);
     }
 
-    public void setKeyboardViewGeometry(final int x, final int y, final int w, final int h) {
-        mKeyboardViewOriginX = x;
-        mKeyboardViewOriginY = y;
+    public void setKeyboardViewGeometry(final int[] originCoords, final int w, final int h) {
+        CoordinateUtils.copy(mKeyboardViewOrigin, originCoords);
         mOffscreenOffsetY = (int)(h * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mOffscreenWidth = w;
         mOffscreenHeight = mOffscreenOffsetY + h;
@@ -186,8 +188,7 @@ public final class PreviewPlacerView extends RelativeLayout {
         final boolean needsToUpdateLastPointer =
                 isOldestTracker && mDrawsGestureFloatingPreviewText;
         if (needsToUpdateLastPointer) {
-            mLastPointerX = tracker.getLastX();
-            mLastPointerY = tracker.getLastY();
+            tracker.getLastCoordinates(mLastPointerCoords);
         }
 
         if (mDrawsGesturePreviewTrail) {
@@ -206,6 +207,17 @@ public final class PreviewPlacerView extends RelativeLayout {
         if (mDrawsGesturePreviewTrail || needsToUpdateLastPointer) {
             invalidate();
         }
+    }
+
+    public void showSlidingKeyInputPreview(final PointerTracker tracker) {
+        if (!tracker.isInSlidingKeyInputFromModifier()) {
+            mShowSlidingKeyInputPreview = false;
+            return;
+        }
+        tracker.getDownCoordinates(mRubberBandFrom);
+        tracker.getLastCoordinates(mRubberBandTo);
+        mShowSlidingKeyInputPreview = true;
+        invalidate();
     }
 
     @Override
@@ -234,6 +246,8 @@ public final class PreviewPlacerView extends RelativeLayout {
     @Override
     public void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+        final int originX = CoordinateUtils.x(mKeyboardViewOrigin);
+        final int originY = CoordinateUtils.y(mKeyboardViewOrigin);
         if (mDrawsGesturePreviewTrail) {
             mayAllocateOffscreenBuffer();
             // Draw gesture trails to offscreen buffer.
@@ -241,11 +255,11 @@ public final class PreviewPlacerView extends RelativeLayout {
                     mOffscreenCanvas, mGesturePaint, mOffscreenDirtyRect);
             // Transfer offscreen buffer to screen.
             if (!mOffscreenDirtyRect.isEmpty()) {
-                final int offsetY = mKeyboardViewOriginY - mOffscreenOffsetY;
-                canvas.translate(mKeyboardViewOriginX, offsetY);
+                final int offsetY = originY - mOffscreenOffsetY;
+                canvas.translate(originX, offsetY);
                 canvas.drawBitmap(mOffscreenBuffer, mOffscreenDirtyRect, mOffscreenDirtyRect,
                         mGesturePaint);
-                canvas.translate(-mKeyboardViewOriginX, -offsetY);
+                canvas.translate(-originX, -offsetY);
                 // Note: Defer clearing the dirty rectangle here because we will get cleared
                 // rectangle on the canvas.
             }
@@ -254,9 +268,14 @@ public final class PreviewPlacerView extends RelativeLayout {
             }
         }
         if (mDrawsGestureFloatingPreviewText) {
-            canvas.translate(mKeyboardViewOriginX, mKeyboardViewOriginY);
+            canvas.translate(originX, originY);
             drawGestureFloatingPreviewText(canvas, mGestureFloatingPreviewText);
-            canvas.translate(-mKeyboardViewOriginX, -mKeyboardViewOriginY);
+            canvas.translate(-originX, -originY);
+        }
+        if (mShowSlidingKeyInputPreview) {
+            canvas.translate(originX, originY);
+            drawSlidingKeyInputPreview(canvas);
+            canvas.translate(-originX, -originY);
         }
     }
 
@@ -317,8 +336,6 @@ public final class PreviewPlacerView extends RelativeLayout {
 
         final Paint paint = mTextPaint;
         final RectF rectangle = mGestureFloatingPreviewRectangle;
-        // TODO: Figure out how we should deal with the floating preview text with multiple moving
-        // fingers.
 
         // Paint the round rectangle background.
         final int textHeight = mGestureFloatingPreviewTextHeight;
@@ -328,9 +345,11 @@ public final class PreviewPlacerView extends RelativeLayout {
         final float rectWidth = textWidth + hPad * 2.0f;
         final float rectHeight = textHeight + vPad * 2.0f;
         final int canvasWidth = canvas.getWidth();
-        final float rectX = Math.min(Math.max(mLastPointerX - rectWidth / 2.0f, 0.0f),
+        final float rectX = Math.min(
+                Math.max(CoordinateUtils.x(mLastPointerCoords) - rectWidth / 2.0f, 0.0f),
                 canvasWidth - rectWidth);
-        final float rectY = mLastPointerY - mGestureFloatingPreviewTextOffset - rectHeight;
+        final float rectY = CoordinateUtils.y(mLastPointerCoords)
+                - mGestureFloatingPreviewTextOffset - rectHeight;
         rectangle.set(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
         final float round = mGestureFloatingPreviewRoundRadius;
         paint.setColor(mGestureFloatingPreviewColor);
@@ -340,5 +359,9 @@ public final class PreviewPlacerView extends RelativeLayout {
         final float textX = rectX + hPad + textWidth / 2.0f;
         final float textY = rectY + vPad + textHeight;
         canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
+    }
+
+    private void drawSlidingKeyInputPreview(final Canvas canvas) {
+        // TODO: Implement rubber band preview
     }
 }

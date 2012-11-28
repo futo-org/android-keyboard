@@ -36,4 +36,14 @@ public final class CoordinateUtils {
     public static int y(final int[] coords) {
         return coords[INDEX_Y];
     }
+
+    public static void set(final int[] coords, final int x, final int y) {
+        coords[INDEX_X] = x;
+        coords[INDEX_Y] = y;
+    }
+
+    public static void copy(final int[] destination, final int[] source) {
+        destination[INDEX_X] = source[INDEX_X];
+        destination[INDEX_Y] = source[INDEX_Y];
+    }
 }
