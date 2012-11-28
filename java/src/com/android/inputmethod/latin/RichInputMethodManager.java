@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -49,19 +50,34 @@ public final class RichInputMethodManager {
         return sInstance;
     }
 
-    public static void init(final Context context) {
-        sInstance.initInternal(context);
+    public static void init(final Context context, final SharedPreferences prefs) {
+        sInstance.initInternal(context, prefs);
+    }
+
+    private boolean isInitialized() {
+        return mImmWrapper != null;
     }
 
     private void checkInitialized() {
-        if (mImmWrapper == null) {
+        if (!isInitialized()) {
             throw new RuntimeException(TAG + " is used before initialization");
         }
     }
 
-    private void initInternal(final Context context) {
+    private void initInternal(final Context context, final SharedPreferences prefs) {
+        if (isInitialized()) {
+            return;
+        }
         mImmWrapper = new InputMethodManagerCompatWrapper(context);
         mInputMethodInfoOfThisIme = getInputMethodInfoOfThisIme(context);
+
+        // Initialize additional subtypes.
+        SubtypeLocale.init(context);
+        final String prefAdditionalSubtypes = SettingsValues.getPrefAdditionalSubtypes(
+                prefs, context.getResources());
+        final InputMethodSubtype[] additionalSubtypes =
+                AdditionalSubtype.createAdditionalSubtypesArray(prefAdditionalSubtypes);
+        setAdditionalInputMethodSubtypes(additionalSubtypes);
     }
 
     public InputMethodManager getInputMethodManager() {
