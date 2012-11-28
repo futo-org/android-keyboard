@@ -22,7 +22,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -82,7 +81,6 @@ public final class SettingsValues {
     private final int mVibrationDurationSettingsRawValue;
     @SuppressWarnings("unused") // TODO: Use this
     private final float mKeypressSoundVolumeRawValue;
-    private final InputMethodSubtype[] mAdditionalSubtypes;
     public final boolean mGestureInputEnabled;
     public final boolean mGesturePreviewTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
@@ -170,8 +168,6 @@ public final class SettingsValues {
                 mAutoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
-        mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
-                getPrefAdditionalSubtypes(prefs, res));
         final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
                 R.bool.config_gesture_input_enabled_by_build_config);
         mGestureInputEnabled = gestureInputEnabledByBuildConfig
@@ -373,10 +369,6 @@ public final class SettingsValues {
 
     public static boolean isFullscreenModeAllowed(final Resources res) {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
-    }
-
-    public InputMethodSubtype[] getAdditionalSubtypes() {
-        return mAdditionalSubtypes;
     }
 
     public static String getPrefAdditionalSubtypes(final SharedPreferences prefs,

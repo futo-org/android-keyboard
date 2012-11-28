@@ -403,33 +403,28 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onCreate() {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mPrefs = prefs;
-        LatinImeLogger.init(this, prefs);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mResources = getResources();
+
+        LatinImeLogger.init(this, mPrefs);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, prefs);
+            ResearchLogger.getInstance().init(this, mPrefs);
         }
-        RichInputMethodManager.init(this);
+        RichInputMethodManager.init(this, mPrefs);
+        mRichImm = RichInputMethodManager.getInstance();
         SubtypeSwitcher.init(this);
-        KeyboardSwitcher.init(this, prefs);
+        KeyboardSwitcher.init(this, mPrefs);
         AccessibilityUtils.init(this);
 
         super.onCreate();
 
-        mRichImm = RichInputMethodManager.getInstance();
         mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
 
-        final Resources res = getResources();
-        mResources = res;
-
         loadSettings();
-
-        mRichImm.setAdditionalInputMethodSubtypes(mCurrentSettings.getAdditionalSubtypes());
-
         initSuggest();
 
-        mDisplayOrientation = res.getConfiguration().orientation;
+        mDisplayOrientation = mResources.getConfiguration().orientation;
 
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
