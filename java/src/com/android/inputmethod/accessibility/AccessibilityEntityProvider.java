@@ -36,6 +36,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.CoordinateUtils;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -62,7 +63,7 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     private final Rect mTempBoundsInScreen = new Rect();
 
     /** The parent view's cached on-screen location. */
-    private final int[] mParentLocation = new int[2];
+    private final int[] mParentLocation = CoordinateUtils.newInstance();
 
     /** The virtual view identifier for the focused node. */
     private int mAccessibilityFocusedView = UNDEFINED;
@@ -180,7 +181,8 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
 
             // Calculate the key's in-screen bounds.
             mTempBoundsInScreen.set(boundsInParent);
-            mTempBoundsInScreen.offset(mParentLocation[0], mParentLocation[1]);
+            mTempBoundsInScreen.offset(
+                    CoordinateUtils.x(mParentLocation), CoordinateUtils.y(mParentLocation));
 
             final Rect boundsInScreen = mTempBoundsInScreen;
 
