@@ -127,30 +127,29 @@ final class GesturePreviewTrail {
         public float p2x, p2y;
         public float r2;
 
-        // Output
         // Closing point of arc at P1.
-        public float p1ax, p1ay;
+        private float p1ax, p1ay;
         // Opening point of arc at P1.
-        public float p1bx, p1by;
+        private float p1bx, p1by;
         // Opening point of arc at P2.
-        public float p2ax, p2ay;
+        private float p2ax, p2ay;
         // Closing point of arc at P2.
-        public float p2bx, p2by;
+        private float p2bx, p2by;
         // Start angle of the trail arcs.
-        public float aa;
+        private float angle;
         // Sweep angle of the trail arc at P1.
-        public float a1;
-        public RectF arc1 = new RectF();
+        private float a1;
+        private final RectF arc1 = new RectF();
         // Sweep angle of the trail arc at P2.
-        public float a2;
-        public RectF arc2 = new RectF();
+        private float a2;
+        private final RectF arc2 = new RectF();
 
         private static final float RADIAN_TO_DEGREE = (float)(180.0d / Math.PI);
         private static final float RIGHT_ANGLE = (float)(Math.PI / 2.0d);
 
-        public static boolean calculatePathPoints(final WorkingSet w) {
-            final float dx = w.p2x - w.p1x;
-            final float dy = w.p2y - w.p1y;
+        public boolean calculatePathPoints() {
+            final float dx = p2x - p1x;
+            final float dy = p2y - p1y;
             // Distance of the points.
             final double l = Math.hypot(dx, dy);
             if (Double.compare(0.0d, l) == 0) {
@@ -159,7 +158,7 @@ final class GesturePreviewTrail {
             // Angle of the line p1-p2
             final float a = (float)Math.atan2(dy, dx);
             // Difference of trail cap radius.
-            final float dr = w.r2 - w.r1;
+            final float dr = r2 - r1;
             // Variation of angle at trail cap.
             final float ar = (float)Math.asin(dr / l);
             // The start angle of trail cap arc at P1.
@@ -170,40 +169,40 @@ final class GesturePreviewTrail {
             final float sina = (float)Math.sin(aa);
             final float cosb = (float)Math.cos(ab);
             final float sinb = (float)Math.sin(ab);
-            w.p1ax = w.p1x + w.r1 * cosa;
-            w.p1ay = w.p1y + w.r1 * sina;
-            w.p1bx = w.p1x + w.r1 * cosb;
-            w.p1by = w.p1y + w.r1 * sinb;
-            w.p2ax = w.p2x + w.r2 * cosa;
-            w.p2ay = w.p2y + w.r2 * sina;
-            w.p2bx = w.p2x + w.r2 * cosb;
-            w.p2by = w.p2y + w.r2 * sinb;
-            w.aa = aa * RADIAN_TO_DEGREE;
+            p1ax = p1x + r1 * cosa;
+            p1ay = p1y + r1 * sina;
+            p1bx = p1x + r1 * cosb;
+            p1by = p1y + r1 * sinb;
+            p2ax = p2x + r2 * cosa;
+            p2ay = p2y + r2 * sina;
+            p2bx = p2x + r2 * cosb;
+            p2by = p2y + r2 * sinb;
+            angle = aa * RADIAN_TO_DEGREE;
             final float ar2degree = ar * 2.0f * RADIAN_TO_DEGREE;
-            w.a1 = -180.0f + ar2degree;
-            w.a2 = 180.0f + ar2degree;
-            w.arc1.set(w.p1x, w.p1y, w.p1x, w.p1y);
-            w.arc1.inset(-w.r1, -w.r1);
-            w.arc2.set(w.p2x, w.p2y, w.p2x, w.p2y);
-            w.arc2.inset(-w.r2, -w.r2);
+            a1 = -180.0f + ar2degree;
+            a2 = 180.0f + ar2degree;
+            arc1.set(p1x, p1y, p1x, p1y);
+            arc1.inset(-r1, -r1);
+            arc2.set(p2x, p2y, p2x, p2y);
+            arc2.inset(-r2, -r2);
             return true;
         }
 
-        public static void createPath(final Path path, final WorkingSet w) {
+        public void createPath(final Path path) {
             path.rewind();
             // Trail cap at P1.
-            path.moveTo(w.p1x, w.p1y);
-            path.arcTo(w.arc1, w.aa, w.a1);
+            path.moveTo(p1x, p1y);
+            path.arcTo(arc1, angle, a1);
             // Trail cap at P2.
-            path.moveTo(w.p2x, w.p2y);
-            path.arcTo(w.arc2, w.aa, w.a2);
+            path.moveTo(p2x, p2y);
+            path.arcTo(arc2, angle, a2);
             // Two trapezoids connecting P1 and P2.
-            path.moveTo(w.p1ax, w.p1ay);
-            path.lineTo(w.p1x, w.p1y);
-            path.lineTo(w.p1bx, w.p1by);
-            path.lineTo(w.p2bx, w.p2by);
-            path.lineTo(w.p2x, w.p2y);
-            path.lineTo(w.p2ax, w.p2ay);
+            path.moveTo(p1ax, p1ay);
+            path.lineTo(p1x, p1y);
+            path.lineTo(p1bx, p1by);
+            path.lineTo(p2bx, p2by);
+            path.lineTo(p2x, p2y);
+            path.lineTo(p2ax, p2ay);
             path.close();
         }
     }
@@ -262,8 +261,8 @@ final class GesturePreviewTrail {
                     paint.setAlpha(alpha);
                     final float width = getWidth(elapsedTime, params);
                     w.r2 = width / 2.0f;
-                    if (WorkingSet.calculatePathPoints(w)) {
-                        WorkingSet.createPath(path, w);
+                    if (w.calculatePathPoints()) {
+                        w.createPath(path);
                         canvas.drawPath(path, paint);
                         outBoundsRect.union((int)w.p2x, (int)w.p2y);
                     }
