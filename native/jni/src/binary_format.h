@@ -17,6 +17,7 @@
 #ifndef LATINIME_BINARY_FORMAT_H
 #define LATINIME_BINARY_FORMAT_H
 
+#include <cctype>
 #include <limits>
 #include <map>
 #include "bloom_filter.h"
@@ -64,6 +65,9 @@ class BinaryFormat {
     static int detectFormat(const uint8_t *const dict);
     static unsigned int getHeaderSize(const uint8_t *const dict);
     static unsigned int getFlags(const uint8_t *const dict);
+    static void readHeaderValue(const uint8_t *const dict, const char *const key,
+            int *outValue, const int outValueSize);
+    static int readHeaderValueInt(const uint8_t *const dict, const char *const key);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t *const dict, int *pos);
     static int getCodePointAndForwardPointer(const uint8_t *const dict, int *pos);
@@ -165,6 +169,70 @@ inline unsigned int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
     default:
         return std::numeric_limits<unsigned int>::max();
     }
+}
+
+inline void BinaryFormat::readHeaderValue(const uint8_t *const dict, const char *const key,
+        int *outValue, const int outValueSize) {
+    int outValueIndex = 0;
+    // Only format 2 and above have header attributes as {key,value} string pairs. For prior
+    // formats, we just return an empty string, as if the key wasn't found.
+    if (2 <= detectFormat(dict)) {
+        const int headerOptionsOffset = 4 /* magic number */
+                + 2 /* dictionary version */ + 2 /* flags */;
+        const int headerSize =
+                (dict[headerOptionsOffset] << 24) + (dict[headerOptionsOffset + 1] << 16)
+                + (dict[headerOptionsOffset + 2] << 8) + dict[headerOptionsOffset + 3];
+        const int headerEnd = headerOptionsOffset + 4 + headerSize;
+        int index = headerOptionsOffset + 4;
+        while (index < headerEnd) {
+            int keyIndex = 0;
+            int codePoint = getCodePointAndForwardPointer(dict, &index);
+            while (codePoint != NOT_A_CODE_POINT) {
+                if (codePoint != key[keyIndex++]) {
+                    break;
+                }
+                codePoint = getCodePointAndForwardPointer(dict, &index);
+            }
+            if (codePoint == NOT_A_CODE_POINT && key[keyIndex] == 0) {
+                // We found the key! Copy and return the value.
+                codePoint = getCodePointAndForwardPointer(dict, &index);
+                while (codePoint != NOT_A_CODE_POINT
+                        && outValueIndex < outValueSize) {
+                    outValue[outValueIndex++] = codePoint;
+                    codePoint = getCodePointAndForwardPointer(dict, &index);
+                }
+                if (outValueIndex < outValueIndex) outValue[outValueIndex] = 0;
+                // Finished copying. Break to go to the termination code.
+                break;
+            }
+            // We didn't find the key, skip the remainder of it and its value
+            while (codePoint != NOT_A_CODE_POINT) {
+                codePoint = getCodePointAndForwardPointer(dict, &index);
+            }
+            codePoint = getCodePointAndForwardPointer(dict, &index);
+            while (codePoint != NOT_A_CODE_POINT) {
+                codePoint = getCodePointAndForwardPointer(dict, &index);
+            }
+        }
+        // We couldn't find it - fall through and return an empty value.
+    }
+    // Put a terminator 0 if possible at all (always unless outValueSize is <= 0)
+    if (outValueIndex >= outValueSize) outValueIndex = outValueSize - 1;
+    if (outValueIndex >= 0) outValue[outValueIndex] = 0;
+    return;
+}
+
+inline int BinaryFormat::readHeaderValueInt(const uint8_t *const dict, const char *const key) {
+    const int bufferSize = LARGEST_INT_DIGIT_COUNT;
+    int intBuffer[bufferSize];
+    char charBuffer[bufferSize];
+    BinaryFormat::readHeaderValue(dict, key, intBuffer, bufferSize);
+    for (int i = 0; i < bufferSize; ++i) {
+        charBuffer[i] = intBuffer[i];
+    }
+    // If not a number, return S_INT_MIN
+    if (!isdigit(charBuffer[0])) return S_INT_MIN;
+    return atoi(charBuffer);
 }
 
 AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *const dict,

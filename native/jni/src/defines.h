@@ -251,6 +251,12 @@ static inline void prof_out(void) {
 // GCC warns about this.
 #define S_INT_MIN (-2147483647 - 1) // -(1 << 31)
 #endif
+// Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
+// As such, this is the maximum number of characters will be needed to represent an int as a
+// string, including the terminator; this is used as the size of a string buffer large enough to
+// hold any value that is intended to fit in an integer, e.g. in the code that reads the header
+// of the binary dictionary where a {key,value} string pair scheme is used.
+#define LARGEST_INT_DIGIT_COUNT 11
 
 // Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().
 // We measured and compared performance of both, and found mmap() is fairly good in terms of
