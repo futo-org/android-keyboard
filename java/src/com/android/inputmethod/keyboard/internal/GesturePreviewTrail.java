@@ -144,68 +144,68 @@ final class GesturePreviewTrail {
         // Sweep angle of the trail arc at P2.
         public float a2;
         public RectF arc2 = new RectF();
-    }
 
-    private static final float RIGHT_ANGLE = (float)(Math.PI / 2.0d);
-    private static final float RADIAN_TO_DEGREE = (float)(180.0d / Math.PI);
+        private static final float RADIAN_TO_DEGREE = (float)(180.0d / Math.PI);
+        private static final float RIGHT_ANGLE = (float)(Math.PI / 2.0d);
 
-    private static boolean calculatePathPoints(final WorkingSet w) {
-        final float dx = w.p2x - w.p1x;
-        final float dy = w.p2y - w.p1y;
-        // Distance of the points.
-        final double l = Math.hypot(dx, dy);
-        if (Double.compare(0.0d, l) == 0) {
-            return false;
+        public static boolean calculatePathPoints(final WorkingSet w) {
+            final float dx = w.p2x - w.p1x;
+            final float dy = w.p2y - w.p1y;
+            // Distance of the points.
+            final double l = Math.hypot(dx, dy);
+            if (Double.compare(0.0d, l) == 0) {
+                return false;
+            }
+            // Angle of the line p1-p2
+            final float a = (float)Math.atan2(dy, dx);
+            // Difference of trail cap radius.
+            final float dr = w.r2 - w.r1;
+            // Variation of angle at trail cap.
+            final float ar = (float)Math.asin(dr / l);
+            // The start angle of trail cap arc at P1.
+            final float aa = a - (RIGHT_ANGLE + ar);
+            // The end angle of trail cap arc at P2.
+            final float ab = a + (RIGHT_ANGLE + ar);
+            final float cosa = (float)Math.cos(aa);
+            final float sina = (float)Math.sin(aa);
+            final float cosb = (float)Math.cos(ab);
+            final float sinb = (float)Math.sin(ab);
+            w.p1ax = w.p1x + w.r1 * cosa;
+            w.p1ay = w.p1y + w.r1 * sina;
+            w.p1bx = w.p1x + w.r1 * cosb;
+            w.p1by = w.p1y + w.r1 * sinb;
+            w.p2ax = w.p2x + w.r2 * cosa;
+            w.p2ay = w.p2y + w.r2 * sina;
+            w.p2bx = w.p2x + w.r2 * cosb;
+            w.p2by = w.p2y + w.r2 * sinb;
+            w.aa = aa * RADIAN_TO_DEGREE;
+            final float ar2degree = ar * 2.0f * RADIAN_TO_DEGREE;
+            w.a1 = -180.0f + ar2degree;
+            w.a2 = 180.0f + ar2degree;
+            w.arc1.set(w.p1x, w.p1y, w.p1x, w.p1y);
+            w.arc1.inset(-w.r1, -w.r1);
+            w.arc2.set(w.p2x, w.p2y, w.p2x, w.p2y);
+            w.arc2.inset(-w.r2, -w.r2);
+            return true;
         }
-        // Angle of the line p1-p2
-        final float a = (float)Math.atan2(dy, dx);
-        // Difference of trail cap radius.
-        final float dr = w.r2 - w.r1;
-        // Variation of angle at trail cap.
-        final float ar = (float)Math.asin(dr / l);
-        // The start angle of trail cap arc at P1.
-        final float aa = a - (RIGHT_ANGLE + ar);
-        // The end angle of trail cap arc at P2.
-        final float ab = a + (RIGHT_ANGLE + ar);
-        final float cosa = (float)Math.cos(aa);
-        final float sina = (float)Math.sin(aa);
-        final float cosb = (float)Math.cos(ab);
-        final float sinb = (float)Math.sin(ab);
-        w.p1ax = w.p1x + w.r1 * cosa;
-        w.p1ay = w.p1y + w.r1 * sina;
-        w.p1bx = w.p1x + w.r1 * cosb;
-        w.p1by = w.p1y + w.r1 * sinb;
-        w.p2ax = w.p2x + w.r2 * cosa;
-        w.p2ay = w.p2y + w.r2 * sina;
-        w.p2bx = w.p2x + w.r2 * cosb;
-        w.p2by = w.p2y + w.r2 * sinb;
-        w.aa = aa * RADIAN_TO_DEGREE;
-        final float ar2degree = ar * 2.0f * RADIAN_TO_DEGREE;
-        w.a1 = -180.0f + ar2degree;
-        w.a2 = 180.0f + ar2degree;
-        w.arc1.set(w.p1x, w.p1y, w.p1x, w.p1y);
-        w.arc1.inset(-w.r1, -w.r1);
-        w.arc2.set(w.p2x, w.p2y, w.p2x, w.p2y);
-        w.arc2.inset(-w.r2, -w.r2);
-        return true;
-    }
 
-    private static void createPath(final Path path, final WorkingSet w) {
-        path.rewind();
-        // Trail cap at P1.
-        path.moveTo(w.p1x, w.p1y);
-        path.arcTo(w.arc1, w.aa, w.a1);
-        // Trail cap at P2.
-        path.moveTo(w.p2x, w.p2y);
-        path.arcTo(w.arc2, w.aa, w.a2);
-        // Two trapezoids connecting P1 and P2.
-        path.moveTo(w.p1ax, w.p1ay);
-        path.lineTo(w.p1x, w.p1y);
-        path.lineTo(w.p1bx, w.p1by);
-        path.lineTo(w.p2bx, w.p2by);
-        path.lineTo(w.p2x, w.p2y);
-        path.lineTo(w.p2ax, w.p2ay);
-        path.close();
+        public static void createPath(final Path path, final WorkingSet w) {
+            path.rewind();
+            // Trail cap at P1.
+            path.moveTo(w.p1x, w.p1y);
+            path.arcTo(w.arc1, w.aa, w.a1);
+            // Trail cap at P2.
+            path.moveTo(w.p2x, w.p2y);
+            path.arcTo(w.arc2, w.aa, w.a2);
+            // Two trapezoids connecting P1 and P2.
+            path.moveTo(w.p1ax, w.p1ay);
+            path.lineTo(w.p1x, w.p1y);
+            path.lineTo(w.p1bx, w.p1by);
+            path.lineTo(w.p2bx, w.p2by);
+            path.lineTo(w.p2x, w.p2y);
+            path.lineTo(w.p2ax, w.p2ay);
+            path.close();
+        }
     }
 
     private final WorkingSet mWorkingSet = new WorkingSet();
@@ -262,8 +262,8 @@ final class GesturePreviewTrail {
                     paint.setAlpha(alpha);
                     final float width = getWidth(elapsedTime, params);
                     w.r2 = width / 2.0f;
-                    if (calculatePathPoints(w)) {
-                        createPath(path, w);
+                    if (WorkingSet.calculatePathPoints(w)) {
+                        WorkingSet.createPath(path, w);
                         canvas.drawPath(path, paint);
                         outBoundsRect.union((int)w.p2x, (int)w.p2y);
                     }
