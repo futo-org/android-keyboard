@@ -118,7 +118,7 @@ final class GesturePreviewTrail {
                 / params.mTrailLingerDuration, 0.0f);
     }
 
-    static final class WorkingSet {
+    static final class RoundedLine {
         // Input
         // Previous point (P1) coordinates and trail radius.
         public float p1x, p1y;
@@ -143,17 +143,18 @@ final class GesturePreviewTrail {
         // Sweep angle of the trail arc at P2.
         private float a2;
         private final RectF arc2 = new RectF();
+        private final Path path = new Path();
 
         private static final float RADIAN_TO_DEGREE = (float)(180.0d / Math.PI);
         private static final float RIGHT_ANGLE = (float)(Math.PI / 2.0d);
 
-        public boolean calculatePathPoints() {
+        public Path makePath() {
             final float dx = p2x - p1x;
             final float dy = p2y - p1y;
             // Distance of the points.
             final double l = Math.hypot(dx, dy);
             if (Double.compare(0.0d, l) == 0) {
-                return false;
+                return null;
             }
             // Angle of the line p1-p2
             final float a = (float)Math.atan2(dy, dx);
@@ -185,10 +186,7 @@ final class GesturePreviewTrail {
             arc1.inset(-r1, -r1);
             arc2.set(p2x, p2y, p2x, p2y);
             arc2.inset(-r2, -r2);
-            return true;
-        }
 
-        public void createPath(final Path path) {
             path.rewind();
             // Trail cap at P1.
             path.moveTo(p1x, p1y);
@@ -204,11 +202,11 @@ final class GesturePreviewTrail {
             path.lineTo(p2x, p2y);
             path.lineTo(p2ax, p2ay);
             path.close();
+            return path;
         }
     }
 
-    private final WorkingSet mWorkingSet = new WorkingSet();
-    private final Path mPath = new Path();
+    private final RoundedLine mRoundedLine = new RoundedLine();
 
     /**
      * Draw gesture preview trail
@@ -242,36 +240,35 @@ final class GesturePreviewTrail {
         if (startIndex < trailSize) {
             paint.setColor(params.mTrailColor);
             paint.setStyle(Paint.Style.FILL);
-            final Path path = mPath;
-            final WorkingSet w = mWorkingSet;
-            w.p1x = getXCoordValue(xCoords[startIndex]);
-            w.p1y = yCoords[startIndex];
+            final RoundedLine line = mRoundedLine;
+            line.p1x = getXCoordValue(xCoords[startIndex]);
+            line.p1y = yCoords[startIndex];
             int lastTime = sinceDown - eventTimes[startIndex];
             float maxWidth = getWidth(lastTime, params);
-            w.r1 = maxWidth / 2.0f;
+            line.r1 = maxWidth / 2.0f;
             // Initialize bounds rectangle.
-            outBoundsRect.set((int)w.p1x, (int)w.p1y, (int)w.p1x, (int)w.p1y);
+            outBoundsRect.set((int)line.p1x, (int)line.p1y, (int)line.p1x, (int)line.p1y);
             for (int i = startIndex + 1; i < trailSize - 1; i++) {
                 final int elapsedTime = sinceDown - eventTimes[i];
-                w.p2x = getXCoordValue(xCoords[i]);
-                w.p2y = yCoords[i];
+                line.p2x = getXCoordValue(xCoords[i]);
+                line.p2y = yCoords[i];
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(xCoords[i])) {
                     final int alpha = getAlpha(elapsedTime, params);
                     paint.setAlpha(alpha);
                     final float width = getWidth(elapsedTime, params);
-                    w.r2 = width / 2.0f;
-                    if (w.calculatePathPoints()) {
-                        w.createPath(path);
+                    line.r2 = width / 2.0f;
+                    final Path path = line.makePath();
+                    if (path != null) {
                         canvas.drawPath(path, paint);
-                        outBoundsRect.union((int)w.p2x, (int)w.p2y);
+                        outBoundsRect.union((int)line.p2x, (int)line.p2y);
                     }
                     // Take union for the bounds.
                     maxWidth = Math.max(maxWidth, width);
                 }
-                w.p1x = w.p2x;
-                w.p1y = w.p2y;
-                w.r1 = w.r2;
+                line.p1x = line.p2x;
+                line.p1y = line.p2y;
+                line.r1 = line.r2;
                 lastTime = elapsedTime;
             }
             // Take care of trail line width.
