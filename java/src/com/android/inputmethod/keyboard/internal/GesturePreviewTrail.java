@@ -19,7 +19,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.SystemClock;
 
 import com.android.inputmethod.latin.Constants;
@@ -153,34 +152,34 @@ final class GesturePreviewTrail {
             paint.setColor(params.mTrailColor);
             paint.setStyle(Paint.Style.FILL);
             final RoundedLine line = mRoundedLine;
-            line.p1x = getXCoordValue(xCoords[startIndex]);
-            line.p1y = yCoords[startIndex];
+            int p1x = getXCoordValue(xCoords[startIndex]);
+            int p1y = yCoords[startIndex];
             int lastTime = sinceDown - eventTimes[startIndex];
             float maxWidth = getWidth(lastTime, params);
-            line.r1 = maxWidth / 2.0f;
+            float r1 = maxWidth / 2.0f;
             // Initialize bounds rectangle.
-            outBoundsRect.set((int)line.p1x, (int)line.p1y, (int)line.p1x, (int)line.p1y);
+            outBoundsRect.set(p1x, p1y, p1x, p1y);
             for (int i = startIndex + 1; i < trailSize - 1; i++) {
                 final int elapsedTime = sinceDown - eventTimes[i];
-                line.p2x = getXCoordValue(xCoords[i]);
-                line.p2y = yCoords[i];
+                final int p2x = getXCoordValue(xCoords[i]);
+                final int p2y = yCoords[i];
+                final float width = getWidth(elapsedTime, params);
+                final float r2 = width / 2.0f;
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(xCoords[i])) {
                     final int alpha = getAlpha(elapsedTime, params);
                     paint.setAlpha(alpha);
-                    final float width = getWidth(elapsedTime, params);
-                    line.r2 = width / 2.0f;
-                    final Path path = line.makePath();
+                    final Path path = line.makePath(p1x, p1y, r1, p2x, p2y, r2);
                     if (path != null) {
                         canvas.drawPath(path, paint);
-                        outBoundsRect.union((int)line.p2x, (int)line.p2y);
+                        outBoundsRect.union(p2x, p2y);
                     }
                     // Take union for the bounds.
                     maxWidth = Math.max(maxWidth, width);
                 }
-                line.p1x = line.p2x;
-                line.p1y = line.p2y;
-                line.r1 = line.r2;
+                p1x = p2x;
+                p1y = p2y;
+                r1 = r2;
                 lastTime = elapsedTime;
             }
             // Take care of trail line width.

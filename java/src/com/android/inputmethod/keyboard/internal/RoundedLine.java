@@ -18,88 +18,86 @@ import android.graphics.Path;
 import android.graphics.RectF;
 
 public final class RoundedLine {
-    // Start point (P1) coordinates and trail radius.
-    public float p1x, p1y;
-    public float r1;
-    // End point (P2) coordinates and trail radius.
-    public float p2x, p2y;
-    public float r2;
+    private final RectF mArc1 = new RectF();
+    private final RectF mArc2 = new RectF();
+    private final Path mPath = new Path();
 
-    // Closing point of arc at P1.
-    private float p1ax, p1ay;
-    // Opening point of arc at P1.
-    private float p1bx, p1by;
-    // Opening point of arc at P2.
-    private float p2ax, p2ay;
-    // Closing point of arc at P2.
-    private float p2bx, p2by;
-    // Start angle of the trail arcs.
-    private float angle;
-    // Sweep angle of the trail arc at P1.
-    private float a1;
-    private final RectF arc1 = new RectF();
-    // Sweep angle of the trail arc at P2.
-    private float a2;
-    private final RectF arc2 = new RectF();
-    private final Path path = new Path();
+    private static final double RADIAN_TO_DEGREE = 180.0d / Math.PI;
+    private static final double RIGHT_ANGLE = Math.PI / 2.0d;
 
-    private static final float RADIAN_TO_DEGREE = (float)(180.0d / Math.PI);
-    private static final float RIGHT_ANGLE = (float)(Math.PI / 2.0d);
-
-    public Path makePath() {
-        final float dx = p2x - p1x;
-        final float dy = p2y - p1y;
+    /**
+     * Make a rounded line path
+     *
+     * @param p1x the x-coordinate of the start point.
+     * @param p1y the y-coordinate of the start point.
+     * @param r1 the radius at the start point
+     * @param p2x the x-coordinate of the end point.
+     * @param p2y the y-coordinate of the end point.
+     * @param r2 the radius at the end point
+     * @return the path of rounded line
+     */
+    public Path makePath(final float p1x, final float p1y, final float r1,
+            final float p2x, final float p2y, final float r2) {
+        final double dx = p2x - p1x;
+        final double dy = p2y - p1y;
         // Distance of the points.
         final double l = Math.hypot(dx, dy);
         if (Double.compare(0.0d, l) == 0) {
             return null;
         }
         // Angle of the line p1-p2
-        final float a = (float)Math.atan2(dy, dx);
+        final double a = Math.atan2(dy, dx);
         // Difference of trail cap radius.
-        final float dr = r2 - r1;
+        final double dr = r2 - r1;
         // Variation of angle at trail cap.
-        final float ar = (float)Math.asin(dr / l);
+        final double ar = Math.asin(dr / l);
         // The start angle of trail cap arc at P1.
-        final float aa = a - (RIGHT_ANGLE + ar);
+        final double aa = a - (RIGHT_ANGLE + ar);
         // The end angle of trail cap arc at P2.
-        final float ab = a + (RIGHT_ANGLE + ar);
+        final double ab = a + (RIGHT_ANGLE + ar);
         final float cosa = (float)Math.cos(aa);
         final float sina = (float)Math.sin(aa);
         final float cosb = (float)Math.cos(ab);
         final float sinb = (float)Math.sin(ab);
-        p1ax = p1x + r1 * cosa;
-        p1ay = p1y + r1 * sina;
-        p1bx = p1x + r1 * cosb;
-        p1by = p1y + r1 * sinb;
-        p2ax = p2x + r2 * cosa;
-        p2ay = p2y + r2 * sina;
-        p2bx = p2x + r2 * cosb;
-        p2by = p2y + r2 * sinb;
-        angle = aa * RADIAN_TO_DEGREE;
-        final float ar2degree = ar * 2.0f * RADIAN_TO_DEGREE;
-        a1 = -180.0f + ar2degree;
-        a2 = 180.0f + ar2degree;
-        arc1.set(p1x, p1y, p1x, p1y);
-        arc1.inset(-r1, -r1);
-        arc2.set(p2x, p2y, p2x, p2y);
-        arc2.inset(-r2, -r2);
+        // Closing point of arc at P1.
+        final float p1ax = p1x + r1 * cosa;
+        final float p1ay = p1y + r1 * sina;
+        // Opening point of arc at P1.
+        final float p1bx = p1x + r1 * cosb;
+        final float p1by = p1y + r1 * sinb;
+        // Opening point of arc at P2.
+        final float p2ax = p2x + r2 * cosa;
+        final float p2ay = p2y + r2 * sina;
+        // Closing point of arc at P2.
+        final float p2bx = p2x + r2 * cosb;
+        final float p2by = p2y + r2 * sinb;
+        // Start angle of the trail arcs.
+        final float angle = (float)(aa * RADIAN_TO_DEGREE);
+        final float ar2degree = (float)(ar * 2.0d * RADIAN_TO_DEGREE);
+        // Sweep angle of the trail arc at P1.
+        final float a1 = -180.0f + ar2degree;
+        // Sweep angle of the trail arc at P2.
+        final float a2 = 180.0f + ar2degree;
+        mArc1.set(p1x, p1y, p1x, p1y);
+        mArc1.inset(-r1, -r1);
+        mArc2.set(p2x, p2y, p2x, p2y);
+        mArc2.inset(-r2, -r2);
 
-        path.rewind();
+        mPath.rewind();
         // Trail cap at P1.
-        path.moveTo(p1x, p1y);
-        path.arcTo(arc1, angle, a1);
+        mPath.moveTo(p1x, p1y);
+        mPath.arcTo(mArc1, angle, a1);
         // Trail cap at P2.
-        path.moveTo(p2x, p2y);
-        path.arcTo(arc2, angle, a2);
+        mPath.moveTo(p2x, p2y);
+        mPath.arcTo(mArc2, angle, a2);
         // Two trapezoids connecting P1 and P2.
-        path.moveTo(p1ax, p1ay);
-        path.lineTo(p1x, p1y);
-        path.lineTo(p1bx, p1by);
-        path.lineTo(p2bx, p2by);
-        path.lineTo(p2x, p2y);
-        path.lineTo(p2ax, p2ay);
-        path.close();
-        return path;
+        mPath.moveTo(p1ax, p1ay);
+        mPath.lineTo(p1x, p1y);
+        mPath.lineTo(p1bx, p1by);
+        mPath.lineTo(p2bx, p2by);
+        mPath.lineTo(p2x, p2y);
+        mPath.lineTo(p2ax, p2ay);
+        mPath.close();
+        return mPath;
     }
 }
