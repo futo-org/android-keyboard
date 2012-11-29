@@ -21,18 +21,22 @@ LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
 MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_CORE_SOURCE_DIRECTORY)/makedict
 
-LOCAL_MAIN_SRC_FILES := $(call all-java-files-under,$(MAKEDICT_CORE_SOURCE_DIRECTORY))
-LOCAL_TOOL_SRC_FILES := $(call all-java-files-under,src)
-LOCAL_ANNOTATIONS_SRC_FILES := $(call all-java-files-under,$(LATINIME_ANNOTATIONS_SOURCE_DIRECTORY))
+LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SOURCE_DIRECTORY))
+LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_ANNOTATIONS_SRC_FILES := \
+        $(call all-java-files-under, $(LATINIME_ANNOTATIONS_SOURCE_DIRECTORY))
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
-        $(call all-java-files-under,tests) \
         $(LOCAL_ANNOTATIONS_SRC_FILES) \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/Constants.java
 
+ifeq ($(DICTTOOL_UNITTEST), true)
+    LOCAL_SRC_FILES += $(call all-java-files-under, tests)
+    LOCAL_JAVA_LIBRARIES := junit
+endif
+
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool_aosp
-LOCAL_JAVA_LIBRARIES := junit
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk
