@@ -34,6 +34,7 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.KeyEventHandler;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.R;
 
 /**
@@ -41,7 +42,7 @@ import com.android.inputmethod.latin.R;
  * key presses and touch movements.
  */
 public final class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
-    private final int[] mCoordinates = new int[2];
+    private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     final KeyDetector mModalPanelKeyDetector;
     private final KeyDetector mSlidingPanelKeyDetector;
@@ -163,7 +164,7 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
         window.setHeight(container.getMeasuredHeight());
         parentView.getLocationInWindow(mCoordinates);
         window.showAtLocation(parentView, Gravity.NO_GRAVITY,
-                x + mCoordinates[0], y + mCoordinates[1]);
+                x + CoordinateUtils.x(mCoordinates), y + CoordinateUtils.y(mCoordinates));
 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();

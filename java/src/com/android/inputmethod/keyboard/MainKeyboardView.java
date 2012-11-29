@@ -369,13 +369,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         @Override
-        public void cancelAllUpdateBatchInputTimer() {
+        public void cancelAllUpdateBatchInputTimers() {
             removeMessages(MSG_UPDATE_BATCH_INPUT);
         }
 
         public void cancelAllMessages() {
             cancelKeyTimers();
-            cancelAllUpdateBatchInputTimer();
+            cancelAllUpdateBatchInputTimers();
         }
     }
 

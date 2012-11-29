@@ -45,6 +45,7 @@ import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -134,7 +135,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Preview placer view
     private final PreviewPlacerView mPreviewPlacerView;
-    private final int[] mCoordinates = new int[2];
+    private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     // Key preview
     private static final int PREVIEW_ALPHA = 240;
@@ -832,10 +833,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             // In transient state.
             return;
         }
-        final int[] viewOrigin = new int[2];
+        final int[] viewOrigin = CoordinateUtils.newInstance();
         getLocationInWindow(viewOrigin);
         final DisplayMetrics dm = getResources().getDisplayMetrics();
-        if (viewOrigin[1] < dm.heightPixels / 4) {
+        if (CoordinateUtils.y(viewOrigin) < dm.heightPixels / 4) {
             // In transient state.
             return;
         }
@@ -850,7 +851,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
         } else {
             windowContentView.addView(mPreviewPlacerView);
-            mPreviewPlacerView.setKeyboardViewGeometry(viewOrigin[0], viewOrigin[1], width, height);
+            mPreviewPlacerView.setKeyboardViewGeometry(
+                    CoordinateUtils.x(viewOrigin), CoordinateUtils.y(viewOrigin), width, height);
         }
     }
 
@@ -940,7 +942,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
         // the left/right background is used if such background is specified.
         final int statePosition;
-        int previewX = key.getDrawX() - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
+        int previewX = key.getDrawX() - (previewWidth - keyDrawWidth) / 2
+                + CoordinateUtils.x(mCoordinates);
         if (previewX < 0) {
             previewX = 0;
             statePosition = STATE_LEFT;
@@ -952,7 +955,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.mY - previewHeight + mPreviewOffset + mCoordinates[1];
+        final int previewY = key.mY - previewHeight + mPreviewOffset
+                + CoordinateUtils.y(mCoordinates);
 
         if (background != null) {
             final int hasMoreKeys = (key.mMoreKeys != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;

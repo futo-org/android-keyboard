@@ -26,6 +26,7 @@ import android.widget.PopupWindow;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.R;
 
@@ -34,7 +35,7 @@ import com.android.inputmethod.latin.R;
  * detecting key presses and touch movements.
  */
 public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
-    private final int[] mCoordinates = new int[2];
+    private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     private final KeyDetector mKeyDetector;
 
@@ -169,7 +170,7 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
         window.setHeight(container.getMeasuredHeight());
         parentView.getLocationInWindow(mCoordinates);
         window.showAtLocation(parentView, Gravity.NO_GRAVITY,
-                x + mCoordinates[0], y + mCoordinates[1]);
+                x + CoordinateUtils.x(mCoordinates), y + CoordinateUtils.y(mCoordinates));
 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
