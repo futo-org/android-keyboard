@@ -688,7 +688,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
-            Log.d(TAG, "commitCurrentLogUnit");
+            Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasWord() ?
+                    ": " + mCurrentLogUnit.getWord() : ""));
         }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
