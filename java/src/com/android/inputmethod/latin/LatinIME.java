@@ -1464,7 +1464,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private static final class BatchInputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private LatinIME mLatinIme;
-        private boolean mInBatchInput; // synchornized using "this".
+        private boolean mInBatchInput; // synchronized using "this".
 
         private BatchInputUpdater() {
             final HandlerThread handlerThread = new HandlerThread(
@@ -1496,6 +1496,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         // Run in the UI thread.
         public synchronized void onStartBatchInput() {
+            mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
             mInBatchInput = true;
         }
 
@@ -1503,7 +1504,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         private synchronized void updateBatchInput(final InputPointers batchPointers,
                 final LatinIME latinIme) {
             if (!mInBatchInput) {
-                // Batch input has ended while the message was being delivered.
+                // Batch input has ended or canceled while the message was being delivered.
                 return;
             }
             final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(
@@ -1523,7 +1524,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
-        public void onCancelBatchInput(final LatinIME latinIme) {
+        public synchronized void onCancelBatchInput(final LatinIME latinIme) {
             mInBatchInput = false;
             latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                     SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);

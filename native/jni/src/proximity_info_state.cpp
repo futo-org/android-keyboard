@@ -31,6 +31,10 @@ const int ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
         1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
 const float ProximityInfoState::NOT_A_DISTANCE_FLOAT = -1.0f;
 const int ProximityInfoState::NOT_A_CODE = -1;
+const int ProximityInfoState::LOOKUP_RADIUS_PERCENTILE = 50;
+const int ProximityInfoState::FIRST_POINT_TIME_OFFSET_MILLIS = 150;
+const int ProximityInfoState::STRONG_DOUBLE_LETTER_TIME_MILLIS = 600;
+const int ProximityInfoState::MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE = 5;
 
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
@@ -105,7 +109,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mNearKeysVector.clear();
         mSearchKeysVector.clear();
         mSpeedRates.clear();
-        mBeelineSpeedRates.clear();
+        mBeelineSpeedPercentiles.clear();
         mCharProbabilities.clear();
         mDirections.clear();
     }
@@ -253,9 +257,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         AKLOGI("===== sampled points =====");
         for (int i = 0; i < mSampledInputSize; ++i) {
             if (isGeometric) {
-                AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %.4f",
+                AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %d",
                         i, mSampledInputXs[i], mSampledInputYs[i], mTimes[i], mSpeedRates[i],
-                        getBeelineSpeedRate(i));
+                        getBeelineSpeedPercentile(i));
             }
             sampledX << mSampledInputXs[i];
             sampledY << mSampledInputYs[i];
@@ -366,54 +370,65 @@ void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const
     }
 }
 
+static const int MAX_PERCENTILE = 100;
 void ProximityInfoState::refreshBeelineSpeedRates(const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int * times) {
-    mBeelineSpeedRates.resize(mSampledInputSize);
+    if (DEBUG_SAMPLING_POINTS){
+        AKLOGI("--- refresh beeline speed rates");
+    }
+    mBeelineSpeedPercentiles.resize(mSampledInputSize);
     for (int i = 0; i < mSampledInputSize; ++i) {
-        mBeelineSpeedRates[i] = calculateBeelineSpeedRate(
-                i, inputSize, xCoordinates, yCoordinates, times);
+        mBeelineSpeedPercentiles[i] = static_cast<int>(calculateBeelineSpeedRate(
+                i, inputSize, xCoordinates, yCoordinates, times) * MAX_PERCENTILE);
     }
 }
 
 float ProximityInfoState::calculateBeelineSpeedRate(
         const int id, const int inputSize, const int *const xCoordinates,
         const int *const yCoordinates, const int * times) const {
-    static const int MAX_PERCENTILE = 100;
-    static const int LOOKUP_TIME_PERCENTILE = 30;
-    static const int LOOKUP_RADIUS_PERCENTILE = 50;
-    if (mSampledInputSize <= 0 || mAverageSpeed < 0.1f) {
+    if (mSampledInputSize <= 0 || mAverageSpeed < 0.001f) {
+        if (DEBUG_SAMPLING_POINTS){
+            AKLOGI("--- invalid state: cancel. size = %d, ave = %f",
+                    mSampledInputSize, mAverageSpeed);
+        }
         return 1.0f;
     }
     const int lookupRadius =
             mProximityInfo->getMostCommonKeyWidth() * LOOKUP_RADIUS_PERCENTILE / MAX_PERCENTILE;
     const int x0 = mSampledInputXs[id];
     const int y0 = mSampledInputYs[id];
-    const int lookupTime =
-            (mTimes.back() - mTimes.front()) * LOOKUP_TIME_PERCENTILE / MAX_PERCENTILE;
-    if (lookupTime <= 0) {
-        return 1.0f;
-    }
+    const int actualInputIndex = mInputIndice[id];
     int tempTime = 0;
     int tempBeelineDistance = 0;
-    int start = mInputIndice[id];
+    int start = actualInputIndex;
     // lookup forward
-    while (start > 0 && tempTime < lookupTime && tempBeelineDistance < lookupRadius) {
+    while (start > 0 && tempBeelineDistance < lookupRadius) {
         tempTime += times[start] - times[start - 1];
         --start;
         tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
     }
+    // Exclusive unless this is an edge point
+    if (start > 0 && start < actualInputIndex) {
+        ++start;
+    }
     tempTime= 0;
     tempBeelineDistance = 0;
-    int end = mInputIndice[id];
+    int end = actualInputIndex;
     // lookup backward
-    while (end < static_cast<int>(inputSize - 1) && tempTime < lookupTime
-            && tempBeelineDistance < lookupRadius) {
+    while (end < (inputSize - 1) && tempBeelineDistance < lookupRadius) {
         tempTime += times[end + 1] - times[end];
         ++end;
-        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
+        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[end], yCoordinates[end]);
+    }
+    // Exclusive unless this is an edge point
+    if (end > actualInputIndex && end < (inputSize - 1)) {
+        --end;
     }
 
-    if (start == end) {
+    if (start >= end) {
+        if (DEBUG_DOUBLE_LETTER) {
+            AKLOGI("--- double letter: start == end %d", start);
+        }
         return 1.0f;
     }
 
@@ -422,11 +437,33 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     const int x3 = xCoordinates[end];
     const int y3 = yCoordinates[end];
     const int beelineDistance = getDistanceInt(x2, y2, x3, y3);
-    const int time = times[end] - times[start];
+    int adjustedStartTime = times[start];
+    if (start == 0 && actualInputIndex == 0 && inputSize > 1) {
+        adjustedStartTime += FIRST_POINT_TIME_OFFSET_MILLIS;
+    }
+    int adjustedEndTime = times[end];
+    if (end == (inputSize - 1) && inputSize > 1) {
+        adjustedEndTime -= FIRST_POINT_TIME_OFFSET_MILLIS;
+    }
+    const int time = adjustedEndTime - adjustedStartTime;
     if (time <= 0) {
         return 1.0f;
     }
-    return (static_cast<float>(beelineDistance) / static_cast<float>(time)) / mAverageSpeed;
+
+    if (time >= STRONG_DOUBLE_LETTER_TIME_MILLIS){
+        return 0.0f;
+    }
+    if (DEBUG_DOUBLE_LETTER) {
+        AKLOGI("--- (%d, %d) double letter: start = %d, end = %d, dist = %d, time = %d, speed = %f,"
+                " ave = %f, val = %f, start time = %d, end time = %d",
+                id, mInputIndice[id], start, end, beelineDistance, time,
+                (static_cast<float>(beelineDistance) / static_cast<float>(time)), mAverageSpeed,
+                ((static_cast<float>(beelineDistance) / static_cast<float>(time)) / mAverageSpeed),
+                adjustedStartTime, adjustedEndTime);
+    }
+    // Offset 1%
+    // TODO: Detect double letter more smartly
+    return 0.01f + static_cast<float>(beelineDistance) / static_cast<float>(time) / mAverageSpeed;
 }
 
 bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
