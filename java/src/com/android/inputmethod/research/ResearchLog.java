@@ -207,7 +207,7 @@ public class ResearchLog {
     private static final String UPTIME_KEY = "_ut";
     private static final String EVENT_TYPE_KEY = "_ty";
 
-    void outputEvent(final String[] keys, final Object[] values, final long time) {
+    void outputEvent(final String[] keys, final Object[] values) {
         // Not thread safe.
         if (keys.length == 0) {
             return;
@@ -225,7 +225,7 @@ public class ResearchLog {
             }
             mJsonWriter.beginObject();
             mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            mJsonWriter.name(UPTIME_KEY).value(time);
+            mJsonWriter.name(UPTIME_KEY).value(SystemClock.uptimeMillis());
             mJsonWriter.name(EVENT_TYPE_KEY).value(keys[0]);
             final int length = values.length;
             for (int i = 0; i < length; i++) {
