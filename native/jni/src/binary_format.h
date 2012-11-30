@@ -17,7 +17,7 @@
 #ifndef LATINIME_BINARY_FORMAT_H
 #define LATINIME_BINARY_FORMAT_H
 
-#include <cctype>
+#include <cstdlib>
 #include <limits>
 #include <map>
 #include "bloom_filter.h"
