@@ -708,12 +708,29 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    private static final String[] EVENTKEYS_LOG_SEGMENT_START = {
+        "logSegmentStart", "isIncludingPrivateData"
+    };
+    private static final String[] EVENTKEYS_LOG_SEGMENT_END = {
+        "logSegmentEnd"
+    };
     /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
             final ResearchLog researchLog, final boolean isIncludingPrivateData) {
+        final LogUnit openingLogUnit = new LogUnit();
+        final Object[] values = {
+            isIncludingPrivateData
+        };
+        openingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_START, values,
+                false /* isPotentiallyPrivate */);
+        researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
         LogUnit logUnit;
         while ((logUnit = logBuffer.shiftOut()) != null) {
             researchLog.publish(logUnit, isIncludingPrivateData);
         }
+        final LogUnit closingLogUnit = new LogUnit();
+        closingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_END, EVENTKEYS_NULLVALUES,
+                false /* isPotentiallyPrivate */);
+        researchLog.publish(closingLogUnit, true /* isIncludingPrivateData */);
     }
 
     private boolean hasOnlyLetters(final String word) {
