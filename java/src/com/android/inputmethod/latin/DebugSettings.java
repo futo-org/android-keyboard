@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -42,6 +43,7 @@ public final class DebugSettings extends PreferenceFragment
 
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
+    private CheckBoxPreference mStatisticsLoggingPref;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -59,6 +61,7 @@ public final class DebugSettings extends PreferenceFragment
         }
         final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING_KEY);
         if (statisticsLoggingPref instanceof CheckBoxPreference) {
+            mStatisticsLoggingPref = (CheckBoxPreference) statisticsLoggingPref;
             if (!SHOW_STATISTICS_LOGGING) {
                 getPreferenceScreen().removePreference(statisticsLoggingPref);
             }
@@ -80,6 +83,14 @@ public final class DebugSettings extends PreferenceFragment
         if (key.equals(DEBUG_MODE_KEY)) {
             if (mDebugMode != null) {
                 mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
+                final boolean checked = mDebugMode.isChecked();
+                if (mStatisticsLoggingPref != null) {
+                    if (checked) {
+                        getPreferenceScreen().addPreference(mStatisticsLoggingPref);
+                    } else {
+                        getPreferenceScreen().removePreference(mStatisticsLoggingPref);
+                    }
+                }
                 updateDebugMode();
                 mServiceNeedsRestart = true;
             }

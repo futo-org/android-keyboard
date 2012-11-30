@@ -39,6 +39,10 @@ class ProximityInfoState {
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
     static const int NOT_A_CODE;
+    static const int LOOKUP_RADIUS_PERCENTILE;
+    static const int FIRST_POINT_TIME_OFFSET_MILLIS;
+    static const int STRONG_DOUBLE_LETTER_TIME_MILLIS;
+    static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
 
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
@@ -56,8 +60,8 @@ class ProximityInfoState {
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mTimes(),
-              mInputIndice(), mLengthCache(), mDistanceCache(), mSpeedRates(),
-              mDirections(), mBeelineSpeedRates(), mCharProbabilities(), mNearKeysVector(),
+              mInputIndice(), mLengthCache(), mBeelineSpeedPercentiles(), mDistanceCache(),
+              mSpeedRates(), mDirections(), mCharProbabilities(), mNearKeysVector(),
               mSearchKeysVector(), mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
@@ -167,8 +171,19 @@ class ProximityInfoState {
         return mSpeedRates[index];
     }
 
-    AK_FORCE_INLINE float getBeelineSpeedRate(const int id) const {
-        return mBeelineSpeedRates[id];
+    AK_FORCE_INLINE int getBeelineSpeedPercentile(const int id) const {
+        return mBeelineSpeedPercentiles[id];
+    }
+
+    AK_FORCE_INLINE DoubleLetterLevel getDoubleLetterLevel(const int id) const {
+        const int beelineSpeedRate = getBeelineSpeedPercentile(id);
+        if (beelineSpeedRate == 0) {
+            return A_STRONG_DOUBLE_LETTER;
+        } else if (beelineSpeedRate < MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE) {
+            return A_DOUBLE_LETTER;
+        } else {
+            return NOT_A_DOUBLE_LETTER;
+        }
     }
 
     float getDirection(const int index) const {
@@ -259,10 +274,10 @@ class ProximityInfoState {
     std::vector<int> mTimes;
     std::vector<int> mInputIndice;
     std::vector<int> mLengthCache;
+    std::vector<int> mBeelineSpeedPercentiles;
     std::vector<float> mDistanceCache;
     std::vector<float> mSpeedRates;
     std::vector<float> mDirections;
-    std::vector<float> mBeelineSpeedRates;
     // probabilities of skipping or mapping to a key for each point.
     std::vector<hash_map_compat<int, float> > mCharProbabilities;
     // The vector for the key code set which holds nearby keys for each sampled input point
