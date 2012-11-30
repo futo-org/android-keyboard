@@ -379,7 +379,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.d(TAG, "stop called");
         }
         logStatistics();
-        commitCurrentLogUnit(SystemClock.uptimeMillis());
+        commitCurrentLogUnit();
 
         if (mMainLogBuffer != null) {
             publishLogBuffer(mMainLogBuffer, mMainResearchLog, false /* isIncludingPrivateData */);
@@ -547,7 +547,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         if (includeHistory) {
-            commitCurrentLogUnit(SystemClock.uptimeMillis());
+            commitCurrentLogUnit();
         } else {
             mFeedbackLogBuffer.clear();
         }
@@ -556,7 +556,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             feedbackContents
         };
         feedbackLogUnit.addLogStatement(EVENTKEYS_FEEDBACK, values,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+                false /* isPotentiallyPrivate */);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
         mFeedbackLog.close(new Runnable() {
@@ -657,9 +657,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private synchronized void enqueuePotentiallyPrivateEvent(final String[] keys,
             final Object[] values) {
         assert values.length + 1 == keys.length;
-        final long time = SystemClock.uptimeMillis();
         if (isAllowedToLog()) {
-            mCurrentLogUnit.addLogStatement(keys, values, time, true /* isPotentiallyPrivate */);
+            mCurrentLogUnit.addLogStatement(keys, values, true /* isPotentiallyPrivate */);
         }
     }
 
@@ -681,18 +680,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private synchronized void enqueueEvent(final String[] keys, final Object[] values) {
         assert values.length + 1 == keys.length;
-        final long time = SystemClock.uptimeMillis();
         if (isAllowedToLog()) {
-            mCurrentLogUnit.addLogStatement(keys, values, time, false /* isPotentiallyPrivate */);
+            mCurrentLogUnit.addLogStatement(keys, values, false /* isPotentiallyPrivate */);
         }
     }
 
-    /* package for test */ void commitCurrentLogUnit(final long maxTime) {
+    /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
             Log.d(TAG, "commitCurrentLogUnit");
         }
         if (!mCurrentLogUnit.isEmpty()) {
-            final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
             if (mMainLogBuffer != null) {
                 mMainLogBuffer.shiftIn(mCurrentLogUnit);
                 if (mMainLogBuffer.isSafeToLog() && mMainResearchLog != null) {
@@ -704,7 +701,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mFeedbackLogBuffer != null) {
                 mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
             }
-            mCurrentLogUnit = newLogUnit;
+            mCurrentLogUnit = new LogUnit();
             Log.d(TAG, "commitCurrentLogUnit");
         }
     }
@@ -722,7 +719,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             isIncludingPrivateData
         };
         openingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_START, values,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+                false /* isPotentiallyPrivate */);
         researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
         LogUnit logUnit;
         while ((logUnit = logBuffer.shiftOut()) != null) {
@@ -730,7 +727,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         final LogUnit closingLogUnit = new LogUnit();
         closingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_END, EVENTKEYS_NULLVALUES,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+                false /* isPotentiallyPrivate */);
         researchLog.publish(closingLogUnit, true /* isIncludingPrivateData */);
     }
 
@@ -745,13 +742,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return false;
     }
 
-    private void onWordComplete(final String word, final long maxTime) {
+    private void onWordComplete(final String word) {
         Log.d(TAG, "onWordComplete: " + word);
         if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
             mStatistics.recordWordEntered();
         }
-        commitCurrentLogUnit(maxTime);
+        commitCurrentLogUnit();
     }
 
     private static int scrubDigitFromCodePoint(int codePoint) {
@@ -961,7 +958,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.commitCurrentLogUnit(SystemClock.uptimeMillis());
+            researchLogger.commitCurrentLogUnit();
             getInstance().stop();
         }
     }
@@ -1208,8 +1205,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_COMMITTEXT,
                 values);
-        // TODO: Replace Long.MAX_VALUE with timestamp of last data to include
-        researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE);
+        researchLogger.onWordComplete(scrubbedWord);
     }
 
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT = {
