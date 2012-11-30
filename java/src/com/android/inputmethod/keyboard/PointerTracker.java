@@ -749,12 +749,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             if (getActivePointerTrackerCount() == 1) {
                 sInGesture = false;
                 sTimeRecorder.onEndBatchInput(eventTime);
+                mTimerProxy.cancelAllUpdateBatchInputTimers();
                 if (!mIsTrackingCanceled) {
                     if (DEBUG_LISTENER) {
                         Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
                                 mPointerId, sAggregratedPointers.getPointerSize()));
                     }
-                    mTimerProxy.cancelAllUpdateBatchInputTimers();
                     mListener.onEndBatchInput(sAggregratedPointers);
                 }
             }
