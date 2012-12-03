@@ -1064,12 +1064,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
                 : mSuggestionsContainer.getHeight();
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
-        int touchY = extraHeight;
+        int visibleTopY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (mainKeyboardView.isShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
-                touchY -= suggestionsHeight;
+                visibleTopY -= suggestionsHeight;
             }
+            final int touchY = mainKeyboardView.isShowingMoreKeysPanel() ? 0 : visibleTopY;
             final int touchWidth = mainKeyboardView.getWidth();
             final int touchHeight = mainKeyboardView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
@@ -1077,8 +1078,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
             outInsets.touchableRegion.set(0, touchY, touchWidth, touchHeight);
         }
-        outInsets.contentTopInsets = touchY;
-        outInsets.visibleTopInsets = touchY;
+        outInsets.contentTopInsets = visibleTopY;
+        outInsets.visibleTopInsets = visibleTopY;
     }
 
     @Override

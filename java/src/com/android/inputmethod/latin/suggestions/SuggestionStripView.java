@@ -27,7 +27,6 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.text.Spannable;
@@ -91,7 +90,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
-    private final PopupWindow mMoreSuggestionsWindow;
 
     private final ArrayList<TextView> mWords = CollectionUtils.newArrayList();
     private final ArrayList<TextView> mInfos = CollectionUtils.newArrayList();
@@ -641,21 +639,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 .findViewById(R.id.more_suggestions_view);
         mMoreSuggestionsBuilder = new MoreSuggestions.Builder(mMoreSuggestionsView);
 
-        final PopupWindow moreWindow = new PopupWindow(context);
-        moreWindow.setWindowLayoutMode(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        moreWindow.setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
-        moreWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
-        moreWindow.setFocusable(true);
-        moreWindow.setOutsideTouchable(true);
-        moreWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                mKeyboardView.dimEntireKeyboard(false);
-            }
-        });
-        mMoreSuggestionsWindow = moreWindow;
-
         final Resources res = context.getResources();
         mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
                 R.dimen.more_suggestions_modal_tolerance);
@@ -738,17 +721,19 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreKeysPanel.Controller mMoreSuggestionsController =
             new MoreKeysPanel.Controller() {
         @Override
-        public boolean dismissMoreKeysPanel() {
-            return dismissMoreSuggestions();
+        public boolean onDismissMoreKeysPanel() {
+            mKeyboardView.dimEntireKeyboard(false /* dimmed */);
+            return mKeyboardView.onDismissMoreKeysPanel();
+        }
+
+        @Override
+        public void onShowMoreKeysPanel(MoreKeysPanel panel) {
+            mKeyboardView.onShowMoreKeysPanel(panel);
         }
     };
 
     boolean dismissMoreSuggestions() {
-        if (mMoreSuggestionsWindow.isShowing()) {
-            mMoreSuggestionsWindow.dismiss();
-            return true;
-        }
-        return false;
+        return mMoreSuggestionsView.dismissMoreKeysPanel();
     }
 
     @Override
@@ -780,11 +765,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final int pointX = stripWidth / 2;
         final int pointY = -params.mMoreSuggestionsBottomGap;
         moreKeysPanel.showMoreKeysPanel(this, mMoreSuggestionsController, pointX, pointY,
-                mMoreSuggestionsWindow, mMoreSuggestionsListener);
+                mMoreSuggestionsListener);
         mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
         mOriginX = mLastX;
         mOriginY = mLastY;
-        mKeyboardView.dimEntireKeyboard(true);
+        mKeyboardView.dimEntireKeyboard(true /* dimmed */);
         for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
             mWords.get(i).setPressed(false);
         }
@@ -816,7 +801,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean dispatchTouchEvent(final MotionEvent me) {
-        if (!mMoreSuggestionsWindow.isShowing()
+        if (!mMoreSuggestionsView.isShowingInParent()
                 || mMoreSuggestionsMode == MORE_SUGGESTIONS_IN_MODAL_MODE) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
