@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.view.View;
 
-public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
+public interface MoreKeysPanel {
     public interface Controller {
         /**
          * Add the {@link MoreKeysPanel} to the target view.
@@ -27,7 +27,7 @@ public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
         public void onShowMoreKeysPanel(final MoreKeysPanel panel);
 
         /**
-         * Remove the current {@link MoreKeysPanel} to the target view.
+         * Remove the current {@link MoreKeysPanel} from the target view.
          */
         public boolean onDismissMoreKeysPanel();
     }
@@ -53,6 +53,36 @@ public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
      * the panel's container view.
      */
     public boolean dismissMoreKeysPanel();
+
+    /**
+     * Process a move event on the more keys panel.
+     *
+     * @param x translated x coordinate of the touch point
+     * @param y translated y coordinate of the touch point
+     * @param pointerId pointer id touch point
+     * @param eventTime timestamp of touch point
+     */
+    public void onMoveEvent(final int x, final int y, final int pointerId, final long eventTime);
+
+    /**
+     * Process a down event on the more keys panel.
+     *
+     * @param x translated x coordinate of the touch point
+     * @param y translated y coordinate of the touch point
+     * @param pointerId pointer id touch point
+     * @param eventTime timestamp of touch point
+     */
+    public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime);
+
+    /**
+     * Process an up event on the more keys panel.
+     *
+     * @param x translated x coordinate of the touch point
+     * @param y translated y coordinate of the touch point
+     * @param pointerId pointer id touch point
+     * @param eventTime timestamp of touch point
+     */
+    public void onUpEvent(final int x, final int y, final int pointerId, final long eventTime);
 
     /**
      * Translate X-coordinate of touch event to the local X-coordinate of this

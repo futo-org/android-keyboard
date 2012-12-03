@@ -84,7 +84,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void showSlidingKeyInputPreview(PointerTracker tracker);
         public void dismissSlidingKeyInputPreview();
         public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
-        public boolean dismissMoreKeysPanel();
     }
 
     public interface TimerProxy {
@@ -319,8 +318,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if this pointer is no longer tracking touch event.
     private boolean mIsTrackingCanceled;
 
-    // true if this pointer has been long-pressed and is showing a more keys panel.
-    private boolean mIsShowingMoreKeysPanel;
+    // the more keys panel currently being shown. equals null if no panel is active.
+    private MoreKeysPanel mMoreKeysPanel;
 
     // true if this pointer is in a sliding key input.
     boolean mIsInSlidingKeyInput;
@@ -812,7 +811,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_EVENT) {
             printTouchEvent("onDownEvent:", x, y, eventTime);
         }
-
         mDrawingProxy = handler.getDrawingProxy();
         mTimerProxy = handler.getTimerProxy();
         setKeyboardActionListener(handler.getKeyboardActionListener());
@@ -848,7 +846,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         // A gesture should start only from a non-modifier key.
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
-                && !mIsShowingMoreKeysPanel && key != null && !key.isModifier();
+                && !isShowingMoreKeysPanel() && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
@@ -856,6 +854,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             mGestureStrokeWithPreviewPoints.onDownEvent(x, y, eventTime, sGestureFirstDownTime,
                     sTimeRecorder.getLastLetterTypingTime());
         }
+    }
+
+    private boolean isShowingMoreKeysPanel() {
+        return (mMoreKeysPanel != null);
     }
 
     private void onDownEventInternal(final int x, final int y, final long eventTime) {
@@ -920,6 +922,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
 
+        if (isShowingMoreKeysPanel()) {
+            final int translatedX = mMoreKeysPanel.translateX(x);
+            final int translatedY = mMoreKeysPanel.translateY(y);
+            mMoreKeysPanel.onMoveEvent(translatedX, translatedY, mPointerId, eventTime);
+            return;
+        }
+
         if (sShouldHandleGesture && me != null) {
             // Add historical points to gesture path.
             final int pointerIndex = me.findPointerIndex(mPointerId);
@@ -932,7 +941,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                         false /* isMajorEvent */, null);
             }
         }
-
         onMoveEventInternal(x, y, eventTime);
     }
 
@@ -964,7 +972,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
         }
-        onUpEventInternal(eventTime);
+        onUpEventInternal(x, y, eventTime);
         onDownEventInternal(x, y, eventTime);
     }
 
@@ -983,7 +991,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     lastX, lastY, Constants.printableCode(oldKey.mCode),
                     x, y, Constants.printableCode(key.mCode)));
         }
-        onUpEventInternal(eventTime);
+        onUpEventInternal(x, y, eventTime);
         onDownEventInternal(x, y, eventTime);
     }
 
@@ -1099,7 +1107,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
             }
         }
-        onUpEventInternal(eventTime);
+        onUpEventInternal(x, y, eventTime);
         sPointerTrackerQueue.remove(this);
     }
 
@@ -1111,11 +1119,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_EVENT) {
             printTouchEvent("onPhntEvent:", mLastX, mLastY, eventTime);
         }
-        onUpEventInternal(eventTime);
+        if (isShowingMoreKeysPanel()) {
+            return;
+        }
+        onUpEventInternal(mLastX, mLastY, eventTime);
         cancelTracking();
     }
 
-    private void onUpEventInternal(final long eventTime) {
+    private void onUpEventInternal(final int x, final int y, final long eventTime) {
         mTimerProxy.cancelKeyTimers();
         resetSlidingKeyInput();
         mIsDetectingGesture = false;
@@ -1123,9 +1134,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mCurrentKey = null;
         // Release the last pressed key.
         setReleasedKeyGraphics(currentKey);
-        if (mIsShowingMoreKeysPanel) {
-            mDrawingProxy.dismissMoreKeysPanel();
-            mIsShowingMoreKeysPanel = false;
+
+        if (isShowingMoreKeysPanel()) {
+            if (!mIsTrackingCanceled) {
+                final int translatedX = mMoreKeysPanel.translateX(x);
+                final int translatedY = mMoreKeysPanel.translateY(y);
+                mMoreKeysPanel.onUpEvent(translatedX, translatedY, mPointerId, eventTime);
+            }
+            mMoreKeysPanel.dismissMoreKeysPanel();
+            mMoreKeysPanel = null;
+            return;
         }
 
         if (sInGesture) {
@@ -1144,10 +1162,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    public void onShowMoreKeysPanel(final int x, final int y, final KeyEventHandler handler) {
-        onLongPressed();
-        mIsShowingMoreKeysPanel = true;
-        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
+    public void onShowMoreKeysPanel(final int translatedX, final int translatedY,
+                final MoreKeysPanel panel) {
+        setReleasedKeyGraphics(mCurrentKey);
+        final long eventTime = SystemClock.uptimeMillis();
+        mMoreKeysPanel = panel;
+        mMoreKeysPanel.onDownEvent(translatedX, translatedY, mPointerId, eventTime);
     }
 
     @Override
@@ -1179,10 +1199,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mTimerProxy.cancelKeyTimers();
         setReleasedKeyGraphics(mCurrentKey);
         resetSlidingKeyInput();
-        if (mIsShowingMoreKeysPanel) {
-            mDrawingProxy.dismissMoreKeysPanel();
-            mIsShowingMoreKeysPanel = false;
-        }
+        mMoreKeysPanel.dismissMoreKeysPanel();
+        mMoreKeysPanel = null;
     }
 
     private void startRepeatKey(final Key key) {
