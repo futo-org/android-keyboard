@@ -50,11 +50,11 @@ class Dictionary {
             bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
             int *outputTypes) const;
 
-    int getBigrams(const int32_t *word, int length, int *codes, int codesSize, int *outWords,
+    int getBigrams(const int *word, int length, int *codes, int codesSize, int *outWords,
             int *frequencies, int *outputTypes) const;
 
-    int getFrequency(const int32_t *word, int length) const;
-    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
+    int getFrequency(const int *word, int length) const;
+    bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     const uint8_t *getDict() const { // required to release dictionary buffer
         return mDict;
     }

@@ -28,7 +28,6 @@
 
 namespace latinime {
 
-// TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int maxWordLength,
         int maxWords, int maxPredictions)
         : mDict(static_cast<unsigned char *>(dict)),
@@ -81,19 +80,18 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
     }
 }
 
-int Dictionary::getBigrams(const int32_t *word, int length, int *codes, int codesSize,
+int Dictionary::getBigrams(const int *word, int length, int *codes, int codesSize,
         int *outWords, int *frequencies, int *outputTypes) const {
     if (length <= 0) return 0;
     return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
             outputTypes);
 }
 
-int Dictionary::getFrequency(const int32_t *word, int length) const {
+int Dictionary::getFrequency(const int *word, int length) const {
     return mUnigramDictionary->getFrequency(word, length);
 }
 
-bool Dictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
-        int length2) const {
+bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
     return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
 }
 } // namespace latinime
