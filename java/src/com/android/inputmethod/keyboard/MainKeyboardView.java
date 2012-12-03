@@ -49,6 +49,7 @@ import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.TouchScreenRegulator;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -672,12 +673,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mMoreKeysPanel = moreKeysPanel;
         mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
 
+        final int[] lastCoords = CoordinateUtils.newInstance();
+        tracker.getLastCoordinates(lastCoords);
         final boolean keyPreviewEnabled = isKeyPreviewPopupEnabled() && !parentKey.noKeyPreview();
         // The more keys keyboard is usually horizontally aligned with the center of the parent key.
         // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
         // keys keyboard is placed at the touch point of the parent key.
         final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint && !keyPreviewEnabled)
-                ? tracker.getLastX()
+                ? CoordinateUtils.x(lastCoords)
                 : parentKey.mX + parentKey.mWidth / 2;
         // The more keys keyboard is usually vertically aligned with the top edge of the parent key
         // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
@@ -687,8 +690,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int pointY = parentKey.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
         moreKeysPanel.showMoreKeysPanel(
                 this, this, pointX, pointY, mMoreKeysWindow, mKeyboardActionListener);
-        final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
-        final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
+        final int translatedX = moreKeysPanel.translateX(CoordinateUtils.x(lastCoords));
+        final int translatedY = moreKeysPanel.translateY(CoordinateUtils.y(lastCoords));
         tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
         dimEntireKeyboard(true);
         return true;
@@ -788,10 +791,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             } else if (pointerCount == 2 && oldPointerCount == 1) {
                 // Single-touch to multi-touch transition.
                 // Send an up event for the last pointer.
-                final int lastX = tracker.getLastX();
-                final int lastY = tracker.getLastY();
-                mOldKey = tracker.getKeyOn(lastX, lastY);
-                tracker.onUpEvent(lastX, lastY, eventTime);
+                final int[] lastCoords = CoordinateUtils.newInstance();
+                mOldKey = tracker.getKeyOn(
+                        CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords));
+                tracker.onUpEvent(
+                        CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords), eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
                 tracker.processMotionEvent(action, x, y, eventTime, this);
             } else {
