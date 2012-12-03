@@ -21,23 +21,23 @@ namespace latinime {
 // TODO: Have proximity character informations in each language's binary dictionary.
 const char *AdditionalProximityChars::LOCALE_EN_US = "en";
 
-const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_A[EN_US_ADDITIONAL_A_SIZE] = {
+const int AdditionalProximityChars::EN_US_ADDITIONAL_A[EN_US_ADDITIONAL_A_SIZE] = {
     'e', 'i', 'o', 'u'
 };
 
-const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_E[EN_US_ADDITIONAL_E_SIZE] = {
+const int AdditionalProximityChars::EN_US_ADDITIONAL_E[EN_US_ADDITIONAL_E_SIZE] = {
     'a', 'i', 'o', 'u'
 };
 
-const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_I[EN_US_ADDITIONAL_I_SIZE] = {
+const int AdditionalProximityChars::EN_US_ADDITIONAL_I[EN_US_ADDITIONAL_I_SIZE] = {
     'a', 'e', 'o', 'u'
 };
 
-const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_O[EN_US_ADDITIONAL_O_SIZE] = {
+const int AdditionalProximityChars::EN_US_ADDITIONAL_O[EN_US_ADDITIONAL_O_SIZE] = {
     'a', 'e', 'i', 'u'
 };
 
-const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_U[EN_US_ADDITIONAL_U_SIZE] = {
+const int AdditionalProximityChars::EN_US_ADDITIONAL_U[EN_US_ADDITIONAL_U_SIZE] = {
     'a', 'e', 'i', 'o'
 };
 } // namespace latinime

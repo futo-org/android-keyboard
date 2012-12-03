@@ -66,7 +66,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
-          mProximityCharsArray(new int32_t[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
+          mProximityCharsArray(new int[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
                   /* proximityGridLength */]),
           mCodeToKeyMap() {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
@@ -115,7 +115,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
-    int32_t *proximityCharsArray = mProximityCharsArray;
+    int *proximityCharsArray = mProximityCharsArray;
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {
             AKLOGI("Index: %d", mProximityCharsArray[startIndex + i]);
@@ -163,14 +163,14 @@ int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int
 }
 
 void ProximityInfo::calculateNearbyKeyCodes(
-        const int x, const int y, const int32_t primaryKey, int *inputCodes) const {
-    int32_t *proximityCharsArray = mProximityCharsArray;
+        const int x, const int y, const int primaryKey, int *inputCodes) const {
+    int *proximityCharsArray = mProximityCharsArray;
     int insertPos = 0;
     inputCodes[insertPos++] = primaryKey;
     const int startIndex = getStartIndexFromCoordinates(x, y);
     if (startIndex >= 0) {
         for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-            const int32_t c = proximityCharsArray[startIndex + i];
+            const int c = proximityCharsArray[startIndex + i];
             if (c < KEYCODE_SPACE || c == primaryKey) {
                 continue;
             }
@@ -198,13 +198,13 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 return;
             }
 
-            const int32_t *additionalProximityChars =
+            const int *additionalProximityChars =
                     AdditionalProximityChars::getAdditionalChars(mLocaleStr, primaryKey);
             for (int j = 0; j < additionalProximitySize; ++j) {
-                const int32_t ac = additionalProximityChars[j];
+                const int ac = additionalProximityChars[j];
                 int k = 0;
                 for (; k < insertPos; ++k) {
-                    if (static_cast<int>(ac) == inputCodes[k]) {
+                    if (ac == inputCodes[k]) {
                         break;
                     }
                 }
@@ -235,7 +235,7 @@ int ProximityInfo::getKeyIndexOf(const int c) const {
     if (c == NOT_A_CODE_POINT) {
         return NOT_AN_INDEX;
     }
-    const int lowerCode = static_cast<int>(toLowerCase(c));
+    const int lowerCode = toLowerCase(c);
     hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(lowerCode);
     if (mapPos != mCodeToKeyMap.end()) {
         return mapPos->second;
@@ -254,7 +254,7 @@ void ProximityInfo::initializeG() {
     // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCodePoints[i];
-        const int lowerCode = static_cast<int>(toLowerCase(code));
+        const int lowerCode = toLowerCase(code);
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
         mCodeToKeyMap[lowerCode] = i;

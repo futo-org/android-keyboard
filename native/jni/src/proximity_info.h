@@ -17,8 +17,6 @@
 #ifndef LATINIME_PROXIMITY_INFO_H
 #define LATINIME_PROXIMITY_INFO_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "hash_map_compat.h"
 #include "jni.h"
@@ -59,7 +57,7 @@ class ProximityInfo {
         return mSweetSpotCenterYs[keyIndex];
     }
     void calculateNearbyKeyCodes(
-            const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
+            const int x, const int y, const int primaryKey, int *inputCodes) const;
 
     bool hasTouchPositionCorrectionData() const {
         return HAS_TOUCH_POSITION_CORRECTION_DATA;
@@ -141,12 +139,12 @@ class ProximityInfo {
     const int KEYBOARD_HEIGHT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
-    int32_t *mProximityCharsArray;
-    int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int32_t mKeyWidths[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int32_t mKeyHeights[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int32_t mKeyCodePoints[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int *mProximityCharsArray;
+    int mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyWidths[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyHeights[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyCodePoints[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
