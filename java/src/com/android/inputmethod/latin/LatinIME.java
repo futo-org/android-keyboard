@@ -161,6 +161,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
     private final RichInputConnection mConnection = new RichInputConnection(this);
+    private RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus(-1, -1, "",
+            Locale.getDefault(), ""); // Dummy object that will match no real recapitalize
 
     // Keep track of the last selection range to decide if we need to show word alternatives
     private static final int NOT_A_CURSOR_POSITION = -1;
@@ -1387,8 +1389,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
+            // Note: calling back to the keyboard on Shift key is handled in onPressKey()
+            // and onReleaseKey().
+            handleRecapitalize();
+            break;
         case Constants.CODE_SWITCH_ALPHA_SYMBOL:
-            // Shift and symbol key is handled in onPressKey() and onReleaseKey().
+            // Note: calling back to the keyboard on symbol key is handled in onPressKey()
+            // and onReleaseKey().
             break;
         case Constants.CODE_SETTINGS:
             onSettingsKeyPressed();
@@ -1926,6 +1933,37 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (mSettings.isInternal()) {
             Utils.Stats.onNonSeparator((char)primaryCode, x, y);
         }
+    }
+
+    private void handleRecapitalize() {
+        if (mLastSelectionStart == mLastSelectionEnd) return; // No selection
+        // If we have a recapitalize in progress, use it; otherwise, create a new one.
+        if (null == mRecapitalizeStatus
+                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+            mRecapitalizeStatus =
+                    new RecapitalizeStatus(mLastSelectionStart, mLastSelectionEnd,
+                    mConnection.getSelectedText(0 /* flags, 0 for no styles */).toString(),
+                    mSettings.getCurrentLocale(), mSettings.getWordSeparators());
+            // We trim leading and trailing whitespace.
+            mRecapitalizeStatus.trim();
+            // Trimming the object may have changed the length of the string, and we need to
+            // reposition the selection handles accordingly. As this result in an IPC call,
+            // only do it if it's actually necessary, in other words if the recapitalize status
+            // is not set at the same place as before.
+            if (!mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+                mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
+                mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
+                mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
+            }
+        }
+        mRecapitalizeStatus.rotate();
+        final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
+        mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+        mConnection.deleteSurroundingText(numCharsDeleted, 0);
+        mConnection.commitText(mRecapitalizeStatus.getRecapitalizedString(), 0);
+        mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
+        mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
+        mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
     }
 
     // Returns true if we did an autocorrection, false otherwise.
