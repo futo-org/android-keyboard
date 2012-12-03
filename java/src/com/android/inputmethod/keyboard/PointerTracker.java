@@ -721,6 +721,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key != null) {
             updateBatchInput(eventTime);
         }
+        if (mIsTrackingCanceled) {
+            return;
+        }
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
@@ -758,6 +761,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     mListener.onEndBatchInput(sAggregratedPointers);
                 }
             }
+        }
+        if (mIsTrackingCanceled) {
+            return;
         }
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
