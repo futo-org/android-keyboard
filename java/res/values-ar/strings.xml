@@ -44,6 +44,10 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"افتراضي"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"اقتراح أسماء جهات الاتصال"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"استخدام الأسماء من جهات الاتصال للاقتراحات والتصحيحات"</string>
+    <!-- no translation found for use_double_space_period (8781529969425082860) -->
+    <skip />
+    <!-- no translation found for use_double_space_period_summary (6532892187247952799) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"كتابة الحرف الأول من كل جملة بحرف كبير."</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
