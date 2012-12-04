@@ -860,6 +860,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mPreviewPlacerView.showSlidingKeyInputPreview(tracker);
     }
 
+    @Override
+    public void dismissSlidingKeyInputPreview() {
+        mPreviewPlacerView.dismissSlidingKeyInputPreview();
+    }
+
     public void showGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
         locatePreviewPlacerView();
         mPreviewPlacerView.setGestureFloatingPreviewText(gestureFloatingPreviewText);
