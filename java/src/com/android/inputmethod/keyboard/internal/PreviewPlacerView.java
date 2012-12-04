@@ -220,6 +220,10 @@ public final class PreviewPlacerView extends RelativeLayout {
         invalidate();
     }
 
+    public void dismissSlidingKeyInputPreview() {
+        mShowSlidingKeyInputPreview = false;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         freeOffscreenBuffer();

@@ -82,6 +82,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
         public void showSlidingKeyInputPreview(PointerTracker tracker);
+        public void dismissSlidingKeyInputPreview();
         public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
     }
 
@@ -881,7 +882,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void resetSlidingKeyInput() {
         mIsInSlidingKeyInput = false;
         mIsInSlidingKeyInputFromModifier = false;
-        mDrawingProxy.showSlidingKeyInputPreview(this);
+        mDrawingProxy.dismissSlidingKeyInputPreview();
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
