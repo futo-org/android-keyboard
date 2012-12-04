@@ -32,9 +32,12 @@
     <skip />
     <!-- no translation found for use_contacts_for_spellchecking_option_summary (8754413382543307713) -->
     <skip />
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar cun smatgar in buttun"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Tun cun smatgar in buttun"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up cun smatgar ina tasta"</string>
+    <!-- no translation found for vibrate_on_keypress (5258079494276955460) -->
+    <skip />
+    <!-- no translation found for sound_on_keypress (6093592297198243644) -->
+    <skip />
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <!-- no translation found for general_category (1859088467017573195) -->
     <skip />
     <!-- no translation found for correction_category (2236750915056607613) -->
@@ -69,7 +72,8 @@
     <skip />
     <!-- no translation found for use_double_space_period_summary (6532892187247952799) -->
     <skip />
-    <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
+    <!-- no translation found for auto_cap (1719746674854628252) -->
+    <skip />
     <!-- no translation found for auto_cap_summary (7934452761022946874) -->
     <skip />
     <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
@@ -112,15 +116,14 @@
     <skip />
     <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
     <skip />
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
+    <!-- no translation found for added_word (8993883354622484372) -->
     <skip />
-    <string name="label_done_key" msgid="2441578748772529288">"Finì"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Trametter"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_go_key" msgid="1635148082137219148">"Очих"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Дараагийн"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Өмнөх"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Хийгдлээ"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Илгээх"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"АБВ"</string>
     <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
     <skip />
     <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
@@ -203,14 +206,18 @@
     <skip />
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
-    <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
+    <!-- no translation found for language_selection_title (1651299598555326750) -->
+    <skip />
     <!-- no translation found for select_language (3693815588777926848) -->
     <skip />
     <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
     <skip />
-    <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Gidai a meglierar quest editur da la metoda d\'endataziun cun trametter automaticamain datas statisticas davart l\'utilisaziun e rapports da collaps a Google."</string>
+    <!-- no translation found for has_dictionary (6071847973466625007) -->
+    <skip />
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
     <!-- no translation found for keyboard_layout (8451164783510487501) -->
     <skip />
     <!-- no translation found for subtype_en_GB (88170601942311355) -->
