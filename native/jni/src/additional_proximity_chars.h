@@ -18,7 +18,6 @@
 #define LATINIME_ADDITIONAL_PROXIMITY_CHARS_H
 
 #include <cstring>
-#include <stdint.h>
 
 #include "defines.h"
 
@@ -29,15 +28,15 @@ class AdditionalProximityChars {
     DISALLOW_IMPLICIT_CONSTRUCTORS(AdditionalProximityChars);
     static const char *LOCALE_EN_US;
     static const int EN_US_ADDITIONAL_A_SIZE = 4;
-    static const int32_t EN_US_ADDITIONAL_A[];
+    static const int EN_US_ADDITIONAL_A[];
     static const int EN_US_ADDITIONAL_E_SIZE = 4;
-    static const int32_t EN_US_ADDITIONAL_E[];
+    static const int EN_US_ADDITIONAL_E[];
     static const int EN_US_ADDITIONAL_I_SIZE = 4;
-    static const int32_t EN_US_ADDITIONAL_I[];
+    static const int EN_US_ADDITIONAL_I[];
     static const int EN_US_ADDITIONAL_O_SIZE = 4;
-    static const int32_t EN_US_ADDITIONAL_O[];
+    static const int EN_US_ADDITIONAL_O[];
     static const int EN_US_ADDITIONAL_U_SIZE = 4;
-    static const int32_t EN_US_ADDITIONAL_U[];
+    static const int EN_US_ADDITIONAL_U[];
 
     AK_FORCE_INLINE static bool isEnLocale(const char *localeStr) {
         const size_t LOCALE_EN_US_SIZE = strlen(LOCALE_EN_US);
@@ -46,7 +45,7 @@ class AdditionalProximityChars {
     }
 
  public:
-    static int getAdditionalCharsSize(const char *localeStr, const int32_t c) {
+    static int getAdditionalCharsSize(const char *localeStr, const int c) {
         if (!isEnLocale(localeStr)) {
             return 0;
         }
@@ -66,7 +65,7 @@ class AdditionalProximityChars {
         }
     }
 
-    static const int32_t *getAdditionalChars(const char *localeStr, const int32_t c) {
+    static const int *getAdditionalChars(const char *localeStr, const int c) {
         if (!isEnLocale(localeStr)) {
             return 0;
         }

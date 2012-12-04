@@ -28,6 +28,7 @@ import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -80,6 +81,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void invalidateKey(Key key);
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
+        public void showSlidingKeyInputPreview(PointerTracker tracker);
+        public void dismissSlidingKeyInputPreview();
         public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
     }
 
@@ -296,6 +299,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // The position and time at which first down event occurred.
     private long mDownTime;
+    private int[] mDownCoordinates = CoordinateUtils.newInstance();
     private long mUpTime;
 
     // The current key where this pointer is.
@@ -540,6 +544,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return mIsInSlidingKeyInput;
     }
 
+    public boolean isInSlidingKeyInputFromModifier() {
+        return mIsInSlidingKeyInputFromModifier;
+    }
+
     public Key getKey() {
         return mCurrentKey;
     }
@@ -642,20 +650,21 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return mGestureStrokeWithPreviewPoints;
     }
 
-    public int getLastX() {
-        return mLastX;
-    }
-
-    public int getLastY() {
-        return mLastY;
+    public void getLastCoordinates(final int[] outCoords) {
+        CoordinateUtils.set(outCoords, mLastX, mLastY);
     }
 
     public long getDownTime() {
         return mDownTime;
     }
 
+    public void getDownCoordinates(final int[] outCoords) {
+        CoordinateUtils.copy(outCoords, mDownCoordinates);
+    }
+
     private Key onDownKey(final int x, final int y, final long eventTime) {
         mDownTime = eventTime;
+        CoordinateUtils.set(mDownCoordinates, x, y);
         mBogusMoveEventDetector.onDownKey();
         return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
     }
@@ -721,6 +730,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key != null) {
             updateBatchInput(eventTime);
         }
+        if (mIsTrackingCanceled) {
+            return;
+        }
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
@@ -758,6 +770,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     mListener.onEndBatchInput(sAggregratedPointers);
                 }
             }
+        }
+        if (mIsTrackingCanceled) {
+            return;
         }
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
@@ -867,6 +882,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void resetSlidingKeyInput() {
         mIsInSlidingKeyInput = false;
         mIsInSlidingKeyInputFromModifier = false;
+        mDrawingProxy.dismissSlidingKeyInputPreview();
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
@@ -1061,6 +1077,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 slideOutFromOldKey(oldKey, x, y);
             }
         }
+        mDrawingProxy.showSlidingKeyInputPreview(this);
     }
 
     public void onUpEvent(final int x, final int y, final long eventTime) {
@@ -1087,7 +1104,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     @Override
     public void onPhantomUpEvent(final long eventTime) {
         if (DEBUG_EVENT) {
-            printTouchEvent("onPhntEvent:", getLastX(), getLastY(), eventTime);
+            printTouchEvent("onPhntEvent:", mLastX, mLastY, eventTime);
         }
         onUpEventInternal(eventTime);
         cancelTracking();
@@ -1134,6 +1151,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     public void onLongPressed() {
+        resetSlidingKeyInput();
         cancelTracking();
         setReleasedKeyGraphics(mCurrentKey);
         sPointerTrackerQueue.remove(this);

@@ -438,15 +438,23 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         if (!Character.isUpperCase(text.codePointAt(0))) return CAPITALIZE_NONE;
         final int len = text.length();
         int capsCount = 1;
+        int letterCount = 1;
         for (int i = 1; i < len; i = text.offsetByCodePoints(i, 1)) {
-            if (1 != capsCount && i != capsCount) break;
-            if (Character.isUpperCase(text.codePointAt(i))) ++capsCount;
+            if (1 != capsCount && letterCount != capsCount) break;
+            final int codePoint = text.codePointAt(i);
+            if (Character.isUpperCase(codePoint)) {
+                ++capsCount;
+                ++letterCount;
+            } else if (Character.isLetter(codePoint)) {
+                // We need to discount non-letters since they may not be upper-case, but may
+                // still be part of a word (e.g. single quote or dash, as in "IT'S" or "FULL-TIME")
+                ++letterCount;
+            }
         }
-        // We know the first char is upper case. So we want to test if either everything
-        // else is lower case, or if everything else is upper case. If the string is
-        // exactly one char long, then we will arrive here with capsCount 1, and this is
-        // correct, too.
+        // We know the first char is upper case. So we want to test if either every letter other
+        // than the first is lower case, or if they are all upper case. If the string is exactly
+        // one char long, then we will arrive here with letterCount 1, and this is correct, too.
         if (1 == capsCount) return CAPITALIZE_FIRST;
-        return (len == capsCount ? CAPITALIZE_ALL : CAPITALIZE_NONE);
+        return (letterCount == capsCount ? CAPITALIZE_ALL : CAPITALIZE_NONE);
     }
 }

@@ -28,9 +28,11 @@ import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
 
 import java.util.ArrayList;
@@ -188,6 +190,35 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         return (letterCount * 4 < length * 3);
     }
 
+    /**
+     * Helper method to test valid capitalizations of a word.
+     *
+     * If the "text" is lower-case, we test only the exact string.
+     * If the "Text" is capitalized, we test the exact string "Text" and the lower-cased
+     *  version of it "text".
+     * If the "TEXT" is fully upper case, we test the exact string "TEXT", the lower-cased
+     *  version of it "text" and the capitalized version of it "Text".
+     */
+    private boolean isInDictForAnyCapitalization(final Dictionary dict, final String text,
+            final int capitalizeType) {
+        // If the word is in there as is, then it's in the dictionary. If not, we'll test lower
+        // case versions, but only if the word is not already all-lower case or mixed case.
+        if (dict.isValidWord(text)) return true;
+        if (AndroidSpellCheckerService.CAPITALIZE_NONE == capitalizeType) return false;
+
+        // If we come here, we have a capitalized word (either First- or All-).
+        // Downcase the word and look it up again. If the word is only capitalized, we
+        // tested all possibilities, so if it's still negative we can return false.
+        final String lowerCaseText = text.toLowerCase(mLocale);
+        if (dict.isValidWord(lowerCaseText)) return true;
+        if (AndroidSpellCheckerService.CAPITALIZE_FIRST == capitalizeType) return false;
+
+        // If the lower case version is not in the dictionary, it's still possible
+        // that we have an all-caps version of a word that needs to be capitalized
+        // according to the dictionary. E.g. "GERMANS" only exists in the dictionary as "Germans".
+        return dict.isValidWord(StringUtils.toTitleCase(lowerCaseText, mLocale));
+    }
+
     // Note : this must be reentrant
     /**
      * Gets a list of suggestions for a specific string. This returns a list of possible
@@ -272,13 +303,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                     suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
                             suggestionStr.length(), suggestion.mScore);
                 }
-                isInDict = dictInfo.mDictionary.isValidWord(text);
-                if (!isInDict && AndroidSpellCheckerService.CAPITALIZE_NONE != capitalizeType) {
-                    // We want to test the word again if it's all caps or first caps only.
-                    // If it's fully down, we already tested it, if it's mixed case, we don't
-                    // want to test a lowercase version of it.
-                    isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
-                }
+                isInDict = isInDictForAnyCapitalization(dictInfo.mDictionary, text, capitalizeType);
             } finally {
                 if (null != dictInfo) {
                     if (!mDictionaryPool.offer(dictInfo)) {

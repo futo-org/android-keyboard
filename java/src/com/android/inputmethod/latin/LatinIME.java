@@ -1177,6 +1177,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     private boolean maybeDoubleSpace() {
         if (!mCurrentSettings.mCorrectionEnabled) return false;
+        if (!mCurrentSettings.mUseDoubleSpacePeriod) return false;
         if (!mHandler.isAcceptingDoubleSpaces()) return false;
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3

@@ -201,7 +201,6 @@ inline void BinaryFormat::readHeaderValue(const uint8_t *const dict, const char 
                     outValue[outValueIndex++] = codePoint;
                     codePoint = getCodePointAndForwardPointer(dict, &index);
                 }
-                if (outValueIndex < outValueIndex) outValue[outValueIndex] = 0;
                 // Finished copying. Break to go to the termination code.
                 break;
             }
@@ -219,7 +218,6 @@ inline void BinaryFormat::readHeaderValue(const uint8_t *const dict, const char 
     // Put a terminator 0 if possible at all (always unless outValueSize is <= 0)
     if (outValueIndex >= outValueSize) outValueIndex = outValueSize - 1;
     if (outValueIndex >= 0) outValue[outValueIndex] = 0;
-    return;
 }
 
 inline int BinaryFormat::readHeaderValueInt(const uint8_t *const dict, const char *const key) {
