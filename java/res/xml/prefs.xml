@@ -119,6 +119,12 @@
                 android:persistent="true"
                 android:defaultValue="true" />
             <CheckBoxPreference
+                android:key="pref_key_use_double_space_period"
+                android:title="@string/use_double_space_period"
+                android:summary="@string/use_double_space_period_summary"
+                android:persistent="true"
+                android:defaultValue="true" />
+            <CheckBoxPreference
                 android:key="pref_show_language_switch_key"
                 android:title="@string/show_language_switch_key"
                 android:summary="@string/show_language_switch_key_summary"

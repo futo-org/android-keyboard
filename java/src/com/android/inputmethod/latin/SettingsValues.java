@@ -75,6 +75,7 @@ public final class SettingsValues {
     @SuppressWarnings("unused") // TODO: Use this
     private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
+    public final boolean mUseDoubleSpacePeriod;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     @SuppressWarnings("unused") // TODO: Use this
@@ -154,6 +155,7 @@ public final class SettingsValues {
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
+        mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
         mBigramPredictionEnabled = isBigramPredictionEnabled(prefs, res);
         mVibrationDurationSettingsRawValue =
