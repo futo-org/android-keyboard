@@ -193,8 +193,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
-        private long mDoubleSpacesTurnIntoPeriodTimeout;
-        private long mDoubleSpaceTimerStart;
+        private long mDoubleSpacePeriodTimeout;
+        private long mDoubleSpacePeriodTimerStart;
 
         public UIHandler(final LatinIME outerInstance) {
             super(outerInstance);
@@ -206,8 +206,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     res.getInteger(R.integer.config_delay_update_suggestions);
             mDelayUpdateShiftState =
                     res.getInteger(R.integer.config_delay_update_shift_state);
-            mDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
-                    R.integer.config_double_spaces_turn_into_period_timeout);
+            mDoubleSpacePeriodTimeout =
+                    res.getInteger(R.integer.config_double_space_period_timeout);
         }
 
         @Override
@@ -258,17 +258,17 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
-        public void startDoubleSpacesTimer() {
-            mDoubleSpaceTimerStart = SystemClock.uptimeMillis();
+        public void startDoubleSpacePeriodTimer() {
+            mDoubleSpacePeriodTimerStart = SystemClock.uptimeMillis();
         }
 
-        public void cancelDoubleSpacesTimer() {
-            mDoubleSpaceTimerStart = 0;
+        public void cancelDoubleSpacePeriodTimer() {
+            mDoubleSpacePeriodTimerStart = 0;
         }
 
-        public boolean isAcceptingDoubleSpaces() {
-            return SystemClock.uptimeMillis() - mDoubleSpaceTimerStart
-                    < mDoubleSpacesTurnIntoPeriodTimeout;
+        public boolean isAcceptingDoubleSpacePeriod() {
+            return SystemClock.uptimeMillis() - mDoubleSpacePeriodTimerStart
+                    < mDoubleSpacePeriodTimeout;
         }
 
         // Working variables for the following methods.
@@ -770,7 +770,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mLastSelectionEnd = editorInfo.initialSelEnd;
 
         mHandler.cancelUpdateSuggestionStrip();
-        mHandler.cancelDoubleSpacesTimer();
+        mHandler.cancelDoubleSpacePeriodTimer();
 
         mainKeyboardView.setMainDictionaryAvailability(mIsMainDictionaryAvailable);
         mainKeyboardView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
@@ -1175,16 +1175,16 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
     }
 
-    private boolean maybeDoubleSpace() {
+    private boolean maybeDoubleSpacePeriod() {
         if (!mCurrentSettings.mCorrectionEnabled) return false;
         if (!mCurrentSettings.mUseDoubleSpacePeriod) return false;
-        if (!mHandler.isAcceptingDoubleSpaces()) return false;
+        if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && canBeFollowedByPeriod(lastThree.charAt(0))
+                && canBeFollowedByDoubleSpacePeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Constants.CODE_SPACE
                 && lastThree.charAt(2) == Constants.CODE_SPACE) {
-            mHandler.cancelDoubleSpacesTimer();
+            mHandler.cancelDoubleSpacePeriodTimer();
             mConnection.deleteSurroundingText(2, 0);
             mConnection.commitText(". ", 1);
             mKeyboardSwitcher.updateShiftState();
@@ -1193,7 +1193,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         return false;
     }
 
-    private static boolean canBeFollowedByPeriod(final int codePoint) {
+    private static boolean canBeFollowedByDoubleSpacePeriod(final int codePoint) {
         // TODO: Check again whether there really ain't a better way to check this.
         // TODO: This should probably be language-dependant...
         return Character.isLetterOrDigit(codePoint)
@@ -1315,9 +1315,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final int spaceState = mSpaceState;
         if (!mWordComposer.isComposingWord()) mIsAutoCorrectionIndicatorOn = false;
 
-        // TODO: Consolidate the double space timer, mLastKeyTime, and the space state.
+        // TODO: Consolidate the double-space period timer, mLastKeyTime, and the space state.
         if (primaryCode != Constants.CODE_SPACE) {
-            mHandler.cancelDoubleSpacesTimer();
+            mHandler.cancelDoubleSpacePeriodTimer();
         }
 
         boolean didAutoCorrect = false;
@@ -1661,7 +1661,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 return;
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
-                mHandler.cancelDoubleSpacesTimer();
+                mHandler.cancelDoubleSpacePeriodTimer();
                 if (mConnection.revertDoubleSpace()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
@@ -1823,14 +1823,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         if (Constants.CODE_SPACE == primaryCode) {
             if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
-                if (maybeDoubleSpace()) {
+                if (maybeDoubleSpacePeriod()) {
                     mSpaceState = SPACE_STATE_DOUBLE;
                 } else if (!isShowingPunctuationList()) {
                     mSpaceState = SPACE_STATE_WEAK;
                 }
             }
 
-            mHandler.startDoubleSpacesTimer();
+            mHandler.startDoubleSpacePeriodTimer();
             if (!mConnection.isCursorTouchingWord(mCurrentSettings)) {
                 mHandler.postUpdateSuggestionStrip();
             }
