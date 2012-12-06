@@ -44,10 +44,8 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Па змаўчанні"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Прапан. імёны кантактаў"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Выкарыстоўваць імёны са спісу кантактаў для прапаноў і выпраўл."</string>
-    <!-- no translation found for use_double_space_period (8781529969425082860) -->
-    <skip />
-    <!-- no translation found for use_double_space_period_summary (6532892187247952799) -->
-    <skip />
+    <string name="use_double_space_period" msgid="8781529969425082860">"Падвойны iнтэрвал"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Падвойнае нацiсканне на прабел ўстаўляе iнтэрвал з наступным прабелам"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аўтаматычна рабіць вялікія літары"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Пісаць з загалоўнай літары першае слова ў кожным сказе"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дадатковыя слоўнікі"</string>
