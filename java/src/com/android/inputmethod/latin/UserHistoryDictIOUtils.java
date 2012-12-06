@@ -63,7 +63,7 @@ public final class UserHistoryDictIOUtils {
 
         @Override
         public int readUnsignedByte() {
-            return ((int)mBuffer[mPosition++]) & 0xFF;
+            return mBuffer[mPosition++] & 0xFF;
         }
 
         @Override

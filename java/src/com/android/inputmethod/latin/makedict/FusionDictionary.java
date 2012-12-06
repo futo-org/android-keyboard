@@ -617,6 +617,7 @@ public final class FusionDictionary implements Iterable<Word> {
     /**
      * Helper method to find a word in a given branch.
      */
+    @SuppressWarnings("unused")
     public static CharGroup findWordInTree(Node node, final String s) {
         int index = 0;
         final StringBuilder checker = DBG ? new StringBuilder() : null;
