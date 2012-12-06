@@ -159,7 +159,7 @@ final class GesturePreviewTrail {
             float r1 = maxWidth / 2.0f;
             // Initialize bounds rectangle.
             outBoundsRect.set(p1x, p1y, p1x, p1y);
-            for (int i = startIndex + 1; i < trailSize - 1; i++) {
+            for (int i = startIndex + 1; i < trailSize; i++) {
                 final int elapsedTime = sinceDown - eventTimes[i];
                 final int p2x = getXCoordValue(xCoords[i]);
                 final int p2y = yCoords[i];
