@@ -208,9 +208,9 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
-#define DEBUG_SAMPLING_POINTS true
-#define DEBUG_POINTS_PROBABILITY true
-#define DEBUG_DOUBLE_LETTER true
+#define DEBUG_SAMPLING_POINTS false
+#define DEBUG_POINTS_PROBABILITY false
+#define DEBUG_DOUBLE_LETTER false
 
 #ifdef FLAG_FULL_DBG
 #define DEBUG_GEO_FULL true

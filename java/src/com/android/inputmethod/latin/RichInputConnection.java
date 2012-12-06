@@ -65,12 +65,6 @@ public final class RichInputConnection {
      * This contains the currently composing text, as LatinIME thinks the TextView is seeing it.
      */
     private StringBuilder mComposingText = new StringBuilder();
-    /**
-     * This is a one-character string containing the character after the cursor. Since LatinIME
-     * never touches it directly, it's never modified by any means other than re-reading from the
-     * TextView when the cursor position is changed by the user.
-     */
-    private CharSequence mCharAfterTheCursor = "";
     // A hint on how many characters to cache from the TextView. A good value of this is given by
     // how many characters we need to be able to almost always find the caps mode.
     private static final int DEFAULT_TEXT_CACHE_SIZE = 100;
@@ -146,7 +140,6 @@ public final class RichInputConnection {
         mCommittedTextBeforeComposingText.setLength(0);
         final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
         if (null != textBeforeCursor) mCommittedTextBeforeComposingText.append(textBeforeCursor);
-        mCharAfterTheCursor = getTextAfterCursor(1, 0);
         if (null != mIC) {
             mIC.finishComposingText();
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -398,6 +391,7 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
+    @SuppressWarnings("unused")
     public String getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
