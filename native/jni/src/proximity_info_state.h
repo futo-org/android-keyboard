@@ -196,7 +196,7 @@ class ProximityInfoState {
     // Returns angle of three points. x, y, and z are indices.
     float getPointsAngle(const int index0, const int index1, const int index2) const;
 
-    float getHighestProbabilitySequence(int *const codePointBuf) const;
+    float getMostProbableCharSequence(int *const codePointBuf) const;
 
     float getProbability(const int index, const int charCode) const;
 

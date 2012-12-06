@@ -1143,9 +1143,9 @@ bool ProximityInfoState::suppressCharProbabilities(const int index0, const int i
     return true;
 }
 
-// Get a word that is detected by tracing highest probability sequence into codePointBuf and
+// Get a word that is detected by tracing the most probable char sequence into codePointBuf and
 // returns probability of generating the word.
-float ProximityInfoState::getHighestProbabilitySequence(int *const codePointBuf) const {
+float ProximityInfoState::getMostProbableCharSequence(int *const codePointBuf) const {
     static const float DEMOTION_LOG_PROBABILITY = 0.3f;
     int index = 0;
     float sumLogProbability = 0.0f;
