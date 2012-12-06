@@ -921,6 +921,7 @@ public final class BinaryDictInputOutput {
      * @param formatOptions file format options.
      * @return the address of the END of the node.
      */
+    @SuppressWarnings("unused")
     private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
             final Node node, final FormatOptions formatOptions) {
         // TODO: Make the code in common with BinaryDictIOUtils#writeCharGroup
@@ -1407,6 +1408,7 @@ public final class BinaryDictInputOutput {
     // TODO: static!? This will behave erratically when used in multi-threaded code.
     // We need to fix this
     private static int[] sGetWordBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
+    @SuppressWarnings("unused")
     private static WeightedString getWordAtAddressWithParentAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions options) {

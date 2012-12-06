@@ -376,10 +376,10 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
                     final byte fc = fcp.getFc();
                     final boolean isValid = fcp.isValid();
                     if (prevFc > 0 && prevFc == fc) {
-                        freq = ((int)fc) & 0xFF;
+                        freq = fc & 0xFF;
                     } else if (UserHistoryForgettingCurveUtils.
                             needsToSave(fc, isValid, mAddLevel0Bigrams)) {
-                        freq = ((int)fc) & 0xFF;
+                        freq = fc & 0xFF;
                     } else {
                         // Delete this entry
                         freq = -1;

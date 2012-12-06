@@ -57,7 +57,6 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputTypeUtils;
@@ -144,7 +143,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private final Statistics mStatistics;
 
     private Intent mUploadIntent;
-    private PendingIntent mUploadPendingIntent;
 
     private LogUnit mCurrentLogUnit = new LogUnit();
 
@@ -189,7 +187,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInputMethodService = ims;
         mPrefs = prefs;
         mUploadIntent = new Intent(mInputMethodService, UploaderService.class);
-        mUploadPendingIntent = PendingIntent.getService(mInputMethodService, 0, mUploadIntent, 0);
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
             scheduleUploadingService(mInputMethodService);
@@ -428,21 +425,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private long mResumeTime = 0L;
-    private void suspendLoggingUntil(long time) {
-        mIsLoggingSuspended = true;
-        mResumeTime = time;
-        requestIndicatorRedraw();
-    }
-
-    private void resumeLogging() {
-        mResumeTime = 0L;
-        updateSuspendedState();
-        requestIndicatorRedraw();
-        if (isAllowedToLog()) {
-            restart();
-        }
-    }
-
     private void updateSuspendedState() {
         final long time = System.currentTimeMillis();
         if (time > mResumeTime) {
@@ -839,10 +821,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public void latinIME_onFinishInputInternal() {
         stop();
     }
-
-    private static final String[] EVENTKEYS_USER_FEEDBACK = {
-        "UserFeedback", "FeedbackContents"
-    };
 
     private static final String[] EVENTKEYS_PREFS_CHANGED = {
         "PrefsChanged", "prefs"

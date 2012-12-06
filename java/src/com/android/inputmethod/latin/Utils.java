@@ -41,6 +41,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public final class Utils {
     private Utils() {
@@ -193,7 +194,7 @@ public final class Utils {
 
         private UsabilityStudyLogUtils() {
             mDate = new Date();
-            mDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss.SSSZ");
+            mDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss.SSSZ", Locale.US);
 
             HandlerThread handlerThread = new HandlerThread("UsabilityStudyLogUtils logging task",
                     Process.THREAD_PRIORITY_BACKGROUND);
@@ -255,7 +256,7 @@ public final class Utils {
                     final long currentTime = System.currentTimeMillis();
                     mDate.setTime(currentTime);
 
-                    final String printString = String.format("%s\t%d\t%s\n",
+                    final String printString = String.format(Locale.US, "%s\t%d\t%s\n",
                             mDateFormat.format(mDate), currentTime, log);
                     if (LatinImeLogger.sDBG) {
                         Log.d(USABILITY_TAG, "Write: " + log);
@@ -297,7 +298,7 @@ public final class Utils {
                     final Date date = new Date();
                     date.setTime(System.currentTimeMillis());
                     final String currentDateTimeString =
-                            new SimpleDateFormat("yyyyMMdd-HHmmssZ").format(date);
+                            new SimpleDateFormat("yyyyMMdd-HHmmssZ", Locale.US).format(date);
                     if (mFile == null) {
                         Log.w(USABILITY_TAG, "No internal log file found.");
                         return;
@@ -313,11 +314,15 @@ public final class Utils {
                             + "/research-" + currentDateTimeString + ".log";
                     final File destFile = new File(destPath);
                     try {
-                        final FileChannel src = (new FileInputStream(mFile)).getChannel();
-                        final FileChannel dest = (new FileOutputStream(destFile)).getChannel();
+                        final FileInputStream srcStream = new FileInputStream(mFile);
+                        final FileOutputStream destStream = new FileOutputStream(destFile);
+                        final FileChannel src = srcStream.getChannel();
+                        final FileChannel dest = destStream.getChannel();
                         src.transferTo(0, src.size(), dest);
                         src.close();
+                        srcStream.close();
                         dest.close();
+                        destStream.close();
                     } catch (FileNotFoundException e1) {
                         Log.w(USABILITY_TAG, e1);
                         return;
