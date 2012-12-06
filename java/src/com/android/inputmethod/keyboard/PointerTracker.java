@@ -777,6 +777,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
     }
 
+    private void cancelBatchInput() {
+        sPointerTrackerQueue.cancelAllPointerTracker();
+        sInGesture = false;
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, String.format("[%d] onCancelBatchInput", mPointerId));
+        }
+        mListener.onCancelBatchInput();
+    }
+
     public void processMotionEvent(final int action, final int x, final int y, final long eventTime,
             final KeyEventHandler handler) {
         switch (action) {
@@ -892,12 +901,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
                     x, y, gestureTime, isMajorEvent);
             if (!onValidArea) {
-                sPointerTrackerQueue.cancelAllPointerTracker();
-                if (DEBUG_LISTENER) {
-                    Log.d(TAG, String.format("[%d] onCancelBatchInput: batchPoints=%d",
-                            mPointerId, sAggregratedPointers.getPointerSize()));
-                }
-                mListener.onCancelBatchInput();
+                cancelBatchInput();
                 return;
             }
             mayStartBatchInput(key);
@@ -1162,8 +1166,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             printTouchEvent("onCancelEvt:", x, y, eventTime);
         }
 
-        sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
-        sPointerTrackerQueue.remove(this);
+        if (sInGesture) {
+            cancelBatchInput();
+        }
+        sPointerTrackerQueue.cancelAllPointerTracker();
+        sPointerTrackerQueue.releaseAllPointers(eventTime);
         onCancelEventInternal();
     }
 
