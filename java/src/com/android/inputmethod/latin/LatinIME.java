@@ -64,6 +64,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -142,6 +143,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
+    // At start, create a default event interpreter that does nothing by passing it no decoder spec.
+    // The event interpreter should never be null.
+    private EventInterpreter mEventInterpreter = new EventInterpreter();
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
@@ -2375,6 +2379,27 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         }
     }
+
+    // Hooks for hardware keyboard
+    @Override
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+        // onHardwareKeyEvent, like onKeyDown returns true if it handled the event, false if
+        // it doesn't know what to do with it and leave it to the application. For example,
+        // hardware key events for adjusting the screen's brightness are passed as is.
+        if (mEventInterpreter.onHardwareKeyEvent(event)) return true;
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        if (mEventInterpreter.onHardwareKeyEvent(event)) return true;
+        return super.onKeyUp(keyCode, event);
+    }
+
+    // onKeyDown and onKeyUp are the main events we are interested in. There are two more events
+    // related to handling of hardware key events that we may want to implement in the future:
+    // boolean onKeyLongPress(final int keyCode, final KeyEvent event);
+    // boolean onKeyMultiple(final int keyCode, final int count, final KeyEvent event);
 
     // receive ringer mode change and network state change.
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
