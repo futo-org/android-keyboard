@@ -162,9 +162,6 @@
     <style name="SuggestionBackgroundStyle">
         <item name="android:background">@drawable/btn_suggestion</item>
     </style>
-    <style name="SuggestionPreviewBackgroundStyle">
-        <item name="android:background">@drawable/suggestion_feedback_background</item>
-    </style>
     <!-- Theme "Basic high contrast" -->
     <style
         name="Keyboard.HighContrast"

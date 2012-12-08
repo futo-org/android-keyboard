@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -47,7 +46,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -64,7 +62,6 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
-import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -95,42 +92,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ArrayList<TextView> mInfos = CollectionUtils.newArrayList();
     private final ArrayList<View> mDividers = CollectionUtils.newArrayList();
 
-    private final PopupWindow mPreviewPopup;
-    private final TextView mPreviewText;
-
     Listener mListener;
     SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
 
     private final SuggestionStripViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
-
-    private final UiHandler mHandler = new UiHandler(this);
-
-    private static final class UiHandler extends StaticInnerHandlerWrapper<SuggestionStripView> {
-        private static final int MSG_HIDE_PREVIEW = 0;
-
-        public UiHandler(final SuggestionStripView outerInstance) {
-            super(outerInstance);
-        }
-
-        @Override
-        public void dispatchMessage(final Message msg) {
-            final SuggestionStripView suggestionStripView = getOuterInstance();
-            switch (msg.what) {
-            case MSG_HIDE_PREVIEW:
-                suggestionStripView.hidePreview();
-                break;
-            }
-        }
-
-        public void cancelHidePreview() {
-            removeMessages(MSG_HIDE_PREVIEW);
-        }
-
-        public void cancelAllMessages() {
-            cancelHidePreview();
-        }
-    }
 
     private static final class SuggestionStripViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
@@ -610,13 +576,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.suggestions_strip, this);
 
-        mPreviewPopup = new PopupWindow(context);
-        mPreviewText = (TextView) inflater.inflate(R.layout.suggestion_preview, null);
-        mPreviewPopup.setWindowLayoutMode(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPreviewPopup.setContentView(mPreviewText);
-        mPreviewPopup.setBackgroundDrawable(null);
-
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
@@ -695,10 +654,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         removeAllViews();
         addView(mSuggestionsStrip);
         dismissMoreSuggestions();
-    }
-
-    void hidePreview() {
-        mPreviewPopup.dismiss();
     }
 
     private final KeyboardActionListener mMoreSuggestionsListener =
@@ -863,8 +818,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mHandler.cancelAllMessages();
-        hidePreview();
         dismissMoreSuggestions();
     }
 }
