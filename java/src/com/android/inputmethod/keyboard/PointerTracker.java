@@ -77,13 +77,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public TimerProxy getTimerProxy();
     }
 
-    public interface DrawingProxy extends MoreKeysPanel.Controller {
+    public interface DrawingProxy {
         public void invalidateKey(Key key);
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
         public void showSlidingKeyInputPreview(PointerTracker tracker);
         public void dismissSlidingKeyInputPreview();
         public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
+        public boolean dismissMoreKeysPanel();
     }
 
     public interface TimerProxy {

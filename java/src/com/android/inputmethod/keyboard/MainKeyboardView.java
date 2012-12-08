@@ -39,7 +39,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodSubtype;
-import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
@@ -136,8 +135,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
     // More keys keyboard
-    private PopupWindow mMoreKeysWindow;
-    private MoreKeysPanel mMoreKeysPanel;
     private int mMoreKeysPanelPointerTrackerId;
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
@@ -665,12 +662,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             }
             mMoreKeysPanelCache.put(parentKey, moreKeysPanel);
         }
-        if (mMoreKeysWindow == null) {
-            mMoreKeysWindow = new PopupWindow(getContext());
-            mMoreKeysWindow.setBackgroundDrawable(null);
-            mMoreKeysWindow.setAnimationStyle(R.style.MoreKeysKeyboardAnimation);
-        }
-        mMoreKeysPanel = moreKeysPanel;
         mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
 
         final int[] lastCoords = CoordinateUtils.newInstance();
@@ -688,12 +679,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
         final int pointY = parentKey.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
-        moreKeysPanel.showMoreKeysPanel(
-                this, this, pointX, pointY, mMoreKeysWindow, mKeyboardActionListener);
+        moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         final int translatedX = moreKeysPanel.translateX(CoordinateUtils.x(lastCoords));
         final int translatedY = moreKeysPanel.translateY(CoordinateUtils.y(lastCoords));
         tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
-        dimEntireKeyboard(true);
+        dimEntireKeyboard(true /* dimmed */);
         return true;
     }
 
@@ -876,15 +866,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     @Override
-    public boolean dismissMoreKeysPanel() {
-        if (mMoreKeysWindow == null || !mMoreKeysWindow.isShowing()) {
-            return false;
-        }
-        mMoreKeysWindow.dismiss();
-        mMoreKeysPanel = null;
+    public boolean onDismissMoreKeysPanel() {
         mMoreKeysPanelPointerTrackerId = -1;
-        dimEntireKeyboard(false);
-        return true;
+        dimEntireKeyboard(false /* dimmed */);
+        return super.onDismissMoreKeysPanel();
     }
 
     /**
