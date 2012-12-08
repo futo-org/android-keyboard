@@ -32,7 +32,6 @@
         <attr name="suggestionStripViewStyle" format="reference" />
         <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
-        <attr name="suggestionPreviewBackgroundStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
