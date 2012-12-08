@@ -19,9 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.PopupWindow;
 
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
@@ -154,37 +152,33 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
 
     @Override
     public void showMoreKeysPanel(final View parentView, final Controller controller,
-            final int pointX, final int pointY, final PopupWindow window,
-            final KeyboardActionListener listener) {
+            final int pointX, final int pointY, final KeyboardActionListener listener) {
         mController = controller;
         mListener = listener;
-        final View container = (View)getParent();
+        final View container = getContainerView();
         final MoreKeysKeyboard pane = (MoreKeysKeyboard)getKeyboard();
         final int defaultCoordX = pane.getDefaultCoordX();
         // The coordinates of panel's left-top corner in parentView's coordinate system.
         final int x = pointX - defaultCoordX - container.getPaddingLeft();
         final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom();
 
-        window.setContentView(container);
-        window.setWidth(container.getMeasuredWidth());
-        window.setHeight(container.getMeasuredHeight());
         parentView.getLocationInWindow(mCoordinates);
-        window.showAtLocation(parentView, Gravity.NO_GRAVITY,
-                x + CoordinateUtils.x(mCoordinates), y + CoordinateUtils.y(mCoordinates));
+        // Ensure the horizontal position of the panel does not extend past the screen edges.
+        final int maxX = parentView.getMeasuredWidth() - container.getMeasuredWidth();
+        final int panelX = Math.max(0, Math.min(maxX, x + CoordinateUtils.x(mCoordinates)));
+        final int panelY = y + CoordinateUtils.y(mCoordinates);
+        container.setX(panelX);
+        container.setY(panelY);
 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
+        controller.onShowMoreKeysPanel(this);
     }
-
-    private boolean mIsDismissing;
 
     @Override
     public boolean dismissMoreKeysPanel() {
-        if (mIsDismissing || mController == null) return false;
-        mIsDismissing = true;
-        final boolean dismissed = mController.dismissMoreKeysPanel();
-        mIsDismissing = false;
-        return dismissed;
+        if (mController == null) return false;
+        return mController.onDismissMoreKeysPanel();
     }
 
     @Override
@@ -195,5 +189,15 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
     @Override
     public int translateY(final int y) {
         return y - mOriginY;
+    }
+
+    @Override
+    public View getContainerView() {
+        return (View)getParent();
+    }
+
+    @Override
+    public boolean isShowingInParent() {
+        return (getContainerView().getParent() != null);
     }
 }

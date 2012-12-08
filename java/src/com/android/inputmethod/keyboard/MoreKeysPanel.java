@@ -17,25 +17,42 @@
 package com.android.inputmethod.keyboard;
 
 import android.view.View;
-import android.widget.PopupWindow;
 
 public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
     public interface Controller {
-        public boolean dismissMoreKeysPanel();
+        /**
+         * Add the {@link MoreKeysPanel} to the target view.
+         * @param panel
+         */
+        public void onShowMoreKeysPanel(final MoreKeysPanel panel);
+
+        /**
+         * Remove the current {@link MoreKeysPanel} to the target view.
+         */
+        public boolean onDismissMoreKeysPanel();
     }
 
     /**
-     * Show more keys panel.
+     * Initializes the layout and event handling of this {@link MoreKeysPanel} and calls the
+     * controller's onShowMoreKeysPanel to add the panel's container view.
      *
-     * @param parentView the parent view of this more keys panel
-     * @param controller the controller that can dismiss this more keys panel
-     * @param pointX x coordinate of this more keys panel
-     * @param pointY y coordinate of this more keys panel
-     * @param window PopupWindow to be used to show this more keys panel
-     * @param listener the listener that will receive keyboard action from this more keys panel.
+     * @param parentView the parent view of this {@link MoreKeysPanel}
+     * @param controller the controller that can dismiss this {@link MoreKeysPanel}
+     * @param pointX x coordinate of this {@link MoreKeysPanel}
+     * @param pointY y coordinate of this {@link MoreKeysPanel}
+     * @param listener the listener that will receive keyboard action from this
+     * {@link MoreKeysPanel}.
      */
-    public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
-            PopupWindow window, KeyboardActionListener listener);
+    // TODO: Currently the MoreKeysPanel is inside a container view that is added to the parent.
+    // Consider the simpler approach of placing the MoreKeysPanel itself into the parent view.
+    public void showMoreKeysPanel(View parentView, Controller controller, int pointX,
+            int pointY, KeyboardActionListener listener);
+
+    /**
+     * Dismisses the more keys panel and calls the controller's onDismissMoreKeysPanel to remove
+     * the panel's container view.
+     */
+    public boolean dismissMoreKeysPanel();
 
     /**
      * Translate X-coordinate of touch event to the local X-coordinate of this
@@ -54,4 +71,14 @@ public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
      * @return the local Y-coordinate to this {@link MoreKeysPanel}
      */
     public int translateY(int y);
+
+    /**
+     * Return the view containing the more keys panel.
+     */
+    public View getContainerView();
+
+    /**
+     * Return whether the panel is currently being shown.
+     */
+    public boolean isShowingInParent();
 }

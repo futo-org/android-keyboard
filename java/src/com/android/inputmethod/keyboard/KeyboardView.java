@@ -102,7 +102,8 @@ import java.util.HashSet;
  * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintActivatedColor
  * @attr ref R.styleable#Keyboard_Key_keyPreviewTextColor
  */
-public class KeyboardView extends View implements PointerTracker.DrawingProxy {
+public class KeyboardView extends View implements PointerTracker.DrawingProxy,
+        MoreKeysPanel.Controller {
     private static final String TAG = KeyboardView.class.getSimpleName();
 
     // XML attributes
@@ -136,6 +137,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // Preview placer view
     private final PreviewPlacerView mPreviewPlacerView;
     private final int[] mOriginCoords = CoordinateUtils.newInstance();
+
+    // More keys panel (used by both more keys keyboard and more suggestions view)
+    // TODO: Consider extending to support multiple more keys panels
+    protected MoreKeysPanel mMoreKeysPanel;
 
     // Key preview
     private static final int PREVIEW_ALPHA = 240;
@@ -1014,7 +1019,33 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
+    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        if (isShowingMoreKeysPanel()) {
+            onDismissMoreKeysPanel();
+        }
+        mMoreKeysPanel = panel;
+        mPreviewPlacerView.addView(mMoreKeysPanel.getContainerView());
+    }
+
+    public boolean isShowingMoreKeysPanel() {
+        return (mMoreKeysPanel != null);
+    }
+
+    @Override
     public boolean dismissMoreKeysPanel() {
+        if (isShowingMoreKeysPanel()) {
+            return mMoreKeysPanel.dismissMoreKeysPanel();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onDismissMoreKeysPanel() {
+        if (isShowingMoreKeysPanel()) {
+            mPreviewPlacerView.removeView(mMoreKeysPanel.getContainerView());
+            mMoreKeysPanel = null;
+            return true;
+        }
         return false;
     }
 

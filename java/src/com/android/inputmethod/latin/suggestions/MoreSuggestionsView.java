@@ -19,10 +19,8 @@ package com.android.inputmethod.latin.suggestions;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.PopupWindow;
 
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -148,37 +146,33 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
 
     @Override
     public void showMoreKeysPanel(final View parentView, final Controller controller,
-            final int pointX, final int pointY, final PopupWindow window,
-            final KeyboardActionListener listener) {
+            final int pointX, final int pointY, final KeyboardActionListener listener) {
         mController = controller;
         mListener = listener;
-        final View container = (View)getParent();
+        final View container = getContainerView();
         final MoreSuggestions pane = (MoreSuggestions)getKeyboard();
         final int defaultCoordX = pane.mOccupiedWidth / 2;
         // The coordinates of panel's left-top corner in parentView's coordinate system.
         final int x = pointX - defaultCoordX - container.getPaddingLeft();
         final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom();
 
-        window.setContentView(container);
-        window.setWidth(container.getMeasuredWidth());
-        window.setHeight(container.getMeasuredHeight());
         parentView.getLocationInWindow(mCoordinates);
-        window.showAtLocation(parentView, Gravity.NO_GRAVITY,
-                x + CoordinateUtils.x(mCoordinates), y + CoordinateUtils.y(mCoordinates));
+        // Ensure the horizontal position of the panel does not extend past the screen edges.
+        final int maxX = parentView.getMeasuredWidth() - container.getMeasuredWidth();
+        final int panelX = Math.max(0, Math.min(maxX, x + CoordinateUtils.x(mCoordinates)));
+        final int panelY = y + CoordinateUtils.y(mCoordinates);
+        container.setX(panelX);
+        container.setY(panelY);
 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
+        controller.onShowMoreKeysPanel(this);
     }
-
-    private boolean mIsDismissing;
 
     @Override
     public boolean dismissMoreKeysPanel() {
-        if (mIsDismissing || mController == null) return false;
-        mIsDismissing = true;
-        final boolean dismissed = mController.dismissMoreKeysPanel();
-        mIsDismissing = false;
-        return dismissed;
+        if (mController == null) return false;
+        return mController.onDismissMoreKeysPanel();
     }
 
     @Override
@@ -224,5 +218,15 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
         final int y = (int)me.getY(index);
         tracker.processMotionEvent(action, x, y, eventTime, mModalPanelKeyEventHandler);
         return true;
+    }
+
+    @Override
+    public View getContainerView() {
+        return (View)getParent();
+    }
+
+    @Override
+    public boolean isShowingInParent() {
+        return (getContainerView().getParent() != null);
     }
 }
