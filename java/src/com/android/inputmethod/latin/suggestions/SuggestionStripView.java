@@ -684,6 +684,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void onShowMoreKeysPanel(MoreKeysPanel panel) {
             mKeyboardView.onShowMoreKeysPanel(panel);
         }
+
+        @Override
+        public void onCancelMoreKeysPanel() {
+            dismissMoreSuggestions();
+        }
     };
 
     boolean dismissMoreSuggestions() {

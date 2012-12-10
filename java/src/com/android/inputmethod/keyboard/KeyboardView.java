@@ -1013,7 +1013,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
     public void closing() {
         dismissAllKeyPreviews();
         cancelAllMessages();
-
+        onCancelMoreKeysPanel();
         mInvalidateAllKeys = true;
         requestLayout();
     }
@@ -1031,11 +1031,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
         return (mMoreKeysPanel != null);
     }
 
-    public boolean dismissMoreKeysPanel() {
+    @Override
+    public void onCancelMoreKeysPanel() {
         if (isShowingMoreKeysPanel()) {
-            return mMoreKeysPanel.dismissMoreKeysPanel();
+            mMoreKeysPanel.dismissMoreKeysPanel();
         }
-        return false;
     }
 
     @Override
