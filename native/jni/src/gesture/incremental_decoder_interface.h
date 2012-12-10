@@ -17,7 +17,6 @@
 #ifndef LATINIME_INCREMENTAL_DECODER_INTERFACE_H
 #define LATINIME_INCREMENTAL_DECODER_INTERFACE_H
 
-#include <stdint.h>
 #include "defines.h"
 
 namespace latinime {
