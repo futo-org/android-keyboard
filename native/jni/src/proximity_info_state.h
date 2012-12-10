@@ -242,7 +242,7 @@ class ProximityInfoState {
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
     bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
-            const int *const yCoordinates, const int *const times);
+            const int *const yCoordinates, const int *const times, const bool isGeometric) const;
     void popInputData();
     void updateAlignPointProbabilities(const int start);
     bool suppressCharProbabilities(const int index1, const int index2);
