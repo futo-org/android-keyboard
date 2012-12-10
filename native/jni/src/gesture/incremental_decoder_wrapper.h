@@ -17,7 +17,6 @@
 #ifndef LATINIME_INCREMENTAL_DECODER_WRAPPER_H
 #define LATINIME_INCREMENTAL_DECODER_WRAPPER_H
 
-#include <stdint.h>
 #include "defines.h"
 #include "incremental_decoder_interface.h"
 

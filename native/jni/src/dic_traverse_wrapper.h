@@ -17,8 +17,6 @@
 #ifndef LATINIME_DIC_TRAVERSE_WRAPPER_H
 #define LATINIME_DIC_TRAVERSE_WRAPPER_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "jni.h"
 

@@ -16,7 +16,6 @@
 
 #include <cstring> // for memset()
 #include <sstream> // for debug prints
-#include <stdint.h>
 
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
@@ -758,8 +757,8 @@ float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
 }
 
 // Puts possible characters into filter and returns new filter size.
-int32_t ProximityInfoState::getAllPossibleChars(
-        const size_t index, int32_t *const filter, const int32_t filterSize) const {
+int ProximityInfoState::getAllPossibleChars(
+        const size_t index, int *const filter, const int filterSize) const {
     if (index >= mSampledInputXs.size()) {
         return filterSize;
     }
@@ -767,7 +766,7 @@ int32_t ProximityInfoState::getAllPossibleChars(
     const int keyCount = mProximityInfo->getKeyCount();
     for (int j = 0; j < keyCount; ++j) {
         if (mSearchKeysVector[index].test(j)) {
-            const int32_t keyCodePoint = mProximityInfo->getCodePointOf(j);
+            const int keyCodePoint = mProximityInfo->getCodePointOf(j);
             bool insert = true;
             // TODO: Avoid linear search
             for (int k = 0; k < filterSize; ++k) {

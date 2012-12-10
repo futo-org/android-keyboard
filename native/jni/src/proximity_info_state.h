@@ -19,7 +19,6 @@
 
 #include <bitset>
 #include <cstring> // for memset()
-#include <stdint.h>
 #include <string>
 #include <vector>
 
@@ -164,8 +163,7 @@ class ProximityInfoState {
 
     int getSpaceY() const;
 
-    int32_t getAllPossibleChars(
-            const size_t startIndex, int32_t *const filter, const int32_t filterSize) const;
+    int getAllPossibleChars(const size_t startIndex, int *const filter, const int filterSize) const;
 
     float getSpeedRate(const int index) const {
         return mSpeedRates[index];

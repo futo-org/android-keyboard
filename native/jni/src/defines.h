@@ -17,8 +17,6 @@
 #ifndef LATINIME_DEFINES_H
 #define LATINIME_DEFINES_H
 
-#include <stdint.h>
-
 #ifdef __GNUC__
 #define AK_FORCE_INLINE __attribute__((always_inline)) __inline__
 #else // __GNUC__
