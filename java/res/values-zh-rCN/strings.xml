@@ -45,7 +45,7 @@
     <string name="use_contacts_dict" msgid="4435317977804180815">"联系人姓名建议"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用联系人中的姓名提供建议和更正"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"双击空格插入句号"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"双击空格键可在空格后插入句号"</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"双击空格键可插入句号并后跟空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"句首字词大写"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加词典"</string>

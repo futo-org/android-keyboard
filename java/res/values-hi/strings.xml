@@ -44,7 +44,7 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"संपर्क नाम सुझाएं"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव और सुधार के लिए संपर्क से नामों का उपयोग करें"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"दोहरी रिक्ति वाला पीरियड"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"दोहरे स्पेस वाला पीरियड"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"स्पेसबार पर डबल टैप करने से पीरियड शामिल हो जाता है जिसके बाद एक रिक्ति होती है"</string>
     <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"प्रत्येक वाक्य के पहले शब्द को बड़ा लिखें"</string>
