@@ -44,7 +44,7 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predvolená"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Navrhnúť mená kontaktov"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Používať mená z Kontaktov na návrhy a opravy"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Bodka dvojitou medzerou"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Bodka s medzerou"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dvojitým klepnutím na medzerník vložíte bodku a medzeru."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Veľké písmená automaticky"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Písanie prvého slova v každej vete veľkým písmenom"</string>

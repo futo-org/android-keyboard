@@ -44,7 +44,7 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminado"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir contactos"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizar nombres de contactos para sugerencias y correcciones"</string>
-    <string name="use_double_space_period" msgid="8781529969425082860">"Punto y doble espacio"</string>
+    <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Poner la primera letra de cada palabra en mayúscula"</string>
