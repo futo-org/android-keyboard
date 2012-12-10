@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <limits>
 #include <map>
+#include <stdint.h>
 #include "bloom_filter.h"
 #include "char_utils.h"
 
@@ -63,8 +64,8 @@ class BinaryFormat {
     static const int SHORTCUT_LIST_SIZE_SIZE = 2;
 
     static int detectFormat(const uint8_t *const dict);
-    static unsigned int getHeaderSize(const uint8_t *const dict);
-    static unsigned int getFlags(const uint8_t *const dict);
+    static int getHeaderSize(const uint8_t *const dict);
+    static int getFlags(const uint8_t *const dict);
     static void readHeaderValue(const uint8_t *const dict, const char *const key,
             int *outValue, const int outValueSize);
     static int readHeaderValueInt(const uint8_t *const dict, const char *const key);
@@ -112,25 +113,25 @@ class BinaryFormat {
     // Originally, format version 1 had a 16-bit magic number, then the version number `01'
     // then options that must be 0. Hence the first 32-bits of the format are always as follow
     // and it's okay to consider them a magic number as a whole.
-    static const uint32_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
-    static const unsigned int FORMAT_VERSION_1_HEADER_SIZE = 5;
+    static const int FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
+    static const int FORMAT_VERSION_1_HEADER_SIZE = 5;
     // The versions of Latin IME that only handle format version 1 only test for the magic
     // number, so we had to change it so that version 2 files would be rejected by older
     // implementations. On this occasion, we made the magic number 32 bits long.
-    static const uint32_t FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+    static const int FORMAT_VERSION_2_MAGIC_NUMBER = -1681835266; // 0x9BC13AFE
 
     static const int CHARACTER_ARRAY_TERMINATOR_SIZE = 1;
-    static const int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
-    static const int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
+    static const int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    static const int CHARACTER_ARRAY_TERMINATOR = 0x1F;
     static const int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
-    static const unsigned int NO_FLAGS = 0;
+    static const int NO_FLAGS = 0;
     static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
 AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict) {
     // The magic number is stored big-endian.
-    const uint32_t magicNumber = (dict[0] << 24) + (dict[1] << 16) + (dict[2] << 8) + dict[3];
+    const int magicNumber = (dict[0] << 24) + (dict[1] << 16) + (dict[2] << 8) + dict[3];
     switch (magicNumber) {
     case FORMAT_VERSION_1_MAGIC_NUMBER:
         // Format 1 header is exactly 5 bytes long and looks like:
@@ -150,7 +151,7 @@ AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict) {
     }
 }
 
-inline unsigned int BinaryFormat::getFlags(const uint8_t *const dict) {
+inline int BinaryFormat::getFlags(const uint8_t *const dict) {
     switch (detectFormat(dict)) {
     case 1:
         return NO_FLAGS; // TODO: NO_FLAGS is unused anywhere else?
@@ -159,7 +160,7 @@ inline unsigned int BinaryFormat::getFlags(const uint8_t *const dict) {
     }
 }
 
-inline unsigned int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
+inline int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
     switch (detectFormat(dict)) {
     case 1:
         return FORMAT_VERSION_1_HEADER_SIZE;
@@ -167,7 +168,7 @@ inline unsigned int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
         // See the format of the header in the comment in detectFormat() above
         return (dict[8] << 24) + (dict[9] << 16) + (dict[10] << 8) + dict[11];
     default:
-        return std::numeric_limits<unsigned int>::max();
+        return std::numeric_limits<int>::max();
     }
 }
 
