@@ -136,7 +136,7 @@ class ProximityInfoState {
         return mSampledInputSize > 0;
     }
 
-    uint32_t size() const {
+    int size() const {
         return mSampledInputSize;
     }
 
