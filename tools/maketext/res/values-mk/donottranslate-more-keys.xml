@@ -30,6 +30,11 @@
     <string name="more_keys_for_cyrillic_ie">&#x0450;</string>
     <!-- U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE -->
     <string name="more_keys_for_cyrillic_i">&#x045D;</string>
+    <!-- Label for "switch to alphabetic" key.
+         U+0410: "А" CYRILLIC CAPITAL LETTER A
+         U+0411: "Б" CYRILLIC CAPITAL LETTER BE
+         U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
+    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
     <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
          U+2019: "’" RIGHT SINGLE QUOTATION MARK
          U+201A: "‚" SINGLE LOW-9 QUOTATION MARK

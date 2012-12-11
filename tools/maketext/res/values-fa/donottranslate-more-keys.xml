@@ -18,6 +18,12 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for "switch to alphabetic" key.
+         U+0627: "ا" ARABIC LETTER ALEF
+         U+200C: ZERO WIDTH NON-JOINER
+         U+0628: "ب" ARABIC LETTER BEH
+         U+067E: "پ" ARABIC LETTER PEH -->
+    <string name="label_to_alpha_key">&#x0627;&#x200C;&#x0628;&#x200C;&#x067E;</string>
     <!-- U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE -->
     <string name="keylabel_for_symbols_1">&#x06F1;</string>
     <!-- U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO -->
@@ -38,6 +44,12 @@
     <string name="keylabel_for_symbols_9">&#x06F9;</string>
     <!-- U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO -->
     <string name="keylabel_for_symbols_0">&#x06F0;</string>
+    <!-- Label for "switch to symbols" key.
+         U+061F: "؟" ARABIC QUESTION MARK -->
+    <string name="label_to_symbol_key">&#x06F3;&#x06F2;&#x06F1;&#x061F;</string>
+    <!-- Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
+         part because it'll be appended by the code. -->
+    <string name="label_to_symbol_with_microphone_key">&#x06F3;&#x06F2;&#x06F1;</string>
     <string name="additional_more_keys_for_symbols_1">1</string>
     <string name="additional_more_keys_for_symbols_2">2</string>
     <string name="additional_more_keys_for_symbols_3">3</string>

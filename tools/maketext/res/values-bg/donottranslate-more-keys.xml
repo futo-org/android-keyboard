@@ -19,10 +19,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Label for "switch to alphabetic" key.
-         U+0E01: "ก" THAI CHARACTER KO KAI
-         U+0E02: "ข" THAI CHARACTER KHO KHAI
-         U+0E04: "ค" THAI CHARACTER KHO KHWAI -->
-    <string name="label_to_alpha_key">&#x0E01;&#x0E02;&#x0E04;</string>
-    <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT -->
-    <string name="keylabel_for_currency_generic">&#x0E3F;</string>
+         U+0410: "А" CYRILLIC CAPITAL LETTER A
+         U+0411: "Б" CYRILLIC CAPITAL LETTER BE
+         U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
+    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
 </resources>
