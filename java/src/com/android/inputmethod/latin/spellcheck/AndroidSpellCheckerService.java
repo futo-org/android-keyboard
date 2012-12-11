@@ -294,6 +294,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             final String[] gatheredSuggestions;
             final boolean hasRecommendedSuggestions;
             if (0 == mLength) {
+                // TODO: the comment below describes what is intended, but in the practice
+                // mBestSuggestion is only ever set to null so it doesn't work. Fix this.
                 // Either we found no suggestions, or we found some BUT the max length was 0.
                 // If we found some mBestSuggestion will not be null. If it is null, then
                 // we found none, regardless of the max length.
