@@ -1412,8 +1412,6 @@ public final class BinaryDictInputOutput {
     private static WeightedString getWordAtAddressWithParentAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions options) {
-        final StringBuilder builder = new StringBuilder();
-
         int currentAddress = address;
         int index = FormatSpec.MAX_WORD_LENGTH - 1;
         int frequency = Integer.MIN_VALUE;
