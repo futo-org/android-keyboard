@@ -144,33 +144,30 @@
         </default>
     </switch>
     <key-style
-        latin:styleName="toSymbolKeyStyle"
-        latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="!text/label_to_symbol_key"
+        latin:styleName="baseForLayoutSwitchKeyStyle"
         latin:keyLabelFlags="fontNormal|preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="toSymbolKeyStyle"
+        latin:code="!code/key_switch_alpha_symbol"
+        latin:keyLabel="!text/label_to_symbol_key"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="!text/label_to_alpha_key"
-        latin:keyLabelFlags="fontNormal|preserveCase"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!text/label_to_more_symbol_for_tablet_key"
-        latin:keyLabelFlags="fontNormal"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!text/label_to_symbol_key"
-        latin:keyLabelFlags="fontNormal"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="!text/keylabel_for_popular_domain"

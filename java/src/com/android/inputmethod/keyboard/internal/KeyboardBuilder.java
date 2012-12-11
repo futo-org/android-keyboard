@@ -622,6 +622,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
             final boolean shortcutKeyEnabledMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_shortcutKeyEnabled, id.mShortcutKeyEnabled);
+            final boolean shortcutKeyOnSymbolsMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_shortcutKeyOnSymbols, id.mShortcutKeyOnSymbols);
             final boolean hasShortcutKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasShortcutKey, id.mHasShortcutKey);
             final boolean languageSwitchKeyEnabledMatched = matchBoolean(a,
@@ -640,12 +642,12 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean selected = keyboardLayoutSetElementMatched && modeMatched
                     && navigateNextMatched && navigatePreviousMatched && passwordInputMatched
                     && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
-                    && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
-                    && isMultiLineMatched && imeActionMatched && localeCodeMatched
-                    && languageCodeMatched && countryCodeMatched;
+                    && shortcutKeyOnSymbolsMatched && hasShortcutKeyMatched
+                    && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
+                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(a.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSetElement),
                                 "keyboardLayoutSetElement"),
@@ -662,6 +664,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "passwordInput"),
                         booleanAttr(a, R.styleable.Keyboard_Case_shortcutKeyEnabled,
                                 "shortcutKeyEnabled"),
+                        booleanAttr(a, R.styleable.Keyboard_Case_shortcutKeyOnSymbols,
+                                "shortcutKeyOnSymbols"),
                         booleanAttr(a, R.styleable.Keyboard_Case_hasShortcutKey,
                                 "hasShortcutKey"),
                         booleanAttr(a, R.styleable.Keyboard_Case_languageSwitchKeyEnabled,

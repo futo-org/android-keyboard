@@ -78,6 +78,7 @@ public final class KeyboardLayoutSet {
             CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
 
+    @SuppressWarnings("serial")
     public static final class KeyboardLayoutSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
 
@@ -93,7 +94,7 @@ public final class KeyboardLayoutSet {
         public ElementParams() {}
     }
 
-    private static final class Params {
+    public static final class Params {
         String mKeyboardLayoutSetName;
         int mMode;
         EditorInfo mEditorInfo;
@@ -109,7 +110,6 @@ public final class KeyboardLayoutSet {
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
                 CollectionUtils.newSparseArray();
-        public Params() {}
     }
 
     public static void clearKeyboardCache() {
@@ -149,7 +149,11 @@ public final class KeyboardLayoutSet {
             elementParams = mParams.mKeyboardLayoutSetElementIdToParamsMap.get(
                     KeyboardId.ELEMENT_ALPHABET);
         }
-        final KeyboardId id = getKeyboardId(keyboardLayoutSetElementId);
+        // Note: The keyboard for each shift state, and mode are represented as an elementName
+        // attribute in a keyboard_layout_set XML file.  Also each keyboard layout XML resource is
+        // specified as an elementKeyboard attribute in the file.
+        // The KeyboardId is an internal key for a Keyboard object.
+        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
         try {
             return getKeyboard(elementParams, id);
         } catch (RuntimeException e) {
@@ -185,22 +189,6 @@ public final class KeyboardLayoutSet {
         }
 
         return keyboard;
-    }
-
-    // Note: The keyboard for each locale, shift state, and mode are represented as
-    // KeyboardLayoutSet element id that is a key in keyboard_set.xml.  Also that file specifies
-    // which XML layout should be used for each keyboard.  The KeyboardId is an internal key for
-    // Keyboard object.
-    private KeyboardId getKeyboardId(final int keyboardLayoutSetElementId) {
-        final Params params = mParams;
-        final boolean isSymbols = (keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS
-                || keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean hasShortcutKey = params.mVoiceKeyEnabled
-                && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mDeviceFormFactor,
-                params.mOrientation, params.mWidth, params.mMode, params.mEditorInfo,
-                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey,
-                params.mLanguageSwitchKeyEnabled);
     }
 
     public static final class Builder {
