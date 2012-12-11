@@ -39,12 +39,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
-    if (isGeometric) {
-        mIsContinuationPossible = checkAndReturnIsContinuationPossible(
-                inputSize, xCoordinates, yCoordinates, times);
-    } else {
-        mIsContinuationPossible = false;
-    }
+    mIsContinuationPossible = checkAndReturnIsContinuationPossible(
+            inputSize, xCoordinates, yCoordinates, times, isGeometric);
 
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
@@ -466,12 +462,26 @@ float ProximityInfoState::calculateBeelineSpeedRate(
 }
 
 bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
-        const int *const xCoordinates, const int *const yCoordinates, const int *const times) {
-    for (int i = 0; i < mSampledInputSize; ++i) {
-        const int index = mInputIndice[i];
-        if (index > inputSize || xCoordinates[index] != mSampledInputXs[i] ||
-                yCoordinates[index] != mSampledInputYs[i] || times[index] != mTimes[i]) {
+        const int *const xCoordinates, const int *const yCoordinates, const int *const times,
+        const bool isGeometric) const {
+    if (isGeometric) {
+        for (int i = 0; i < mSampledInputSize; ++i) {
+            const int index = mInputIndice[i];
+            if (index > inputSize || xCoordinates[index] != mSampledInputXs[i] ||
+                    yCoordinates[index] != mSampledInputYs[i] || times[index] != mTimes[i]) {
+                return false;
+            }
+        }
+    } else {
+        if (inputSize < mSampledInputSize) {
+            // Assuming the cache is invalid if the previous input size is larger than the new one.
             return false;
+        }
+        for (int i = 0; i < mSampledInputSize && i < MAX_WORD_LENGTH_INTERNAL; ++i) {
+            if (xCoordinates[i] != mSampledInputXs[i]
+                    || yCoordinates[i] != mSampledInputYs[i]) {
+                return false;
+            }
         }
     }
     return true;

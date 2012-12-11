@@ -376,6 +376,7 @@ static inline void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
 // TODO: Remove
+#define MAX_POINTER_COUNT 1
 #define MAX_POINTER_COUNT_FOR_G 2
 
 // Size, in bytes, of the bloom filter index for bigrams
