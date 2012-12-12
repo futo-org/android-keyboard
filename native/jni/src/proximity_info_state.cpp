@@ -668,11 +668,15 @@ int ProximityInfoState::getDuration(const int index) const {
     return 0;
 }
 
-float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint) const {
+// TODO: Remove the "scale" parameter
+// This function basically converts from a length to an edit distance. Accordingly, it's obviously
+// wrong to compare with mMaxPointToKeyLength.
+float ProximityInfoState::getPointToKeyLength(
+        const int inputIndex, const int codePoint, const float scale) const {
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mDistanceCache[index], mMaxPointToKeyLength);
+        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
     }
     if (isSkippableCodePoint(codePoint)) {
         return 0.0f;
@@ -681,13 +685,25 @@ float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int co
     return MAX_POINT_TO_KEY_LENGTH;
 }
 
-float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const int keyId) const {
+float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint) const {
+    return getPointToKeyLength(inputIndex, codePoint, 1.0f);
+}
+
+// TODO: Remove the "scale" parameter
+// This function basically converts from a length to an edit distance. Accordingly, it's obviously
+// wrong to compare with mMaxPointToKeyLength.
+float ProximityInfoState::getPointToKeyByIdLength(
+        const int inputIndex, const int keyId, const float scale) const {
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mDistanceCache[index], mMaxPointToKeyLength);
+        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
     return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+}
+
+float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const int keyId) const {
+    return getPointToKeyByIdLength(inputIndex, keyId, 1.0f);
 }
 
 // In the following function, c is the current character of the dictionary word currently examined.
