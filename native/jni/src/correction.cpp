@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-#include <cassert>
-#include <cctype>
-#include <cmath>
-#include <cstring>
-
 #define LOG_TAG "LatinIME: correction.cpp"
 
 #include "char_utils.h"
@@ -1002,7 +997,7 @@ int Correction::RankingAlgorithm::editDistance(const int *before, const int befo
 float Correction::RankingAlgorithm::calcNormalizedScore(const int *before, const int beforeLength,
         const int *after, const int afterLength, const int score) {
     if (0 == beforeLength || 0 == afterLength) {
-        return 0;
+        return 0.0f;
     }
     const int distance = editDistance(before, beforeLength, after, afterLength);
     int spaceCount = 0;
@@ -1013,7 +1008,7 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const int *before, const
     }
 
     if (spaceCount == afterLength) {
-        return 0;
+        return 0.0f;
     }
 
     const float maxScore = score >= S_INT_MAX ? static_cast<float>(S_INT_MAX)

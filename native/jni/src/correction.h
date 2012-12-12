@@ -19,7 +19,6 @@
 
 #include <cassert>
 #include <cstring> // for memset()
-#include <stdint.h>
 
 #include "correction_state.h"
 #include "defines.h"
@@ -237,7 +236,7 @@ class Correction {
     int mTerminalOutputIndex;
     int mMaxErrors;
 
-    uint8_t mTotalTraverseCount;
+    int mTotalTraverseCount;
 
     // The following arrays are state buffer.
     int mWord[MAX_WORD_LENGTH_INTERNAL];
@@ -352,7 +351,7 @@ AK_FORCE_INLINE static void calcEditDistanceOneStep(int *editDistanceTable, cons
     const int prevCO = outputLength >= 2 ? toBaseLowerCase(output[outputLength - 2]) : 0;
     for (int i = 1; i <= inputSize; ++i) {
         const int ci = toBaseLowerCase(input[i - 1]);
-        const uint16_t cost = (ci == co) ? 0 : 1;
+        const int cost = (ci == co) ? 0 : 1;
         current[i] = min(current[i - 1] + 1, min(prev[i] + 1, prev[i - 1] + cost));
         if (i >= 2 && prevprev && ci == prevCO && co == toBaseLowerCase(input[i - 2])) {
             current[i] = min(current[i], prevprev[i - 2] + 1);
