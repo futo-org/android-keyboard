@@ -18,6 +18,11 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for "switch to alphabetic" key.
+         U+05D0: "א" HEBREW LETTER ALEF
+         U+05D1: "ב" HEBREW LETTER BET
+         U+05D2: "ג" HEBREW LETTER GIMEL -->
+    <string name="label_to_alpha_key">&#x05D0;&#x05D1;&#x05D2;</string>
     <!-- U+2605: "★" BLACK STAR -->
     <string name="more_keys_for_star">&#x2605;</string>
     <!-- U+00B1: "±" PLUS-MINUS SIGN

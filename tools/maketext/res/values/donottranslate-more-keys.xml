@@ -60,6 +60,8 @@
     <string name="keylabel_for_south_slavic_row3_8"></string>
     <string name="more_keys_for_cyrillic_ie"></string>
     <string name="more_keys_for_cyrillic_i"></string>
+    <!-- Label for "switch to alphabetic" key. -->
+    <string name="label_to_alpha_key">ABC</string>
     <string name="more_keys_for_single_quote">!fixedColumnOrder!4,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
     <!-- <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;</string> -->
@@ -121,6 +123,11 @@
     <string name="keylabel_for_symbols_8">8</string>
     <string name="keylabel_for_symbols_9">9</string>
     <string name="keylabel_for_symbols_0">0</string>
+    <!-- Label for "switch to symbols" key. -->
+    <string name="label_to_symbol_key">\?123</string>
+    <!-- Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
+         part because it'll be appended by the code. -->
+    <string name="label_to_symbol_with_microphone_key">123</string>
     <string name="additional_more_keys_for_symbols_1"></string>
     <string name="additional_more_keys_for_symbols_2"></string>
     <string name="additional_more_keys_for_symbols_3"></string>

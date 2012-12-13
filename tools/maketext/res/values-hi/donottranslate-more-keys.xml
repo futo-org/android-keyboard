@@ -18,6 +18,11 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for "switch to alphabetic" key.
+         U+0915: "क" DEVANAGARI LETTER KA
+         U+0916: "ख" DEVANAGARI LETTER KHA
+         U+0917: "ग" DEVANAGARI LETTER GA -->
+    <string name="label_to_alpha_key">&#x0915;&#x0916;&#x0917;</string>
     <!-- U+0967: "१" DEVANAGARI DIGIT ONE -->
     <string name="keylabel_for_symbols_1">&#x0967;</string>
     <!-- U+0968: "२" DEVANAGARI DIGIT TWO -->
@@ -38,6 +43,11 @@
     <string name="keylabel_for_symbols_9">&#x096F;</string>
     <!-- U+0966: "०" DEVANAGARI DIGIT ZERO -->
     <string name="keylabel_for_symbols_0">&#x0966;</string>
+    <!-- Label for "switch to symbols" key. -->
+    <string name="label_to_symbol_key">\?&#x0967;&#x0968;&#x0969;</string>
+    <!-- Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
+         part because it'll be appended by the code. -->
+    <string name="label_to_symbol_with_microphone_key">&#x0967;&#x0968;&#x0969;</string>
     <string name="additional_more_keys_for_symbols_1">1</string>
     <string name="additional_more_keys_for_symbols_2">2</string>
     <string name="additional_more_keys_for_symbols_3">3</string>

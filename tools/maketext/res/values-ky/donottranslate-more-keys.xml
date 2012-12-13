@@ -38,4 +38,9 @@
     <string name="more_keys_for_cyrillic_o">&#x04E9;</string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
     <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
+    <!-- Label for "switch to alphabetic" key.
+         U+0410: "А" CYRILLIC CAPITAL LETTER A
+         U+0411: "Б" CYRILLIC CAPITAL LETTER BE
+         U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
+    <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
 </resources>
