@@ -74,9 +74,6 @@
     <string name="label_previous_key" msgid="1211868118071386787">"السابق"</string>
     <string name="label_done_key" msgid="2441578748772529288">"تم"</string>
     <string name="label_send_key" msgid="2815056534433717444">"إرسال"</string>
-    <string name="label_to_alpha_key" msgid="4793983863798817523">"أ ب ج"</string>
-    <string name="label_to_symbol_key" msgid="8516904117128967293">"٣٢١؟"</string>
-    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"٣٢١"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف مؤقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"انتظار"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"يمكنك توصيل سماعة رأس لسماع مفاتيح كلمة المرور منطوقة بصوت عالٍ."</string>
