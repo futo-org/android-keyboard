@@ -844,8 +844,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void closing() {
         super.closing();
-        dismissMoreKeysPanel();
+        onCancelMoreKeysPanel();
         mMoreKeysPanelCache.clear();
+    }
+
+    @Override
+    public void onCancelMoreKeysPanel() {
+        super.onCancelMoreKeysPanel();
+        PointerTracker.dismissAllMoreKeysPanels();
     }
 
     @Override

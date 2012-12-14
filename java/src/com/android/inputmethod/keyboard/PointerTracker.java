@@ -412,6 +412,17 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
+    public static void dismissAllMoreKeysPanels() {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
+            if (tracker.isShowingMoreKeysPanel()) {
+                tracker.mMoreKeysPanel.dismissMoreKeysPanel();
+                tracker.mMoreKeysPanel = null;
+            }
+        }
+    }
+
     private PointerTracker(final int id, final KeyEventHandler handler) {
         if (handler == null) {
             throw new NullPointerException();
@@ -715,6 +726,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             sLastRecognitionPointSize = 0;
             sLastRecognitionTime = 0;
             mListener.onStartBatchInput();
+            dismissAllMoreKeysPanels();
         }
         mTimerProxy.cancelLongPressTimer();
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
@@ -846,7 +858,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         // A gesture should start only from a non-modifier key.
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
-                && !isShowingMoreKeysPanel() && key != null && !key.isModifier();
+                && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
@@ -907,6 +919,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 cancelBatchInput();
                 return;
             }
+            // If the MoreKeysPanel is showing then do not attempt to enter gesture mode. However,
+            // the gestured touch points are still being recorded in case the panel is dismissed.
+            if (isShowingMoreKeysPanel()) {
+                return;
+            }
             mayStartBatchInput(key);
             if (sInGesture) {
                 mayUpdateBatchInput(eventTime, key);
@@ -926,7 +943,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             final int translatedX = mMoreKeysPanel.translateX(x);
             final int translatedY = mMoreKeysPanel.translateY(y);
             mMoreKeysPanel.onMoveEvent(translatedX, translatedY, mPointerId, eventTime);
-            return;
         }
 
         if (sShouldHandleGesture && me != null) {
@@ -940,6 +956,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 onGestureMoveEvent(historicalX, historicalY, historicalTime,
                         false /* isMajorEvent */, null);
             }
+        }
+
+        if (isShowingMoreKeysPanel()) {
+            // Do not handle sliding keys (or show key pop-ups) when the MoreKeysPanel is visible.
+            return;
         }
         onMoveEventInternal(x, y, eventTime);
     }
@@ -1199,8 +1220,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mTimerProxy.cancelKeyTimers();
         setReleasedKeyGraphics(mCurrentKey);
         resetSlidingKeyInput();
-        mMoreKeysPanel.dismissMoreKeysPanel();
-        mMoreKeysPanel = null;
+        if (isShowingMoreKeysPanel()) {
+            mMoreKeysPanel.dismissMoreKeysPanel();
+            mMoreKeysPanel = null;
+        }
     }
 
     private void startRepeatKey(final Key key) {

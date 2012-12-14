@@ -30,6 +30,11 @@ public interface MoreKeysPanel {
          * Remove the current {@link MoreKeysPanel} from the target view.
          */
         public boolean onDismissMoreKeysPanel();
+
+        /**
+         * Instructs the parent to cancel the panel (e.g., when entering a different input mode).
+         */
+        public void onCancelMoreKeysPanel();
     }
 
     /**

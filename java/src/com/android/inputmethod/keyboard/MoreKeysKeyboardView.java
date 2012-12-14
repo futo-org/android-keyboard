@@ -120,7 +120,15 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     public void onMoveEvent(int x, int y, final int pointerId, long eventTime) {
+        if (mActivePointerId != pointerId) {
+            return;
+        }
+        final boolean hasOldKey = (mCurrentKey != null);
         onMoveKeyInternal(x, y, pointerId);
+        if (hasOldKey && mCurrentKey == null) {
+            // If the pointer has moved too far away from any target then cancel the panel.
+            mController.onCancelMoreKeysPanel();
+        }
     }
 
     @Override
