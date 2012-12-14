@@ -18,10 +18,12 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 
@@ -87,13 +89,43 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
         mObserver = new ContentObserver(null) {
             @Override
-            public void onChange(boolean self) {
+            public void onChange(final boolean self) {
+                // This hook is deprecated as of API level 16, but should still be supported for
+                // cases where the IME is running on an older version of the platform.
+                onChange(self, null);
+            }
+            // The following hook is only available as of API level 16, and as such it will only
+            // work on JellyBean+ devices. On older versions of the platform, the hook
+            // above will be called instead.
+            @Override
+            public void onChange(final boolean self, final Uri uri) {
                 setRequiresReload(true);
+                // We want to report back to Latin IME in case the user just entered the word.
+                // If the user changed the word in the dialog box, then we want to replace
+                // what was entered in the text field.
+                if (null == uri || !(context instanceof LatinIME)) return;
+                final long changedRowId = ContentUris.parseId(uri);
+                if (-1 == changedRowId) return; // Unknown content... Not sure why we're here
+                final String changedWord = getChangedWordForUri(uri);
+                ((LatinIME)context).onWordAddedToUserDictionary(changedWord);
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
 
         loadDictionary();
+    }
+
+    private String getChangedWordForUri(final Uri uri) {
+        final Cursor cursor = mContext.getContentResolver().query(uri,
+                PROJECTION_QUERY, null, null, null);
+        if (cursor == null) return null;
+        try {
+            if (!cursor.moveToFirst()) return null;
+            final int indexWord = cursor.getColumnIndex(Words.WORD);
+            return cursor.getString(indexWord);
+        } finally {
+            cursor.close();
+        }
     }
 
     @Override
