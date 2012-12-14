@@ -824,6 +824,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
+        resetComposingState(true /* alsoResetLastComposedWord */);
     }
 
     @Override
