@@ -101,6 +101,16 @@ final class GesturePreviewTrail {
         }
     }
 
+    /**
+     * Calculate the alpha of a gesture trail.
+     * A gesture trail starts from fully opaque. After mFadeStartDelay has been passed, the alpha
+     * of a trail reduces in proportion to the elapsed time. Then after mFadeDuration has been
+     * passed, a trail becomes fully transparent.
+     *
+     * @param elapsedTime the elapsed time since a trail has been made.
+     * @param params gesture trail display parameters
+     * @return the width of a gesture trail
+     */
     private static int getAlpha(final int elapsedTime, final Params params) {
         if (elapsedTime < params.mFadeoutStartDelay) {
             return Constants.Color.ALPHA_OPAQUE;
@@ -111,10 +121,19 @@ final class GesturePreviewTrail {
         return Constants.Color.ALPHA_OPAQUE - decreasingAlpha;
     }
 
+    /**
+     * Calculate the width of a gesture trail.
+     * A gesture trail starts from the width of mTrailStartWidth and reduces its width in proportion
+     * to the elapsed time. After mTrailEndWidth has been passed, the width becomes mTraiLEndWidth.
+     *
+     * @param elapsedTime the elapsed time since a trail has been made.
+     * @param params gesture trail display parameters
+     * @return the width of a gesture trail
+     */
     private static float getWidth(final int elapsedTime, final Params params) {
-        return Math.max((params.mTrailLingerDuration - elapsedTime)
-                * (params.mTrailStartWidth - params.mTrailEndWidth)
-                / params.mTrailLingerDuration, 0.0f);
+        final int deltaTime = params.mTrailLingerDuration - elapsedTime;
+        final float deltaWidth = params.mTrailStartWidth - params.mTrailEndWidth;
+        return (deltaTime * deltaWidth) / params.mTrailLingerDuration + params.mTrailEndWidth;
     }
 
     private final RoundedLine mRoundedLine = new RoundedLine();
@@ -154,7 +173,7 @@ final class GesturePreviewTrail {
             final RoundedLine line = mRoundedLine;
             int p1x = getXCoordValue(xCoords[startIndex]);
             int p1y = yCoords[startIndex];
-            int lastTime = sinceDown - eventTimes[startIndex];
+            final int lastTime = sinceDown - eventTimes[startIndex];
             float maxWidth = getWidth(lastTime, params);
             float r1 = maxWidth / 2.0f;
             // Initialize bounds rectangle.
@@ -167,20 +186,19 @@ final class GesturePreviewTrail {
                 final float r2 = width / 2.0f;
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(xCoords[i])) {
-                    final int alpha = getAlpha(elapsedTime, params);
-                    paint.setAlpha(alpha);
                     final Path path = line.makePath(p1x, p1y, r1, p2x, p2y, r2);
                     if (path != null) {
+                        final int alpha = getAlpha(elapsedTime, params);
+                        paint.setAlpha(alpha);
                         canvas.drawPath(path, paint);
+                        // Take union for the bounds.
                         outBoundsRect.union(p2x, p2y);
+                        maxWidth = Math.max(maxWidth, width);
                     }
-                    // Take union for the bounds.
-                    maxWidth = Math.max(maxWidth, width);
                 }
                 p1x = p2x;
                 p1y = p2y;
                 r1 = r2;
-                lastTime = elapsedTime;
             }
             // Take care of trail line width.
             final int inset = -((int)maxWidth + 1);
