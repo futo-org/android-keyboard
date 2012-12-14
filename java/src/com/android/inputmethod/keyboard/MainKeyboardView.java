@@ -135,7 +135,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
     // More keys keyboard
-    private int mMoreKeysPanelPointerTrackerId;
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
@@ -662,7 +661,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             }
             mMoreKeysPanelCache.put(parentKey, moreKeysPanel);
         }
-        mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
@@ -732,14 +730,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
-        final int x, y;
-        if (mMoreKeysPanel != null && id == mMoreKeysPanelPointerTrackerId) {
-            x = mMoreKeysPanel.translateX((int)me.getX(index));
-            y = mMoreKeysPanel.translateY((int)me.getY(index));
-        } else {
-            x = (int)me.getX(index);
-            y = (int)me.getY(index);
-        }
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
+
         // TODO: This might be moved to the tracker.processMotionEvent() call below.
         if (ENABLE_USABILITY_STUDY_LOG && action != MotionEvent.ACTION_MOVE) {
             writeUsabilityStudyLog(me, action, eventTime, index, id, x, y);
@@ -800,19 +793,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 final int pointerId = me.getPointerId(i);
                 final PointerTracker tracker = PointerTracker.getPointerTracker(
                         pointerId, this);
-                final int px, py;
-                final MotionEvent motionEvent;
-                if (mMoreKeysPanel != null
-                        && tracker.mPointerId == mMoreKeysPanelPointerTrackerId) {
-                    px = mMoreKeysPanel.translateX((int)me.getX(i));
-                    py = mMoreKeysPanel.translateY((int)me.getY(i));
-                    motionEvent = null;
-                } else {
-                    px = (int)me.getX(i);
-                    py = (int)me.getY(i);
-                    motionEvent = me;
-                }
-                tracker.onMoveEvent(px, py, eventTime, motionEvent);
+                final int px = (int)me.getX(i);
+                final int py = (int)me.getY(i);
+                tracker.onMoveEvent(px, py, eventTime, me);
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     writeUsabilityStudyLog(me, action, eventTime, i, pointerId, px, py);
                 }
@@ -867,7 +850,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public boolean onDismissMoreKeysPanel() {
-        mMoreKeysPanelPointerTrackerId = -1;
         dimEntireKeyboard(false /* dimmed */);
         return super.onDismissMoreKeysPanel();
     }

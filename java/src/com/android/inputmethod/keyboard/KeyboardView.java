@@ -1031,7 +1031,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
         return (mMoreKeysPanel != null);
     }
 
-    @Override
     public boolean dismissMoreKeysPanel() {
         if (isShowingMoreKeysPanel()) {
             return mMoreKeysPanel.dismissMoreKeysPanel();
