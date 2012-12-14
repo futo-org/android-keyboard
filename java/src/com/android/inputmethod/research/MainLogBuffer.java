@@ -113,7 +113,7 @@ public class MainLogBuffer extends LogBuffer {
             final String word = logUnit.getWord();
             if (word == null) {
                 // Digits outside words are a privacy threat.
-                if (logUnit.hasDigit()) {
+                if (logUnit.mayContainDigit()) {
                     return false;
                 }
             } else {
