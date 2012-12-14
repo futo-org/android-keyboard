@@ -73,7 +73,7 @@ import java.util.ArrayList;
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
     public interface Listener {
-        public boolean addWordToUserDictionary(String word);
+        public void addWordToUserDictionary(String word);
         public void pickSuggestionManually(int index, CharSequence word);
     }
 

@@ -339,6 +339,24 @@ public final class RichInputConnection {
         }
     }
 
+    public void setComposingRegion(final int start, final int end) {
+        if (DEBUG_BATCH_NESTING) checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        mCurrentCursorPosition = end;
+        final CharSequence textBeforeCursor =
+                getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE + (end - start), 0);
+        final int indexOfStartOfComposingText =
+                Math.max(textBeforeCursor.length() - (end - start), 0);
+        mComposingText.append(textBeforeCursor.subSequence(indexOfStartOfComposingText,
+                textBeforeCursor.length()));
+        mCommittedTextBeforeComposingText.setLength(0);
+        mCommittedTextBeforeComposingText.append(
+                textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
+        if (null != mIC) {
+            mIC.setComposingRegion(start, end);
+        }
+    }
+
     public void setComposingText(final CharSequence text, final int i) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
