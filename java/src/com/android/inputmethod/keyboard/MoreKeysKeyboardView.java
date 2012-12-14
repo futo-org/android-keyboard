@@ -19,76 +19,28 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
-import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.CoordinateUtils;
-import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.R;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
  * detecting key presses and touch movements.
  */
-public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
+public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     private final KeyDetector mKeyDetector;
-
     private Controller mController;
-    private KeyboardActionListener mListener;
+    protected KeyboardActionListener mListener;
     private int mOriginX;
     private int mOriginY;
+    private Key mCurrentKey;
 
-    private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
-
-    private final KeyboardActionListener mMoreKeysKeyboardListener =
-            new KeyboardActionListener.Adapter() {
-        @Override
-        public void onCodeInput(final int primaryCode, final int x, final int y) {
-            // Because a more keys keyboard doesn't need proximity characters correction, we don't
-            // send touch event coordinates.
-            mListener.onCodeInput(
-                    primaryCode, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        }
-
-        @Override
-        public void onTextInput(final String text) {
-            mListener.onTextInput(text);
-        }
-
-        @Override
-        public void onStartBatchInput() {
-            mListener.onStartBatchInput();
-        }
-
-        @Override
-        public void onUpdateBatchInput(final InputPointers batchPointers) {
-            mListener.onUpdateBatchInput(batchPointers);
-        }
-
-        @Override
-        public void onEndBatchInput(final InputPointers batchPointers) {
-            mListener.onEndBatchInput(batchPointers);
-        }
-
-        @Override
-        public void onCancelInput() {
-            mListener.onCancelInput();
-        }
-
-        @Override
-        public void onPressKey(final int primaryCode) {
-            mListener.onPressKey(primaryCode);
-        }
-
-        @Override
-        public void onReleaseKey(final int primaryCode, final boolean withSliding) {
-            mListener.onReleaseKey(primaryCode, withSliding);
-        }
-    };
+    private int mActivePointerId;
 
     public MoreKeysKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
@@ -124,26 +76,6 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
     }
 
     @Override
-    public KeyDetector getKeyDetector() {
-        return mKeyDetector;
-    }
-
-    @Override
-    public KeyboardActionListener getKeyboardActionListener() {
-        return mMoreKeysKeyboardListener;
-    }
-
-    @Override
-    public DrawingProxy getDrawingProxy() {
-        return this;
-    }
-
-    @Override
-    public TimerProxy getTimerProxy() {
-        return EMPTY_TIMER_PROXY;
-    }
-
-    @Override
     public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
         // More keys keyboard needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
@@ -156,10 +88,8 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
         mController = controller;
         mListener = listener;
         final View container = getContainerView();
-        final MoreKeysKeyboard pane = (MoreKeysKeyboard)getKeyboard();
-        final int defaultCoordX = pane.getDefaultCoordX();
         // The coordinates of panel's left-top corner in parentView's coordinate system.
-        final int x = pointX - defaultCoordX - container.getPaddingLeft();
+        final int x = pointX - getDefaultCoordX() - container.getPaddingLeft();
         final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom();
 
         parentView.getLocationInWindow(mCoordinates);
@@ -173,6 +103,73 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
         controller.onShowMoreKeysPanel(this);
+    }
+
+    /**
+     * Returns the default x coordinate for showing this panel.
+     */
+    protected int getDefaultCoordX() {
+        return ((MoreKeysKeyboard)getKeyboard()).getDefaultCoordX();
+    }
+
+    @Override
+    public void onDownEvent(final int x, final int y, final int pointerId, final long eventTime) {
+        mActivePointerId = pointerId;
+        onMoveKeyInternal(x, y, pointerId);
+    }
+
+    @Override
+    public void onMoveEvent(int x, int y, final int pointerId, long eventTime) {
+        onMoveKeyInternal(x, y, pointerId);
+    }
+
+    @Override
+    public void onUpEvent(final int x, final int y, final int pointerId, final long eventTime) {
+        if (mCurrentKey != null && mActivePointerId == pointerId) {
+            updateReleaseKeyGraphics(mCurrentKey);
+            onCodeInput(mCurrentKey.mCode, x, y);
+            mCurrentKey = null;
+        }
+    }
+
+    /**
+     * Performs the specific action for this panel when the user presses a key on the panel.
+     */
+    protected void onCodeInput(final int code, final int x, final int y) {
+        if (code == Constants.CODE_OUTPUT_TEXT) {
+            mListener.onTextInput(mCurrentKey.getOutputText());
+        } else if (code != Constants.CODE_UNSPECIFIED) {
+            mListener.onCodeInput(code, x, y);
+        }
+    }
+
+    private void onMoveKeyInternal(int x, int y, int pointerId) {
+        if (mActivePointerId != pointerId) {
+            // Ignore old pointers when newer pointer is active.
+            return;
+        }
+        final Key oldKey = mCurrentKey;
+        final Key newKey = mKeyDetector.detectHitKey(x, y);
+        if (newKey != oldKey) {
+            mCurrentKey = newKey;
+            invalidateKey(mCurrentKey);
+            if (oldKey != null) {
+                updateReleaseKeyGraphics(oldKey);
+            }
+            if (newKey != null) {
+                updatePressKeyGraphics(newKey);
+            }
+        }
+    }
+
+    private void updateReleaseKeyGraphics(final Key key) {
+        key.onReleased();
+        invalidateKey(key);
+    }
+
+    private void updatePressKeyGraphics(final Key key) {
+        key.onPressed();
+        invalidateKey(key);
     }
 
     @Override
@@ -189,6 +186,35 @@ public final class MoreKeysKeyboardView extends KeyboardView implements MoreKeys
     @Override
     public int translateY(final int y) {
         return y - mOriginY;
+    }
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent me) {
+        final int action = me.getActionMasked();
+        final long eventTime = me.getEventTime();
+        final int index = me.getActionIndex();
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
+        final int pointerId = me.getPointerId(index);
+        processMotionEvent(action, x, y, pointerId, eventTime);
+        return true;
+    }
+
+    public void processMotionEvent(final int action, final int x, final int y,
+            final int pointerId, final long eventTime) {
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+        case MotionEvent.ACTION_POINTER_DOWN:
+            onDownEvent(x, y, pointerId, eventTime);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+            onUpEvent(x, y, pointerId, eventTime);
+            break;
+        case MotionEvent.ACTION_MOVE:
+            onMoveEvent(x, y, pointerId, eventTime);
+            break;
+        }
     }
 
     @Override

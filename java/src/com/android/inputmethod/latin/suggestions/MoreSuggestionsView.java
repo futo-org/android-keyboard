@@ -17,66 +17,17 @@
 package com.android.inputmethod.latin.suggestions;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.MoreKeysDetector;
-import com.android.inputmethod.keyboard.MoreKeysPanel;
-import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
-import com.android.inputmethod.keyboard.PointerTracker.KeyEventHandler;
-import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.latin.CoordinateUtils;
+import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import com.android.inputmethod.latin.R;
 
 /**
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public final class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
-    private final int[] mCoordinates = CoordinateUtils.newInstance();
-
-    final KeyDetector mModalPanelKeyDetector;
-    private final KeyDetector mSlidingPanelKeyDetector;
-
-    private Controller mController;
-    KeyboardActionListener mListener;
-    private int mOriginX;
-    private int mOriginY;
-
-    static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
-
-    final KeyboardActionListener mSuggestionsPaneListener =
-            new KeyboardActionListener.Adapter() {
-        @Override
-        public void onPressKey(final int primaryCode) {
-            mListener.onPressKey(primaryCode);
-        }
-
-        @Override
-        public void onReleaseKey(final int primaryCode, final boolean withSliding) {
-            mListener.onReleaseKey(primaryCode, withSliding);
-        }
-
-        @Override
-        public void onCodeInput(final int primaryCode, final int x, final int y) {
-            final int index = primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE;
-            if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
-                mListener.onCustomRequest(index);
-            }
-        }
-
-        @Override
-        public void onCancelInput() {
-            mListener.onCancelInput();
-        }
-    };
+public final class MoreSuggestionsView extends MoreKeysKeyboardView {
 
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreSuggestionsViewStyle);
@@ -85,12 +36,12 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
     public MoreSuggestionsView(final Context context, final AttributeSet attrs,
             final int defStyle) {
         super(context, attrs, defStyle);
+    }
 
-        final Resources res = context.getResources();
-        mModalPanelKeyDetector = new KeyDetector(/* keyHysteresisDistance */ 0);
-        mSlidingPanelKeyDetector = new MoreKeysDetector(
-                res.getDimension(R.dimen.more_suggestions_slide_allowance));
-        setKeyPreviewPopupEnabled(false, 0);
+    @Override
+    protected int getDefaultCoordX() {
+        final MoreSuggestions pane = (MoreSuggestions)getKeyboard();
+        return pane.mOccupiedWidth / 2;
     }
 
     @Override
@@ -110,119 +61,11 @@ public final class MoreSuggestionsView extends KeyboardView implements MoreKeysP
     }
 
     @Override
-    public void setKeyboard(final Keyboard keyboard) {
-        super.setKeyboard(keyboard);
-        mModalPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), -getPaddingTop());
-        mSlidingPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
-                -getPaddingTop() + mVerticalCorrection);
-    }
-
-    @Override
-    public KeyDetector getKeyDetector() {
-        return mSlidingPanelKeyDetector;
-    }
-
-    @Override
-    public KeyboardActionListener getKeyboardActionListener() {
-        return mSuggestionsPaneListener;
-    }
-
-    @Override
-    public DrawingProxy getDrawingProxy() {
-        return this;
-    }
-
-    @Override
-    public TimerProxy getTimerProxy() {
-        return EMPTY_TIMER_PROXY;
-    }
-
-    @Override
-    public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
-        // Suggestions pane needs no pop-up key preview displayed, so we pass always false with a
-        // delay of 0. The delay does not matter actually since the popup is not shown anyway.
-        super.setKeyPreviewPopupEnabled(false, 0);
-    }
-
-    @Override
-    public void showMoreKeysPanel(final View parentView, final Controller controller,
-            final int pointX, final int pointY, final KeyboardActionListener listener) {
-        mController = controller;
-        mListener = listener;
-        final View container = getContainerView();
-        final MoreSuggestions pane = (MoreSuggestions)getKeyboard();
-        final int defaultCoordX = pane.mOccupiedWidth / 2;
-        // The coordinates of panel's left-top corner in parentView's coordinate system.
-        final int x = pointX - defaultCoordX - container.getPaddingLeft();
-        final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom();
-
-        parentView.getLocationInWindow(mCoordinates);
-        // Ensure the horizontal position of the panel does not extend past the screen edges.
-        final int maxX = parentView.getMeasuredWidth() - container.getMeasuredWidth();
-        final int panelX = Math.max(0, Math.min(maxX, x + CoordinateUtils.x(mCoordinates)));
-        final int panelY = y + CoordinateUtils.y(mCoordinates);
-        container.setX(panelX);
-        container.setY(panelY);
-
-        mOriginX = x + container.getPaddingLeft();
-        mOriginY = y + container.getPaddingTop();
-        controller.onShowMoreKeysPanel(this);
-    }
-
-    @Override
-    public boolean dismissMoreKeysPanel() {
-        if (mController == null) return false;
-        return mController.onDismissMoreKeysPanel();
-    }
-
-    @Override
-    public int translateX(final int x) {
-        return x - mOriginX;
-    }
-
-    @Override
-    public int translateY(final int y) {
-        return y - mOriginY;
-    }
-
-    private final KeyEventHandler mModalPanelKeyEventHandler = new KeyEventHandler() {
-        @Override
-        public KeyDetector getKeyDetector() {
-            return mModalPanelKeyDetector;
+    public void onCodeInput(final int primaryCode, final int x, final int y) {
+        final int index = primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE;
+        if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
+            mListener.onCustomRequest(index);
         }
-
-        @Override
-        public KeyboardActionListener getKeyboardActionListener() {
-            return mSuggestionsPaneListener;
-        }
-
-        @Override
-        public DrawingProxy getDrawingProxy() {
-            return MoreSuggestionsView.this;
-        }
-
-        @Override
-        public TimerProxy getTimerProxy() {
-            return EMPTY_TIMER_PROXY;
-        }
-    };
-
-    @Override
-    public boolean onTouchEvent(final MotionEvent me) {
-        final int action = me.getAction();
-        final long eventTime = me.getEventTime();
-        final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-        tracker.processMotionEvent(action, x, y, eventTime, mModalPanelKeyEventHandler);
-        return true;
-    }
-
-    @Override
-    public View getContainerView() {
-        return (View)getParent();
     }
 
     @Override

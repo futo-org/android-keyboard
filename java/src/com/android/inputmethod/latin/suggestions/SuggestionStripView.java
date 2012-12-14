@@ -54,7 +54,6 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
-import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.CollectionUtils;
@@ -771,7 +770,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(id, moreKeysPanel);
         final int x = (int)me.getX(index);
         final int y = (int)me.getY(index);
         final int translatedX = moreKeysPanel.translateX(x);
@@ -783,7 +781,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 // Decided to be in the sliding input mode only when the touch point has been moved
                 // upward.
                 mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_SLIDING_MODE;
-                tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
             } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
                 // Decided to be in the modal input mode
                 mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
@@ -792,7 +789,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         // MORE_SUGGESTIONS_IN_SLIDING_MODE
-        tracker.processMotionEvent(action, translatedX, translatedY, eventTime, moreKeysPanel);
+        mMoreSuggestionsView.processMotionEvent(action, translatedX, translatedY, id, eventTime);
         return true;
     }
 
