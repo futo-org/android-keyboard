@@ -149,6 +149,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
+    private PositionalInfoForUserDictPendingAddition
+            mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
     private RichInputConnection mConnection = new RichInputConnection(this);
 
@@ -779,6 +781,19 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mainKeyboardView.setGesturePreviewMode(mCurrentSettings.mGesturePreviewTrailEnabled,
                 mCurrentSettings.mGestureFloatingPreviewTextEnabled);
 
+        // If we have a user dictionary addition in progress, we should check now if we should
+        // replace the previously committed string with the word that has actually been added
+        // to the user dictionary.
+        if (null != mPositionalInfoForUserDictPendingAddition
+                && mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
+                        mConnection, editorInfo, mLastSelectionEnd)) {
+            mPositionalInfoForUserDictPendingAddition = null;
+        }
+        // If tryReplaceWithActualWord returns false, we don't know what word was
+        // added to the user dictionary yet, so we keep the data and defer processing. The word will
+        // be replaced when the user dictionary reports back with the actual word, which ends
+        // up calling #onWordAddedToUserDictionary() in this class.
+
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -1210,9 +1225,31 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
     // pressed.
     @Override
-    public boolean addWordToUserDictionary(final String word) {
+    public void addWordToUserDictionary(final String word) {
+        if (TextUtils.isEmpty(word)) {
+            // Probably never supposed to happen, but just in case.
+            mPositionalInfoForUserDictPendingAddition = null;
+            return;
+        }
+        mPositionalInfoForUserDictPendingAddition =
+                new PositionalInfoForUserDictPendingAddition(
+                        word, mLastSelectionEnd, getCurrentInputEditorInfo());
         mUserDictionary.addWordToUserDictionary(word, 128);
-        return true;
+    }
+
+    public void onWordAddedToUserDictionary(final String newSpelling) {
+        // If word was added but not by us, bail out
+        if (null == mPositionalInfoForUserDictPendingAddition) return;
+        if (mWordComposer.isComposingWord()) {
+            // We are late... give up and return
+            mPositionalInfoForUserDictPendingAddition = null;
+            return;
+        }
+        mPositionalInfoForUserDictPendingAddition.setActualWordBeingAdded(newSpelling);
+        if (mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
+                mConnection, getCurrentInputEditorInfo(), mLastSelectionEnd)) {
+            mPositionalInfoForUserDictPendingAddition = null;
+        }
     }
 
     private static boolean isAlphabet(final int code) {
