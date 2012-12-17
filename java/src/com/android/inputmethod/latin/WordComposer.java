@@ -25,7 +25,7 @@ import java.util.Arrays;
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public final class WordComposer {
-    private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
+    private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
 
     public static final int CAPS_MODE_OFF = 0;
     // 1 is shift bit, 2 is caps bit, 4 is auto bit but this is just a convention as these bits
@@ -36,7 +36,7 @@ public final class WordComposer {
     public static final int CAPS_MODE_AUTO_SHIFT_LOCKED = 0x7;
 
     private int[] mPrimaryKeyCodes;
-    private final InputPointers mInputPointers = new InputPointers(N);
+    private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
     private final StringBuilder mTypedWord;
     private String mAutoCorrection;
     private boolean mIsResumed;
@@ -55,8 +55,8 @@ public final class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
-        mPrimaryKeyCodes = new int[N];
-        mTypedWord = new StringBuilder(N);
+        mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
+        mTypedWord = new StringBuilder(MAX_WORD_LENGTH);
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
@@ -111,7 +111,7 @@ public final class WordComposer {
 
     // TODO: make sure that the index should not exceed MAX_WORD_LENGTH
     public int getCodeAt(int index) {
-        if (index >= BinaryDictionary.MAX_WORD_LENGTH) {
+        if (index >= MAX_WORD_LENGTH) {
             return -1;
         }
         return mPrimaryKeyCodes[index];
@@ -134,7 +134,7 @@ public final class WordComposer {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
-        if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
+        if (newIndex < MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
             // In the batch input mode, the {@code mInputPointers} holds batch input points and
@@ -347,7 +347,7 @@ public final class WordComposer {
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
         final int[] primaryKeyCodes = mPrimaryKeyCodes;
-        mPrimaryKeyCodes = new int[N];
+        mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
                 mInputPointers, mTypedWord.toString(), committedWord, separatorString,
                 prevWord);
