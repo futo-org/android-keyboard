@@ -51,10 +51,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static boolean DEBUG = false;
 
     /**
-     * The maximum length of a word in this dictionary. This is the same value as the binary
-     * dictionary.
+     * The maximum length of a word in this dictionary.
      */
-    protected static final int MAX_WORD_LENGTH = BinaryDictionary.MAX_WORD_LENGTH;
+    protected static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
 
     /**
      * A static map of locks, each of which controls access to a single binary dictionary file. They

@@ -40,7 +40,7 @@ public class ExpandableDictionary extends Dictionary {
     protected static final int BIGRAM_MAX_FREQUENCY = 255;
 
     private Context mContext;
-    private char[] mWordBuilder = new char[BinaryDictionary.MAX_WORD_LENGTH];
+    private char[] mWordBuilder = new char[Constants.Dictionary.MAX_WORD_LENGTH];
     private int mMaxDepth;
     private int mInputLength;
 
@@ -158,7 +158,7 @@ public class ExpandableDictionary extends Dictionary {
         super(dictType);
         mContext = context;
         clearDictionary();
-        mCodes = new int[BinaryDictionary.MAX_WORD_LENGTH][];
+        mCodes = new int[Constants.Dictionary.MAX_WORD_LENGTH][];
     }
 
     public void loadDictionary() {
@@ -195,11 +195,11 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     public int getMaxWordLength() {
-        return BinaryDictionary.MAX_WORD_LENGTH;
+        return Constants.Dictionary.MAX_WORD_LENGTH;
     }
 
     public void addWord(final String word, final String shortcutTarget, final int frequency) {
-        if (word.length() >= BinaryDictionary.MAX_WORD_LENGTH) {
+        if (word.length() >= Constants.Dictionary.MAX_WORD_LENGTH) {
             return;
         }
         addWordRec(mRoots, word, 0, shortcutTarget, frequency, null);
@@ -254,7 +254,7 @@ public class ExpandableDictionary extends Dictionary {
             final String prevWord, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
         if (composer.size() > 1) {
-            if (composer.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
+            if (composer.size() >= Constants.Dictionary.MAX_WORD_LENGTH) {
                 return null;
             }
             final ArrayList<SuggestedWordInfo> suggestions =
@@ -620,7 +620,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     // Local to reverseLookUp, but do not allocate each time.
-    private final char[] mLookedUpString = new char[BinaryDictionary.MAX_WORD_LENGTH];
+    private final char[] mLookedUpString = new char[Constants.Dictionary.MAX_WORD_LENGTH];
 
     /**
      * reverseLookUp retrieves the full word given a list of terminal nodes and adds those words
@@ -635,7 +635,7 @@ public class ExpandableDictionary extends Dictionary {
         for (NextWord nextWord : terminalNodes) {
             node = nextWord.getWordNode();
             freq = nextWord.getFrequency();
-            int index = BinaryDictionary.MAX_WORD_LENGTH;
+            int index = Constants.Dictionary.MAX_WORD_LENGTH;
             do {
                 --index;
                 mLookedUpString[index] = node.mCode;
@@ -647,7 +647,7 @@ public class ExpandableDictionary extends Dictionary {
             // to ignore the word in this case.
             if (freq >= 0 && node == null) {
                 suggestions.add(new SuggestedWordInfo(new String(mLookedUpString, index,
-                        BinaryDictionary.MAX_WORD_LENGTH - index),
+                        Constants.Dictionary.MAX_WORD_LENGTH - index),
                         freq, SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }

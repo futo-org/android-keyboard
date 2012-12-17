@@ -41,9 +41,9 @@ public final class BinaryDictionary extends Dictionary {
      * It is necessary to keep it at this value because some languages e.g. German have
      * really long words.
      */
-    public static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
-    public static final int MAX_WORDS = 18;
-    public static final int MAX_SPACES = 16;
+    private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    private static final int MAX_WORDS = 18;
+    private static final int MAX_SPACES = 16;
 
     private static final int MAX_PREDICTIONS = 60;
     private static final int MAX_RESULTS = Math.max(MAX_PREDICTIONS, MAX_WORDS);

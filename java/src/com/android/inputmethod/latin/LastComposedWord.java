@@ -45,7 +45,8 @@ public final class LastComposedWord {
     public final String mCommittedWord;
     public final String mSeparatorString;
     public final String mPrevWord;
-    public final InputPointers mInputPointers = new InputPointers(BinaryDictionary.MAX_WORD_LENGTH);
+    public final InputPointers mInputPointers =
+            new InputPointers(Constants.Dictionary.MAX_WORD_LENGTH);
 
     private boolean mActive;
 
