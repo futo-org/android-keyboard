@@ -2020,7 +2020,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // old suggestions. Also, if we are showing the "add to dictionary" hint, we need to
         // revert to suggestions - although it is unclear how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
-                || !suggestedWords.mTypedWordValid
+                || suggestedWords.mTypedWordValid
                 || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
