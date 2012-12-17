@@ -1462,7 +1462,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onStartBatchInput() {
-        BatchInputUpdater.getInstance().onStartBatchInput();
+        BatchInputUpdater.getInstance().onStartBatchInput(this);
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             if (ProductionFlag.IS_INTERNAL) {
@@ -1528,34 +1528,32 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         public boolean handleMessage(final Message msg) {
             switch (msg.what) {
             case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                updateBatchInput((InputPointers)msg.obj, mLatinIme);
+                updateBatchInput((InputPointers)msg.obj);
                 break;
             }
             return true;
         }
 
         // Run in the UI thread.
-        public synchronized void onStartBatchInput() {
+        public synchronized void onStartBatchInput(final LatinIME latinIme) {
             mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+            mLatinIme = latinIme;
             mInBatchInput = true;
         }
 
         // Run in the Handler thread.
-        private synchronized void updateBatchInput(final InputPointers batchPointers,
-                final LatinIME latinIme) {
+        private synchronized void updateBatchInput(final InputPointers batchPointers) {
             if (!mInBatchInput) {
                 // Batch input has ended or canceled while the message was being delivered.
                 return;
             }
-            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(
-                    batchPointers, latinIme);
-            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
+            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                     suggestedWords, false /* dismissGestureFloatingPreviewText */);
         }
 
         // Run in the UI thread.
-        public void onUpdateBatchInput(final InputPointers batchPointers, final LatinIME latinIme) {
-            mLatinIme = latinIme;
+        public void onUpdateBatchInput(final InputPointers batchPointers) {
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
                 return;
             }
@@ -1564,29 +1562,34 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
-        public synchronized void onCancelBatchInput(final LatinIME latinIme) {
+        public synchronized void onCancelBatchInput() {
             mInBatchInput = false;
-            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                     SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
         }
 
         // Run in the UI thread.
-        public synchronized SuggestedWords onEndBatchInput(final InputPointers batchPointers,
-                final LatinIME latinIme) {
+        public synchronized SuggestedWords onEndBatchInput(final InputPointers batchPointers) {
             mInBatchInput = false;
-            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(
-                    batchPointers, latinIme);
-            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
+            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                     suggestedWords, true /* dismissGestureFloatingPreviewText */);
             return suggestedWords;
         }
 
         // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
         // be synchronized.
-        private static SuggestedWords getSuggestedWordsGestureLocked(
-                final InputPointers batchPointers, final LatinIME latinIme) {
-            latinIme.mWordComposer.setBatchInputPointers(batchPointers);
-            return latinIme.getSuggestedWords(Suggest.SESSION_GESTURE);
+        private SuggestedWords getSuggestedWordsGestureLocked(final InputPointers batchPointers) {
+            mLatinIme.mWordComposer.setBatchInputPointers(batchPointers);
+            final SuggestedWords suggestedWords =
+                    mLatinIme.getSuggestedWords(Suggest.SESSION_GESTURE);
+            final int suggestionCount = suggestedWords.size();
+            if (suggestionCount <= 1) {
+                final String mostProbableSuggestion = (suggestionCount == 0) ? null
+                        : suggestedWords.getWord(0);
+                return mLatinIme.getOlderSuggestions(mostProbableSuggestion);
+            }
+            return suggestedWords;
         }
     }
 
@@ -1605,13 +1608,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        BatchInputUpdater.getInstance().onUpdateBatchInput(batchPointers, this);
+        BatchInputUpdater.getInstance().onUpdateBatchInput(batchPointers);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
         final SuggestedWords suggestedWords = BatchInputUpdater.getInstance().onEndBatchInput(
-                batchPointers, this);
+                batchPointers);
         final String batchInputText = suggestedWords.isEmpty()
                 ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {
@@ -1658,7 +1661,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onCancelBatchInput() {
-        BatchInputUpdater.getInstance().onCancelBatchInput(this);
+        BatchInputUpdater.getInstance().onCancelBatchInput();
     }
 
     private void handleBackspace(final int spaceState) {
@@ -2024,20 +2027,26 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
-            SuggestedWords previousSuggestions = mSuggestionStripView.getSuggestions();
-            if (previousSuggestions == mCurrentSettings.mSuggestPuncList) {
-                previousSuggestions = SuggestedWords.EMPTY;
-            }
-            final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                    SuggestedWords.getTypedWordAndPreviousSuggestions(
-                            typedWord, previousSuggestions);
-            return new SuggestedWords(typedWordAndPreviousSuggestions,
-                            false /* typedWordValid */,
-                            false /* hasAutoCorrectionCandidate */,
-                            false /* isPunctuationSuggestions */,
-                            true /* isObsoleteSuggestions */,
-                            false /* isPrediction */);
+            return getOlderSuggestions(typedWord);
         }
+    }
+
+    private SuggestedWords getOlderSuggestions(final String typedWord) {
+        SuggestedWords previousSuggestions = mSuggestionStripView.getSuggestions();
+        if (previousSuggestions == mCurrentSettings.mSuggestPuncList) {
+            previousSuggestions = SuggestedWords.EMPTY;
+        }
+        if (typedWord == null) {
+            return previousSuggestions;
+        }
+        final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
+                SuggestedWords.getTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+        return new SuggestedWords(typedWordAndPreviousSuggestions,
+                false /* typedWordValid */,
+                false /* hasAutoCorrectionCandidate */,
+                false /* isPunctuationSuggestions */,
+                true /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
     private void showSuggestionStrip(final SuggestedWords suggestedWords, final String typedWord) {
