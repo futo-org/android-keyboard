@@ -16,11 +16,10 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.SuggestionSpanUtils;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.text.style.SuggestionSpan;
 import android.util.Log;
 
 public final class SuggestionSpanPickedNotificationReceiver extends BroadcastReceiver {
@@ -30,12 +29,12 @@ public final class SuggestionSpanPickedNotificationReceiver extends BroadcastRec
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (SuggestionSpanUtils.ACTION_SUGGESTION_PICKED.equals(intent.getAction())) {
+        if (SuggestionSpan.ACTION_SUGGESTION_PICKED.equals(intent.getAction())) {
             if (DBG) {
                 final String before = intent.getStringExtra(
-                        SuggestionSpanUtils.SUGGESTION_SPAN_PICKED_BEFORE);
+                        SuggestionSpan.SUGGESTION_SPAN_PICKED_BEFORE);
                 final String after = intent.getStringExtra(
-                        SuggestionSpanUtils.SUGGESTION_SPAN_PICKED_AFTER);
+                        SuggestionSpan.SUGGESTION_SPAN_PICKED_AFTER);
                 Log.d(TAG, "Received notification picked: " + before + "," + after);
             }
         }
