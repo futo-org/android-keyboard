@@ -26,6 +26,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -207,14 +208,11 @@ public class ResearchLog {
     private static final String UPTIME_KEY = "_ut";
     private static final String EVENT_TYPE_KEY = "_ty";
 
-    void outputEvent(final String[] keys, final Object[] values, final long time) {
+    void outputEvent(final LogStatement logStatement, final Object[] values, final long time) {
         // Not thread safe.
-        if (keys.length == 0) {
-            return;
-        }
         if (DEBUG) {
-            if (keys.length != values.length + 1) {
-                Log.d(TAG, "Key and Value list sizes do not match. " + keys[0]);
+            if (logStatement.mKeys.length != values.length) {
+                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.mName);
             }
         }
         try {
@@ -226,10 +224,11 @@ public class ResearchLog {
             mJsonWriter.beginObject();
             mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
             mJsonWriter.name(UPTIME_KEY).value(time);
-            mJsonWriter.name(EVENT_TYPE_KEY).value(keys[0]);
+            mJsonWriter.name(EVENT_TYPE_KEY).value(logStatement.mName);
+            final String[] keys = logStatement.mKeys;
             final int length = values.length;
             for (int i = 0; i < length; i++) {
-                mJsonWriter.name(keys[i + 1]);
+                mJsonWriter.name(keys[i]);
                 Object value = values[i];
                 if (value instanceof CharSequence) {
                     mJsonWriter.value(value.toString());

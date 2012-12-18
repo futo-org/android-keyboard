@@ -16,8 +16,9 @@
 
 package com.android.inputmethod.research;
 
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,48 +36,54 @@ import java.util.List;
  * been published recently, or whether the LogUnit contains numbers, etc.
  */
 /* package */ class LogUnit {
-    private final List<String[]> mKeysList;
-    private final List<Object[]> mValuesList;
+    private final ArrayList<LogStatement> mLogStatementList;
+    private final ArrayList<Object[]> mValuesList;
     // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
     // mTimeList.
-    private final List<Long> mTimeList;
-    private final List<Boolean> mIsPotentiallyPrivate;
+    private final ArrayList<Long> mTimeList;
     private String mWord;
     private boolean mMayContainDigit;
+    private boolean mIsPartOfMegaword;
 
     public LogUnit() {
-        mKeysList = CollectionUtils.newArrayList();
-        mValuesList = CollectionUtils.newArrayList();
-        mTimeList = CollectionUtils.newArrayList();
-        mIsPotentiallyPrivate = CollectionUtils.newArrayList();
+        mLogStatementList = new ArrayList<LogStatement>();
+        mValuesList = new ArrayList<Object[]>();
+        mTimeList = new ArrayList<Long>();
+        mIsPartOfMegaword = false;
     }
 
-    private LogUnit(final List<String[]> keysList, final List<Object[]> valuesList,
-            final List<Long> timeList, final List<Boolean> isPotentiallyPrivate) {
-        mKeysList = keysList;
+    private LogUnit(final ArrayList<LogStatement> logStatementList,
+            final ArrayList<Object[]> valuesList,
+            final ArrayList<Long> timeList,
+            final boolean isPartOfMegaword) {
+        mLogStatementList = logStatementList;
         mValuesList = valuesList;
         mTimeList = timeList;
-        mIsPotentiallyPrivate = isPotentiallyPrivate;
+        mIsPartOfMegaword = isPartOfMegaword;
     }
 
     /**
      * Adds a new log statement.  The time parameter in successive calls to this method must be
      * monotonically increasing, or splitByTime() will not work.
      */
-    public void addLogStatement(final String[] keys, final Object[] values,
-            final long time, final boolean isPotentiallyPrivate) {
-        mKeysList.add(keys);
+    public void addLogStatement(final LogStatement logStatement, final Object[] values,
+            final long time) {
+        mLogStatementList.add(logStatement);
         mValuesList.add(values);
         mTimeList.add(time);
-        mIsPotentiallyPrivate.add(isPotentiallyPrivate);
     }
 
     public void publishTo(final ResearchLog researchLog, final boolean isIncludingPrivateData) {
-        final int size = mKeysList.size();
+        final int size = mLogStatementList.size();
         for (int i = 0; i < size; i++) {
-            if (!mIsPotentiallyPrivate.get(i) || isIncludingPrivateData) {
-                researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i), mTimeList.get(i));
+            final LogStatement logStatement = mLogStatementList.get(i);
+            if (!isIncludingPrivateData && logStatement.mIsPotentiallyPrivate) {
+                continue;
             }
+            if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
+                continue;
+            }
+            researchLog.outputEvent(mLogStatementList.get(i), mValuesList.get(i), mTimeList.get(i));
         }
     }
 
@@ -101,7 +108,7 @@ import java.util.List;
     }
 
     public boolean isEmpty() {
-        return mKeysList.isEmpty();
+        return mLogStatementList.isEmpty();
     }
 
     /**
@@ -112,14 +119,27 @@ import java.util.List;
         // Assume that mTimeList is in sorted order.
         final int length = mTimeList.size();
         for (int index = 0; index < length; index++) {
-            if (mTimeList.get(index) >= maxTime) {
+            if (mTimeList.get(index) > maxTime) {
+                final List<LogStatement> laterLogStatements =
+                        mLogStatementList.subList(index, length);
+                final List<Object[]> laterValues = mValuesList.subList(index, length);
+                final List<Long> laterTimes = mTimeList.subList(index, length);
+
+                // Create the LogUnit containing the later logStatements and associated data.
                 final LogUnit newLogUnit = new LogUnit(
-                        mKeysList.subList(index, length),
-                        mValuesList.subList(index, length),
-                        mTimeList.subList(index, length),
-                        mIsPotentiallyPrivate.subList(index, length));
+                        new ArrayList<LogStatement>(laterLogStatements),
+                        new ArrayList<Object[]>(laterValues),
+                        new ArrayList<Long>(laterTimes),
+                        true /* isPartOfMegaword */);
                 newLogUnit.mWord = null;
                 newLogUnit.mMayContainDigit = mMayContainDigit;
+
+                // Purge the logStatements and associated data from this LogUnit.
+                laterLogStatements.clear();
+                laterValues.clear();
+                laterTimes.clear();
+                mIsPartOfMegaword = true;
+
                 return newLogUnit;
             }
         }
