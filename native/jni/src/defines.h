@@ -23,6 +23,9 @@
 #define AK_FORCE_INLINE inline
 #endif // __GNUC__
 
+// This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
+#define MAX_WORD_LENGTH_INTERNAL 48
+
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <android/log.h>
 #ifndef LOG_TAG
@@ -37,20 +40,33 @@
 #define INTS_TO_CHARS(input, length, output) do { \
         intArrayToCharArray(input, length, output); } while (0)
 
+// TODO: Support full UTF-8 conversion
+AK_FORCE_INLINE static int intArrayToCharArray(const int *source, const int sourceSize,
+        char *dest) {
+    int si = 0;
+    int di = 0;
+    while (si < sourceSize && di < MAX_WORD_LENGTH_INTERNAL - 1 && 0 != source[si]) {
+        const int codePoint = source[si++];
+        if (codePoint < 0x7F) {
+            dest[di++] = codePoint;
+        } else if (codePoint < 0x7FF) {
+            dest[di++] = 0xC0 + (codePoint >> 6);
+            dest[di++] = 0x80 + (codePoint & 0x3F);
+        } else if (codePoint < 0xFFFF) {
+            dest[di++] = 0xE0 + (codePoint >> 12);
+            dest[di++] = 0x80 + ((codePoint & 0xFC0) >> 6);
+            dest[di++] = 0x80 + (codePoint & 0x3F);
+        }
+    }
+    dest[di] = 0;
+    return di;
+}
+
 static inline void dumpWordInfo(const int *word, const int length, const int rank,
         const int frequency) {
     static char charBuf[50];
-    int i = 0;
-    for (; i < length; ++i) {
-        const int c = word[i];
-        if (c == 0) {
-            break;
-        }
-        // static_cast only for debugging
-        charBuf[i] = static_cast<char>(c);
-    }
-    charBuf[i] = 0;
-    if (i > 1) {
+    const int N = intArrayToCharArray(word, length, charBuf);
+    if (N > 1) {
         AKLOGI("%2d [ %s ] (%d)", rank, charBuf, frequency);
     }
 }
@@ -66,32 +82,10 @@ static inline void dumpResult(const int *outWords, const int *frequencies, const
 
 static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
     static char charBuf[50];
-    int i = 0;
-    for (; i < length; ++i) {
-        const int c = word[i];
-        if (c == 0) {
-            break;
-        }
-        // static_cast only for debugging
-        charBuf[i] = static_cast<char>(c);
-    }
-    charBuf[i] = 0;
-    if (i > 1) {
+    const int N = intArrayToCharArray(word, length, charBuf);
+    if (N > 1) {
         AKLOGI("[ %s ]", charBuf);
     }
-}
-
-static inline void intArrayToCharArray(const int *input, const int length, char *output) {
-    int i = 0;
-    for (; i < length; ++i) {
-        const int c = input[i];
-        if (c == 0) {
-            break;
-        }
-        // static_cast only for debugging
-        output[i] = static_cast<char>(c);
-    }
-    output[i] = 0;
 }
 
 #ifndef __ANDROID__
@@ -319,10 +313,6 @@ static inline void prof_out(void) {
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
 #define MAX_FREQ 255
 #define MAX_BIGRAM_FREQ 15
-
-// This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
-// This is only used for the size of array. Not to be used in c functions.
-#define MAX_WORD_LENGTH_INTERNAL 48
 
 // This must be the same as ProximityInfo#MAX_PROXIMITY_CHARS_SIZE, currently it's 16.
 #define MAX_PROXIMITY_CHARS_SIZE_INTERNAL 16

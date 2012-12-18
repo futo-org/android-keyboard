@@ -72,6 +72,5 @@ inline static bool isSkippableCodePoint(const int codePoint) {
     // TODO: Do not hardcode here
     return codePoint == KEYCODE_SINGLE_QUOTE || codePoint == KEYCODE_HYPHEN_MINUS;
 }
-
 } // namespace latinime
 #endif // LATINIME_CHAR_UTILS_H
