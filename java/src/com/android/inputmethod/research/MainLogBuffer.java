@@ -119,6 +119,10 @@ public class MainLogBuffer extends LogBuffer {
             } else {
                 // Words not in the dictionary are a privacy threat.
                 if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
+                    if (DEBUG) {
+                        Log.d(TAG, "NOT SAFE!: hasLetters: " + ResearchLogger.hasLetters(word)
+                                + ", isValid: " + (dictionary.isValidWord(word)));
+                    }
                     return false;
                 }
             }
