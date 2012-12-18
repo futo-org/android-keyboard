@@ -62,12 +62,16 @@ import java.util.List;
         mIsPartOfMegaword = isPartOfMegaword;
     }
 
+    private static final Object[] NULL_VALUES = new Object[0];
     /**
      * Adds a new log statement.  The time parameter in successive calls to this method must be
      * monotonically increasing, or splitByTime() will not work.
      */
-    public void addLogStatement(final LogStatement logStatement, final Object[] values,
-            final long time) {
+    public void addLogStatement(final LogStatement logStatement, final long time,
+            Object... values) {
+        if (values == null) {
+            values = NULL_VALUES;
+        }
         mLogStatementList.add(logStatement);
         mValuesList.add(values);
         mTimeList.add(time);
