@@ -118,7 +118,7 @@ public class MainLogBuffer extends LogBuffer {
                 }
             } else {
                 // Words not in the dictionary are a privacy threat.
-                if (!(dictionary.isValidWord(word))) {
+                if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
                     return false;
                 }
             }

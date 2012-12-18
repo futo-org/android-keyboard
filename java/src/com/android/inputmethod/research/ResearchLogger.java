@@ -47,7 +47,6 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
@@ -88,7 +87,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final boolean OUTPUT_ENTIRE_BUFFER = false;  // true may disclose private info
     public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
-    private static final int OUTPUT_FORMAT_VERSION = 1;
+    private static final int OUTPUT_FORMAT_VERSION = 5;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     private static final String PREF_RESEARCH_HAS_SEEN_SPLASH = "pref_research_has_seen_splash";
     /* package */ static final String FILENAME_PREFIX = "researchLog";
@@ -377,7 +376,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.d(TAG, "stop called");
         }
         logStatistics();
-        commitCurrentLogUnit(SystemClock.uptimeMillis());
+        commitCurrentLogUnit();
 
         if (mMainLogBuffer != null) {
             publishLogBuffer(mMainLogBuffer, mMainResearchLog, false /* isIncludingPrivateData */);
@@ -522,15 +521,46 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
     */
 
-    private static final String[] EVENTKEYS_FEEDBACK = {
-        "UserTimestamp", "contents"
-    };
+    static class LogStatement {
+        final String mName;
+
+        // mIsPotentiallyPrivate indicates that event contains potentially private information.  If
+        // the word that this event is a part of is determined to be privacy-sensitive, then this
+        // event should not be included in the output log.  The system waits to output until the
+        // containing word is known.
+        final boolean mIsPotentiallyPrivate;
+
+        // mIsPotentiallyRevealing indicates that this statement may disclose details about other
+        // words typed in other LogUnits.  This can happen if the user is not inserting spaces, and
+        // data from Suggestions and/or Composing text reveals the entire "megaword".  For example,
+        // say the user is typing "for the win", and the system wants to record the bigram "the
+        // win".  If the user types "forthe", omitting the space, the system will give "for the" as
+        // a suggestion.  If the user accepts the autocorrection, the suggestion for "for the" is
+        // included in the log for the word "the", disclosing that the previous word had been "for".
+        // For now, we simply do not include this data when logging part of a "megaword".
+        final boolean mIsPotentiallyRevealing;
+
+        // mKeys stores the names that are the attributes in the output json objects
+        final String[] mKeys;
+        private static final String[] NULL_KEYS = new String[0];
+
+        LogStatement(final String name, final boolean isPotentiallyPrivate,
+                final boolean isPotentiallyRevealing, final String... keys) {
+            mName = name;
+            mIsPotentiallyPrivate = isPotentiallyPrivate;
+            mIsPotentiallyRevealing = isPotentiallyRevealing;
+            mKeys = (keys == null) ? NULL_KEYS : keys;
+        }
+    }
+
+    private static final LogStatement LOGSTATEMENT_FEEDBACK =
+            new LogStatement("UserTimestamp", false, false, "contents");
     public void sendFeedback(final String feedbackContents, final boolean includeHistory) {
         if (mFeedbackLogBuffer == null) {
             return;
         }
         if (includeHistory) {
-            commitCurrentLogUnit(SystemClock.uptimeMillis());
+            commitCurrentLogUnit();
         } else {
             mFeedbackLogBuffer.clear();
         }
@@ -538,8 +568,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             feedbackContents
         };
-        feedbackLogUnit.addLogStatement(EVENTKEYS_FEEDBACK, values,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+        feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, values, SystemClock.uptimeMillis());
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
         mFeedbackLog.close(new Runnable() {
@@ -624,25 +653,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private static final Object[] EVENTKEYS_NULLVALUES = {};
+    private static final Object[] NULL_VALUES = {};
 
     /**
      * Buffer a research log event, flagging it as privacy-sensitive.
-     *
-     * This event contains potentially private information.  If the word that this event is a part
-     * of is determined to be privacy-sensitive, then this event should not be included in the
-     * output log.  The system waits to output until the containing word is known.
-     *
-     * @param keys an array containing a descriptive name for the event, followed by the keys
-     * @param values an array of values, either a String or Number.  length should be one
-     * less than the keys array
      */
-    private synchronized void enqueuePotentiallyPrivateEvent(final String[] keys,
-            final Object[] values) {
-        assert values.length + 1 == keys.length;
+    private synchronized void enqueueEvent(LogStatement logStatement, Object... values) {
+        if (values == null) {
+            values = NULL_VALUES;
+        }
+        assert values.length == logStatement.mKeys.length;
         if (isAllowedToLog()) {
             final long time = SystemClock.uptimeMillis();
-            mCurrentLogUnit.addLogStatement(keys, values, time, true /* isPotentiallyPrivate */);
+            mCurrentLogUnit.addLogStatement(logStatement, values, time);
         }
     }
 
@@ -650,33 +673,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.setMayContainDigit();
     }
 
-    /**
-     * Buffer a research log event, flaggint it as not privacy-sensitive.
-     *
-     * This event contains no potentially private information.  Even if the word that this event
-     * is privacy-sensitive, this event can still safely be sent to the output log.  The system
-     * waits until the containing word is known so that this event can be written in the proper
-     * temporal order with other events that may be privacy sensitive.
-     *
-     * @param keys an array containing a descriptive name for the event, followed by the keys
-     * @param values an array of values, either a String or Number.  length should be one
-     * less than the keys array
-     */
-    private synchronized void enqueueEvent(final String[] keys, final Object[] values) {
-        assert values.length + 1 == keys.length;
-        if (isAllowedToLog()) {
-            final long time = SystemClock.uptimeMillis();
-            mCurrentLogUnit.addLogStatement(keys, values, time, false /* isPotentiallyPrivate */);
-        }
-    }
-
-    /* package for test */ void commitCurrentLogUnit(final long maxTime) {
+    /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
             Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasWord() ?
                     ": " + mCurrentLogUnit.getWord() : ""));
         }
         if (!mCurrentLogUnit.isEmpty()) {
-            final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
             if (mMainLogBuffer != null) {
                 mMainLogBuffer.shiftIn(mCurrentLogUnit);
                 if (mMainLogBuffer.isSafeToLog() && mMainResearchLog != null) {
@@ -688,37 +690,38 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mFeedbackLogBuffer != null) {
                 mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
             }
-            mCurrentLogUnit = newLogUnit;
-            Log.d(TAG, "commitCurrentLogUnit");
+            mCurrentLogUnit = new LogUnit();
         }
     }
 
-    private static final String[] EVENTKEYS_LOG_SEGMENT_START = {
-        "logSegmentStart", "isIncludingPrivateData"
-    };
-    private static final String[] EVENTKEYS_LOG_SEGMENT_END = {
-        "logSegmentEnd"
-    };
+    private static final LogStatement LOGSTATEMENT_LOG_SEGMENT_OPENING =
+            new LogStatement("logSegmentStart", false, false, "isIncludingPrivateData");
+    private static final LogStatement LOGSTATEMENT_LOG_SEGMENT_CLOSING =
+            new LogStatement("logSegmentEnd", false, false);
     /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
             final ResearchLog researchLog, final boolean isIncludingPrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
         final Object[] values = {
             isIncludingPrivateData
         };
-        openingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_START, values,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+        openingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_OPENING, values,
+                SystemClock.uptimeMillis());
         researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
         LogUnit logUnit;
         while ((logUnit = logBuffer.shiftOut()) != null) {
+            if (DEBUG) {
+                Log.d(TAG, "publishLogBuffer: " + (logUnit.hasWord() ? logUnit.getWord()
+                        : "<wordless>"));
+            }
             researchLog.publish(logUnit, isIncludingPrivateData);
         }
         final LogUnit closingLogUnit = new LogUnit();
-        closingLogUnit.addLogStatement(EVENTKEYS_LOG_SEGMENT_END, EVENTKEYS_NULLVALUES,
-                SystemClock.uptimeMillis(), false /* isPotentiallyPrivate */);
+        closingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_CLOSING, NULL_VALUES,
+                SystemClock.uptimeMillis());
         researchLog.publish(closingLogUnit, true /* isIncludingPrivateData */);
     }
 
-    private boolean hasLetters(final String word) {
+    public static boolean hasLetters(final String word) {
         final int length = word.length();
         for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
             final int codePoint = word.codePointAt(i);
@@ -729,13 +732,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return false;
     }
 
-    private void onWordComplete(final String word, final long maxTime) {
+    private static final LogStatement LOGSTATEMENT_COMMIT_AUTOSPACE =
+            new LogStatement("CommitAutospace", true, false);
+    private void onWordComplete(final String word, final long maxTime, final boolean isPartial) {
         Log.d(TAG, "onWordComplete: " + word);
         if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
             mStatistics.recordWordEntered();
         }
-        commitCurrentLogUnit(maxTime);
+        final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
+        enqueueCommitText(word);
+        if (isPartial) {
+            enqueueEvent(LOGSTATEMENT_COMMIT_AUTOSPACE, NULL_VALUES);
+            enqueueCommitText(" ");
+        }
+        commitCurrentLogUnit();
+        mCurrentLogUnit = newLogUnit;
     }
 
     private static int scrubDigitFromCodePoint(int codePoint) {
@@ -788,10 +800,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return WORD_REPLACEMENT_STRING;
     }
 
-    private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
-        "LatinIMEOnStartInputViewInternal", "uuid", "packageName", "inputType", "imeOptions",
-        "fieldId", "display", "model", "prefs", "versionCode", "versionName", "outputFormatVersion"
-    };
+    private static final LogStatement LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL =
+            new LogStatement("LatinImeOnStartInputViewInternal", false, false, "uuid",
+                    "packageName", "inputType", "imeOptions", "fieldId", "display", "model",
+                    "prefs", "versionCode", "versionName", "outputFormatVersion");
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
@@ -807,14 +819,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         0);
                 final Integer versionCode = packageInfo.versionCode;
                 final String versionName = packageInfo.versionName;
-                final Object[] values = {
+                researchLogger.enqueueEvent(LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL,
                         researchLogger.mUUIDString, editorInfo.packageName,
                         Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
-                        OUTPUT_FORMAT_VERSION
-                };
-                researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
+                        OUTPUT_FORMAT_VERSION);
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -825,23 +835,18 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         stop();
     }
 
-    private static final String[] EVENTKEYS_PREFS_CHANGED = {
-        "PrefsChanged", "prefs"
-    };
+    private static final LogStatement LOGSTATEMENT_PREFS_CHANGED =
+            new LogStatement("PrefsChanged", false, false, "prefs");
     public static void prefsChanged(final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
-        final Object[] values = {
-            prefs
-        };
-        researchLogger.enqueueEvent(EVENTKEYS_PREFS_CHANGED, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_PREFS_CHANGED, prefs);
     }
 
     // Regular logging methods
 
-    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
-        "MainKeyboardViewProcessMotionEvent", "action", "eventTime", "id", "x", "y", "size",
-        "pressure"
-    };
+    private static final LogStatement LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT =
+            new LogStatement("MainKeyboardViewProcessMotionEvent", true, false, "action",
+                    "eventTime", "id", "x", "y", "size", "pressure");
     public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
             final long eventTime, final int index, final int id, final int x, final int y) {
         if (me != null) {
@@ -858,40 +863,32 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final float size = me.getSize(index);
             final float pressure = me.getPressure(index);
-            final Object[] values = {
-                actionString, eventTime, id, x, y, size, pressure
-            };
-            getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT, values);
+            getInstance().enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
+                    actionString, eventTime, id, x, y, size, pressure);
         }
     }
 
-    private static final String[] EVENTKEYS_LATINIME_ONCODEINPUT = {
-        "LatinIMEOnCodeInput", "code", "x", "y"
-    };
+    private static final LogStatement LOGSTATEMENT_LATIN_IME_ON_CODE_INPUT =
+            new LogStatement("LatinImeOnCodeInput", true, false, "code", "x", "y");
     public static void latinIME_onCodeInput(final int code, final int x, final int y) {
         final long time = SystemClock.uptimeMillis();
         final ResearchLogger researchLogger = getInstance();
-        final Object[] values = {
-            Constants.printableCode(scrubDigitFromCodePoint(code)), x, y
-        };
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATIN_IME_ON_CODE_INPUT,
+                Constants.printableCode(scrubDigitFromCodePoint(code)), x, y);
         if (Character.isDigit(code)) {
             researchLogger.setCurrentLogUnitContainsDigitFlag();
         }
         researchLogger.mStatistics.recordChar(code, time);
     }
-
-    private static final String[] EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS = {
-        "LatinIMEOnDisplayCompletions", "applicationSpecifiedCompletions"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_ONDISPLAYCOMPLETIONS =
+            new LogStatement("LatinIMEOnDisplayCompletions", true, true,
+                    "applicationSpecifiedCompletions");
     public static void latinIME_onDisplayCompletions(
             final CompletionInfo[] applicationSpecifiedCompletions) {
-        final Object[] values = {
-            applicationSpecifiedCompletions
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS,
-                values);
+        // Note; passing an array as a single element in a vararg list.  Must create a new
+        // dummy array around it or it will get expanded.
+        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_ONDISPLAYCOMPLETIONS,
+                new Object[] { applicationSpecifiedCompletions });
     }
 
     public static boolean getAndClearLatinIMEExpectingUpdateSelection() {
@@ -900,13 +897,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return returnValue;
     }
 
-    private static final String[] EVENTKEYS_LATINIME_ONWINDOWHIDDEN = {
-        "LatinIMEOnWindowHidden", "isTextTruncated", "text"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_ONWINDOWHIDDEN =
+            new LogStatement("LatinIMEOnWindowHidden", false, false, "isTextTruncated", "text");
     public static void latinIME_onWindowHidden(final int savedSelectionStart,
             final int savedSelectionEnd, final InputConnection ic) {
         if (ic != null) {
-            final Object[] values = new Object[2];
+            final boolean isTextTruncated;
+            final String text;
             if (OUTPUT_ENTIRE_BUFFER) {
                 // Capture the TextView contents.  This will trigger onUpdateSelection(), so we
                 // set sLatinIMEExpectingUpdateSelection so that when onUpdateSelection() is called,
@@ -921,8 +918,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 ic.endBatchEdit();
                 sLatinIMEExpectingUpdateSelection = true;
                 if (TextUtils.isEmpty(charSequence)) {
-                    values[0] = false;
-                    values[1] = "";
+                    isTextTruncated = false;
+                    text = "";
                 } else {
                     if (charSequence.length() > MAX_INPUTVIEW_LENGTH_TO_CAPTURE) {
                         int length = MAX_INPUTVIEW_LENGTH_TO_CAPTURE;
@@ -933,29 +930,33 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         }
                         final CharSequence truncatedCharSequence = charSequence.subSequence(0,
                                 length);
-                        values[0] = true;
-                        values[1] = truncatedCharSequence.toString();
+                        isTextTruncated = true;
+                        text = truncatedCharSequence.toString();
                     } else {
-                        values[0] = false;
-                        values[1] = charSequence.toString();
+                        isTextTruncated = false;
+                        text = charSequence.toString();
                     }
                 }
             } else {
-                values[0] = true;
-                values[1] = "";
+                isTextTruncated = true;
+                text = "";
             }
             final ResearchLogger researchLogger = getInstance();
-            researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.commitCurrentLogUnit(SystemClock.uptimeMillis());
+            // Assume that OUTPUT_ENTIRE_BUFFER is only true when we don't care about privacy (e.g.
+            // during a live user test), so the normal isPotentiallyPrivate and
+            // isPotentiallyRevealing flags do not apply
+            researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONWINDOWHIDDEN, isTextTruncated,
+                    text);
+            researchLogger.commitCurrentLogUnit();
             getInstance().stop();
         }
     }
 
-    private static final String[] EVENTKEYS_LATINIME_ONUPDATESELECTION = {
-        "LatinIMEOnUpdateSelection", "lastSelectionStart", "lastSelectionEnd", "oldSelStart",
-        "oldSelEnd", "newSelStart", "newSelEnd", "composingSpanStart", "composingSpanEnd",
-        "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_ONUPDATESELECTION =
+            new LogStatement("LatinIMEOnUpdateSelection", true, false, "lastSelectionStart",
+                    "lastSelectionEnd", "oldSelStart", "oldSelEnd", "newSelStart", "newSelEnd",
+                    "composingSpanStart", "composingSpanEnd", "expectingUpdateSelection",
+                    "expectingUpdateSelectionFromLogger", "context");
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
@@ -971,350 +972,253 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         final ResearchLogger researchLogger = getInstance();
         final String scrubbedWord = researchLogger.scrubWord(word);
-        final Object[] values = {
-            lastSelectionStart, lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart,
-            newSelEnd, composingSpanStart, composingSpanEnd, expectingUpdateSelection,
-            expectingUpdateSelectionFromLogger, scrubbedWord
-        };
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONUPDATESELECTION, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONUPDATESELECTION, lastSelectionStart,
+                lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+                composingSpanStart, composingSpanEnd, expectingUpdateSelection,
+                expectingUpdateSelectionFromLogger, scrubbedWord);
     }
 
-    private static final String[] EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY = {
-        "LatinIMEPickSuggestionManually", "replacedWord", "index", "suggestion", "x", "y"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY =
+            new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
+                    "suggestion", "x", "y");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, CharSequence suggestion) {
-        final Object[] values = {
-            scrubDigitsFromString(replacedWord), index,
-            (suggestion == null ? null : scrubDigitsFromString(suggestion.toString())),
-            Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE
-        };
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY,
-                values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
+                scrubDigitsFromString(replacedWord), index,
+                suggestion == null ? null : scrubDigitsFromString(suggestion.toString()),
+                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
     }
 
-    private static final String[] EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION = {
-        "LatinIMEPunctuationSuggestion", "index", "suggestion", "x", "y"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION =
+            new LogStatement("LatinIMEPunctuationSuggestion", false, false, "index", "suggestion",
+                    "x", "y");
     public static void latinIME_punctuationSuggestion(final int index,
             final CharSequence suggestion) {
-        final Object[] values = {
-            index, suggestion,
-            Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE
-        };
-        getInstance().enqueueEvent(EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION, index, suggestion,
+                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
     }
 
-    private static final String[] EVENTKEYS_LATINIME_SENDKEYCODEPOINT = {
-        "LatinIMESendKeyCodePoint", "code"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_SENDKEYCODEPOINT =
+            new LogStatement("LatinIMESendKeyCodePoint", true, false, "code");
     public static void latinIME_sendKeyCodePoint(final int code) {
-        final Object[] values = {
-            Constants.printableCode(scrubDigitFromCodePoint(code))
-        };
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_SENDKEYCODEPOINT,
+                Constants.printableCode(scrubDigitFromCodePoint(code)));
         if (Character.isDigit(code)) {
             researchLogger.setCurrentLogUnitContainsDigitFlag();
         }
     }
 
-    private static final String[] EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACE = {
-        "LatinIMESwapSwapperAndSpace"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE =
+            new LogStatement("LatinIMESwapSwapperAndSpace", false, false);
     public static void latinIME_swapSwapperAndSpace() {
-        getInstance().enqueueEvent(EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACE, EVENTKEYS_NULLVALUES);
+        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE);
     }
 
-    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_ONLONGPRESS = {
-        "MainKeyboardViewOnLongPress"
-    };
+    private static final LogStatement LOGSTATEMENT_MAINKEYBOARDVIEW_ONLONGPRESS =
+            new LogStatement("MainKeyboardViewOnLongPress", false, false);
     public static void mainKeyboardView_onLongPress() {
-        getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_ONLONGPRESS, EVENTKEYS_NULLVALUES);
+        getInstance().enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_ONLONGPRESS);
     }
 
-    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD = {
-        "MainKeyboardViewSetKeyboard", "elementId", "locale", "orientation", "width",
-        "modeName", "action", "navigateNext", "navigatePrevious", "clobberSettingsKey",
-        "passwordInput", "shortcutKeyEnabled", "hasShortcutKey", "languageSwitchKeyEnabled",
-        "isMultiLine", "tw", "th", "keys"
-    };
+    private static final LogStatement LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD =
+            new LogStatement("MainKeyboardViewSetKeyboard", false, false, "elementId", "locale",
+                    "orientation", "width", "modeName", "action", "navigateNext",
+                    "navigatePrevious", "clobberSettingsKey", "passwordInput", "shortcutKeyEnabled",
+                    "hasShortcutKey", "languageSwitchKeyEnabled", "isMultiLine", "tw", "th",
+                    "keys");
     public static void mainKeyboardView_setKeyboard(final Keyboard keyboard) {
-        if (keyboard != null) {
-            final KeyboardId kid = keyboard.mId;
-            final boolean isPasswordView = kid.passwordInput();
-            getInstance().setIsPasswordView(isPasswordView);
-            final Object[] values = {
+        final KeyboardId kid = keyboard.mId;
+        final boolean isPasswordView = kid.passwordInput();
+        getInstance().setIsPasswordView(isPasswordView);
+        getInstance().enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD,
                 KeyboardId.elementIdToName(kid.mElementId),
                 kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                kid.mOrientation,
-                kid.mWidth,
-                KeyboardId.modeName(kid.mMode),
-                kid.imeAction(),
-                kid.navigateNext(),
-                kid.navigatePrevious(),
-                kid.mClobberSettingsKey,
-                isPasswordView,
-                kid.mShortcutKeyEnabled,
-                kid.mHasShortcutKey,
-                kid.mLanguageSwitchKeyEnabled,
-                kid.isMultiLine(),
-                keyboard.mOccupiedWidth,
-                keyboard.mOccupiedHeight,
-                keyboard.mKeys
-            };
-            getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD, values);
-        }
+                kid.mOrientation, kid.mWidth, KeyboardId.modeName(kid.mMode), kid.imeAction(),
+                kid.navigateNext(), kid.navigatePrevious(), kid.mClobberSettingsKey,
+                isPasswordView, kid.mShortcutKeyEnabled, kid.mHasShortcutKey,
+                kid.mLanguageSwitchKeyEnabled, kid.isMultiLine(), keyboard.mOccupiedWidth,
+                keyboard.mOccupiedHeight, keyboard.mKeys);
     }
 
-    private static final String[] EVENTKEYS_LATINIME_REVERTCOMMIT = {
-        "LatinIMERevertCommit", "originallyTypedWord"
-    };
+    private static final LogStatement LOGSTATEMENT_LATINIME_REVERTCOMMIT =
+            new LogStatement("LatinIMERevertCommit", true, false, "originallyTypedWord");
     public static void latinIME_revertCommit(final String originallyTypedWord) {
-        final Object[] values = {
-            originallyTypedWord
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_REVERTCOMMIT, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_REVERTCOMMIT, originallyTypedWord);
     }
 
-    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT = {
-        "PointerTrackerCallListenerOnCancelInput"
-    };
+    private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCANCELINPUT =
+            new LogStatement("PointerTrackerCallListenerOnCancelInput", false, false);
     public static void pointerTracker_callListenerOnCancelInput() {
-        getInstance().enqueueEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT,
-                EVENTKEYS_NULLVALUES);
+        getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCANCELINPUT);
     }
 
-    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT = {
-        "PointerTrackerCallListenerOnCodeInput", "code", "outputText", "x", "y",
-        "ignoreModifierKey", "altersCode", "isEnabled"
-    };
+    private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCODEINPUT =
+            new LogStatement("PointerTrackerCallListenerOnCodeInput", true, false, "code",
+                    "outputText", "x", "y", "ignoreModifierKey", "altersCode", "isEnabled");
     public static void pointerTracker_callListenerOnCodeInput(final Key key, final int x,
             final int y, final boolean ignoreModifierKey, final boolean altersCode,
             final int code) {
         if (key != null) {
             String outputText = key.getOutputText();
-            final Object[] values = {
-                Constants.printableCode(scrubDigitFromCodePoint(code)), outputText == null ? null
-                        : scrubDigitsFromString(outputText.toString()),
-                x, y, ignoreModifierKey, altersCode, key.isEnabled()
-            };
-            getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT, values);
+            getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCODEINPUT,
+                    Constants.printableCode(scrubDigitFromCodePoint(code)),
+                    outputText == null ? null : scrubDigitsFromString(outputText.toString()),
+                    x, y, ignoreModifierKey, altersCode, key.isEnabled());
         }
     }
 
-    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE = {
-        "PointerTrackerCallListenerOnRelease", "code", "withSliding", "ignoreModifierKey",
-        "isEnabled"
-    };
+    private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONRELEASE =
+            new LogStatement("PointerTrackerCallListenerOnRelease", true, false, "code",
+                    "withSliding", "ignoreModifierKey", "isEnabled");
     public static void pointerTracker_callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding, final boolean ignoreModifierKey) {
         if (key != null) {
-            final Object[] values = {
-                Constants.printableCode(scrubDigitFromCodePoint(primaryCode)), withSliding,
-                ignoreModifierKey, key.isEnabled()
-            };
-            getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE, values);
+            getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONRELEASE,
+                    Constants.printableCode(scrubDigitFromCodePoint(primaryCode)), withSliding,
+                    ignoreModifierKey, key.isEnabled());
         }
     }
 
-    private static final String[] EVENTKEYS_POINTERTRACKER_ONDOWNEVENT = {
-        "PointerTrackerOnDownEvent", "deltaT", "distanceSquared"
-    };
+    private static final LogStatement LOGSTATEMENT_POINTERTRACKER_ONDOWNEVENT =
+            new LogStatement("PointerTrackerOnDownEvent", true, false, "deltaT", "distanceSquared");
     public static void pointerTracker_onDownEvent(long deltaT, int distanceSquared) {
-        final Object[] values = {
-            deltaT, distanceSquared
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_POINTERTRACKER_ONDOWNEVENT, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_ONDOWNEVENT, deltaT,
+                distanceSquared);
     }
 
-    private static final String[] EVENTKEYS_POINTERTRACKER_ONMOVEEVENT = {
-        "PointerTrackerOnMoveEvent", "x", "y", "lastX", "lastY"
-    };
+    private static final LogStatement LOGSTATEMENT_POINTERTRACKER_ONMOVEEVENT =
+            new LogStatement("PointerTrackerOnMoveEvent", true, false, "x", "y", "lastX", "lastY");
     public static void pointerTracker_onMoveEvent(final int x, final int y, final int lastX,
             final int lastY) {
-        final Object[] values = {
-            x, y, lastX, lastY
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_POINTERTRACKER_ONMOVEEVENT, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_ONMOVEEVENT, x, y, lastX, lastY);
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_COMMITCOMPLETION = {
-        "RichInputConnectionCommitCompletion", "completionInfo"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_COMMITCOMPLETION =
+            new LogStatement("RichInputConnectionCommitCompletion", true, false, "completionInfo");
     public static void richInputConnection_commitCompletion(final CompletionInfo completionInfo) {
-        final Object[] values = {
-            completionInfo
-        };
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(
-                EVENTKEYS_RICHINPUTCONNECTION_COMMITCOMPLETION, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_COMMITCOMPLETION,
+                completionInfo);
     }
 
-    // Disabled for privacy-protection reasons.  Because this event comes after
-    // richInputConnection_commitText, which is the event used to separate LogUnits, the
-    // data in this event can be associated with the next LogUnit, revealing information
-    // about the current word even if it was supposed to be suppressed.  The occurrance of
-    // autocorrection can be determined by examining the difference between the text strings in
-    // the last call to richInputConnection_setComposingText before
-    // richInputConnection_commitText, so it's not a data loss.
-    // TODO: Figure out how to log this event without loss of privacy.
-    /*
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_COMMITCORRECTION = {
-        "RichInputConnectionCommitCorrection", "typedWord", "autoCorrection"
-    };
-    */
-    public static void richInputConnection_commitCorrection(CorrectionInfo correctionInfo) {
-        /*
-        final String typedWord = correctionInfo.getOldText().toString();
-        final String autoCorrection = correctionInfo.getNewText().toString();
-        final Object[] values = {
-            scrubDigitsFromString(typedWord), scrubDigitsFromString(autoCorrection)
-        };
+    private boolean isExpectingCommitText = false;
+    public static void latinIME_commitPartialText(final CharSequence committedWord,
+            final long lastTimestampOfWordData) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(
-                EVENTKEYS_RICHINPUTCONNECTION_COMMITCORRECTION, values);
-        */
+        final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
+        researchLogger.onWordComplete(scrubbedWord, lastTimestampOfWordData, true /* isPartial */);
+        researchLogger.isExpectingCommitText = true;
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_COMMITTEXT = {
-        "RichInputConnectionCommitText", "typedWord", "newCursorPosition"
-    };
-    public static void richInputConnection_commitText(final CharSequence typedWord,
+    private static final LogStatement LOGSTATEMENT_COMMITTEXT_UPDATECURSOR =
+            new LogStatement("CommitTextUpdateCursor", true, false, "newCursorPosition");
+    public static void richInputConnection_commitText(final CharSequence committedWord,
             final int newCursorPosition) {
-        final String scrubbedWord = scrubDigitsFromString(typedWord.toString());
-        final Object[] values = {
-            scrubbedWord, newCursorPosition
-        };
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_COMMITTEXT,
-                values);
-        // TODO: Replace Long.MAX_VALUE with timestamp of last data to include
-        researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE);
+        final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
+        if (!researchLogger.isExpectingCommitText) {
+            researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE, false /* isPartial */);
+            researchLogger.enqueueEvent(LOGSTATEMENT_COMMITTEXT_UPDATECURSOR, newCursorPosition);
+        }
+        researchLogger.isExpectingCommitText = false;
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT = {
-        "RichInputConnectionDeleteSurroundingText", "beforeLength", "afterLength"
-    };
+    private static final LogStatement LOGSTATEMENT_COMMITTEXT =
+            new LogStatement("CommitText", true, false, "committedText");
+    private void enqueueCommitText(final CharSequence word) {
+        enqueueEvent(LOGSTATEMENT_COMMITTEXT, word);
+    }
+
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT =
+            new LogStatement("RichInputConnectionDeleteSurroundingText", true, false,
+                    "beforeLength", "afterLength");
     public static void richInputConnection_deleteSurroundingText(final int beforeLength,
             final int afterLength) {
-        final Object[] values = {
-            beforeLength, afterLength
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(
-                EVENTKEYS_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT,
+                beforeLength, afterLength);
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT = {
-        "RichInputConnectionFinishComposingText"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT =
+            new LogStatement("RichInputConnectionFinishComposingText", false, false);
     public static void richInputConnection_finishComposingText() {
-        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT,
-                EVENTKEYS_NULLVALUES);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT);
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_PERFORMEDITORACTION = {
-        "RichInputConnectionPerformEditorAction", "imeActionNext"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_PERFORMEDITORACTION =
+            new LogStatement("RichInputConnectionPerformEditorAction", false, false,
+                    "imeActionNext");
     public static void richInputConnection_performEditorAction(final int imeActionNext) {
-        final Object[] values = {
-            imeActionNext
-        };
-        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_PERFORMEDITORACTION, values);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_PERFORMEDITORACTION,
+                imeActionNext);
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_SENDKEYEVENT = {
-        "RichInputConnectionSendKeyEvent", "eventTime", "action", "code"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SENDKEYEVENT =
+            new LogStatement("RichInputConnectionSendKeyEvent", true, false, "eventTime", "action",
+                    "code");
     public static void richInputConnection_sendKeyEvent(final KeyEvent keyEvent) {
-        final Object[] values = {
-            keyEvent.getEventTime(),
-            keyEvent.getAction(),
-            keyEvent.getKeyCode()
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SENDKEYEVENT,
-                values);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_SENDKEYEVENT,
+                keyEvent.getEventTime(), keyEvent.getAction(), keyEvent.getKeyCode());
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_SETCOMPOSINGTEXT = {
-        "RichInputConnectionSetComposingText", "text", "newCursorPosition"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SETCOMPOSINGTEXT =
+            new LogStatement("RichInputConnectionSetComposingText", true, true, "text",
+                    "newCursorPosition");
     public static void richInputConnection_setComposingText(final CharSequence text,
             final int newCursorPosition) {
         if (text == null) {
             throw new RuntimeException("setComposingText is null");
         }
-        final Object[] values = {
-            text, newCursorPosition
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SETCOMPOSINGTEXT,
-                values);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_SETCOMPOSINGTEXT, text,
+                newCursorPosition);
     }
 
-    private static final String[] EVENTKEYS_RICHINPUTCONNECTION_SETSELECTION = {
-        "RichInputConnectionSetSelection", "from", "to"
-    };
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SETSELECTION =
+            new LogStatement("RichInputConnectionSetSelection", true, false, "from", "to");
     public static void richInputConnection_setSelection(final int from, final int to) {
-        final Object[] values = {
-            from, to
-        };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SETSELECTION,
-                values);
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_SETSELECTION, from, to);
     }
 
-    private static final String[] EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT = {
-        "SuddenJumpingTouchEventHandlerOnTouchEvent", "motionEvent"
-    };
+    private static final LogStatement LOGSTATEMENT_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT =
+            new LogStatement("SuddenJumpingTouchEventHandlerOnTouchEvent", true, false,
+                    "motionEvent");
     public static void suddenJumpingTouchEventHandler_onTouchEvent(final MotionEvent me) {
         if (me != null) {
-            final Object[] values = {
-                me.toString()
-            };
-            getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT, values);
+            getInstance().enqueueEvent(LOGSTATEMENT_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT,
+                    me.toString());
         }
     }
 
-    private static final String[] EVENTKEYS_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS = {
-        "SuggestionStripViewSetSuggestions", "suggestedWords"
-    };
+    private static final LogStatement LOGSTATEMENT_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS =
+            new LogStatement("SuggestionStripViewSetSuggestions", true, true, "suggestedWords");
     public static void suggestionStripView_setSuggestions(final SuggestedWords suggestedWords) {
         if (suggestedWords != null) {
-            final Object[] values = {
-                suggestedWords
-            };
-            getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS, values);
+            getInstance().enqueueEvent(LOGSTATEMENT_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS,
+                    suggestedWords);
         }
     }
 
-    private static final String[] EVENTKEYS_USER_TIMESTAMP = {
-        "UserTimestamp"
-    };
+    private static final LogStatement LOGSTATEMENT_USER_TIMESTAMP =
+            new LogStatement("UserTimestamp", false, false);
     public void userTimestamp() {
-        getInstance().enqueueEvent(EVENTKEYS_USER_TIMESTAMP, EVENTKEYS_NULLVALUES);
+        getInstance().enqueueEvent(LOGSTATEMENT_USER_TIMESTAMP);
     }
 
-    private static final String[] EVENTKEYS_STATISTICS = {
-        "Statistics", "charCount", "letterCount", "numberCount", "spaceCount", "deleteOpsCount",
-        "wordCount", "isEmptyUponStarting", "isEmptinessStateKnown", "averageTimeBetweenKeys",
-        "averageTimeBeforeDelete", "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete"
-    };
+    private static final LogStatement LOGSTATEMENT_STATISTICS =
+            new LogStatement("Statistics", false, false, "charCount", "letterCount", "numberCount",
+                    "spaceCount", "deleteOpsCount", "wordCount", "isEmptyUponStarting",
+                    "isEmptinessStateKnown", "averageTimeBetweenKeys", "averageTimeBeforeDelete",
+                    "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
-        final Object[] values = {
-            statistics.mCharCount, statistics.mLetterCount, statistics.mNumberCount,
-            statistics.mSpaceCount, statistics.mDeleteKeyCount,
-            statistics.mWordCount, statistics.mIsEmptyUponStarting,
-            statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
-            statistics.mBeforeDeleteKeyCounter.getAverageTime(),
-            statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
-            statistics.mAfterDeleteKeyCounter.getAverageTime()
-        };
-        researchLogger.enqueueEvent(EVENTKEYS_STATISTICS, values);
+        researchLogger.enqueueEvent(LOGSTATEMENT_STATISTICS, statistics.mCharCount,
+                statistics.mLetterCount, statistics.mNumberCount, statistics.mSpaceCount,
+                statistics.mDeleteKeyCount, statistics.mWordCount, statistics.mIsEmptyUponStarting,
+                statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
+                statistics.mBeforeDeleteKeyCounter.getAverageTime(),
+                statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
+                statistics.mAfterDeleteKeyCounter.getAverageTime());
     }
 }
