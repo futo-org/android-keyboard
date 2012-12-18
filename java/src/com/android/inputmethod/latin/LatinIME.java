@@ -820,10 +820,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         super.onFinishInput();
 
         LatinImeLogger.commit();
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().latinIME_onFinishInputInternal();
-        }
-
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
@@ -840,6 +836,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         resetComposingState(true /* alsoResetLastComposedWord */);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().latinIME_onFinishInputViewInternal();
+        }
     }
 
     @Override
