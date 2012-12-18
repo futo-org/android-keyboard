@@ -824,7 +824,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public void latinIME_onFinishInputInternal() {
+    public void latinIME_onFinishInputViewInternal() {
         stop();
     }
 
