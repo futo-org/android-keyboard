@@ -36,6 +36,12 @@ public class Statistics {
     int mDeleteKeyCount;
     // Number of words entered during a session.
     int mWordCount;
+    // Number of words found in the dictionary.
+    int mDictionaryWordCount;
+    // Number of words split and spaces automatically entered.
+    int mSplitWordsCount;
+    // Number of gestures that were input.
+    int mGestureInputCount;
     // Whether the text field was empty upon editing
     boolean mIsEmptyUponStarting;
     boolean mIsEmptinessStateKnown;
@@ -143,8 +149,19 @@ public class Statistics {
         mLastTapTime = time;
     }
 
-    public void recordWordEntered() {
+    public void recordWordEntered(final boolean isDictionaryWord) {
         mWordCount++;
+        if (isDictionaryWord) {
+            mDictionaryWordCount++;
+        }
+    }
+
+    public void recordSplitWords() {
+        mSplitWordsCount++;
+    }
+
+    public void recordGestureInput() {
+        mGestureInputCount++;
     }
 
     public void setIsEmptyUponStarting(final boolean isEmpty) {

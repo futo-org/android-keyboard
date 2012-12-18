@@ -565,10 +565,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mFeedbackLogBuffer.clear();
         }
         final LogUnit feedbackLogUnit = new LogUnit();
-        final Object[] values = {
-            feedbackContents
-        };
-        feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, values, SystemClock.uptimeMillis());
+        feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
+                feedbackContents);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
         mFeedbackLog.close(new Runnable() {
@@ -653,19 +651,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private static final Object[] NULL_VALUES = {};
-
     /**
      * Buffer a research log event, flagging it as privacy-sensitive.
      */
     private synchronized void enqueueEvent(LogStatement logStatement, Object... values) {
-        if (values == null) {
-            values = NULL_VALUES;
-        }
         assert values.length == logStatement.mKeys.length;
         if (isAllowedToLog()) {
             final long time = SystemClock.uptimeMillis();
-            mCurrentLogUnit.addLogStatement(logStatement, values, time);
+            mCurrentLogUnit.addLogStatement(logStatement, time, values);
         }
     }
 
@@ -701,11 +694,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
             final ResearchLog researchLog, final boolean isIncludingPrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
-        final Object[] values = {
-            isIncludingPrivateData
-        };
-        openingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_OPENING, values,
-                SystemClock.uptimeMillis());
+        openingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_OPENING, SystemClock.uptimeMillis(),
+                isIncludingPrivateData);
         researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
         LogUnit logUnit;
         while ((logUnit = logBuffer.shiftOut()) != null) {
@@ -716,7 +706,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             researchLog.publish(logUnit, isIncludingPrivateData);
         }
         final LogUnit closingLogUnit = new LogUnit();
-        closingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_CLOSING, NULL_VALUES,
+        closingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_CLOSING,
                 SystemClock.uptimeMillis());
         researchLog.publish(closingLogUnit, true /* isIncludingPrivateData */);
     }
@@ -732,19 +722,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return false;
     }
 
-    private static final LogStatement LOGSTATEMENT_COMMIT_AUTOSPACE =
-            new LogStatement("CommitAutospace", true, false);
-    private void onWordComplete(final String word, final long maxTime, final boolean isPartial) {
-        Log.d(TAG, "onWordComplete: " + word);
+    private static final LogStatement LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS =
+            new LogStatement("recordSplitWords", true, false);
+    private void onWordComplete(final String word, final long maxTime, final boolean isSplitWords) {
         if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
-            mStatistics.recordWordEntered();
+            final boolean isDictionaryWord = mDictionary != null
+                    && mDictionary.isValidWord(word);
+            mStatistics.recordWordEntered(isDictionaryWord);
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
         enqueueCommitText(word);
-        if (isPartial) {
-            enqueueEvent(LOGSTATEMENT_COMMIT_AUTOSPACE, NULL_VALUES);
+        if (isSplitWords) {
+            enqueueEvent(LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS);
             enqueueCommitText(" ");
+            mStatistics.recordSplitWords();
         }
         commitCurrentLogUnit();
         mCurrentLogUnit = newLogUnit;
@@ -1205,11 +1197,23 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         getInstance().enqueueEvent(LOGSTATEMENT_USER_TIMESTAMP);
     }
 
+    private static final LogStatement LOGSTATEMENT_LATINIME_ONENDBATCHINPUT =
+            new LogStatement("LatinIMEOnEndBatchInput", true, false, "enteredText",
+                    "enteredWordPos");
+    public static void latinIME_onEndBatchInput(final CharSequence enteredText,
+            final int enteredWordPos) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
+                enteredWordPos);
+        researchLogger.mStatistics.recordGestureInput();
+    }
+
     private static final LogStatement LOGSTATEMENT_STATISTICS =
             new LogStatement("Statistics", false, false, "charCount", "letterCount", "numberCount",
                     "spaceCount", "deleteOpsCount", "wordCount", "isEmptyUponStarting",
                     "isEmptinessStateKnown", "averageTimeBetweenKeys", "averageTimeBeforeDelete",
-                    "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete");
+                    "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete",
+                    "dictionaryWordCount", "splitWordsCount", "gestureInputCount");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
@@ -1219,6 +1223,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
                 statistics.mBeforeDeleteKeyCounter.getAverageTime(),
                 statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
-                statistics.mAfterDeleteKeyCounter.getAverageTime());
+                statistics.mAfterDeleteKeyCounter.getAverageTime(),
+                statistics.mDictionaryWordCount, statistics.mSplitWordsCount,
+                statistics.mGestureInputCount);
     }
 }
