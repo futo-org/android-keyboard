@@ -20,18 +20,19 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.util.Random;
 
 public class MainLogBuffer extends LogBuffer {
     private static final String TAG = MainLogBuffer.class.getSimpleName();
-    // For privacy reasons, be sure to set to "false" for production code.
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     private static final int N_GRAM_SIZE = 2;
     // The number of words between n-grams to omit from the log.
-    private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES = DEBUG ? 2 : 18;
+    private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES =
+            ProductionFlag.IS_EXPERIMENTAL_DEBUG ? 2 : 18;
 
     private final ResearchLog mResearchLog;
     private Suggest mSuggest;

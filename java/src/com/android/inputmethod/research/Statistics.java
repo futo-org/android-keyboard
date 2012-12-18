@@ -19,10 +19,11 @@ package com.android.inputmethod.research;
 import android.util.Log;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
 public class Statistics {
     private static final String TAG = Statistics.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
     // Number of characters entered during a typing session
     int mCharCount;
