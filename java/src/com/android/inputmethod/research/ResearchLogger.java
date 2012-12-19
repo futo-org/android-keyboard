@@ -83,7 +83,7 @@ import java.util.UUID;
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     private static final boolean LOG_EVERYTHING = false;  // true will disclose private info
     public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
@@ -804,7 +804,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL =
             new LogStatement("LatinImeOnStartInputViewInternal", false, false, "uuid",
                     "packageName", "inputType", "imeOptions", "fieldId", "display", "model",
-                    "prefs", "versionCode", "versionName", "outputFormatVersion", "logEverything");
+                    "prefs", "versionCode", "versionName", "outputFormatVersion", "logEverything",
+                    "isExperimentalDebug");
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
@@ -825,7 +826,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
-                        OUTPUT_FORMAT_VERSION, LOG_EVERYTHING);
+                        OUTPUT_FORMAT_VERSION, LOG_EVERYTHING,
+                        ProductionFlag.IS_EXPERIMENTAL_DEBUG);
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }

@@ -23,4 +23,9 @@ public final class ProductionFlag {
 
     public static final boolean IS_EXPERIMENTAL = false;
     public static final boolean IS_INTERNAL = false;
+
+    // When false, IS_EXPERIMENTAL_DEBUG suggests that all guarded class-private DEBUG flags should
+    // be false, and any privacy controls should be enforced.  IS_EXPERIMENTAL_DEBUG should be false
+    // for any released build.
+    public static final boolean IS_EXPERIMENTAL_DEBUG = false;
 }
