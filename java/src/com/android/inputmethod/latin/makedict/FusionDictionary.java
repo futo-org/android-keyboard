@@ -484,7 +484,7 @@ public final class FusionDictionary implements Iterable<Word> {
             if (differentCharIndex == currentGroup.mChars.length) {
                 if (charIndex + differentCharIndex >= word.length) {
                     // The new word is a prefix of an existing word, but the node on which it
-                    // should end already exists as is. Since the old CharNode was not a terminal, 
+                    // should end already exists as is. Since the old CharNode was not a terminal,
                     // make it one by filling in its frequency and other attributes
                     currentGroup.update(frequency, shortcutTargets, null, isNotAWord,
                             isBlacklistEntry);
@@ -526,7 +526,7 @@ public final class FusionDictionary implements Iterable<Word> {
                     } else {
                         newParent = new CharGroup(
                                 Arrays.copyOfRange(currentGroup.mChars, 0, differentCharIndex),
-                                null /* shortcutTargets */, null /* bigrams */, -1, 
+                                null /* shortcutTargets */, null /* bigrams */, -1,
                                 false /* isNotAWord */, false /* isBlacklistEntry */, newChildren);
                         final CharGroup newWord = new CharGroup(Arrays.copyOfRange(word,
                                 charIndex + differentCharIndex, word.length),
