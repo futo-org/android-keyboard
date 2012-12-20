@@ -38,9 +38,9 @@ class GestureSuggest : public SuggestInterface {
         if (!mSuggestInterface) {
             return 0;
         }
-        return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs,
-                inputYs, times, pointerIds, codes, inputSize, commitPoint, outWords, frequencies,
-                outputIndices, outputTypes);
+        return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs, inputYs, times,
+                pointerIds, codes, inputSize, commitPoint, outWords, frequencies, outputIndices,
+                outputTypes);
     }
 
     static void setGestureSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int, int)) {
@@ -50,10 +50,10 @@ class GestureSuggest : public SuggestInterface {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(GestureSuggest);
     static SuggestInterface *getGestureSuggestInstance(int maxWordLength, int maxWords) {
-        if (sGestureSuggestFactoryMethod) {
-            return sGestureSuggestFactoryMethod(maxWordLength, maxWords);
+        if (!sGestureSuggestFactoryMethod) {
+            return 0;
         }
-        return 0;
+        return sGestureSuggestFactoryMethod(maxWordLength, maxWords);
     }
 
     static SuggestInterface *(*sGestureSuggestFactoryMethod)(int, int);
