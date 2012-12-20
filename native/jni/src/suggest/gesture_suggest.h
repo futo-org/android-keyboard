@@ -14,53 +14,50 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_GESTURE_DECODER_WRAPPER_H
-#define LATINIME_GESTURE_DECODER_WRAPPER_H
+#ifndef LATINIME_GESTURE_SUGGEST_H
+#define LATINIME_GESTURE_SUGGEST_H
 
 #include "defines.h"
-#include "incremental_decoder_interface.h"
+#include "suggest_interface.h"
 
 namespace latinime {
 
-class UnigramDictionary;
-class BigramDictionary;
 class ProximityInfo;
 
-class GestureDecoderWrapper : public IncrementalDecoderInterface {
+class GestureSuggest : public SuggestInterface {
  public:
-    GestureDecoderWrapper(const int maxWordLength, const int maxWords)
-            : mIncrementalDecoderInterface(getGestureDecoderInstance(maxWordLength, maxWords)) {
+    GestureSuggest(const int maxWordLength, const int maxWords)
+            : mSuggestInterface(getGestureSuggestInstance(maxWordLength, maxWords)) {
     }
 
-    virtual ~GestureDecoderWrapper();
+    virtual ~GestureSuggest();
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *codes, int inputSize, int commitPoint, int *outWords,
             int *frequencies, int *outputIndices, int *outputTypes) const {
-        if (!mIncrementalDecoderInterface) {
+        if (!mSuggestInterface) {
             return 0;
         }
-        return mIncrementalDecoderInterface->getSuggestions(pInfo, traverseSession, inputXs,
+        return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs,
                 inputYs, times, pointerIds, codes, inputSize, commitPoint, outWords, frequencies,
                 outputIndices, outputTypes);
     }
 
-    static void setGestureDecoderFactoryMethod(
-            IncrementalDecoderInterface *(*factoryMethod)(int, int)) {
-        sGestureDecoderFactoryMethod = factoryMethod;
+    static void setGestureSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int, int)) {
+        sGestureSuggestFactoryMethod = factoryMethod;
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(GestureDecoderWrapper);
-    static IncrementalDecoderInterface *getGestureDecoderInstance(int maxWordLength, int maxWords) {
-        if (sGestureDecoderFactoryMethod) {
-            return sGestureDecoderFactoryMethod(maxWordLength, maxWords);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(GestureSuggest);
+    static SuggestInterface *getGestureSuggestInstance(int maxWordLength, int maxWords) {
+        if (sGestureSuggestFactoryMethod) {
+            return sGestureSuggestFactoryMethod(maxWordLength, maxWords);
         }
         return 0;
     }
 
-    static IncrementalDecoderInterface *(*sGestureDecoderFactoryMethod)(int, int);
-    IncrementalDecoderInterface *mIncrementalDecoderInterface;
+    static SuggestInterface *(*sGestureSuggestFactoryMethod)(int, int);
+    SuggestInterface *mSuggestInterface;
 };
 } // namespace latinime
-#endif // LATINIME_GESTURE_DECODER_WRAPPER_H
+#endif // LATINIME_GESTURE_SUGGEST_H

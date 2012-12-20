@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_INCREMENTAL_DECODER_INTERFACE_H
-#define LATINIME_INCREMENTAL_DECODER_INTERFACE_H
+#ifndef LATINIME_SUGGEST_INTERFACE_H
+#define LATINIME_SUGGEST_INTERFACE_H
 
 #include "defines.h"
 
 namespace latinime {
 
-class UnigramDictionary;
-class BigramDictionary;
 class ProximityInfo;
 
-class IncrementalDecoderInterface {
+class SuggestInterface {
  public:
     virtual int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs,
             int *inputYs, int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
             int *outWords, int *frequencies, int *outputIndices, int *outputTypes) const = 0;
-    IncrementalDecoderInterface() { };
-    virtual ~IncrementalDecoderInterface() { };
+    SuggestInterface() { };
+    virtual ~SuggestInterface() { };
  private:
-    DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderInterface);
+    DISALLOW_COPY_AND_ASSIGN(SuggestInterface);
 };
 } // namespace latinime
-#endif // LATINIME_INCREMENTAL_DECODER_INTERFACE_H
+#endif // LATINIME_SUGGEST_INTERFACE_H

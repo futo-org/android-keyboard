@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#include "gesture_decoder_wrapper.h"
+#include "gesture_suggest.h"
 
 namespace latinime {
-    IncrementalDecoderInterface *
-            (*GestureDecoderWrapper::sGestureDecoderFactoryMethod)(int, int) = 0;
+    SuggestInterface *(*GestureSuggest::sGestureSuggestFactoryMethod)(int, int) = 0;
 
-    GestureDecoderWrapper::~GestureDecoderWrapper() {
-        delete mIncrementalDecoderInterface;
+    GestureSuggest::~GestureSuggest() {
+        delete mSuggestInterface;
     }
 } // namespace latinime

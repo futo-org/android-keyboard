@@ -23,7 +23,7 @@
 #include "defines.h"
 #include "dictionary.h"
 #include "dic_traverse_wrapper.h"
-#include "gesture_decoder_wrapper.h"
+#include "gesture_suggest.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -36,7 +36,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, 
           mUnigramDictionary(new UnigramDictionary(mOffsetDict, maxWordLength, maxWords,
                   BinaryFormat::getFlags(mDict))),
           mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions)),
-          mGestureDecoder(new GestureDecoderWrapper(maxWordLength, maxWords)) {
+          mGestureSuggest(new GestureSuggest(maxWordLength, maxWords)) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             AKLOGI("Max word length (%d) is greater than %d",
@@ -49,7 +49,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, 
 Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
-    delete mGestureDecoder;
+    delete mGestureSuggest;
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
@@ -61,7 +61,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
     if (isGesture) {
         DicTraverseWrapper::initDicTraverseSession(
                 traverseSession, this, prevWordChars, prevWordLength);
-        result = mGestureDecoder->getSuggestions(proximityInfo, traverseSession,
+        result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession,
                 xcoordinates, ycoordinates, times, pointerIds, codes, codesSize, commitPoint,
                 outWords, frequencies, spaceIndices, outputTypes);
         if (DEBUG_DICT) {

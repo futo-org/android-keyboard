@@ -26,7 +26,7 @@ include $(CLEAR_VARS)
 LATIN_IME_SRC_DIR := src
 LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
+LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/suggest
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
@@ -57,8 +57,8 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
-    gesture/gesture_decoder_wrapper.cpp \
-    gesture/typing_decoder_wrapper.cpp
+    suggest/gesture_suggest.cpp \
+    suggest/typing_suggest.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

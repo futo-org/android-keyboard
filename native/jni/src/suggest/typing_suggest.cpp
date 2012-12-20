@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#include "typing_decoder_wrapper.h"
+#include "typing_suggest.h"
 
 namespace latinime {
-    IncrementalDecoderInterface *
-            (*TypingDecoderWrapper::sIncrementalDecoderFactoryMethod)(int, int) = 0;
+    SuggestInterface *(*TypingSuggest::sTypingSuggestFactoryMethod)(int, int) = 0;
 
-    TypingDecoderWrapper::~TypingDecoderWrapper() {
-        delete mIncrementalDecoderInterface;
+    TypingSuggest::~TypingSuggest() {
+        delete mSuggestInterface;
     }
 } // namespace latinime

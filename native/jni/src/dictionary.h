@@ -24,8 +24,8 @@
 namespace latinime {
 
 class BigramDictionary;
-class IncrementalDecoderInterface;
 class ProximityInfo;
+class SuggestInterface;
 class UnigramDictionary;
 
 class Dictionary {
@@ -83,7 +83,7 @@ class Dictionary {
 
     const UnigramDictionary *mUnigramDictionary;
     const BigramDictionary *mBigramDictionary;
-    IncrementalDecoderInterface *mGestureDecoder;
+    SuggestInterface *mGestureSuggest;
 };
 
 // public static utility methods
