@@ -38,9 +38,9 @@ class TypingSuggest : public SuggestInterface {
         if (!mSuggestInterface) {
             return 0;
         }
-        return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs,
-                inputYs, times, pointerIds, codes, inputSize, commitPoint, outWords, frequencies,
-                outputIndices, outputTypes);
+        return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs, inputYs, times,
+                pointerIds, codes, inputSize, commitPoint, outWords, frequencies, outputIndices,
+                outputTypes);
     }
 
     static void setTypingSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int, int)) {
@@ -50,10 +50,10 @@ class TypingSuggest : public SuggestInterface {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TypingSuggest);
     static SuggestInterface *getTypingSuggestInstance(int maxWordLength, int maxWords) {
-        if (sTypingSuggestFactoryMethod) {
-            return sTypingSuggestFactoryMethod(maxWordLength, maxWords);
+        if (!sTypingSuggestFactoryMethod) {
+            return 0;
         }
-        return 0;
+        return sTypingSuggestFactoryMethod(maxWordLength, maxWords);
     }
 
     static SuggestInterface *(*sTypingSuggestFactoryMethod)(int, int);
