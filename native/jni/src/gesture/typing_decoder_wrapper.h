@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_INCREMENTAL_DECODER_WRAPPER_H
-#define LATINIME_INCREMENTAL_DECODER_WRAPPER_H
+#ifndef LATINIME_TYPING_DECODER_WRAPPER_H
+#define LATINIME_TYPING_DECODER_WRAPPER_H
 
 #include "defines.h"
 #include "incremental_decoder_interface.h"
@@ -26,13 +26,13 @@ class UnigramDictionary;
 class BigramDictionary;
 class ProximityInfo;
 
-class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
+class TypingDecoderWrapper : public IncrementalDecoderInterface {
  public:
-    IncrementalDecoderWrapper(const int maxWordLength, const int maxWords)
+    TypingDecoderWrapper(const int maxWordLength, const int maxWords)
             : mIncrementalDecoderInterface(getIncrementalDecoderInstance(maxWordLength, maxWords)) {
     }
 
-    virtual ~IncrementalDecoderWrapper();
+    virtual ~TypingDecoderWrapper();
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *codes, int inputSize, int commitPoint, int *outWords,
@@ -51,7 +51,7 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(IncrementalDecoderWrapper);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(TypingDecoderWrapper);
     static IncrementalDecoderInterface *getIncrementalDecoderInstance(int maxWordLength,
             int maxWords) {
         if (sIncrementalDecoderFactoryMethod) {
@@ -64,4 +64,4 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
     IncrementalDecoderInterface *mIncrementalDecoderInterface;
 };
 } // namespace latinime
-#endif // LATINIME_INCREMENTAL_DECODER_WRAPPER_H
+#endif // LATINIME_TYPING_DECODER_WRAPPER_H
