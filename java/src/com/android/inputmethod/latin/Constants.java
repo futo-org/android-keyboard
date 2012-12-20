@@ -204,6 +204,7 @@ public final class Constants {
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
+        case CODE_RESEARCH: return "research";
         default:
             if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
             if (code < 0x100) return String.format("'%c'", code);
