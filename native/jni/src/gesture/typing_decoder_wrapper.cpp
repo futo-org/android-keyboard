@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#include "incremental_decoder_wrapper.h"
+#include "typing_decoder_wrapper.h"
 
 namespace latinime {
     IncrementalDecoderInterface *
-            (*IncrementalDecoderWrapper::sIncrementalDecoderFactoryMethod)(int, int) = 0;
+            (*TypingDecoderWrapper::sIncrementalDecoderFactoryMethod)(int, int) = 0;
 
-    IncrementalDecoderWrapper::~IncrementalDecoderWrapper() {
+    TypingDecoderWrapper::~TypingDecoderWrapper() {
         delete mIncrementalDecoderInterface;
     }
 } // namespace latinime
