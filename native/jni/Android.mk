@@ -58,7 +58,7 @@ LATIN_IME_CORE_SRC_FILES := \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     gesture/gesture_decoder_wrapper.cpp \
-    gesture/incremental_decoder_wrapper.cpp
+    gesture/typing_decoder_wrapper.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
