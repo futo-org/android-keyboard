@@ -647,7 +647,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final float savedStrokeWidth = paint.getStrokeWidth();
             if (IS_SHOWING_INDICATOR_CLEARLY) {
                 paint.setStrokeWidth(5);
-                canvas.drawRect(0, 0, width, height, paint);
+                canvas.drawLine(0, 0, 0, height, paint);
+                canvas.drawLine(width, 0, width, height, paint);
             } else {
                 // Put a tiny red dot on the screen so a knowledgeable user can check whether
                 // it is enabled.  The dot is actually a zero-width, zero-height rectangle,
