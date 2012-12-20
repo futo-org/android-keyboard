@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,6 +46,9 @@ import java.net.URL;
 
 public final class UploaderService extends IntentService {
     private static final String TAG = UploaderService.class.getSimpleName();
+    // Set IS_INHIBITING_AUTO_UPLOAD to true for local testing
+    private static final boolean IS_INHIBITING_AUTO_UPLOAD =
+            false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;  // Force false in production
     public static final long RUN_INTERVAL = AlarmManager.INTERVAL_HOUR;
     private static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
             + ".extra.UPLOAD_UNCONDITIONALLY";
@@ -116,7 +120,8 @@ public final class UploaderService extends IntentService {
     }
 
     private void doUpload(final boolean isUploadingUnconditionally) {
-        if (!isUploadingUnconditionally && (!isExternallyPowered() || !hasWifiConnection())) {
+        if (!isUploadingUnconditionally && (!isExternallyPowered() || !hasWifiConnection()
+                || IS_INHIBITING_AUTO_UPLOAD)) {
             return;
         }
         if (mFilesDir == null) {
