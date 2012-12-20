@@ -681,7 +681,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
                 mMainLogBuffer.shiftIn(mCurrentLogUnit);
-                if (mMainLogBuffer.isSafeToLog() && mMainResearchLog != null) {
+                if ((mMainLogBuffer.isSafeToLog() || LOG_EVERYTHING) && mMainResearchLog != null) {
                     publishLogBuffer(mMainLogBuffer, mMainResearchLog,
                             true /* isIncludingPrivateData */);
                     mMainLogBuffer.resetWordCounter();
