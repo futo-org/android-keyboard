@@ -16,10 +16,15 @@
 
 package com.android.inputmethod.event;
 
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
 /**
  * A hardware event decoder for a hardware qwerty-ish keyboard.
+ *
+ * The events are always hardware keypresses, but they can be key down or key up events, they
+ * can be dead keys, they can be meta keys like shift or ctrl... This does not deal with
+ * 10-key like keyboards; a different decoder is used for this.
  */
 public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
     final int mDeviceId;
@@ -31,6 +36,23 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
 
     @Override
     public Event decodeHardwareKey(final KeyEvent keyEvent) {
-        return Event.obtainEvent();
+        final Event event = Event.obtainEvent();
+        // KeyEvent#getUnicodeChar() does not exactly returns a unicode char, but rather a value
+        // that includes both the unicode char in the lower 21 bits and flags in the upper bits,
+        // hence the name "codePointAndFlags". {@see KeyEvent#getUnicodeChar()} for more info.
+        final int codePointAndFlags = keyEvent.getUnicodeChar();
+        if (keyEvent.isPrintingKey()) {
+            if (0 != (codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT)) {
+                // A dead key.
+                event.setDeadEvent(codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK);
+            } else {
+                // A committable character. This should be committed right away, taking into
+                // account the current state.
+                event.setCommittableEvent(codePointAndFlags);
+            }
+        } else {
+            event.setNotHandledEvent();
+        }
+        return event;
     }
 }
