@@ -791,6 +791,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void cancelBatchInput() {
         sPointerTrackerQueue.cancelAllPointerTracker();
+        if (!sInGesture) {
+            return;
+        }
         sInGesture = false;
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onCancelBatchInput", mPointerId));
@@ -1208,9 +1211,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             printTouchEvent("onCancelEvt:", x, y, eventTime);
         }
 
-        if (sInGesture) {
-            cancelBatchInput();
-        }
+        cancelBatchInput();
         sPointerTrackerQueue.cancelAllPointerTracker();
         sPointerTrackerQueue.releaseAllPointers(eventTime);
         onCancelEventInternal();
