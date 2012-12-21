@@ -16,10 +16,21 @@
 
 package com.android.inputmethod.research;
 
+import android.content.SharedPreferences;
+import android.util.JsonWriter;
+import android.util.Log;
+import android.view.inputmethod.CompletionInfo;
+
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A group of log statements related to each other.
@@ -36,6 +47,8 @@ import java.util.List;
  * been published recently, or whether the LogUnit contains numbers, etc.
  */
 /* package */ class LogUnit {
+    private static final String TAG = LogUnit.class.getSimpleName();
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     private final ArrayList<LogStatement> mLogStatementList;
     private final ArrayList<Object[]> mValuesList;
     // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
@@ -77,8 +90,13 @@ import java.util.List;
         mTimeList.add(time);
     }
 
-    public void publishTo(final ResearchLog researchLog, final boolean isIncludingPrivateData) {
+    /**
+     * Publish the contents of this LogUnit to researchLog.
+     */
+    public synchronized void publishTo(final ResearchLog researchLog,
+            final boolean isIncludingPrivateData) {
         final int size = mLogStatementList.size();
+        // Write out any logStatement that passes the privacy filter.
         for (int i = 0; i < size; i++) {
             final LogStatement logStatement = mLogStatementList.get(i);
             if (!isIncludingPrivateData && logStatement.mIsPotentiallyPrivate) {
@@ -87,8 +105,70 @@ import java.util.List;
             if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
                 continue;
             }
-            researchLog.outputEvent(mLogStatementList.get(i), mValuesList.get(i), mTimeList.get(i));
+            // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
+            // researchLog.getValidJsonWriter() will not open the file for writing.
+            final JsonWriter jsonWriter = researchLog.getValidJsonWriterLocked();
+            outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
+                    mTimeList.get(i));
         }
+    }
+
+    private static final String CURRENT_TIME_KEY = "_ct";
+    private static final String UPTIME_KEY = "_ut";
+    private static final String EVENT_TYPE_KEY = "_ty";
+
+    /**
+     * Write the logStatement and its contents out through jsonWriter.
+     *
+     * Note that this method is not thread safe for the same jsonWriter.  Callers must ensure
+     * thread safety.
+     */
+    private boolean outputLogStatementToLocked(final JsonWriter jsonWriter,
+            final LogStatement logStatement, final Object[] values, final Long time) {
+        if (DEBUG) {
+            if (logStatement.mKeys.length != values.length) {
+                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.mName);
+            }
+        }
+        try {
+            jsonWriter.beginObject();
+            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
+            jsonWriter.name(UPTIME_KEY).value(time);
+            jsonWriter.name(EVENT_TYPE_KEY).value(logStatement.mName);
+            final String[] keys = logStatement.mKeys;
+            final int length = values.length;
+            for (int i = 0; i < length; i++) {
+                jsonWriter.name(keys[i]);
+                final Object value = values[i];
+                if (value instanceof CharSequence) {
+                    jsonWriter.value(value.toString());
+                } else if (value instanceof Number) {
+                    jsonWriter.value((Number) value);
+                } else if (value instanceof Boolean) {
+                    jsonWriter.value((Boolean) value);
+                } else if (value instanceof CompletionInfo[]) {
+                    JsonUtils.writeJson((CompletionInfo[]) value, jsonWriter);
+                } else if (value instanceof SharedPreferences) {
+                    JsonUtils.writeJson((SharedPreferences) value, jsonWriter);
+                } else if (value instanceof Key[]) {
+                    JsonUtils.writeJson((Key[]) value, jsonWriter);
+                } else if (value instanceof SuggestedWords) {
+                    JsonUtils.writeJson((SuggestedWords) value, jsonWriter);
+                } else if (value == null) {
+                    jsonWriter.nullValue();
+                } else {
+                    Log.w(TAG, "Unrecognized type to be logged: " +
+                            (value == null ? "<null>" : value.getClass().getName()));
+                    jsonWriter.nullValue();
+                }
+            }
+            jsonWriter.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Error in JsonWriter; skipping LogStatement");
+            return false;
+        }
+        return true;
     }
 
     public void setWord(String word) {

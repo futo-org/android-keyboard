@@ -16,17 +16,10 @@
 
 package com.android.inputmethod.research;
 
-import android.content.SharedPreferences;
-import android.os.SystemClock;
 import android.util.JsonWriter;
 import android.util.Log;
-import android.view.inputmethod.CompletionInfo;
 
-import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,7 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -204,103 +196,17 @@ public class ResearchLog {
         }
     }
 
-    private static final String CURRENT_TIME_KEY = "_ct";
-    private static final String UPTIME_KEY = "_ut";
-    private static final String EVENT_TYPE_KEY = "_ty";
-
-    void outputEvent(final LogStatement logStatement, final Object[] values, final long time) {
-        // Not thread safe.
-        if (DEBUG) {
-            if (logStatement.mKeys.length != values.length) {
-                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.mName);
-            }
-        }
+    /**
+     * Return a JsonWriter for this ResearchLog.  It is initialized the first time this method is
+     * called.  The cached value is returned in future calls.
+     */
+    public JsonWriter getValidJsonWriterLocked() {
         try {
             if (mJsonWriter == NULL_JSON_WRITER) {
                 mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
                 mJsonWriter.beginArray();
                 mHasWrittenData = true;
             }
-            mJsonWriter.beginObject();
-            mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            mJsonWriter.name(UPTIME_KEY).value(time);
-            mJsonWriter.name(EVENT_TYPE_KEY).value(logStatement.mName);
-            final String[] keys = logStatement.mKeys;
-            final int length = values.length;
-            for (int i = 0; i < length; i++) {
-                mJsonWriter.name(keys[i]);
-                Object value = values[i];
-                if (value instanceof CharSequence) {
-                    mJsonWriter.value(value.toString());
-                } else if (value instanceof Number) {
-                    mJsonWriter.value((Number) value);
-                } else if (value instanceof Boolean) {
-                    mJsonWriter.value((Boolean) value);
-                } else if (value instanceof CompletionInfo[]) {
-                    CompletionInfo[] ci = (CompletionInfo[]) value;
-                    mJsonWriter.beginArray();
-                    for (int j = 0; j < ci.length; j++) {
-                        mJsonWriter.value(ci[j].toString());
-                    }
-                    mJsonWriter.endArray();
-                } else if (value instanceof SharedPreferences) {
-                    SharedPreferences prefs = (SharedPreferences) value;
-                    mJsonWriter.beginObject();
-                    for (Map.Entry<String,?> entry : prefs.getAll().entrySet()) {
-                        mJsonWriter.name(entry.getKey());
-                        final Object innerValue = entry.getValue();
-                        if (innerValue == null) {
-                            mJsonWriter.nullValue();
-                        } else if (innerValue instanceof Boolean) {
-                            mJsonWriter.value((Boolean) innerValue);
-                        } else if (innerValue instanceof Number) {
-                            mJsonWriter.value((Number) innerValue);
-                        } else {
-                            mJsonWriter.value(innerValue.toString());
-                        }
-                    }
-                    mJsonWriter.endObject();
-                } else if (value instanceof Key[]) {
-                    Key[] keyboardKeys = (Key[]) value;
-                    mJsonWriter.beginArray();
-                    for (Key keyboardKey : keyboardKeys) {
-                        mJsonWriter.beginObject();
-                        mJsonWriter.name("code").value(keyboardKey.mCode);
-                        mJsonWriter.name("altCode").value(keyboardKey.getAltCode());
-                        mJsonWriter.name("x").value(keyboardKey.mX);
-                        mJsonWriter.name("y").value(keyboardKey.mY);
-                        mJsonWriter.name("w").value(keyboardKey.mWidth);
-                        mJsonWriter.name("h").value(keyboardKey.mHeight);
-                        mJsonWriter.endObject();
-                    }
-                    mJsonWriter.endArray();
-                } else if (value instanceof SuggestedWords) {
-                    SuggestedWords words = (SuggestedWords) value;
-                    mJsonWriter.beginObject();
-                    mJsonWriter.name("typedWordValid").value(words.mTypedWordValid);
-                    mJsonWriter.name("willAutoCorrect").value(words.mWillAutoCorrect);
-                    mJsonWriter.name("isPunctuationSuggestions")
-                            .value(words.mIsPunctuationSuggestions);
-                    mJsonWriter.name("isObsoleteSuggestions").value(words.mIsObsoleteSuggestions);
-                    mJsonWriter.name("isPrediction").value(words.mIsPrediction);
-                    mJsonWriter.name("words");
-                    mJsonWriter.beginArray();
-                    final int size = words.size();
-                    for (int j = 0; j < size; j++) {
-                        SuggestedWordInfo wordInfo = words.getWordInfo(j);
-                        mJsonWriter.value(wordInfo.toString());
-                    }
-                    mJsonWriter.endArray();
-                    mJsonWriter.endObject();
-                } else if (value == null) {
-                    mJsonWriter.nullValue();
-                } else {
-                    Log.w(TAG, "Unrecognized type to be logged: " +
-                            (value == null ? "<null>" : value.getClass().getName()));
-                    mJsonWriter.nullValue();
-                }
-            }
-            mJsonWriter.endObject();
         } catch (IOException e) {
             e.printStackTrace();
             Log.w(TAG, "Error in JsonWriter; disabling logging");
@@ -315,5 +221,6 @@ public class ResearchLog {
                 mJsonWriter = NULL_JSON_WRITER;
             }
         }
+        return mJsonWriter;
     }
 }
