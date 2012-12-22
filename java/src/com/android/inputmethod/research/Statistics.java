@@ -43,6 +43,10 @@ public class Statistics {
     int mSplitWordsCount;
     // Number of gestures that were input.
     int mGestureInputCount;
+    // Number of gestures that were deleted.
+    int mGesturesDeletedCount;
+    // Total number of characters in words entered by gesture.
+    int mGestureCharsCount;
     // Whether the text field was empty upon editing
     boolean mIsEmptyUponStarting;
     boolean mIsEmptinessStateKnown;
@@ -109,6 +113,8 @@ public class Statistics {
         mBeforeDeleteKeyCounter.reset();
         mDuringRepeatedDeleteKeysCounter.reset();
         mAfterDeleteKeyCounter.reset();
+        mGestureCharsCount = 0;
+        mGesturesDeletedCount = 0;
 
         mLastTapTime = 0;
         mIsLastKeyDeleteKey = false;
@@ -161,12 +167,17 @@ public class Statistics {
         mSplitWordsCount++;
     }
 
-    public void recordGestureInput() {
+    public void recordGestureInput(final int numCharsEntered) {
         mGestureInputCount++;
+        mGestureCharsCount += numCharsEntered;
     }
 
     public void setIsEmptyUponStarting(final boolean isEmpty) {
         mIsEmptyUponStarting = isEmpty;
         mIsEmptinessStateKnown = true;
+    }
+
+    public void recordGestureDelete() {
+        mGesturesDeletedCount++;
     }
 }
