@@ -1681,6 +1681,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (length > 0) {
                 if (mWordComposer.isBatchMode()) {
                     mWordComposer.reset();
+                    if (ProductionFlag.IS_EXPERIMENTAL) {
+                        ResearchLogger.latinIME_handleBackspace_batch(mWordComposer.getTypedWord());
+                    }
                 } else {
                     mWordComposer.deleteLast();
                 }

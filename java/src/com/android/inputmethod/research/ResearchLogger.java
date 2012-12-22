@@ -1221,7 +1221,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
                 enteredWordPos);
-        researchLogger.mStatistics.recordGestureInput();
+        researchLogger.mStatistics.recordGestureInput(enteredText.length());
+    }
+
+    private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH =
+            new LogStatement("LatinIMEHandleBackspaceBatch", true, false, "deletedText");
+    public static void latinIME_handleBackspace_batch(final CharSequence deletedText) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH, deletedText);
+        researchLogger.mStatistics.recordGestureDelete();
     }
 
     private static final LogStatement LOGSTATEMENT_STATISTICS =
@@ -1229,7 +1237,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "spaceCount", "deleteOpsCount", "wordCount", "isEmptyUponStarting",
                     "isEmptinessStateKnown", "averageTimeBetweenKeys", "averageTimeBeforeDelete",
                     "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete",
-                    "dictionaryWordCount", "splitWordsCount", "gestureInputCount");
+                    "dictionaryWordCount", "splitWordsCount", "gestureInputCount",
+                    "gestureCharsCount", "gesturesDeletedCount");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
@@ -1241,6 +1250,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
                 statistics.mAfterDeleteKeyCounter.getAverageTime(),
                 statistics.mDictionaryWordCount, statistics.mSplitWordsCount,
-                statistics.mGestureInputCount);
+                statistics.mGestureInputCount,
+                statistics.mGestureCharsCount,
+                statistics.mGesturesDeletedCount);
     }
 }
