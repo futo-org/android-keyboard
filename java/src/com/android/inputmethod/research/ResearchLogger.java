@@ -1224,6 +1224,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 completionInfo);
     }
 
+    /**
+     * Log a call to LatinIME.commitCurrentAutoCorrection().
+     *
+     * SystemResponse: The IME has committed an auto-correction.  An auto-correction changes the raw
+     * text input to another word that the user more likely desired to type.
+     */
+    private static final LogStatement LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION =
+            new LogStatement("LatinIMECommitCurrentAutoCorrection", true, false, "typedWord",
+                    "autoCorrection", "separatorString");
+    public static void latinIme_commitCurrentAutoCorrection(final String typedWord,
+            final String autoCorrection, final String separatorString) {
+        final String scrubbedTypedWord = scrubDigitsFromString(typedWord);
+        final String scrubbedAutoCorrection = scrubDigitsFromString(autoCorrection);
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION,
+                scrubbedTypedWord, scrubbedAutoCorrection, separatorString);
+        researchLogger.onWordComplete(scrubbedAutoCorrection, Long.MAX_VALUE,
+                false /* isPartial */);
+    }
+
     private boolean isExpectingCommitText = false;
     public static void latinIME_commitPartialText(final CharSequence committedWord,
             final long lastTimestampOfWordData) {
@@ -1246,9 +1266,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
         if (!researchLogger.isExpectingCommitText) {
-            researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE, false /* isPartial */);
             researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT,
                     newCursorPosition);
+            researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE, false /* isPartial */);
         }
         researchLogger.isExpectingCommitText = false;
     }
