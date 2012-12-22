@@ -34,7 +34,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -141,7 +140,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // used to check whether words are not unique
     private Suggest mSuggest;
     private MainKeyboardView mMainKeyboardView;
-    private InputMethodService mInputMethodService;
+    private LatinIME mLatinIME;
     private final Statistics mStatistics;
 
     private Intent mUploadIntent;
@@ -156,12 +155,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final InputMethodService ims, final SharedPreferences prefs) {
-        assert ims != null;
-        if (ims == null) {
+    public void init(final LatinIME latinIME, final SharedPreferences prefs) {
+        assert latinIME != null;
+        if (latinIME == null) {
             Log.w(TAG, "IMS is null; logging is off");
         } else {
-            mFilesDir = ims.getFilesDir();
+            mFilesDir = latinIME.getFilesDir();
             if (mFilesDir == null || !mFilesDir.exists()) {
                 Log.w(TAG, "IME storage directory does not exist.");
             }
@@ -186,12 +185,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 e.apply();
             }
         }
-        mInputMethodService = ims;
+        mLatinIME = latinIME;
         mPrefs = prefs;
-        mUploadIntent = new Intent(mInputMethodService, UploaderService.class);
+        mUploadIntent = new Intent(mLatinIME, UploaderService.class);
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            scheduleUploadingService(mInputMethodService);
+            scheduleUploadingService(mLatinIME);
         }
     }
 
@@ -250,7 +249,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (windowToken == null) {
             return;
         }
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mInputMethodService)
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mLatinIME)
                 .setTitle(R.string.research_splash_title)
                 .setMessage(R.string.research_splash_content)
                 .setPositiveButton(android.R.string.yes,
@@ -265,12 +264,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                final String packageName = mInputMethodService.getPackageName();
+                                final String packageName = mLatinIME.getPackageName();
                                 final Uri packageUri = Uri.parse("package:" + packageName);
                                 final Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE,
                                         packageUri);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mInputMethodService.startActivity(intent);
+                                mLatinIME.startActivity(intent);
                             }
                 })
                 .setCancelable(true)
@@ -278,7 +277,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         new OnCancelListener() {
                             @Override
                             public void onCancel(DialogInterface dialog) {
-                                mInputMethodService.requestHideSelf(0);
+                                mLatinIME.requestHideSelf(0);
                             }
                 });
         mSplashDialog = builder.create();
@@ -322,10 +321,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void checkForEmptyEditor() {
-        if (mInputMethodService == null) {
+        if (mLatinIME == null) {
             return;
         }
-        final InputConnection ic = mInputMethodService.getCurrentInputConnection();
+        final InputConnection ic = mLatinIME.getCurrentInputConnection();
         if (ic == null) {
             return;
         }
@@ -585,7 +584,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (DEBUG) {
             Log.d(TAG, "calling uploadNow()");
         }
-        mInputMethodService.startService(mUploadIntent);
+        mLatinIME.startService(mUploadIntent);
     }
 
     public void onLeavingSendFeedbackDialog() {
@@ -818,7 +817,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     || InputTypeUtils.isVisiblePasswordInputType(editorInfo.inputType);
             getInstance().setIsPasswordView(isPassword);
             researchLogger.start();
-            final Context context = researchLogger.mInputMethodService;
+            final Context context = researchLogger.mLatinIME;
             try {
                 final PackageInfo packageInfo;
                 packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),
