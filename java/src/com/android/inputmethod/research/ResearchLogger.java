@@ -1452,8 +1452,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
                 statistics.mAfterDeleteKeyCounter.getAverageTime(),
                 statistics.mDictionaryWordCount, statistics.mSplitWordsCount,
-                statistics.mGestureInputCount,
-                statistics.mGestureCharsCount,
+                statistics.mGesturesInputCount,
+                statistics.mGesturesCharsCount,
                 statistics.mGesturesDeletedCount);
     }
 }
