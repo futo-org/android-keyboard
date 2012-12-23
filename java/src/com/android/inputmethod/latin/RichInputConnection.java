@@ -648,19 +648,20 @@ public final class RichInputConnection {
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
-        if (!". ".equals(textBeforeCursor)) {
+        final String periodSpace = ". ";
+        if (!periodSpace.equals(textBeforeCursor)) {
             // Theoretically we should not be coming here if there isn't ". " before the
             // cursor, but the application may be changing the text while we are typing, so
             // anything goes. We should not crash.
             Log.d(TAG, "Tried to revert double-space combo but we didn't find "
-                    + "\". \" just before the cursor.");
+                    + "\"" + periodSpace + "\" just before the cursor.");
             return false;
         }
         deleteSurroundingText(2, 0);
         final String doubleSpace = "  ";
         commitText(doubleSpace, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.richInputConnection_revertDoubleSpacePeriod(doubleSpace);
+            ResearchLogger.richInputConnection_revertDoubleSpacePeriod();
         }
         return true;
     }
@@ -685,7 +686,7 @@ public final class RichInputConnection {
         final String text = " " + textBeforeCursor.subSequence(0, 1);
         commitText(text, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.richInputConnection_revertSwapPunctuation(text);
+            ResearchLogger.richInputConnection_revertSwapPunctuation();
         }
         return true;
     }

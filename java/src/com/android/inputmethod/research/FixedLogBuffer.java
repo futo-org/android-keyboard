@@ -72,6 +72,15 @@ public class FixedLogBuffer extends LogBuffer {
         mNumActualWords++; // Must be a word, or we wouldn't be here.
     }
 
+    @Override
+    public LogUnit unshiftIn() {
+        final LogUnit logUnit = super.unshiftIn();
+        if (logUnit != null && logUnit.hasWord()) {
+            mNumActualWords--;
+        }
+        return logUnit;
+    }
+
     private void shiftOutThroughFirstWord() {
         final LinkedList<LogUnit> logUnits = getLogUnits();
         while (!logUnits.isEmpty()) {
