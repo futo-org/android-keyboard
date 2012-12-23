@@ -2095,6 +2095,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                         typedWord, autoCorrection.toString(), separatorString, mWordComposer);
             }
             mExpectingUpdateSelection = true;
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord,
+                        autoCorrection.toString(), separatorString);
+            }
+
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorString);
             if (!typedWord.equals(autoCorrection)) {
