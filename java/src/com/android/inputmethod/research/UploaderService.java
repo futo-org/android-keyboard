@@ -46,9 +46,10 @@ import java.net.URL;
 
 public final class UploaderService extends IntentService {
     private static final String TAG = UploaderService.class.getSimpleName();
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Set IS_INHIBITING_AUTO_UPLOAD to true for local testing
-    private static final boolean IS_INHIBITING_AUTO_UPLOAD =
-            false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;  // Force false in production
+    private static final boolean IS_INHIBITING_AUTO_UPLOAD = false
+            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;  // Force false in production
     public static final long RUN_INTERVAL = AlarmManager.INTERVAL_HOUR;
     private static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
             + ".extra.UPLOAD_UNCONDITIONALLY";
@@ -146,7 +147,9 @@ public final class UploaderService extends IntentService {
     }
 
     private boolean uploadFile(File file) {
-        Log.d(TAG, "attempting upload of " + file.getAbsolutePath());
+        if (DEBUG) {
+            Log.d(TAG, "attempting upload of " + file.getAbsolutePath());
+        }
         boolean success = false;
         final int contentLength = (int) file.length();
         HttpURLConnection connection = null;
@@ -162,6 +165,9 @@ public final class UploaderService extends IntentService {
             int numBytesRead;
             while ((numBytesRead = fileInputStream.read(buf)) != -1) {
                 os.write(buf, 0, numBytesRead);
+                if (DEBUG) {
+                    Log.d(TAG, new String(buf));
+                }
             }
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.d(TAG, "upload failed: " + connection.getResponseCode());
@@ -176,7 +182,9 @@ public final class UploaderService extends IntentService {
             }
             file.delete();
             success = true;
-            Log.d(TAG, "upload successful");
+            if (DEBUG) {
+                Log.d(TAG, "upload successful");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
