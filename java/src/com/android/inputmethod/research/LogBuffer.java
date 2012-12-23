@@ -110,4 +110,8 @@ public class LogBuffer {
         }
         return logUnit;
     }
+
+    public boolean isEmpty() {
+        return mLogUnits.isEmpty();
+    }
 }

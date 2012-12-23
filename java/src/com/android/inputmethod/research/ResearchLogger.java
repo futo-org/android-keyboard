@@ -706,6 +706,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
             final ResearchLog researchLog, final boolean isIncludingPrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
+        if (logBuffer.isEmpty()) return;
         openingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_OPENING, SystemClock.uptimeMillis(),
                 isIncludingPrivateData);
         researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
