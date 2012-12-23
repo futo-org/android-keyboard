@@ -24,10 +24,12 @@ import android.view.inputmethod.CompletionInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +97,22 @@ import java.util.Map;
      */
     public synchronized void publishTo(final ResearchLog researchLog,
             final boolean isIncludingPrivateData) {
+        // Prepare debugging output if necessary
+        final StringWriter debugStringWriter;
+        final JsonWriter debugJsonWriter;
+        if (DEBUG) {
+            debugStringWriter = new StringWriter();
+            debugJsonWriter = new JsonWriter(debugStringWriter);
+            debugJsonWriter.setIndent("  ");
+            try {
+                debugJsonWriter.beginArray();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not open array in JsonWriter", e);
+            }
+        } else {
+            debugStringWriter = null;
+            debugJsonWriter = null;
+        }
         final int size = mLogStatementList.size();
         // Write out any logStatement that passes the privacy filter.
         for (int i = 0; i < size; i++) {
@@ -110,6 +128,23 @@ import java.util.Map;
             final JsonWriter jsonWriter = researchLog.getValidJsonWriterLocked();
             outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
                     mTimeList.get(i));
+            if (DEBUG) {
+                outputLogStatementToLocked(debugJsonWriter, mLogStatementList.get(i),
+                        mValuesList.get(i), mTimeList.get(i));
+            }
+        }
+        if (DEBUG) {
+            try {
+                debugJsonWriter.endArray();
+                debugJsonWriter.flush();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not close array in JsonWriter", e);
+            }
+            final String bigString = debugStringWriter.getBuffer().toString();
+            final String[] lines = bigString.split("\n");
+            for (String line : lines) {
+                Log.d(TAG, line);
+            }
         }
     }
 
