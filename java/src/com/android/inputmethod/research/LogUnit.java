@@ -19,6 +19,7 @@ package com.android.inputmethod.research;
 import android.content.SharedPreferences;
 import android.util.JsonWriter;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.keyboard.Key;
@@ -189,6 +190,8 @@ import java.util.Map;
                     JsonUtils.writeJson((Key[]) value, jsonWriter);
                 } else if (value instanceof SuggestedWords) {
                     JsonUtils.writeJson((SuggestedWords) value, jsonWriter);
+                } else if (value instanceof MotionEvent) {
+                    JsonUtils.writeJson((MotionEvent) value, jsonWriter);
                 } else if (value == null) {
                     jsonWriter.nullValue();
                 } else {
