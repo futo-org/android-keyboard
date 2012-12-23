@@ -1454,7 +1454,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void onTextInput(final String rawText) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(rawText.toString());
+            commitCurrentAutoCorrection(rawText);
         } else {
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
@@ -2104,13 +2104,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                         + "is empty? Impossible! I must commit suicide.");
             }
             if (ProductionFlag.IS_INTERNAL) {
-                Stats.onAutoCorrection(
-                        typedWord, autoCorrection.toString(), separatorString, mWordComposer);
+                Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
             }
             mExpectingUpdateSelection = true;
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord,
-                        autoCorrection.toString(), separatorString);
+                ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
+                        separatorString);
             }
 
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
@@ -2177,7 +2176,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         // We need to log before we commit, because the word composer will store away the user
         // typed word.
-        final String replacedWord = mWordComposer.getTypedWord().toString();
+        final String replacedWord = mWordComposer.getTypedWord();
         LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
@@ -2227,8 +2226,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
-        mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord.toString(),
-                separatorString, prevWord);
+        mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord, separatorString,
+                prevWord);
     }
 
     private void setPunctuationSuggestions() {
@@ -2252,7 +2251,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
         if (userHistoryDictionary != null) {
-            final CharSequence prevWord
+            final String prevWord
                     = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
             if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
@@ -2265,9 +2264,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int maxFreq = AutoCorrection.getMaxFrequency(
                     mSuggest.getUnigramDictionaries(), suggestion);
             if (maxFreq == 0) return null;
-            final String prevWordString = (null == prevWord) ? null : prevWord.toString();
-            userHistoryDictionary.addToUserHistory(prevWordString, secondWord, maxFreq > 0);
-            return prevWordString;
+            userHistoryDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
+            return prevWord;
         }
         return null;
     }
