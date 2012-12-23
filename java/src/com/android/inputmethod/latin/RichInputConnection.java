@@ -178,9 +178,6 @@ public final class RichInputConnection {
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitText(text, i);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_commitText(text, i);
-            }
         }
     }
 
@@ -665,7 +662,11 @@ public final class RichInputConnection {
             return false;
         }
         deleteSurroundingText(2, 0);
-        commitText("  ", 1);
+        final String doubleSpace = "  ";
+        commitText(doubleSpace, 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().onWordComplete(doubleSpace, Long.MAX_VALUE);
+        }
         return true;
     }
 
@@ -686,7 +687,11 @@ public final class RichInputConnection {
             return false;
         }
         deleteSurroundingText(2, 0);
-        commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
+        final String text = " " + textBeforeCursor.subSequence(0, 1);
+        commitText(text, 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().onWordComplete(text, Long.MAX_VALUE);
+        }
         return true;
     }
 

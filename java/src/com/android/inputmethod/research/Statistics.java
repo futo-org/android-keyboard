@@ -47,6 +47,10 @@ public class Statistics {
     int mGesturesDeletedCount;
     // Total number of characters in words entered by gesture.
     int mGesturesCharsCount;
+    // Number of manual suggestions chosen.
+    int mManualSuggestionsCount;
+    // Number of times a commit was reverted in this session.
+    int mRevertCommitsCount;
     // Whether the text field was empty upon editing
     boolean mIsEmptyUponStarting;
     boolean mIsEmptinessStateKnown;
@@ -111,6 +115,8 @@ public class Statistics {
         mSplitWordsCount = 0;
         mGesturesInputCount = 0;
         mGesturesDeletedCount = 0;
+        mManualSuggestionsCount = 0;
+        mRevertCommitsCount = 0;
         mIsEmptyUponStarting = true;
         mIsEmptinessStateKnown = false;
         mKeyCounter.reset();
@@ -183,5 +189,12 @@ public class Statistics {
 
     public void recordGestureDelete() {
         mGesturesDeletedCount++;
+    }
+    public void recordManualSuggestion() {
+        mManualSuggestionsCount++;
+    }
+
+    public void recordRevertCommit() {
+        mRevertCommitsCount++;
     }
 }

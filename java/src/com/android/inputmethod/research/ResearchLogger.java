@@ -741,7 +741,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final LogStatement LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS =
             new LogStatement("recordSplitWords", true, false);
-    private void onWordComplete(final String word, final long maxTime, final boolean isSplitWords) {
+    public void onWordComplete(final String word, final long maxTime) {
         final Dictionary dictionary = getDictionary();
         if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
@@ -751,11 +751,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
         enqueueCommitText(word);
-        if (isSplitWords) {
-            enqueueEvent(LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS);
-            enqueueCommitText(" ");
-            mStatistics.recordSplitWords();
-        }
         commitCurrentLogUnit();
         mCurrentLogUnit = newLogUnit;
     }
@@ -1049,12 +1044,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
                     "suggestion", "x", "y");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
-            final int index, CharSequence suggestion) {
+            final int index, final String suggestion) {
+        final String scrubbedWord = scrubDigitsFromString(suggestion);
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
-                suggestion == null ? null : scrubDigitsFromString(suggestion.toString()),
-                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
+                suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
+                Constants.SUGGESTION_STRIP_COORDINATE);
+        researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE);
+        researchLogger.mStatistics.recordManualSuggestion();
     }
 
     /**
@@ -1065,10 +1063,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION =
             new LogStatement("LatinIMEPunctuationSuggestion", false, false, "index", "suggestion",
                     "x", "y");
-    public static void latinIME_punctuationSuggestion(final int index,
-            final CharSequence suggestion) {
-        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION, index, suggestion,
+    public static void latinIME_punctuationSuggestion(final int index, final String suggestion) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION, index, suggestion,
                 Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
+        researchLogger.onWordComplete(suggestion, Long.MAX_VALUE);
     }
 
     /**
@@ -1147,9 +1146,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * backspace.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_REVERTCOMMIT =
-            new LogStatement("LatinIMERevertCommit", true, false, "originallyTypedWord");
-    public static void latinIME_revertCommit(final String originallyTypedWord) {
-        getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_REVERTCOMMIT, originallyTypedWord);
+            new LogStatement("LatinIMERevertCommit", true, false, "committedWord",
+                    "originallyTypedWord");
+    public static void latinIME_revertCommit(final String committedWord,
+            final String originallyTypedWord) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord,
+                originallyTypedWord);
+        researchLogger.mStatistics.recordRevertCommit();
     }
 
     /**
@@ -1259,17 +1263,27 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION,
                 scrubbedTypedWord, scrubbedAutoCorrection, separatorString);
-        researchLogger.onWordComplete(scrubbedAutoCorrection, Long.MAX_VALUE,
-                false /* isPartial */);
+        researchLogger.onWordComplete(scrubbedAutoCorrection, Long.MAX_VALUE);
     }
 
     private boolean isExpectingCommitText = false;
+    /**
+     * Log a call to RichInputConnection.commitPartialText
+     *
+     * SystemResponse: The IME is committing part of a word.  This happens if a space is
+     * automatically inserted to split a single typed string into two or more words.
+     */
+    // TODO: This method is currently unused.  Find where it should be called from in the IME and
+    // add invocations.
+    private static final LogStatement LOGSTATEMENT_LATINIME_COMMIT_PARTIAL_TEXT =
+            new LogStatement("LatinIMECommitPartialText", true, false, "newCursorPosition");
     public static void latinIME_commitPartialText(final CharSequence committedWord,
             final long lastTimestampOfWordData) {
         final ResearchLogger researchLogger = getInstance();
         final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
-        researchLogger.onWordComplete(scrubbedWord, lastTimestampOfWordData, true /* isPartial */);
-        researchLogger.isExpectingCommitText = true;
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMIT_PARTIAL_TEXT);
+        researchLogger.onWordComplete(scrubbedWord, lastTimestampOfWordData);
+        researchLogger.mStatistics.recordSplitWords();
     }
 
     /**
@@ -1287,7 +1301,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (!researchLogger.isExpectingCommitText) {
             researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT,
                     newCursorPosition);
-            researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE, false /* isPartial */);
+            researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE);
         }
         researchLogger.isExpectingCommitText = false;
     }
@@ -1465,7 +1479,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "isEmptinessStateKnown", "averageTimeBetweenKeys", "averageTimeBeforeDelete",
                     "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete",
                     "dictionaryWordCount", "splitWordsCount", "gestureInputCount",
-                    "gestureCharsCount", "gesturesDeletedCount");
+                    "gestureCharsCount", "gesturesDeletedCount", "manualSuggestionsCount",
+                    "revertCommitsCount");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
@@ -1477,8 +1492,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
                 statistics.mAfterDeleteKeyCounter.getAverageTime(),
                 statistics.mDictionaryWordCount, statistics.mSplitWordsCount,
-                statistics.mGesturesInputCount,
-                statistics.mGesturesCharsCount,
-                statistics.mGesturesDeletedCount);
+                statistics.mGesturesInputCount, statistics.mGesturesCharsCount,
+                statistics.mGesturesDeletedCount, statistics.mManualSuggestionsCount,
+                statistics.mRevertCommitsCount);
     }
 }
