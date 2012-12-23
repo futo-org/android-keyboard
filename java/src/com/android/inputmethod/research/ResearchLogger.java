@@ -378,7 +378,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (DEBUG) {
             Log.d(TAG, "stop called");
         }
-        logStatistics();
         commitCurrentLogUnit();
 
         if (mMainLogBuffer != null) {
@@ -856,6 +855,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void latinIME_onFinishInputViewInternal() {
+        logStatistics();
         stop();
     }
 
