@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.event;
 
+import android.util.SparseArray;
 import android.view.KeyEvent;
 
 /**
@@ -32,18 +33,41 @@ public class EventInterpreter {
     // TODO: Create an object type to represent input material + visual feedback + decoding state
     // TODO: Create an interface to call back to Latin IME through the above object
 
-    // TODO: replace this with an associative container to bind device id -> decoder
-    HardwareEventDecoder mHardwareEventDecoder;
-    SoftwareEventDecoder mSoftwareEventDecoder;
+    final EventDecoderSpec mDecoderSpec;
+    final SparseArray<HardwareEventDecoder> mHardwareEventDecoders;
+    final SoftwareEventDecoder mSoftwareEventDecoder;
 
+    /**
+     * Create a default interpreter.
+     *
+     * This creates a default interpreter that does nothing. A default interpreter should normally
+     * only be used for fallback purposes, when we really don't know what we want to do with input.
+     *
+     */
     public EventInterpreter() {
         this(null);
     }
 
+    /**
+     * Create an event interpreter according to a specification.
+     *
+     * The specification contains information about what to do with events. Typically, it will
+     * contain information about the type of keyboards - for example, if hardware keyboard(s) is/are
+     * attached, their type will be included here so that the decoder knows what to do with each
+     * keypress (a 10-key keyboard is not handled like a qwerty-ish keyboard).
+     * It also contains information for combining characters. For example, if the input language
+     * is Japanese, the specification will typically request kana conversion.
+     * Also note that the specification can be null. This means that we need to create a default
+     * interpreter that does no specific combining, and assumes the most common cases.
+     *
+     * @param specification the specification for event interpretation. null for default.
+     */
     public EventInterpreter(final EventDecoderSpec specification) {
-        // TODO: create the decoding chain from a specification. The decoders should be
-        // created lazily
-        mHardwareEventDecoder = new HardwareKeyboardEventDecoder(0);
+        mDecoderSpec = null != specification ? specification : new EventDecoderSpec();
+        // For both, we expect to have only one decoder in almost all cases, hence the default
+        // capacity of 1.
+        mHardwareEventDecoders = new SparseArray<HardwareEventDecoder>(1);
+        mSoftwareEventDecoder = new SoftwareKeyboardEventDecoder();
     }
 
     // Helper method to decode a hardware key event into a generic event, and execute any
@@ -60,11 +84,17 @@ public class EventInterpreter {
     }
 
     private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {
-        // TODO: look up the decoder by device id. It should be created lazily
-        return mHardwareEventDecoder;
+        final HardwareEventDecoder decoder = mHardwareEventDecoders.get(deviceId);
+        if (null != decoder) return decoder;
+        // TODO: create the decoder according to the specification
+        final HardwareEventDecoder newDecoder = new HardwareKeyboardEventDecoder(deviceId);
+        mHardwareEventDecoders.put(deviceId, newDecoder);
+        return newDecoder;
     }
 
     private SoftwareEventDecoder getSoftwareEventDecoder() {
+        // Within the context of Latin IME, since we never present several software interfaces
+        // at the time, we should never need multiple software event decoders at a time.
         return mSoftwareEventDecoder;
     }
 

@@ -16,21 +16,12 @@
 
 package com.android.inputmethod.event;
 
-import android.view.KeyEvent;
-
 /**
- * A hardware event decoder for a hardware qwerty-ish keyboard.
+ * A decoder for events from software keyboard, like the ones displayed by Latin IME.
  */
-public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
-    final int mDeviceId;
-
-    public HardwareKeyboardEventDecoder(final int deviceId) {
-        mDeviceId = deviceId;
-        // TODO: get the layout for this hardware keyboard
-    }
-
+public class SoftwareKeyboardEventDecoder implements SoftwareEventDecoder {
     @Override
-    public Event decodeHardwareKey(final KeyEvent keyEvent) {
-        return Event.obtainEvent();
+    public Event decodeSoftwareEvent() {
+        return null;
     }
 }
