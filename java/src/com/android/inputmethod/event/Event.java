@@ -81,4 +81,12 @@ public class Event {
         mType = EVENT_NOT_HANDLED;
         mCodePoint = NOT_A_CODE_POINT; // Just in case
     }
+
+    public boolean isCommittable() {
+        return EVENT_COMMITTABLE == mType;
+    }
+
+    public int getCodePoint() {
+        return mCodePoint;
+    }
 }

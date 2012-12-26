@@ -19,6 +19,8 @@ package com.android.inputmethod.event;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
+import com.android.inputmethod.latin.Constants;
+
 /**
  * A hardware event decoder for a hardware qwerty-ish keyboard.
  *
@@ -41,7 +43,16 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
         // that includes both the unicode char in the lower 21 bits and flags in the upper bits,
         // hence the name "codePointAndFlags". {@see KeyEvent#getUnicodeChar()} for more info.
         final int codePointAndFlags = keyEvent.getUnicodeChar();
-        if (keyEvent.isPrintingKey()) {
+        // The keyCode is the abstraction used by the KeyEvent to represent different keys that
+        // do not necessarily map to a unicode character. This represents a physical key, like
+        // the key for 'A' or Space, but also Backspace or Ctrl or Caps Lock.
+        final int keyCode = keyEvent.getKeyCode();
+        if (KeyEvent.KEYCODE_DEL == keyCode) {
+            event.setCommittableEvent(Constants.CODE_DELETE);
+            return event;
+        }
+        if (keyEvent.isPrintingKey() || KeyEvent.KEYCODE_SPACE == keyCode
+                || KeyEvent.KEYCODE_ENTER == keyCode) {
             if (0 != (codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT)) {
                 // A dead key.
                 event.setDeadEvent(codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK);
