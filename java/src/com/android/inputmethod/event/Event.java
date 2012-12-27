@@ -29,8 +29,56 @@ package com.android.inputmethod.event;
  * The combiner should figure out what to do with this.
  */
 public class Event {
+    // Should the types below be represented by separate classes instead? It would be cleaner
+    // but probably a bit too much
+    // An event we don't handle in Latin IME, for example pressing Ctrl on a hardware keyboard.
+    final public static int EVENT_NOT_HANDLED = 0;
+    // A character that is already final, for example pressing an alphabetic character on a
+    // hardware qwerty keyboard.
+    final public static int EVENT_COMMITTABLE = 1;
+    // A dead key, which means a character that should combine with what is coming next. Examples
+    // include the "^" character on an azerty keyboard which combines with "e" to make "ê", or
+    // AltGr+' on a dvorak international keyboard which combines with "e" to make "é". This is
+    // true regardless of the language or combining mode, and should be seen as a property of the
+    // key - a dead key followed by another key with which it can combine should be regarded as if
+    // the keyboard actually had such a key.
+    final public static int EVENT_DEAD = 2;
+    // A toggle event is triggered by a key that affects the previous character. An example would
+    // be a numeric key on a 10-key keyboard, which would toggle between 1 - a - b - c with
+    // repeated presses.
+    final public static int EVENT_TOGGLE = 3;
+    // A mode event instructs the combiner to change modes. The canonical example would be the
+    // hankaku/zenkaku key on a Japanese keyboard, or even the caps lock key on a qwerty keyboard
+    // if handled at the combiner level.
+    final public static int EVENT_MODE_KEY = 4;
+
+    final private static int NOT_A_CODE_POINT = 0;
+
+    private int mType; // The type of event - one of the constants above
+    // The code point associated with the event, if relevant. This is a unicode code point, and
+    // has nothing to do with other representations of the key. It is only relevant if this event
+    // is the right type: COMMITTABLE or DEAD or TOGGLE, but for a mode key like hankaku/zenkaku or
+    // ctrl, there is no code point associated so this should be NOT_A_CODE_POINT to avoid
+    // unintentional use of its value when it's not relevant.
+    private int mCodePoint;
+
     static Event obtainEvent() {
         // TODO: create an event pool instead
         return new Event();
+    }
+
+    public void setDeadEvent(final int codePoint) {
+        mType = EVENT_DEAD;
+        mCodePoint = codePoint;
+    }
+
+    public void setCommittableEvent(final int codePoint) {
+        mType = EVENT_COMMITTABLE;
+        mCodePoint = codePoint;
+    }
+
+    public void setNotHandledEvent() {
+        mType = EVENT_NOT_HANDLED;
+        mCodePoint = NOT_A_CODE_POINT; // Just in case
     }
 }

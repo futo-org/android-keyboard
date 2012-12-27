@@ -17,7 +17,12 @@
 package com.android.inputmethod.event;
 
 /**
- * An event decoder for software events.
+ * An event decoder for events out of a software keyboard.
+ *
+ * This defines the interface for an event decoder that supports events out of a software keyboard.
+ * This differs significantly from hardware keyboard event decoders in several respects. First,
+ * a software keyboard does not have a scancode/layout system; the keypresses that insert
+ * characters output unicode characters directly.
  */
 public interface SoftwareEventDecoder extends EventDecoder {
     public Event decodeSoftwareEvent();
