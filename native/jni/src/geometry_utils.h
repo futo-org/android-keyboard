@@ -54,7 +54,7 @@ static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int 
 static AK_FORCE_INLINE float getAngle(const int x1, const int y1, const int x2, const int y2) {
     const int dx = x1 - x2;
     const int dy = y1 - y2;
-    if (dx == 0 && dy == 0) return 0;
+    if (dx == 0 && dy == 0) return 0.0f;
     return atan2f(static_cast<float>(dy), static_cast<float>(dx));
 }
 
@@ -96,6 +96,7 @@ static inline float pointToLineSegSquaredDistanceFloat(const float x, const floa
 
 // Normal distribution N(u, sigma^2).
 struct NormalDistribution {
+ public:
     NormalDistribution(const float u, const float sigma)
             : mU(u), mSigma(sigma),
               mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * SQUARE_FLOAT(sigma))),
@@ -108,10 +109,10 @@ struct NormalDistribution {
 
 private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
-    float mU; // mean value
-    float mSigma; // standard deviation
-    float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
-    float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
+    const float mU; // mean value
+    const float mSigma; // standard deviation
+    const float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
+    const float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
 }; // struct NormalDistribution
 } // namespace latinime
 #endif // LATINIME_GEOMETRY_UTILS_H
