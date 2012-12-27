@@ -534,17 +534,17 @@ public final class RichInputConnection {
         // Going backward, alternate skipping non-separators and separators until enough words
         // have been read.
         int count = additionalPrecedingWordsCount;
-        int start = before.length();
+        int startIndexInBefore = before.length();
         boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
         while (true) { // see comments below for why this is guaranteed to halt
-            while (start > 0) {
-                final int codePoint = Character.codePointBefore(before, start);
+            while (startIndexInBefore > 0) {
+                final int codePoint = Character.codePointBefore(before, startIndexInBefore);
                 if (isStoppingAtWhitespace == isSeparator(codePoint, sep)) {
                     break;  // inner loop
                 }
-                --start;
+                --startIndexInBefore;
                 if (Character.isSupplementaryCodePoint(codePoint)) {
-                    --start;
+                    --startIndexInBefore;
                 }
             }
             // isStoppingAtWhitespace is true every other time through the loop,
@@ -557,20 +557,20 @@ public final class RichInputConnection {
         }
 
         // Find last word separator after the cursor
-        int end = -1;
-        while (++end < after.length()) {
-            final int codePoint = Character.codePointAt(after, end);
+        int endIndexInAfter = -1;
+        while (++endIndexInAfter < after.length()) {
+            final int codePoint = Character.codePointAt(after, endIndexInAfter);
             if (isSeparator(codePoint, sep)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {
-                ++end;
+                ++endIndexInAfter;
             }
         }
 
-        final String word = before.toString().substring(start, before.length())
-                + after.toString().substring(0, end);
-        return new Range(before.length() - start, end, word);
+        final String word = before.toString().substring(startIndexInBefore, before.length())
+                + after.toString().substring(0, endIndexInAfter);
+        return new Range(before.length() - startIndexInBefore, endIndexInAfter, word);
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
