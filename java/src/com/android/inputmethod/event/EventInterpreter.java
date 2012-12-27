@@ -19,6 +19,9 @@ package com.android.inputmethod.event;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.LatinIME;
+
 /**
  * This class implements the logic between receiving events and generating code points.
  *
@@ -36,6 +39,7 @@ public class EventInterpreter {
     final EventDecoderSpec mDecoderSpec;
     final SparseArray<HardwareEventDecoder> mHardwareEventDecoders;
     final SoftwareEventDecoder mSoftwareEventDecoder;
+    final LatinIME mLatinIme;
 
     /**
      * Create a default interpreter.
@@ -43,9 +47,10 @@ public class EventInterpreter {
      * This creates a default interpreter that does nothing. A default interpreter should normally
      * only be used for fallback purposes, when we really don't know what we want to do with input.
      *
+     * @param latinIme a reference to the ime.
      */
-    public EventInterpreter() {
-        this(null);
+    public EventInterpreter(final LatinIME latinIme) {
+        this(null, latinIme);
     }
 
     /**
@@ -61,13 +66,15 @@ public class EventInterpreter {
      * interpreter that does no specific combining, and assumes the most common cases.
      *
      * @param specification the specification for event interpretation. null for default.
+     * @param latinIme a reference to the ime.
      */
-    public EventInterpreter(final EventDecoderSpec specification) {
+    public EventInterpreter(final EventDecoderSpec specification, final LatinIME latinIme) {
         mDecoderSpec = null != specification ? specification : new EventDecoderSpec();
         // For both, we expect to have only one decoder in almost all cases, hence the default
         // capacity of 1.
         mHardwareEventDecoders = new SparseArray<HardwareEventDecoder>(1);
         mSoftwareEventDecoder = new SoftwareKeyboardEventDecoder();
+        mLatinIme = latinIme;
     }
 
     // Helper method to decode a hardware key event into a generic event, and execute any
@@ -99,6 +106,11 @@ public class EventInterpreter {
     }
 
     private boolean onEvent(final Event event) {
+        if (event.isCommittable()) {
+            mLatinIme.onCodeInput(event.getCodePoint(),
+                    Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE);
+            return true;
+        }
         // TODO: Classify the event - input or non-input (see design doc)
         // TODO: IF action event
         //          Send decoded action back to LatinIME

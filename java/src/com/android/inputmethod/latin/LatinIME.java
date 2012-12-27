@@ -145,7 +145,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private final SubtypeState mSubtypeState = new SubtypeState();
     // At start, create a default event interpreter that does nothing by passing it no decoder spec.
     // The event interpreter should never be null.
-    private EventInterpreter mEventInterpreter = new EventInterpreter();
+    private EventInterpreter mEventInterpreter = new EventInterpreter(this);
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
