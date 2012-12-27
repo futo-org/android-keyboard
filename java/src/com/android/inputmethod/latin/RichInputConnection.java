@@ -568,14 +568,9 @@ public final class RichInputConnection {
             }
         }
 
-        final int cursor = getCursorPosition();
-        if (start >= 0 && cursor + end <= after.length() + before.length()) {
-            String word = before.toString().substring(start, before.length())
-                    + after.toString().substring(0, end);
-            return new Range(before.length() - start, end, word);
-        }
-
-        return null;
+        final String word = before.toString().substring(start, before.length())
+                + after.toString().substring(0, end);
+        return new Range(before.length() - start, end, word);
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
