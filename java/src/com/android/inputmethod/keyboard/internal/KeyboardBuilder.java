@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -240,14 +241,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             final int displayHeight = mDisplayMetrics.heightPixels;
             final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
-                    mResources, R.array.keyboard_heights, null);
+                    mResources, R.array.keyboard_heights);
             final float keyboardHeight;
-            if (keyboardHeightString != null) {
-                keyboardHeight = Float.parseFloat(keyboardHeightString)
-                        * mDisplayMetrics.density;
-            } else {
+            if (TextUtils.isEmpty(keyboardHeightString)) {
                 keyboardHeight = keyboardAttr.getDimension(
                         R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
+            } else {
+                keyboardHeight = Float.parseFloat(keyboardHeightString)
+                        * mDisplayMetrics.density;
             }
             final float maxKeyboardHeight = ResourceUtils.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);

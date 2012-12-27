@@ -21,7 +21,11 @@
     <string-array name="sudden_jumping_touch_event_device_list" translatable="false">
         <!-- "Build.HARDWARE,true" that needs "sudden jump touch event" hack.
              See {@link com.android.inputmethod.keyboard.SuddenJumpingTouchEventHandler}. -->
-        <item>mahimahi,true</item> <!-- Nexus One -->
-        <item>sholes,true</item> <!-- Droid -->
+        <!-- Nexus One -->
+        <item>mahimahi,true</item>
+        <!-- Droid -->
+        <item>sholes,true</item>
+        <!-- Default value for unknown device -->
+        <item>DEFAULT,false</item>
     </string-array>
 </resources>

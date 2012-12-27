@@ -20,11 +20,13 @@
 <resources>
     <string-array name="keypress_volumes" translatable="false">
         <!-- Build.HARDWARE,volume -->
-        <item>herring,0.5</item>
-        <item>tuna,0.5</item>
-        <item>stingray,0.4</item>
-        <item>grouper,0.3</item>
-        <item>mako,0.3</item>
-        <item>manta,0.2</item>
+        <item>herring,0.5f</item>
+        <item>tuna,0.5f</item>
+        <item>stingray,0.4f</item>
+        <item>grouper,0.3f</item>
+        <item>mako,0.3f</item>
+        <item>manta,0.2f</item>
+        <!-- Default value for unknown device -->
+        <item>DEFAULT,0.2f</item>
     </string-array>
 </resources>

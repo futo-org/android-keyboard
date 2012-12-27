@@ -21,6 +21,9 @@
     <string-array name="phantom_sudden_move_event_device_list" translatable="false">
         <!-- "Build.HARDWARE,true" that needs "phantom sudden move event" hack.
              See {@link com.android.inputmethod.keyboard.PointerTracker}. -->
-        <item>stingray,true</item> <!-- Xoom -->
+        <!-- Xoom -->
+        <item>stingray,true</item>
+        <!-- Default value for unknown device -->
+        <item>DEFAULT,false</item>
     </string-array>
 </resources>

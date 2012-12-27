@@ -55,7 +55,7 @@ public final class TouchScreenRegulator {
     public TouchScreenRegulator(final Context context, final ProcessMotionEvent view) {
         mView = view;
         mNeedsSuddenJumpingHack = Boolean.parseBoolean(ResourceUtils.getDeviceOverrideValue(
-                context.getResources(), R.array.sudden_jumping_touch_event_device_list, "false"));
+                context.getResources(), R.array.sudden_jumping_touch_event_device_list));
     }
 
     public void setKeyboardGeometry(final int keyboardWidth) {

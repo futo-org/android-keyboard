@@ -19,11 +19,15 @@ package com.android.inputmethod.latin;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.util.Log;
 import android.util.TypedValue;
 
 import java.util.HashMap;
 
 public final class ResourceUtils {
+    private static final String TAG = ResourceUtils.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     public static final float UNDEFINED_RATIO = -1.0f;
     public static final int UNDEFINED_DIMENSION = -1;
 
@@ -31,24 +35,44 @@ public final class ResourceUtils {
         // This utility class is not publicly instantiable.
     }
 
+    private static final String DEFAULT_PREFIX = "DEFAULT,";
     private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
     private static final HashMap<String, String> sDeviceOverrideValueMap =
             CollectionUtils.newHashMap();
 
-    public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
+    public static String getDeviceOverrideValue(final Resources res, final int overrideResId) {
         final int orientation = res.getConfiguration().orientation;
         final String key = overrideResId + "-" + orientation;
-        if (!sDeviceOverrideValueMap.containsKey(key)) {
-            String overrideValue = defValue;
-            for (final String element : res.getStringArray(overrideResId)) {
-                if (element.startsWith(HARDWARE_PREFIX)) {
-                    overrideValue = element.substring(HARDWARE_PREFIX.length());
-                    break;
-                }
+        if (sDeviceOverrideValueMap.containsKey(key)) {
+            return sDeviceOverrideValueMap.get(key);
+        }
+
+        final String[] overrideArray = res.getStringArray(overrideResId);
+        final String overrideValue = StringUtils.findPrefixedString(HARDWARE_PREFIX, overrideArray);
+        // The overrideValue might be an empty string.
+        if (overrideValue != null) {
+            if (DEBUG) {
+                Log.d(TAG, "Find override value:"
+                        + " resource="+ res.getResourceEntryName(overrideResId)
+                        + " Build.HARDWARE=" + Build.HARDWARE + " override=" + overrideValue);
             }
             sDeviceOverrideValueMap.put(key, overrideValue);
+            return overrideValue;
         }
-        return sDeviceOverrideValueMap.get(key);
+
+        final String defaultValue = StringUtils.findPrefixedString(DEFAULT_PREFIX, overrideArray);
+        // The defaultValue might be an empty string.
+        if (defaultValue == null) {
+            Log.w(TAG, "Couldn't find override value nor default value:"
+                    + " resource="+ res.getResourceEntryName(overrideResId)
+                    + " Build.HARDWARE=" + Build.HARDWARE);
+        } else if (DEBUG) {
+            Log.d(TAG, "Found default value:"
+                + " resource="+ res.getResourceEntryName(overrideResId)
+                + " Build.HARDWARE=" + Build.HARDWARE + " default=" + defaultValue);
+        }
+        sDeviceOverrideValueMap.put(key, defaultValue);
+        return defaultValue;
     }
 
     public static boolean isValidFraction(final float fraction) {
@@ -85,8 +109,8 @@ public final class ResourceUtils {
         return a.getDimensionPixelSize(index, ResourceUtils.UNDEFINED_DIMENSION);
     }
 
-    public static float getDimensionOrFraction(TypedArray a, int index, int base,
-            float defValue) {
+    public static float getDimensionOrFraction(final TypedArray a, final int index, final int base,
+            final float defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null) {
             return defValue;
@@ -99,7 +123,7 @@ public final class ResourceUtils {
         return defValue;
     }
 
-    public static int getEnumValue(TypedArray a, int index, int defValue) {
+    public static int getEnumValue(final TypedArray a, final int index, final int defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null) {
             return defValue;
@@ -110,19 +134,19 @@ public final class ResourceUtils {
         return defValue;
     }
 
-    public static boolean isFractionValue(TypedValue v) {
+    public static boolean isFractionValue(final TypedValue v) {
         return v.type == TypedValue.TYPE_FRACTION;
     }
 
-    public static boolean isDimensionValue(TypedValue v) {
+    public static boolean isDimensionValue(final TypedValue v) {
         return v.type == TypedValue.TYPE_DIMENSION;
     }
 
-    public static boolean isIntegerValue(TypedValue v) {
+    public static boolean isIntegerValue(final TypedValue v) {
         return v.type >= TypedValue.TYPE_FIRST_INT && v.type <= TypedValue.TYPE_LAST_INT;
     }
 
-    public static boolean isStringValue(TypedValue v) {
+    public static boolean isStringValue(final TypedValue v) {
         return v.type == TypedValue.TYPE_STRING;
     }
 }
