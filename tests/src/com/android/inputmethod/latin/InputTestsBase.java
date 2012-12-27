@@ -275,7 +275,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         if (subtype == null) {
             fail("InputMethodSubtype for locale " + locale + " is not enabled");
         }
-        SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        SubtypeSwitcher.getInstance().onSubtypeChanged(subtype);
         mLatinIME.loadKeyboard();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();

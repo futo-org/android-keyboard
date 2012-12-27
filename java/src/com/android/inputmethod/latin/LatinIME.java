@@ -582,10 +582,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onConfigurationChanged(final Configuration conf) {
-        // System locale has been changed. Needs to reload keyboard.
-        if (mSubtypeSwitcher.onConfigurationChanged(conf)) {
-            loadKeyboard();
-        }
         // If orientation changed while predicting, commit the change
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
@@ -651,7 +647,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
-        mSubtypeSwitcher.updateSubtype(subtype);
+        mSubtypeSwitcher.onSubtypeChanged(subtype);
         loadKeyboard();
     }
 
@@ -719,15 +715,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final boolean inputTypeChanged = !mCurrentSettings.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
-            final boolean currentSubtypeEnabled = mSubtypeSwitcher
-                    .updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
-            if (!currentSubtypeEnabled) {
-                // Current subtype is disabled. Needs to update subtype and keyboard.
-                final InputMethodSubtype newSubtype = mRichImm.getCurrentInputMethodSubtype(
-                        mSubtypeSwitcher.getNoLanguageSubtype());
-                mSubtypeSwitcher.updateSubtype(newSubtype);
-                loadKeyboard();
-            }
+            mSubtypeSwitcher.updateParametersOnStartInputView();
         }
 
         // The EditorInfo might have a flag that affects fullscreen mode.

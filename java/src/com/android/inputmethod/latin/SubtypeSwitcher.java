@@ -20,7 +20,6 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.REQ_NET
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.net.ConnectivityManager;
@@ -53,9 +52,6 @@ public final class SubtypeSwitcher {
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
-    // Note: This variable is always non-null after {@link #initialize(LatinIME)}.
-    private InputMethodSubtype mCurrentSubtype;
-    private Locale mCurrentSystemLocale;
     /*-----------------------------------------------------------*/
 
     private boolean mIsNetworkConnected;
@@ -84,7 +80,6 @@ public final class SubtypeSwitcher {
     public static void init(final Context context) {
         SubtypeLocale.init(context);
         sInstance.initialize(context);
-        sInstance.updateAllParameters();
     }
 
     private SubtypeSwitcher() {
@@ -96,60 +91,28 @@ public final class SubtypeSwitcher {
         mRichImm = RichInputMethodManager.getInstance();
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
-        mCurrentSystemLocale = mResources.getConfiguration().locale;
         mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
-        mCurrentSubtype = mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype);
         if (mNoLanguageSubtype == null) {
             throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
         }
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
-    }
 
-    // Update all parameters stored in SubtypeSwitcher.
-    // Only configuration changed event is allowed to call this because this is heavy.
-    private void updateAllParameters() {
-        mCurrentSystemLocale = mResources.getConfiguration().locale;
-        updateSubtype(mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype));
-        updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
+        onSubtypeChanged(getCurrentSubtype());
+        updateParametersOnStartInputView();
     }
 
     /**
-     * Update parameters which are changed outside LatinIME. This parameters affect UI so they
-     * should be updated every time onStartInputView.
-     *
-     * @return true if the current subtype is enabled.
+     * Update parameters which are changed outside LatinIME. This parameters affect UI so that they
+     * should be updated every time onStartInputView is called.
      */
-    public boolean updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled() {
-        final boolean currentSubtypeEnabled =
-                updateEnabledSubtypesAndReturnIfEnabled(mCurrentSubtype);
-        updateShortcutIME();
-        return currentSubtypeEnabled;
-    }
-
-    /**
-     * Update enabled subtypes from the framework.
-     *
-     * @param subtype the subtype to be checked
-     * @return true if the {@code subtype} is enabled.
-     */
-    private boolean updateEnabledSubtypesAndReturnIfEnabled(final InputMethodSubtype subtype) {
+    public void updateParametersOnStartInputView() {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                 mRichImm.getInputMethodManager().getEnabledInputMethodSubtypeList(null, true);
         mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
-
-        for (final InputMethodSubtype ims : enabledSubtypesOfThisIme) {
-            if (ims.equals(subtype)) {
-                return true;
-            }
-        }
-        if (DBG) {
-            Log.w(TAG, "Subtype: " + subtype.getLocale() + "/" + subtype.getExtraValue()
-                    + " was disabled");
-        }
-        return false;
+        updateShortcutIME();
     }
 
     private void updateShortcutIME() {
@@ -185,25 +148,21 @@ public final class SubtypeSwitcher {
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void updateSubtype(InputMethodSubtype newSubtype) {
+    public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
         if (DBG) {
-            Log.w(TAG, "onCurrentInputMethodSubtypeChanged: to: "
-                    + newSubtype.getLocale() + "/" + newSubtype.getExtraValue() + ", from: "
-                    + mCurrentSubtype.getLocale() + "/" + mCurrentSubtype.getExtraValue());
+            Log.w(TAG, "onSubtypeChanged: " + SubtypeLocale.getSubtypeDisplayName(
+                    newSubtype, mResources));
         }
 
         final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
-        final boolean sameLocale = mCurrentSystemLocale.equals(newLocale);
-        final boolean sameLanguage = mCurrentSystemLocale.getLanguage().equals(
-                newLocale.getLanguage());
+        final Locale systemLocale = mResources.getConfiguration().locale;
+        final boolean sameLocale = systemLocale.equals(newLocale);
+        final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
         final boolean implicitlyEnabled =
                 mRichImm.checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
         mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
                 sameLocale || (sameLanguage && implicitlyEnabled));
 
-        if (newSubtype.equals(mCurrentSubtype)) return;
-
-        mCurrentSubtype = newSubtype;
         updateShortcutIME();
     }
 
@@ -281,21 +240,11 @@ public final class SubtypeSwitcher {
     }
 
     public Locale getCurrentSubtypeLocale() {
-        return SubtypeLocale.getSubtypeLocale(mCurrentSubtype);
-    }
-
-    public boolean onConfigurationChanged(final Configuration conf) {
-        final Locale systemLocale = conf.locale;
-        final boolean systemLocaleChanged = !systemLocale.equals(mCurrentSystemLocale);
-        // If system configuration was changed, update all parameters.
-        if (systemLocaleChanged) {
-            updateAllParameters();
-        }
-        return systemLocaleChanged;
+        return SubtypeLocale.getSubtypeLocale(getCurrentSubtype());
     }
 
     public InputMethodSubtype getCurrentSubtype() {
-        return mCurrentSubtype;
+        return mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype);
     }
 
     public InputMethodSubtype getNoLanguageSubtype() {
