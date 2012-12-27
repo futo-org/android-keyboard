@@ -16,10 +16,8 @@
 
 package com.android.inputmethod.latin;
 
-import android.app.AlertDialog;
 import android.app.backup.BackupManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -31,12 +29,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.inputmethod.InputMethodSubtype;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
@@ -94,9 +87,6 @@ public final class Settings extends InputMethodSettingsFragment
     private CheckBoxPreference mBigramPrediction;
     private Preference mDebugSettingsPreference;
 
-    private TextView mKeypressVibrationDurationSettingsTextView;
-    private TextView mKeypressSoundVolumeSettingsTextView;
-
     private static void setPreferenceEnabled(final Preference preference, final boolean enabled) {
         if (preference != null) {
             preference.setEnabled(enabled);
@@ -127,7 +117,7 @@ public final class Settings extends InputMethodSettingsFragment
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
-        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
         mAutoCorrectionThresholdPreference =
@@ -227,7 +217,9 @@ public final class Settings extends InputMethodSettingsFragment
                             return true;
                         }
                     });
-            updateKeypressVibrationDurationSettingsSummary(prefs, res);
+            mKeypressVibrationDurationSettingsPref.setSummary(
+                    res.getString(R.string.settings_keypress_vibration_duration,
+                            SettingsValues.getCurrentVibrationDuration(prefs, res)));
         }
 
         mKeypressSoundVolumeSettingsPref =
@@ -241,7 +233,8 @@ public final class Settings extends InputMethodSettingsFragment
                             return true;
                         }
                     });
-            updateKeypressSoundVolumeSummary(prefs, res);
+            mKeypressSoundVolumeSettingsPref.setSummary(String.valueOf(
+                    getCurrentKeyPressSoundVolumePercent(prefs, res)));
         }
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, res);
     }
@@ -349,122 +342,73 @@ public final class Settings extends InputMethodSettingsFragment
         }
     }
 
-    private void updateKeypressVibrationDurationSettingsSummary(
-            final SharedPreferences sp, final Resources res) {
-        if (mKeypressVibrationDurationSettingsPref != null) {
-            mKeypressVibrationDurationSettingsPref.setSummary(
-                    SettingsValues.getCurrentVibrationDuration(sp, res)
-                            + res.getString(R.string.settings_ms));
-        }
-    }
-
     private void showKeypressVibrationDurationSettingsDialog() {
         final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
         final Context context = getActivity();
-        final Resources res = context.getResources();
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.prefs_keypress_vibration_duration_settings);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final PreferenceScreen settingsPref = mKeypressVibrationDurationSettingsPref;
+        final SeekBarDialog.Listener listener = new SeekBarDialog.Adapter() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                final int ms = Integer.valueOf(
-                        mKeypressVibrationDurationSettingsTextView.getText().toString());
+            public void onPositiveButtonClick(final SeekBarDialog dialog) {
+                final int ms = dialog.getValue();
                 sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, ms).apply();
-                updateKeypressVibrationDurationSettingsSummary(sp, res);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        final View v = LayoutInflater.from(context).inflate(
-                R.layout.vibration_settings_dialog, null);
-        final int currentMs = SettingsValues.getCurrentVibrationDuration(
-                getPreferenceManager().getSharedPreferences(), getResources());
-        mKeypressVibrationDurationSettingsTextView = (TextView)v.findViewById(R.id.vibration_value);
-        final SeekBar sb = (SeekBar)v.findViewById(R.id.vibration_settings);
-        sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-                final int tempMs = arg1;
-                mKeypressVibrationDurationSettingsTextView.setText(String.valueOf(tempMs));
+                if (settingsPref != null) {
+                    settingsPref.setSummary(dialog.getValueText());
+                }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar arg0) {
+            public void onStopTrackingTouch(final SeekBarDialog dialog) {
+                final int ms = dialog.getValue();
+                VibratorUtils.getInstance(context).vibrate(ms);
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar arg0) {
-                final int tempMs = arg0.getProgress();
-                VibratorUtils.getInstance(context).vibrate(tempMs);
-            }
-        });
-        sb.setProgress(currentMs);
-        mKeypressVibrationDurationSettingsTextView.setText(String.valueOf(currentMs));
-        builder.setView(v);
-        builder.create().show();
+        };
+        final int currentMs = SettingsValues.getCurrentVibrationDuration(sp, getResources());
+        final SeekBarDialog.Builder builder = new SeekBarDialog.Builder(context);
+        builder.setTitle(R.string.prefs_keypress_vibration_duration_settings)
+            .setListener(listener)
+            .setMaxValue(AudioAndHapticFeedbackManager.MAX_KEYPRESS_VIBRATION_DURATION)
+            .setValueFromat(R.string.settings_keypress_vibration_duration)
+            .setValue(currentMs)
+            .create()
+            .show();
     }
 
-    private void updateKeypressSoundVolumeSummary(final SharedPreferences sp, final Resources res) {
-        if (mKeypressSoundVolumeSettingsPref != null) {
-            mKeypressSoundVolumeSettingsPref.setSummary(String.valueOf(
-                    (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100)));
-        }
+    private static final int PERCENT_INT = 100;
+    private static final float PERCENT_FLOAT = 100.0f;
+
+    private static int getCurrentKeyPressSoundVolumePercent(final SharedPreferences sp,
+            final Resources res) {
+        return (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * PERCENT_FLOAT);
     }
 
     private void showKeypressSoundVolumeSettingDialog() {
+        final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
         final Context context = getActivity();
         final AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
-        final Resources res = context.getResources();
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.prefs_keypress_sound_volume_settings);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final PreferenceScreen settingsPref = mKeypressSoundVolumeSettingsPref;
+        final SeekBarDialog.Listener listener = new SeekBarDialog.Adapter() {
             @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                final float volume =
-                        ((float)Integer.valueOf(
-                                mKeypressSoundVolumeSettingsTextView.getText().toString())) / 100;
+            public void onPositiveButtonClick(final SeekBarDialog dialog) {
+                final float volume = dialog.getValue() / PERCENT_FLOAT;
                 sp.edit().putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, volume).apply();
-                updateKeypressSoundVolumeSummary(sp, res);
-            }
-        });
-        builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        final View v = LayoutInflater.from(context).inflate(
-                R.layout.sound_effect_volume_dialog, null);
-        final int currentVolumeInt =
-                (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100);
-        mKeypressSoundVolumeSettingsTextView =
-                (TextView)v.findViewById(R.id.sound_effect_volume_value);
-        final SeekBar sb = (SeekBar)v.findViewById(R.id.sound_effect_volume_bar);
-        sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
-                final int tempVolume = arg1;
-                mKeypressSoundVolumeSettingsTextView.setText(String.valueOf(tempVolume));
+                if (settingsPref != null) {
+                    settingsPref.setSummary(dialog.getValueText());
+                }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar arg0) {
+            public void onStopTrackingTouch(final SeekBarDialog dialog) {
+                final float volume = dialog.getValue() / PERCENT_FLOAT;
+                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, volume);
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar arg0) {
-                final float tempVolume = ((float)arg0.getProgress()) / 100;
-                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, tempVolume);
-            }
-        });
-        sb.setProgress(currentVolumeInt);
-        mKeypressSoundVolumeSettingsTextView.setText(String.valueOf(currentVolumeInt));
-        builder.setView(v);
-        builder.create().show();
+        };
+        final SeekBarDialog.Builder builder = new SeekBarDialog.Builder(context);
+        final int currentVolumeInt = getCurrentKeyPressSoundVolumePercent(sp, getResources());
+        builder.setTitle(R.string.prefs_keypress_sound_volume_settings)
+            .setListener(listener)
+            .setMaxValue(PERCENT_INT)
+            .setValue(currentVolumeInt)
+            .create()
+            .show();
     }
 }

@@ -30,6 +30,8 @@ import com.android.inputmethod.latin.VibratorUtils;
  * complexity of settings and the like.
  */
 public final class AudioAndHapticFeedbackManager {
+    public static final int MAX_KEYPRESS_VIBRATION_DURATION = 250; // millisecond
+
     private final AudioManager mAudioManager;
     private final VibratorUtils mVibratorUtils;
 
