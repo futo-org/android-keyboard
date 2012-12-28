@@ -76,6 +76,9 @@
     <!-- Description for delay for dismissing a popup on screen: default value of the delay [CHAR LIMIT=15] -->
     <string name="key_preview_popup_dismiss_default_delay">Default</string>
 
+    <!-- Units abbreviation for the keypress vibration duration (milliseconds) [CHAR LIMIT=10] -->
+    <string name="settings_keypress_vibration_duration"><xliff:g id="milliseconds">%s</xliff:g>ms</string>
+
     <!-- Option name for enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=25] -->
     <string name="use_contacts_dict">Suggest Contact names</string>
     <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
