@@ -997,9 +997,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final boolean isAutoCorrection = false;
         setSuggestionStrip(suggestedWords, isAutoCorrection);
         setAutoCorrectionIndicator(isAutoCorrection);
-        // TODO: is this the right thing to do? What should we auto-correct to in
-        // this case? This says to keep whatever the user typed.
-        mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
         setSuggestionStripShown(true);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
@@ -1989,7 +1986,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
-                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
             }
             return;
         }
