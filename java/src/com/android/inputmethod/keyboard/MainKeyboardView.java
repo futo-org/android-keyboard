@@ -393,8 +393,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mHasDistinctMultitouch = hasDistinctMultitouch && !forceNonDistinctMultitouch;
         final Resources res = getResources();
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-                ResourceUtils.getDeviceOverrideValue(res,
-                        R.array.phantom_sudden_move_event_device_list, "false"));
+                ResourceUtils.getDeviceOverrideValue(
+                        res, R.array.phantom_sudden_move_event_device_list));
         PointerTracker.init(needsPhantomSuddenMoveEventHack);
 
         final TypedArray a = context.obtainStyledAttributes(

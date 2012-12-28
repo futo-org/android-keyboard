@@ -62,6 +62,23 @@ public final class StringUtils {
     }
 
     /**
+     * Find a string that start with specified prefix from an array.
+     *
+     * @param prefix a prefix string to find.
+     * @param array an string array to be searched.
+     * @return the rest part of the string that starts with the prefix.
+     * Returns null if it couldn't be found.
+     */
+    public static String findPrefixedString(final String prefix, final String[] array) {
+        for (final String element : array) {
+            if (element.startsWith(prefix)) {
+                return element.substring(prefix.length());
+            }
+        }
+        return null;
+    }
+
+    /**
      * Remove duplicates from an array of strings.
      *
      * This method will always keep the first occurrence of all strings at their position

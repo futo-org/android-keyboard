@@ -24,5 +24,7 @@
         <item>tuna,5</item>
         <item>mako,5</item>
         <item>manta,16</item>
+        <!-- Default value for unknown device -->
+        <item>DEFAULT,10</item>
     </string-array>
 </resources>

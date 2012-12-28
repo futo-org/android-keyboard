@@ -78,10 +78,6 @@ public final class SettingsValues {
     public final boolean mUseDoubleSpacePeriod;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
-    @SuppressWarnings("unused") // TODO: Use this
-    private final int mVibrationDurationSettingsRawValue;
-    @SuppressWarnings("unused") // TODO: Use this
-    private final float mKeypressSoundVolumeRawValue;
     public final boolean mGestureInputEnabled;
     public final boolean mGesturePreviewTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
@@ -158,9 +154,6 @@ public final class SettingsValues {
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
         mBigramPredictionEnabled = isBigramPredictionEnabled(prefs, res);
-        mVibrationDurationSettingsRawValue =
-                prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
-        mKeypressSoundVolumeRawValue = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
 
         // Compute other readable settings
         mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
@@ -383,27 +376,23 @@ public final class SettingsValues {
     // Accessed from the settings interface, hence public
     public static float getCurrentKeypressSoundVolume(final SharedPreferences prefs,
             final Resources res) {
-        // TODO: use mVibrationDurationSettingsRawValue instead of reading it again here
         final float volume = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
         if (volume >= 0) {
             return volume;
         }
-
-        return Float.parseFloat(ResourceUtils.getDeviceOverrideValue(
-                res, R.array.keypress_volumes, "-1.0f"));
+        return Float.parseFloat(
+                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
     }
 
     // Likewise
     public static int getCurrentVibrationDuration(final SharedPreferences prefs,
             final Resources res) {
-        // TODO: use mKeypressVibrationDuration instead of reading it again here
         final int ms = prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
         if (ms >= 0) {
             return ms;
         }
-
-        return Integer.parseInt(ResourceUtils.getDeviceOverrideValue(
-                res, R.array.keypress_vibration_durations, "-1"));
+        return Integer.parseInt(
+                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
     }
 
     // Likewise
