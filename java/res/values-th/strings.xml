@@ -42,6 +42,8 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"หน่วงเวลาก่อนปิดป๊อปอัพหลัก"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ไม่มีการหน่วงเวลา"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ค่าเริ่มต้น"</string>
+    <!-- no translation found for settings_keypress_vibration_duration (489402970497503329) -->
+    <skip />
     <string name="use_contacts_dict" msgid="4435317977804180815">"แนะนำชื่อผู้ติดต่อ"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"ใช้ชื่อจากรายชื่อติดต่อสำหรับคำแนะนำและการแก้ไข"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"แตะ Space สองครั้งแทรกจุด"</string>
