@@ -29,7 +29,7 @@ import android.view.inputmethod.EditorInfo;
  * the IME needs to take a note of what it has to replace and where it is.
  * This class encapsulates this data.
  */
-public class PositionalInfoForUserDictPendingAddition {
+public final class PositionalInfoForUserDictPendingAddition {
     final private String mOriginalWord;
     final private int mCursorPos; // Position of the cursor after the word
     final private EditorInfo mEditorInfo; // On what binding this has been added

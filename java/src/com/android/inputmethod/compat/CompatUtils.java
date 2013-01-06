@@ -31,8 +31,8 @@ public final class CompatUtils {
     private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
             "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
 
-    public static Intent getInputLanguageSelectionIntent(String inputMethodId,
-            int flagsForSubtypeSettings) {
+    public static Intent getInputLanguageSelectionIntent(final String inputMethodId,
+            final int flagsForSubtypeSettings) {
         // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
         final String action = INPUT_METHOD_SUBTYPE_SETTINGS;
         final Intent intent = new Intent(action);
@@ -45,7 +45,7 @@ public final class CompatUtils {
         return intent;
     }
 
-    public static Class<?> getClass(String className) {
+    public static Class<?> getClass(final String className) {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -53,8 +53,8 @@ public final class CompatUtils {
         }
     }
 
-    public static Method getMethod(Class<?> targetClass, String name,
-            Class<?>... parameterTypes) {
+    public static Method getMethod(final Class<?> targetClass, final String name,
+            final Class<?>... parameterTypes) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getMethod(name, parameterTypes);
@@ -66,7 +66,7 @@ public final class CompatUtils {
         return null;
     }
 
-    public static Field getField(Class<?> targetClass, String name) {
+    public static Field getField(final Class<?> targetClass, final String name) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getField(name);
@@ -78,7 +78,8 @@ public final class CompatUtils {
         return null;
     }
 
-    public static Constructor<?> getConstructor(Class<?> targetClass, Class<?> ... types) {
+    public static Constructor<?> getConstructor(final Class<?> targetClass,
+            final Class<?> ... types) {
         if (targetClass == null || types == null) return null;
         try {
             return targetClass.getConstructor(types);
@@ -90,7 +91,7 @@ public final class CompatUtils {
         return null;
     }
 
-    public static Object newInstance(Constructor<?> constructor, Object ... args) {
+    public static Object newInstance(final Constructor<?> constructor, final Object ... args) {
         if (constructor == null) return null;
         try {
             return constructor.newInstance(args);
@@ -100,8 +101,8 @@ public final class CompatUtils {
         return null;
     }
 
-    public static Object invoke(
-            Object receiver, Object defaultValue, Method method, Object... args) {
+    public static Object invoke(final Object receiver, final Object defaultValue,
+            final Method method, final Object... args) {
         if (method == null) return defaultValue;
         try {
             return method.invoke(receiver, args);
@@ -111,7 +112,8 @@ public final class CompatUtils {
         return defaultValue;
     }
 
-    public static Object getFieldValue(Object receiver, Object defaultValue, Field field) {
+    public static Object getFieldValue(final Object receiver, final Object defaultValue,
+            final Field field) {
         if (field == null) return defaultValue;
         try {
             return field.get(receiver);
@@ -121,7 +123,7 @@ public final class CompatUtils {
         return defaultValue;
     }
 
-    public static void setFieldValue(Object receiver, Field field, Object value) {
+    public static void setFieldValue(final Object receiver, final Field field, final Object value) {
         if (field == null) return;
         try {
             field.set(receiver, value);

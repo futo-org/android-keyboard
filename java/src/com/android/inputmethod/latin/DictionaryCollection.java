@@ -38,7 +38,7 @@ public final class DictionaryCollection extends Dictionary {
         mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
     }
 
-    public DictionaryCollection(final String dictType, Dictionary... dictionaries) {
+    public DictionaryCollection(final String dictType, final Dictionary... dictionaries) {
         super(dictType);
         if (null == dictionaries) {
             mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
@@ -48,7 +48,7 @@ public final class DictionaryCollection extends Dictionary {
         }
     }
 
-    public DictionaryCollection(final String dictType, Collection<Dictionary> dictionaries) {
+    public DictionaryCollection(final String dictType, final Collection<Dictionary> dictionaries) {
         super(dictType);
         mDictionaries = CollectionUtils.newCopyOnWriteArrayList(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));

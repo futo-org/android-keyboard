@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.util.HashMap;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ import java.util.Set;
  * All bigrams including stale ones in SQL DB should be stored in this class to avoid adding stale
  * bigrams when we write to the SQL DB.
  */
+@UsedForTesting
 public final class UserHistoryDictionaryBigramList {
     public static final byte FORGETTING_CURVE_INITIAL_VALUE = 0;
     private static final String TAG = UserHistoryDictionaryBigramList.class.getSimpleName();

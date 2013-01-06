@@ -61,7 +61,7 @@ public final class Utils {
         }
     }
 
-    /* package */ static class RingCharBuffer {
+    /* package */ static final class RingCharBuffer {
         private static RingCharBuffer sRingCharBuffer = new RingCharBuffer();
         private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
         private static final int INVALID_COORDINATE = -2;
@@ -203,7 +203,7 @@ public final class Utils {
         }
 
         // Initialization-on-demand holder
-        private static class OnDemandInitializationHolder {
+        private static final class OnDemandInitializationHolder {
             public static final UsabilityStudyLogUtils sInstance = new UsabilityStudyLogUtils();
         }
 
