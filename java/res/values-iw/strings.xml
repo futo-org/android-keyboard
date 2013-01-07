@@ -42,8 +42,7 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"עיכוב סגירת חלון קופץ של מקש"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ללא עיכוב"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ברירת מחדל"</string>
-    <!-- no translation found for settings_keypress_vibration_duration (489402970497503329) -->
-    <skip />
+    <string name="settings_keypress_vibration_duration" msgid="489402970497503329">"<xliff:g id="MILLISECONDS">%s</xliff:g> אלפ\' שניה"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"הצע שמות של אנשי קשר"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"השתמש בשמות מרשימת אנשי הקשר עבור הצעות ותיקונים"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"רווח כפול לנקודה"</string>
