@@ -413,14 +413,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mResources = getResources();
 
-        LatinImeLogger.init(this, mPrefs);
+        LatinImeLogger.init(this);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, mPrefs);
+            ResearchLogger.getInstance().init(this);
         }
-        RichInputMethodManager.init(this, mPrefs);
+        RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
         SubtypeSwitcher.init(this);
-        KeyboardSwitcher.init(this, mPrefs);
+        KeyboardSwitcher.init(this);
         AccessibilityUtils.init(this);
 
         super.onCreate();

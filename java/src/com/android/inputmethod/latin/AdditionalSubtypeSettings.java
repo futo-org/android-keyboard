@@ -387,7 +387,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
         super.onCreate(savedInstanceState);
 
         mPrefs = getPreferenceManager().getSharedPreferences();
-        RichInputMethodManager.init(getActivity(), mPrefs);
+        RichInputMethodManager.init(getActivity());
         mRichImm = RichInputMethodManager.getInstance();
         addPreferencesFromResource(R.xml.additional_subtype_settings);
         setHasOptionsMenu(true);

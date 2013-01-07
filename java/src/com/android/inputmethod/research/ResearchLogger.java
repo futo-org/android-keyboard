@@ -38,6 +38,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -161,7 +162,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final LatinIME latinIME, final SharedPreferences prefs) {
+    public void init(final LatinIME latinIME) {
         assert latinIME != null;
         if (latinIME == null) {
             Log.w(TAG, "IMS is null; logging is off");
@@ -171,6 +172,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Log.w(TAG, "IME storage directory does not exist.");
             }
         }
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
         if (prefs != null) {
             mUUIDString = getUUID(prefs);
             if (!prefs.contains(PREF_USABILITY_STUDY_MODE)) {

@@ -21,6 +21,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
@@ -50,7 +51,8 @@ public final class RichInputMethodManager {
         return sInstance;
     }
 
-    public static void init(final Context context, final SharedPreferences prefs) {
+    public static void init(final Context context) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sInstance.initInternal(context, prefs);
     }
 

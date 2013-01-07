@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -50,7 +51,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
         // Note: The themeId should be aligned with "themeId" attribute of Keyboard style
         // in values/style.xml.
-        public KeyboardTheme(int themeId, int styleId) {
+        public KeyboardTheme(final int themeId, final int styleId) {
             mThemeId = themeId;
             mStyleId = styleId;
         }
@@ -95,11 +96,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         // Intentional empty constructor for singleton.
     }
 
-    public static void init(LatinIME latinIme, SharedPreferences prefs) {
+    public static void init(final LatinIME latinIme) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIme);
         sInstance.initInternal(latinIme, prefs);
     }
 
-    private void initInternal(LatinIME latinIme, SharedPreferences prefs) {
+    private void initInternal(final LatinIME latinIme, final SharedPreferences prefs) {
         mLatinIME = latinIme;
         mResources = latinIme.getResources();
         mFeedbackManager = new AudioAndHapticFeedbackManager(latinIme);
@@ -109,7 +111,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setContextThemeWrapper(latinIme, getKeyboardTheme(latinIme, prefs));
     }
 
-    private static KeyboardTheme getKeyboardTheme(Context context, SharedPreferences prefs) {
+    private static KeyboardTheme getKeyboardTheme(final Context context,
+            final SharedPreferences prefs) {
         final String defaultIndex = context.getString(R.string.config_default_keyboard_theme_index);
         final String themeIndex = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultIndex);
         try {
@@ -124,7 +127,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return KEYBOARD_THEMES[0];
     }
 
-    private void setContextThemeWrapper(Context context, KeyboardTheme keyboardTheme) {
+    private void setContextThemeWrapper(final Context context, final KeyboardTheme keyboardTheme) {
         if (mThemeContext == null || mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
@@ -132,7 +135,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
+    public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues) {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
@@ -210,14 +213,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onResetKeyboardStateToAlphabet();
     }
 
-    public void onPressKey(int code) {
+    public void onPressKey(final int code) {
         if (isVibrateAndSoundFeedbackRequired()) {
             mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
         }
         mState.onPressKey(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
-    public void onReleaseKey(int code, boolean withSliding) {
+    public void onReleaseKey(final int code, final boolean withSliding) {
         mState.onReleaseKey(code, withSliding);
     }
 
@@ -303,7 +306,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
-    public void startLongPressTimer(int code) {
+    public void startLongPressTimer(final int code) {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
@@ -323,11 +326,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
-    public void hapticAndAudioFeedback(int code) {
+    public void hapticAndAudioFeedback(final int code) {
         mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
     }
 
-    public void onLongPressTimeout(int code) {
+    public void onLongPressTimeout(final int code) {
         mState.onLongPressTimeout(code);
     }
 
@@ -346,7 +349,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onCodeInput(int code) {
+    public void onCodeInput(final int code) {
         mState.onCodeInput(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
@@ -354,7 +357,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return mKeyboardView;
     }
 
-    public View onCreateInputView(boolean isHardwareAcceleratedDrawingEnabled) {
+    public View onCreateInputView(final boolean isHardwareAcceleratedDrawingEnabled) {
         if (mKeyboardView != null) {
             mKeyboardView.closing();
         }
@@ -383,7 +386,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
+    public void onAutoCorrectionStateChanged(final boolean isAutoCorrection) {
         if (mIsAutoCorrectionActive != isAutoCorrection) {
             mIsAutoCorrectionActive = isAutoCorrection;
             if (mKeyboardView != null) {
