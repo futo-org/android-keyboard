@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -42,8 +41,7 @@ public class SpacebarTextTests extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        RichInputMethodManager.init(
-                context, PreferenceManager.getDefaultSharedPreferences(context));
+        RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
         mRes = context.getResources();
         SubtypeLocale.init(context);

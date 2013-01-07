@@ -31,7 +31,7 @@ public final class LatinImeLogger implements SharedPreferences.OnSharedPreferenc
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     }
 
-    public static void init(LatinIME context, SharedPreferences prefs) {
+    public static void init(LatinIME context) {
     }
 
     public static void commit() {
