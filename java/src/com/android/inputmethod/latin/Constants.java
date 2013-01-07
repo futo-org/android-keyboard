@@ -111,7 +111,7 @@ public final class Constants {
         }
     }
 
-    public static class TextUtils {
+    public static final class TextUtils {
         /**
          * Capitalization mode for {@link android.text.TextUtils#getCapsMode}: don't capitalize
          * characters.  This value may be used with
@@ -126,7 +126,7 @@ public final class Constants {
         }
     }
 
-    public static class Dictionary {
+    public static final class Dictionary {
         public static final int MAX_WORD_LENGTH = 48;
 
         private Dictionary() {

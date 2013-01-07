@@ -21,23 +21,23 @@ import android.view.inputmethod.EditorInfo;
 import java.lang.reflect.Field;
 
 public final class EditorInfoCompatUtils {
-    // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
+    // Note that EditorInfo.IME_FLAG_FORCE_ASCII has been introduced
+    // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
     private static final Field FIELD_IME_FLAG_FORCE_ASCII = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_FORCE_ASCII");
-    private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_IME_FLAG_FORCE_ASCII);
+    private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils.getFieldValue(
+            null /* receiver */, null /* defaultValue */, FIELD_IME_FLAG_FORCE_ASCII);
 
     private EditorInfoCompatUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    public static boolean hasFlagForceAscii(int imeOptions) {
-        if (OBJ_IME_FLAG_FORCE_ASCII == null)
-            return false;
+    public static boolean hasFlagForceAscii(final int imeOptions) {
+        if (OBJ_IME_FLAG_FORCE_ASCII == null) return false;
         return (imeOptions & OBJ_IME_FLAG_FORCE_ASCII) != 0;
     }
 
-    public static String imeActionName(int imeOptions) {
+    public static String imeActionName(final int imeOptions) {
         final int actionId = imeOptions & EditorInfo.IME_MASK_ACTION;
         switch (actionId) {
         case EditorInfo.IME_ACTION_UNSPECIFIED:
@@ -61,7 +61,7 @@ public final class EditorInfoCompatUtils {
         }
     }
 
-    public static String imeOptionsName(int imeOptions) {
+    public static String imeOptionsName(final int imeOptions) {
         final String action = imeActionName(imeOptions);
         final StringBuilder flags = new StringBuilder();
         if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {

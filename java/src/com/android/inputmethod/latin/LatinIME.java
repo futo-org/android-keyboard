@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.os.Build.VERSION_CODES;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -1318,10 +1319,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             return;
         }
 
-        // 16 is android.os.Build.VERSION_CODES.JELLY_BEAN but we can't write it because
-        // we want to be able to compile against the Ice Cream Sandwich SDK.
         if (Constants.CODE_ENTER == code && mTargetApplicationInfo != null
-                && mTargetApplicationInfo.targetSdkVersion < 16) {
+                && mTargetApplicationInfo.targetSdkVersion < VERSION_CODES.JELLY_BEAN) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
@@ -1736,10 +1735,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                // 16 is android.os.Build.VERSION_CODES.JELLY_BEAN but we can't write it because
-                // we want to be able to compile against the Ice Cream Sandwich SDK.
                 if (mTargetApplicationInfo != null
-                        && mTargetApplicationInfo.targetSdkVersion < 16) {
+                        && mTargetApplicationInfo.targetSdkVersion < VERSION_CODES.JELLY_BEAN) {
                     // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
                     // a hardware keyboard event on pressing enter or delete. This is bad for many
                     // reasons (there are race conditions with commits) but some applications are

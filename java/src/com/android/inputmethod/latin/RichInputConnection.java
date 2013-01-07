@@ -284,40 +284,40 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
             if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-            // This method is only called for enter or backspace when speaking to old
-            // applications (target SDK <= 15), or for digits.
+            // This method is only called for enter or backspace when speaking to old applications
+            // (target SDK <= 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)), or for digits.
             // When talking to new applications we never use this method because it's inherently
             // racy and has unpredictable results, but for backward compatibility we continue
             // sending the key events for only Enter and Backspace because some applications
             // mistakenly catch them to do some stuff.
             switch (keyEvent.getKeyCode()) {
-                case KeyEvent.KEYCODE_ENTER:
-                    mCommittedTextBeforeComposingText.append("\n");
-                    mCurrentCursorPosition += 1;
-                    break;
-                case KeyEvent.KEYCODE_DEL:
-                    if (0 == mComposingText.length()) {
-                        if (mCommittedTextBeforeComposingText.length() > 0) {
-                            mCommittedTextBeforeComposingText.delete(
-                                    mCommittedTextBeforeComposingText.length() - 1,
-                                    mCommittedTextBeforeComposingText.length());
-                        }
-                    } else {
-                        mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
+            case KeyEvent.KEYCODE_ENTER:
+                mCommittedTextBeforeComposingText.append("\n");
+                mCurrentCursorPosition += 1;
+                break;
+            case KeyEvent.KEYCODE_DEL:
+                if (0 == mComposingText.length()) {
+                    if (mCommittedTextBeforeComposingText.length() > 0) {
+                        mCommittedTextBeforeComposingText.delete(
+                                mCommittedTextBeforeComposingText.length() - 1,
+                                mCommittedTextBeforeComposingText.length());
                     }
-                    if (mCurrentCursorPosition > 0) mCurrentCursorPosition -= 1;
-                    break;
-                case KeyEvent.KEYCODE_UNKNOWN:
-                    if (null != keyEvent.getCharacters()) {
-                        mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
-                        mCurrentCursorPosition += keyEvent.getCharacters().length();
-                    }
-                    break;
-                default:
-                    final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
-                    mCommittedTextBeforeComposingText.append(text);
-                    mCurrentCursorPosition += text.length();
-                    break;
+                } else {
+                    mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
+                }
+                if (mCurrentCursorPosition > 0) mCurrentCursorPosition -= 1;
+                break;
+            case KeyEvent.KEYCODE_UNKNOWN:
+                if (null != keyEvent.getCharacters()) {
+                    mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
+                    mCurrentCursorPosition += keyEvent.getCharacters().length();
+                }
+                break;
+            default:
+                final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
+                mCommittedTextBeforeComposingText.append(text);
+                mCurrentCursorPosition += text.length();
+                break;
             }
         }
         if (null != mIC) {

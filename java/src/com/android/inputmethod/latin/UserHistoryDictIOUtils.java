@@ -48,6 +48,7 @@ public final class UserHistoryDictIOUtils {
         public void setBigram(final String word1, final String word2, final int frequency);
     }
 
+    @UsedForTesting
     public interface BigramDictionaryInterface {
         public int getFrequency(final String word1, final String word2);
     }

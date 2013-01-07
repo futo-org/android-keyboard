@@ -56,6 +56,7 @@ public final class BinaryDictInputOutput {
     private static final int MAX_PASSES = 24;
     private static final int MAX_JUMPS = 12;
 
+    @UsedForTesting
     public interface FusionDictionaryBufferInterface {
         public int readUnsignedByte();
         public int readUnsignedShort();

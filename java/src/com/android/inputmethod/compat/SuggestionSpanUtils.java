@@ -34,11 +34,12 @@ import java.util.ArrayList;
 public final class SuggestionSpanUtils {
     private static final String TAG = SuggestionSpanUtils.class.getSimpleName();
 
-    // Note that SuggestionSpan.FLAG_AUTO_CORRECTION was added in API level 15.
-    public static final Field FIELD_FLAG_AUTO_CORRECTION =
-            CompatUtils.getField(SuggestionSpan.class, "FLAG_AUTO_CORRECTION");
-    public static final Integer OBJ_FLAG_AUTO_CORRECTION =
-            (Integer) CompatUtils.getFieldValue(null, null, FIELD_FLAG_AUTO_CORRECTION);
+    // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
+    // in API level 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1).
+    public static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
+            SuggestionSpan.class, "FLAG_AUTO_CORRECTION");
+    public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
+            null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
 
     static {
         if (LatinImeLogger.sDBG) {
@@ -58,8 +59,9 @@ public final class SuggestionSpanUtils {
             return text;
         }
         final Spannable spannable = new SpannableString(text);
-        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null, new String[] {},
-                (int)OBJ_FLAG_AUTO_CORRECTION, SuggestionSpanPickedNotificationReceiver.class);
+        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
+                new String[] {} /* suggestions */, (int)OBJ_FLAG_AUTO_CORRECTION,
+                SuggestionSpanPickedNotificationReceiver.class);
         spannable.setSpan(suggestionSpan, 0, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
         return spannable;
@@ -87,8 +89,8 @@ public final class SuggestionSpanUtils {
 
         // TODO: We should avoid adding suggestion span candidates that came from the bigram
         // prediction.
-        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null,
-                suggestionsList.toArray(new String[suggestionsList.size()]), 0,
+        final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
+                suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
                 SuggestionSpanPickedNotificationReceiver.class);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
