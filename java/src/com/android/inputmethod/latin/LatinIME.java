@@ -2394,7 +2394,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-        if (mEventInterpreter.onHardwareKeyEvent(event)) return true;
         return super.onKeyUp(keyCode, event);
     }
 
