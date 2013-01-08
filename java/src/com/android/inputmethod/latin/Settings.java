@@ -114,6 +114,7 @@ public final class Settings extends InputMethodSettingsFragment
         // {@link SubtypeLocale} class may not have been initialized. It is safe to call
         // {@link SubtypeLocale#init(Context)} multiple times.
         SubtypeLocale.init(context);
+        AudioAndHapticFeedbackManager.init(context);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
@@ -154,7 +155,7 @@ public final class Settings extends InputMethodSettingsFragment
 
         final PreferenceGroup advancedSettings =
                 (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
-        if (!VibratorUtils.getInstance(context).hasVibrator()) {
+        if (!AudioAndHapticFeedbackManager.getInstance().hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
             if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
                 advancedSettings.removePreference(findPreference(PREF_VIBRATION_DURATION_SETTINGS));
@@ -327,8 +328,8 @@ public final class Settings extends InputMethodSettingsFragment
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
             final SharedPreferences sp, final Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
-            final boolean hasVibratorHardware = VibratorUtils.getInstance(getActivity())
-                    .hasVibrator();
+            final boolean hasVibratorHardware =
+                    AudioAndHapticFeedbackManager.getInstance().hasVibrator();
             final boolean vibrateOnByUser = sp.getBoolean(Settings.PREF_VIBRATE_ON,
                     res.getBoolean(R.bool.config_default_vibration_enabled));
             setPreferenceEnabled(mKeypressVibrationDurationSettingsPref,
@@ -359,7 +360,7 @@ public final class Settings extends InputMethodSettingsFragment
             @Override
             public void onStopTrackingTouch(final SeekBarDialog dialog) {
                 final int ms = dialog.getValue();
-                VibratorUtils.getInstance(context).vibrate(ms);
+                AudioAndHapticFeedbackManager.getInstance().vibrate(ms);
             }
         };
         final int currentMs = SettingsValues.getCurrentVibrationDuration(sp, getResources());
