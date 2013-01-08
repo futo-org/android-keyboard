@@ -32,12 +32,12 @@ import com.android.inputmethod.research.ResearchLogger;
 
 public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-
     private static final String TAG = DebugSettings.class.getSimpleName();
-    private static final String DEBUG_MODE_KEY = "debug_mode";
-    public static final String FORCE_NON_DISTINCT_MULTITOUCH_KEY = "force_non_distinct_multitouch";
+
+    public static final String PREF_DEBUG_MODE = "debug_mode";
+    public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    private static final String PREF_STATISTICS_LOGGING_KEY = "enable_logging";
+    public static final String PREF_STATISTICS_LOGGING = "enable_logging";
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
     private boolean mServiceNeedsRestart = false;
@@ -58,7 +58,7 @@ public final class DebugSettings extends PreferenceFragment
                     ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
             checkbox.setSummary(R.string.settings_warning_researcher_mode);
         }
-        final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING_KEY);
+        final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING);
         if (statisticsLoggingPref instanceof CheckBoxPreference) {
             mStatisticsLoggingPref = (CheckBoxPreference) statisticsLoggingPref;
             if (!SHOW_STATISTICS_LOGGING) {
@@ -67,7 +67,7 @@ public final class DebugSettings extends PreferenceFragment
         }
 
         mServiceNeedsRestart = false;
-        mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
+        mDebugMode = (CheckBoxPreference) findPreference(PREF_DEBUG_MODE);
         updateDebugMode();
     }
 
@@ -79,9 +79,9 @@ public final class DebugSettings extends PreferenceFragment
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(DEBUG_MODE_KEY)) {
+        if (key.equals(PREF_DEBUG_MODE)) {
             if (mDebugMode != null) {
-                mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
+                mDebugMode.setChecked(prefs.getBoolean(PREF_DEBUG_MODE, false));
                 final boolean checked = mDebugMode.isChecked();
                 if (mStatisticsLoggingPref != null) {
                     if (checked) {
@@ -93,7 +93,7 @@ public final class DebugSettings extends PreferenceFragment
                 updateDebugMode();
                 mServiceNeedsRestart = true;
             }
-        } else if (key.equals(FORCE_NON_DISTINCT_MULTITOUCH_KEY)
+        } else if (key.equals(PREF_FORCE_NON_DISTINCT_MULTITOUCH)
                 || key.equals(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT)) {
             mServiceNeedsRestart = true;
         }
