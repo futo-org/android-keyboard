@@ -18,6 +18,7 @@ package com.android.inputmethod.research;
 
 import android.content.SharedPreferences;
 import android.util.JsonWriter;
+import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.keyboard.Key;
@@ -27,6 +28,9 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Routines for mapping classes and variables to JSON representations for logging.
+ */
 /* package */ class JsonUtils {
     private JsonUtils() {
         // This utility class is not publicly instantiable.
@@ -97,6 +101,56 @@ import java.util.Map;
             final SuggestedWordInfo wordInfo = words.getWordInfo(j);
             jsonWriter.value(wordInfo.toString());
         }
+        jsonWriter.endArray();
+        jsonWriter.endObject();
+    }
+
+    /* package */ static void writeJson(final MotionEvent me, final JsonWriter jsonWriter)
+            throws IOException {
+        jsonWriter.beginObject();
+        jsonWriter.name("pointerIds");
+        jsonWriter.beginArray();
+        final int pointerCount = me.getPointerCount();
+        for (int index = 0; index < pointerCount; index++) {
+            jsonWriter.value(me.getPointerId(index));
+        }
+        jsonWriter.endArray();
+
+        jsonWriter.name("xyt");
+        jsonWriter.beginArray();
+        final int historicalSize = me.getHistorySize();
+        for (int index = 0; index < historicalSize; index++) {
+            jsonWriter.beginObject();
+            jsonWriter.name("t");
+            jsonWriter.value(me.getHistoricalEventTime(index));
+            jsonWriter.name("d");
+            jsonWriter.beginArray();
+            for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
+                jsonWriter.beginObject();
+                jsonWriter.name("x");
+                jsonWriter.value(me.getHistoricalX(pointerIndex, index));
+                jsonWriter.name("y");
+                jsonWriter.value(me.getHistoricalY(pointerIndex, index));
+                jsonWriter.endObject();
+            }
+            jsonWriter.endArray();
+            jsonWriter.endObject();
+        }
+        jsonWriter.beginObject();
+        jsonWriter.name("t");
+        jsonWriter.value(me.getEventTime());
+        jsonWriter.name("d");
+        jsonWriter.beginArray();
+        for (int pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++) {
+            jsonWriter.beginObject();
+            jsonWriter.name("x");
+            jsonWriter.value(me.getX(pointerIndex));
+            jsonWriter.name("y");
+            jsonWriter.value(me.getY(pointerIndex));
+            jsonWriter.endObject();
+        }
+        jsonWriter.endArray();
+        jsonWriter.endObject();
         jsonWriter.endArray();
         jsonWriter.endObject();
     }

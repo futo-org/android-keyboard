@@ -643,7 +643,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mMainKeyboardView.invalidateAllKeys();
     }
 
-
     public void paintIndicator(KeyboardView view, Paint paint, Canvas canvas, int width,
             int height) {
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger
@@ -896,8 +895,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      */
     private static final LogStatement LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT =
-            new LogStatement("MainKeyboardViewProcessMotionEvent", true, false, "action",
-                    "eventTime", "id", "x", "y", "size", "pressure");
+            new LogStatement("MotionEvent", true, false, "action", "MotionEvent");
     public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
             final long eventTime, final int index, final int id, final int x, final int y) {
         if (me != null) {
@@ -912,11 +910,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 case MotionEvent.ACTION_OUTSIDE: actionString = "OUTSIDE"; break;
                 default: actionString = "ACTION_" + action; break;
             }
-            final float size = me.getSize(index);
-            final float pressure = me.getPressure(index);
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
-                    actionString, eventTime, id, x, y, size, pressure);
+                    actionString, MotionEvent.obtain(me));
             if (action == MotionEvent.ACTION_DOWN) {
                 // Subtract 1 from eventTime so the down event is included in the later
                 // LogUnit, not the earlier (the test is for inequality).
