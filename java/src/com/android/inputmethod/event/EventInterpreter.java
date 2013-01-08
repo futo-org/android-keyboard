@@ -19,8 +19,11 @@ package com.android.inputmethod.event;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
+
+import java.util.ArrayList;
 
 /**
  * This class implements the logic between receiving events and generating code points.
@@ -40,6 +43,7 @@ public class EventInterpreter {
     final SparseArray<HardwareEventDecoder> mHardwareEventDecoders;
     final SoftwareEventDecoder mSoftwareEventDecoder;
     final LatinIME mLatinIme;
+    final ArrayList<Combiner> mCombiners;
 
     /**
      * Create a default interpreter.
@@ -74,6 +78,8 @@ public class EventInterpreter {
         // capacity of 1.
         mHardwareEventDecoders = new SparseArray<HardwareEventDecoder>(1);
         mSoftwareEventDecoder = new SoftwareKeyboardEventDecoder();
+        mCombiners = CollectionUtils.newArrayList();
+        mCombiners.add(new DeadKeyCombiner());
         mLatinIme = latinIme;
     }
 
@@ -108,11 +114,16 @@ public class EventInterpreter {
     private boolean onEvent(final Event event) {
         Event currentlyProcessingEvent = event;
         boolean processed = false;
+        for (int i = 0; i < mCombiners.size(); ++i) {
+            currentlyProcessingEvent = mCombiners.get(i).combine(event);
+        }
         while (null != currentlyProcessingEvent) {
             if (currentlyProcessingEvent.isCommittable()) {
                 mLatinIme.onCodeInput(currentlyProcessingEvent.mCodePoint,
                         Constants.EXTERNAL_KEYBOARD_COORDINATE,
                         Constants.EXTERNAL_KEYBOARD_COORDINATE);
+                processed = true;
+            } else if (event.isDead()) {
                 processed = true;
             }
             currentlyProcessingEvent = currentlyProcessingEvent.mNextEvent;
