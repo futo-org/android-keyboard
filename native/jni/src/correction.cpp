@@ -71,8 +71,7 @@ void Correction::resetCorrection() {
     mTotalTraverseCount = 0;
 }
 
-void Correction::initCorrection(const ProximityInfo *pi, const int inputSize,
-        const int maxDepth) {
+void Correction::initCorrection(const ProximityInfo *pi, const int inputSize, const int maxDepth) {
     mProximityInfo = pi;
     mInputSize = inputSize;
     mMaxDepth = maxDepth;
@@ -168,8 +167,7 @@ bool Correction::initProcessState(const int outputIndex) {
     return true;
 }
 
-int Correction::goDownTree(
-        const int parentIndex, const int childCount, const int firstChildPos) {
+int Correction::goDownTree(const int parentIndex, const int childCount, const int firstChildPos) {
     mCorrectionStates[mOutputIndex].mParentIndex = parentIndex;
     mCorrectionStates[mOutputIndex].mChildCount = childCount;
     mCorrectionStates[mOutputIndex].mSiblingPos = firstChildPos;
@@ -532,8 +530,7 @@ inline static bool isUpperCase(unsigned short c) {
 // RankingAlgorithm //
 //////////////////////
 
-/* static */
-int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
+/* static */ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
         const int outputIndex, const int freq, int *editDistanceTable, const Correction *correction,
         const int inputSize) {
     const int excessivePos = correction->getExcessivePos();
@@ -794,10 +791,9 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     return finalFreq;
 }
 
-/* static */
-int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
-        const int *freqArray, const int *wordLengthArray, const int wordCount,
-        const Correction *correction, const bool isSpaceProximity, const int *word) {
+/* static */ int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(const int *freqArray,
+        const int *wordLengthArray, const int wordCount, const Correction *correction,
+        const bool isSpaceProximity, const int *word) {
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     bool firstCapitalizedWordDemotion = false;
@@ -965,8 +961,8 @@ inline static int editDistanceInternal(int *editDistanceTable, const int *before
     return dp[li * lo - 1];
 }
 
-int Correction::RankingAlgorithm::editDistance(const int *before, const int beforeLength,
-        const int *after, const int afterLength) {
+/* static */ int Correction::RankingAlgorithm::editDistance(const int *before,
+        const int beforeLength, const int *after, const int afterLength) {
     int table[(beforeLength + 1) * (afterLength + 1)];
     return editDistanceInternal(table, before, beforeLength, after, afterLength);
 }
@@ -993,9 +989,8 @@ int Correction::RankingAlgorithm::editDistance(const int *before, const int befo
 // the result.
 // So, we can normalize original score by dividing powf(2, min(b.l(),a.l())) * 255 * 2.
 
-/* static */
-float Correction::RankingAlgorithm::calcNormalizedScore(const int *before, const int beforeLength,
-        const int *after, const int afterLength, const int score) {
+/* static */ float Correction::RankingAlgorithm::calcNormalizedScore(const int *before,
+        const int beforeLength, const int *after, const int afterLength, const int score) {
     if (0 == beforeLength || 0 == afterLength) {
         return 0.0f;
     }

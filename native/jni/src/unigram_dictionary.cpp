@@ -365,7 +365,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
 }
 
 void UnigramDictionary::onTerminal(const int probability,
-        const TerminalAttributes& terminalAttributes, Correction *correction,
+        const TerminalAttributes &terminalAttributes, Correction *correction,
         WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
         const int currentWordIndex) const {
     const int inputIndex = correction->getInputIndex();
@@ -390,8 +390,7 @@ void UnigramDictionary::onTerminal(const int probability,
 
         const int shortcutProbability = finalProbability > 0 ? finalProbability - 1 : 0;
         // Please note that the shortcut candidates will be added to the master queue only.
-        TerminalAttributes::ShortcutIterator iterator =
-                terminalAttributes.getShortcutIterator();
+        TerminalAttributes::ShortcutIterator iterator = terminalAttributes.getShortcutIterator();
         while (iterator.hasNextShortcutTarget()) {
             // TODO: addWord only supports weak ordering, meaning we have no means
             // to control the order of the shortcuts relative to one another or to the word.

@@ -28,7 +28,7 @@ namespace latinime {
 class WordsPriorityQueue {
  public:
     class SuggestedWord {
-    public:
+     public:
         int mScore;
         int mWord[MAX_WORD_LENGTH_INTERNAL];
         int mWordLength;
@@ -122,7 +122,7 @@ class WordsPriorityQueue {
     AK_FORCE_INLINE float getHighestNormalizedScore(const int *before, const int beforeLength,
             int **outWord, int *outScore, int *outLength) {
         if (!mHighestSuggestedWord) {
-            return 0.0;
+            return 0.0f;
         }
         return getNormalizedScore(mHighestSuggestedWord, before, beforeLength, outWord, outScore,
                 outLength);
