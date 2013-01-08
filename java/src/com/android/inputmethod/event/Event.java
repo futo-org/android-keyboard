@@ -61,23 +61,26 @@ public class Event {
     // ctrl, there is no code point associated so this should be NOT_A_CODE_POINT to avoid
     // unintentional use of its value when it's not relevant.
     final public int mCodePoint;
+    // The next event, if any. Null if there is no next event yet.
+    final public Event mNextEvent;
 
     // This method is private - to create a new event, use one of the create* utility methods.
-    private Event(final int type, final int codePoint) {
+    private Event(final int type, final int codePoint, final Event next) {
         mType = type;
         mCodePoint = codePoint;
+        mNextEvent = next;
     }
 
-    public static Event createDeadEvent(final int codePoint) {
-        return new Event(EVENT_DEAD, codePoint);
+    public static Event createDeadEvent(final int codePoint, final Event next) {
+        return new Event(EVENT_DEAD, codePoint, next);
     }
 
-    public static Event createCommittableEvent(final int codePoint) {
-        return new Event(EVENT_COMMITTABLE, codePoint);
+    public static Event createCommittableEvent(final int codePoint, final Event next) {
+        return new Event(EVENT_COMMITTABLE, codePoint, next);
     }
 
     public static Event createNotHandledEvent() {
-        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT);
+        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT, null);
     }
 
     public boolean isCommittable() {
