@@ -16,7 +16,16 @@
 
 package com.android.inputmethod.latin;
 
-public final class Settings {
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.preference.PreferenceManager;
+
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+
+import java.util.Locale;
+
+public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
     public static final String PREF_AUTO_CAP = "auto_cap";
@@ -56,4 +65,55 @@ public final class Settings {
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
+
+    private Resources mRes;
+    private SharedPreferences mPrefs;
+    private Locale mCurrentLocale;
+    private SettingsValues mSettingsValues;
+
+    private static final Settings sInstance = new Settings();
+
+    public static Settings getInstance() {
+        return sInstance;
+    }
+
+    public static void init(final Context context) {
+        sInstance.onCreate(context);
+    }
+
+    private Settings() {
+        // Intentional empty constructor for singleton.
+    }
+
+    private void onCreate(final Context context) {
+        mRes = context.getResources();
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public void onDestroy() {
+        mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
+        loadSettings(mCurrentLocale, mSettingsValues.mInputAttributes);
+    }
+
+    public void loadSettings(final Locale locale, final InputAttributes inputAttributes) {
+        mCurrentLocale = locale;
+        final SharedPreferences prefs = mPrefs;
+        final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
+            @Override
+            protected SettingsValues job(final Resources res) {
+                return new SettingsValues(prefs, res, inputAttributes);
+            }
+        };
+        mSettingsValues = job.runInLocale(mRes, locale);
+    }
+
+    // TODO: Remove this method and add proxy method to SettingsValues.
+    public SettingsValues getCurrent() {
+        return mSettingsValues;
+    }
 }

@@ -82,7 +82,7 @@ public final class SettingsValues {
     public final boolean mGestureFloatingPreviewTextEnabled;
 
     // From the input box
-    private final InputAttributes mInputAttributes;
+    public final InputAttributes mInputAttributes;
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
@@ -269,6 +269,7 @@ public final class SettingsValues {
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
     }
 
+    // TODO: Clean up and move public helper methods to Settings class.
     // Public to access from KeyboardSwitcher. Should it have access to some
     // process-global instance instead?
     public static boolean isKeyPreviewPopupEnabled(final SharedPreferences prefs,
@@ -418,10 +419,5 @@ public final class SettingsValues {
 
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return mInputAttributes.isSameInputType(editorInfo);
-    }
-
-    // For debug.
-    public String getInputAttributesDebugString() {
-        return mInputAttributes.toString();
     }
 }
