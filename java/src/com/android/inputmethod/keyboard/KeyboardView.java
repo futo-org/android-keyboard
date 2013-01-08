@@ -50,6 +50,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -870,9 +871,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
         mPreviewPlacerView.dismissSlidingKeyInputPreview();
     }
 
-    public void showGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
+    public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.setGestureFloatingPreviewText(gestureFloatingPreviewText);
+        mPreviewPlacerView.setGestureFloatingPreviewText(suggestedWords);
     }
 
     public void dismissGestureFloatingPreviewText() {
