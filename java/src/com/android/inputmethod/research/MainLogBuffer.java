@@ -22,15 +22,24 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.util.LinkedList;
 import java.util.Random;
 
-public class MainLogBuffer extends LogBuffer {
+/**
+ * Provide a log buffer of fixed length that enforces privacy restrictions.
+ *
+ * The privacy restrictions include making sure that no numbers are logged, that all logged words
+ * are in the dictionary, and that words are recorded infrequently enough that the user's meaning
+ * cannot be easily determined.
+ */
+public class MainLogBuffer extends FixedLogBuffer {
     private static final String TAG = MainLogBuffer.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     private static final int N_GRAM_SIZE = 2;
-    // The number of words between n-grams to omit from the log.
+    // The number of words between n-grams to omit from the log.  If debugging, record 50% of all
+    // words.  Otherwise, only record 10%.
     private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES =
             ProductionFlag.IS_EXPERIMENTAL_DEBUG ? 2 : 18;
 
@@ -56,7 +65,7 @@ public class MainLogBuffer extends LogBuffer {
         mWordsUntilSafeToSample = random.nextInt(mMinWordPeriod);
     }
 
-    public void setSuggest(Suggest suggest) {
+    public void setSuggest(final Suggest suggest) {
         mSuggest = suggest;
     }
 
@@ -108,9 +117,10 @@ public class MainLogBuffer extends LogBuffer {
         }
         // Check each word in the buffer.  If any word poses a privacy threat, we cannot upload the
         // complete buffer contents in detail.
-        final int length = mLogUnits.size();
+        final LinkedList<LogUnit> logUnits = getLogUnits();
+        final int length = logUnits.size();
         for (int i = 0; i < length; i++) {
-            final LogUnit logUnit = mLogUnits.get(i);
+            final LogUnit logUnit = logUnits.get(i);
             final String word = logUnit.getWord();
             if (word == null) {
                 // Digits outside words are a privacy threat.
@@ -133,7 +143,7 @@ public class MainLogBuffer extends LogBuffer {
     }
 
     @Override
-    protected void onShiftOut(LogUnit logUnit) {
+    protected void onShiftOut(final LogUnit logUnit) {
         if (mResearchLog != null) {
             mResearchLog.publish(logUnit, false /* isIncludingPrivateData */);
         }

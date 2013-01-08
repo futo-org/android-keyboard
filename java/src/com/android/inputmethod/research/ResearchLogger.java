@@ -377,7 +377,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
             // LogBuffer is one more than FEEDBACK_WORD_BUFFER_SIZE, because it must also hold
             // the feedback LogUnit itself.
-            mFeedbackLogBuffer = new LogBuffer(FEEDBACK_WORD_BUFFER_SIZE + 1);
+            mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE + 1);
         }
     }
 

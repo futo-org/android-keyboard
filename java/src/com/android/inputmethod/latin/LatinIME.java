@@ -2078,12 +2078,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (ProductionFlag.IS_INTERNAL) {
                 Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
             }
-            mExpectingUpdateSelection = true;
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
                         separatorString);
             }
-
+            mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorString);
             if (!typedWord.equals(autoCorrection)) {
