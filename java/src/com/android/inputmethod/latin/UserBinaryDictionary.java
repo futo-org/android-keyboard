@@ -31,14 +31,15 @@ import android.text.TextUtils;
 import java.util.Arrays;
 
 /**
- * An expandable dictionary that stores the words in the user unigram dictionary.
- *
- * Largely a copy of UserDictionary, will replace that class in the future.
+ * An expandable dictionary that stores the words in the user dictionary provider into a binary
+ * dictionary file to use it from native code.
  */
 public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     // The user dictionary provider uses an empty string to mean "all languages".
     private static final String USER_DICTIONARY_ALL_LANGUAGES = "";
+    private static final int HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY = 250;
+    private static final int LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY = 160;
 
     // TODO: use Words.SHORTCUT when we target JellyBean or above
     final static String SHORTCUT = "shortcut";
@@ -233,6 +234,19 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         mContext.startActivity(intent);
     }
 
+    private int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {
+        // The default frequency for the user dictionary is 250 for historical reasons.
+        // Latin IME considers a good value for the default user dictionary frequency
+        // is about 160 considering the scale we use. So we are scaling down the values.
+        if (defaultFrequency > Integer.MAX_VALUE / LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY) {
+            return (defaultFrequency / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY)
+                    * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY;
+        } else {
+            return (defaultFrequency * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY)
+                    / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY;
+        }
+    }
+
     private void addWords(final Cursor cursor) {
         final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
         clearFusionDictionary();
@@ -245,12 +259,13 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final String word = cursor.getString(indexWord);
                 final String shortcut = hasShortcutColumn ? cursor.getString(indexShortcut) : null;
                 final int frequency = cursor.getInt(indexFrequency);
+                final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, frequency);
+                    super.addWord(word, null, adjustedFrequency);
                 }
                 if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, frequency);
+                    super.addWord(shortcut, word, adjustedFrequency);
                 }
                 cursor.moveToNext();
             }
