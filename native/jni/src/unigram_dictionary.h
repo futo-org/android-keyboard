@@ -59,14 +59,13 @@ class UnigramDictionary {
             WordsPriorityQueuePool *queuePool) const;
     int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t *const digraphs, const unsigned int digraphsSize) const;
-    void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
-        const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
-        int *xCoordinatesBuffer, int *yCoordinatesBuffer, const int codesBufferSize,
-        const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
-        const bool useFullEditDistance, const int *codesSrc, const int codesRemain,
-        const int currentDepth, int *codesDest, Correction *correction,
-        WordsPriorityQueuePool *queuePool, const digraph_t *const digraphs,
-        const unsigned int digraphsSize) const;
+    void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codesBuffer, int *xCoordinatesBuffer,
+            int *yCoordinatesBuffer, const int codesBufferSize, const std::map<int, int> *bigramMap,
+            const uint8_t *bigramFilter, const bool useFullEditDistance, const int *codesSrc,
+            const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
+            WordsPriorityQueuePool *queuePool, const digraph_t *const digraphs,
+            const unsigned int digraphsSize) const;
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             Correction *correction) const;
@@ -79,12 +78,11 @@ class UnigramDictionary {
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             Correction *correction, WordsPriorityQueuePool *queuePool, const bool doAutoCompletion,
             const int maxErrors, const int currentWordIndex) const;
-    void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
-            const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputSize,
-            Correction *correction, WordsPriorityQueuePool *queuePool,
+    void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            const int inputSize, Correction *correction, WordsPriorityQueuePool *queuePool,
             const bool hasAutoCorrectionCandidate) const;
-    void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
+    void onTerminal(const int freq, const TerminalAttributes &terminalAttributes,
             Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
             const int currentWordIndex) const;
     // Process a node by considering proximity, missing and excessive character
@@ -96,14 +94,13 @@ class UnigramDictionary {
             Correction *correction, int *word) const;
     int getMostFrequentWordLikeInner(const int *const inWord, const int inputSize,
             int *outWord) const;
-    int getSubStringSuggestion(
-            ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
-            const int *codes, const bool useFullEditDistance, Correction *correction,
-            WordsPriorityQueuePool *queuePool, const int inputSize,
+    int getSubStringSuggestion(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            Correction *correction, WordsPriorityQueuePool *queuePool, const int inputSize,
             const bool hasAutoCorrectionCandidate, const int currentWordIndex,
-            const int inputWordStartPos, const int inputWordLength,
-            const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
-            int *wordLengthArray, int *outputWord, int *outputWordLength) const;
+            const int inputWordStartPos, const int inputWordLength, const int outputWordStartPos,
+            const bool isSpaceProximity, int *freqArray, int *wordLengthArray, int *outputWord,
+            int *outputWordLength) const;
     void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputSize, Correction *correction, WordsPriorityQueuePool *queuePool,

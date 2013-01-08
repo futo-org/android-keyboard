@@ -28,8 +28,8 @@ class SuggestInterface {
     virtual int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs,
             int *inputYs, int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
             int *outWords, int *frequencies, int *outputIndices, int *outputTypes) const = 0;
-    SuggestInterface() {};
-    virtual ~SuggestInterface() {};
+    SuggestInterface() {}
+    virtual ~SuggestInterface() {}
  private:
     DISALLOW_COPY_AND_ASSIGN(SuggestInterface);
 };

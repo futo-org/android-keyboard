@@ -58,8 +58,7 @@ class Correction {
     // Non virtual inline destructor -- never inherit this class
     ~Correction() {}
     void resetCorrection();
-    void initCorrection(
-            const ProximityInfo *pi, const int inputSize, const int maxWordLength);
+    void initCorrection(const ProximityInfo *pi, const int inputSize, const int maxWordLength);
     void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);
 
     // TODO: remove
