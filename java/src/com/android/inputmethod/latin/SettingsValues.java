@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -96,10 +95,8 @@ public final class SettingsValues {
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
-    public SettingsValues(final SharedPreferences prefs, final InputAttributes inputAttributes,
-            final Context context) {
-        final Resources res = context.getResources();
-
+    public SettingsValues(final SharedPreferences prefs, final Resources res,
+            final InputAttributes inputAttributes) {
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mWeakSpaceStrippers = res.getString(R.string.weak_space_stripping_symbols);
@@ -121,7 +118,7 @@ public final class SettingsValues {
                 res.getString(R.string.symbols_excluded_from_word_separators);
         mWordSeparators = createWordSeparators(mWeakSpaceStrippers, mWeakSpaceSwappers,
                 mSymbolsExcludedFromWordSeparators, res);
-        mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+        mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
 
         // Store the input attributes
         if (null == inputAttributes) {
@@ -132,7 +129,7 @@ public final class SettingsValues {
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-        mVibrateOn = isVibrateOn(context, prefs, res);
+        mVibrateOn = isVibrateOn(prefs, res);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
         mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
@@ -214,9 +211,8 @@ public final class SettingsValues {
         throw new RuntimeException("Bug: visibility string is not configured correctly");
     }
 
-    private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
-            final Resources res) {
-        final boolean hasVibrator = VibratorUtils.getInstance(context).hasVibrator();
+    private static boolean isVibrateOn(final SharedPreferences prefs, final Resources res) {
+        final boolean hasVibrator = AudioAndHapticFeedbackManager.getInstance().hasVibrator();
         return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
                 res.getBoolean(R.bool.config_default_vibration_enabled));
     }

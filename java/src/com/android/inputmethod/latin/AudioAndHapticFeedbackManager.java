@@ -18,10 +18,9 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Vibrator;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-
-import com.android.inputmethod.latin.VibratorUtils;
 
 /**
  * This class gathers audio feedback and haptic feedback functions.
@@ -32,34 +31,61 @@ import com.android.inputmethod.latin.VibratorUtils;
 public final class AudioAndHapticFeedbackManager {
     public static final int MAX_KEYPRESS_VIBRATION_DURATION = 250; // millisecond
 
-    private final AudioManager mAudioManager;
-    private final VibratorUtils mVibratorUtils;
+    private AudioManager mAudioManager;
+    private Vibrator mVibrator;
 
     private SettingsValues mSettingsValues;
     private boolean mSoundOn;
 
-    public AudioAndHapticFeedbackManager(final LatinIME latinIme) {
-        mVibratorUtils = VibratorUtils.getInstance(latinIme);
-        mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
+    private static final AudioAndHapticFeedbackManager sInstance =
+            new AudioAndHapticFeedbackManager();
+
+    public static AudioAndHapticFeedbackManager getInstance() {
+        return sInstance;
+    }
+
+    private AudioAndHapticFeedbackManager() {
+        // Intentional empty constructor for singleton.
+    }
+
+    public static void init(final Context context) {
+        sInstance.initInternal(context);
+    }
+
+    private void initInternal(final Context context) {
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void hapticAndAudioFeedback(final int primaryCode,
             final View viewToPerformHapticFeedbackOn) {
-        vibrate(viewToPerformHapticFeedbackOn);
+        vibrateInternal(viewToPerformHapticFeedbackOn);
         playKeyClick(primaryCode);
+    }
+
+    public boolean hasVibrator() {
+        return mVibrator != null && mVibrator.hasVibrator();
+    }
+
+    public void vibrate(final long milliseconds) {
+        if (mVibrator == null) {
+            return;
+        }
+        mVibrator.vibrate(milliseconds);
     }
 
     private boolean reevaluateIfSoundIsOn() {
         if (mSettingsValues == null || !mSettingsValues.mSoundOn || mAudioManager == null) {
             return false;
-        } else {
-            return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
         }
+        return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
     }
 
-    private void playKeyClick(int primaryCode) {
+    private void playKeyClick(final int primaryCode) {
         // if mAudioManager is null, we can't play a sound anyway, so return
-        if (mAudioManager == null) return;
+        if (mAudioManager == null) {
+            return;
+        }
         if (mSoundOn) {
             final int sound;
             switch (primaryCode) {
@@ -80,7 +106,7 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
-    private void vibrate(final View viewToPerformHapticFeedbackOn) {
+    private void vibrateInternal(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
@@ -91,9 +117,9 @@ public final class AudioAndHapticFeedbackManager {
                         HapticFeedbackConstants.KEYBOARD_TAP,
                         HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }
-        } else if (mVibratorUtils != null) {
-            mVibratorUtils.vibrate(mSettingsValues.mKeypressVibrationDuration);
+            return;
         }
+        vibrate(mSettingsValues.mKeypressVibrationDuration);
     }
 
     public void onSettingsChanged(final SettingsValues settingsValues) {
