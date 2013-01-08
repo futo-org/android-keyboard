@@ -643,7 +643,7 @@ public final class RichInputConnection {
         return word;
     }
 
-    public boolean revertDoubleSpace() {
+    public boolean revertDoubleSpacePeriod() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
@@ -660,7 +660,7 @@ public final class RichInputConnection {
         final String doubleSpace = "  ";
         commitText(doubleSpace, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().onWordComplete(doubleSpace, Long.MAX_VALUE);
+            ResearchLogger.richInputConnection_revertDoubleSpacePeriod(doubleSpace);
         }
         return true;
     }
@@ -685,7 +685,7 @@ public final class RichInputConnection {
         final String text = " " + textBeforeCursor.subSequence(0, 1);
         commitText(text, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().onWordComplete(text, Long.MAX_VALUE);
+            ResearchLogger.richInputConnection_revertSwapPunctuation(text);
         }
         return true;
     }
