@@ -66,7 +66,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
     };
 
-    private AudioAndHapticFeedbackManager mFeedbackManager;
+    private final AudioAndHapticFeedbackManager mFeedbackManager =
+            AudioAndHapticFeedbackManager.getInstance();
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
@@ -104,7 +105,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private void initInternal(final LatinIME latinIme, final SharedPreferences prefs) {
         mLatinIME = latinIme;
         mResources = latinIme.getResources();
-        mFeedbackManager = new AudioAndHapticFeedbackManager(latinIme);
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);

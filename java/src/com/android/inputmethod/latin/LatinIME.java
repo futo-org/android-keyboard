@@ -421,6 +421,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mRichImm = RichInputMethodManager.getInstance();
         SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this);
+        AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
 
         super.onCreate();
@@ -461,12 +462,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = mPrefs;
         final InputAttributes inputAttributes =
                 new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
         final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
             @Override
-            protected SettingsValues job(Resources res) {
-                return new SettingsValues(mPrefs, inputAttributes, LatinIME.this);
+            protected SettingsValues job(final Resources res) {
+                return new SettingsValues(prefs, res, inputAttributes);
             }
         };
         mCurrentSettings = job.runInLocale(mResources, mSubtypeSwitcher.getCurrentSubtypeLocale());
