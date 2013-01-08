@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.preference.PreferenceActivity;
 
 public final class SettingsActivity extends PreferenceActivity {
-    private static final String DEFAULT_FRAGMENT = Settings.class.getName();
+    private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
 
     @Override
     public Intent getIntent() {
