@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2011, The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,45 +25,38 @@
 #include "jni.h"
 #include "jni_common.h"
 
-using namespace latinime;
-
 /*
  * Returns the JNI version on success, -1 on failure.
  */
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = 0;
-    jint result = -1;
 
     if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
         AKLOGE("ERROR: GetEnv failed");
-        goto bail;
+        return -1;
     }
     assert(env);
-
-    if (!register_BinaryDictionary(env)) {
+    if (!env) {
+        AKLOGE("ERROR: JNIEnv is invalid");
+        return -1;
+    }
+    if (!latinime::register_BinaryDictionary(env)) {
         AKLOGE("ERROR: BinaryDictionary native registration failed");
-        goto bail;
+        return -1;
     }
-
-    if (!register_DicTraverseSession(env)) {
+    if (!latinime::register_DicTraverseSession(env)) {
         AKLOGE("ERROR: DicTraverseSession native registration failed");
-        goto bail;
+        return -1;
     }
-
-    if (!register_ProximityInfo(env)) {
+    if (!latinime::register_ProximityInfo(env)) {
         AKLOGE("ERROR: ProximityInfo native registration failed");
-        goto bail;
+        return -1;
     }
-
     /* success -- return valid version number */
-    result = JNI_VERSION_1_6;
-
-bail:
-    return result;
+    return JNI_VERSION_1_6;
 }
 
 namespace latinime {
-
 int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods,
         int numMethods) {
     jclass clazz = env->FindClass(className);
