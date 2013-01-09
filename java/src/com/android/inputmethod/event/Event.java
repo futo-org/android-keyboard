@@ -54,39 +54,33 @@ public class Event {
 
     final private static int NOT_A_CODE_POINT = 0;
 
-    private int mType; // The type of event - one of the constants above
+    final private int mType; // The type of event - one of the constants above
     // The code point associated with the event, if relevant. This is a unicode code point, and
     // has nothing to do with other representations of the key. It is only relevant if this event
     // is the right type: COMMITTABLE or DEAD or TOGGLE, but for a mode key like hankaku/zenkaku or
     // ctrl, there is no code point associated so this should be NOT_A_CODE_POINT to avoid
     // unintentional use of its value when it's not relevant.
-    private int mCodePoint;
+    final public int mCodePoint;
 
-    static Event obtainEvent() {
-        // TODO: create an event pool instead
-        return new Event();
-    }
-
-    public void setDeadEvent(final int codePoint) {
-        mType = EVENT_DEAD;
+    // This method is private - to create a new event, use one of the create* utility methods.
+    private Event(final int type, final int codePoint) {
+        mType = type;
         mCodePoint = codePoint;
     }
 
-    public void setCommittableEvent(final int codePoint) {
-        mType = EVENT_COMMITTABLE;
-        mCodePoint = codePoint;
+    public static Event createDeadEvent(final int codePoint) {
+        return new Event(EVENT_DEAD, codePoint);
     }
 
-    public void setNotHandledEvent() {
-        mType = EVENT_NOT_HANDLED;
-        mCodePoint = NOT_A_CODE_POINT; // Just in case
+    public static Event createCommittableEvent(final int codePoint) {
+        return new Event(EVENT_COMMITTABLE, codePoint);
+    }
+
+    public static Event createNotHandledEvent() {
+        return new Event(EVENT_NOT_HANDLED, NOT_A_CODE_POINT);
     }
 
     public boolean isCommittable() {
         return EVENT_COMMITTABLE == mType;
-    }
-
-    public int getCodePoint() {
-        return mCodePoint;
     }
 }

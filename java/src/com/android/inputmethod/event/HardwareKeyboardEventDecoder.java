@@ -38,7 +38,6 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
 
     @Override
     public Event decodeHardwareKey(final KeyEvent keyEvent) {
-        final Event event = Event.obtainEvent();
         // KeyEvent#getUnicodeChar() does not exactly returns a unicode char, but rather a value
         // that includes both the unicode char in the lower 21 bits and flags in the upper bits,
         // hence the name "codePointAndFlags". {@see KeyEvent#getUnicodeChar()} for more info.
@@ -48,22 +47,20 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
         // the key for 'A' or Space, but also Backspace or Ctrl or Caps Lock.
         final int keyCode = keyEvent.getKeyCode();
         if (KeyEvent.KEYCODE_DEL == keyCode) {
-            event.setCommittableEvent(Constants.CODE_DELETE);
-            return event;
+            return Event.createCommittableEvent(Constants.CODE_DELETE);
         }
         if (keyEvent.isPrintingKey() || KeyEvent.KEYCODE_SPACE == keyCode
                 || KeyEvent.KEYCODE_ENTER == keyCode) {
             if (0 != (codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT)) {
                 // A dead key.
-                event.setDeadEvent(codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK);
+                return Event.createDeadEvent(codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK);
             } else {
                 // A committable character. This should be committed right away, taking into
                 // account the current state.
-                event.setCommittableEvent(codePointAndFlags);
+                return Event.createCommittableEvent(codePointAndFlags);
             }
         } else {
-            event.setNotHandledEvent();
+            return Event.createNotHandledEvent();
         }
-        return event;
     }
 }
