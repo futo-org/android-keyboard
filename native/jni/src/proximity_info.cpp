@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <cassert>
 #include <cstring>
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"
@@ -75,7 +74,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     const jsize localeCStrUtf8Length = env->GetStringUTFLength(localeJStr);
     if (localeCStrUtf8Length >= MAX_LOCALE_STRING_LENGTH) {
         AKLOGI("Locale string length too long: length=%d", localeCStrUtf8Length);
-        assert(false);
+        ASSERT(false);
     }
     memset(mLocaleStr, 0, sizeof(mLocaleStr));
     env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), mLocaleStr);
@@ -105,7 +104,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
         if (DEBUG_DICT) {
             AKLOGI("HasSpaceProximity: Illegal coordinates (%d, %d)", x, y);
             // TODO: Enable this assertion.
-            //assert(false);
+            //ASSERT(false);
         }
         return false;
     }
@@ -180,7 +179,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 inputCodes[insertPos++] = c;
                 if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                     if (DEBUG_DICT) {
-                        assert(false);
+                        ASSERT(false);
                     }
                     return;
                 }
@@ -192,7 +191,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
             inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
             if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                 if (DEBUG_DICT) {
-                    assert(false);
+                    ASSERT(false);
                 }
                 return;
             }
@@ -213,7 +212,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 inputCodes[insertPos++] = ac;
                 if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                     if (DEBUG_DICT) {
-                        assert(false);
+                        ASSERT(false);
                     }
                     return;
                 }

@@ -17,7 +17,7 @@
 #ifndef LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 #define LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 
-#include <cassert>
+#include "defines.h"
 #include "words_priority_queue.h"
 
 namespace latinime {
@@ -55,7 +55,7 @@ class WordsPriorityQueuePool {
         }
         if (inputWordLength < 0 || inputWordLength >= SUB_QUEUE_MAX_COUNT) {
             if (DEBUG_WORDS_PRIORITY_QUEUE) {
-                assert(false);
+                ASSERT(false);
             }
             return 0;
         }
