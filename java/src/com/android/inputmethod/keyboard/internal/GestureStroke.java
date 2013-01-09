@@ -233,6 +233,10 @@ public class GestureStroke {
         if (lastIndex >= 0) {
             final int x = mXCoordinates.get(lastIndex);
             final int y = mYCoordinates.get(lastIndex);
+            if (DEBUG) {
+                Log.d(TAG, String.format("[%d] duplicateLastPointWith: %d,%d|%d", mPointerId,
+                        x, y, time));
+            }
             // TODO: Have appendMajorPoint()
             appendPoint(x, y, time);
             updateIncrementalRecognitionSize(x, y, time);
@@ -251,6 +255,16 @@ public class GestureStroke {
     }
 
     private void appendPoint(final int x, final int y, final int time) {
+        final int lastIndex = mEventTimes.getLength() - 1;
+        // The point that is created by {@link duplicateLastPointWith(int)} may have later event
+        // time than the next {@link MotionEvent}. To maintain the monotonicity of the event time,
+        // drop the successive point here.
+        if (lastIndex >= 0 && mEventTimes.get(lastIndex) > time) {
+            Log.w(TAG, String.format("[%d] drop stale event: %d,%d|%d last: %d,%d|%d", mPointerId,
+                    x, y, time, mXCoordinates.get(lastIndex), mYCoordinates.get(lastIndex),
+                    mEventTimes.get(lastIndex)));
+            return;
+        }
         mEventTimes.add(time);
         mXCoordinates.add(x);
         mYCoordinates.add(y);
