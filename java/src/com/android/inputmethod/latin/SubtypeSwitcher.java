@@ -31,6 +31,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.List;
@@ -239,7 +240,14 @@ public final class SubtypeSwitcher {
         return mNeedsToDisplayLanguage.getValue();
     }
 
+    private static Locale sForcedLocaleForTesting = null;
+    @UsedForTesting
+    void forceLocale(final Locale locale) {
+        sForcedLocaleForTesting = locale;
+    }
+
     public Locale getCurrentSubtypeLocale() {
+        if (null != sForcedLocaleForTesting) return sForcedLocaleForTesting;
         return SubtypeLocale.getSubtypeLocale(getCurrentSubtype());
     }
 
