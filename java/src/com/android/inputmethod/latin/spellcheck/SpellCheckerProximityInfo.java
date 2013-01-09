@@ -73,6 +73,12 @@ public final class SpellCheckerProximityInfo {
         // to spell check has been entered with one of the keyboards above. Also, specifically
         // to English, many spelling errors consist of the last vowel of the word being wrong
         // because in English vowels tend to merge with each other in pronunciation.
+        /*
+        The Qwerty layout this represents looks like the following:
+            q w e r t y u i o p
+             a s d f g h j k l
+               z x c v b n m
+        */
         final static int[] PROXIMITY = {
             // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
             // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
@@ -127,10 +133,13 @@ public final class SpellCheckerProximityInfo {
         final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.
-        final static int[] PROXIMITY = {
-            // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
-            // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
-            // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
+        /*
+        The Russian layout this represents looks like the following:
+            й ц у к е н г ш щ з х
+            ф ы в а п р о л д ж э
+              я ч с м и т ь б ю
+
+        This gives us the following table:
             'й', 'ц', 'ф', 'ы', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ц', 'й', 'ф', 'ы', 'в', 'у', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'у', 'ц', 'ы', 'в', 'а', 'к', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -143,7 +152,6 @@ public final class SpellCheckerProximityInfo {
             'з', 'щ', 'д', 'ж', 'э', 'х', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'х', 'з', 'ж', 'э', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
-            // Proximity for row 2. See comment above about size.
             'ф', 'й', 'ц', 'ы', 'я', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ы', 'й', 'ц', 'у', 'ф', 'в', 'я', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'в', 'ц', 'у', 'к', 'ы', 'а', 'я', 'ч', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -156,7 +164,6 @@ public final class SpellCheckerProximityInfo {
             'ж', 'щ', 'з', 'х', 'д', 'э', 'б', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'э', 'з', 'х', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
-            // Proximity for row 3. See comment above about size.
             'я', 'ф', 'ы', 'в', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ч', 'ы', 'в', 'а', 'я', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'с', 'в', 'а', 'п', 'ч', 'м', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -166,6 +173,249 @@ public final class SpellCheckerProximityInfo {
             'ь', 'о', 'л', 'д', 'т', 'б', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'б', 'л', 'д', 'ж', 'ь', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ю', 'д', 'ж', 'э', 'б', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+        Using the following characters:
+        */
+        private static final int CY_SHORT_I = '\u0439'; // й
+        private static final int CY_TSE = '\u0446'; // ц
+        private static final int CY_U = '\u0443'; // у
+        private static final int CY_KA = '\u043A'; // к
+        private static final int CY_IE = '\u0435'; // е
+        private static final int CY_EN = '\u043D'; // н
+        private static final int CY_GHE = '\u0433'; // г
+        private static final int CY_SHA = '\u0448'; // ш
+        private static final int CY_SHCHA = '\u0449'; // щ
+        private static final int CY_ZE = '\u0437'; // з
+        private static final int CY_HA = '\u0445'; // х
+        private static final int CY_EF = '\u0444'; // ф
+        private static final int CY_YERU = '\u044B'; // ы
+        private static final int CY_VE = '\u0432'; // в
+        private static final int CY_A = '\u0430'; // а
+        private static final int CY_PE = '\u043F'; // п
+        private static final int CY_ER = '\u0440'; // р
+        private static final int CY_O = '\u043E'; // о
+        private static final int CY_EL = '\u043B'; // л
+        private static final int CY_DE = '\u0434'; // д
+        private static final int CY_ZHE = '\u0436'; // ж
+        private static final int CY_E = '\u044D'; // э
+        private static final int CY_YA = '\u044F'; // я
+        private static final int CY_CHE = '\u0447'; // ч
+        private static final int CY_ES = '\u0441'; // с
+        private static final int CY_EM = '\u043C'; // м
+        private static final int CY_I = '\u0438'; // и
+        private static final int CY_TE = '\u0442'; // т
+        private static final int CY_SOFT_SIGN = '\u044C'; // ь
+        private static final int CY_BE = '\u0431'; // б
+        private static final int CY_YU = '\u044E'; // ю
+        final static int[] PROXIMITY = {
+            // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
+            // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
+            // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
+            CY_SHORT_I, CY_TSE, CY_EF, CY_YERU, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_TSE, CY_SHORT_I, CY_EF, CY_YERU, CY_VE, CY_U, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_U, CY_TSE, CY_YERU, CY_VE, CY_A, CY_KA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_KA, CY_U, CY_VE, CY_A, CY_PE, CY_IE, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_IE, CY_KA, CY_A, CY_PE, CY_ER, CY_EN, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_EN, CY_IE, CY_PE, CY_ER, CY_O, CY_GHE, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_GHE, CY_EN, CY_ER, CY_O, CY_EL, CY_SHA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_SHA, CY_GHE, CY_O, CY_EL, CY_DE, CY_SHCHA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_SHCHA, CY_SHA, CY_EL, CY_DE, CY_ZHE, CY_ZE, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_ZE, CY_SHCHA, CY_DE, CY_ZHE, CY_E, CY_HA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_HA, CY_ZE, CY_ZHE, CY_E, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            // Proximity for row 2. See comment above about size.
+            CY_EF, CY_SHORT_I, CY_TSE, CY_YERU, CY_YA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_YERU, CY_SHORT_I, CY_TSE, CY_U, CY_EF, CY_VE, CY_YA, CY_CHE,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_VE, CY_TSE, CY_U, CY_KA, CY_YERU, CY_A, CY_YA, CY_CHE,
+                    CY_ES, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_A, CY_U, CY_KA, CY_IE, CY_VE, CY_PE, CY_CHE, CY_ES,
+                    CY_EM, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_PE, CY_KA, CY_IE, CY_EN, CY_A, CY_ER, CY_ES, CY_EM,
+                    CY_I, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_ER, CY_IE, CY_EN, CY_GHE, CY_PE, CY_O, CY_EM, CY_I,
+                    CY_TE, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_O, CY_EN, CY_GHE, CY_SHA, CY_ER, CY_EL, CY_I, CY_TE,
+                    CY_SOFT_SIGN, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_EL, CY_GHE, CY_SHA, CY_SHCHA, CY_O, CY_DE, CY_TE, CY_SOFT_SIGN,
+                    CY_BE, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_DE, CY_SHA, CY_SHCHA, CY_ZE, CY_EL, CY_ZHE, CY_SOFT_SIGN, CY_BE,
+                    CY_YU, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_ZHE, CY_SHCHA, CY_ZE, CY_HA, CY_DE, CY_E, CY_BE, CY_YU,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_E, CY_ZE, CY_HA, CY_YU, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            // Proximity for row 3. See comment above about size.
+            CY_YA, CY_EF, CY_YERU, CY_VE, CY_CHE, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_CHE, CY_YERU, CY_VE, CY_A, CY_YA, CY_ES, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_ES, CY_VE, CY_A, CY_PE, CY_CHE, CY_EM, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_EM, CY_A, CY_PE, CY_ER, CY_ES, CY_I, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_I, CY_PE, CY_ER, CY_O, CY_EM, CY_TE, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_TE, CY_ER, CY_O, CY_EL, CY_I, CY_SOFT_SIGN, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_SOFT_SIGN, CY_O, CY_EL, CY_DE, CY_TE, CY_BE, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_BE, CY_EL, CY_DE, CY_ZHE, CY_SOFT_SIGN, CY_YU, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            CY_YU, CY_DE, CY_ZHE, CY_E, CY_BE, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+        };
+        static {
+            buildProximityIndices(PROXIMITY, INDICES);
+        }
+        static int getIndexOf(int characterCode) {
+            return computeIndex(characterCode, INDICES);
+        }
+    }
+
+    private static final class Greek {
+        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
+        // TODO: The following table is solely based on the keyboard layout. Consult with Greek
+        // speakers on commonly misspelled words/letters.
+        /*
+        The Greek layout this represents looks like the following:
+            ; ς ε ρ τ υ θ ι ο π
+             α σ δ φ γ η ξ κ λ
+               ζ χ ψ ω β ν μ
+
+        This gives us the following table:
+            'ς', 'ε', 'α', 'σ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ε', 'ς', 'ρ', 'σ', 'δ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ρ', 'ε', 'τ', 'δ', 'φ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'τ', 'ρ', 'υ', 'φ', 'γ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'υ', 'τ', 'θ', 'γ', 'η', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'θ', 'υ', 'ι', 'η', 'ξ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ι', 'θ', 'ο', 'ξ', 'κ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ο', 'ι', 'π', 'κ', 'λ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'π', 'ο', 'λ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'α', 'ς', 'σ', 'ζ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'σ', 'ς', 'ε', 'α', 'δ', 'ζ', 'χ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'δ', 'ε', 'ρ', 'σ', 'φ', 'ζ', 'χ', 'ψ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'φ', 'ρ', 'τ', 'δ', 'γ', 'χ', 'ψ', 'ω', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'γ', 'τ', 'υ', 'φ', 'η', 'ψ', 'ω', 'β', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'η', 'υ', 'θ', 'γ', 'ξ', 'ω', 'β', 'ν', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ξ', 'θ', 'ι', 'η', 'κ', 'β', 'ν', 'μ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'κ', 'ι', 'ο', 'ξ', 'λ', 'ν', 'μ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'λ', 'ο', 'π', 'κ', 'μ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'ζ', 'α', 'σ', 'δ', 'χ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'χ', 'σ', 'δ', 'φ', 'ζ', 'ψ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ψ', 'δ', 'φ', 'γ', 'χ', 'ω', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ω', 'φ', 'γ', 'η', 'ψ', 'β', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'β', 'γ', 'η', 'ξ', 'ω', 'ν', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ν', 'η', 'ξ', 'κ', 'β', 'μ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'μ', 'ξ', 'κ', 'λ', 'ν', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+        Using the following characters:
+        */
+        private static final int GR_FINAL_SIGMA = '\u03C2'; // ς
+        private static final int GR_EPSILON = '\u03B5'; // ε
+        private static final int GR_RHO = '\u03C1'; // ρ
+        private static final int GR_TAU = '\u03C4'; // τ
+        private static final int GR_UPSILON = '\u03C5'; // υ
+        private static final int GR_THETA = '\u03B8'; // θ
+        private static final int GR_IOTA = '\u03B9'; // ι
+        private static final int GR_OMICRON = '\u03BF'; // ο
+        private static final int GR_PI = '\u03C0'; // π
+        private static final int GR_ALPHA = '\u03B1'; // α
+        private static final int GR_SIGMA = '\u03C3'; // σ
+        private static final int GR_DELTA = '\u03B4'; // δ
+        private static final int GR_PHI = '\u03C6'; // φ
+        private static final int GR_GAMMA = '\u03B3'; // γ
+        private static final int GR_ETA = '\u03B7'; // η
+        private static final int GR_XI = '\u03BE'; // ξ
+        private static final int GR_KAPPA = '\u03BA'; // κ
+        private static final int GR_LAMDA = '\u03BB'; // λ
+        private static final int GR_ZETA = '\u03B6'; // ζ
+        private static final int GR_CHI = '\u03C7'; // χ
+        private static final int GR_PSI = '\u03C8'; // ψ
+        private static final int GR_OMEGA = '\u03C9'; // ω
+        private static final int GR_BETA = '\u03B2'; // β
+        private static final int GR_NU = '\u03BD'; // ν
+        private static final int GR_MU = '\u03BC'; // μ
+        final static int[] PROXIMITY = {
+            // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
+            // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
+            // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
+            GR_FINAL_SIGMA, GR_EPSILON, GR_ALPHA, GR_SIGMA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_EPSILON, GR_FINAL_SIGMA, GR_RHO, GR_SIGMA, GR_DELTA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_RHO, GR_EPSILON, GR_TAU, GR_DELTA, GR_PHI, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_TAU, GR_RHO, GR_UPSILON, GR_PHI, GR_GAMMA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_UPSILON, GR_TAU, GR_THETA, GR_GAMMA, GR_ETA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_THETA, GR_UPSILON, GR_IOTA, GR_ETA, GR_XI, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_IOTA, GR_THETA, GR_OMICRON, GR_XI, GR_KAPPA, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_OMICRON, GR_IOTA, GR_PI, GR_KAPPA, GR_LAMDA, NUL, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_PI, GR_OMICRON, GR_LAMDA, NUL, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            GR_ALPHA, GR_FINAL_SIGMA, GR_SIGMA, GR_ZETA, NUL, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_SIGMA, GR_FINAL_SIGMA, GR_EPSILON, GR_ALPHA, GR_DELTA, GR_ZETA, GR_CHI, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_DELTA, GR_EPSILON, GR_RHO, GR_SIGMA, GR_PHI, GR_ZETA, GR_CHI, GR_PSI,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_PHI, GR_RHO, GR_TAU, GR_DELTA, GR_GAMMA, GR_CHI, GR_PSI, GR_OMEGA,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_GAMMA, GR_TAU, GR_UPSILON, GR_PHI, GR_ETA, GR_PSI, GR_OMEGA, GR_BETA,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_ETA, GR_UPSILON, GR_THETA, GR_GAMMA, GR_XI, GR_OMEGA, GR_BETA, GR_NU,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_XI, GR_THETA, GR_IOTA, GR_ETA, GR_KAPPA, GR_BETA, GR_NU, GR_MU,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_KAPPA, GR_IOTA, GR_OMICRON, GR_XI, GR_LAMDA, GR_NU, GR_MU, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_LAMDA, GR_OMICRON, GR_PI, GR_KAPPA, GR_MU, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            GR_ZETA, GR_ALPHA, GR_SIGMA, GR_DELTA, GR_CHI, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_CHI, GR_SIGMA, GR_DELTA, GR_PHI, GR_ZETA, GR_PSI, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_PSI, GR_DELTA, GR_PHI, GR_GAMMA, GR_CHI, GR_OMEGA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_OMEGA, GR_PHI, GR_GAMMA, GR_ETA, GR_PSI, GR_BETA, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_BETA, GR_GAMMA, GR_ETA, GR_XI, GR_OMEGA, GR_NU, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_NU, GR_ETA, GR_XI, GR_KAPPA, GR_BETA, GR_MU, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            GR_MU, GR_XI, GR_KAPPA, GR_LAMDA, GR_NU, NUL, NUL, NUL,
+                    NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
@@ -183,6 +433,8 @@ public final class SpellCheckerProximityInfo {
                 return Latin.PROXIMITY;
             case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
                 return Cyrillic.PROXIMITY;
+            case AndroidSpellCheckerService.SCRIPT_GREEK:
+                return Greek.PROXIMITY;
             default:
                 throw new RuntimeException("Wrong script supplied: " + script);
         }
@@ -194,6 +446,8 @@ public final class SpellCheckerProximityInfo {
                 return Latin.getIndexOf(codePoint);
             case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
                 return Cyrillic.getIndexOf(codePoint);
+            case AndroidSpellCheckerService.SCRIPT_GREEK:
+                return Greek.getIndexOf(codePoint);
             default:
                 throw new RuntimeException("Wrong script supplied: " + script);
         }
