@@ -107,7 +107,7 @@ public class EventInterpreter {
 
     private boolean onEvent(final Event event) {
         if (event.isCommittable()) {
-            mLatinIme.onCodeInput(event.getCodePoint(),
+            mLatinIme.onCodeInput(event.mCodePoint,
                     Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE);
             return true;
         }
