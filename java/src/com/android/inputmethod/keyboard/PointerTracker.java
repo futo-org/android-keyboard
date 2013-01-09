@@ -98,6 +98,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public boolean isInDoubleTapTimeout();
         public void cancelKeyTimers();
         public void startUpdateBatchInputTimer(PointerTracker tracker);
+        public void cancelUpdateBatchInputTimer(PointerTracker tracker);
         public void cancelAllUpdateBatchInputTimers();
 
         public static class Adapter implements TimerProxy {
@@ -123,6 +124,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             public void cancelKeyTimers() {}
             @Override
             public void startUpdateBatchInputTimer(PointerTracker tracker) {}
+            @Override
+            public void cancelUpdateBatchInputTimer(PointerTracker tracker) {}
             @Override
             public void cancelAllUpdateBatchInputTimers() {}
         }
@@ -940,6 +943,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_MOVE_EVENT) {
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         }
+        mTimerProxy.cancelUpdateBatchInputTimer(this);
         if (mIsTrackingCanceled) {
             return;
         }
@@ -1124,6 +1128,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             printTouchEvent("onUpEvent  :", x, y, eventTime);
         }
 
+        mTimerProxy.cancelUpdateBatchInputTimer(this);
         if (!sInGesture) {
             if (mCurrentKey != null && mCurrentKey.isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
