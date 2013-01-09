@@ -387,7 +387,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
-                DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
+                DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
         final boolean hasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         mHasDistinctMultitouch = hasDistinctMultitouch && !forceNonDistinctMultitouch;
