@@ -352,6 +352,9 @@ static inline void prof_out(void) {
 
 #define MAX_SPACES_INTERNAL 16
 
+// TODO: Change this to MAX_WORDS, remove MAX_WORDS in Java, and stop getting it from Java
+#define MAX_WORDS_INTERNAL 18
+
 // Max Distance between point to key
 #define MAX_POINT_TO_KEY_LENGTH 10000000
 
