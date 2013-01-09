@@ -66,11 +66,15 @@ LOCAL_SRC_FILES := \
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
-    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
+    LOCAL_CFLAGS += -DFLAG_DO_PROFILE -funwind-tables
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
-    LOCAL_CFLAGS += -DFLAG_DBG
+    LOCAL_CFLAGS += -DFLAG_DBG -funwind-tables
+ifeq ($(FLAG_FULL_DBG), true)
+    $(warning Making full debug version of native library)
+    LOCAL_CFLAGS += -DFLAG_FULL_DBG
+endif # FLAG_FULL_DBG
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 

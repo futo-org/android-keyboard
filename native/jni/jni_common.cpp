@@ -16,8 +16,6 @@
 
 #define LOG_TAG "LatinIME: jni"
 
-#include <cassert>
-
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
@@ -35,7 +33,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         AKLOGE("ERROR: GetEnv failed");
         return -1;
     }
-    assert(env);
+    ASSERT(env);
     if (!env) {
         AKLOGE("ERROR: JNIEnv is invalid");
         return -1;
