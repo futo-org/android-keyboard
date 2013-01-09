@@ -1717,6 +1717,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // If there is a selection, remove it.
                 final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
                 mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+                // Reset mLastSelectionEnd to mLastSelectionStart. This is what is supposed to
+                // happen, and if it's wrong, the next call to onUpdateSelection will correct it,
+                // but we want to set it right away to avoid it being used with the wrong values
+                // later (typically, in a subsequent press on backspace).
+                mLastSelectionEnd = mLastSelectionStart;
                 mConnection.deleteSurroundingText(lengthToDelete, 0);
             } else {
                 // There is no selection, just delete one character.

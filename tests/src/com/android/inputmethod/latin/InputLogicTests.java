@@ -102,6 +102,27 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("delete selection", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
+    public void testDeleteSelectionTwice() {
+        final String STRING_TO_TYPE = "some text delete me some text";
+        final int typedLength = STRING_TO_TYPE.length();
+        final int SELECTION_START = 10;
+        final int SELECTION_END = 19;
+        final String EXPECTED_RESULT = "some text some text";
+        type(STRING_TO_TYPE);
+        // There is no IMF to call onUpdateSelection for us so we must do it by hand.
+        // Send once to simulate the cursor actually responding to the move caused by typing.
+        // This is necessary because LatinIME is bookkeeping to avoid confusing a real cursor
+        // move with a move triggered by LatinIME inputting stuff.
+        mLatinIME.onUpdateSelection(0, 0, typedLength, typedLength, -1, -1);
+        mInputConnection.setSelection(SELECTION_START, SELECTION_END);
+        // And now we simulate the user actually selecting some text.
+        mLatinIME.onUpdateSelection(typedLength, typedLength,
+                SELECTION_START, SELECTION_END, -1, -1);
+        type(Constants.CODE_DELETE);
+        type(Constants.CODE_DELETE);
+        assertEquals("delete selection twice", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
     public void testAutoCorrect() {
         final String STRING_TO_TYPE = "tgis ";
         final String EXPECTED_RESULT = "this ";
