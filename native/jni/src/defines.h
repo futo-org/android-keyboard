@@ -93,6 +93,7 @@ static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
 #include <execinfo.h>
 #include <stdlib.h>
 
+#define DO_ASSERT_TEST
 #define ASSERT(success) do { if (!(success)) { showStackTrace(); assert(success);} } while (0)
 #define SHOW_STACK_TRACE do { showStackTrace(); } while (0)
 
@@ -111,6 +112,7 @@ static inline void showStackTrace() {
 }
 #else
 #include <cassert>
+#define DO_ASSERT_TEST
 #define ASSERT(success) assert(success)
 #define SHOW_STACK_TRACE
 #endif
@@ -120,6 +122,7 @@ static inline void showStackTrace() {
 #define AKLOGI(fmt, ...)
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
+#undef DO_ASSERT_TEST
 #define ASSERT(success)
 #define SHOW_STACK_TRACE
 #define INTS_TO_CHARS(input, length, output)

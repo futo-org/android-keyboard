@@ -123,6 +123,15 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 }
             }
         }
+#ifdef DO_ASSERT_TEST
+        if (times) {
+            for (int i = 0; i < inputSize; ++i) {
+                if (i > 0) {
+                    ASSERT(times[i] >= times[i - 1]);
+                }
+            }
+        }
+#endif
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
         int lastInputIndex = pushTouchPointStartIndex;
         for (int i = lastInputIndex; i < inputSize; ++i) {
