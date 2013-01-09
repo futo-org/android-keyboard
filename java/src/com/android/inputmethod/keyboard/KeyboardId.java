@@ -59,8 +59,6 @@ public final class KeyboardId {
     public static final int FORM_FACTOR_TABLET7 = 1;
     public static final int FORM_FACTOR_TABLET10 = 2;
 
-    private static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
-
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
     public final int mDeviceFormFactor;
@@ -174,19 +172,12 @@ public final class KeyboardId {
     }
 
     public int imeAction() {
-        final int actionId = mEditorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
-        if ((mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            return EditorInfo.IME_ACTION_NONE;
-        } else if (mEditorInfo.actionLabel != null) {
-            return IME_ACTION_CUSTOM_LABEL;
-        } else {
-            return actionId;
-        }
+        return InputTypeUtils.getActionIdFromEditorInfo(mEditorInfo);
     }
 
     public int imeActionId() {
         final int actionId = imeAction();
-        return actionId == IME_ACTION_CUSTOM_LABEL ? mEditorInfo.actionId : actionId;
+        return actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL ? mEditorInfo.actionId : actionId;
     }
 
     @Override
@@ -269,7 +260,7 @@ public final class KeyboardId {
     }
 
     public static String actionName(final int actionId) {
-        return (actionId == IME_ACTION_CUSTOM_LABEL) ? "actionCustomLabel"
+        return (actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL) ? "actionCustomLabel"
                 : EditorInfoCompatUtils.imeActionName(actionId);
     }
 }
