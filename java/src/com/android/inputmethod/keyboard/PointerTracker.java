@@ -791,6 +791,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void cancelBatchInput() {
         sPointerTrackerQueue.cancelAllPointerTracker();
+        mIsDetectingGesture = false;
         if (!sInGesture) {
             return;
         }
@@ -918,6 +919,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsDetectingGesture) {
             final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
                     x, y, gestureTime, isMajorEvent);
+            // If the move event goes out from valid batch input area, cancel batch input.
             if (!onValidArea) {
                 cancelBatchInput();
                 return;
@@ -1196,6 +1198,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     @Override
     public void cancelTracking() {
+        if (isShowingMoreKeysPanel()) {
+            return;
+        }
         mIsTrackingCanceled = true;
     }
 
