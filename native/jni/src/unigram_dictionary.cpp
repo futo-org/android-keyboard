@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <cassert>
 #include <cstring>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
@@ -100,9 +99,9 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
         const digraph_t *const digraphs, const unsigned int digraphsSize) const {
-    assert(sizeof(codesDest[0]) == sizeof(codesSrc[0]));
-    assert(sizeof(xCoordinatesBuffer[0]) == sizeof(xcoordinates[0]));
-    assert(sizeof(yCoordinatesBuffer[0]) == sizeof(ycoordinates[0]));
+    ASSERT(sizeof(codesDest[0]) == sizeof(codesSrc[0]));
+    ASSERT(sizeof(xCoordinatesBuffer[0]) == sizeof(xcoordinates[0]));
+    ASSERT(sizeof(yCoordinatesBuffer[0]) == sizeof(ycoordinates[0]));
 
     const int startIndex = static_cast<int>(codesDest - codesBuffer);
     if (currentDepth < MAX_DIGRAPH_SEARCH_DEPTH) {
@@ -894,7 +893,7 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     // else if MASK_GROUP_ADDRESS_TYPE is not NONE: the children address
     // Note that you can't have a node that both is not a terminal and has no children.
     int c = BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos);
-    assert(NOT_A_CODE_POINT != c);
+    ASSERT(NOT_A_CODE_POINT != c);
 
     // We are going to loop through each character and make it look like it's a different
     // node each time. To do that, we will process characters in this node in order until
@@ -987,7 +986,7 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
 
     // Now we finished processing this node, and we want to traverse children. If there are no
     // children, we can't come here.
-    assert(BinaryFormat::hasChildrenInFlags(flags));
+    ASSERT(BinaryFormat::hasChildrenInFlags(flags));
 
     // If this node was a terminal it still has the frequency under the pointer (it may have been
     // read, but not skipped - see readFrequencyWithoutMovingPointer).

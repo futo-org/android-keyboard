@@ -247,7 +247,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         if (mSkippedCount == 0 && mSkipPos < mOutputIndex) {
             if (DEBUG_DICT) {
                 // TODO: Enable this assertion.
-                //assert(mSkipPos == mOutputIndex - 1);
+                //ASSERT(mSkipPos == mOutputIndex - 1);
             }
             mSkipPos = mOutputIndex;
         }

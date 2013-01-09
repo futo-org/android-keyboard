@@ -17,7 +17,6 @@
 #ifndef LATINIME_CORRECTION_H
 #define LATINIME_CORRECTION_H
 
-#include <cassert>
 #include <cstring> // for memset()
 
 #include "correction_state.h"
@@ -150,7 +149,7 @@ class Correction {
             // Branch if multiplier == 2 for the optimization
             if (multiplier < 0) {
                 if (DEBUG_DICT) {
-                    assert(false);
+                    ASSERT(false);
                 }
                 AKLOGI("--- Invalid multiplier: %d", multiplier);
             } else if (multiplier == 0) {
