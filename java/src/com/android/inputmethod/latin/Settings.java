@@ -135,7 +135,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readKeyPreviewPopupDismissDelay(final SharedPreferences prefs,
             final Resources res) {
-        // TODO: use mKeyPreviewPopupDismissDelayRawValue instead of reading it again here.
         return Integer.parseInt(prefs.getString(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(
                         R.integer.config_key_preview_linger_timeout))));
@@ -186,7 +185,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
-        // TODO: use mUsabilityStudyMode instead of reading it again here
         return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
     }
 

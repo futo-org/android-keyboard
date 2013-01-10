@@ -51,14 +51,8 @@ public final class SettingsValues {
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
     private final String mVoiceMode;
-    private final String mAutoCorrectionThresholdRawValue;
-    public final String mShowSuggestionsSetting;
-    @SuppressWarnings("unused") // TODO: Use this
-    private final boolean mUsabilityStudyMode;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
-    @SuppressWarnings("unused") // TODO: Use this
-    private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
     public final boolean mUseDoubleSpacePeriod;
     // Use bigrams to predict the next word when there is no input for it yet
@@ -122,20 +116,15 @@ public final class SettingsValues {
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
         mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
-        mAutoCorrectionThresholdRawValue = prefs.getString(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
+        final String autoCorrectionThresholdRawValue = prefs.getString(
+                Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
-        mShowSuggestionsSetting = prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING,
-                res.getString(R.string.prefs_suggestion_visibility_default_value));
-        mUsabilityStudyMode = Settings.readUsabilityStudyMode(prefs);
         mIncludesOtherImesInLanguageSwitchList = prefs.getBoolean(
                 Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false);
         mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
-        mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
-                Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
-                Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
-        mAutoCorrectEnabled = readAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
+        mAutoCorrectEnabled = readAutoCorrectEnabled(res, autoCorrectionThresholdRawValue);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
         // Compute other readable settings
@@ -143,7 +132,7 @@ public final class SettingsValues {
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
-                mAutoCorrectionThresholdRawValue);
+                autoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
         final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
@@ -154,7 +143,10 @@ public final class SettingsValues {
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
-        mSuggestionVisibility = createSuggestionVisibility(res);
+        final String showSuggestionsSetting = prefs.getString(
+                Settings.PREF_SHOW_SUGGESTIONS_SETTING,
+                res.getString(R.string.prefs_suggestion_visibility_default_value));
+        mSuggestionVisibility = createSuggestionVisibility(res, showSuggestionsSetting);
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {
@@ -271,8 +263,8 @@ public final class SettingsValues {
         SUGGESTION_VISIBILITY_HIDE_VALUE
     };
 
-    private int createSuggestionVisibility(final Resources res) {
-        final String suggestionVisiblityStr = mShowSuggestionsSetting;
+    private static int createSuggestionVisibility(final Resources res,
+            final String suggestionVisiblityStr) {
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
             if (suggestionVisiblityStr.equals(res.getString(visibility))) {
                 return visibility;
