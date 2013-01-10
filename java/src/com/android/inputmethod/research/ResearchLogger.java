@@ -730,6 +730,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    private static final LogStatement LOGSTATEMENT_UNCOMMIT_CURRENT_LOGUNIT =
+            new LogStatement("UncommitCurrentLogUnit", false, false);
     public void uncommitCurrentLogUnit(final String expectedWord,
             final boolean dumpCurrentLogUnit) {
         // The user has deleted this word and returned to the previous.  Check that the word in the
@@ -768,6 +770,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mFeedbackLogBuffer != null) {
             mFeedbackLogBuffer.unshiftIn();
         }
+        enqueueEvent(LOGSTATEMENT_UNCOMMIT_CURRENT_LOGUNIT);
         if (DEBUG) {
             Log.d(TAG, "uncommitCurrentLogUnit (dump=" + dumpCurrentLogUnit + ") back to "
                     + (mCurrentLogUnit.hasWord() ? ": '" + mCurrentLogUnit.getWord() + "'" : ""));
