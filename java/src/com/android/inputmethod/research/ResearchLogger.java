@@ -838,6 +838,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit = newLogUnit;
     }
 
+    private void setSavedDownEventTime(final long time) {
+        mSavedDownEventTime = time;
+    }
+
     public void onWordFinished(final String word, final boolean isBatchMode) {
         commitCurrentLogUnitAsWord(word, mSavedDownEventTime, isBatchMode);
         mSavedDownEventTime = Long.MAX_VALUE;
@@ -987,7 +991,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (action == MotionEvent.ACTION_DOWN) {
                 // Subtract 1 from eventTime so the down event is included in the later
                 // LogUnit, not the earlier (the test is for inequality).
-                researchLogger.mSavedDownEventTime = eventTime - 1;
+                researchLogger.setSavedDownEventTime(eventTime - 1);
             }
         }
     }
@@ -1625,6 +1629,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH, deletedText);
         researchLogger.mStatistics.recordGestureDelete();
+    }
+
+    public static void latinIME_handleSeparator() {
+        // Reset the saved down event time.  For tapping, motion events, etc. before the separator
+        // are assigned to the previous LogUnit, and events after the separator are assigned to the
+        // next LogUnit.  In the case of multitap, this might capture down events corresponding to
+        // the next word, however it should not be more than a character or two.
+        getInstance().setSavedDownEventTime(SystemClock.uptimeMillis());
     }
 
     /**
