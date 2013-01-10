@@ -1175,9 +1175,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /**
      * Log a call to LatinIME.sendKeyCodePoint().
      *
-     * SystemResponse: The IME is simulating a hardware keypress.  This happens for numbers; other
-     * input typically goes through RichInputConnection.setComposingText() and
-     * RichInputConnection.commitText().
+     * SystemResponse: The IME is inserting text into the TextView for numbers, fixed strings, or
+     * some other unusual mechanism.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_SENDKEYCODEPOINT =
             new LogStatement("LatinIMESendKeyCodePoint", true, false, "code");
@@ -1188,6 +1187,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (Character.isDigit(code)) {
             researchLogger.setCurrentLogUnitContainsDigitFlag();
         }
+    }
+
+    /**
+     * Log a call to LatinIME.promotePhantomSpace().
+     *
+     * SystemResponse: The IME is inserting a real space in place of a phantom space.
+     */
+    private static final LogStatement LOGSTATEMENT_LATINIME_PROMOTEPHANTOMSPACE =
+            new LogStatement("LatinIMEPromotPhantomSpace", false, false);
+    public static void latinIME_promotePhantomSpace() {
+        final ResearchLogger researchLogger = getInstance();
+        final LogUnit logUnit;
+        if (researchLogger.mMainLogBuffer == null) {
+            logUnit = researchLogger.mCurrentLogUnit;
+        } else {
+            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        }
+        researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_PROMOTEPHANTOMSPACE);
     }
 
     /**
