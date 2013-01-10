@@ -119,6 +119,7 @@ public class MainLogBuffer extends FixedLogBuffer {
         // complete buffer contents in detail.
         final LinkedList<LogUnit> logUnits = getLogUnits();
         final int length = logUnits.size();
+        int wordsFound = 0;
         for (int i = 0; i < length; i++) {
             final LogUnit logUnit = logUnits.get(i);
             final String word = logUnit.getWord();
@@ -135,8 +136,17 @@ public class MainLogBuffer extends FixedLogBuffer {
                                 + ", isValid: " + (dictionary.isValidWord(word)));
                     }
                     return false;
+                } else {
+                    wordsFound++;
                 }
             }
+        }
+        if (wordsFound < N_GRAM_SIZE) {
+            // Not enough words.  Not unsafe, but reject anyway.
+            if (DEBUG) {
+                Log.d(TAG, "not enough words");
+            }
+            return false;
         }
         // All checks have passed; this buffer's content can be safely uploaded.
         return true;

@@ -46,6 +46,20 @@ public class LogBuffer {
         mLogUnits.add(logUnit);
     }
 
+    public LogUnit unshiftIn() {
+        if (mLogUnits.isEmpty()) {
+            return null;
+        }
+        return mLogUnits.removeLast();
+    }
+
+    public LogUnit peekLastLogUnit() {
+        if (mLogUnits.isEmpty()) {
+            return null;
+        }
+        return mLogUnits.peekLast();
+    }
+
     public boolean isEmpty() {
         return mLogUnits.isEmpty();
     }

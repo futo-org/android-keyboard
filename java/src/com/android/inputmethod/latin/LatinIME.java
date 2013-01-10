@@ -1131,7 +1131,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
                     separatorString);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.getInstance().onWordFinished(typedWord);
+                ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
             }
         }
     }
@@ -1163,7 +1163,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private void swapSwapperAndSpace() {
-        CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
+        final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
                 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
@@ -1171,7 +1171,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_swapSwapperAndSpace(text);
+                ResearchLogger.latinIME_swapSwapperAndSpace(lastTwo, text);
             }
             mKeyboardSwitcher.updateShiftState();
         }
@@ -1191,7 +1191,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final String textToInsert = ". ";
             mConnection.commitText(textToInsert, 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert);
+                ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
+                        false /* isBatchMode */);
             }
             mKeyboardSwitcher.updateShiftState();
             return true;
@@ -1440,7 +1441,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mConnection.commitText(text, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onTextInput(text);
+            ResearchLogger.latinIME_onTextInput(text, false /* isBatchMode */);
         }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
@@ -1665,10 +1666,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int length = mWordComposer.size();
             if (length > 0) {
                 if (mWordComposer.isBatchMode()) {
-                    mWordComposer.reset();
                     if (ProductionFlag.IS_EXPERIMENTAL) {
-                        ResearchLogger.latinIME_handleBackspace_batch(mWordComposer.getTypedWord());
+                        final String word = mWordComposer.getTypedWord();
+                        ResearchLogger.latinIME_handleBackspace_batch(word);
+                        ResearchLogger.getInstance().uncommitCurrentLogUnit(
+                                word, false /* dumpCurrentLogUnit */);
                     }
+                    mWordComposer.reset();
                 } else {
                     mWordComposer.deleteLast();
                 }
@@ -2084,7 +2088,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
-                        separatorString);
+                        separatorString, mWordComposer.isBatchMode());
             }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
@@ -2118,7 +2122,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             onCodeInput(primaryCode,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion);
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
+                        false /* isBatchMode */);
             }
             return;
         }
@@ -2157,7 +2162,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion);
+            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
+                    mWordComposer.isBatchMode());
         }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
@@ -2254,6 +2260,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 mConnection.getWordBeforeCursorIfAtEndOfWord(mSettings.getCurrent());
         if (null != word) {
             restartSuggestionsOnWordBeforeCursor(word);
+            // TODO: Handle the case where the user manually moves the cursor and then backs up over
+            // a separator.  In that case, the current log unit should not be uncommitted.
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.getInstance().uncommitCurrentLogUnit(word.toString(),
+                        true /* dumpCurrentLogUnit */);
+            }
         }
     }
 
@@ -2297,7 +2309,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord);
+            ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
+                    mWordComposer.isBatchMode());
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the
         // separator.

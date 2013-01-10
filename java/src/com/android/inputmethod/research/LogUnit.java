@@ -240,6 +240,7 @@ import java.util.Map;
     public LogUnit splitByTime(final long maxTime) {
         // Assume that mTimeList is in sorted order.
         final int length = mTimeList.size();
+        // TODO: find time by binary search, e.g. using Collections#binarySearch()
         for (int index = 0; index < length; index++) {
             if (mTimeList.get(index) > maxTime) {
                 final List<LogStatement> laterLogStatements =
@@ -266,5 +267,14 @@ import java.util.Map;
             }
         }
         return new LogUnit();
+    }
+
+    public void append(final LogUnit logUnit) {
+        mLogStatementList.addAll(logUnit.mLogStatementList);
+        mValuesList.addAll(logUnit.mValuesList);
+        mTimeList.addAll(logUnit.mTimeList);
+        mWord = null;
+        mMayContainDigit = mMayContainDigit || logUnit.mMayContainDigit;
+        mIsPartOfMegaword = false;
     }
 }

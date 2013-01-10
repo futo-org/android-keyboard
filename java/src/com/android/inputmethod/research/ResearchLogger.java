@@ -390,6 +390,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (DEBUG) {
             Log.d(TAG, "stop called");
         }
+        // Commit mCurrentLogUnit before closing.
         commitCurrentLogUnit();
 
         if (mMainLogBuffer != null) {
@@ -676,11 +677,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /**
      * Buffer a research log event, flagging it as privacy-sensitive.
      */
-    private synchronized void enqueueEvent(LogStatement logStatement, Object... values) {
+    private synchronized void enqueueEvent(final LogStatement logStatement,
+            final Object... values) {
+        enqueueEvent(mCurrentLogUnit, logStatement, values);
+    }
+
+    private synchronized void enqueueEvent(final LogUnit logUnit, final LogStatement logStatement,
+            final Object... values) {
         assert values.length == logStatement.mKeys.length;
-        if (isAllowedToLog()) {
+        if (isAllowedToLog() && logUnit != null) {
             final long time = SystemClock.uptimeMillis();
-            mCurrentLogUnit.addLogStatement(logStatement, time, values);
+            logUnit.addLogStatement(logStatement, time, values);
         }
     }
 
@@ -695,17 +702,61 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
-                mMainLogBuffer.shiftIn(mCurrentLogUnit);
                 if ((mMainLogBuffer.isSafeToLog() || LOG_EVERYTHING) && mMainResearchLog != null) {
                     publishLogBuffer(mMainLogBuffer, mMainResearchLog,
                             true /* isIncludingPrivateData */);
                     mMainLogBuffer.resetWordCounter();
                 }
+                mMainLogBuffer.shiftIn(mCurrentLogUnit);
             }
             if (mFeedbackLogBuffer != null) {
                 mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
             }
             mCurrentLogUnit = new LogUnit();
+        }
+    }
+
+    public void uncommitCurrentLogUnit(final String expectedWord,
+            final boolean dumpCurrentLogUnit) {
+        // The user has deleted this word and returned to the previous.  Check that the word in the
+        // logUnit matches the expected word.  If so, restore the last log unit committed to be the
+        // current logUnit.  I.e., pull out the last LogUnit from all the LogBuffers, and make
+        // restore it to mCurrentLogUnit so the new edits are captured with the word.  Optionally
+        // dump the contents of mCurrentLogUnit (useful if they contain deletions of the next word
+        // that should not be reported to protect user privacy)
+        //
+        // Note that we don't use mLastLogUnit here, because it only goes one word back and is only
+        // needed for reverts, which only happen one back.
+        if (mMainLogBuffer == null) {
+            return;
+        }
+        final LogUnit oldLogUnit = mMainLogBuffer.peekLastLogUnit();
+
+        // Check that expected word matches.
+        if (oldLogUnit != null) {
+            final String oldLogUnitWord = oldLogUnit.getWord();
+            if (!oldLogUnitWord.equals(expectedWord)) {
+                return;
+            }
+        }
+
+        // Uncommit, merging if necessary.
+        mMainLogBuffer.unshiftIn();
+        if (oldLogUnit != null && !dumpCurrentLogUnit) {
+            oldLogUnit.append(mCurrentLogUnit);
+            mSavedDownEventTime = Long.MAX_VALUE;
+        }
+        if (oldLogUnit == null) {
+            mCurrentLogUnit = new LogUnit();
+        } else {
+            mCurrentLogUnit = oldLogUnit;
+        }
+        if (mFeedbackLogBuffer != null) {
+            mFeedbackLogBuffer.unshiftIn();
+        }
+        if (DEBUG) {
+            Log.d(TAG, "uncommitCurrentLogUnit back to " + (mCurrentLogUnit.hasWord()
+                    ? ": '" + mCurrentLogUnit.getWord() + "'" : ""));
         }
     }
 
@@ -751,24 +802,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * After this operation completes, mCurrentLogUnit will hold any logStatements that happened
      * after maxTime.
      */
-    private static final LogStatement LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS =
-            new LogStatement("recordSplitWords", true, false);
-    /* package for test */ void commitCurrentLogUnitAsWord(final String word, final long maxTime) {
+    /* package for test */ void commitCurrentLogUnitAsWord(final String word, final long maxTime,
+            final boolean isBatchMode) {
+        if (word == null) {
+            return;
+        }
         final Dictionary dictionary = getDictionary();
-        if (word != null && word.length() > 0 && hasLetters(word)) {
+        if (word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
             final boolean isDictionaryWord = dictionary != null
                     && dictionary.isValidWord(word);
             mStatistics.recordWordEntered(isDictionaryWord);
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
-        enqueueCommitText(word);
+        enqueueCommitText(word, isBatchMode);
         commitCurrentLogUnit();
         mCurrentLogUnit = newLogUnit;
     }
 
-    public void onWordFinished(final String word) {
-        commitCurrentLogUnitAsWord(word, mSavedDownEventTime);
+    public void onWordFinished(final String word, final boolean isBatchMode) {
+        commitCurrentLogUnitAsWord(word, mSavedDownEventTime, isBatchMode);
         mSavedDownEventTime = Long.MAX_VALUE;
     }
 
@@ -1060,9 +1113,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      * SystemResponse: Raw text is added to the TextView.
      */
-    public static void latinIME_onTextInput(final String text) {
+    public static void latinIME_onTextInput(final String text, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE, isBatchMode);
     }
 
     /**
@@ -1074,14 +1127,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
                     "suggestion", "x", "y");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
-            final int index, final String suggestion) {
+            final int index, final String suggestion, final boolean isBatchMode) {
         final String scrubbedWord = scrubDigitsFromString(suggestion);
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
                 Constants.SUGGESTION_STRIP_COORDINATE);
-        researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion();
     }
 
@@ -1093,11 +1146,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION =
             new LogStatement("LatinIMEPunctuationSuggestion", false, false, "index", "suggestion",
                     "x", "y");
-    public static void latinIME_punctuationSuggestion(final int index, final String suggestion) {
+    public static void latinIME_punctuationSuggestion(final int index, final String suggestion,
+            final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION, index, suggestion,
                 Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
-        researchLogger.commitCurrentLogUnitAsWord(suggestion, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(suggestion, Long.MAX_VALUE, isBatchMode);
     }
 
     /**
@@ -1125,11 +1179,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * if a soft space is inserted after a word.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE =
-            new LogStatement("LatinIMESwapSwapperAndSpace", false, false);
-    public static void latinIME_swapSwapperAndSpace(final String text) {
+            new LogStatement("LatinIMESwapSwapperAndSpace", false, false, "originalCharacters",
+                    "charactersAfterSwap");
+    public static void latinIME_swapSwapperAndSpace(final CharSequence originalCharacters,
+            final String charactersAfterSwap) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE);
-        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE);
+        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        if (logUnit != null) {
+            researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE,
+                    originalCharacters, charactersAfterSwap);
+        }
     }
 
     /**
@@ -1137,9 +1196,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      * SystemResponse: Two spaces have been replaced by period space.
      */
-    public static void latinIME_maybeDoubleSpacePeriod(final String text) {
+    public static void latinIME_maybeDoubleSpacePeriod(final String text,
+            final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE, isBatchMode);
     }
 
     /**
@@ -1191,12 +1251,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMERevertCommit", true, false, "committedWord",
                     "originallyTypedWord");
     public static void latinIME_revertCommit(final String committedWord,
-            final String originallyTypedWord) {
+            final String originallyTypedWord, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord,
-                originallyTypedWord);
+        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
+            if (logUnit != null) {
+                logUnit.setWord(originallyTypedWord);
+            }
+            final Dictionary dictionary = researchLogger.getDictionary();
+            researchLogger.mStatistics.recordWordEntered(dictionary != null
+                    && dictionary.isValidWord(originallyTypedWord));
+        }
+        researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
+                LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord);
         researchLogger.mStatistics.recordRevertCommit();
-        researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE, isBatchMode);
     }
 
     /**
@@ -1295,9 +1364,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      * SystemResponse: The IME has reverted ". ", which had previously replaced two typed spaces.
      */
-    public static void richInputConnection_revertDoubleSpacePeriod(final String doubleSpace) {
-        final ResearchLogger researchLogger = getInstance();
-        researchLogger.commitCurrentLogUnitAsWord(doubleSpace, Long.MAX_VALUE);
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_REVERTDOUBLESPACEPERIOD =
+            new LogStatement("RichInputConnectionRevertDoubleSpacePeriod", false, false);
+    public static void richInputConnection_revertDoubleSpacePeriod() {
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_REVERTDOUBLESPACEPERIOD);
     }
 
     /**
@@ -1305,9 +1375,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      * SystemResponse: The IME has reverted a punctuation swap.
      */
-    public static void richInputConnection_revertSwapPunctuation(final String text) {
-        final ResearchLogger researchLogger = getInstance();
-        researchLogger.commitCurrentLogUnitAsWord(text, Long.MAX_VALUE);
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_REVERTSWAPPUNCTUATION =
+            new LogStatement("RichInputConnectionRevertSwapPunctuation", false, false);
+    public static void richInputConnection_revertSwapPunctuation() {
+        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_REVERTSWAPPUNCTUATION);
     }
 
     /**
@@ -1320,13 +1391,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMECommitCurrentAutoCorrection", true, false, "typedWord",
                     "autoCorrection", "separatorString");
     public static void latinIme_commitCurrentAutoCorrection(final String typedWord,
-            final String autoCorrection, final String separatorString) {
+            final String autoCorrection, final String separatorString, final boolean isBatchMode) {
         final String scrubbedTypedWord = scrubDigitsFromString(typedWord);
         final String scrubbedAutoCorrection = scrubDigitsFromString(autoCorrection);
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION,
                 scrubbedTypedWord, scrubbedAutoCorrection, separatorString);
-        researchLogger.commitCurrentLogUnitAsWord(scrubbedAutoCorrection, Long.MAX_VALUE);
+        researchLogger.commitCurrentLogUnitAsWord(scrubbedAutoCorrection, Long.MAX_VALUE,
+                isBatchMode);
     }
 
     private boolean isExpectingCommitText = false;
@@ -1340,13 +1412,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // add invocations.
     private static final LogStatement LOGSTATEMENT_LATINIME_COMMIT_PARTIAL_TEXT =
             new LogStatement("LatinIMECommitPartialText", true, false, "newCursorPosition");
-    public static void latinIME_commitPartialText(final CharSequence committedWord,
-            final long lastTimestampOfWordData) {
+    public static void latinIME_commitPartialText(final String committedWord,
+            final long lastTimestampOfWordData, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
+        final String scrubbedWord = scrubDigitsFromString(committedWord);
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMIT_PARTIAL_TEXT);
-        researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, lastTimestampOfWordData);
-        researchLogger.mStatistics.recordSplitWords();
+        researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, lastTimestampOfWordData,
+                isBatchMode);
     }
 
     /**
@@ -1357,14 +1429,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT =
             new LogStatement("RichInputConnectionCommitText", true, false, "newCursorPosition");
-    public static void richInputConnection_commitText(final CharSequence committedWord,
-            final int newCursorPosition) {
+    public static void richInputConnection_commitText(final String committedWord,
+            final int newCursorPosition, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
+        final String scrubbedWord = scrubDigitsFromString(committedWord);
         if (!researchLogger.isExpectingCommitText) {
             researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT,
                     newCursorPosition);
-            researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE);
+            researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         }
         researchLogger.isExpectingCommitText = false;
     }
@@ -1373,9 +1445,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * Shared event for logging committed text.
      */
     private static final LogStatement LOGSTATEMENT_COMMITTEXT =
-            new LogStatement("CommitText", true, false, "committedText");
-    private void enqueueCommitText(final CharSequence word) {
-        enqueueEvent(LOGSTATEMENT_COMMITTEXT, word);
+            new LogStatement("CommitText", true, false, "committedText", "isBatchMode");
+    private void enqueueCommitText(final String word, final boolean isBatchMode) {
+        enqueueEvent(LOGSTATEMENT_COMMITTEXT, word, isBatchMode);
     }
 
     /**
