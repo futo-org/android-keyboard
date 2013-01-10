@@ -163,6 +163,10 @@ public class GestureStroke {
         }
     }
 
+    public int getLength() {
+        return mEventTimes.getLength();
+    }
+
     public void onDownEvent(final int x, final int y, final long downTime,
             final long gestureFirstDownTime, final long lastTypingTime) {
         reset();
@@ -202,7 +206,7 @@ public class GestureStroke {
         if (!hasDetectedFastMove()) {
             return false;
         }
-        final int size = mEventTimes.getLength();
+        final int size = getLength();
         if (size <= 0) {
             return false;
         }
@@ -229,7 +233,7 @@ public class GestureStroke {
     }
 
     public void duplicateLastPointWith(final int time) {
-        final int lastIndex = mEventTimes.getLength() - 1;
+        final int lastIndex = getLength() - 1;
         if (lastIndex >= 0) {
             final int x = mXCoordinates.get(lastIndex);
             final int y = mYCoordinates.get(lastIndex);
@@ -255,7 +259,7 @@ public class GestureStroke {
     }
 
     private void appendPoint(final int x, final int y, final int time) {
-        final int lastIndex = mEventTimes.getLength() - 1;
+        final int lastIndex = getLength() - 1;
         // The point that is created by {@link duplicateLastPointWith(int)} may have later event
         // time than the next {@link MotionEvent}. To maintain the monotonicity of the event time,
         // drop the successive point here.
@@ -281,7 +285,7 @@ public class GestureStroke {
     }
 
     private int detectFastMove(final int x, final int y, final int time) {
-        final int size = mEventTimes.getLength();
+        final int size = getLength();
         final int lastIndex = size - 1;
         final int lastX = mXCoordinates.get(lastIndex);
         final int lastY = mYCoordinates.get(lastIndex);
@@ -321,7 +325,7 @@ public class GestureStroke {
      */
     public boolean addPointOnKeyboard(final int x, final int y, final int time,
             final boolean isMajorEvent) {
-        final int size = mEventTimes.getLength();
+        final int size = getLength();
         if (size <= 0) {
             // Down event
             appendPoint(x, y, time);
@@ -348,7 +352,7 @@ public class GestureStroke {
         final int pixelsPerSec = pixels * MSEC_PER_SEC;
         // Equivalent to (pixels / msecs < mGestureRecognitionThreshold / MSEC_PER_SEC)
         if (pixelsPerSec < mGestureRecognitionSpeedThreshold * msecs) {
-            mIncrementalRecognitionSize = mEventTimes.getLength();
+            mIncrementalRecognitionSize = getLength();
         }
     }
 
@@ -358,7 +362,7 @@ public class GestureStroke {
     }
 
     public final void appendAllBatchPoints(final InputPointers out) {
-        appendBatchPoints(out, mEventTimes.getLength());
+        appendBatchPoints(out, getLength());
     }
 
     public final void appendIncrementalBatchPoints(final InputPointers out) {
