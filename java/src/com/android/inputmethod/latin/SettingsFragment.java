@@ -145,11 +145,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
             }
             mKeyPreviewPopupDismissDelay.setEnabled(
-                    SettingsValues.isKeyPreviewPopupEnabled(prefs, res));
+                    Settings.readKeyPreviewPopupEnabled(prefs, res));
         }
 
         setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
-                SettingsValues.showsLanguageSwitchKey(prefs));
+                Settings.readShowsLanguageSwitchKey(prefs));
 
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
@@ -180,7 +180,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                     });
             mKeypressVibrationDurationSettingsPref.setSummary(
                     res.getString(R.string.settings_keypress_vibration_duration,
-                            SettingsValues.getCurrentVibrationDuration(prefs, res)));
+                            Settings.readVibrationDuration(prefs, res)));
         }
 
         mKeypressSoundVolumeSettingsPref =
@@ -229,7 +229,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                     prefs.getBoolean(Settings.PREF_POPUP_ON, true));
         } else if (key.equals(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
             setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
-                    SettingsValues.showsLanguageSwitchKey(prefs));
+                    Settings.readShowsLanguageSwitchKey(prefs));
         } else if (key.equals(Settings.PREF_GESTURE_INPUT)) {
             final boolean gestureInputEnabledByConfig = getResources().getBoolean(
                     R.bool.config_gesture_input_enabled_by_build_config);
@@ -261,7 +261,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 (PreferenceScreen)findPreference(Settings.PREF_CUSTOM_INPUT_STYLES);
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         final Resources res = getResources();
-        final String prefSubtype = SettingsValues.getPrefAdditionalSubtypes(prefs, res);
+        final String prefSubtype = Settings.readPrefAdditionalSubtypes(prefs, res);
         final InputMethodSubtype[] subtypes =
                 AdditionalSubtype.createAdditionalSubtypesArray(prefSubtype);
         final StringBuilder styles = new StringBuilder();
@@ -323,7 +323,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 AudioAndHapticFeedbackManager.getInstance().vibrate(ms);
             }
         };
-        final int currentMs = SettingsValues.getCurrentVibrationDuration(sp, getResources());
+        final int currentMs = Settings.readVibrationDuration(sp, getResources());
         final SeekBarDialog.Builder builder = new SeekBarDialog.Builder(context);
         builder.setTitle(R.string.prefs_keypress_vibration_duration_settings)
                 .setListener(listener)
@@ -339,7 +339,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
     private static int getCurrentKeyPressSoundVolumePercent(final SharedPreferences sp,
             final Resources res) {
-        return (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * PERCENT_FLOAT);
+        return (int)(Settings.readKeypressSoundVolume(sp, res) * PERCENT_FLOAT);
     }
 
     private void showKeypressSoundVolumeSettingDialog() {

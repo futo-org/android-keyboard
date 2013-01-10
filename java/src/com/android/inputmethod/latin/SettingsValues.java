@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
@@ -35,19 +34,6 @@ import java.util.HashMap;
  */
 public final class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
-
-    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE
-            = R.string.prefs_suggestion_visibility_show_value;
-    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
-            = R.string.prefs_suggestion_visibility_show_only_portrait_value;
-    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE
-            = R.string.prefs_suggestion_visibility_hide_value;
-
-    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
-        SUGGESTION_VISIBILITY_SHOW_VALUE,
-        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
-        SUGGESTION_VISIBILITY_HIDE_VALUE
-    };
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
@@ -86,7 +72,7 @@ public final class SettingsValues {
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
-    public final float mFxVolume;
+    public final float mKeypressSoundVolume;
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
@@ -129,10 +115,10 @@ public final class SettingsValues {
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-        mVibrateOn = isVibrateOn(prefs, res);
+        mVibrateOn = readVibrationEnabled(prefs, res);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
-        mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
+        mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
         mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
@@ -140,23 +126,23 @@ public final class SettingsValues {
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
         mShowSuggestionsSetting = prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
-        mUsabilityStudyMode = getUsabilityStudyMode(prefs);
+        mUsabilityStudyMode = Settings.readUsabilityStudyMode(prefs);
         mIncludesOtherImesInLanguageSwitchList = prefs.getBoolean(
                 Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false);
-        mShowsLanguageSwitchKey = showsLanguageSwitchKey(prefs);
+        mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
         mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
-        mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
-        mBigramPredictionEnabled = isBigramPredictionEnabled(prefs, res);
+        mAutoCorrectEnabled = readAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
+        mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
         // Compute other readable settings
-        mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
-        mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
-        mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
-        mAutoCorrectionThreshold = getAutoCorrectionThreshold(res,
+        mKeypressVibrationDuration = Settings.readVibrationDuration(prefs, res);
+        mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
+        mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
+        mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
                 mAutoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
@@ -169,52 +155,6 @@ public final class SettingsValues {
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
-    }
-
-    // Helper functions to create member values.
-    private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
-        if (puncs != null) {
-            for (final String puncSpec : puncs) {
-                puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
-                        Dictionary.TYPE_HARDCODED));
-            }
-        }
-        return new SuggestedWords(puncList,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                true /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
-    }
-
-    private static String createWordSeparators(final String weakSpaceStrippers,
-            final String weakSpaceSwappers, final String symbolsExcludedFromWordSeparators,
-            final Resources res) {
-        String wordSeparators = weakSpaceStrippers + weakSpaceSwappers
-                + res.getString(R.string.phantom_space_promoting_symbols);
-        for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
-            wordSeparators = wordSeparators.replace(
-                    symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
-        }
-        return wordSeparators;
-    }
-
-    private int createSuggestionVisibility(final Resources res) {
-        final String suggestionVisiblityStr = mShowSuggestionsSetting;
-        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
-            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
-                return visibility;
-            }
-        }
-        throw new RuntimeException("Bug: visibility string is not configured correctly");
-    }
-
-    private static boolean isVibrateOn(final SharedPreferences prefs, final Resources res) {
-        final boolean hasVibrator = AudioAndHapticFeedbackManager.getInstance().hasVibrator();
-        return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
-                res.getBoolean(R.bool.config_default_vibration_enabled));
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {
@@ -262,41 +202,106 @@ public final class SettingsValues {
         return mInputAttributes.mShouldInsertSpacesAutomatically;
     }
 
-    private static boolean isAutoCorrectEnabled(final Resources res,
+    public boolean isVoiceKeyEnabled(final EditorInfo editorInfo) {
+        final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
+        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
+        return shortcutImeEnabled && mVoiceKeyEnabled
+                && !InputTypeUtils.isPasswordInputType(inputType);
+    }
+
+    public boolean isVoiceKeyOnMain() {
+        return mVoiceKeyOnMain;
+    }
+
+    public boolean isLanguageSwitchKeyEnabled() {
+        if (!mShowsLanguageSwitchKey) {
+            return false;
+        }
+        final RichInputMethodManager imm = RichInputMethodManager.getInstance();
+        if (mIncludesOtherImesInLanguageSwitchList) {
+            return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
+        } else {
+            return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
+        }
+    }
+
+    public boolean isSameInputType(final EditorInfo editorInfo) {
+        return mInputAttributes.isSameInputType(editorInfo);
+    }
+
+    // Helper functions to create member values.
+    private static SuggestedWords createSuggestPuncList(final String[] puncs) {
+        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
+        if (puncs != null) {
+            for (final String puncSpec : puncs) {
+                puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
+                        Dictionary.TYPE_HARDCODED));
+            }
+        }
+        return new SuggestedWords(puncList,
+                false /* typedWordValid */,
+                false /* hasAutoCorrectionCandidate */,
+                true /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
+    }
+
+    private static String createWordSeparators(final String weakSpaceStrippers,
+            final String weakSpaceSwappers, final String symbolsExcludedFromWordSeparators,
+            final Resources res) {
+        String wordSeparators = weakSpaceStrippers + weakSpaceSwappers
+                + res.getString(R.string.phantom_space_promoting_symbols);
+        for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
+            wordSeparators = wordSeparators.replace(
+                    symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
+        }
+        return wordSeparators;
+    }
+
+    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE =
+            R.string.prefs_suggestion_visibility_show_value;
+    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE =
+            R.string.prefs_suggestion_visibility_show_only_portrait_value;
+    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE =
+            R.string.prefs_suggestion_visibility_hide_value;
+    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
+        SUGGESTION_VISIBILITY_SHOW_VALUE,
+        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
+        SUGGESTION_VISIBILITY_HIDE_VALUE
+    };
+
+    private int createSuggestionVisibility(final Resources res) {
+        final String suggestionVisiblityStr = mShowSuggestionsSetting;
+        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
+            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
+                return visibility;
+            }
+        }
+        throw new RuntimeException("Bug: visibility string is not configured correctly");
+    }
+
+    private static boolean readVibrationEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        final boolean hasVibrator = AudioAndHapticFeedbackManager.getInstance().hasVibrator();
+        return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
+                res.getBoolean(R.bool.config_default_vibration_enabled));
+    }
+
+    private static boolean readAutoCorrectEnabled(final Resources res,
             final String currentAutoCorrectionSetting) {
         final String autoCorrectionOff = res.getString(
                 R.string.auto_correction_threshold_mode_index_off);
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
     }
 
-    // TODO: Clean up and move public helper methods to Settings class.
-    // Public to access from KeyboardSwitcher. Should it have access to some
-    // process-global instance instead?
-    public static boolean isKeyPreviewPopupEnabled(final SharedPreferences prefs,
-            final Resources res) {
-        final boolean showPopupOption = res.getBoolean(
-                R.bool.config_enable_show_popup_on_keypress_option);
-        if (!showPopupOption) return res.getBoolean(R.bool.config_default_popup_preview);
-        return prefs.getBoolean(Settings.PREF_POPUP_ON,
-                res.getBoolean(R.bool.config_default_popup_preview));
-    }
-
-    // Likewise
-    public static int getKeyPreviewPopupDismissDelay(final SharedPreferences prefs,
-            final Resources res) {
-        // TODO: use mKeyPreviewPopupDismissDelayRawValue instead of reading it again here.
-        return Integer.parseInt(prefs.getString(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
-                Integer.toString(res.getInteger(
-                        R.integer.config_key_preview_linger_timeout))));
-    }
-
-    private static boolean isBigramPredictionEnabled(final SharedPreferences prefs,
+    private static boolean readBigramPredictionEnabled(final SharedPreferences prefs,
             final Resources res) {
         return prefs.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, res.getBoolean(
                 R.bool.config_default_next_word_prediction));
     }
 
-    private static float getAutoCorrectionThreshold(final Resources res,
+    private static float readAutoCorrectionThreshold(final Resources res,
             final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = res.getStringArray(
                 R.array.auto_correction_threshold_values);
@@ -317,107 +322,5 @@ public final class SettingsValues {
                     + Arrays.toString(autoCorrectionThresholdValues));
         }
         return autoCorrectionThreshold;
-    }
-
-    public boolean isVoiceKeyEnabled(final EditorInfo editorInfo) {
-        final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
-        return shortcutImeEnabled && mVoiceKeyEnabled
-                && !InputTypeUtils.isPasswordInputType(inputType);
-    }
-
-    public boolean isVoiceKeyOnMain() {
-        return mVoiceKeyOnMain;
-    }
-
-    // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
-    // This is being used only for the backward compatibility.
-    private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
-            "pref_suppress_language_switch_key";
-
-    public static boolean showsLanguageSwitchKey(final SharedPreferences prefs) {
-        if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
-            final boolean suppressLanguageSwitchKey = prefs.getBoolean(
-                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
-            final SharedPreferences.Editor editor = prefs.edit();
-            editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
-            editor.putBoolean(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
-            editor.apply();
-        }
-        return prefs.getBoolean(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
-    }
-
-    public boolean isLanguageSwitchKeyEnabled() {
-        if (!mShowsLanguageSwitchKey) {
-            return false;
-        }
-        final RichInputMethodManager imm = RichInputMethodManager.getInstance();
-        if (mIncludesOtherImesInLanguageSwitchList) {
-            return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
-        } else {
-            return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
-        }
-    }
-
-    public static boolean isFullscreenModeAllowed(final Resources res) {
-        return res.getBoolean(R.bool.config_use_fullscreen_mode);
-    }
-
-    public static String getPrefAdditionalSubtypes(final SharedPreferences prefs,
-            final Resources res) {
-        final String predefinedPrefSubtypes = AdditionalSubtype.createPrefSubtypes(
-                res.getStringArray(R.array.predefined_subtypes));
-        return prefs.getString(Settings.PREF_CUSTOM_INPUT_STYLES, predefinedPrefSubtypes);
-    }
-
-    // Accessed from the settings interface, hence public
-    public static float getCurrentKeypressSoundVolume(final SharedPreferences prefs,
-            final Resources res) {
-        final float volume = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
-        if (volume >= 0) {
-            return volume;
-        }
-        return Float.parseFloat(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
-    }
-
-    // Likewise
-    public static int getCurrentVibrationDuration(final SharedPreferences prefs,
-            final Resources res) {
-        final int ms = prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
-        if (ms >= 0) {
-            return ms;
-        }
-        return Integer.parseInt(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
-    }
-
-    // Likewise
-    public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
-        // TODO: use mUsabilityStudyMode instead of reading it again here
-        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
-    }
-
-    public static long getLastUserHistoryWriteTime(final SharedPreferences prefs,
-            final String locale) {
-        final String str = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(str);
-        if (map.containsKey(locale)) {
-            return map.get(locale);
-        }
-        return 0;
-    }
-
-    public static void setLastUserHistoryWriteTime(final SharedPreferences prefs,
-            final String locale) {
-        final String oldStr = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(oldStr);
-        map.put(locale, System.currentTimeMillis());
-        final String newStr = LocaleUtils.localeAndTimeHashMapToStr(map);
-        prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
-    }
-
-    public boolean isSameInputType(final EditorInfo editorInfo) {
-        return mInputAttributes.isSameInputType(editorInfo);
     }
 }
