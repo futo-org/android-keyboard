@@ -100,11 +100,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
     }
 
     public void setSuggetedWords(final SuggestedWords suggestedWords) {
-        if (suggestedWords == null) {
-            mSuggestedWords = SuggestedWords.EMPTY;
-        } else {
-            mSuggestedWords = suggestedWords;
-        }
+        mSuggestedWords = suggestedWords;
         updatePreviewPosition();
     }
 

@@ -41,6 +41,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 public final class PreviewPlacerView extends RelativeLayout {
     private final int[] mKeyboardViewOrigin = CoordinateUtils.newInstance();
 
+    // TODO: Consolidate gesture preview trail with {@link KeyboardView}
     private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
             CollectionUtils.newSparseArray();
     private final Params mGesturePreviewTrailParams;
@@ -60,19 +61,16 @@ public final class PreviewPlacerView extends RelativeLayout {
 
     private final DrawingHandler mDrawingHandler;
 
+    // TODO: Remove drawing handler.
     private static final class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
-        private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
-        private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
+        private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 0;
 
         private final Params mGesturePreviewTrailParams;
-        private final int mGestureFloatingPreviewTextLingerTimeout;
 
         public DrawingHandler(final PreviewPlacerView outerInstance,
-                final Params gesturePreviewTrailParams,
-                final int getstureFloatinPreviewTextLinerTimeout) {
+                final Params gesturePreviewTrailParams) {
             super(outerInstance);
             mGesturePreviewTrailParams = gesturePreviewTrailParams;
-            mGestureFloatingPreviewTextLingerTimeout = getstureFloatinPreviewTextLinerTimeout;
         }
 
         @Override
@@ -80,19 +78,10 @@ public final class PreviewPlacerView extends RelativeLayout {
             final PreviewPlacerView placerView = getOuterInstance();
             if (placerView == null) return;
             switch (msg.what) {
-            case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-                placerView.setGestureFloatingPreviewText(null);
-                break;
             case MSG_UPDATE_GESTURE_PREVIEW_TRAIL:
                 placerView.invalidate();
                 break;
             }
-        }
-
-        public void dismissGestureFloatingPreviewText() {
-            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
-                    mGestureFloatingPreviewTextLingerTimeout);
         }
 
         public void postUpdateGestureTrailPreview() {
@@ -112,16 +101,13 @@ public final class PreviewPlacerView extends RelativeLayout {
 
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        final int gestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         // TODO: mGestureFloatingPreviewText could be an instance of GestureFloatingPreviewText or
         // MultiGesturePreviewText, depending on the user's choice in the settings.
         mGestureFloatingPreviewText = new GestureFloatingPreviewText(keyboardViewAttr, context);
         mGesturePreviewTrailParams = new Params(keyboardViewAttr);
         keyboardViewAttr.recycle();
 
-        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams,
-                gestureFloatingPreviewTextLingerTimeout);
+        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
 
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
@@ -283,10 +269,6 @@ public final class PreviewPlacerView extends RelativeLayout {
         if (!mGestureFloatingPreviewText.isPreviewEnabled()) return;
         mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
         invalidate();
-    }
-
-    public void dismissGestureFloatingPreviewText() {
-        mDrawingHandler.dismissGestureFloatingPreviewText();
     }
 
     private void drawSlidingKeyInputPreview(final Canvas canvas) {
