@@ -134,17 +134,9 @@ public class Statistics {
         if (DEBUG) {
             Log.d(TAG, "recordChar() called");
         }
-        final long delta = time - mLastTapTime;
         if (codePoint == Constants.CODE_DELETE) {
             mDeleteKeyCount++;
-            if (delta < MIN_DELETION_INTERMISSION) {
-                if (mIsLastKeyDeleteKey) {
-                    mDuringRepeatedDeleteKeysCounter.add(delta);
-                } else {
-                    mBeforeDeleteKeyCounter.add(delta);
-                }
-            }
-            mIsLastKeyDeleteKey = true;
+            recordUserAction(time, true /* isDeletion */);
         } else {
             mCharCount++;
             if (Character.isDigit(codePoint)) {
@@ -156,14 +148,8 @@ public class Statistics {
             if (Character.isSpaceChar(codePoint)) {
                 mSpaceCount++;
             }
-            if (mIsLastKeyDeleteKey && delta < MIN_DELETION_INTERMISSION) {
-                mAfterDeleteKeyCounter.add(delta);
-            } else if (!mIsLastKeyDeleteKey && delta < MIN_TYPING_INTERMISSION) {
-                mKeyCounter.add(delta);
-            }
-            mIsLastKeyDeleteKey = false;
+            recordUserAction(time, false /* isDeletion */);
         }
-        mLastTapTime = time;
     }
 
     public void recordWordEntered(final boolean isDictionaryWord) {
@@ -177,9 +163,10 @@ public class Statistics {
         mSplitWordsCount++;
     }
 
-    public void recordGestureInput(final int numCharsEntered) {
+    public void recordGestureInput(final int numCharsEntered, final long time) {
         mGesturesInputCount++;
         mGesturesCharsCount += numCharsEntered;
+        recordUserAction(time, false /* isDeletion */);
     }
 
     public void setIsEmptyUponStarting(final boolean isEmpty) {
@@ -187,14 +174,43 @@ public class Statistics {
         mIsEmptinessStateKnown = true;
     }
 
-    public void recordGestureDelete() {
+    public void recordGestureDelete(final int length, final long time) {
         mGesturesDeletedCount++;
-    }
-    public void recordManualSuggestion() {
-        mManualSuggestionsCount++;
+        recordUserAction(time, true /* isDeletion */);
     }
 
-    public void recordRevertCommit() {
+    public void recordManualSuggestion(final long time) {
+        mManualSuggestionsCount++;
+        recordUserAction(time, false /* isDeletion */);
+    }
+
+    public void recordRevertCommit(final long time) {
         mRevertCommitsCount++;
+        recordUserAction(time, true /* isDeletion */);
+    }
+
+    private void recordUserAction(final long time, final boolean isDeletion) {
+        final long delta = time - mLastTapTime;
+        if (isDeletion) {
+            if (delta < MIN_DELETION_INTERMISSION) {
+                if (mIsLastKeyDeleteKey) {
+                    mDuringRepeatedDeleteKeysCounter.add(delta);
+                } else {
+                    mBeforeDeleteKeyCounter.add(delta);
+                }
+            } else {
+                ResearchLogger.onUserPause(delta);
+            }
+        } else {
+            if (mIsLastKeyDeleteKey && delta < MIN_DELETION_INTERMISSION) {
+                mAfterDeleteKeyCounter.add(delta);
+            } else if (!mIsLastKeyDeleteKey && delta < MIN_TYPING_INTERMISSION) {
+                mKeyCounter.add(delta);
+            } else {
+                ResearchLogger.onUserPause(delta);
+            }
+        }
+        mIsLastKeyDeleteKey = isDeletion;
+        mLastTapTime = time;
     }
 }

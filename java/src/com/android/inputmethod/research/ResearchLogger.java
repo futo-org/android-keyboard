@@ -1153,7 +1153,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
                 Constants.SUGGESTION_STRIP_COORDINATE);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
-        researchLogger.mStatistics.recordManualSuggestion();
+        researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());
     }
 
     /**
@@ -1281,7 +1281,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
                 LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord);
-        researchLogger.mStatistics.recordRevertCommit();
+        researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
         researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE, isBatchMode);
     }
 
@@ -1611,7 +1611,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
                 enteredWordPos);
-        researchLogger.mStatistics.recordGestureInput(enteredText.length());
+        researchLogger.mStatistics.recordGestureInput(enteredText.length(),
+                SystemClock.uptimeMillis());
     }
 
     /**
@@ -1624,7 +1625,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_handleBackspace_batch(final CharSequence deletedText) {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH, deletedText);
-        researchLogger.mStatistics.recordGestureDelete();
+        researchLogger.mStatistics.recordGestureDelete(deletedText.length(),
+                SystemClock.uptimeMillis());
+    }
+
+    /**
+     * Log a long interval between user operation.
+     *
+     * UserInput: The user has not done anything for a while.
+     */
+    private static final LogStatement LOGSTATEMENT_ONUSERPAUSE = new LogStatement("OnUserPause",
+            false, false, "intervalInMs");
+    public static void onUserPause(final long interval) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_ONUSERPAUSE, interval);
     }
 
     /**
