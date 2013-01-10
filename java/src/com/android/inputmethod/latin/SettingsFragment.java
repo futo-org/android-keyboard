@@ -308,10 +308,17 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Context context = getActivity();
         final PreferenceScreen settingsPref = mKeypressVibrationDurationSettingsPref;
         final SeekBarDialog.Listener listener = new SeekBarDialog.Adapter() {
+            private void writePreference(final SharedPreferences sp, final int value) {
+                sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, value).apply();
+            }
+
             @Override
             public void onPositiveButtonClick(final SeekBarDialog dialog) {
-                final int ms = dialog.getValue();
-                sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, ms).apply();
+                writePreference(sp, dialog.getValue());
+            }
+
+            @Override
+            public void onDismiss(final SeekBarDialog dialog) {
                 if (settingsPref != null) {
                     settingsPref.setSummary(dialog.getValueText());
                 }
@@ -348,10 +355,17 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         final PreferenceScreen settingsPref = mKeypressSoundVolumeSettingsPref;
         final SeekBarDialog.Listener listener = new SeekBarDialog.Adapter() {
+            private void writePreference(final SharedPreferences sp, final float value) {
+                sp.edit().putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, value).apply();
+            }
+
             @Override
             public void onPositiveButtonClick(final SeekBarDialog dialog) {
-                final float volume = dialog.getValue() / PERCENT_FLOAT;
-                sp.edit().putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, volume).apply();
+                writePreference(sp, dialog.getValue() / PERCENT_FLOAT);
+            }
+
+            @Override
+            public void onDismiss(final SeekBarDialog dialog) {
                 if (settingsPref != null) {
                     settingsPref.setSummary(dialog.getValueText());
                 }
