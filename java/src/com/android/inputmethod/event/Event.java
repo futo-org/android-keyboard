@@ -86,4 +86,8 @@ public class Event {
     public boolean isCommittable() {
         return EVENT_COMMITTABLE == mType;
     }
+
+    public boolean isDead() {
+        return EVENT_DEAD == mType;
+    }
 }
