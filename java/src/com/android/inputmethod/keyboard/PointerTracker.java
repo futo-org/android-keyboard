@@ -920,8 +920,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             final boolean isMajorEvent, final Key key) {
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
         if (mIsDetectingGesture) {
+            final int beforeLength = mGestureStrokeWithPreviewPoints.getLength();
             final boolean onValidArea = mGestureStrokeWithPreviewPoints.addPointOnKeyboard(
                     x, y, gestureTime, isMajorEvent);
+            if (mGestureStrokeWithPreviewPoints.getLength() > beforeLength) {
+                mTimerProxy.startUpdateBatchInputTimer(this);
+            }
             // If the move event goes out from valid batch input area, cancel batch input.
             if (!onValidArea) {
                 cancelBatchInput();
@@ -943,7 +947,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_MOVE_EVENT) {
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         }
-        mTimerProxy.cancelUpdateBatchInputTimer(this);
         if (mIsTrackingCanceled) {
             return;
         }
