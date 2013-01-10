@@ -47,17 +47,18 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
         // the key for 'A' or Space, but also Backspace or Ctrl or Caps Lock.
         final int keyCode = keyEvent.getKeyCode();
         if (KeyEvent.KEYCODE_DEL == keyCode) {
-            return Event.createCommittableEvent(Constants.CODE_DELETE);
+            return Event.createCommittableEvent(Constants.CODE_DELETE, null /* next */);
         }
         if (keyEvent.isPrintingKey() || KeyEvent.KEYCODE_SPACE == keyCode
                 || KeyEvent.KEYCODE_ENTER == keyCode) {
             if (0 != (codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT)) {
                 // A dead key.
-                return Event.createDeadEvent(codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK);
+                return Event.createDeadEvent(
+                        codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK, null /* next */);
             } else {
                 // A committable character. This should be committed right away, taking into
                 // account the current state.
-                return Event.createCommittableEvent(codePointAndFlags);
+                return Event.createCommittableEvent(codePointAndFlags, null /* next */);
             }
         } else {
             return Event.createNotHandledEvent();

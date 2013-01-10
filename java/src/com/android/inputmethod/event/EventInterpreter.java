@@ -106,19 +106,17 @@ public class EventInterpreter {
     }
 
     private boolean onEvent(final Event event) {
-        if (event.isCommittable()) {
-            mLatinIme.onCodeInput(event.mCodePoint,
-                    Constants.EXTERNAL_KEYBOARD_COORDINATE, Constants.EXTERNAL_KEYBOARD_COORDINATE);
-            return true;
+        Event currentlyProcessingEvent = event;
+        boolean processed = false;
+        while (null != currentlyProcessingEvent) {
+            if (currentlyProcessingEvent.isCommittable()) {
+                mLatinIme.onCodeInput(currentlyProcessingEvent.mCodePoint,
+                        Constants.EXTERNAL_KEYBOARD_COORDINATE,
+                        Constants.EXTERNAL_KEYBOARD_COORDINATE);
+                processed = true;
+            }
+            currentlyProcessingEvent = currentlyProcessingEvent.mNextEvent;
         }
-        // TODO: Classify the event - input or non-input (see design doc)
-        // TODO: IF action event
-        //          Send decoded action back to LatinIME
-        //       ELSE
-        //          Send input event to the combiner
-        //          Get back new input material + visual feedback + combiner state
-        //          Route the event to Latin IME
-        //       ENDIF
-        return false;
+        return processed;
     }
 }
