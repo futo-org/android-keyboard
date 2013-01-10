@@ -1202,7 +1202,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_swapSwapperAndSpace(final CharSequence originalCharacters,
             final String charactersAfterSwap) {
         final ResearchLogger researchLogger = getInstance();
-        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        final LogUnit logUnit;
+        if (researchLogger.mMainLogBuffer == null) {
+            logUnit = null;
+        } else {
+            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        }
         if (logUnit != null) {
             researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE,
                     originalCharacters, charactersAfterSwap);
@@ -1273,7 +1278,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final String originallyTypedWord, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
         // TODO: Verify that mCurrentLogUnit has been restored and contains the reverted word.
-        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        final LogUnit logUnit;
+        if (researchLogger.mMainLogBuffer == null) {
+            logUnit = null;
+        } else {
+            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        }
         if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
             if (logUnit != null) {
                 logUnit.setWord(originallyTypedWord);
