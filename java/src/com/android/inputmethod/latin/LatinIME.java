@@ -1588,10 +1588,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final boolean dismissGestureFloatingPreviewText) {
         showSuggestionStrip(suggestedWords, null);
         final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         if (dismissGestureFloatingPreviewText) {
             mainKeyboardView.dismissGestureFloatingPreviewText();
-        } else {
-            mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         }
     }
 
