@@ -75,7 +75,7 @@ public final class RichInputMethodManager {
 
         // Initialize additional subtypes.
         SubtypeLocale.init(context);
-        final String prefAdditionalSubtypes = SettingsValues.getPrefAdditionalSubtypes(
+        final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
                 prefs, context.getResources());
         final InputMethodSubtype[] additionalSubtypes =
                 AdditionalSubtype.createAdditionalSubtypesArray(prefAdditionalSubtypes);

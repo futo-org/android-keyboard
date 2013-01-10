@@ -1083,7 +1083,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public boolean onEvaluateFullscreenMode() {
         // Reread resource value here, because this method is called by framework anytime as needed.
         final boolean isFullscreenModeAllowed =
-                SettingsValues.isFullscreenModeAllowed(getResources());
+                Settings.readUseFullscreenMode(getResources());
         if (super.onEvaluateFullscreenMode() && isFullscreenModeAllowed) {
             // TODO: Remove this hack. Actually we should not really assume NO_EXTRACT_UI
             // implies NO_FULLSCREEN. However, the framework mistakenly does.  i.e. NO_EXTRACT_UI

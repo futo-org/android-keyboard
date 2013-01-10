@@ -36,6 +36,7 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
@@ -181,8 +182,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         keyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
         keyboardView.setKeyPreviewPopupEnabled(
-                SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
-                SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
+                Settings.readKeyPreviewPopupEnabled(mPrefs, mResources),
+                Settings.readKeyPreviewPopupDismissDelay(mPrefs, mResources));
         keyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
         keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)

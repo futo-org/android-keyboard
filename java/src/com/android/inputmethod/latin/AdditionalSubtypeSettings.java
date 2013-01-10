@@ -400,7 +400,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
         mKeyboardLayoutSetAdapter = new KeyboardLayoutSetAdapter(context);
 
         final String prefSubtypes =
-                SettingsValues.getPrefAdditionalSubtypes(mPrefs, getResources());
+                Settings.readPrefAdditionalSubtypes(mPrefs, getResources());
         setPrefSubtypes(prefSubtypes, context);
 
         mIsAddingNewSubtype = (savedInstanceState != null)
@@ -564,19 +564,13 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
     @Override
     public void onPause() {
         super.onPause();
-        final String oldSubtypes = SettingsValues.getPrefAdditionalSubtypes(mPrefs, getResources());
+        final String oldSubtypes = Settings.readPrefAdditionalSubtypes(mPrefs, getResources());
         final InputMethodSubtype[] subtypes = getSubtypes();
         final String prefSubtypes = AdditionalSubtype.createPrefSubtypes(subtypes);
         if (prefSubtypes.equals(oldSubtypes)) {
             return;
         }
-
-        final SharedPreferences.Editor editor = mPrefs.edit();
-        try {
-            editor.putString(Settings.PREF_CUSTOM_INPUT_STYLES, prefSubtypes);
-        } finally {
-            editor.apply();
-        }
+        Settings.writePrefAdditionalSubtypes(mPrefs, prefSubtypes);
         mRichImm.setAdditionalInputMethodSubtypes(subtypes);
     }
 

@@ -102,7 +102,7 @@ public final class AudioAndHapticFeedbackManager {
                 sound = AudioManager.FX_KEYPRESS_STANDARD;
                 break;
             }
-            mAudioManager.playSoundEffect(sound, mSettingsValues.mFxVolume);
+            mAudioManager.playSoundEffect(sound, mSettingsValues.mKeypressSoundVolume);
         }
     }
 

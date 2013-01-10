@@ -219,7 +219,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
             } catch (InterruptedException e) {
             }
         }
-        final long last = SettingsValues.getLastUserHistoryWriteTime(mPrefs, mLocale);
+        final long last = Settings.readLastUserHistoryWriteTime(mPrefs, mLocale);
         final boolean initializing = last == 0;
         final long now = System.currentTimeMillis();
         profTotal = 0;
@@ -355,7 +355,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
             }
 
             // Save the timestamp after we finish writing the binary dictionary.
-            SettingsValues.setLastUserHistoryWriteTime(mPrefs, mLocale);
+            Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
             if (PROFILE_SAVE_RESTORE) {
                 final long diff = System.currentTimeMillis() - now;
                 Log.w(TAG, "PROF: Write User HistoryDictionary: " + mLocale + ", " + diff + "ms.");

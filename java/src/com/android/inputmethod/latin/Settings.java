@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -65,6 +66,11 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
+
+    // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
+    // This is being used only for the backward compatibility.
+    private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
+            "pref_suppress_language_switch_key";
 
     private Resources mRes;
     private SharedPreferences mPrefs;
@@ -115,5 +121,95 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // TODO: Remove this method and add proxy method to SettingsValues.
     public SettingsValues getCurrent() {
         return mSettingsValues;
+    }
+
+    // Accessed from the settings interface, hence public
+    public static boolean readKeyPreviewPopupEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        final boolean showPopupOption = res.getBoolean(
+                R.bool.config_enable_show_popup_on_keypress_option);
+        if (!showPopupOption) return res.getBoolean(R.bool.config_default_popup_preview);
+        return prefs.getBoolean(PREF_POPUP_ON,
+                res.getBoolean(R.bool.config_default_popup_preview));
+    }
+
+    public static int readKeyPreviewPopupDismissDelay(final SharedPreferences prefs,
+            final Resources res) {
+        // TODO: use mKeyPreviewPopupDismissDelayRawValue instead of reading it again here.
+        return Integer.parseInt(prefs.getString(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
+                Integer.toString(res.getInteger(
+                        R.integer.config_key_preview_linger_timeout))));
+    }
+
+    public static boolean readShowsLanguageSwitchKey(final SharedPreferences prefs) {
+        if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
+            final boolean suppressLanguageSwitchKey = prefs.getBoolean(
+                    PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+            final SharedPreferences.Editor editor = prefs.edit();
+            editor.remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY);
+            editor.putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey);
+            editor.apply();
+        }
+        return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+    }
+
+    public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,
+            final Resources res) {
+        final String predefinedPrefSubtypes = AdditionalSubtype.createPrefSubtypes(
+                res.getStringArray(R.array.predefined_subtypes));
+        return prefs.getString(PREF_CUSTOM_INPUT_STYLES, predefinedPrefSubtypes);
+    }
+
+    public static void writePrefAdditionalSubtypes(final SharedPreferences prefs,
+            final String prefSubtypes) {
+        prefs.edit().putString(Settings.PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
+    }
+
+    public static float readKeypressSoundVolume(final SharedPreferences prefs,
+            final Resources res) {
+        final float volume = prefs.getFloat(PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
+        if (volume >= 0) {
+            return volume;
+        }
+        return Float.parseFloat(
+                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
+    }
+
+    public static int readVibrationDuration(final SharedPreferences prefs,
+            final Resources res) {
+        final int ms = prefs.getInt(PREF_VIBRATION_DURATION_SETTINGS, -1);
+        if (ms >= 0) {
+            return ms;
+        }
+        return Integer.parseInt(
+                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
+    }
+
+    public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
+        // TODO: use mUsabilityStudyMode instead of reading it again here
+        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
+    }
+
+    public static long readLastUserHistoryWriteTime(final SharedPreferences prefs,
+            final String locale) {
+        final String str = prefs.getString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
+        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(str);
+        if (map.containsKey(locale)) {
+            return map.get(locale);
+        }
+        return 0;
+    }
+
+    public static void writeLastUserHistoryWriteTime(final SharedPreferences prefs,
+            final String locale) {
+        final String oldStr = prefs.getString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
+        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(oldStr);
+        map.put(locale, System.currentTimeMillis());
+        final String newStr = LocaleUtils.localeAndTimeHashMapToStr(map);
+        prefs.edit().putString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
+    }
+
+    public static boolean readUseFullscreenMode(final Resources res) {
+        return res.getBoolean(R.bool.config_use_fullscreen_mode);
     }
 }
