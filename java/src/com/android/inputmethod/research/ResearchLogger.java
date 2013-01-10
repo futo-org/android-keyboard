@@ -1247,8 +1247,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void mainKeyboardView_setKeyboard(final Keyboard keyboard) {
         final KeyboardId kid = keyboard.mId;
         final boolean isPasswordView = kid.passwordInput();
-        getInstance().setIsPasswordView(isPasswordView);
-        getInstance().enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD,
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.setIsPasswordView(isPasswordView);
+        researchLogger.enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD,
                 KeyboardId.elementIdToName(kid.mElementId),
                 kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 kid.mOrientation, kid.mWidth, KeyboardId.modeName(kid.mMode), kid.imeAction(),
@@ -1271,12 +1272,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_revertCommit(final String committedWord,
             final String originallyTypedWord, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        // Assume that mCurrentLogUnit has been restored to contain the reverted word.
-        final LogUnit logUnit = researchLogger.mCurrentLogUnit;
+        // TODO: Verify that mCurrentLogUnit has been restored and contains the reverted word.
+        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
         if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
             if (logUnit != null) {
-                // Probably not necessary, but setting as a precaution in case the word isn't
-                // committed later.
                 logUnit.setWord(originallyTypedWord);
             }
         }
@@ -1413,10 +1412,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final String scrubbedTypedWord = scrubDigitsFromString(typedWord);
         final String scrubbedAutoCorrection = scrubDigitsFromString(autoCorrection);
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION,
-                scrubbedTypedWord, scrubbedAutoCorrection, separatorString);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedAutoCorrection, Long.MAX_VALUE,
                 isBatchMode);
+
+        // Add the autocorrection logStatement at the end of the logUnit for the committed word.
+        // We have to do this after calling commitCurrentLogUnitAsWord, because it may split the
+        // current logUnit, and then we have to peek to get the logUnit reference back.
+        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        // TODO: Add test to confirm that the commitCurrentAutoCorrection log statement should
+        // always be added to logUnit (if non-null) and not mCurrentLogUnit.
+        researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION,
+                scrubbedTypedWord, scrubbedAutoCorrection, separatorString);
     }
 
     private boolean isExpectingCommitText = false;
