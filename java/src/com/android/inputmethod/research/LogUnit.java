@@ -114,24 +114,37 @@ import java.util.Map;
             debugStringWriter = null;
             debugJsonWriter = null;
         }
-        final int size = mLogStatementList.size();
         // Write out any logStatement that passes the privacy filter.
-        for (int i = 0; i < size; i++) {
-            final LogStatement logStatement = mLogStatementList.get(i);
-            if (!isIncludingPrivateData && logStatement.mIsPotentiallyPrivate) {
-                continue;
+        final int size = mLogStatementList.size();
+        if (size != 0) {
+            // Note that jsonWriter is only set to a non-null value if the logUnit start text is
+            // output and at least one logStatement is output.
+            JsonWriter jsonWriter = null;
+            for (int i = 0; i < size; i++) {
+                final LogStatement logStatement = mLogStatementList.get(i);
+                if (!isIncludingPrivateData && logStatement.mIsPotentiallyPrivate) {
+                    continue;
+                }
+                if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
+                    continue;
+                }
+                // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
+                // researchLog.getValidJsonWriterLocked() will not ever be called, and the file
+                // will not have been opened for writing.
+                if (jsonWriter == null) {
+                    jsonWriter = researchLog.getValidJsonWriterLocked();
+                    outputLogUnitStart(jsonWriter);
+                }
+                outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
+                        mTimeList.get(i));
+                if (DEBUG) {
+                    outputLogStatementToLocked(debugJsonWriter, mLogStatementList.get(i),
+                            mValuesList.get(i), mTimeList.get(i));
+                }
             }
-            if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
-                continue;
-            }
-            // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
-            // researchLog.getValidJsonWriter() will not open the file for writing.
-            final JsonWriter jsonWriter = researchLog.getValidJsonWriterLocked();
-            outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
-                    mTimeList.get(i));
-            if (DEBUG) {
-                outputLogStatementToLocked(debugJsonWriter, mLogStatementList.get(i),
-                        mValuesList.get(i), mTimeList.get(i));
+            if (jsonWriter != null) {
+                // We must have called logUnitStart earlier, so emit a logUnitStop.
+                outputLogUnitStop(jsonWriter, isIncludingPrivateData);
             }
         }
         if (DEBUG) {
@@ -152,6 +165,35 @@ import java.util.Map;
     private static final String CURRENT_TIME_KEY = "_ct";
     private static final String UPTIME_KEY = "_ut";
     private static final String EVENT_TYPE_KEY = "_ty";
+    private static final String WORD_KEY = "_wo";
+    private static final String LOG_UNIT_BEGIN_KEY = "logUnitStart";
+    private static final String LOG_UNIT_END_KEY = "logUnitEnd";
+
+    private void outputLogUnitStart(final JsonWriter jsonWriter) {
+        try {
+            jsonWriter.beginObject();
+            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
+            jsonWriter.name(WORD_KEY).value(getWord());
+            jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_BEGIN_KEY);
+            jsonWriter.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Error in JsonWriter; cannot write LogUnitStart");
+        }
+    }
+
+    private void outputLogUnitStop(final JsonWriter jsonWriter,
+            final boolean isIncludingPrivateData) {
+        try {
+            jsonWriter.beginObject();
+            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
+            jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_END_KEY);
+            jsonWriter.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Error in JsonWriter; cannot write LogUnitStop");
+        }
+    }
 
     /**
      * Write the logStatement and its contents out through jsonWriter.
