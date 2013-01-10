@@ -139,7 +139,7 @@ public final class SettingsValues {
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
         // Compute other readable settings
-        mKeypressVibrationDuration = Settings.readVibrationDuration(prefs, res);
+        mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,

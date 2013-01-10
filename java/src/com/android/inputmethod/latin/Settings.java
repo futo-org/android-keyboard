@@ -168,19 +168,21 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static float readKeypressSoundVolume(final SharedPreferences prefs,
             final Resources res) {
         final float volume = prefs.getFloat(PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
-        if (volume >= 0) {
-            return volume;
-        }
+        return (volume >= 0) ? volume : readDefaultKeypressSoundVolume(res);
+    }
+
+    public static float readDefaultKeypressSoundVolume(final Resources res) {
         return Float.parseFloat(
                 ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
     }
 
-    public static int readVibrationDuration(final SharedPreferences prefs,
+    public static int readKeypressVibrationDuration(final SharedPreferences prefs,
             final Resources res) {
         final int ms = prefs.getInt(PREF_VIBRATION_DURATION_SETTINGS, -1);
-        if (ms >= 0) {
-            return ms;
-        }
+        return (ms >= 0) ? ms : readDefaultKeypressVibrationDuration(res);
+    }
+
+    public static int readDefaultKeypressVibrationDuration(final Resources res) {
         return Integer.parseInt(
                 ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
     }
