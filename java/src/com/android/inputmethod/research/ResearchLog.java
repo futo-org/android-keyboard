@@ -193,6 +193,9 @@ public class ResearchLog {
             });
         } catch (RejectedExecutionException e) {
             // TODO: Add code to record loss of data, and report.
+            if (DEBUG) {
+                Log.d(TAG, "ResearchLog.publish() rejecting scheduled execution");
+            }
         }
     }
 

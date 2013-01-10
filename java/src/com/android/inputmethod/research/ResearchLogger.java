@@ -85,7 +85,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Whether all n-grams should be logged.  true will disclose private info.
-    private static final boolean LOG_EVERYTHING = false
+    private static final boolean IS_LOGGING_EVERYTHING = false
             && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Whether the TextView contents are logged at the end of the session.  true will disclose
     // private info.
@@ -105,7 +105,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final boolean IS_SHOWING_INDICATOR = true;
     // Change the default indicator to something very visible.  Currently two red vertical bars on
     // either side of they keyboard.
-    private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false || LOG_EVERYTHING;
+    private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false || IS_LOGGING_EVERYTHING;
     public static final int FEEDBACK_WORD_BUFFER_SIZE = 5;
 
     // constants related to specific log points
@@ -395,7 +395,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
         if (mMainLogBuffer != null) {
             publishLogBuffer(mMainLogBuffer, mMainResearchLog,
-                    LOG_EVERYTHING /* isIncludingPrivateData */);
+                    IS_LOGGING_EVERYTHING /* isIncludingPrivateData */);
             mMainResearchLog.close(null /* callback */);
             mMainLogBuffer = null;
         }
@@ -702,7 +702,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
-                if ((mMainLogBuffer.isSafeToLog() || LOG_EVERYTHING) && mMainResearchLog != null) {
+                if ((mMainLogBuffer.isSafeToLog() || IS_LOGGING_EVERYTHING)
+                        && mMainResearchLog != null) {
                     publishLogBuffer(mMainLogBuffer, mMainResearchLog,
                             true /* isIncludingPrivateData */);
                     mMainLogBuffer.resetWordCounter();
@@ -916,7 +917,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
-                        OUTPUT_FORMAT_VERSION, LOG_EVERYTHING,
+                        OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
                         ProductionFlag.IS_EXPERIMENTAL_DEBUG);
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
@@ -1258,9 +1259,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (logUnit != null) {
                 logUnit.setWord(originallyTypedWord);
             }
-            final Dictionary dictionary = researchLogger.getDictionary();
-            researchLogger.mStatistics.recordWordEntered(dictionary != null
-                    && dictionary.isValidWord(originallyTypedWord));
         }
         researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
                 LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord);
@@ -1388,7 +1386,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * text input to another word that the user more likely desired to type.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION =
-            new LogStatement("LatinIMECommitCurrentAutoCorrection", true, false, "typedWord",
+            new LogStatement("LatinIMECommitCurrentAutoCorrection", true, true, "typedWord",
                     "autoCorrection", "separatorString");
     public static void latinIme_commitCurrentAutoCorrection(final String typedWord,
             final String autoCorrection, final String separatorString, final boolean isBatchMode) {
