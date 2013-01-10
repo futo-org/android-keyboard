@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
@@ -40,7 +39,6 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
     private static final class GesturePreviewTextParams {
         public final int mGesturePreviewTextSize;
         public final int mGesturePreviewTextColor;
-        public final int mGesturePreviewTextDimmedColor;
         public final int mGesturePreviewTextOffset;
         public final int mGesturePreviewTextHeight;
         public final int mGesturePreviewColor;
@@ -66,7 +64,6 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
                     R.styleable.KeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
             mGesturePreviewRoundRadius = keyboardViewAttr.getDimension(
                     R.styleable.KeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
-            mGesturePreviewTextDimmedColor = Color.GRAY;
 
             final Paint textPaint = new Paint();
             textPaint.setAntiAlias(true);
