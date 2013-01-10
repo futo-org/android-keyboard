@@ -133,7 +133,8 @@ final class GesturePreviewTrail {
     private static float getWidth(final int elapsedTime, final Params params) {
         final int deltaTime = params.mTrailLingerDuration - elapsedTime;
         final float deltaWidth = params.mTrailStartWidth - params.mTrailEndWidth;
-        return (deltaTime * deltaWidth) / params.mTrailLingerDuration + params.mTrailEndWidth;
+        return Math.max(
+                (deltaTime * deltaWidth) / params.mTrailLingerDuration, params.mTrailEndWidth);
     }
 
     private final RoundedLine mRoundedLine = new RoundedLine();
