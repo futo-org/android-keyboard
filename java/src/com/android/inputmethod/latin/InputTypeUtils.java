@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.text.InputType;
+import android.view.inputmethod.EditorInfo;
 
 public final class InputTypeUtils implements InputType {
     private static final int WEB_TEXT_PASSWORD_INPUT_TYPE =
@@ -35,6 +36,7 @@ public final class InputTypeUtils implements InputType {
         InputType.TYPE_TEXT_VARIATION_URI,
         InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
         InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD };
+    public static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
 
     private InputTypeUtils() {
         // This utility class is not publicly instantiable.
@@ -101,5 +103,16 @@ public final class InputTypeUtils implements InputType {
             if (variation == fieldVariation) return false;
         }
         return true;
+    }
+
+    public static int getActionIdFromEditorInfo(final EditorInfo editorInfo) {
+        final int actionId = editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+        if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            return EditorInfo.IME_ACTION_NONE;
+        } else if (editorInfo.actionLabel != null) {
+            return IME_ACTION_CUSTOM_LABEL;
+        } else {
+            return actionId;
+        }
     }
 }
