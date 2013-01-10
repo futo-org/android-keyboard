@@ -55,8 +55,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     protected MyTextView mTextView;
     protected View mInputView;
     protected InputConnection mInputConnection;
-    private final HashMap<String, InputMethodSubtype> mSubtypeMap =
-            new HashMap<String, InputMethodSubtype>();
 
     // A helper class to ease span tests
     public static class SpanGetter {
@@ -143,7 +141,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         final boolean previousDebugSetting = setDebugMode(true);
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
-        initSubtypeMap();
         final EditorInfo ei = new EditorInfo();
         ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final InputConnection ic = mTextView.onCreateInputConnection(ei);
@@ -159,26 +156,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mLatinIME.onStartInputView(ei, false);
         mInputConnection = ic;
         changeLanguage("en_US");
-    }
-
-    private void initSubtypeMap() {
-        final InputMethodManager imm = (InputMethodManager)mLatinIME.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        final String packageName = mLatinIME.getPackageName();
-        // The IMEs and subtypes don't need to be enabled to run this test because IMF isn't
-        // involved here.
-        for (final InputMethodInfo imi : imm.getInputMethodList()) {
-            if (imi.getPackageName().equals(packageName)) {
-                final int subtypeCount = imi.getSubtypeCount();
-                for (int i = 0; i < subtypeCount; i++) {
-                    final InputMethodSubtype ims = imi.getSubtypeAt(i);
-                    final String locale = ims.getLocale();
-                    mSubtypeMap.put(locale, ims);
-                }
-                return;
-            }
-        }
-        fail("LatinIME is not found");
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
@@ -270,12 +247,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void changeLanguage(final String locale) {
-        final InputMethodSubtype subtype = mSubtypeMap.get(locale);
         mTextView.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
-        if (subtype == null) {
-            fail("InputMethodSubtype for locale " + locale + " is not enabled");
-        }
-        SubtypeSwitcher.getInstance().onSubtypeChanged(subtype);
+        SubtypeSwitcher.getInstance().forceLocale(mTextView.mCurrentLocale);
         mLatinIME.loadKeyboard();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();

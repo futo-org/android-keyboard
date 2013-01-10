@@ -117,7 +117,5 @@ public class BlueUnderlineTests extends InputTestsBase {
         // Now simulate the user moving the cursor.
         SpanGetter span = new SpanGetter(mTextView.getText(), UnderlineSpan.class);
         assertNull("should not be composing, so should not have an underline span", span.mSpan);
-        span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
-        assertNull("should not be composing, so should not have an underline span", span.mSpan);
     }
 }
