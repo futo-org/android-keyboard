@@ -85,7 +85,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Whether all n-grams should be logged.  true will disclose private info.
-    private static final boolean IS_LOGGING_EVERYTHING = false
+    public static final boolean IS_LOGGING_EVERYTHING = false
             && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Whether the TextView contents are logged at the end of the session.  true will disclose
     // private info.
@@ -394,8 +394,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         commitCurrentLogUnit();
 
         if (mMainLogBuffer != null) {
-            publishLogBuffer(mMainLogBuffer, mMainResearchLog,
-                    IS_LOGGING_EVERYTHING /* isIncludingPrivateData */);
+            while (!mMainLogBuffer.isEmpty()) {
+                if ((mMainLogBuffer.isNGramSafe() || IS_LOGGING_EVERYTHING) &&
+                        mMainResearchLog != null) {
+                    publishLogBuffer(mMainLogBuffer, mMainResearchLog,
+                            true /* isIncludingPrivateData */);
+                    mMainLogBuffer.resetWordCounter();
+                } else {
+                    mMainLogBuffer.shiftOutThroughFirstWord();
+                }
+            }
             mMainResearchLog.close(null /* callback */);
             mMainLogBuffer = null;
         }
@@ -702,8 +710,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
-                if ((mMainLogBuffer.isSafeToLog() || IS_LOGGING_EVERYTHING)
-                        && mMainResearchLog != null) {
+                if ((mMainLogBuffer.isNGramSafe() || IS_LOGGING_EVERYTHING) &&
+                        mMainLogBuffer.isNGramComplete() &&
+                        mMainResearchLog != null) {
                     publishLogBuffer(mMainLogBuffer, mMainResearchLog,
                             true /* isIncludingPrivateData */);
                     mMainLogBuffer.resetWordCounter();
@@ -714,6 +723,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
             }
             mCurrentLogUnit = new LogUnit();
+        } else {
+            if (DEBUG) {
+                Log.d(TAG, "Warning: tried to commit empty log unit.");
+            }
         }
     }
 
@@ -756,8 +769,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mFeedbackLogBuffer.unshiftIn();
         }
         if (DEBUG) {
-            Log.d(TAG, "uncommitCurrentLogUnit back to " + (mCurrentLogUnit.hasWord()
-                    ? ": '" + mCurrentLogUnit.getWord() + "'" : ""));
+            Log.d(TAG, "uncommitCurrentLogUnit (dump=" + dumpCurrentLogUnit + ") back to "
+                    + (mCurrentLogUnit.hasWord() ? ": '" + mCurrentLogUnit.getWord() + "'" : ""));
         }
     }
 
@@ -773,12 +786,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 isIncludingPrivateData);
         researchLog.publish(openingLogUnit, true /* isIncludingPrivateData */);
         LogUnit logUnit;
-        while ((logUnit = logBuffer.shiftOut()) != null) {
+        int numWordsToPublish = MainLogBuffer.N_GRAM_SIZE;
+        while ((logUnit = logBuffer.shiftOut()) != null && numWordsToPublish > 0) {
             if (DEBUG) {
                 Log.d(TAG, "publishLogBuffer: " + (logUnit.hasWord() ? logUnit.getWord()
                         : "<wordless>"));
             }
             researchLog.publish(logUnit, isIncludingPrivateData);
+            if (logUnit.getWord() != null) {
+                numWordsToPublish--;
+            }
         }
         final LogUnit closingLogUnit = new LogUnit();
         closingLogUnit.addLogStatement(LOGSTATEMENT_LOG_SEGMENT_CLOSING,
@@ -1254,9 +1271,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_revertCommit(final String committedWord,
             final String originallyTypedWord, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
-        final LogUnit logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        // Assume that mCurrentLogUnit has been restored to contain the reverted word.
+        final LogUnit logUnit = researchLogger.mCurrentLogUnit;
         if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
             if (logUnit != null) {
+                // Probably not necessary, but setting as a precaution in case the word isn't
+                // committed later.
                 logUnit.setWord(originallyTypedWord);
             }
         }

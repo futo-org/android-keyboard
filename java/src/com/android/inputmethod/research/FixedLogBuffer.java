@@ -81,7 +81,7 @@ public class FixedLogBuffer extends LogBuffer {
         return logUnit;
     }
 
-    private void shiftOutThroughFirstWord() {
+    public void shiftOutThroughFirstWord() {
         final LinkedList<LogUnit> logUnits = getLogUnits();
         while (!logUnits.isEmpty()) {
             final LogUnit logUnit = logUnits.removeFirst();
