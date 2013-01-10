@@ -153,6 +153,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
     private boolean mShowKeyPreviewPopup = true;
     private int mKeyPreviewLingerTimeout;
 
+    // Gesture floating preview text
+    // TODO: Make this parameter customizable by user via settings.
+    private int mGestureFloatingPreviewTextLingerTimeout;
+
     // Background state set
     private static final int[][][] KEY_PREVIEW_BACKGROUND_STATE_TABLE = {
         { // STATE_MIDDLE
@@ -204,6 +208,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
 
     public static class DrawingHandler extends StaticInnerHandlerWrapper<KeyboardView> {
         private static final int MSG_DISMISS_KEY_PREVIEW = 0;
+        private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
         public DrawingHandler(final KeyboardView outerInstance) {
             super(outerInstance);
@@ -221,6 +226,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
                     previewText.setVisibility(INVISIBLE);
                 }
                 break;
+            case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
+                keyboardView.mPreviewPlacerView.setGestureFloatingPreviewText(SuggestedWords.EMPTY);
+                break;
             }
         }
 
@@ -234,6 +242,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
 
         private void cancelAllDismissKeyPreviews() {
             removeMessages(MSG_DISMISS_KEY_PREVIEW);
+        }
+
+        public void dismissGestureFloatingPreviewText(final long delay) {
+            sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT), delay);
         }
 
         public void cancelAllMessages() {
@@ -279,6 +291,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
                 R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAlpha = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_backgroundDimAlpha, 0);
+        mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         keyboardViewAttr.recycle();
 
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
@@ -877,7 +891,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
 
     public void dismissGestureFloatingPreviewText() {
         locatePreviewPlacerView();
-        mPreviewPlacerView.dismissGestureFloatingPreviewText();
+        mDrawingHandler.dismissGestureFloatingPreviewText(mGestureFloatingPreviewTextLingerTimeout);
     }
 
     @Override
