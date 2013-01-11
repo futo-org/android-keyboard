@@ -279,9 +279,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         final long length = file.length();
 
         // Build the new binary dictionary
-        final BinaryDictionary newBinaryDictionary =
-                new BinaryDictionary(mContext, filename, 0, length, true /* useFullEditDistance */,
-                        null, mDictType);
+        final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0, length,
+                true /* useFullEditDistance */, null, mDictType);
 
         if (mBinaryDictionary != null) {
             // Ensure all threads accessing the current dictionary have finished before swapping in

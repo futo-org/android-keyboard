@@ -39,7 +39,7 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
-    UnigramDictionary(const uint8_t *const streamStart, int maxWordLength, int maxWords,
+    UnigramDictionary(const uint8_t *const streamStart, int maxWordLength,
             const unsigned int flags);
     int getFrequency(const int *const inWord, const int length) const;
     int getBigramPosition(int pos, int *word, int offset, int length) const;
@@ -110,7 +110,6 @@ class UnigramDictionary {
 
     const uint8_t *const DICT_ROOT;
     const int MAX_WORD_LENGTH;
-    const int MAX_WORDS;
     const int ROOT_POS;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;

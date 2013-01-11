@@ -26,8 +26,8 @@
 
 namespace latinime {
 
-BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions)
-        : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_PREDICTIONS(maxPredictions) {
+BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength)
+        : DICT(dict), MAX_WORD_LENGTH(maxWordLength) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
     }
@@ -36,7 +36,7 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
 BigramDictionary::~BigramDictionary() {
 }
 
-bool BigramDictionary::addWordBigram(int *word, int length, int frequency, int *bigramFreq,
+void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *bigramFreq,
         int *bigramCodePoints, int *outputTypes) const {
     word[length] = 0;
     if (DEBUG_DICT) {
@@ -49,7 +49,7 @@ bool BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
 
     // Find the right insertion point
     int insertAt = 0;
-    while (insertAt < MAX_PREDICTIONS) {
+    while (insertAt < MAX_RESULTS) {
         if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
                 && length < Dictionary::wideStrLen(
                         bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
@@ -58,28 +58,27 @@ bool BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
         insertAt++;
     }
     if (DEBUG_DICT) {
-        AKLOGI("Bigram: InsertAt -> %d MAX_PREDICTIONS: %d", insertAt, MAX_PREDICTIONS);
+        AKLOGI("Bigram: InsertAt -> %d MAX_RESULTS: %d", insertAt, MAX_RESULTS);
     }
-    if (insertAt < MAX_PREDICTIONS) {
-        memmove(bigramFreq + (insertAt + 1),
-                bigramFreq + insertAt,
-                (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramFreq[0]));
-        bigramFreq[insertAt] = frequency;
-        outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
-        memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
-                bigramCodePoints + insertAt * MAX_WORD_LENGTH,
-                (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramCodePoints[0]) * MAX_WORD_LENGTH);
-        int *dest = bigramCodePoints + insertAt * MAX_WORD_LENGTH;
-        while (length--) {
-            *dest++ = *word++;
-        }
-        *dest = 0; // NULL terminate
-        if (DEBUG_DICT) {
-            AKLOGI("Bigram: Added word at %d", insertAt);
-        }
-        return true;
+    if (insertAt >= MAX_RESULTS) {
+        return;
     }
-    return false;
+    memmove(bigramFreq + (insertAt + 1),
+            bigramFreq + insertAt,
+            (MAX_RESULTS - insertAt - 1) * sizeof(bigramFreq[0]));
+    bigramFreq[insertAt] = frequency;
+    outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
+    memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
+            bigramCodePoints + insertAt * MAX_WORD_LENGTH,
+            (MAX_RESULTS - insertAt - 1) * sizeof(bigramCodePoints[0]) * MAX_WORD_LENGTH);
+    int *dest = bigramCodePoints + insertAt * MAX_WORD_LENGTH;
+    while (length--) {
+        *dest++ = *word++;
+    }
+    *dest = 0; // NULL terminate
+    if (DEBUG_DICT) {
+        AKLOGI("Bigram: Added word at %d", insertAt);
+    }
 }
 
 /* Parameters :
@@ -135,13 +134,12 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
             // here, but it can't get too bad.
             const int frequency =
                     BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreqTemp);
-            if (addWordBigram(bigramBuffer, length, frequency, bigramFreq, bigramCodePoints,
-                    outputTypes)) {
-                ++bigramCount;
-            }
+            addWordBigram(bigramBuffer, length, frequency, bigramFreq, bigramCodePoints,
+                    outputTypes);
+            ++bigramCount;
         }
     } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
-    return bigramCount;
+    return min(bigramCount, MAX_RESULTS);
 }
 
 // Returns a pointer to the start of the bigram list.

@@ -347,13 +347,8 @@ static inline void prof_out(void) {
 #define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_FREQ * 58 / 100)
 
 #define MAX_DEPTH_MULTIPLIER 3
-
 #define FIRST_WORD_INDEX 0
-
-#define MAX_SPACES_INTERNAL 16
-
-// TODO: Change this to MAX_WORDS, remove MAX_WORDS in Java, and stop getting it from Java
-#define MAX_WORDS_INTERNAL 18
+#define MAX_RESULTS 18 /* Must be identical to BinaryDictionary.MAX_RESULTS in Java */
 
 // Max Distance between point to key
 #define MAX_POINT_TO_KEY_LENGTH 10000000

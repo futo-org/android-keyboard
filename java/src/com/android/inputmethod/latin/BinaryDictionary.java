@@ -42,17 +42,13 @@ public final class BinaryDictionary extends Dictionary {
      * really long words.
      */
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
-    private static final int MAX_WORDS = 18;
-    private static final int MAX_SPACES = 16;
-
-    private static final int MAX_PREDICTIONS = 60;
-    private static final int MAX_RESULTS = Math.max(MAX_PREDICTIONS, MAX_WORDS);
+    private static final int MAX_RESULTS = 18; /* Must be identical to MAX_RESULTS in defines.h */
 
     private long mNativeDict;
     private final Locale mLocale;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
-    private final int[] mSpaceIndices = new int[MAX_SPACES];
+    private final int[] mSpaceIndices = new int[MAX_RESULTS];
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
 
@@ -80,16 +76,14 @@ public final class BinaryDictionary extends Dictionary {
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
      * dictionary factory.
-     * @param context the context to access the environment from.
      * @param filename the name of the file to read through native code.
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @param dictType the dictionary type, as a human-readable string
      */
-    public BinaryDictionary(final Context context, final String filename, final long offset,
-            final long length, final boolean useFullEditDistance, final Locale locale,
-            final String dictType) {
+    public BinaryDictionary(final String filename, final long offset, final long length,
+            final boolean useFullEditDistance, final Locale locale, final String dictType) {
         super(dictType);
         mLocale = locale;
         mUseFullEditDistance = useFullEditDistance;
@@ -101,7 +95,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int maxWordLength, int maxWords, int maxPredictions);
+            int maxWordLength);
     private native void closeNative(long dict);
     private native int getFrequencyNative(long dict, int[] word);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
@@ -116,8 +110,7 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
             final long length) {
-        mNativeDict = openNative(path, startOffset, length, MAX_WORD_LENGTH, MAX_WORDS,
-                MAX_PREDICTIONS);
+        mNativeDict = openNative(path, startOffset, length, MAX_WORD_LENGTH);
     }
 
     @Override
@@ -148,14 +141,12 @@ public final class BinaryDictionary extends Dictionary {
         final InputPointers ips = composer.getInputPointers();
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
-        final int tmpCount = getSuggestionsNative(mNativeDict,
-                proximityInfo.getNativeProximityInfo(), getTraverseSession(sessionId).getSession(),
-                ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-                mInputCodePoints, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+        final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+                getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
+                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
+                codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes);
-        final int count = Math.min(tmpCount, MAX_PREDICTIONS);
-
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             if (composerSize > 0 && mOutputScores[j] < 1) break;

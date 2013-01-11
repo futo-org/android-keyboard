@@ -26,8 +26,8 @@ class ProximityInfo;
 
 class GestureSuggest : public SuggestInterface {
  public:
-    GestureSuggest(const int maxWordLength, const int maxWords)
-            : mSuggestInterface(getGestureSuggestInstance(maxWordLength, maxWords)) {
+    GestureSuggest(const int maxWordLength)
+            : mSuggestInterface(getGestureSuggestInstance(maxWordLength)) {
     }
 
     virtual ~GestureSuggest();
@@ -43,20 +43,20 @@ class GestureSuggest : public SuggestInterface {
                 outputTypes);
     }
 
-    static void setGestureSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int, int)) {
+    static void setGestureSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int)) {
         sGestureSuggestFactoryMethod = factoryMethod;
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(GestureSuggest);
-    static SuggestInterface *getGestureSuggestInstance(int maxWordLength, int maxWords) {
+    static SuggestInterface *getGestureSuggestInstance(int maxWordLength) {
         if (!sGestureSuggestFactoryMethod) {
             return 0;
         }
-        return sGestureSuggestFactoryMethod(maxWordLength, maxWords);
+        return sGestureSuggestFactoryMethod(maxWordLength);
     }
 
-    static SuggestInterface *(*sGestureSuggestFactoryMethod)(int, int);
+    static SuggestInterface *(*sGestureSuggestFactoryMethod)(int);
     SuggestInterface *mSuggestInterface;
 };
 } // namespace latinime
