@@ -2122,7 +2122,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
-                        false /* isBatchMode */);
+                        false /* isBatchMode */, suggestedWords.mIsPrediction);
             }
             return;
         }

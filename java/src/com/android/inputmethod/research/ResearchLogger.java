@@ -1163,12 +1163,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION =
             new LogStatement("LatinIMEPunctuationSuggestion", false, false, "index", "suggestion",
-                    "x", "y");
+                    "x", "y", "isPrediction");
     public static void latinIME_punctuationSuggestion(final int index, final String suggestion,
-            final boolean isBatchMode) {
+            final boolean isBatchMode, final boolean isPrediction) {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION, index, suggestion,
-                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
+                Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                isPrediction);
         researchLogger.commitCurrentLogUnitAsWord(suggestion, Long.MAX_VALUE, isBatchMode);
     }
 
