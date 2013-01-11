@@ -1843,6 +1843,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Returns true if we did an autocorrection, false otherwise.
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_handleSeparator();
+        }
         boolean didAutoCorrect = false;
         // Handle separator
         if (mWordComposer.isComposingWord()) {
