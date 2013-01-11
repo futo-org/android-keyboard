@@ -720,6 +720,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.setMayContainDigit();
     }
 
+    private void setCurrentLogUnitContainsCorrection() {
+        mCurrentLogUnit.setContainsCorrection();
+    }
+
     /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
             Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasWord() ?
@@ -850,7 +854,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mCurrentLogUnit.setWord(word);
             final boolean isDictionaryWord = dictionary != null
                     && dictionary.isValidWord(word);
-            mStatistics.recordWordEntered(isDictionaryWord);
+            mStatistics.recordWordEntered(isDictionaryWord, mCurrentLogUnit.containsCorrection());
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
         enqueueCommitText(word, isBatchMode);
@@ -1181,6 +1185,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 scrubDigitsFromString(replacedWord), index,
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
                 Constants.SUGGESTION_STRIP_COORDINATE);
+        researchLogger.setCurrentLogUnitContainsCorrection();
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());
     }
@@ -1340,6 +1345,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
                 LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord,
                 separatorString);
+        if (logUnit != null) {
+            logUnit.setContainsCorrection();
+        }
         researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
         researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE, isBatchMode);
     }
@@ -1500,6 +1508,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         final String scrubbedWord = scrubDigitsFromString(committedWord);
         researchLogger.enqueueEvent(LOGSTATEMENT_COMMIT_PARTIAL_TEXT);
+        researchLogger.mStatistics.recordAutoCorrection(SystemClock.uptimeMillis());
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, lastTimestampOfWordData,
                 isBatchMode);
     }
@@ -1740,7 +1749,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete",
                     "dictionaryWordCount", "splitWordsCount", "gestureInputCount",
                     "gestureCharsCount", "gesturesDeletedCount", "manualSuggestionsCount",
-                    "revertCommitsCount");
+                    "revertCommitsCount", "correctedWordsCount", "autoCorrectionsCount");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
@@ -1754,6 +1763,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mDictionaryWordCount, statistics.mSplitWordsCount,
                 statistics.mGesturesInputCount, statistics.mGesturesCharsCount,
                 statistics.mGesturesDeletedCount, statistics.mManualSuggestionsCount,
-                statistics.mRevertCommitsCount);
+                statistics.mRevertCommitsCount, statistics.mCorrectedWordsCount,
+                statistics.mAutoCorrectionsCount);
     }
 }
