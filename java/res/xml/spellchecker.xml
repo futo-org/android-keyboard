@@ -57,18 +57,6 @@
     />
     <subtype
             android:label="@string/subtype_generic"
-            android:subtypeLocale="cs"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="nl"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="hr"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
             android:subtypeLocale="pt_BR"
     />
 </spell-checker>

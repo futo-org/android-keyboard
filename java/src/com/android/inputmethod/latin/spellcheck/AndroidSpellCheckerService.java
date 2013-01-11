@@ -81,6 +81,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
+    public static final int SCRIPT_GREEK = 2;
     public static final String SINGLE_QUOTE = "\u0027";
     public static final String APOSTROPHE = "\u2019";
     private static final TreeMap<String, Integer> mLanguageToScript;
@@ -94,18 +95,23 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         // IMPORTANT: this only contains languages - do not write countries in there.
         // Only the language is searched from the map.
         mLanguageToScript = CollectionUtils.newTreeMap();
-        mLanguageToScript.put("en", SCRIPT_LATIN);
-        mLanguageToScript.put("fr", SCRIPT_LATIN);
-        mLanguageToScript.put("de", SCRIPT_LATIN);
-        mLanguageToScript.put("nl", SCRIPT_LATIN);
         mLanguageToScript.put("cs", SCRIPT_LATIN);
+        mLanguageToScript.put("da", SCRIPT_LATIN);
+        mLanguageToScript.put("de", SCRIPT_LATIN);
+        mLanguageToScript.put("el", SCRIPT_GREEK);
+        mLanguageToScript.put("en", SCRIPT_LATIN);
         mLanguageToScript.put("es", SCRIPT_LATIN);
-        mLanguageToScript.put("it", SCRIPT_LATIN);
+        mLanguageToScript.put("fi", SCRIPT_LATIN);
+        mLanguageToScript.put("fr", SCRIPT_LATIN);
         mLanguageToScript.put("hr", SCRIPT_LATIN);
+        mLanguageToScript.put("it", SCRIPT_LATIN);
+        mLanguageToScript.put("lt", SCRIPT_LATIN);
+        mLanguageToScript.put("lv", SCRIPT_LATIN);
+        mLanguageToScript.put("nb", SCRIPT_LATIN);
+        mLanguageToScript.put("nl", SCRIPT_LATIN);
         mLanguageToScript.put("pt", SCRIPT_LATIN);
+        mLanguageToScript.put("sl", SCRIPT_LATIN);
         mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
-        // TODO: Make a persian proximity, and activate the Farsi subtype.
-        // mLanguageToScript.put("fa", SCRIPT_PERSIAN);
     }
 
     @Override public void onCreate() {
