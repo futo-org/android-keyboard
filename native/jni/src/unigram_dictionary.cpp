@@ -41,9 +41,9 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
 
 // TODO: check the header
 UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int maxWordLength,
-        int maxWords, const unsigned int flags)
-        : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
-          ROOT_POS(0), MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
+        const unsigned int flags)
+        : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), ROOT_POS(0),
+          MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
     }
@@ -170,7 +170,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
         const int *ycoordinates, const int *codes, const int codesSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, int *outWords, int *frequencies, int *outputTypes) const {
-    WordsPriorityQueuePool queuePool(MAX_WORDS, SUB_QUEUE_MAX_WORDS, MAX_WORD_LENGTH);
+    WordsPriorityQueuePool queuePool(MAX_RESULTS, SUB_QUEUE_MAX_WORDS, MAX_WORD_LENGTH);
     queuePool.clearAll();
     Correction masterCorrection;
     masterCorrection.resetCorrection();

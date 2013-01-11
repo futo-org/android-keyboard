@@ -28,15 +28,14 @@
 
 namespace latinime {
 
-Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int maxWordLength,
-        int maxWords, int maxPredictions)
+Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int maxWordLength)
         : mDict(static_cast<unsigned char *>(dict)),
           mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mUnigramDictionary(new UnigramDictionary(mOffsetDict, maxWordLength, maxWords,
+          mUnigramDictionary(new UnigramDictionary(mOffsetDict, maxWordLength,
                   BinaryFormat::getFlags(mDict))),
-          mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions)),
-          mGestureSuggest(new GestureSuggest(maxWordLength, maxWords)) {
+          mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength)),
+          mGestureSuggest(new GestureSuggest(maxWordLength)) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             AKLOGI("Max word length (%d) is greater than %d",

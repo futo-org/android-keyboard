@@ -58,9 +58,8 @@ public final class DictionaryFactory {
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context);
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
-                final BinaryDictionary binaryDictionary =
-                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength,
-                                useFullEditDistance, locale, Dictionary.TYPE_MAIN);
+                final BinaryDictionary binaryDictionary = new BinaryDictionary(f.mFilename,
+                        f.mOffset, f.mLength, useFullEditDistance, locale, Dictionary.TYPE_MAIN);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -112,7 +111,7 @@ public final class DictionaryFactory {
                 Log.e(TAG, "sourceDir is not a file: " + sourceDir);
                 return null;
             }
-            return new BinaryDictionary(context, sourceDir, afd.getStartOffset(), afd.getLength(),
+            return new BinaryDictionary(sourceDir, afd.getStartOffset(), afd.getLength(),
                     false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource");
@@ -130,17 +129,16 @@ public final class DictionaryFactory {
 
     /**
      * Create a dictionary from passed data. This is intended for unit tests only.
-     * @param context the test context to create this data from.
      * @param dictionary the file to read
      * @param startOffset the offset in the file where the data starts
      * @param length the length of the data
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return the created dictionary, or null.
      */
-    public static Dictionary createDictionaryForTest(Context context, File dictionary,
-            long startOffset, long length, final boolean useFullEditDistance, Locale locale) {
+    public static Dictionary createDictionaryForTest(File dictionary, long startOffset, long length,
+            final boolean useFullEditDistance, Locale locale) {
         if (dictionary.isFile()) {
-            return new BinaryDictionary(context, dictionary.getAbsolutePath(), startOffset, length,
+            return new BinaryDictionary(dictionary.getAbsolutePath(), startOffset, length,
                     useFullEditDistance, locale, Dictionary.TYPE_MAIN);
         } else {
             Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());

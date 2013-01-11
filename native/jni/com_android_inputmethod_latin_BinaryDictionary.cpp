@@ -43,7 +43,7 @@ class ProximityInfo;
 static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object, jstring sourceDir,
-        jlong dictOffset, jlong dictSize, jint maxWordLength, jint maxWords, jint maxPredictions) {
+        jlong dictOffset, jlong dictSize, jint maxWordLength) {
     PROF_OPEN;
     PROF_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
@@ -117,8 +117,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object, jstring
         releaseDictBuf(dictBuf, 0, 0);
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
-        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust, maxWordLength,
-                maxWords, maxPredictions);
+        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust, maxWordLength);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -163,6 +162,14 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     const jsize outputCodePointsLength = env->GetArrayLength(outputCodePointsArray);
     int outputCodePoints[outputCodePointsLength];
     const jsize scoresLength = env->GetArrayLength(scoresArray);
+
+    /* By the way, let's check the output array length here to make sure */
+    if (scoresLength < MAX_RESULTS) {
+        ASSERT(false);
+        return 0;
+    }
+
+    // Cont'd: Output values
     int scores[scoresLength];
     const jsize spaceIndicesLength = env->GetArrayLength(spaceIndicesArray);
     int spaceIndices[spaceIndicesLength];
@@ -270,7 +277,7 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIII)J",
+    {"openNative", "(Ljava/lang/String;JJI)J",
             reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
     {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I",

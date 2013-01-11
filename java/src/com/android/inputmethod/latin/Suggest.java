@@ -72,9 +72,8 @@ public final class Suggest {
     }
 
     @UsedForTesting
-    Suggest(final Context context, final File dictionary,
-            final long startOffset, final long length, final Locale locale) {
-        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
+    Suggest(final File dictionary, final long startOffset, final long length, final Locale locale) {
+        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
         mLocale = locale;
         mMainDictionary = mainDict;
