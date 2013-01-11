@@ -1476,7 +1476,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     Stats.onAutoCorrection("", mWordComposer.getTypedWord(), " ", mWordComposer);
                 }
             }
-            if (mWordComposer.size() <= 1) {
+            final int wordComposerSize = mWordComposer.size();
+            // Since isComposingWord() is true, the size is at least 1.
+            final int lastChar = mWordComposer.getCodeAt(wordComposerSize - 1);
+            if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
                 // tap one-letter words and you want them auto-corrected (typically, "i" in English
@@ -1490,8 +1493,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             mExpectingUpdateSelection = true;
             // The following is necessary for the case where the user typed something but didn't
-            // manual pick it and didn't input any separator.
-            mSpaceState = SPACE_STATE_PHANTOM;
+            // manual pick it and didn't input any separator: we want to put a space between what
+            // has been entered and the coming gesture input result, so we go into phantom space
+            // state, which will be promoted to a space when the gesture result is committed. But if
+            // the current input ends in a word connector on the other hand, then we want to have
+            // the next input stick to the current input so we don't switch to phantom space state.
+            if (!mSettings.getCurrent().isWordConnector(lastChar)) {
+                mSpaceState = SPACE_STATE_PHANTOM;
+            }
         } else {
             final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
             if (mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
