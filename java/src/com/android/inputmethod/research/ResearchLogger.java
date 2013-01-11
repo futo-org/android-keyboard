@@ -324,11 +324,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         sIsLogging = enableLogging;
     }
 
+    private static int sLogFileCounter = 0;
+
     private File createLogFile(File filesDir) {
         final StringBuilder sb = new StringBuilder();
         sb.append(FILENAME_PREFIX).append('-');
         sb.append(mUUIDString).append('-');
-        sb.append(TIMESTAMP_DATEFORMAT.format(new Date()));
+        sb.append(TIMESTAMP_DATEFORMAT.format(new Date())).append('-');
+        // Sometimes logFiles are created within milliseconds of each other.  Append a counter to
+        // separate these.
+        if (sLogFileCounter < Integer.MAX_VALUE) {
+            sLogFileCounter++;
+        } else {
+            // Wrap the counter, in the unlikely event of overflow.
+            sLogFileCounter = 0;
+        }
+        sb.append(sLogFileCounter);
         sb.append(FILENAME_SUFFIX);
         return new File(filesDir, sb.toString());
     }
@@ -374,12 +385,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         if (mMainLogBuffer == null) {
-            mMainResearchLog = new ResearchLog(createLogFile(mFilesDir));
+            mMainResearchLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
             mMainLogBuffer = new MainLogBuffer(mMainResearchLog);
             mMainLogBuffer.setSuggest(mSuggest);
         }
         if (mFeedbackLogBuffer == null) {
-            mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
+            mFeedbackLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
             // LogBuffer is one more than FEEDBACK_WORD_BUFFER_SIZE, because it must also hold
             // the feedback LogUnit itself.
             mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE + 1);
@@ -599,7 +610,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 uploadNow();
             }
         });
-        mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
+        mFeedbackLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
     }
 
     public void uploadNow() {
