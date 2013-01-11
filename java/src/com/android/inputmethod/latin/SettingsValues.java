@@ -37,11 +37,10 @@ public final class SettingsValues {
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
-    public final String mWeakSpaceStrippers;
-    public final String mWeakSpaceSwappers;
-    private final String mPhantomSpacePromotingSymbols;
+    public final int[] mSymbolsPrecededBySpace;
+    public final int[] mSymbolsFollowedBySpace;
+    public final int[] mWordConnectors;
     public final SuggestedWords mSuggestPuncList;
-    private final String mSymbolsExcludedFromWordSeparators;
     public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
 
@@ -79,25 +78,19 @@ public final class SettingsValues {
             final InputAttributes inputAttributes) {
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
-        mWeakSpaceStrippers = res.getString(R.string.weak_space_stripping_symbols);
-        mWeakSpaceSwappers = res.getString(R.string.weak_space_swapping_symbols);
-        mPhantomSpacePromotingSymbols = res.getString(R.string.phantom_space_promoting_symbols);
-        if (LatinImeLogger.sDBG) {
-            final int length = mWeakSpaceStrippers.length();
-            for (int i = 0; i < length; i = mWeakSpaceStrippers.offsetByCodePoints(i, 1)) {
-                if (isWeakSpaceSwapper(mWeakSpaceStrippers.codePointAt(i))) {
-                    throw new RuntimeException("Char code " + mWeakSpaceStrippers.codePointAt(i)
-                            + " is both a weak space swapper and stripper.");
-                }
-            }
-        }
+        mSymbolsPrecededBySpace =
+                StringUtils.toCodePointArray(res.getString(R.string.symbols_preceded_by_space));
+        Arrays.sort(mSymbolsPrecededBySpace);
+        mSymbolsFollowedBySpace =
+                StringUtils.toCodePointArray(res.getString(R.string.symbols_followed_by_space));
+        Arrays.sort(mSymbolsFollowedBySpace);
+        mWordConnectors =
+                StringUtils.toCodePointArray(res.getString(R.string.symbols_word_connectors));
+        Arrays.sort(mWordConnectors);
         final String[] suggestPuncsSpec = KeySpecParser.parseCsvString(
                 res.getString(R.string.suggested_punctuations), null);
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mSymbolsExcludedFromWordSeparators =
-                res.getString(R.string.symbols_excluded_from_word_separators);
-        mWordSeparators = createWordSeparators(mWeakSpaceStrippers, mWeakSpaceSwappers,
-                mSymbolsExcludedFromWordSeparators, res);
+        mWordSeparators = res.getString(R.string.symbols_word_separators);
         mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
 
         // Store the input attributes
@@ -169,25 +162,16 @@ public final class SettingsValues {
         return mWordSeparators.contains(String.valueOf((char)code));
     }
 
-    public boolean isSymbolExcludedFromWordSeparators(final int code) {
-        return mSymbolsExcludedFromWordSeparators.contains(String.valueOf((char)code));
+    public boolean isWordConnector(final int code) {
+        return Arrays.binarySearch(mWordConnectors, code) >= 0;
     }
 
-    // TODO: use "Phantom" instead of "Weak" in this method name
-    public boolean isWeakSpaceStripper(final int code) {
-        // TODO: this does not work if the code does not fit in a char
-        return mWeakSpaceStrippers.contains(String.valueOf((char)code));
+    public boolean isUsuallyPrecededBySpace(final int code) {
+        return Arrays.binarySearch(mSymbolsPrecededBySpace, code) >= 0;
     }
 
-    // TODO: use "Phantom" instead of "Weak" in this method name
-    public boolean isWeakSpaceSwapper(final int code) {
-        // TODO: this does not work if the code does not fit in a char
-        return mWeakSpaceSwappers.contains(String.valueOf((char)code));
-    }
-
-    public boolean isPhantomSpacePromotingSymbol(final int code) {
-        // TODO: this does not work if the code does not fit in a char
-        return mPhantomSpacePromotingSymbols.contains(String.valueOf((char)code));
+    public boolean isUsuallyFollowedBySpace(final int code) {
+        return Arrays.binarySearch(mSymbolsFollowedBySpace, code) >= 0;
     }
 
     public boolean shouldInsertSpacesAutomatically() {
@@ -237,18 +221,6 @@ public final class SettingsValues {
                 true /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);
-    }
-
-    private static String createWordSeparators(final String weakSpaceStrippers,
-            final String weakSpaceSwappers, final String symbolsExcludedFromWordSeparators,
-            final Resources res) {
-        String wordSeparators = weakSpaceStrippers + weakSpaceSwappers
-                + res.getString(R.string.phantom_space_promoting_symbols);
-        for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
-            wordSeparators = wordSeparators.replace(
-                    symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
-        }
-        return wordSeparators;
     }
 
     private static final int SUGGESTION_VISIBILITY_SHOW_VALUE =
