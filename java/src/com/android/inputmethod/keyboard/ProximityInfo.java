@@ -80,17 +80,17 @@ public final class ProximityInfo {
         mNativeProximityInfo = createNativeProximityInfo(touchPositionCorrection);
     }
 
-    public static ProximityInfo createDummyProximityInfo() {
+    private static ProximityInfo createDummyProximityInfo() {
         return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
     }
 
-    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity,
+    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximityCharsArray,
             final int rowSize, final int gridWidth, final int gridHeight) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative("",
                         rowSize, gridWidth, gridHeight, gridWidth, gridHeight,
-                        1, proximity, 0, null, null, null, null, null, null, null, null);
+                        1, proximityCharsArray, 0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
@@ -100,15 +100,13 @@ public final class ProximityInfo {
     }
 
     // TODO: Stop passing proximityCharsArray
-    private native long setProximityInfoNative(
-            String locale, int maxProximityCharsSize, int displayWidth,
-            int displayHeight, int gridWidth, int gridHeight,
-            int mostCommonKeyWidth, int[] proximityCharsArray,
-            int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
-            int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
+    private static native long setProximityInfoNative(String locale, int maxProximityCharsSize,
+            int displayWidth, int displayHeight, int gridWidth, int gridHeight,
+            int mostCommonKeyWidth, int[] proximityCharsArray, int keyCount, int[] keyXCoordinates,
+            int[] keyYCoordinates, int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
             float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
 
-    private native void releaseProximityInfoNative(long nativeProximityInfo);
+    private static native void releaseProximityInfoNative(long nativeProximityInfo);
 
     private static boolean needsProximityInfo(final Key key) {
         // Don't include special keys into ProximityInfo.
@@ -232,10 +230,10 @@ public final class ProximityInfo {
         }
 
         // TODO: Stop passing proximityCharsArray
-        return setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
-                mKeyboardMinWidth, mKeyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth,
-                proximityCharsArray, keyCount, keyXCoordinates, keyYCoordinates, keyWidths,
-                keyHeights, keyCharCodes, sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
+        return setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE, mKeyboardMinWidth,
+                mKeyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth, proximityCharsArray,
+                keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
+                sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
     }
 
     public long getNativeProximityInfo() {

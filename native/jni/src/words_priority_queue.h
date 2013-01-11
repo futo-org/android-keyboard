@@ -27,10 +27,9 @@ namespace latinime {
 
 class WordsPriorityQueue {
  public:
-    class SuggestedWord {
-     public:
+    struct SuggestedWord {
         int mScore;
-        int mWord[MAX_WORD_LENGTH_INTERNAL];
+        int mWord[MAX_WORD_LENGTH];
         int mWordLength;
         bool mUsed;
         int mType;
@@ -44,11 +43,10 @@ class WordsPriorityQueue {
         }
     };
 
-    WordsPriorityQueue(int maxWords, int maxWordLength)
-            : mSuggestions(), MAX_WORDS(static_cast<unsigned int>(maxWords)),
-              MAX_WORD_LENGTH(static_cast<unsigned int>(maxWordLength)),
-              mSuggestedWords(new SuggestedWord[maxWordLength]), mHighestSuggestedWord(0) {
-        for (int i = 0; i < maxWordLength; ++i) {
+    WordsPriorityQueue(int maxWords)
+            : mSuggestions(), MAX_WORDS(maxWords),
+              mSuggestedWords(new SuggestedWord[MAX_WORD_LENGTH]), mHighestSuggestedWord(0) {
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
             mSuggestedWords[i].mUsed = false;
         }
     }
@@ -171,7 +169,6 @@ class WordsPriorityQueue {
             wordComparator> Suggestions;
     Suggestions mSuggestions;
     const int MAX_WORDS;
-    const int MAX_WORD_LENGTH;
     SuggestedWord *mSuggestedWords;
     SuggestedWord *mHighestSuggestedWord;
 };

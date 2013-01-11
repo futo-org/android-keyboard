@@ -24,12 +24,12 @@
 
 namespace latinime {
 class Dictionary;
-static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object, jstring localeJStr) {
+static jlong latinime_setDicTraverseSession(JNIEnv *env, jclass clazz, jstring localeJStr) {
     void *traverseSession = DicTraverseWrapper::getDicTraverseSession(env, localeJStr);
     return reinterpret_cast<jlong>(traverseSession);
 }
 
-static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession,
+static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
     void *ts = reinterpret_cast<void *>(traverseSession);
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
@@ -42,7 +42,7 @@ static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong t
     DicTraverseWrapper::initDicTraverseSession(ts, dict, prevWord, previousWordLength);
 }
 
-static void latinime_releaseDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession) {
+static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {
     void *ts = reinterpret_cast<void *>(traverseSession);
     DicTraverseWrapper::releaseDicTraverseSession(ts);
 }

@@ -41,15 +41,15 @@ class Dictionary {
     const static int KIND_SHORTCUT = 7; // A shortcut
     const static int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
 
-    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int maxWordLength);
+    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust);
 
     int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
-            int *ycoordinates, int *times, int *pointerIds, int *codes, int codesSize,
-            int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
+            int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints, int inputSize,
+            int *prevWordCodePoints, int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
             int *outputTypes) const;
 
-    int getBigrams(const int *word, int length, int *codes, int codesSize, int *outWords,
+    int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
 
     int getFrequency(const int *word, int length) const;
