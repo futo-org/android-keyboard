@@ -185,12 +185,12 @@ public class ResearchLog {
         mFlushFuture = mExecutor.schedule(mFlushCallable, FLUSH_DELAY_IN_MS, TimeUnit.MILLISECONDS);
     }
 
-    public synchronized void publish(final LogUnit logUnit, final boolean isIncludingPrivateData) {
+    public synchronized void publish(final LogUnit logUnit, final boolean canIncludePrivateData) {
         try {
             mExecutor.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    logUnit.publishTo(ResearchLog.this, isIncludingPrivateData);
+                    logUnit.publishTo(ResearchLog.this, canIncludePrivateData);
                     scheduleFlush();
                     return null;
                 }

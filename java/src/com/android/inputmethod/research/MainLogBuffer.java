@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -56,19 +57,24 @@ import java.util.Random;
  * If the user closes a session, then the entire LogBuffer is flushed, publishing any embedded
  * n-gram containing dictionary words.
  */
-public class MainLogBuffer extends FixedLogBuffer {
+public abstract class MainLogBuffer extends FixedLogBuffer {
     private static final String TAG = MainLogBuffer.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
-    // The number of words between n-grams to omit from the log.  If debugging, record 50% of all
-    // words.  Otherwise, only record 10%.
-    private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES =
-            ProductionFlag.IS_EXPERIMENTAL_DEBUG ? 2 : 18;
 
-    private final ResearchLog mResearchLog;
+    // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
+    // testing.
+    /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
+            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+
+    // The number of words between n-grams to omit from the log.
+    private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES =
+            IS_LOGGING_EVERYTHING ? 0 : (DEBUG ? 2 : 18);
+
     private Suggest mSuggest;
+    private boolean mIsStopping = false;
 
     /* package for test */ int mNumWordsBetweenNGrams;
 
@@ -76,9 +82,8 @@ public class MainLogBuffer extends FixedLogBuffer {
     // after a sample is taken.
     /* package for test */ int mNumWordsUntilSafeToSample;
 
-    public MainLogBuffer(final ResearchLog researchLog) {
+    public MainLogBuffer() {
         super(N_GRAM_SIZE + DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES);
-        mResearchLog = researchLog;
         mNumWordsBetweenNGrams = DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES;
         final Random random = new Random();
         mNumWordsUntilSafeToSample = DEBUG ? 0 : random.nextInt(mNumWordsBetweenNGrams + 1);
@@ -92,6 +97,10 @@ public class MainLogBuffer extends FixedLogBuffer {
         mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
     }
 
+    public void setIsStopping() {
+        mIsStopping = true;
+    }
+
     /**
      * Determines whether uploading the n words at the front the MainLogBuffer will not violate
      * user privacy.
@@ -103,16 +112,36 @@ public class MainLogBuffer extends FixedLogBuffer {
      * the screen orientation and other characteristics about the device can be uploaded without
      * revealing much about the user.
      */
-    public boolean isNGramSafe() {
+    private boolean isSafeNGram(final ArrayList<LogUnit> logUnits, final int minNGramSize) {
+        // Bypass privacy checks when debugging.
+        if (IS_LOGGING_EVERYTHING) {
+            if (mIsStopping) {
+                return true;
+            } else {
+                // Only check that it is the right length.  If not, wait for later words to make
+                // complete n-grams.
+                int numWordsInLogUnitList = 0;
+                final int length = logUnits.size();
+                for (int i = 0; i < length; i++) {
+                    final LogUnit logUnit = logUnits.get(i);
+                    final String word = logUnit.getWord();
+                    if (word != null) {
+                        numWordsInLogUnitList++;
+                    }
+                }
+                return numWordsInLogUnitList >= minNGramSize;
+            }
+        }
+
         // Check that we are not sampling too frequently.  Having sampled recently might disclose
         // too much of the user's intended meaning.
         if (mNumWordsUntilSafeToSample > 0) {
             return false;
         }
         if (mSuggest == null || !mSuggest.hasMainDictionary()) {
-            // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a word
-            // is out-of-vocabulary or not.  Therefore, we must judge the entire buffer contents to
-            // potentially pose a privacy risk.
+            // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a
+            // word is out-of-vocabulary or not.  Therefore, we must judge the entire buffer
+            // contents to potentially pose a privacy risk.
             return false;
         }
         // Reload the dictionary in case it has changed (e.g., because the user has changed
@@ -121,12 +150,12 @@ public class MainLogBuffer extends FixedLogBuffer {
         if (dictionary == null) {
             return false;
         }
-        // Check each word in the buffer.  If any word poses a privacy threat, we cannot upload the
-        // complete buffer contents in detail.
-        final LinkedList<LogUnit> logUnits = getLogUnits();
+
+        // Check each word in the buffer.  If any word poses a privacy threat, we cannot upload
+        // the complete buffer contents in detail.
+        int numWordsInLogUnitList = 0;
         final int length = logUnits.size();
-        int wordsNeeded = N_GRAM_SIZE;
-        for (int i = 0; i < length && wordsNeeded > 0; i++) {
+        for (int i = 0; i < length; i++) {
             final LogUnit logUnit = logUnits.get(i);
             final String word = logUnit.getWord();
             if (word == null) {
@@ -135,6 +164,7 @@ public class MainLogBuffer extends FixedLogBuffer {
                     return false;
                 }
             } else {
+                numWordsInLogUnitList++;
                 // Words not in the dictionary are a privacy threat.
                 if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
                     if (DEBUG) {
@@ -145,38 +175,59 @@ public class MainLogBuffer extends FixedLogBuffer {
                 }
             }
         }
-        // All checks have passed; this buffer's content can be safely uploaded.
-        return true;
+
+        // Finally, only return true if the minNGramSize is met.
+        return numWordsInLogUnitList >= minNGramSize;
     }
 
-    public boolean isNGramComplete() {
+    public void shiftAndPublishAll() {
         final LinkedList<LogUnit> logUnits = getLogUnits();
-        final int length = logUnits.size();
-        int wordsNeeded = N_GRAM_SIZE;
-        for (int i = 0; i < length && wordsNeeded > 0; i++) {
-            final LogUnit logUnit = logUnits.get(i);
-            final String word = logUnit.getWord();
-            if (word != null) {
-                wordsNeeded--;
-            }
+        while (!logUnits.isEmpty()) {
+            publishLogUnitsAtFrontOfBuffer();
         }
-        return wordsNeeded == 0;
     }
 
     @Override
-    protected void onShiftOut(final LogUnit logUnit) {
-        if (mResearchLog != null) {
-            mResearchLog.publish(logUnit,
-                    ResearchLogger.IS_LOGGING_EVERYTHING /* isIncludingPrivateData */);
+    protected final void onBufferFull() {
+        publishLogUnitsAtFrontOfBuffer();
+    }
+
+    protected final void publishLogUnitsAtFrontOfBuffer() {
+        ArrayList<LogUnit> logUnits = peekAtFirstNWords(N_GRAM_SIZE);
+        if (isSafeNGram(logUnits, N_GRAM_SIZE)) {
+            // Good n-gram at the front of the buffer.  Publish it, disclosing details.
+            publish(logUnits, true /* canIncludePrivateData */);
+            shiftOutWords(N_GRAM_SIZE);
+            resetWordCounter();
+        } else {
+            // No good n-gram at front, and buffer is full.  Shift out the first word (or if there
+            // is none, the existing logUnits).
+            logUnits = peekAtFirstNWords(1);
+            publish(logUnits, false /* canIncludePrivateData */);
+            shiftOutWords(1);
         }
-        if (logUnit.hasWord()) {
-            if (mNumWordsUntilSafeToSample > 0) {
-                mNumWordsUntilSafeToSample--;
-                Log.d(TAG, "wordsUntilSafeToSample now at " + mNumWordsUntilSafeToSample);
-            }
-        }
+    }
+
+    /**
+     * Called when a list of logUnits should be published.
+     *
+     * It is the subclass's responsibility to implement the publication.
+     *
+     * @param logUnits The list of logUnits to be published.
+     * @param canIncludePrivateData Whether the private data in the logUnits can be included in
+     * publication.
+     */
+    protected abstract void publish(final ArrayList<LogUnit> logUnits,
+            final boolean canIncludePrivateData);
+
+    @Override
+    protected void shiftOutWords(int numWords) {
+        int oldNumActualWords = getNumActualWords();
+        super.shiftOutWords(numWords);
+        int numWordsShifted = oldNumActualWords - getNumActualWords();
+        mNumWordsUntilSafeToSample -= numWordsShifted;
         if (DEBUG) {
-            Log.d(TAG, "shiftedOut " + (logUnit.hasWord() ? logUnit.getWord() : ""));
+            Log.d(TAG, "wordsUntilSafeToSample now at " + mNumWordsUntilSafeToSample);
         }
     }
 }

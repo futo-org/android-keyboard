@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.research;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -65,8 +66,13 @@ public class FixedLogBuffer extends LogBuffer {
             super.shiftIn(newLogUnit);
             return;
         }
-        if (mNumActualWords == mWordCapacity) {
-            shiftOutThroughFirstWord();
+        if (mNumActualWords >= mWordCapacity) {
+            // Give subclass a chance to handle the buffer full condition by shifting out logUnits.
+            onBufferFull();
+            // If still full, evict.
+            if (mNumActualWords >= mWordCapacity) {
+                shiftOutWords(1);
+            }
         }
         super.shiftIn(newLogUnit);
         mNumActualWords++; // Must be a word, or we wouldn't be here.
@@ -81,18 +87,8 @@ public class FixedLogBuffer extends LogBuffer {
         return logUnit;
     }
 
-    public void shiftOutThroughFirstWord() {
-        final LinkedList<LogUnit> logUnits = getLogUnits();
-        while (!logUnits.isEmpty()) {
-            final LogUnit logUnit = logUnits.removeFirst();
-            onShiftOut(logUnit);
-            if (logUnit.hasWord()) {
-                // Successfully shifted out a word-containing LogUnit and made space for the new
-                // LogUnit.
-                mNumActualWords--;
-                break;
-            }
-        }
+    public int getNumWords() {
+        return mNumActualWords;
     }
 
     /**
@@ -105,28 +101,63 @@ public class FixedLogBuffer extends LogBuffer {
     }
 
     /**
-     * Called when a LogUnit is removed from the LogBuffer as a result of a shiftIn.  LogUnits are
-     * removed in the order entered.  This method is not called when shiftOut is called directly.
+     * Called when the buffer has just shifted in one more word than its maximum, and its about to
+     * shift out LogUnits to bring it back down to the maximum.
      *
      * Base class does nothing; subclasses may override if they want to record non-privacy sensitive
      * events that fall off the end.
      */
-    protected void onShiftOut(final LogUnit logUnit) {
+    protected void onBufferFull() {
     }
 
-    /**
-     * Called to deliberately remove the oldest LogUnit.  Usually called when draining the
-     * LogBuffer.
-     */
     @Override
     public LogUnit shiftOut() {
-        if (isEmpty()) {
-            return null;
-        }
         final LogUnit logUnit = super.shiftOut();
-        if (logUnit.hasWord()) {
+        if (logUnit != null && logUnit.hasWord()) {
             mNumActualWords--;
         }
         return logUnit;
+    }
+
+    protected void shiftOutWords(final int numWords) {
+        final int targetNumWords = mNumActualWords - numWords;
+        final LinkedList<LogUnit> logUnits = getLogUnits();
+        while (mNumActualWords > targetNumWords && !logUnits.isEmpty()) {
+            shiftOut();
+        }
+    }
+
+    public void shiftOutAll() {
+        final LinkedList<LogUnit> logUnits = getLogUnits();
+        while (!logUnits.isEmpty()) {
+            shiftOut();
+        }
+        mNumActualWords = 0;
+    }
+
+    /**
+     * Returns a list of {@link LogUnit}s at the front of the buffer that have associated words.  No
+     * more than {@code n} LogUnits will have words associated with them.  If there are not enough
+     * LogUnits in the buffer to meet the word requirement, returns the all LogUnits.
+     *
+     * @param n The maximum number of {@link LogUnit}s with words to return.
+     * @return The list of the {@link LogUnit}s containing the first n words
+     */
+    public ArrayList<LogUnit> peekAtFirstNWords(int n) {
+        final LinkedList<LogUnit> logUnits = getLogUnits();
+        final int length = logUnits.size();
+        // Allocate space for n*2 logUnits.  There will be at least n, one for each word, and
+        // there may be additional for punctuation, between-word commands, etc.  This should be
+        // enough that reallocation won't be necessary.
+        final ArrayList<LogUnit> list = new ArrayList<LogUnit>(n * 2);
+        for (int i = 0; i < length && n > 0; i++) {
+            final LogUnit logUnit = logUnits.get(i);
+            list.add(logUnit);
+            final String word = logUnit.getWord();
+            if (word != null) {
+                n--;
+            }
+        }
+        return list;
     }
 }
