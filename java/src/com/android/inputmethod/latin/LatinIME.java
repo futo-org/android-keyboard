@@ -1301,13 +1301,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private void sendKeyCodePoint(final int code) {
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_sendKeyCodePoint(code);
+        }
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (code >= '0' && code <= '9') {
             sendDownUpKeyEventForBackwardCompatibility(code - '0' + KeyEvent.KEYCODE_0);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_sendKeyCodePoint(code);
-            }
             return;
         }
 
@@ -1327,6 +1327,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
+        }
         final long when = SystemClock.uptimeMillis();
         if (primaryCode != Constants.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
@@ -1420,9 +1423,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
-        }
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
@@ -2327,6 +2327,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void promotePhantomSpace() {
         if (mSettings.getCurrent().shouldInsertSpacesAutomatically()) {
             sendKeyCodePoint(Constants.CODE_SPACE);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_promotePhantomSpace();
+            }
         }
     }
 
