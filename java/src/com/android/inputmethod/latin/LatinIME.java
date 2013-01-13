@@ -1667,7 +1667,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 if (mWordComposer.isBatchMode()) {
                     if (ProductionFlag.IS_EXPERIMENTAL) {
                         final String word = mWordComposer.getTypedWord();
-                        ResearchLogger.latinIME_handleBackspace_batch(word);
+                        ResearchLogger.latinIME_handleBackspace_batch(word, 1);
                         ResearchLogger.getInstance().uncommitCurrentLogUnit(
                                 word, false /* dumpCurrentLogUnit */);
                     }
@@ -1718,14 +1718,17 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // We should backspace one char and restart suggestion if at the end of a word.
             if (mLastSelectionStart != mLastSelectionEnd) {
                 // If there is a selection, remove it.
-                final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
+                final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
                 mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
                 // Reset mLastSelectionEnd to mLastSelectionStart. This is what is supposed to
                 // happen, and if it's wrong, the next call to onUpdateSelection will correct it,
                 // but we want to set it right away to avoid it being used with the wrong values
                 // later (typically, in a subsequent press on backspace).
                 mLastSelectionEnd = mLastSelectionStart;
-                mConnection.deleteSurroundingText(lengthToDelete, 0);
+                mConnection.deleteSurroundingText(numCharsDeleted, 0);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted);
+                }
             } else {
                 // There is no selection, just delete one character.
                 if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
@@ -1742,8 +1745,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 } else {
                     mConnection.deleteSurroundingText(1, 0);
                 }
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_handleBackspace(1);
+                }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     mConnection.deleteSurroundingText(1, 0);
+                    if (ProductionFlag.IS_EXPERIMENTAL) {
+                        ResearchLogger.latinIME_handleBackspace(1);
+                    }
                 }
             }
             if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation)) {

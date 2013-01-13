@@ -1650,15 +1650,31 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
-     * Log a call to LatinIME.handleBackspace().
+     * Log a call to LatinIME.handleBackspace() that is not a batch delete.
+     *
+     * UserInput: The user is deleting one or more characters by hitting the backspace key once.
+     * The covers single character deletes as well as deleting selections.
+     */
+    private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE =
+            new LogStatement("LatinIMEHandleBackspace", true, false, "numCharacters");
+    public static void latinIME_handleBackspace(final int numCharacters) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE, numCharacters);
+    }
+
+    /**
+     * Log a call to LatinIME.handleBackspace() that is a batch delete.
      *
      * UserInput: The user is deleting a gestured word by hitting the backspace key once.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH =
-            new LogStatement("LatinIMEHandleBackspaceBatch", true, false, "deletedText");
-    public static void latinIME_handleBackspace_batch(final CharSequence deletedText) {
+            new LogStatement("LatinIMEHandleBackspaceBatch", true, false, "deletedText",
+                    "numCharacters");
+    public static void latinIME_handleBackspace_batch(final CharSequence deletedText,
+            final int numCharacters) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH, deletedText);
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH, deletedText,
+                numCharacters);
         researchLogger.mStatistics.recordGestureDelete(deletedText.length(),
                 SystemClock.uptimeMillis());
     }
