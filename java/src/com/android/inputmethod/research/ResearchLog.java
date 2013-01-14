@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.research;
 
+import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
@@ -23,7 +24,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -50,6 +51,8 @@ public class ResearchLog {
 
     /* package */ final ScheduledExecutorService mExecutor;
     /* package */ final File mFile;
+    private final Context mContext;
+
     private JsonWriter mJsonWriter = NULL_JSON_WRITER;
     // true if at least one byte of data has been written out to the log file.  This must be
     // remembered because JsonWriter requires that calls matching calls to beginObject and
@@ -78,12 +81,13 @@ public class ResearchLog {
         }
     }
 
-    public ResearchLog(final File outputFile) {
+    public ResearchLog(final File outputFile, Context context) {
         if (outputFile == null) {
             throw new IllegalArgumentException();
         }
         mExecutor = Executors.newSingleThreadScheduledExecutor();
         mFile = outputFile;
+        mContext = context;
     }
 
     public synchronized void close(final Runnable onClosed) {
@@ -206,7 +210,9 @@ public class ResearchLog {
     public JsonWriter getValidJsonWriterLocked() {
         try {
             if (mJsonWriter == NULL_JSON_WRITER) {
-                mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
+                final FileOutputStream fos =
+                        mContext.openFileOutput(mFile.getName(), Context.MODE_PRIVATE);
+                mJsonWriter = new JsonWriter(new BufferedWriter(new OutputStreamWriter(fos)));
                 mJsonWriter.beginArray();
                 mHasWrittenData = true;
             }
