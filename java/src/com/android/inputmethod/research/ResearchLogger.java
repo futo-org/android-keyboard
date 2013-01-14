@@ -1297,9 +1297,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_REVERTCOMMIT =
             new LogStatement("LatinIMERevertCommit", true, false, "committedWord",
-                    "originallyTypedWord");
+                    "originallyTypedWord", "separatorString");
     public static void latinIME_revertCommit(final String committedWord,
-            final String originallyTypedWord, final boolean isBatchMode) {
+            final String originallyTypedWord, final boolean isBatchMode,
+            final String separatorString) {
         final ResearchLogger researchLogger = getInstance();
         // TODO: Verify that mCurrentLogUnit has been restored and contains the reverted word.
         final LogUnit logUnit;
@@ -1314,7 +1315,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
         }
         researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
-                LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord);
+                LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord,
+                separatorString);
         researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
         researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE, isBatchMode);
     }

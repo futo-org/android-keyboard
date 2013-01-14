@@ -2321,7 +2321,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
-                    mWordComposer.isBatchMode());
+                    mWordComposer.isBatchMode(), mLastComposedWord.mSeparatorString);
             ResearchLogger.getInstance().uncommitCurrentLogUnit(committedWord,
                     true /* dumpCurrentLogUnit */);
         }
