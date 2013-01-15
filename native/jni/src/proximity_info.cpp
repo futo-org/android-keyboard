@@ -144,7 +144,7 @@ float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
-    return getNormalizedSquaredDistanceFloat(centerX, centerY, touchX, touchY, keyWidth);
+    return getSquaredDistanceFloat(centerX, centerY, touchX, touchY) / SQUARE_FLOAT(keyWidth);
 }
 
 int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) const {

@@ -20,6 +20,7 @@
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
 #include "defines.h"
+#include "geometry_utils.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
 
