@@ -31,14 +31,14 @@ class GestureSuggest : public SuggestInterface {
     virtual ~GestureSuggest();
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
-            int *times, int *pointerIds, int *codes, int inputSize, int commitPoint, int *outWords,
-            int *frequencies, int *outputIndices, int *outputTypes) const {
+            int *times, int *pointerIds, int *inputCodePoints, int inputSize, int commitPoint,
+            int *outWords, int *frequencies, int *outputIndices, int *outputTypes) const {
         if (!mSuggestInterface) {
             return 0;
         }
         return mSuggestInterface->getSuggestions(pInfo, traverseSession, inputXs, inputYs, times,
-                pointerIds, codes, inputSize, commitPoint, outWords, frequencies, outputIndices,
-                outputTypes);
+                pointerIds, inputCodePoints, inputSize, commitPoint, outWords, frequencies,
+                outputIndices, outputTypes);
     }
 
     static void setGestureSuggestFactoryMethod(SuggestInterface *(*factoryMethod)()) {
