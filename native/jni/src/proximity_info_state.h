@@ -24,7 +24,6 @@
 
 #include "char_utils.h"
 #include "defines.h"
-#include "geometry_utils.h"
 #include "hash_map_compat.h"
 
 namespace latinime {

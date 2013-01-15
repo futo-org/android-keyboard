@@ -21,8 +21,6 @@
 
 #include "defines.h"
 
-#define DEBUG_DECODER false
-
 #define M_PI_F 3.14159265f
 #define ROUND_FLOAT_10000(f) ((f) < 1000.0f && (f) > 0.001f) \
         ? (floorf((f) * 10000.0f) / 10000.0f) : (f)
@@ -36,19 +34,8 @@ static inline float getSquaredDistanceFloat(const float x1, const float y1, cons
     return SQUARE_FLOAT(x1 - x2) + SQUARE_FLOAT(y1 - y2);
 }
 
-static inline float getNormalizedSquaredDistanceFloat(const float x1, const float y1,
-        const float x2, const float y2, const float scale) {
-    return getSquaredDistanceFloat(x1, y1, x2, y2) / SQUARE_FLOAT(scale);
-}
-
-static inline float getDistanceFloat(const float x1, const float y1, const float x2,
-        const float y2) {
-    return hypotf(x1 - x2, y1 - y2);
-}
-
 static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2, const int y2) {
-    return static_cast<int>(getDistanceFloat(static_cast<float>(x1), static_cast<float>(y1),
-            static_cast<float>(x2), static_cast<float>(y2)));
+    return static_cast<int>(hypotf(static_cast<float>(x1 - x2), static_cast<float>(y1 - y2)));
 }
 
 static AK_FORCE_INLINE float getAngle(const int x1, const int y1, const int x2, const int y2) {

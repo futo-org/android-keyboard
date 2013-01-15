@@ -23,6 +23,11 @@
 #define AK_FORCE_INLINE inline
 #endif // __GNUC__
 
+#if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+#undef AK_FORCE_INLINE
+#define AK_FORCE_INLINE inline
+#endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+
 // Must be identical to Constants.Dictionary.MAX_WORD_LENGTH in Java
 #define MAX_WORD_LENGTH 48
 // Must be identical to BinaryDictionary.MAX_RESULTS in Java
@@ -32,7 +37,7 @@
 #include <android/log.h>
 #ifndef LOG_TAG
 #define LOG_TAG "LatinIME: "
-#endif
+#endif // LOG_TAG
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 
@@ -110,14 +115,14 @@ static inline void showStackTrace() {
     }
     free(strs);
 }
-#else
+#else // __ANDROID__
 #include <cassert>
 #define DO_ASSERT_TEST
 #define ASSERT(success) assert(success)
 #define SHOW_STACK_TRACE
-#endif
+#endif // __ANDROID__
 
-#else
+#else // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
 #define DUMP_RESULT(words, frequencies)
@@ -126,7 +131,7 @@ static inline void showStackTrace() {
 #define ASSERT(success)
 #define SHOW_STACK_TRACE
 #define INTS_TO_CHARS(input, length, output)
-#endif
+#endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 
 #ifdef FLAG_DO_PROFILE
 // Profiler

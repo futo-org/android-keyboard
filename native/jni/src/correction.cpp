@@ -16,6 +16,8 @@
 
 #define LOG_TAG "LatinIME: correction.cpp"
 
+#include <cmath>
+
 #include "char_utils.h"
 #include "correction.h"
 #include "defines.h"
