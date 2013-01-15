@@ -528,7 +528,7 @@ public final class KeyboardTextsSet {
         // U+064E: "َ" ARABIC FATHA
         // U+0640: "ـ" ARABIC TATWEEL
         // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
-        /* 57 */ "!fixedColumnOrder!7,\u0655,\u0654,\u0652,\u064D,\u064C,\u064B,\u0651,\u0656,\u0670,\u0653,\u0650,\u064F,\u064E,\u0640\u0640\u0640|\u0640",
+        /* 57 */ "!fixedColumnOrder!7, \u0655|\u0655, \u0654|\u0654, \u0652|\u0652, \u064D|\u064D, \u064C|\u064C, \u064B|\u064B, \u0651|\u0651, \u0656|\u0656, \u0670|\u0670, \u0653|\u0653, \u0650|\u0650, \u064F|\u064F, \u064E|\u064E,\u0640\u0640\u0640|\u0640",
         /* 58 */ "\u0651",
         // U+0661: "١" ARABIC-INDIC DIGIT ONE
         /* 59 */ "\u0661",
@@ -1327,7 +1327,7 @@ public final class KeyboardTextsSet {
         // U+064E: "َ" ARABIC FATHA
         // U+0640: "ـ" ARABIC TATWEEL
         // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
-        /* 57 */ "!fixedColumnOrder!7,\u0655,\u0652,\u0651,\u064C,\u064D,\u064B,\u0654,\u0656,\u0670,\u0653,\u064F,\u0650,\u064E,\u0640\u0640\u0640|\u0640",
+        /* 57 */ "!fixedColumnOrder!7, \u0655|\u0655, \u0652|\u0652, \u0651|\u0651, \u064C|\u064C, \u064D|\u064D, \u064B|\u064B, \u0654|\u0654, \u0656|\u0656, \u0670|\u0670, \u0653|\u0653, \u064F|\u064F, \u0650|\u0650, \u064E|\u064E,\u0640\u0640\u0640|\u0640",
         /* 58 */ "\u064B",
         // U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE
         /* 59 */ "\u06F1",

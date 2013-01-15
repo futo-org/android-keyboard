@@ -148,6 +148,7 @@
          U+064E: "َ" ARABIC FATHA
          U+0640: "ـ" ARABIC TATWEEL -->
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
-    <string name="more_keys_for_arabic_diacritics">"!fixedColumnOrder!7,&#x0655;,&#x0652;,&#x0651;,&#x064C;,&#x064D;,&#x064B;,&#x0654;,&#x0656;,&#x0670;,&#x0653;,&#x064F;,&#x0650;,&#x064E;,&#x0640;&#x0640;&#x0640;|&#x0640;"</string>
+    <!-- Note: The space character is needed as a preceding letter to draw Arabic diacritics characters correctly. -->
+    <string name="more_keys_for_arabic_diacritics">"!fixedColumnOrder!7,&#x20;&#x0655;|&#x0655;,&#x20;&#x0652;|&#x0652;,&#x20;&#x0651;|&#x0651;,&#x20;&#x064C;|&#x064C;,&#x20;&#x064D;|&#x064D;,&#x20;&#x064B;|&#x064B;,&#x20;&#x0654;|&#x0654;,&#x20;&#x0656;|&#x0656;,&#x20;&#x0670;|&#x0670;,&#x20;&#x0653;|&#x0653;,&#x20;&#x064F;|&#x064F;,&#x20;&#x0650;|&#x0650;,&#x20;&#x064E;|&#x064E;,&#x0640;&#x0640;&#x0640;|&#x0640;"</string>
     <string name="keyhintlabel_for_arabic_diacritics">&#x064B;</string>
 </resources>
