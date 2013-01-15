@@ -1705,12 +1705,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(LOGSTATEMENT_ONUSERPAUSE, interval);
     }
 
-    public static void latinIME_handleSeparator() {
-        // Reset the saved down event time.  For tapping, motion events, etc. before the separator
-        // are assigned to the previous LogUnit, and events after the separator are assigned to the
-        // next LogUnit.  In the case of multitap, this might capture down events corresponding to
-        // the next word, however it should not be more than a character or two.
-        getInstance().setSavedDownEventTime(SystemClock.uptimeMillis());
+    /**
+     * Record the current time in case the LogUnit is later split.
+     *
+     * If the current logUnitis split, then tapping, motion events, etc. before this time should
+     * be assigned to one LogUnit, and events after this time should go into the following LogUnit.
+     */
+    public static void recordTimeForLogUnitSplit() {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.setSavedDownEventTime(SystemClock.uptimeMillis());
+        researchLogger.mSavedDownEventTime = Long.MAX_VALUE;
     }
 
     /**
