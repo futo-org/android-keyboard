@@ -24,15 +24,14 @@ namespace latinime {
 
 class WordsPriorityQueuePool {
  public:
-    WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength)
+    WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords)
             // Note: using placement new() requires the caller to call the destructor explicitly.
-            : mMasterQueue(new(mMasterQueueBuf) WordsPriorityQueue(
-                      mainQueueMaxWords, maxWordLength)) {
+            : mMasterQueue(new(mMasterQueueBuf) WordsPriorityQueue(mainQueueMaxWords)) {
         for (int i = 0, subQueueBufOffset = 0;
                 i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT;
                 ++i, subQueueBufOffset += static_cast<int>(sizeof(WordsPriorityQueue))) {
             mSubQueues[i] = new(mSubQueueBuf + subQueueBufOffset)
-                    WordsPriorityQueue(subQueueMaxWords, maxWordLength);
+                    WordsPriorityQueue(subQueueMaxWords);
         }
     }
 

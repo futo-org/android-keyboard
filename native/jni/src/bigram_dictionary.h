@@ -26,8 +26,8 @@ namespace latinime {
 
 class BigramDictionary {
  public:
-    BigramDictionary(const unsigned char *dict, int maxWordLength);
-    int getBigrams(const int *word, int length, int *inputCodes, int codesSize, int *outWords,
+    BigramDictionary(const uint8_t *const streamStart);
+    int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
     void fillBigramAddressToFrequencyMapAndFilter(const int *prevWord, const int prevWordLength,
             std::map<int, int> *map, uint8_t *filter) const;
@@ -37,17 +37,11 @@ class BigramDictionary {
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
     void addWordBigram(int *word, int length, int frequency, int *bigramFreq, int *bigramCodePoints,
             int *outputTypes) const;
-    int getBigramAddress(int *pos, bool advance);
-    int getBigramFreq(int *pos);
-    void searchForTerminalNode(int addressLookingFor, int frequency);
-    bool getFirstBitOfByte(int *pos) { return (DICT[*pos] & 0x80) > 0; }
-    bool getSecondBitOfByte(int *pos) { return (DICT[*pos] & 0x40) > 0; }
-    bool checkFirstCharacter(int *word, int *inputCodes) const;
+    bool checkFirstCharacter(int *word, int *inputCodePoints) const;
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
 
-    const unsigned char *DICT;
-    const int MAX_WORD_LENGTH;
+    const uint8_t *const DICT_ROOT;
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
 };

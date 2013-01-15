@@ -290,10 +290,10 @@ class ProximityInfoState {
     // inputs including the current input point.
     std::vector<NearKeycodesSet> mSearchKeysVector;
     bool mTouchPositionCorrectionEnabled;
-    int mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
-    int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
+    int mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
+    int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
     int mSampledInputSize;
-    int mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
+    int mPrimaryInputWord[MAX_WORD_LENGTH];
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_STATE_H

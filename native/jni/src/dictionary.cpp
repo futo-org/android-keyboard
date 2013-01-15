@@ -28,21 +28,13 @@
 
 namespace latinime {
 
-Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int maxWordLength)
+Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
         : mDict(static_cast<unsigned char *>(dict)),
           mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mUnigramDictionary(new UnigramDictionary(mOffsetDict, maxWordLength,
-                  BinaryFormat::getFlags(mDict))),
-          mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength)),
-          mGestureSuggest(new GestureSuggest(maxWordLength)) {
-    if (DEBUG_DICT) {
-        if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
-            AKLOGI("Max word length (%d) is greater than %d",
-                    maxWordLength, MAX_WORD_LENGTH_INTERNAL);
-            AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
-        }
-    }
+          mUnigramDictionary(new UnigramDictionary(mOffsetDict, BinaryFormat::getFlags(mDict))),
+          mBigramDictionary(new BigramDictionary(mOffsetDict)),
+          mGestureSuggest(new GestureSuggest()) {
 }
 
 Dictionary::~Dictionary() {
@@ -52,38 +44,38 @@ Dictionary::~Dictionary() {
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
-        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *codes,
-        int codesSize, int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
+        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
+        int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint, bool isGesture,
         bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
         int *outputTypes) const {
     int result = 0;
     if (isGesture) {
         DicTraverseWrapper::initDicTraverseSession(
-                traverseSession, this, prevWordChars, prevWordLength);
-        result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession,
-                xcoordinates, ycoordinates, times, pointerIds, codes, codesSize, commitPoint,
-                outWords, frequencies, spaceIndices, outputTypes);
+                traverseSession, this, prevWordCodePoints, prevWordLength);
+        result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+                ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
+                frequencies, spaceIndices, outputTypes);
         if (DEBUG_DICT) {
-            DUMP_RESULT(outWords, frequencies, 18 /* MAX_WORDS */, MAX_WORD_LENGTH_INTERNAL);
+            DUMP_RESULT(outWords, frequencies);
         }
         return result;
     } else {
         std::map<int, int> bigramMap;
         uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
+        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordCodePoints,
                 prevWordLength, &bigramMap, bigramFilter);
-        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
-                ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
-                useFullEditDistance, outWords, frequencies, outputTypes);
+        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
+                inputCodePoints, inputSize, &bigramMap, bigramFilter, useFullEditDistance, outWords,
+                frequencies, outputTypes);
         return result;
     }
 }
 
-int Dictionary::getBigrams(const int *word, int length, int *codes, int codesSize,
+int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, int inputSize,
         int *outWords, int *frequencies, int *outputTypes) const {
     if (length <= 0) return 0;
-    return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
-            outputTypes);
+    return mBigramDictionary->getBigrams(word, length, inputCodePoints, inputSize, outWords,
+            frequencies, outputTypes);
 }
 
 int Dictionary::getFrequency(const int *word, int length) const {

@@ -486,7 +486,7 @@ bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSiz
             // Assuming the cache is invalid if the previous input size is larger than the new one.
             return false;
         }
-        for (int i = 0; i < mSampledInputSize && i < MAX_WORD_LENGTH_INTERNAL; ++i) {
+        for (int i = 0; i < mSampledInputSize && i < MAX_WORD_LENGTH; ++i) {
             if (xCoordinates[i] != mSampledInputXs[i]
                     || yCoordinates[i] != mSampledInputYs[i]) {
                 return false;
@@ -1184,7 +1184,7 @@ float ProximityInfoState::getMostProbableString(int *const codePointBuf) const {
     int index = 0;
     float sumLogProbability = 0.0f;
     // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
-    for (int i = 0; i < mSampledInputSize && index < MAX_WORD_LENGTH_INTERNAL - 1; ++i) {
+    for (int i = 0; i < mSampledInputSize && index < MAX_WORD_LENGTH - 1; ++i) {
         float minLogProbability = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
         int character = NOT_AN_INDEX;
         for (hash_map_compat<int, float>::const_iterator it = mCharProbabilities[i].begin();

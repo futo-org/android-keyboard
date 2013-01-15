@@ -23,8 +23,10 @@
 #define AK_FORCE_INLINE inline
 #endif // __GNUC__
 
-// This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
-#define MAX_WORD_LENGTH_INTERNAL 48
+// Must be identical to Constants.Dictionary.MAX_WORD_LENGTH in Java
+#define MAX_WORD_LENGTH 48
+// Must be identical to BinaryDictionary.MAX_RESULTS in Java
+#define MAX_RESULTS 18
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <android/log.h>
@@ -34,8 +36,7 @@
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 
-#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength) do { \
-        dumpResult(words, frequencies, maxWordCount, maxWordLength); } while (0)
+#define DUMP_RESULT(words, frequencies) do { dumpResult(words, frequencies); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
 #define INTS_TO_CHARS(input, length, output) do { \
         intArrayToCharArray(input, length, output); } while (0)
@@ -45,7 +46,7 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *source, const int sour
         char *dest) {
     int si = 0;
     int di = 0;
-    while (si < sourceSize && di < MAX_WORD_LENGTH_INTERNAL - 1 && 0 != source[si]) {
+    while (si < sourceSize && di < MAX_WORD_LENGTH - 1 && 0 != source[si]) {
         const int codePoint = source[si++];
         if (codePoint < 0x7F) {
             dest[di++] = codePoint;
@@ -71,11 +72,10 @@ static inline void dumpWordInfo(const int *word, const int length, const int ran
     }
 }
 
-static inline void dumpResult(const int *outWords, const int *frequencies, const int maxWordCounts,
-        const int maxWordLength) {
+static inline void dumpResult(const int *outWords, const int *frequencies) {
     AKLOGI("--- DUMP RESULT ---------");
-    for (int i = 0; i < maxWordCounts; ++i) {
-        dumpWordInfo(&outWords[i * maxWordLength], maxWordLength, i, frequencies[i]);
+    for (int i = 0; i < MAX_RESULTS; ++i) {
+        dumpWordInfo(&outWords[i * MAX_WORD_LENGTH], MAX_WORD_LENGTH, i, frequencies[i]);
     }
     AKLOGI("-------------------------");
 }
@@ -120,7 +120,7 @@ static inline void showStackTrace() {
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
-#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
+#define DUMP_RESULT(words, frequencies)
 #define DUMP_WORD(word, length)
 #undef DO_ASSERT_TEST
 #define ASSERT(success)
@@ -348,7 +348,6 @@ static inline void prof_out(void) {
 
 #define MAX_DEPTH_MULTIPLIER 3
 #define FIRST_WORD_INDEX 0
-#define MAX_RESULTS 18 /* Must be identical to BinaryDictionary.MAX_RESULTS in Java */
 
 // Max Distance between point to key
 #define MAX_POINT_TO_KEY_LENGTH 10000000

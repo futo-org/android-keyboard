@@ -57,7 +57,7 @@ class Correction {
     // Non virtual inline destructor -- never inherit this class
     ~Correction() {}
     void resetCorrection();
-    void initCorrection(const ProximityInfo *pi, const int inputSize, const int maxWordLength);
+    void initCorrection(const ProximityInfo *pi, const int inputSize, const int maxDepth);
     void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);
 
     // TODO: remove
@@ -237,14 +237,14 @@ class Correction {
     int mTotalTraverseCount;
 
     // The following arrays are state buffer.
-    int mWord[MAX_WORD_LENGTH_INTERNAL];
-    int mDistances[MAX_WORD_LENGTH_INTERNAL];
+    int mWord[MAX_WORD_LENGTH];
+    int mDistances[MAX_WORD_LENGTH];
 
     // Edit distance calculation requires a buffer with (N+1)^2 length for the input length N.
     // Caveat: Do not create multiple tables per thread as this table eats up RAM a lot.
-    int mEditDistanceTable[(MAX_WORD_LENGTH_INTERNAL + 1) * (MAX_WORD_LENGTH_INTERNAL + 1)];
+    int mEditDistanceTable[(MAX_WORD_LENGTH + 1) * (MAX_WORD_LENGTH + 1)];
 
-    CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
+    CorrectionState mCorrectionStates[MAX_WORD_LENGTH];
 
     // The following member variables are being used as cache values of the correction state.
     bool mNeedsToTraverseAllNodes;
@@ -336,7 +336,7 @@ inline Correction::CorrectionType Correction::processUnrelatedCorrectionType() {
 
 AK_FORCE_INLINE static void calcEditDistanceOneStep(int *editDistanceTable, const int *input,
         const int inputSize, const int *output, const int outputLength) {
-    // TODO: Make sure that editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL] is not touched.
+    // TODO: Make sure that editDistance[0 ~ MAX_WORD_LENGTH] is not touched.
     // Let dp[i][j] be editDistanceTable[i * (inputSize + 1) + j].
     // Assuming that dp[0][0] ... dp[outputLength - 1][inputSize] are already calculated,
     // and calculate dp[ouputLength][0] ... dp[outputLength][inputSize].

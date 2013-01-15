@@ -39,12 +39,11 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
-    UnigramDictionary(const uint8_t *const streamStart, int maxWordLength,
-            const unsigned int flags);
+    UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags);
     int getFrequency(const int *const inWord, const int length) const;
     int getBigramPosition(int pos, int *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
+            const int *ycoordinates, const int *inputCodePoints, const int inputSize,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             const bool useFullEditDistance, int *outWords, int *frequencies,
             int *outputTypes) const;
@@ -53,11 +52,11 @@ class UnigramDictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(UnigramDictionary);
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int inputSize,
+            const int *ycoordinates, const int *inputCodePoints, const int inputSize,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool *queuePool) const;
-    int getDigraphReplacement(const int *codes, const int i, const int codesSize,
+    int getDigraphReplacement(const int *codes, const int i, const int inputSize,
             const digraph_t *const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codesBuffer, int *xCoordinatesBuffer,
@@ -67,7 +66,7 @@ class UnigramDictionary {
             WordsPriorityQueuePool *queuePool, const digraph_t *const digraphs,
             const unsigned int digraphsSize) const;
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
+            const int *ycoordinates, const int *codes, const int inputSize,
             Correction *correction) const;
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const std::map<int, int> *bigramMap,
@@ -109,7 +108,6 @@ class UnigramDictionary {
             int *outputWord) const;
 
     const uint8_t *const DICT_ROOT;
-    const int MAX_WORD_LENGTH;
     const int ROOT_POS;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;

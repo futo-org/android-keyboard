@@ -17,7 +17,7 @@
 #include "typing_suggest.h"
 
 namespace latinime {
-    SuggestInterface *(*TypingSuggest::sTypingSuggestFactoryMethod)(int) = 0;
+    SuggestInterface *(*TypingSuggest::sTypingSuggestFactoryMethod)() = 0;
 
     TypingSuggest::~TypingSuggest() {
         delete mSuggestInterface;
