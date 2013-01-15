@@ -745,6 +745,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.setContainsCorrection();
     }
 
+    private void setCurrentLogUnitCorrectionType(final int correctionType) {
+        mCurrentLogUnit.setCorrectionType(correctionType);
+    }
+
     /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
             Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasWord() ?
@@ -1194,13 +1198,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "suggestion", "x", "y");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, final String suggestion, final boolean isBatchMode) {
-        final String scrubbedWord = scrubDigitsFromString(suggestion);
         final ResearchLogger researchLogger = getInstance();
+        if (!replacedWord.equals(suggestion.toString())) {
+            // The user choose something other than what was already there.
+            researchLogger.setCurrentLogUnitContainsCorrection();
+            researchLogger.setCurrentLogUnitCorrectionType(LogUnit.CORRECTIONTYPE_TYPO);
+        }
+        final String scrubbedWord = scrubDigitsFromString(suggestion);
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
                 Constants.SUGGESTION_STRIP_COORDINATE);
-        researchLogger.setCurrentLogUnitContainsCorrection();
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());
     }
@@ -1490,10 +1498,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMECommitCurrentAutoCorrection", true, true, "typedWord",
                     "autoCorrection", "separatorString");
     public static void latinIme_commitCurrentAutoCorrection(final String typedWord,
-            final String autoCorrection, final String separatorString, final boolean isBatchMode) {
+            final String autoCorrection, final String separatorString, final boolean isBatchMode,
+            final SuggestedWords suggestedWords) {
         final String scrubbedTypedWord = scrubDigitsFromString(typedWord);
         final String scrubbedAutoCorrection = scrubDigitsFromString(autoCorrection);
         final ResearchLogger researchLogger = getInstance();
+        researchLogger.mCurrentLogUnit.initializeSuggestions(suggestedWords);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedAutoCorrection, Long.MAX_VALUE,
                 isBatchMode);
 
@@ -1691,10 +1701,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinIMEOnEndBatchInput", true, false, "enteredText",
                     "enteredWordPos");
     public static void latinIME_onEndBatchInput(final CharSequence enteredText,
-            final int enteredWordPos) {
+            final int enteredWordPos, final SuggestedWords suggestedWords) {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
                 enteredWordPos);
+        researchLogger.mCurrentLogUnit.initializeSuggestions(suggestedWords);
         researchLogger.mStatistics.recordGestureInput(enteredText.length(),
                 SystemClock.uptimeMillis());
     }
