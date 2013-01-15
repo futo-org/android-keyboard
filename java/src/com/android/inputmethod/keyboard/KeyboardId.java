@@ -172,12 +172,7 @@ public final class KeyboardId {
     }
 
     public int imeAction() {
-        return InputTypeUtils.getActionIdFromEditorInfo(mEditorInfo);
-    }
-
-    public int imeActionId() {
-        final int actionId = imeAction();
-        return actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL ? mEditorInfo.actionId : actionId;
+        return InputTypeUtils.getImeOptionsActionIdFromEditorInfo(mEditorInfo);
     }
 
     @Override

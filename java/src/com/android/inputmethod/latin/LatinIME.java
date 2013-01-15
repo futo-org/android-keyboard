@@ -166,6 +166,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
+    private int mActionId;
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
@@ -754,6 +755,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         mLastSelectionStart = editorInfo.initialSelStart;
         mLastSelectionEnd = editorInfo.initialSelEnd;
+        mActionId = InputTypeUtils.getConcreteActionIdFromEditorInfo(editorInfo);
 
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
@@ -1272,10 +1274,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private static int getActionId(final Keyboard keyboard) {
-        return keyboard != null ? keyboard.mId.imeActionId() : EditorInfo.IME_ACTION_NONE;
-    }
-
     private void performEditorAction(final int actionId) {
         mConnection.performEditorAction(actionId);
     }
@@ -1384,10 +1382,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             break;
         case Constants.CODE_ACTION_ENTER:
-            final int actionId = getActionId(switcher.getKeyboard());
-            if (EditorInfo.IME_ACTION_NONE != actionId
-                && EditorInfo.IME_ACTION_UNSPECIFIED != actionId) {
-                performEditorAction(actionId);
+            if (EditorInfo.IME_ACTION_NONE != mActionId
+                && EditorInfo.IME_ACTION_UNSPECIFIED != mActionId) {
+                performEditorAction(mActionId);
                 break;
             }
             didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
