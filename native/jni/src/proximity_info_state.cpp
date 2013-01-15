@@ -101,7 +101,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mTimes.clear();
         mInputIndice.clear();
         mLengthCache.clear();
-        mDistanceCache.clear();
+        mDistanceCache_G.clear();
         mNearKeysVector.clear();
         mSearchKeysVector.clear();
         mSpeedRates.clear();
@@ -210,7 +210,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const int keyCount = mProximityInfo->getKeyCount();
         mNearKeysVector.resize(mSampledInputSize);
         mSearchKeysVector.resize(mSampledInputSize);
-        mDistanceCache.resize(mSampledInputSize * keyCount);
+        mDistanceCache_G.resize(mSampledInputSize * keyCount);
         for (int i = lastSavedInputSize; i < mSampledInputSize; ++i) {
             mNearKeysVector[i].reset();
             mSearchKeysVector[i].reset();
@@ -221,7 +221,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int y = mSampledInputYs[i];
                 const float normalizedSquaredDistance =
                         mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
-                mDistanceCache[index] = normalizedSquaredDistance;
+                mDistanceCache_G[index] = normalizedSquaredDistance;
                 if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
                     mNearKeysVector[i][k] = true;
                 }
@@ -686,7 +686,7 @@ float ProximityInfoState::getPointToKeyLength(
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
+        return min(mDistanceCache_G[index] * scale, mMaxPointToKeyLength);
     }
     if (isSkippableCodePoint(codePoint)) {
         return 0.0f;
@@ -695,7 +695,7 @@ float ProximityInfoState::getPointToKeyLength(
     return MAX_POINT_TO_KEY_LENGTH;
 }
 
-float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint) const {
+float ProximityInfoState::getPointToKeyLength_G(const int inputIndex, const int codePoint) const {
     return getPointToKeyLength(inputIndex, codePoint, 1.0f);
 }
 
@@ -706,7 +706,7 @@ float ProximityInfoState::getPointToKeyByIdLength(
         const int inputIndex, const int keyId, const float scale) const {
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
+        return min(mDistanceCache_G[index] * scale, mMaxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
     return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
