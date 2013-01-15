@@ -1861,6 +1861,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int spaceState) {
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.recordTimeForLogUnitSplit();
+            ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
         boolean didAutoCorrect = false;
         // Handle separator

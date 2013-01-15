@@ -1719,13 +1719,29 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /**
      * Record the current time in case the LogUnit is later split.
      *
-     * If the current logUnitis split, then tapping, motion events, etc. before this time should
+     * If the current logUnit is split, then tapping, motion events, etc. before this time should
      * be assigned to one LogUnit, and events after this time should go into the following LogUnit.
      */
     public static void recordTimeForLogUnitSplit() {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.setSavedDownEventTime(SystemClock.uptimeMillis());
         researchLogger.mSavedDownEventTime = Long.MAX_VALUE;
+    }
+
+    /**
+     * Log a call to LatinIME.handleSeparator()
+     *
+     * SystemResponse: The system is inserting a separator character, possibly performing auto-
+     * correction or other actions appropriate at the end of a word.
+     */
+    private static final LogStatement LOGSTATEMENT_LATINIME_HANDLESEPARATOR =
+            new LogStatement("LatinIMEHandleSeparator", false, false, "primaryCode",
+                    "isComposingWord");
+    public static void latinIME_handleSeparator(final int primaryCode,
+            final boolean isComposingWord) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLESEPARATOR, primaryCode,
+                isComposingWord);
     }
 
     /**
