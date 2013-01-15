@@ -71,7 +71,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                latin:parentStyle="shiftEnterKeyStyle" />
         </case>
         <!-- Smiley in textShortMessage field.
              Overrides common enter key style. -->

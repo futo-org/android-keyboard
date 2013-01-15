@@ -1369,9 +1369,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         case Constants.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME(this);
             break;
-        case Constants.CODE_ACTION_ENTER:
-            performEditorAction(getActionId(switcher.getKeyboard()));
-            break;
         case Constants.CODE_ACTION_NEXT:
             performEditorAction(EditorInfo.IME_ACTION_NEXT);
             break;
@@ -1386,32 +1383,20 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 ResearchLogger.getInstance().onResearchKeySelected(this);
             }
             break;
-        default:
-            mSpaceState = SPACE_STATE_NONE;
-            if (mSettings.getCurrent().isWordSeparator(primaryCode)) {
-                didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
-            } else {
-                if (SPACE_STATE_PHANTOM == spaceState) {
-                    if (ProductionFlag.IS_INTERNAL) {
-                        if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
-                            Stats.onAutoCorrection(
-                                    "", mWordComposer.getTypedWord(), " ", mWordComposer);
-                        }
-                    }
-                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
-                }
-                final int keyX, keyY;
-                final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-                if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
-                    keyX = x;
-                    keyY = y;
-                } else {
-                    keyX = Constants.NOT_A_COORDINATE;
-                    keyY = Constants.NOT_A_COORDINATE;
-                }
-                handleCharacter(primaryCode, keyX, keyY, spaceState);
+        case Constants.CODE_ACTION_ENTER:
+            final int actionId = getActionId(switcher.getKeyboard());
+            if (EditorInfo.IME_ACTION_NONE != actionId
+                && EditorInfo.IME_ACTION_UNSPECIFIED != actionId) {
+                performEditorAction(actionId);
+                break;
             }
-            mExpectingUpdateSelection = true;
+            didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
+            break;
+        case Constants.CODE_SHIFT_ENTER:
+            didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
+            break;
+        default:
+            didAutoCorrect = handleNonSpecialCharacter(primaryCode, x, y, spaceState);
             break;
         }
         switcher.onCodeInput(primaryCode);
@@ -1423,6 +1408,38 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mEnteredText = null;
         }
         mConnection.endBatchEdit();
+    }
+
+    private boolean handleNonSpecialCharacter(final int primaryCode, final int x, final int y,
+            final int spaceState) {
+        mSpaceState = SPACE_STATE_NONE;
+        final boolean didAutoCorrect;
+        if (mSettings.getCurrent().isWordSeparator(primaryCode)) {
+            didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
+        } else {
+            didAutoCorrect = false;
+            if (SPACE_STATE_PHANTOM == spaceState) {
+                if (ProductionFlag.IS_INTERNAL) {
+                    if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
+                        Stats.onAutoCorrection(
+                                "", mWordComposer.getTypedWord(), " ", mWordComposer);
+                    }
+                }
+                commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            }
+            final int keyX, keyY;
+            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+            if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
+                keyX = x;
+                keyY = y;
+            } else {
+                keyX = Constants.NOT_A_COORDINATE;
+                keyY = Constants.NOT_A_COORDINATE;
+            }
+            handleCharacter(primaryCode, keyX, keyY, spaceState);
+        }
+        mExpectingUpdateSelection = true;
+        return didAutoCorrect;
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
