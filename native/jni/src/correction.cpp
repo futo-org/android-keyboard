@@ -22,6 +22,7 @@
 #include "correction.h"
 #include "defines.h"
 #include "proximity_info_state.h"
+#include "suggest_utils.h"
 
 namespace latinime {
 
@@ -673,27 +674,9 @@ inline static bool isUpperCase(unsigned short c) {
             if (i < adjustedProximityMatchedCount) {
                 multiplyIntCapped(typedLetterMultiplier, &finalFreq);
             }
-            if (squaredDistance >= 0) {
-                // Promote or demote the score according to the distance from the sweet spot
-                static const float A = ZERO_DISTANCE_PROMOTION_RATE / 100.0f;
-                static const float B = 1.0f;
-                static const float C = 0.5f;
-                static const float MIN = 0.3f;
-                static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
-                static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-                const float x = static_cast<float>(squaredDistance)
-                        / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
-                const float factor = max((x < R1)
-                        ? (A * (R1 - x) + B * x) / R1
-                        : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
-                // factor is a piecewise linear function like:
-                // A -_                  .
-                //     ^-_               .
-                // B      \              .
-                //         \_            .
-                // C         ------------.
-                //                       .
-                // 0   R1 R2             .
+            const float factor =
+                    SuggestUtils::getDistanceScalingFactor(static_cast<float>(squaredDistance));
+            if (factor > 0.0f) {
                 multiplyRate((int)(factor * 100.0f), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
                 multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
