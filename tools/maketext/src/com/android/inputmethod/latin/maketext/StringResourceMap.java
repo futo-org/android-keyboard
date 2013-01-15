@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.maketext;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DefaultHandler2;
 
 import java.io.IOException;
@@ -48,6 +49,9 @@ public class StringResourceMap {
             parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
             parser.parse(is, handler);
         } catch (ParserConfigurationException e) {
+        } catch (SAXParseException e) {
+            throw new RuntimeException(e.getMessage() + " at line " + e.getLineNumber()
+                    + ", column " + e.getColumnNumber());
         } catch (SAXException e) {
             throw new RuntimeException(e.getMessage());
         } catch (IOException e) {
