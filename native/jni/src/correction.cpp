@@ -30,7 +30,7 @@ class ProximityInfo;
 /////////////////////////////
 
 inline static void initEditDistance(int *editDistanceTable) {
-    for (int i = 0; i <= MAX_WORD_LENGTH_INTERNAL; ++i) {
+    for (int i = 0; i <= MAX_WORD_LENGTH; ++i) {
         editDistanceTable[i] = i;
     }
 }
@@ -77,7 +77,7 @@ void Correction::initCorrection(const ProximityInfo *pi, const int inputSize, co
     mMaxDepth = maxDepth;
     mMaxEditDistance = mInputSize < 5 ? 2 : mInputSize / 2;
     // TODO: This is not supposed to be required.  Check what's going wrong with
-    // editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL]
+    // editDistance[0 ~ MAX_WORD_LENGTH]
     initEditDistance(mEditDistanceTable);
 }
 

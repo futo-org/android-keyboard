@@ -17,7 +17,7 @@
 #include "gesture_suggest.h"
 
 namespace latinime {
-    SuggestInterface *(*GestureSuggest::sGestureSuggestFactoryMethod)(int) = 0;
+    SuggestInterface *(*GestureSuggest::sGestureSuggestFactoryMethod)() = 0;
 
     GestureSuggest::~GestureSuggest() {
         delete mSuggestInterface;

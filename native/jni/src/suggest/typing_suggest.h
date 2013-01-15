@@ -26,8 +26,7 @@ class ProximityInfo;
 
 class TypingSuggest : public SuggestInterface {
  public:
-    TypingSuggest(const int maxWordLength)
-            : mSuggestInterface(getTypingSuggestInstance(maxWordLength)) {
+    TypingSuggest() : mSuggestInterface(getTypingSuggestInstance()) {
     }
 
     virtual ~TypingSuggest();
@@ -43,20 +42,20 @@ class TypingSuggest : public SuggestInterface {
                 outputTypes);
     }
 
-    static void setTypingSuggestFactoryMethod(SuggestInterface *(*factoryMethod)(int)) {
+    static void setTypingSuggestFactoryMethod(SuggestInterface *(*factoryMethod)()) {
         sTypingSuggestFactoryMethod = factoryMethod;
     }
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(TypingSuggest);
-    static SuggestInterface *getTypingSuggestInstance(int maxWordLength) {
+    DISALLOW_COPY_AND_ASSIGN(TypingSuggest);
+    static SuggestInterface *getTypingSuggestInstance() {
         if (!sTypingSuggestFactoryMethod) {
             return 0;
         }
-        return sTypingSuggestFactoryMethod(maxWordLength);
+        return sTypingSuggestFactoryMethod();
     }
 
-    static SuggestInterface *(*sTypingSuggestFactoryMethod)(int);
+    static SuggestInterface *(*sTypingSuggestFactoryMethod)();
     SuggestInterface *mSuggestInterface;
 };
 } // namespace latinime

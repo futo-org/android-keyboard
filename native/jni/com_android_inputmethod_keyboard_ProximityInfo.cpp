@@ -24,12 +24,12 @@
 
 namespace latinime {
 
-static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
-        jstring localeJStr, jint maxProximityCharsSize, jint displayWidth, jint displayHeight,
-        jint gridWidth, jint gridHeight, jint mostCommonkeyWidth, jintArray proximityChars,
-        jint keyCount, jintArray keyXCoordinates, jintArray keyYCoordinates,
-        jintArray keyWidths, jintArray keyHeights, jintArray keyCharCodes,
-        jfloatArray sweetSpotCenterXs, jfloatArray sweetSpotCenterYs, jfloatArray sweetSpotRadii) {
+static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jclass clazz, jstring localeJStr,
+        jint maxProximityCharsSize, jint displayWidth, jint displayHeight, jint gridWidth,
+        jint gridHeight, jint mostCommonkeyWidth, jintArray proximityChars, jint keyCount,
+        jintArray keyXCoordinates, jintArray keyYCoordinates, jintArray keyWidths,
+        jintArray keyHeights, jintArray keyCharCodes, jfloatArray sweetSpotCenterXs,
+        jfloatArray sweetSpotCenterYs, jfloatArray sweetSpotRadii) {
     ProximityInfo *proximityInfo = new ProximityInfo(env, localeJStr, maxProximityCharsSize,
             displayWidth, displayHeight, gridWidth, gridHeight, mostCommonkeyWidth, proximityChars,
             keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
@@ -37,7 +37,7 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     return reinterpret_cast<jlong>(proximityInfo);
 }
 
-static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximityInfo) {
+static void latinime_Keyboard_release(JNIEnv *env, jclass clazz, jlong proximityInfo) {
     ProximityInfo *pi = reinterpret_cast<ProximityInfo *>(proximityInfo);
     delete pi;
 }

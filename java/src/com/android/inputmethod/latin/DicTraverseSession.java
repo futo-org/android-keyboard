@@ -23,10 +23,10 @@ public final class DicTraverseSession {
         JniUtils.loadNativeLibrary();
     }
 
-    private native long setDicTraverseSessionNative(String locale);
-    private native void initDicTraverseSessionNative(long nativeDicTraverseSession,
+    private static native long setDicTraverseSessionNative(String locale);
+    private static native void initDicTraverseSessionNative(long nativeDicTraverseSession,
             long dictionary, int[] previousWord, int previousWordLength);
-    private native void releaseDicTraverseSessionNative(long nativeDicTraverseSession);
+    private static native void releaseDicTraverseSessionNative(long nativeDicTraverseSession);
 
     private long mNativeDicTraverseSession;
 

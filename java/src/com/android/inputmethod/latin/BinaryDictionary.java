@@ -35,14 +35,10 @@ public final class BinaryDictionary extends Dictionary {
     public static final String DICTIONARY_PACK_AUTHORITY =
             "com.android.inputmethod.latin.dictionarypack";
 
-    /**
-     * There is a difference between what java and native code can handle.
-     * This value should only be used in BinaryDictionary.java
-     * It is necessary to keep it at this value because some languages e.g. German have
-     * really long words.
-     */
+    // Must be identical to MAX_WORD_LENGTH in native/jni/src/defines.h
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
-    private static final int MAX_RESULTS = 18; /* Must be identical to MAX_RESULTS in defines.h */
+    // Must be identical to MAX_RESULTS in native/jni/src/defines.h
+    private static final int MAX_RESULTS = 18;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -94,23 +90,22 @@ public final class BinaryDictionary extends Dictionary {
         JniUtils.loadNativeLibrary();
     }
 
-    private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int maxWordLength);
-    private native void closeNative(long dict);
-    private native int getFrequencyNative(long dict, int[] word);
-    private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
-    private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
-            int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
-            int[] inputCodePoints, int codesSize, int commitPoint, boolean isGesture,
-            int[] prevWordCodePointArray, boolean useFullEditDistance, int[] outputCodePoints,
-            int[] outputScores, int[] outputIndices, int[] outputTypes);
+    private static native long openNative(String sourceDir, long dictOffset, long dictSize);
+    private static native void closeNative(long dict);
+    private static native int getFrequencyNative(long dict, int[] word);
+    private static native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
+    private static native int getSuggestionsNative(long dict, long proximityInfo,
+            long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
+            int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
+            boolean isGesture, int[] prevWordCodePointArray, boolean useFullEditDistance,
+            int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
             final long length) {
-        mNativeDict = openNative(path, startOffset, length, MAX_WORD_LENGTH);
+        mNativeDict = openNative(path, startOffset, length);
     }
 
     @Override
@@ -139,12 +134,12 @@ public final class BinaryDictionary extends Dictionary {
         }
 
         final InputPointers ips = composer.getInputPointers();
-        final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
+        final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
-                codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+                inputSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes);
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();

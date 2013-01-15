@@ -30,10 +30,6 @@ namespace latinime {
 class TerminalAttributes {
  public:
     class ShortcutIterator {
-        const uint8_t *const mDict;
-        int mPos;
-        bool mHasNextShortcutTarget;
-
      public:
         ShortcutIterator(const uint8_t *dict, const int pos, const uint8_t flags)
                 : mDict(dict), mPos(pos),
@@ -50,7 +46,7 @@ class TerminalAttributes {
             const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
             mHasNextShortcutTarget = 0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
             unsigned int i;
-            for (i = 0; i < MAX_WORD_LENGTH_INTERNAL; ++i) {
+            for (i = 0; i < MAX_WORD_LENGTH; ++i) {
                 const int codePoint = BinaryFormat::getCodePointAndForwardPointer(mDict, &mPos);
                 if (NOT_A_CODE_POINT == codePoint) break;
                 outWord[i] = codePoint;
@@ -58,6 +54,11 @@ class TerminalAttributes {
             *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
             return i;
         }
+
+     private:
+        const uint8_t *const mDict;
+        int mPos;
+        bool mHasNextShortcutTarget;
     };
 
     TerminalAttributes(const uint8_t *const dict, const uint8_t flags, const int pos)

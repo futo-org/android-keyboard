@@ -40,9 +40,8 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
         { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int maxWordLength,
-        const unsigned int flags)
-        : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), ROOT_POS(0),
+UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags)
+        : DICT_ROOT(streamStart), ROOT_POS(0),
           MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
@@ -52,21 +51,17 @@ UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int maxWo
 UnigramDictionary::~UnigramDictionary() {
 }
 
-static inline int getCodesBufferSize(const int *codes, const int codesSize) {
-    return sizeof(*codes) * codesSize;
-}
-
 // TODO: This needs to take a const int* and not tinker with its contents
 static void addWord(int *word, int length, int frequency, WordsPriorityQueue *queue, int type) {
     queue->push(frequency, word, length, type);
 }
 
 // Return the replacement code point for a digraph, or 0 if none.
-int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, const int codesSize,
+int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, const int inputSize,
         const digraph_t *const digraphs, const unsigned int digraphsSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
-    if (i + 2 > codesSize) return false;
+    if (i + 2 > inputSize) return false;
 
     // Search for the first char of some digraph
     int lastDigraphIndex = -1;
@@ -87,7 +82,7 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
 
 // Mostly the same arguments as the non-recursive version, except:
 // codes is the original value. It points to the start of the work buffer, and gets passed as is.
-// codesSize is the size of the user input (thus, it is the size of codesSrc).
+// inputSize is the size of the user input (thus, it is the size of codesSrc).
 // codesDest is the current point in the work buffer.
 // codesSrc is the current point in the user-input, original, content-unmodified buffer.
 // codesRemain is the remaining size in codesSrc.
@@ -167,49 +162,49 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
 // bigramFilter is a bloom filter for fast rejection: see functions setInFilter and isInFilter
 // in bigram_dictionary.cpp
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-        const int *ycoordinates, const int *codes, const int codesSize,
+        const int *ycoordinates, const int *inputCodePoints, const int inputSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, int *outWords, int *frequencies, int *outputTypes) const {
-    WordsPriorityQueuePool queuePool(MAX_RESULTS, SUB_QUEUE_MAX_WORDS, MAX_WORD_LENGTH);
+    WordsPriorityQueuePool queuePool(MAX_RESULTS, SUB_QUEUE_MAX_WORDS);
     queuePool.clearAll();
     Correction masterCorrection;
     masterCorrection.resetCorrection();
     if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & FLAGS)
     { // Incrementally tune the word and try all possibilities
-        int codesBuffer[getCodesBufferSize(codes, codesSize)];
-        int xCoordinatesBuffer[codesSize];
-        int yCoordinatesBuffer[codesSize];
+        int codesBuffer[sizeof(*inputCodePoints) * inputSize];
+        int xCoordinatesBuffer[inputSize];
+        int yCoordinatesBuffer[inputSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
-                useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
+                xCoordinatesBuffer, yCoordinatesBuffer, inputSize, bigramMap, bigramFilter,
+                useFullEditDistance, inputCodePoints, inputSize, 0, codesBuffer, &masterCorrection,
                 &queuePool, GERMAN_UMLAUT_DIGRAPHS, NELEMS(GERMAN_UMLAUT_DIGRAPHS));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
-        int codesBuffer[getCodesBufferSize(codes, codesSize)];
-        int xCoordinatesBuffer[codesSize];
-        int yCoordinatesBuffer[codesSize];
+        int codesBuffer[sizeof(*inputCodePoints) * inputSize];
+        int xCoordinatesBuffer[inputSize];
+        int yCoordinatesBuffer[inputSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
-                useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
+                xCoordinatesBuffer, yCoordinatesBuffer, inputSize, bigramMap, bigramFilter,
+                useFullEditDistance, inputCodePoints, inputSize, 0, codesBuffer, &masterCorrection,
                 &queuePool, FRENCH_LIGATURES_DIGRAPHS, NELEMS(FRENCH_LIGATURES_DIGRAPHS));
     } else { // Normal processing
-        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
+        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, inputCodePoints, inputSize,
                 bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, &queuePool);
     }
 
     PROF_START(20);
     if (DEBUG_DICT) {
         float ns = queuePool.getMasterQueue()->getHighestNormalizedScore(
-                masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
+                masterCorrection.getPrimaryInputWord(), inputSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
             queuePool.getMasterQueue()->outputSuggestions(masterCorrection.getPrimaryInputWord(),
-                    codesSize, frequencies, outWords, outputTypes);
+                    inputSize, frequencies, outWords, outputTypes);
 
     if (DEBUG_DICT) {
         float ns = queuePool.getMasterQueue()->getHighestNormalizedScore(
-                masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
+                masterCorrection.getPrimaryInputWord(), inputSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
@@ -227,7 +222,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
 }
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-        const int *ycoordinates, const int *codes, const int inputSize,
+        const int *ycoordinates, const int *inputCodePoints, const int inputSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, Correction *correction, WordsPriorityQueuePool *queuePool)
         const {
@@ -236,8 +231,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo, const i
     PROF_END(0);
 
     PROF_START(1);
-    getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, bigramMap, bigramFilter,
-            useFullEditDistance, inputSize, correction, queuePool);
+    getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, inputCodePoints, bigramMap,
+            bigramFilter, useFullEditDistance, inputSize, correction, queuePool);
     PROF_END(1);
 
     PROF_START(2);
@@ -262,7 +257,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo, const i
     // Multiple word suggestions
     if (SUGGEST_MULTIPLE_WORDS
             && inputSize >= MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION) {
-        getSplitMultipleWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+        getSplitMultipleWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, inputCodePoints,
                 useFullEditDistance, inputSize, correction, queuePool,
                 hasAutoCorrectionCandidate);
     }
@@ -398,10 +393,10 @@ void UnigramDictionary::onTerminal(const int probability,
             // so that the insert order is protected inside the queue for words
             // with the same score. For the moment we use -1 to make sure the shortcut will
             // never be in front of the word.
-            int shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
+            int shortcutTarget[MAX_WORD_LENGTH];
             int shortcutFrequency;
             const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
-                    MAX_WORD_LENGTH_INTERNAL, shortcutTarget, &shortcutFrequency);
+                    MAX_WORD_LENGTH, shortcutTarget, &shortcutFrequency);
             int shortcutScore;
             int kind;
             if (shortcutFrequency == BinaryFormat::WHITELIST_SHORTCUT_FREQUENCY
@@ -487,7 +482,7 @@ int UnigramDictionary::getSubStringSuggestion(
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
             inputSize, correction);
 
-    int word[MAX_WORD_LENGTH_INTERNAL];
+    int word[MAX_WORD_LENGTH];
     int freq = getMostFrequentWordLike(
             inputWordStartPos, inputWordLength, correction, word);
     if (freq > 0) {
@@ -761,13 +756,13 @@ static inline void onTerminalWordLike(const int freq, int *newWord, const int le
 // that is, everything that only differs by case/accents.
 int UnigramDictionary::getMostFrequentWordLikeInner(const int *const inWord, const int inputSize,
         int *outWord) const {
-    int newWord[MAX_WORD_LENGTH_INTERNAL];
+    int newWord[MAX_WORD_LENGTH];
     int depth = 0;
     int maxFreq = -1;
     const uint8_t *const root = DICT_ROOT;
-    int stackChildCount[MAX_WORD_LENGTH_INTERNAL];
-    int stackInputIndex[MAX_WORD_LENGTH_INTERNAL];
-    int stackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
+    int stackChildCount[MAX_WORD_LENGTH];
+    int stackInputIndex[MAX_WORD_LENGTH];
+    int stackSiblingPos[MAX_WORD_LENGTH];
 
     int startPos = 0;
     stackChildCount[0] = BinaryFormat::getGroupCountAndForwardPointer(root, &startPos);
