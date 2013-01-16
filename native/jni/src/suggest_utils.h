@@ -18,11 +18,12 @@
 #define LATINIME_SUGGEST_UTILS_H
 
 #include "defines.h"
+#include "proximity_info_state.h"
 
 namespace latinime {
 class SuggestUtils {
  public:
-    static float getDistanceScalingFactor(float normalizedSquaredDistance) {
+    static float getDistanceScalingFactor(const float normalizedSquaredDistance) {
         if (normalizedSquaredDistance < 0.0f) {
             return -1.0f;
         }
@@ -33,8 +34,8 @@ class SuggestUtils {
         static const float MIN = 0.3f;
         static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
         static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-        const float x = static_cast<float>(normalizedSquaredDistance)
-                / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+        const float x = normalizedSquaredDistance / static_cast<float>(
+                ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
         const float factor = max((x < R1)
                 ? (A * (R1 - x) + B * x) / R1
                 : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
@@ -48,6 +49,9 @@ class SuggestUtils {
         // 0   R1 R2             .
         return factor;
     }
+
+ private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestUtils);
 };
 } // namespace latinime
 #endif // LATINIME_SUGGEST_UTILS_H
