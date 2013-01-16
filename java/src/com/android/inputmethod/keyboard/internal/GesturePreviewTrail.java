@@ -138,6 +138,7 @@ final class GesturePreviewTrail {
     }
 
     private final RoundedLine mRoundedLine = new RoundedLine();
+    private final Rect mRoundedLineBounds = new Rect();
 
     /**
      * Draw gesture preview trail
@@ -149,6 +150,8 @@ final class GesturePreviewTrail {
      */
     public boolean drawGestureTrail(final Canvas canvas, final Paint paint,
             final Rect outBoundsRect, final Params params) {
+        // Initialize bounds rectangle.
+        outBoundsRect.setEmpty();
         final int trailSize = mEventTimes.getLength();
         if (trailSize == 0) {
             return false;
@@ -171,39 +174,32 @@ final class GesturePreviewTrail {
         if (startIndex < trailSize) {
             paint.setColor(params.mTrailColor);
             paint.setStyle(Paint.Style.FILL);
-            final RoundedLine line = mRoundedLine;
+            final RoundedLine roundedLine = mRoundedLine;
             int p1x = getXCoordValue(xCoords[startIndex]);
             int p1y = yCoords[startIndex];
             final int lastTime = sinceDown - eventTimes[startIndex];
-            float maxWidth = getWidth(lastTime, params);
-            float r1 = maxWidth / 2.0f;
-            // Initialize bounds rectangle.
-            outBoundsRect.set(p1x, p1y, p1x, p1y);
+            float r1 = getWidth(lastTime, params) / 2.0f;
             for (int i = startIndex + 1; i < trailSize; i++) {
                 final int elapsedTime = sinceDown - eventTimes[i];
                 final int p2x = getXCoordValue(xCoords[i]);
                 final int p2y = yCoords[i];
-                final float width = getWidth(elapsedTime, params);
-                final float r2 = width / 2.0f;
+                final float r2 = getWidth(elapsedTime, params) / 2.0f;
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(xCoords[i])) {
-                    final Path path = line.makePath(p1x, p1y, r1, p2x, p2y, r2);
+                    final Path path = roundedLine.makePath(p1x, p1y, r1, p2x, p2y, r2);
                     if (path != null) {
                         final int alpha = getAlpha(elapsedTime, params);
                         paint.setAlpha(alpha);
                         canvas.drawPath(path, paint);
                         // Take union for the bounds.
-                        outBoundsRect.union(p2x, p2y);
-                        maxWidth = Math.max(maxWidth, width);
+                        roundedLine.getBounds(mRoundedLineBounds);
+                        outBoundsRect.union(mRoundedLineBounds);
                     }
                 }
                 p1x = p2x;
                 p1y = p2y;
                 r1 = r2;
             }
-            // Take care of trail line width.
-            final int inset = -((int)maxWidth + 1);
-            outBoundsRect.inset(inset, inset);
         }
 
         final int newSize = trailSize - startIndex;
