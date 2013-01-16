@@ -15,6 +15,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 public final class RoundedLine {
@@ -99,5 +100,11 @@ public final class RoundedLine {
         mPath.lineTo(p2ax, p2ay);
         mPath.close();
         return mPath;
+    }
+
+    public void getBounds(final Rect outBounds) {
+        // Reuse mArc1 as working variable
+        mPath.computeBounds(mArc1, true /* unused */);
+        mArc1.roundOut(outBounds);
     }
 }
