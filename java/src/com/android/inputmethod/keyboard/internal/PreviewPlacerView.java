@@ -52,7 +52,8 @@ public final class PreviewPlacerView extends RelativeLayout {
     private int mOffscreenOffsetY;
     private Bitmap mOffscreenBuffer;
     private final Canvas mOffscreenCanvas = new Canvas();
-    private final Rect mOffscreenDirtyRect = new Rect();
+    private final Rect mOffscreenSrcRect = new Rect();
+    private final Rect mDirtyRect = new Rect();
     private final Rect mGesturePreviewTrailBoundsRect = new Rect(); // per trail
     private final GestureFloatingPreviewText mGestureFloatingPreviewText;
     private boolean mShowSlidingKeyInputPreview;
@@ -193,6 +194,7 @@ public final class PreviewPlacerView extends RelativeLayout {
         mOffscreenBuffer = Bitmap.createBitmap(
                 mOffscreenWidth, mOffscreenHeight, Bitmap.Config.ARGB_8888);
         mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+        mOffscreenCanvas.translate(0, mOffscreenOffsetY);
     }
 
     @Override
@@ -205,18 +207,17 @@ public final class PreviewPlacerView extends RelativeLayout {
             mayAllocateOffscreenBuffer();
             // Draw gesture trails to offscreen buffer.
             final boolean needsUpdatingGesturePreviewTrail = drawGestureTrails(
-                    mOffscreenCanvas, mGesturePaint, mOffscreenDirtyRect);
-            // Transfer offscreen buffer to screen.
-            if (!mOffscreenDirtyRect.isEmpty()) {
-                canvas.translate(0, - mOffscreenOffsetY);
-                canvas.drawBitmap(mOffscreenBuffer, mOffscreenDirtyRect, mOffscreenDirtyRect,
-                        mGesturePaint);
-                canvas.translate(0, mOffscreenOffsetY);
-                // Note: Defer clearing the dirty rectangle here because we will get cleared
-                // rectangle on the canvas.
-            }
+                    mOffscreenCanvas, mGesturePaint, mDirtyRect);
             if (needsUpdatingGesturePreviewTrail) {
                 mDrawingHandler.postUpdateGestureTrailPreview();
+            }
+            // Transfer offscreen buffer to screen.
+            if (!mDirtyRect.isEmpty()) {
+                mOffscreenSrcRect.set(mDirtyRect);
+                mOffscreenSrcRect.offset(0, mOffscreenOffsetY);
+                canvas.drawBitmap(mOffscreenBuffer, mOffscreenSrcRect, mDirtyRect, null);
+                // Note: Defer clearing the dirty rectangle here because we will get cleared
+                // rectangle on the canvas.
             }
         }
         mGestureFloatingPreviewText.onDraw(canvas);
@@ -235,10 +236,8 @@ public final class PreviewPlacerView extends RelativeLayout {
             offscreenCanvas.drawRect(dirtyRect, paint);
         }
         dirtyRect.setEmpty();
-
-        // Draw gesture trails to offscreen buffer.
-        offscreenCanvas.translate(0, mOffscreenOffsetY);
         boolean needsUpdatingGesturePreviewTrail = false;
+        // Draw gesture trails to offscreen buffer.
         synchronized (mGesturePreviewTrails) {
             // Trails count == fingers count that have ever been active.
             final int trailsCount = mGesturePreviewTrails.size();
@@ -251,18 +250,7 @@ public final class PreviewPlacerView extends RelativeLayout {
                 dirtyRect.union(mGesturePreviewTrailBoundsRect);
             }
         }
-        offscreenCanvas.translate(0, -mOffscreenOffsetY);
-
-        // Clip dirty rectangle with offscreen buffer width/height.
-        dirtyRect.offset(0, mOffscreenOffsetY);
-        clipRect(dirtyRect, 0, 0, mOffscreenWidth, mOffscreenHeight);
         return needsUpdatingGesturePreviewTrail;
-    }
-
-    private static void clipRect(final Rect out, final int left, final int top, final int right,
-            final int bottom) {
-        out.set(Math.max(out.left, left), Math.max(out.top, top), Math.min(out.right, right),
-                Math.min(out.bottom, bottom));
     }
 
     public void setGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
