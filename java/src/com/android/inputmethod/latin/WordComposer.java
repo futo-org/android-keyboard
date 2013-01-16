@@ -350,7 +350,7 @@ public final class WordComposer {
         mPrimaryKeyCodes = new int[MAX_WORD_LENGTH];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
                 mInputPointers, mTypedWord.toString(), committedWord, separatorString,
-                prevWord);
+                prevWord, mCapitalizedMode);
         mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
@@ -374,6 +374,7 @@ public final class WordComposer {
         mTypedWord.setLength(0);
         mTypedWord.append(lastComposedWord.mTypedWord);
         refreshSize();
+        mCapitalizedMode = lastComposedWord.mCapitalizedMode;
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
         mIsResumed = true;
     }

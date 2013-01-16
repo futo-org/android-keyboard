@@ -45,19 +45,21 @@ public final class LastComposedWord {
     public final String mCommittedWord;
     public final String mSeparatorString;
     public final String mPrevWord;
+    public final int mCapitalizedMode;
     public final InputPointers mInputPointers =
             new InputPointers(Constants.Dictionary.MAX_WORD_LENGTH);
 
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(null, null, "", "", NOT_A_SEPARATOR, null);
+            new LastComposedWord(null, null, "", "", NOT_A_SEPARATOR, null,
+            WordComposer.CAPS_MODE_OFF);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
-            final String typedWord, final String committedWord,
-            final String separatorString, final String prevWord) {
+            final String typedWord, final String committedWord, final String separatorString,
+            final String prevWord, final int capitalizedMode) {
         mPrimaryKeyCodes = primaryKeyCodes;
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);
@@ -67,6 +69,7 @@ public final class LastComposedWord {
         mSeparatorString = separatorString;
         mActive = true;
         mPrevWord = prevWord;
+        mCapitalizedMode = capitalizedMode;
     }
 
     public void deactivate() {
