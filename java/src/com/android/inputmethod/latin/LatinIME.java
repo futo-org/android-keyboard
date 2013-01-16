@@ -773,7 +773,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // to the user dictionary.
         if (null != mPositionalInfoForUserDictPendingAddition
                 && mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
-                        mConnection, editorInfo, mLastSelectionEnd)) {
+                        mConnection, editorInfo, mLastSelectionEnd,
+                        mSubtypeSwitcher.getCurrentSubtypeLocale())) {
             mPositionalInfoForUserDictPendingAddition = null;
         }
         // If tryReplaceWithActualWord returns false, we don't know what word was
@@ -1223,11 +1224,17 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mPositionalInfoForUserDictPendingAddition = null;
             return;
         }
+        final String wordToEdit;
+        if (StringUtils.isAutoCapsMode(mLastComposedWord.mCapitalizedMode)) {
+            wordToEdit = word.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
+        } else {
+            wordToEdit = word;
+        }
         mPositionalInfoForUserDictPendingAddition =
                 new PositionalInfoForUserDictPendingAddition(
-                        word, mLastSelectionEnd, getCurrentInputEditorInfo(),
+                        wordToEdit, mLastSelectionEnd, getCurrentInputEditorInfo(),
                         mLastComposedWord.mCapitalizedMode);
-        mUserDictionary.addWordToUserDictionary(word, 128);
+        mUserDictionary.addWordToUserDictionary(wordToEdit);
     }
 
     public void onWordAddedToUserDictionary(final String newSpelling) {
@@ -1240,7 +1247,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mPositionalInfoForUserDictPendingAddition.setActualWordBeingAdded(newSpelling);
         if (mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
-                mConnection, getCurrentInputEditorInfo(), mLastSelectionEnd)) {
+                mConnection, getCurrentInputEditorInfo(), mLastSelectionEnd,
+                mSubtypeSwitcher.getCurrentSubtypeLocale())) {
             mPositionalInfoForUserDictPendingAddition = null;
         }
     }
