@@ -33,13 +33,15 @@ public final class PositionalInfoForUserDictPendingAddition {
     final private String mOriginalWord;
     final private int mCursorPos; // Position of the cursor after the word
     final private EditorInfo mEditorInfo; // On what binding this has been added
+    final private int mCapitalizedMode;
     private String mActualWordBeingAdded;
 
     public PositionalInfoForUserDictPendingAddition(final String word, final int cursorPos,
-            final EditorInfo editorInfo) {
+            final EditorInfo editorInfo, final int capitalizedMode) {
         mOriginalWord = word;
         mCursorPos = cursorPos;
         mEditorInfo = editorInfo;
+        mCapitalizedMode = capitalizedMode;
     }
 
     public void setActualWordBeingAdded(final String actualWordBeingAdded) {

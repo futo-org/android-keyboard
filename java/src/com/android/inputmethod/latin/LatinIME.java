@@ -1225,7 +1225,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mPositionalInfoForUserDictPendingAddition =
                 new PositionalInfoForUserDictPendingAddition(
-                        word, mLastSelectionEnd, getCurrentInputEditorInfo());
+                        word, mLastSelectionEnd, getCurrentInputEditorInfo(),
+                        mLastComposedWord.mCapitalizedMode);
         mUserDictionary.addWordToUserDictionary(word, 128);
     }
 
