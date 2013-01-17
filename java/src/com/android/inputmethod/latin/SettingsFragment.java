@@ -180,7 +180,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                     });
             mKeypressVibrationDurationSettingsPref.setSummary(
                     res.getString(R.string.settings_keypress_vibration_duration,
-                            Settings.readVibrationDuration(prefs, res)));
+                            Settings.readKeypressVibrationDuration(prefs, res)));
         }
 
         mKeypressSoundVolumeSettingsPref =
@@ -312,9 +312,21 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, value).apply();
             }
 
+            private void feedbackSettingsValue(final int value) {
+                AudioAndHapticFeedbackManager.getInstance().vibrate(value);
+            }
+
             @Override
             public void onPositiveButtonClick(final SeekBarDialog dialog) {
                 writePreference(sp, dialog.getValue());
+            }
+
+            @Override
+            public void onNeutralButtonClick(final SeekBarDialog dialog) {
+                final int defaultValue =
+                        Settings.readDefaultKeypressVibrationDuration(context.getResources());
+                dialog.setValue(defaultValue, false /* fromUser */);
+                writePreference(sp, defaultValue);
             }
 
             @Override
@@ -326,13 +338,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
             @Override
             public void onStopTrackingTouch(final SeekBarDialog dialog) {
-                final int ms = dialog.getValue();
-                AudioAndHapticFeedbackManager.getInstance().vibrate(ms);
+                feedbackSettingsValue(dialog.getValue());
             }
         };
-        final int currentMs = Settings.readVibrationDuration(sp, getResources());
+        final int currentMs = Settings.readKeypressVibrationDuration(sp, getResources());
         final SeekBarDialog.Builder builder = new SeekBarDialog.Builder(context);
         builder.setTitle(R.string.prefs_keypress_vibration_duration_settings)
+                .setNeutralButtonText(R.string.button_default)
                 .setListener(listener)
                 .setMaxValue(AudioAndHapticFeedbackManager.MAX_KEYPRESS_VIBRATION_DURATION)
                 .setValueFromat(R.string.settings_keypress_vibration_duration)
@@ -359,9 +371,21 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 sp.edit().putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, value).apply();
             }
 
+            private void feedbackSettingsValue(final float value) {
+                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, value);
+            }
+
             @Override
             public void onPositiveButtonClick(final SeekBarDialog dialog) {
                 writePreference(sp, dialog.getValue() / PERCENT_FLOAT);
+            }
+
+            @Override
+            public void onNeutralButtonClick(final SeekBarDialog dialog) {
+                final float defaultValue =
+                        Settings.readDefaultKeypressSoundVolume(context.getResources());
+                dialog.setValue((int)(defaultValue * PERCENT_INT), false /* fromUser */);
+                writePreference(sp, defaultValue);
             }
 
             @Override
@@ -373,13 +397,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
             @Override
             public void onStopTrackingTouch(final SeekBarDialog dialog) {
-                final float volume = dialog.getValue() / PERCENT_FLOAT;
-                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, volume);
+                feedbackSettingsValue(dialog.getValue() / PERCENT_FLOAT);
             }
         };
         final SeekBarDialog.Builder builder = new SeekBarDialog.Builder(context);
         final int currentVolumeInt = getCurrentKeyPressSoundVolumePercent(sp, getResources());
         builder.setTitle(R.string.prefs_keypress_sound_volume_settings)
+                .setNeutralButtonText(R.string.button_default)
                 .setListener(listener)
                 .setMaxValue(PERCENT_INT)
                 .setValue(currentVolumeInt)
