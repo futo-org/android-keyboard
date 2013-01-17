@@ -106,7 +106,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // Change the default indicator to something very visible.  Currently two red vertical bars on
     // either side of they keyboard.
     private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false || IS_LOGGING_EVERYTHING;
-    public static final int FEEDBACK_WORD_BUFFER_SIZE = 5;
+    // FEEDBACK_WORD_BUFFER_SIZE should add 1 because it must also hold the feedback LogUnit itself.
+    public static final int FEEDBACK_WORD_BUFFER_SIZE = (Integer.MAX_VALUE - 1) + 1;
 
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
@@ -391,9 +392,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (mFeedbackLogBuffer == null) {
             mFeedbackLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
-            // LogBuffer is one more than FEEDBACK_WORD_BUFFER_SIZE, because it must also hold
-            // the feedback LogUnit itself.
-            mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE + 1);
+            mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
         }
     }
 
