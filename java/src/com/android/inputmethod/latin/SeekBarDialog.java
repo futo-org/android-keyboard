@@ -30,6 +30,8 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
     public interface Listener {
         public void onPositiveButtonClick(final SeekBarDialog dialog);
         public void onNegativeButtonClick(final SeekBarDialog dialog);
+        public void onNeutralButtonClick(final SeekBarDialog dialog);
+        public void onDismiss(final SeekBarDialog dialog);
         public void onProgressChanged(final SeekBarDialog dialog);
         public void onStartTrackingTouch(final SeekBarDialog dialog);
         public void onStopTrackingTouch(final SeekBarDialog dialog);
@@ -39,7 +41,11 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
         @Override
         public void onPositiveButtonClick(final SeekBarDialog dialog) {}
         @Override
-        public void onNegativeButtonClick(final SeekBarDialog dialog) { dialog.dismiss(); }
+        public void onNegativeButtonClick(final SeekBarDialog dialog) {}
+        @Override
+        public void onNeutralButtonClick(final SeekBarDialog dialog) {}
+        @Override
+        public void onDismiss(final SeekBarDialog dialog) {}
         @Override
         public void onProgressChanged(final SeekBarDialog dialog) {}
         @Override
@@ -63,6 +69,9 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
         dialogBuilder.setView(builder.mView);
         dialogBuilder.setPositiveButton(android.R.string.ok, this);
         dialogBuilder.setNegativeButton(android.R.string.cancel, this);
+        if (builder.mNeutralButtonTextResId != 0) {
+            dialogBuilder.setNeutralButton(builder.mNeutralButtonTextResId, this);
+        }
         mDialog = dialogBuilder.create();
         mListener = (builder.mListener == null) ? EMPTY_ADAPTER : builder.mListener;
         mValueView = (TextView)builder.mView.findViewById(R.id.seek_bar_dialog_value);
@@ -101,15 +110,21 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
     }
 
     @Override
-    public void onClick(final DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
+    public void onClick(final DialogInterface dialog, final int which) {
+        switch (which) {
+        case DialogInterface.BUTTON_POSITIVE:
             mListener.onPositiveButtonClick(this);
-            return;
-        }
-        if (which == DialogInterface.BUTTON_NEGATIVE) {
+            break;
+        case DialogInterface.BUTTON_NEGATIVE:
             mListener.onNegativeButtonClick(this);
+            break;
+        case DialogInterface.BUTTON_NEUTRAL:
+            mListener.onNeutralButtonClick(this);
+            break;
+        default:
             return;
         }
+        mListener.onDismiss(this);
     }
 
     @Override
@@ -135,6 +150,7 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
         final AlertDialog.Builder mDialogBuilder;
         final View mView;
 
+        int mNeutralButtonTextResId;
         int mMaxValue;
         int mValueFormatResId;
         int mValue;
@@ -150,8 +166,14 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
             return this;
         }
 
+        public Builder setNeutralButtonText(final int resId) {
+            mNeutralButtonTextResId = resId;
+            return this;
+        }
+
         public Builder setMaxValue(final int max) {
             mMaxValue = max;
+            mValue = Math.min(mValue, max);
             return this;
         }
 
@@ -161,7 +183,7 @@ public final class SeekBarDialog implements DialogInterface.OnClickListener,
         }
 
         public Builder setValue(final int value) {
-            mValue = value;
+            mValue = Math.min(value, mMaxValue);
             return this;
         }
 
