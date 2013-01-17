@@ -2429,6 +2429,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+        if (!ProductionFlag.IS_HARDWARE_KEYBOARD_SUPPORTED) return super.onKeyDown(keyCode, event);
         // onHardwareKeyEvent, like onKeyDown returns true if it handled the event, false if
         // it doesn't know what to do with it and leave it to the application. For example,
         // hardware key events for adjusting the screen's brightness are passed as is.
