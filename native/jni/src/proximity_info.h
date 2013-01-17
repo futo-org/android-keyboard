@@ -20,6 +20,7 @@
 #include "defines.h"
 #include "hash_map_compat.h"
 #include "jni.h"
+#include "proximity_info_utils.h"
 
 namespace latinime {
 
@@ -40,7 +41,6 @@ class ProximityInfo {
     float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
-    int getKeyIndexOf(const int c) const;
     int getCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
@@ -109,23 +109,26 @@ class ProximityInfo {
     int getKeyCenterYOfKeyIdG(int keyId) const;
     int getKeyKeyDistanceG(int keyId0, int keyId1) const;
 
+    void initializeProximities(const int *const inputCodes, const int *const inputXCoordinates,
+            const int *const inputYCoordinates, const int inputSize, int *allInputCodes) const {
+        ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
+                inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
+                mProximityCharsArray, MAX_PROXIMITY_CHARS_SIZE, CELL_HEIGHT, CELL_WIDTH,
+                GRID_WIDTH, MOST_COMMON_KEY_WIDTH, KEY_COUNT, mLocaleStr, &mCodeToKeyMap,
+                allInputCodes);
+    }
+
+    int getKeyIndexOf(const int c) const {
+        return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mCodeToKeyMap);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
     static const float NOT_A_DISTANCE_FLOAT;
 
-    int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
-    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
-    bool isOnKey(const int keyId, const int x, const int y) const {
-        if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
-        const int left = mKeyXCoordinates[keyId];
-        const int top = mKeyYCoordinates[keyId];
-        const int right = left + mKeyWidths[keyId] + 1;
-        const int bottom = top + mKeyHeights[keyId];
-        return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
-    }
 
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int GRID_WIDTH;

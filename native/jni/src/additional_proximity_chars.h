@@ -45,7 +45,7 @@ class AdditionalProximityChars {
     }
 
  public:
-    static int getAdditionalCharsSize(const char *localeStr, const int c) {
+    static int getAdditionalCharsSize(const char *const localeStr, const int c) {
         if (!isEnLocale(localeStr)) {
             return 0;
         }
@@ -65,7 +65,7 @@ class AdditionalProximityChars {
         }
     }
 
-    static const int *getAdditionalChars(const char *localeStr, const int c) {
+    static const int *getAdditionalChars(const char *const localeStr, const int c) {
         if (!isEnLocale(localeStr)) {
             return 0;
         }

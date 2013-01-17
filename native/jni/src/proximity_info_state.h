@@ -61,7 +61,7 @@ class ProximityInfoState {
               mInputIndice(), mLengthCache(), mBeelineSpeedPercentiles(), mDistanceCache_G(),
               mSpeedRates(), mDirections(), mCharProbabilities(), mNearKeysVector(),
               mSearchKeysVector(), mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
-        memset(mInputCodes, 0, sizeof(mInputCodes));
+        memset(mInputProximities, 0, sizeof(mInputProximities));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
     }
@@ -117,12 +117,12 @@ class ProximityInfoState {
         if (length != mSampledInputSize) {
             return false;
         }
-        const int *inputCodes = mInputCodes;
+        const int *inputProximities = mInputProximities;
         while (length--) {
-            if (*inputCodes != *word) {
+            if (*inputProximities != *word) {
                 return false;
             }
-            inputCodes += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
+            inputProximities += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
             word++;
         }
         return true;
@@ -229,7 +229,7 @@ class ProximityInfoState {
     }
 
     inline const int *getProximityCodePointsAt(const int index) const {
-        return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
+        return mInputProximities + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
 
     float updateNearKeysDistances(const int x, const int y,
@@ -289,7 +289,7 @@ class ProximityInfoState {
     // inputs including the current input point.
     std::vector<NearKeycodesSet> mSearchKeysVector;
     bool mTouchPositionCorrectionEnabled;
-    int mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
+    int mInputProximities[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
     int mSampledInputSize;
     int mPrimaryInputWord[MAX_WORD_LENGTH];
