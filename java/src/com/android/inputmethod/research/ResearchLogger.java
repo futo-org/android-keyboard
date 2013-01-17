@@ -852,6 +852,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit = newLogUnit;
     }
 
+    /**
+     * Record the time of a MotionEvent.ACTION_DOWN.
+     *
+     * Warning: Not thread safe.  Only call from the main thread.
+     */
     private void setSavedDownEventTime(final long time) {
         mSavedDownEventTime = time;
     }
