@@ -577,11 +577,11 @@ public final class RichInputConnection {
         final CharSequence before = getTextBeforeCursor(1, 0);
         final CharSequence after = getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(before) && !settingsValues.isWordSeparator(before.charAt(0))
-                && !settingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
+                && !settingsValues.isWordConnector(before.charAt(0))) {
             return true;
         }
         if (!TextUtils.isEmpty(after) && !settingsValues.isWordSeparator(after.charAt(0))
-                && !settingsValues.isSymbolExcludedFromWordSeparators(after.charAt(0))) {
+                && !settingsValues.isWordConnector(after.charAt(0))) {
             return true;
         }
         return false;
@@ -633,12 +633,9 @@ public final class RichInputConnection {
         final char firstChar = word.charAt(0); // we just tested that word is not empty
         if (word.length() == 1 && !Character.isLetter(firstChar)) return null;
 
-        // We only suggest on words that start with a letter or a symbol that is excluded from
-        // word separators (see #handleCharacterWhileInBatchEdit).
-        if (!(Character.isLetter(firstChar)
-                || settings.isSymbolExcludedFromWordSeparators(firstChar))) {
-            return null;
-        }
+        // We don't restart suggestion if the first character is not a letter, because we don't
+        // start composing when the first character is not a letter.
+        if (!Character.isLetter(firstChar)) return null;
 
         return word;
     }

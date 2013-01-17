@@ -1493,12 +1493,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mSpaceState = SPACE_STATE_PHANTOM;
         } else {
             final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-            // TODO: reverse this logic. We should have the means to determine whether a character
-            // should usually be followed by a space, and it should be more readable.
-            if (Constants.NOT_A_CODE != codePointBeforeCursor
-                    && !Character.isWhitespace(codePointBeforeCursor)
-                    && !mSettings.getCurrent().isPhantomSpacePromotingSymbol(codePointBeforeCursor)
-                    && !mSettings.getCurrent().isWeakSpaceStripper(codePointBeforeCursor)) {
+            if (mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
                 mSpaceState = SPACE_STATE_PHANTOM;
             }
         }
@@ -1775,25 +1770,22 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
     }
 
+    /*
+     * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
+     */
     private boolean maybeStripSpace(final int code,
             final int spaceState, final boolean isFromSuggestionStrip) {
         if (Constants.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
             mConnection.removeTrailingSpace();
             return false;
-        } else if ((SPACE_STATE_WEAK == spaceState
-                || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
-                && isFromSuggestionStrip) {
-            if (mSettings.getCurrent().isWeakSpaceSwapper(code)) {
-                return true;
-            } else {
-                if (mSettings.getCurrent().isWeakSpaceStripper(code)) {
-                    mConnection.removeTrailingSpace();
-                }
-                return false;
-            }
-        } else {
-            return false;
         }
+        if ((SPACE_STATE_WEAK == spaceState || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
+                && isFromSuggestionStrip) {
+            if (mSettings.getCurrent().isUsuallyPrecededBySpace(code)) return false;
+            if (mSettings.getCurrent().isUsuallyFollowedBySpace(code)) return true;
+            mConnection.removeTrailingSpace();
+        }
+        return false;
     }
 
     private void handleCharacter(final int primaryCode, final int x,
@@ -1801,7 +1793,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         boolean isComposingWord = mWordComposer.isComposingWord();
 
         if (SPACE_STATE_PHANTOM == spaceState &&
-                !mSettings.getCurrent().isSymbolExcludedFromWordSeparators(primaryCode)) {
+                !mSettings.getCurrent().isWordConnector(primaryCode)) {
             if (isComposingWord) {
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
@@ -1813,7 +1805,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // dozen milliseconds. Avoid calling it as much as possible, since we are on the UI
         // thread here.
         if (!isComposingWord && (isAlphabet(primaryCode)
-                || mSettings.getCurrent().isSymbolExcludedFromWordSeparators(primaryCode))
+                || mSettings.getCurrent().isWordConnector(primaryCode))
                 && mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation) &&
                 !mConnection.isCursorTouchingWord(mSettings.getCurrent())) {
             // Reset entirely the composing state anyway, then start composing a new word unless
@@ -1885,7 +1877,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 Constants.SUGGESTION_STRIP_COORDINATE == x);
 
         if (SPACE_STATE_PHANTOM == spaceState &&
-                mSettings.getCurrent().isPhantomSpacePromotingSymbol(primaryCode)) {
+                mSettings.getCurrent().isUsuallyPrecededBySpace(primaryCode)) {
             promotePhantomSpace();
         }
         sendKeyCodePoint(primaryCode);
@@ -1900,16 +1892,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
 
             mHandler.startDoubleSpacePeriodTimer();
-            if (!mConnection.isCursorTouchingWord(mSettings.getCurrent())) {
-                mHandler.postUpdateSuggestionStrip();
-            }
+            mHandler.postUpdateSuggestionStrip();
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
             } else if (SPACE_STATE_PHANTOM == spaceState
-                    && !mSettings.getCurrent().isWeakSpaceStripper(primaryCode)
-                    && !mSettings.getCurrent().isPhantomSpacePromotingSymbol(primaryCode)) {
+                    && mSettings.getCurrent().isUsuallyFollowedBySpace(primaryCode)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
                 // space. For example, if I type "Good dat", pick "day" from the suggestion strip
@@ -2158,9 +2147,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // In the batch input mode, a manually picked suggested word should just replace
                 // the current batch input text and there is no need for a phantom space.
                 && !mWordComposer.isBatchMode()) {
-            int firstChar = Character.codePointAt(suggestion, 0);
-            if ((!mSettings.getCurrent().isWeakSpaceStripper(firstChar))
-                    && (!mSettings.getCurrent().isWeakSpaceSwapper(firstChar))) {
+            final int firstChar = Character.codePointAt(suggestion, 0);
+            if (!mSettings.getCurrent().isWordSeparator(firstChar)
+                    || mSettings.getCurrent().isUsuallyPrecededBySpace(firstChar)) {
                 promotePhantomSpace();
             }
         }
