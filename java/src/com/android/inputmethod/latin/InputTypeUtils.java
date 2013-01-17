@@ -105,7 +105,7 @@ public final class InputTypeUtils implements InputType {
         return true;
     }
 
-    public static int getActionIdFromEditorInfo(final EditorInfo editorInfo) {
+    public static int getImeOptionsActionIdFromEditorInfo(final EditorInfo editorInfo) {
         final int actionId = editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             return EditorInfo.IME_ACTION_NONE;
@@ -114,5 +114,10 @@ public final class InputTypeUtils implements InputType {
         } else {
             return actionId;
         }
+    }
+
+    public static int getConcreteActionIdFromEditorInfo(final EditorInfo editorInfo) {
+        final int actionId = getImeOptionsActionIdFromEditorInfo(editorInfo);
+        return actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL ? editorInfo.actionId : actionId;
     }
 }
