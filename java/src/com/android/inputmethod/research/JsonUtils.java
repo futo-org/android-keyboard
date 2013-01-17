@@ -98,7 +98,7 @@ import java.util.Map;
         jsonWriter.beginArray();
         final int size = words.size();
         for (int j = 0; j < size; j++) {
-            final SuggestedWordInfo wordInfo = words.getWordInfo(j);
+            final SuggestedWordInfo wordInfo = words.getInfo(j);
             jsonWriter.value(wordInfo.toString());
         }
         jsonWriter.endArray();

@@ -65,10 +65,6 @@ public final class SuggestedWords {
         return mSuggestedWordInfoList.get(pos).mWord;
     }
 
-    public SuggestedWordInfo getWordInfo(int pos) {
-        return mSuggestedWordInfoList.get(pos);
-    }
-
     public SuggestedWordInfo getInfo(int pos) {
         return mSuggestedWordInfoList.get(pos);
     }
@@ -113,7 +109,7 @@ public final class SuggestedWords {
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
-            final SuggestedWordInfo prevWordInfo = previousSuggestions.getWordInfo(pos);
+            final SuggestedWordInfo prevWordInfo = previousSuggestions.getInfo(pos);
             final String prevWord = prevWordInfo.mWord;
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
