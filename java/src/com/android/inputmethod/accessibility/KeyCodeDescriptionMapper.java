@@ -209,7 +209,7 @@ public final class KeyCodeDescriptionMapper {
     private String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
             final Key key) {
         final KeyboardId keyboardId = keyboard.mId;
-        final int actionId = keyboardId.imeActionId();
+        final int actionId = keyboardId.imeAction();
         final int resId;
 
         // Always use the label, if available.
