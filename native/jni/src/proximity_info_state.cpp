@@ -53,33 +53,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mGridHeight = proximityInfo->getGridWidth();
     mGridWidth = proximityInfo->getGridHeight();
 
-    memset(mInputCodes, 0, sizeof(mInputCodes));
+    memset(mInputProximities, 0, sizeof(mInputProximities));
 
     if (!isGeometric && pointerId == 0) {
-        // Initialize
-        // - mInputCodes
-        // - mNormalizedSquaredDistances
-        // TODO: Merge
-        for (int i = 0; i < inputSize; ++i) {
-            const int primaryKey = inputCodes[i];
-            const int x = xCoordinates[i];
-            const int y = yCoordinates[i];
-            int *proximities = &mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL];
-            mProximityInfo->calculateNearbyKeyCodes(x, y, primaryKey, proximities);
-        }
-
-        if (DEBUG_PROXIMITY_CHARS) {
-            for (int i = 0; i < inputSize; ++i) {
-                AKLOGI("---");
-                for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL; ++j) {
-                    int icc = mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
-                    int icfjc = inputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
-                    icc += 0;
-                    icfjc += 0;
-                    AKLOGI("--- (%d)%c,%c", i, icc, icfjc); AKLOGI("--- A<%d>,B<%d>", icc, icfjc);
-                }
-            }
-        }
+        mProximityInfo->initializeProximities(inputCodes, xCoordinates, yCoordinates,
+                inputSize, mInputProximities);
     }
 
     ///////////////////////

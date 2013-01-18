@@ -94,11 +94,6 @@ ProximityInfo::~ProximityInfo() {
     delete[] mProximityCharsArray;
 }
 
-inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y) const {
-    return ((y / CELL_HEIGHT) * GRID_WIDTH + (x / CELL_WIDTH))
-            * MAX_PROXIMITY_CHARS_SIZE;
-}
-
 bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (x < 0 || y < 0) {
         if (DEBUG_DICT) {
@@ -109,7 +104,8 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
         return false;
     }
 
-    const int startIndex = getStartIndexFromCoordinates(x, y);
+    const int startIndex = ProximityInfoUtils::getStartIndexFromCoordinates(
+            MAX_PROXIMITY_CHARS_SIZE, x, y, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH);
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
@@ -147,100 +143,6 @@ float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
     return getSquaredDistanceFloat(centerX, centerY, touchX, touchY) / SQUARE_FLOAT(keyWidth);
 }
 
-int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) const {
-    if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
-    const int left = mKeyXCoordinates[keyId];
-    const int top = mKeyYCoordinates[keyId];
-    const int right = left + mKeyWidths[keyId];
-    const int bottom = top + mKeyHeights[keyId];
-    const int edgeX = x < left ? left : (x > right ? right : x);
-    const int edgeY = y < top ? top : (y > bottom ? bottom : y);
-    const int dx = x - edgeX;
-    const int dy = y - edgeY;
-    return dx * dx + dy * dy;
-}
-
-void ProximityInfo::calculateNearbyKeyCodes(
-        const int x, const int y, const int primaryKey, int *inputCodes) const {
-    int *proximityCharsArray = mProximityCharsArray;
-    int insertPos = 0;
-    inputCodes[insertPos++] = primaryKey;
-    const int startIndex = getStartIndexFromCoordinates(x, y);
-    if (startIndex >= 0) {
-        for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-            const int c = proximityCharsArray[startIndex + i];
-            if (c < KEYCODE_SPACE || c == primaryKey) {
-                continue;
-            }
-            const int keyIndex = getKeyIndexOf(c);
-            const bool onKey = isOnKey(keyIndex, x, y);
-            const int distance = squaredDistanceToEdge(keyIndex, x, y);
-            if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
-                inputCodes[insertPos++] = c;
-                if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-                    if (DEBUG_DICT) {
-                        ASSERT(false);
-                    }
-                    return;
-                }
-            }
-        }
-        const int additionalProximitySize =
-                AdditionalProximityChars::getAdditionalCharsSize(mLocaleStr, primaryKey);
-        if (additionalProximitySize > 0) {
-            inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
-            if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-                if (DEBUG_DICT) {
-                    ASSERT(false);
-                }
-                return;
-            }
-
-            const int *additionalProximityChars =
-                    AdditionalProximityChars::getAdditionalChars(mLocaleStr, primaryKey);
-            for (int j = 0; j < additionalProximitySize; ++j) {
-                const int ac = additionalProximityChars[j];
-                int k = 0;
-                for (; k < insertPos; ++k) {
-                    if (ac == inputCodes[k]) {
-                        break;
-                    }
-                }
-                if (k < insertPos) {
-                    continue;
-                }
-                inputCodes[insertPos++] = ac;
-                if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-                    if (DEBUG_DICT) {
-                        ASSERT(false);
-                    }
-                    return;
-                }
-            }
-        }
-    }
-    // Add a delimiter for the proximity characters
-    for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-        inputCodes[i] = NOT_A_CODE_POINT;
-    }
-}
-
-int ProximityInfo::getKeyIndexOf(const int c) const {
-    if (KEY_COUNT == 0) {
-        // We do not have the coordinate data
-        return NOT_AN_INDEX;
-    }
-    if (c == NOT_A_CODE_POINT) {
-        return NOT_AN_INDEX;
-    }
-    const int lowerCode = toLowerCase(c);
-    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(lowerCode);
-    if (mapPos != mCodeToKeyMap.end()) {
-        return mapPos->second;
-    }
-    return NOT_AN_INDEX;
-}
-
 int ProximityInfo::getCodePointOf(const int keyIndex) const {
     if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
         return NOT_A_CODE_POINT;
@@ -269,11 +171,13 @@ void ProximityInfo::initializeG() {
 }
 
 int ProximityInfo::getKeyCenterXOfCodePointG(int charCode) const {
-    return getKeyCenterXOfKeyIdG(getKeyIndexOf(charCode));
+    return getKeyCenterXOfKeyIdG(
+            ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, charCode, &mCodeToKeyMap));
 }
 
 int ProximityInfo::getKeyCenterYOfCodePointG(int charCode) const {
-    return getKeyCenterYOfKeyIdG(getKeyIndexOf(charCode));
+    return getKeyCenterYOfKeyIdG(
+            ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, charCode, &mCodeToKeyMap));
 }
 
 int ProximityInfo::getKeyCenterXOfKeyIdG(int keyId) const {
