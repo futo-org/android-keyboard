@@ -252,7 +252,7 @@ public final class FormatSpec {
     /**
      * Class representing file header.
      */
-    static final class FileHeader {
+    public static final class FileHeader {
         public final int mHeaderSize;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
