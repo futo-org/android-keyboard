@@ -149,7 +149,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 settingsValues.isLanguageSwitchKeyEnabled());
         mKeyboardLayoutSet = builder.build();
         try {
-            mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
+            mState.onLoadKeyboard();
             mFeedbackManager.onSettingsChanged(settingsValues);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());

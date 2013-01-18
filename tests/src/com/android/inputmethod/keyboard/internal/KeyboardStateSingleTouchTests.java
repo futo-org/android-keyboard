@@ -150,59 +150,6 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, ALPHABET_SHIFT_LOCKED);
     }
 
-    // Automatic switch back to alphabet by registered letters.
-    public void testSwitchBackChar() {
-        // Set switch back chars.
-        final String switchBackSymbols = "'";
-        final int switchBackCode = switchBackSymbols.codePointAt(0);
-        setLayoutSwitchBackSymbols(switchBackSymbols);
-        loadKeyboard(ALPHABET_UNSHIFTED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter symbol letter.
-        pressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter switch back letter, switch back to alphabet.
-        pressAndReleaseKey(switchBackCode, SYMBOLS_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter symbol shift letter.
-        pressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter switch abck letter, switch back to alphabet.
-        pressAndReleaseKey(switchBackCode, SYMBOLS_SHIFTED, ALPHABET_UNSHIFTED);
-    }
-
-    // Automatic switch back to alphabet shift locked by registered letters.
-    public void testSwitchBackCharShiftLocked() {
-        // Set switch back chars.
-        final String switchBackSymbols = "'";
-        final int switchBackCode = switchBackSymbols.codePointAt(0);
-        setLayoutSwitchBackSymbols(switchBackSymbols);
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter symbol letter.
-        pressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter switch back letter, switch back to alphabet shift locked.
-        pressAndReleaseKey(switchBackCode, SYMBOLS_UNSHIFTED, ALPHABET_SHIFT_LOCKED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter symbol shift letter.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter switch back letter, switch back to alphabet shift locked.
-        pressAndReleaseKey(switchBackCode, SYMBOLS_SHIFTED, ALPHABET_SHIFT_LOCKED);
-    }
-
     // Automatic upper case test
     public void testAutomaticUpperCase() {
         // Set capitalize the first character of all words mode.
