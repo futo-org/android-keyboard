@@ -1185,6 +1185,11 @@ float ProximityInfoState::getMostProbableString(int *const codePointBuf) const {
     return sumLogProbability;
 }
 
+bool ProximityInfoState::hasSpaceProximity(const int index) const {
+    ASSERT(0 <= index && index < mSampledInputSize);
+    return mProximityInfo->hasSpaceProximity(getInputX(index), getInputY(index));
+}
+
 // Returns a probability of mapping index to keyIndex.
 float ProximityInfoState::getProbability(const int index, const int keyIndex) const {
     ASSERT(0 <= index && index < mSampledInputSize);

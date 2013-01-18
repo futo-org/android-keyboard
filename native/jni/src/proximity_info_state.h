@@ -146,6 +146,8 @@ class ProximityInfoState {
         return mSampledInputYs[index];
     }
 
+    bool hasSpaceProximity(const int index) const;
+
     int getLengthCache(const int index) const {
         return mLengthCache[index];
     }
