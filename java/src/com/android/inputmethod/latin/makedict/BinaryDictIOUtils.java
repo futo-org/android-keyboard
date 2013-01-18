@@ -25,8 +25,12 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -976,5 +980,28 @@ public final class BinaryDictIOUtils {
             return BinaryDictInputOutput.readCharGroup(buffer, position, header.mFormatOptions);
         }
         return null;
+    }
+
+    /**
+     * Convenience method to read the header of a binary file.
+     *
+     * This is quite resource intensive - don't call when performance is critical.
+     *
+     * @param file The file to read.
+     */
+    private static final int HEADER_READING_BUFFER_SIZE = 16384;
+    public static FileHeader getDictionaryFileHeader(final File file)
+        throws FileNotFoundException, IOException, UnsupportedFormatException {
+        final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
+        final FileInputStream inStream = new FileInputStream(file);
+        try {
+            inStream.read(buffer);
+            final BinaryDictInputOutput.ByteBufferWrapper wrapper =
+                    new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
+                            FileChannel.MapMode.READ_ONLY, 0, file.length()));
+            return BinaryDictInputOutput.readHeader(wrapper);
+        } finally {
+            inStream.close();
+        }
     }
 }
