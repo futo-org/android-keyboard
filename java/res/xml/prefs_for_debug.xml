@@ -23,8 +23,7 @@
             android:title="@string/prefs_enable_log"
             android:summary="@string/prefs_description_log"
             android:persistent="true"
-            android:defaultValue="false"
-            />
+            android:defaultValue="false" />
 
     <ListPreference
             android:key="pref_keyboard_layout_20110916"
@@ -32,26 +31,27 @@
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
             android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="@string/config_default_keyboard_theme_index"
-            />
+            android:defaultValue="@string/config_default_keyboard_theme_index" />
 
     <CheckBoxPreference
             android:key="debug_mode"
             android:title="@string/prefs_debug_mode"
             android:persistent="true"
-            android:defaultValue="false"
-            />
+            android:defaultValue="false" />
 
     <CheckBoxPreference
             android:key="force_non_distinct_multitouch"
             android:title="@string/prefs_force_non_distinct_multitouch"
             android:persistent="true"
-            android:defaultValue="false"
-            />
+            android:defaultValue="false" />
 
     <CheckBoxPreference
             android:key="usability_study_mode"
             android:title="@string/prefs_usability_study_mode"
             android:persistent="true"
             android:defaultValue="false" />
+
+    <PreferenceScreen
+        android:key="read_external_dictionary"
+        android:title="@string/prefs_read_external_dictionary" />
 </PreferenceScreen>
