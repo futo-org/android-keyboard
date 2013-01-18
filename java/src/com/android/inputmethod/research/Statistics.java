@@ -25,6 +25,7 @@ public class Statistics {
     private static final String TAG = Statistics.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
+    // TODO: Cleanup comments to only including those giving meaningful information.
     // Number of characters entered during a typing session
     int mCharCount;
     // Number of letter characters entered during a typing session
@@ -41,6 +42,8 @@ public class Statistics {
     int mDictionaryWordCount;
     // Number of words split and spaces automatically entered.
     int mSplitWordsCount;
+    // Number of words entered during a session.
+    int mCorrectedWordsCount;
     // Number of gestures that were input.
     int mGesturesInputCount;
     // Number of gestures that were deleted.
@@ -49,6 +52,8 @@ public class Statistics {
     int mGesturesCharsCount;
     // Number of manual suggestions chosen.
     int mManualSuggestionsCount;
+    // Number of times that autocorrection was invoked.
+    int mAutoCorrectionsCount;
     // Number of times a commit was reverted in this session.
     int mRevertCommitsCount;
     // Whether the text field was empty upon editing
@@ -113,10 +118,12 @@ public class Statistics {
         mWordCount = 0;
         mDictionaryWordCount = 0;
         mSplitWordsCount = 0;
+        mCorrectedWordsCount = 0;
         mGesturesInputCount = 0;
         mGesturesDeletedCount = 0;
         mManualSuggestionsCount = 0;
         mRevertCommitsCount = 0;
+        mAutoCorrectionsCount = 0;
         mIsEmptyUponStarting = true;
         mIsEmptinessStateKnown = false;
         mKeyCounter.reset();
@@ -152,10 +159,14 @@ public class Statistics {
         }
     }
 
-    public void recordWordEntered(final boolean isDictionaryWord) {
+    public void recordWordEntered(final boolean isDictionaryWord,
+            final boolean containsCorrection) {
         mWordCount++;
         if (isDictionaryWord) {
             mDictionaryWordCount++;
+        }
+        if (containsCorrection) {
+            mCorrectedWordsCount++;
         }
     }
 
@@ -181,6 +192,11 @@ public class Statistics {
 
     public void recordManualSuggestion(final long time) {
         mManualSuggestionsCount++;
+        recordUserAction(time, false /* isDeletion */);
+    }
+
+    public void recordAutoCorrection(final long time) {
+        mAutoCorrectionsCount++;
         recordUserAction(time, false /* isDeletion */);
     }
 

@@ -60,6 +60,7 @@ import java.util.Map;
     private String mWord;
     private boolean mMayContainDigit;
     private boolean mIsPartOfMegaword;
+    private boolean mContainsCorrection;
 
     public LogUnit() {
         mLogStatementList = new ArrayList<LogStatement>();
@@ -274,6 +275,14 @@ import java.util.Map;
         return mMayContainDigit;
     }
 
+    public void setContainsCorrection() {
+        mContainsCorrection = true;
+    }
+
+    public boolean containsCorrection() {
+        return mContainsCorrection;
+    }
+
     public boolean isEmpty() {
         return mLogStatementList.isEmpty();
     }
@@ -301,6 +310,7 @@ import java.util.Map;
                         true /* isPartOfMegaword */);
                 newLogUnit.mWord = null;
                 newLogUnit.mMayContainDigit = mMayContainDigit;
+                newLogUnit.mContainsCorrection = mContainsCorrection;
 
                 // Purge the logStatements and associated data from this LogUnit.
                 laterLogStatements.clear();
@@ -320,6 +330,7 @@ import java.util.Map;
         mTimeList.addAll(logUnit.mTimeList);
         mWord = null;
         mMayContainDigit = mMayContainDigit || logUnit.mMayContainDigit;
+        mContainsCorrection = mContainsCorrection || logUnit.mContainsCorrection;
         mIsPartOfMegaword = false;
     }
 }
