@@ -360,8 +360,10 @@ public final class WordComposer {
         mDigitsCount = 0;
         mIsBatchMode = false;
         mTypedWord.setLength(0);
+        mCodePointSize = 0;
         mTrailingSingleQuotesCount = 0;
         mIsFirstCharCapitalized = false;
+        mCapitalizedMode = CAPS_MODE_OFF;
         refreshSize();
         mAutoCorrection = null;
         mIsResumed = false;
