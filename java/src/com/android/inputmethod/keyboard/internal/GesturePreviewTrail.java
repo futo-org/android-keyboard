@@ -131,10 +131,8 @@ final class GesturePreviewTrail {
      * @return the width of a gesture trail
      */
     private static float getWidth(final int elapsedTime, final Params params) {
-        final int deltaTime = params.mTrailLingerDuration - elapsedTime;
         final float deltaWidth = params.mTrailStartWidth - params.mTrailEndWidth;
-        return Math.max(
-                (deltaTime * deltaWidth) / params.mTrailLingerDuration, params.mTrailEndWidth);
+        return params.mTrailStartWidth - (deltaWidth * elapsedTime) / params.mTrailLingerDuration;
     }
 
     private final RoundedLine mRoundedLine = new RoundedLine();
