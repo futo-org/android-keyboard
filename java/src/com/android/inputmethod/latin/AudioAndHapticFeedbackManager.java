@@ -29,8 +29,6 @@ import android.view.View;
  * complexity of settings and the like.
  */
 public final class AudioAndHapticFeedbackManager {
-    public static final int MAX_KEYPRESS_VIBRATION_DURATION = 250; // millisecond
-
     private AudioManager mAudioManager;
     private Vibrator mVibrator;
 
