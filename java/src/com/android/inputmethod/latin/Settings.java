@@ -55,6 +55,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_GESTURE_SETTINGS = "gesture_typing_settings";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
+    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
@@ -173,6 +174,16 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static float readDefaultKeypressSoundVolume(final Resources res) {
         return Float.parseFloat(
                 ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
+    }
+
+    public static int readKeyLongpressTimeout(final SharedPreferences prefs,
+            final Resources res) {
+        final int ms = prefs.getInt(PREF_KEY_LONGPRESS_TIMEOUT, -1);
+        return (ms >= 0) ? ms : readDefaultKeyLongpressTimeout(res);
+    }
+
+    public static int readDefaultKeyLongpressTimeout(final Resources res) {
+        return res.getInteger(R.integer.config_default_longpress_key_timeout);
     }
 
     public static int readKeypressVibrationDuration(final SharedPreferences prefs,
