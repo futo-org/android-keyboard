@@ -28,4 +28,6 @@ public final class ProductionFlag {
     // be false, and any privacy controls should be enforced.  IS_EXPERIMENTAL_DEBUG should be false
     // for any released build.
     public static final boolean IS_EXPERIMENTAL_DEBUG = false;
+
+    public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = true;
 }
