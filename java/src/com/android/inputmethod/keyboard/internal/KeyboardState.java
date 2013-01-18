@@ -26,7 +26,7 @@ import com.android.inputmethod.latin.Constants;
  *
  * This class contains all keyboard state transition logic.
  *
- * The input events are {@link #onLoadKeyboard(String)}, {@link #onSaveKeyboardState()},
+ * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int, boolean, int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, int)}, {@link #onCancelInput(boolean)},
  * {@link #onUpdateShiftState(int)}, {@link #onLongPressTimeout(int)}.
@@ -74,7 +74,6 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
     private int mSwitchState = SWITCH_STATE_ALPHA;
-    private String mLayoutSwitchBackSymbols;
 
     private boolean mIsAlphabetMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
@@ -109,15 +108,14 @@ public final class KeyboardState {
         }
     }
 
-    public KeyboardState(SwitchActions switchActions) {
+    public KeyboardState(final SwitchActions switchActions) {
         mSwitchActions = switchActions;
     }
 
-    public void onLoadKeyboard(String layoutSwitchBackSymbols) {
+    public void onLoadKeyboard() {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onLoadKeyboard: " + this);
         }
-        mLayoutSwitchBackSymbols = layoutSwitchBackSymbols;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mPrevMainKeyboardWasShiftLocked = false;
@@ -177,7 +175,7 @@ public final class KeyboardState {
     private static final int AUTOMATIC_SHIFT = 2;
     private static final int SHIFT_LOCK_SHIFTED = 3;
 
-    private void setShifted(int shiftMode) {
+    private void setShifted(final int shiftMode) {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode) + " " + this);
         }
@@ -216,7 +214,7 @@ public final class KeyboardState {
         }
     }
 
-    private void setShiftLocked(boolean shiftLocked) {
+    private void setShiftLocked(final boolean shiftLocked) {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked + " " + this);
         }
@@ -313,7 +311,7 @@ public final class KeyboardState {
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
-    public void onPressKey(int code, boolean isSinglePointer, int autoCaps) {
+    public void onPressKey(final int code, final boolean isSinglePointer, final int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onPressKey: code=" + Constants.printableCode(code)
                    + " single=" + isSinglePointer + " autoCaps=" + autoCaps + " " + this);
@@ -346,7 +344,7 @@ public final class KeyboardState {
         }
     }
 
-    public void onReleaseKey(int code, boolean withSliding) {
+    public void onReleaseKey(final int code, final boolean withSliding) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onReleaseKey: code=" + Constants.printableCode(code)
                     + " sliding=" + withSliding + " " + this);
@@ -364,7 +362,7 @@ public final class KeyboardState {
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
     }
 
-    private void onReleaseSymbol(boolean withSliding) {
+    private void onReleaseSymbol(final boolean withSliding) {
         if (mSymbolKeyState.isChording()) {
             // Switch back to the previous keyboard mode if the user chords the mode change key and
             // another key, then releases the mode change key.
@@ -378,7 +376,7 @@ public final class KeyboardState {
         mSymbolKeyState.onRelease();
     }
 
-    public void onLongPressTimeout(int code) {
+    public void onLongPressTimeout(final int code) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onLongPressTimeout: code=" + Constants.printableCode(code) + " " + this);
         }
@@ -388,7 +386,7 @@ public final class KeyboardState {
         }
     }
 
-    public void onUpdateShiftState(int autoCaps) {
+    public void onUpdateShiftState(final int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
         }
@@ -404,7 +402,7 @@ public final class KeyboardState {
         resetKeyboardStateToAlphabet();
     }
 
-    private void updateAlphabetShiftState(int autoCaps) {
+    private void updateAlphabetShiftState(final int autoCaps) {
         if (!mIsAlphabetMode) return;
         if (!mShiftKeyState.isReleasing()) {
             // Ignore update shift state event while the shift key is being pressed (including
@@ -468,7 +466,7 @@ public final class KeyboardState {
         }
     }
 
-    private void onReleaseShift(boolean withSliding) {
+    private void onReleaseShift(final boolean withSliding) {
         if (mIsAlphabetMode) {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
             mIsInAlphabetUnshiftedFromShifted = false;
@@ -523,7 +521,7 @@ public final class KeyboardState {
         mShiftKeyState.onRelease();
     }
 
-    public void onCancelInput(boolean isSinglePointer) {
+    public void onCancelInput(final boolean isSinglePointer) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCancelInput: single=" + isSinglePointer + " " + this);
         }
@@ -542,17 +540,11 @@ public final class KeyboardState {
                 || mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE;
     }
 
-    private static boolean isSpaceCharacter(int c) {
+    private static boolean isSpaceCharacter(final int c) {
         return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
     }
 
-    private boolean isLayoutSwitchBackCharacter(int c) {
-        if (TextUtils.isEmpty(mLayoutSwitchBackSymbols)) return false;
-        if (mLayoutSwitchBackSymbols.indexOf(c) >= 0) return true;
-        return false;
-    }
-
-    public void onCodeInput(int code, boolean isSinglePointer, int autoCaps) {
+    public void onCodeInput(final int code, final boolean isSinglePointer, final int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCodeInput: code=" + Constants.printableCode(code)
                     + " single=" + isSinglePointer
@@ -592,17 +584,11 @@ public final class KeyboardState {
                     || code == Constants.CODE_OUTPUT_TEXT)) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
-            // Switch back to alpha keyboard mode immediately if user types one of the switch back
-            // characters.
-            if (isLayoutSwitchBackCharacter(code)) {
-                toggleAlphabetAndSymbols();
-                mPrevSymbolsKeyboardWasShifted = false;
-            }
             break;
         case SWITCH_STATE_SYMBOL:
             // Switch back to alpha keyboard mode if user types one or more non-space/enter
-            // characters followed by a space/enter or one of the switch back characters.
-            if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
+            // characters followed by a space/enter.
+            if (isSpaceCharacter(code)) {
                 toggleAlphabetAndSymbols();
                 mPrevSymbolsKeyboardWasShifted = false;
             }
@@ -615,7 +601,7 @@ public final class KeyboardState {
         }
     }
 
-    private static String shiftModeToString(int shiftMode) {
+    private static String shiftModeToString(final int shiftMode) {
         switch (shiftMode) {
         case UNSHIFT: return "UNSHIFT";
         case MANUAL_SHIFT: return "MANUAL";
@@ -624,7 +610,7 @@ public final class KeyboardState {
         }
     }
 
-    private static String switchStateToString(int switchState) {
+    private static String switchStateToString(final int switchState) {
         switch (switchState) {
         case SWITCH_STATE_ALPHA: return "ALPHA";
         case SWITCH_STATE_SYMBOL_BEGIN: return "SYMBOL-BEGIN";
