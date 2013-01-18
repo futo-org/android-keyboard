@@ -82,6 +82,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.TreeSet;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -167,6 +168,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private int mDeleteCount;
     private long mLastKeyTime;
     private int mActionId;
+    private TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
@@ -721,6 +723,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SPACE_STATE_NONE;
+        mCurrentlyPressedHardwareKeys.clear();
 
         if (mSuggestionStripView != null) {
             // This will set the punctuation suggestions if next word suggestion is off;
@@ -2429,12 +2432,20 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // onHardwareKeyEvent, like onKeyDown returns true if it handled the event, false if
         // it doesn't know what to do with it and leave it to the application. For example,
         // hardware key events for adjusting the screen's brightness are passed as is.
-        if (mEventInterpreter.onHardwareKeyEvent(event)) return true;
+        if (mEventInterpreter.onHardwareKeyEvent(event)) {
+            final long keyIdentifier = event.getDeviceId() << 32 + event.getKeyCode();
+            mCurrentlyPressedHardwareKeys.add(keyIdentifier);
+            return true;
+        }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent event) {
+        final long keyIdentifier = event.getDeviceId() << 32 + event.getKeyCode();
+        if (mCurrentlyPressedHardwareKeys.remove(keyIdentifier)) {
+            return true;
+        }
         return super.onKeyUp(keyCode, event);
     }
 
