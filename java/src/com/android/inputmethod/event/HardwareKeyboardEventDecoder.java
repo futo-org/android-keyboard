@@ -55,13 +55,20 @@ public class HardwareKeyboardEventDecoder implements HardwareEventDecoder {
                 // A dead key.
                 return Event.createDeadEvent(
                         codePointAndFlags & KeyCharacterMap.COMBINING_ACCENT_MASK, null /* next */);
-            } else {
-                // A committable character. This should be committed right away, taking into
-                // account the current state.
-                return Event.createCommittableEvent(codePointAndFlags, null /* next */);
             }
-        } else {
-            return Event.createNotHandledEvent();
+            if (KeyEvent.KEYCODE_ENTER == keyCode) {
+                // The Enter key. If the Shift key is not being pressed, this should send a
+                // CODE_ACTION_ENTER to trigger the action if any, or a carriage return
+                // otherwise. If the Shift key is depressed, this should send a
+                // CODE_SHIFT_ENTER and let Latin IME decide what to do with it.
+                return Event.createCommittableEvent(keyEvent.isShiftPressed()
+                        ? Constants.CODE_SHIFT_ENTER : Constants.CODE_ACTION_ENTER,
+                        null /* next */);
+            }
+            // If not Enter, then we have a committable character. This should be committed
+            // right away, taking into account the current state.
+            return Event.createCommittableEvent(codePointAndFlags, null /* next */);
         }
+        return Event.createNotHandledEvent();
     }
 }
