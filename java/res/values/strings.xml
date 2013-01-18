@@ -375,6 +375,8 @@
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration settings</string>
     <!-- Title of the settings for keypress sound volume -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume settings</string>
+    <!-- Title of the settings for reading an external dictionary file -->
+    <string name="prefs_read_external_dictionary">Read external dictionary file</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
