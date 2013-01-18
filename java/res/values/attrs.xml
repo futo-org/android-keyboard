@@ -434,4 +434,9 @@
         <!-- Enable proximity characters correction. Disabled by default. -->
         <attr name="enableProximityCharsCorrection" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="SeekBarDialogPreference">
+        <attr name="valueFormatText" format="reference" />
+        <attr name="maxValue" format="integer" />
+    </declare-styleable>
 </resources>

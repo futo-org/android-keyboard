@@ -16,6 +16,7 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     android:title="@string/english_ime_settings"
     android:key="english_ime_settings">
     <PreferenceCategory
@@ -144,12 +145,15 @@
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />
-            <PreferenceScreen
+            <com.android.inputmethod.latin.SeekBarDialogPreference
                 android:key="pref_vibration_duration_settings"
-                android:title="@string/prefs_keypress_vibration_duration_settings"/>
-            <PreferenceScreen
+                android:title="@string/prefs_keypress_vibration_duration_settings"
+                latin:valueFormatText="@string/abbreviation_unit_milliseconds"
+                latin:maxValue="@integer/config_max_vibration_duration" />
+            <com.android.inputmethod.latin.SeekBarDialogPreference
                 android:key="pref_keypress_sound_volume"
-                android:title="@string/prefs_keypress_sound_volume_settings" />
+                android:title="@string/prefs_keypress_sound_volume_settings"
+                latin:maxValue="100" /> <!-- percent -->
         </PreferenceScreen>
         <PreferenceScreen
             android:key="debug_settings"
