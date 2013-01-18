@@ -216,17 +216,13 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
      *
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
-     * @param frequency the frequency of occurrence of the word. A frequency of 255 is considered
-     * the highest.
-     * @TODO use a higher or float range for frequency
      */
-    public synchronized void addWordToUserDictionary(final String word, final int frequency) {
+    public synchronized void addWordToUserDictionary(final String word) {
         // TODO: do something for the UI. With the following, any sufficiently long word will
         // look like it will go to the user dictionary but it won't.
         // Safeguard against adding long words. Can cause stack overflow.
         if (word.length() >= MAX_WORD_LENGTH) return;
 
-        // TODO: Add an argument to the intent to specify the frequency.
         Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
         intent.putExtra(Words.WORD, word);
         intent.putExtra(Words.LOCALE, mLocale);
