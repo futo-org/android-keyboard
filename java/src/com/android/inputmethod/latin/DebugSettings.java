@@ -25,6 +25,7 @@ import android.os.Process;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -38,6 +39,7 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     public static final String PREF_STATISTICS_LOGGING = "enable_logging";
+    private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
     private boolean mServiceNeedsRestart = false;
@@ -64,6 +66,19 @@ public final class DebugSettings extends PreferenceFragment
             if (!SHOW_STATISTICS_LOGGING) {
                 getPreferenceScreen().removePreference(statisticsLoggingPref);
             }
+        }
+
+        PreferenceScreen readExternalDictionary =
+                (PreferenceScreen) findPreference(PREF_READ_EXTERNAL_DICTIONARY);
+        if (null != readExternalDictionary) {
+            readExternalDictionary.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(final Preference arg0) {
+                            // TODO: actually read the dictionary
+                            return true;
+                        }
+                    });
         }
 
         mServiceNeedsRestart = false;
