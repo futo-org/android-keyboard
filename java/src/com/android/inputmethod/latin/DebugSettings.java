@@ -77,6 +77,7 @@ public final class DebugSettings extends PreferenceFragment
                         public boolean onPreferenceClick(final Preference arg0) {
                             ExternalDictionaryGetterForDebug.chooseAndInstallDictionary(
                                     getActivity());
+                            mServiceNeedsRestart = true;
                             return true;
                         }
                     });

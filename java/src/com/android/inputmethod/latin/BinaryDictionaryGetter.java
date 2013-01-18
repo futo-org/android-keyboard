@@ -56,7 +56,7 @@ final class BinaryDictionaryGetter {
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
 
     // Name of the category for the main dictionary
-    private static final String MAIN_DICTIONARY_CATEGORY = "main";
+    public static final String MAIN_DICTIONARY_CATEGORY = "main";
     public static final String ID_CATEGORY_SEPARATOR = ":";
 
     // The key considered to read the version attribute in a dictionary file.
