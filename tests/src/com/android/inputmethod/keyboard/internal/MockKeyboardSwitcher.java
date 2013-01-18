@@ -61,7 +61,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         return mLayout;
     }
 
-    public static String getLayoutName(int layoutId) {
+    public static String getLayoutName(final int layoutId) {
         switch (layoutId) {
         case MockConstants.ALPHABET_UNSHIFTED: return "ALPHABET_UNSHIFTED";
         case MockConstants.ALPHABET_MANUAL_SHIFTED: return "ALPHABET_MANUAL_SHIFTED";
@@ -74,7 +74,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void setAutoCapsMode(int autoCaps) {
+    public void setAutoCapsMode(final int autoCaps) {
         mAutoCapsMode = autoCaps;
         mAutoCapsState = autoCaps;
     }
@@ -139,7 +139,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void startLongPressTimer(int code) {
+    public void startLongPressTimer(final int code) {
         mLongPressTimeoutCode = code;
     }
 
@@ -149,11 +149,11 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void hapticAndAudioFeedback(int code) {
+    public void hapticAndAudioFeedback(final int code) {
         // Nothing to do.
     }
 
-    public void onLongPressTimeout(int code) {
+    public void onLongPressTimeout(final int code) {
         // TODO: Handle simultaneous long presses.
         if (mLongPressTimeoutCode == code) {
             mLongPressTimeoutCode = 0;
@@ -165,26 +165,26 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onUpdateShiftState(mAutoCapsState);
     }
 
-    public void loadKeyboard(String layoutSwitchBackSymbols) {
-        mState.onLoadKeyboard(layoutSwitchBackSymbols);
+    public void loadKeyboard() {
+        mState.onLoadKeyboard();
     }
 
     public void saveKeyboardState() {
         mState.onSaveKeyboardState();
     }
 
-    public void onPressKey(int code, boolean isSinglePointer) {
+    public void onPressKey(final int code, final boolean isSinglePointer) {
         mState.onPressKey(code, isSinglePointer, mAutoCapsState);
     }
 
-    public void onReleaseKey(int code, boolean withSliding) {
+    public void onReleaseKey(final int code, final boolean withSliding) {
         mState.onReleaseKey(code, withSliding);
         if (mLongPressTimeoutCode == code) {
             mLongPressTimeoutCode = 0;
         }
     }
 
-    public void onCodeInput(int code, boolean isSinglePointer) {
+    public void onCodeInput(final int code, final boolean isSinglePointer) {
         if (mAutoCapsMode == MockConstants.CAP_MODE_WORDS) {
             if (Constants.isLetterCode(code)) {
                 mAutoCapsState = (code == MockConstants.CODE_AUTO_CAPS_TRIGGER)
@@ -196,7 +196,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, isSinglePointer, mAutoCapsState);
     }
 
-    public void onCancelInput(boolean isSinglePointer) {
+    public void onCancelInput(final boolean isSinglePointer) {
         mState.onCancelInput(isSinglePointer);
     }
 }

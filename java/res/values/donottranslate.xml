@@ -29,19 +29,6 @@
     <string name="symbols_word_separators">"&#x0009;&#x0020;\n"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"</string>
     <!-- Word connectors -->
     <string name="symbols_word_connectors">\'-</string>
-    <!-- Symbol characters list that should switch back to the main layout -->
-    <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
-         U+2019: "’" RIGHT SINGLE QUOTATION MARK
-         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-         U+201C: "“" LEFT DOUBLE QUOTATION MARK
-         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
-         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
-    <!-- <string name="layout_switch_back_symbols">\"\'&#x2018;&#x2019;&#x201A;&#x201B;&#x201C;&#x201D;&#x201E;&#x201F;&#x00AB;&#x00BB;</string> -->
-    <string name="layout_switch_back_symbols"></string>
 
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
