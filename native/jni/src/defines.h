@@ -248,6 +248,9 @@ static inline void prof_out(void) {
 // GCC warns about this.
 #define S_INT_MIN (-2147483647 - 1) // -(1 << 31)
 #endif
+
+#define MAX_PERCENTILE 100
+
 // Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
 // As such, this is the maximum number of characters will be needed to represent an int as a
 // string, including the terminator; this is used as the size of a string buffer large enough to
