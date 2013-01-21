@@ -131,7 +131,7 @@ public final class UploaderService extends IntentService {
         final File[] files = mFilesDir.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.getName().startsWith(ResearchLogger.FILENAME_PREFIX)
+                return pathname.getName().startsWith(ResearchLogger.LOG_FILENAME_PREFIX)
                         && !pathname.canWrite();
             }
         });
