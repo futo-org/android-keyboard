@@ -25,6 +25,13 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResizableIntArray;
 
+/*
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutStartDelay
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutDuration
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailUpdateInterval
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailColor
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailWidth
+ */
 final class GesturePreviewTrail {
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
 
@@ -47,6 +54,7 @@ final class GesturePreviewTrail {
         public final int mTrailLingerDuration;
 
         public Params(final TypedArray keyboardViewAttr) {
+            // TODO: Move these XML attributes to MainKeyboardView
             mTrailColor = keyboardViewAttr.getColor(
                     R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
             mTrailStartWidth = keyboardViewAttr.getDimension(

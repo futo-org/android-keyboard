@@ -34,6 +34,14 @@ import com.android.inputmethod.latin.SuggestedWords;
 /**
  * The class for single gesture preview text. The class for multiple gesture preview text will be
  * derived from it.
+ *
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextSize
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewHorizontalPadding
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
  */
 public class GestureFloatingPreviewText extends AbstractDrawingPreview {
     private static final class GesturePreviewTextParams {
@@ -50,6 +58,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
         private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
 
         public GesturePreviewTextParams(final TypedArray keyboardViewAttr) {
+            // TODO: Move these XML attributes to MainKeyboardView
             mGesturePreviewTextSize = keyboardViewAttr.getDimensionPixelSize(
                     R.styleable.KeyboardView_gestureFloatingPreviewTextSize, 0);
             mGesturePreviewTextColor = keyboardViewAttr.getColor(

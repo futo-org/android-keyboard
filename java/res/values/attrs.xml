@@ -51,8 +51,6 @@
         <!-- Blur radius of key text shadow. -->
         <attr name="keyTextShadowRadius" format="float" />
 
-        <!-- Layout resource for key press feedback.-->
-        <attr name="keyPreviewLayout" format="reference" />
         <!-- Key preview background states -->
         <attr name="state_left_edge" format="boolean" />
         <attr name="state_right_edge" format="boolean" />
@@ -71,8 +69,6 @@
         <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
         <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
         <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
-        <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
-        <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->
         <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
         <!-- Duration while gesture preview trail is fading out in millisecond. -->
@@ -117,6 +113,8 @@
         <attr name="longPressShiftKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
+        <!-- Layout resource for key press feedback.-->
+        <attr name="keyPreviewLayout" format="reference" />
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
@@ -127,6 +125,8 @@
         <attr name="moreKeysKeyboardLayout" format="reference" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
+        <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
+        <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Static threshold for gesture after fast typing (msec) -->
         <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer" />
         <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
