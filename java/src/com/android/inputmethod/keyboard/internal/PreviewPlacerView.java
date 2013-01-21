@@ -41,7 +41,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 public final class PreviewPlacerView extends RelativeLayout {
     private final int[] mKeyboardViewOrigin = CoordinateUtils.newInstance();
 
-    // TODO: Consolidate gesture preview trail with {@link KeyboardView}
+    // TODO: Separate gesture preview trail drawing code into separate class.
     private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
             CollectionUtils.newSparseArray();
     private final Params mGesturePreviewTrailParams;
@@ -55,6 +55,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     private final Rect mOffscreenSrcRect = new Rect();
     private final Rect mDirtyRect = new Rect();
     private final Rect mGesturePreviewTrailBoundsRect = new Rect(); // per trail
+    // TODO: Move these AbstractDrawingPvreiew objects to MainKeyboardView.
     private final GestureFloatingPreviewText mGestureFloatingPreviewText;
     private boolean mShowSlidingKeyInputPreview;
     private final int[] mRubberBandFrom = CoordinateUtils.newInstance();
@@ -104,7 +105,7 @@ public final class PreviewPlacerView extends RelativeLayout {
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
         // TODO: mGestureFloatingPreviewText could be an instance of GestureFloatingPreviewText or
         // MultiGesturePreviewText, depending on the user's choice in the settings.
-        mGestureFloatingPreviewText = new GestureFloatingPreviewText(mainKeyboardViewAttr, context);
+        mGestureFloatingPreviewText = new GestureFloatingPreviewText(this, mainKeyboardViewAttr);
         mGesturePreviewTrailParams = new Params(mainKeyboardViewAttr);
         mainKeyboardViewAttr.recycle();
 
@@ -120,11 +121,14 @@ public final class PreviewPlacerView extends RelativeLayout {
         setLayerType(LAYER_TYPE_HARDWARE, layerPaint);
     }
 
-    public void setKeyboardViewGeometry(final int[] originCoords, final int w, final int h) {
+    public void setKeyboardViewGeometry(final int[] originCoords, final int width,
+            final int height) {
         CoordinateUtils.copy(mKeyboardViewOrigin, originCoords);
-        mOffscreenOffsetY = (int)(h * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
-        mOffscreenWidth = w;
-        mOffscreenHeight = mOffscreenOffsetY + h;
+        mGestureFloatingPreviewText.setKeyboardGeometry(originCoords, width, height);
+        mOffscreenOffsetY = (int)(
+                height * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
+        mOffscreenWidth = width;
+        mOffscreenHeight = mOffscreenOffsetY + height;
     }
 
     public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
@@ -134,11 +138,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     }
 
     public void invalidatePointer(final PointerTracker tracker) {
-        final boolean needsToUpdateLastPointer =
-                tracker.isOldestTrackerInQueue() && mGestureFloatingPreviewText.isPreviewEnabled();
-        if (needsToUpdateLastPointer) {
-            mGestureFloatingPreviewText.setPreviewPosition(tracker);
-        }
+        mGestureFloatingPreviewText.setPreviewPosition(tracker);
 
         if (mDrawsGesturePreviewTrail) {
             GesturePreviewTrail trail;
@@ -150,10 +150,8 @@ public final class PreviewPlacerView extends RelativeLayout {
                 }
             }
             trail.addStroke(tracker.getGestureStrokeWithPreviewPoints(), tracker.getDownTime());
-        }
 
-        // TODO: Should narrow the invalidate region.
-        if (mDrawsGesturePreviewTrail || needsToUpdateLastPointer) {
+            // TODO: Should narrow the invalidate region.
             invalidate();
         }
     }
@@ -175,6 +173,7 @@ public final class PreviewPlacerView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
+        mGestureFloatingPreviewText.onDetachFromWindow();
         freeOffscreenBuffer();
     }
 
@@ -254,9 +253,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     }
 
     public void setGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
-        if (!mGestureFloatingPreviewText.isPreviewEnabled()) return;
         mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
-        invalidate();
     }
 
     private void drawSlidingKeyInputPreview(final Canvas canvas) {

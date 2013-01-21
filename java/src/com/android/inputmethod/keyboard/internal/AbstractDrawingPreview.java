@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.graphics.Canvas;
+import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 
@@ -25,14 +26,31 @@ import com.android.inputmethod.keyboard.PointerTracker;
  * GestureFloatingPrevewText, GestureTrail, and SlidingKeyInputPreview.
  */
 public abstract class AbstractDrawingPreview {
+    private final View mDrawingView;
     private boolean mPreviewEnabled;
 
-    public void setPreviewEnabled(final boolean enabled) {
+    protected AbstractDrawingPreview(final View drawingView) {
+        mDrawingView = drawingView;
+    }
+
+    public final View getDrawingView() {
+        return mDrawingView;
+    }
+
+    public final void setPreviewEnabled(final boolean enabled) {
         mPreviewEnabled = enabled;
     }
 
     public boolean isPreviewEnabled() {
         return mPreviewEnabled;
+    }
+
+    public void setKeyboardGeometry(final int[] originCoords, final int width, final int height) {
+        // Default implementation is empty.
+    }
+
+    public void onDetachFromWindow() {
+        // Default implementation is empty.
     }
 
     /**
@@ -43,7 +61,7 @@ public abstract class AbstractDrawingPreview {
 
     /**
      * Set the position of the preview.
-     * @param pt The new location of the preview is based on the points in PointerTracker pt.
+     * @param tracker The new location of the preview is based on the points in PointerTracker.
      */
-    public abstract void setPreviewPosition(final PointerTracker pt);
+    public abstract void setPreviewPosition(final PointerTracker tracker);
 }
