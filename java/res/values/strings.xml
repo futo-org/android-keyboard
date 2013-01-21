@@ -377,6 +377,12 @@
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume settings</string>
     <!-- Title of the settings for reading an external dictionary file -->
     <string name="prefs_read_external_dictionary">Read external dictionary file</string>
+    <!-- Message to show when there are no files to install as an external dictionary [CHAR LIMIT=100] -->
+    <string name="read_external_dictionary_no_files_message">No dictionary files in the Downloads folder</string>
+    <!-- Title of the dialog that selects a file to install as an external dictionary [CHAR LIMIT=50] -->
+    <string name="read_external_dictionary_multiple_files_title">Select a dictionary file to install</string>
+    <!-- Title of the confirmation dialog to install a file as an external dictionary [CHAR LIMIT=50] -->
+    <string name="read_external_dictionary_confirm_install_message">Really install this file for <xliff:g id="locale_name">%s</xliff:g>?</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
