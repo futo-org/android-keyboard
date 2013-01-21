@@ -92,11 +92,6 @@ class ProximityInfoUtils {
         return SQUARE_FLOAT(x1 - x2) + SQUARE_FLOAT(y1 - y2);
     }
 
-    static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2,
-            const int y2) {
-        return static_cast<int>(hypotf(static_cast<float>(x1 - x2), static_cast<float>(y1 - y2)));
-    }
-
     static inline float pointToLineSegSquaredDistanceFloat(const float x, const float y,
         const float x1, const float y1, const float x2, const float y2, const bool extend) {
         const float ray1x = x - x1;
