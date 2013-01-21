@@ -53,7 +53,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final Resources res = context.getResources();
         mKeyDetector = new MoreKeysDetector(
                 res.getDimension(R.dimen.more_keys_keyboard_slide_allowance));
-        setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
@@ -73,13 +72,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
-    }
-
-    @Override
-    public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
-        // More keys keyboard needs no pop-up key preview displayed, so we pass always false with a
-        // delay of 0. The delay does not matter actually since the popup is not shown anyway.
-        super.setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override

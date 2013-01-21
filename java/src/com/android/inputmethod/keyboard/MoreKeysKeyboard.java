@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -262,9 +263,11 @@ public final class MoreKeysKeyboard extends Keyboard {
          * @param containerView the container of {@link MoreKeysKeyboardView}.
          * @param parentKey the {@link Key} that invokes more keys keyboard.
          * @param parentKeyboardView the {@link KeyboardView} that contains the parentKey.
+         * @param keyPreviewDrawParams the parameter to place key preview.
          */
         public Builder(final View containerView, final Key parentKey,
-                final KeyboardView parentKeyboardView) {
+                final MainKeyboardView parentKeyboardView,
+                final KeyPreviewDrawParams keyPreviewDrawParams) {
             super(containerView.getContext(), new MoreKeysKeyboardParams());
             final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
             load(parentKeyboard.mMoreKeysTemplate, parentKeyboard.mId);
@@ -285,8 +288,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // left/right/top paddings. The bottom paddings of both backgrounds don't need to
                 // be considered because the vertical positions of both backgrounds were already
                 // adjusted with their bottom paddings deducted.
-                width = parentKeyboardView.mKeyPreviewDrawParams.mPreviewVisibleWidth;
-                height = parentKeyboardView.mKeyPreviewDrawParams.mPreviewVisibleHeight
+                width = keyPreviewDrawParams.mPreviewVisibleWidth;
+                height = keyPreviewDrawParams.mPreviewVisibleHeight
                         + mParams.mVerticalGap;
             } else {
                 width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth);
