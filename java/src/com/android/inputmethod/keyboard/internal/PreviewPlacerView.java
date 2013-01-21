@@ -100,13 +100,13 @@ public final class PreviewPlacerView extends RelativeLayout {
         super(context);
         setWillNotDraw(false);
 
-        final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
-                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
+        final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
+                attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
         // TODO: mGestureFloatingPreviewText could be an instance of GestureFloatingPreviewText or
         // MultiGesturePreviewText, depending on the user's choice in the settings.
-        mGestureFloatingPreviewText = new GestureFloatingPreviewText(keyboardViewAttr, context);
-        mGesturePreviewTrailParams = new Params(keyboardViewAttr);
-        keyboardViewAttr.recycle();
+        mGestureFloatingPreviewText = new GestureFloatingPreviewText(mainKeyboardViewAttr, context);
+        mGesturePreviewTrailParams = new Params(mainKeyboardViewAttr);
+        mainKeyboardViewAttr.recycle();
 
         mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
 

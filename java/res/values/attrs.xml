@@ -60,24 +60,6 @@
         <attr name="verticalCorrection" format="dimension" />
 
         <attr name="backgroundDimAlpha" format="integer" />
-
-        <!-- Attributes for PreviewPlacerView -->
-        <attr name="gestureFloatingPreviewTextSize" format="dimension" />
-        <attr name="gestureFloatingPreviewTextColor" format="color" />
-        <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
-        <attr name="gestureFloatingPreviewColor" format="color" />
-        <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
-        <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
-        <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
-        <!-- Delay after gesture trail starts fading out in millisecond. -->
-        <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
-        <!-- Duration while gesture preview trail is fading out in millisecond. -->
-        <attr name="gesturePreviewTrailFadeoutDuration" format="integer" />
-        <!-- Interval of updating gesture preview trail in millisecond. -->
-        <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
-        <attr name="gesturePreviewTrailColor" format="color" />
-        <attr name="gesturePreviewTrailStartWidth" format="dimension" />
-        <attr name="gesturePreviewTrailEndWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">
@@ -125,8 +107,25 @@
         <attr name="moreKeysKeyboardLayout" format="reference" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
+        <!-- Delay after gesture trail starts fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
+        <!-- Duration while gesture preview trail is fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutDuration" format="integer" />
+        <!-- Interval of updating gesture preview trail in millisecond. -->
+        <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
+        <attr name="gesturePreviewTrailColor" format="color" />
+        <attr name="gesturePreviewTrailStartWidth" format="dimension" />
+        <attr name="gesturePreviewTrailEndWidth" format="dimension" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
+        <!-- Attributes for GestureFloatingPreviewText -->
+        <attr name="gestureFloatingPreviewTextSize" format="dimension" />
+        <attr name="gestureFloatingPreviewTextColor" format="color" />
+        <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
+        <attr name="gestureFloatingPreviewColor" format="color" />
+        <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
         <!-- Static threshold for gesture after fast typing (msec) -->
         <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer" />
         <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
