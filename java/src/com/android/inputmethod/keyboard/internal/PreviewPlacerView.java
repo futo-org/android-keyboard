@@ -173,6 +173,7 @@ public final class PreviewPlacerView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
         mGestureFloatingPreviewText.onDetachFromWindow();
         freeOffscreenBuffer();
     }
