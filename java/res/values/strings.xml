@@ -383,6 +383,8 @@
     <string name="read_external_dictionary_multiple_files_title">Select a dictionary file to install</string>
     <!-- Title of the confirmation dialog to install a file as an external dictionary [CHAR LIMIT=50] -->
     <string name="read_external_dictionary_confirm_install_message">Really install this file for <xliff:g id="locale_name">%s</xliff:g>?</string>
+    <!-- Title for an error dialog that contains the details of the error in the body [CHAR LIMIT=80] -->
+    <string name="error">There was an error</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>

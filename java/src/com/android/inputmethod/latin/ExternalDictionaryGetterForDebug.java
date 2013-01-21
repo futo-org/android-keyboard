@@ -21,12 +21,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
+import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -121,13 +126,56 @@ public class ExternalDictionaryGetterForDebug {
                 }).setPositiveButton(android.R.string.ok, new OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
-                        installFile(file, header);
+                        installFile(context, file, header);
                         dialog.dismiss();
                     }
                 }).create().show();
     }
 
-    private static void installFile(final File file, final FileHeader header) {
-        // TODO: actually install the dictionary
+    private static void installFile(final Context context, final File file,
+            final FileHeader header) {
+        BufferedOutputStream outputStream = null;
+        File tempFile = null;
+        try {
+            final String locale =
+                    header.mDictionaryOptions.mAttributes.get(DICTIONARY_LOCALE_ATTRIBUTE);
+            // Create the id for a main dictionary for this locale
+            final String id = BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY
+                    + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale;
+            final String finalFileName =
+                    BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+            final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
+            tempFile = new File(tempFileName);
+            tempFile.delete();
+            outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
+            final BufferedInputStream bufferedStream = new BufferedInputStream(
+                    new FileInputStream(file));
+            BinaryDictionaryFileDumper.checkMagicAndCopyFileTo(bufferedStream, outputStream);
+            outputStream.flush();
+            final File finalFile = new File(finalFileName);
+            finalFile.delete();
+            if (!tempFile.renameTo(finalFile)) {
+                throw new IOException("Can't move the file to its final name");
+            }
+        } catch (IOException e) {
+            // There was an error: show a dialog
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.error)
+                    .setMessage(e.toString())
+                    .setPositiveButton(android.R.string.ok, new OnClickListener() {
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int which) {
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+            return;
+        } finally {
+            try {
+                if (null != outputStream) outputStream.close();
+                if (null != tempFile) tempFile.delete();
+            } catch (IOException e) {
+                // Don't do anything
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -162,9 +163,9 @@ public final class BinaryDictionaryFileDumper {
             InputStream inputStream = null;
             InputStream uncompressedStream = null;
             InputStream decryptedStream = null;
-            BufferedInputStream bufferedStream = null;
+            BufferedInputStream bufferedInputStream = null;
             File outputFile = null;
-            FileOutputStream outputStream = null;
+            BufferedOutputStream bufferedOutputStream = null;
             AssetFileDescriptor afd = null;
             final Uri wordListUri = wordListUriBuilder.build();
             try {
@@ -178,7 +179,6 @@ public final class BinaryDictionaryFileDumper {
                 // Just to be sure, delete the file. This may fail silently, and return false: this
                 // is the right thing to do, as we just want to continue anyway.
                 outputFile.delete();
-                outputStream = new FileOutputStream(outputFile);
                 // Get the appropriate decryption method for this try
                 switch (mode) {
                     case COMPRESSED_CRYPTED_COMPRESSED:
@@ -206,10 +206,11 @@ public final class BinaryDictionaryFileDumper {
                         inputStream = originalSourceStream;
                         break;
                 }
-                bufferedStream = new BufferedInputStream(inputStream);
-                checkMagicAndCopyFileTo(bufferedStream, outputStream);
-                outputStream.flush();
-                outputStream.close();
+                bufferedInputStream = new BufferedInputStream(inputStream);
+                bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+                checkMagicAndCopyFileTo(bufferedInputStream, bufferedOutputStream);
+                bufferedOutputStream.flush();
+                bufferedOutputStream.close();
                 final File finalFile = new File(finalFileName);
                 finalFile.delete();
                 if (!outputFile.renameTo(finalFile)) {
@@ -241,12 +242,12 @@ public final class BinaryDictionaryFileDumper {
                     if (null != inputStream) inputStream.close();
                     if (null != uncompressedStream) uncompressedStream.close();
                     if (null != decryptedStream) decryptedStream.close();
-                    if (null != bufferedStream) bufferedStream.close();
+                    if (null != bufferedInputStream) bufferedInputStream.close();
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while closing a file descriptor : " + e);
                 }
                 try {
-                    if (null != outputStream) outputStream.close();
+                    if (null != bufferedOutputStream) bufferedOutputStream.close();
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while closing a file : " + e);
                 }
@@ -301,9 +302,8 @@ public final class BinaryDictionaryFileDumper {
      * @param input the stream to be copied.
      * @param output an output stream to copy the data to.
      */
-    // TODO: make output a BufferedOutputStream
-    private static void checkMagicAndCopyFileTo(final BufferedInputStream input,
-            final FileOutputStream output) throws FileNotFoundException, IOException {
+    public static void checkMagicAndCopyFileTo(final BufferedInputStream input,
+            final BufferedOutputStream output) throws FileNotFoundException, IOException {
         // Check the magic number
         final int length = MAGIC_NUMBER_VERSION_2.length;
         final byte[] magicNumberBuffer = new byte[length];
