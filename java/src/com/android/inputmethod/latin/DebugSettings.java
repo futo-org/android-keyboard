@@ -75,7 +75,8 @@ public final class DebugSettings extends PreferenceFragment
                     new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(final Preference arg0) {
-                            // TODO: actually read the dictionary
+                            ExternalDictionaryGetterForDebug.chooseAndInstallDictionary(
+                                    getActivity());
                             return true;
                         }
                     });
