@@ -83,7 +83,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void dismissKeyPreview(PointerTracker tracker);
         public void showSlidingKeyInputPreview(PointerTracker tracker);
         public void dismissSlidingKeyInputPreview();
-        public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
+        public void showGesturePreviewTrail(PointerTracker tracker);
     }
 
     public interface TimerProxy {
@@ -709,8 +709,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return sPointerTrackerQueue.size();
     }
 
-    private static boolean isOldestTrackerInQueue(final PointerTracker tracker) {
-        return sPointerTrackerQueue.getOldestElement() == tracker;
+    public boolean isOldestTrackerInQueue() {
+        return sPointerTrackerQueue.getOldestElement() == this;
     }
 
     private void mayStartBatchInput(final Key key) {
@@ -732,7 +732,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             dismissAllMoreKeysPanels();
         }
         mTimerProxy.cancelLongPressTimer();
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
+        mDrawingProxy.showGesturePreviewTrail(this);
     }
 
     public void updateBatchInputByTimer(final long eventTime) {
@@ -748,7 +748,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingCanceled) {
             return;
         }
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
+        mDrawingProxy.showGesturePreviewTrail(this);
     }
 
     private void updateBatchInput(final long eventTime) {
@@ -789,7 +789,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingCanceled) {
             return;
         }
-        mDrawingProxy.showGesturePreviewTrail(this, isOldestTrackerInQueue(this));
+        mDrawingProxy.showGesturePreviewTrail(this);
     }
 
     private void cancelBatchInput() {
