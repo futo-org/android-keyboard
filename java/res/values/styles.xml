@@ -53,7 +53,6 @@
         <item name="keyHintLetterPadding">@dimen/key_hint_letter_padding</item>
         <item name="keyPopupHintLetterPadding">@dimen/key_popup_hint_letter_padding</item>
         <item name="keyShiftedLetterHintPadding">@dimen/key_uppercase_letter_padding</item>
-        <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewTextColor">@color/key_text_color_default</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
@@ -67,7 +66,6 @@
         <item name="gestureFloatingPreviewHorizontalPadding">@dimen/gesture_floating_preview_horizontal_padding</item>
         <item name="gestureFloatingPreviewVerticalPadding">@dimen/gesture_floating_preview_vertical_padding</item>
         <item name="gestureFloatingPreviewRoundRadius">@dimen/gesture_floating_preview_round_radius</item>
-        <item name="gestureFloatingPreviewTextLingerTimeout">@integer/config_gesture_floating_preview_text_linger_timeout</item>
         <item name="gesturePreviewTrailFadeoutStartDelay">@integer/config_gesture_preview_trail_fadeout_start_delay</item>
         <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
         <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>
@@ -85,6 +83,7 @@
         <item name="longPressKeyTimeout">@integer/config_long_press_key_timeout</item>
         <item name="longPressShiftKeyTimeout">@integer/config_long_press_shift_key_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
+        <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
@@ -95,6 +94,7 @@
         <item name="altCodeKeyWhileTypingFadeoutAnimator">@anim/alt_code_key_while_typing_fadeout</item>
         <item name="altCodeKeyWhileTypingFadeinAnimator">@anim/alt_code_key_while_typing_fadein</item>
         <!-- Common attributes of MainKeyboardView for gesture typing detection and recognition -->
+        <item name="gestureFloatingPreviewTextLingerTimeout">@integer/config_gesture_floating_preview_text_linger_timeout</item>
         <item name="gestureStaticTimeThresholdAfterFastTyping">@integer/config_gesture_static_time_threshold_after_fast_typing</item>
         <item name="gestureDetectFastMoveSpeedThreshold">@fraction/config_gesture_detect_fast_move_speed_threshold</item>
         <item name="gestureDynamicThresholdDecayDuration">@integer/config_gesture_dynamic_threshold_decay_duration</item>

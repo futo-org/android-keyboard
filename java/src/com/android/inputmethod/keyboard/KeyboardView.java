@@ -28,26 +28,16 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Message;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
-import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
-import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -57,26 +47,12 @@ import java.util.HashSet;
  * A view that renders a virtual {@link Keyboard}.
  *
  * @attr ref R.styleable#KeyboardView_keyBackground
- * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
  * @attr ref R.styleable#KeyboardView_keyTextShadowRadius
  * @attr ref R.styleable#KeyboardView_backgroundDimAlpha
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextSize
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewHorizontalPadding
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextLingerTimeout
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutStartDelay
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutDuration
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailUpdateInterval
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailColor
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailWidth
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#Keyboard_Key_keyTypeface
  * @attr ref R.styleable#Keyboard_Key_keyLetterSize
@@ -97,8 +73,6 @@ import java.util.HashSet;
  * @attr ref R.styleable#Keyboard_Key_keyPreviewTextColor
  */
 public class KeyboardView extends View {
-    private static final String TAG = KeyboardView.class.getSimpleName();
-
     // XML attributes
     protected final KeyVisualAttributes mKeyVisualAttributes;
     private final int mKeyLabelHorizontalPadding;
@@ -126,20 +100,6 @@ public class KeyboardView extends View {
     private Keyboard mKeyboard;
     protected final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
 
-    // Preview placer view
-    // TODO: Move PreviewPlacerView to MainKeyboardView
-    protected final PreviewPlacerView mPreviewPlacerView;
-    private final int[] mOriginCoords = CoordinateUtils.newInstance();
-
-    // Key preview
-    // TODO: Move these variable to MainKeyboardView
-    protected final int mKeyPreviewLayoutId;
-    protected final SparseArray<TextView> mKeyPreviewTexts = CollectionUtils.newSparseArray();
-
-    // Gesture floating preview text
-    // TODO: Make this parameter customizable by user via settings.
-    private int mGestureFloatingPreviewTextLingerTimeout;
-
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
     private boolean mNeedsToDimEntireKeyboard;
@@ -164,56 +124,6 @@ public class KeyboardView extends View {
     private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
     private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 
-    // TODO: Move this to MainKeyboardView
-    protected final DrawingHandler mDrawingHandler = new DrawingHandler(this);
-
-    public static class DrawingHandler extends StaticInnerHandlerWrapper<KeyboardView> {
-        private static final int MSG_DISMISS_KEY_PREVIEW = 0;
-        private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
-
-        public DrawingHandler(final KeyboardView outerInstance) {
-            super(outerInstance);
-        }
-
-        @Override
-        public void handleMessage(final Message msg) {
-            final KeyboardView keyboardView = getOuterInstance();
-            if (keyboardView == null) return;
-            final PointerTracker tracker = (PointerTracker) msg.obj;
-            switch (msg.what) {
-            case MSG_DISMISS_KEY_PREVIEW:
-                final TextView previewText = keyboardView.mKeyPreviewTexts.get(tracker.mPointerId);
-                if (previewText != null) {
-                    previewText.setVisibility(INVISIBLE);
-                }
-                break;
-            case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-                keyboardView.mPreviewPlacerView.setGestureFloatingPreviewText(SuggestedWords.EMPTY);
-                break;
-            }
-        }
-
-        public void dismissKeyPreview(final long delay, final PointerTracker tracker) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, tracker), delay);
-        }
-
-        public void cancelDismissKeyPreview(final PointerTracker tracker) {
-            removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
-        }
-
-        private void cancelAllDismissKeyPreviews() {
-            removeMessages(MSG_DISMISS_KEY_PREVIEW);
-        }
-
-        public void dismissGestureFloatingPreviewText(final long delay) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT), delay);
-        }
-
-        public void cancelAllMessages() {
-            cancelAllDismissKeyPreviews();
-        }
-    }
-
     public KeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
@@ -235,14 +145,10 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
         mKeyTextShadowRadius = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_keyTextShadowRadius, 0.0f);
-        mKeyPreviewLayoutId = keyboardViewAttr.getResourceId(
-                R.styleable.KeyboardView_keyPreviewLayout, 0);
         mVerticalCorrection = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_verticalCorrection, 0);
         mBackgroundDimAlpha = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_backgroundDimAlpha, 0);
-        mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         keyboardViewAttr.recycle();
 
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
@@ -250,7 +156,6 @@ public class KeyboardView extends View {
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
 
-        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
         mPaint.setAntiAlias(true);
     }
 
@@ -284,13 +189,6 @@ public class KeyboardView extends View {
      */
     public Keyboard getKeyboard() {
         return mKeyboard;
-    }
-
-    // TODO: Move this method to MainKeyboardView
-    public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
-            final boolean drawsGestureFloatingPreviewText) {
-        mPreviewPlacerView.setGesturePreviewMode(
-                drawsGesturePreviewTrail, drawsGestureFloatingPreviewText);
     }
 
     @Override
@@ -733,94 +631,6 @@ public class KeyboardView extends View {
         return paint;
     }
 
-    public void cancelAllMessages() {
-        mDrawingHandler.cancelAllMessages();
-    }
-
-    // TODO: Move this method to MainKeyboardView.
-    protected TextView getKeyPreviewText(final int pointerId) {
-        TextView previewText = mKeyPreviewTexts.get(pointerId);
-        if (previewText != null) {
-            return previewText;
-        }
-        final Context context = getContext();
-        if (mKeyPreviewLayoutId != 0) {
-            previewText = (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
-        } else {
-            previewText = new TextView(context);
-        }
-        mKeyPreviewTexts.put(pointerId, previewText);
-        return previewText;
-    }
-
-    // TODO: Move this method to MainKeyboardView.
-    private void dismissAllKeyPreviews() {
-        final int pointerCount = mKeyPreviewTexts.size();
-        for (int id = 0; id < pointerCount; id++) {
-            final TextView previewText = mKeyPreviewTexts.get(id);
-            if (previewText != null) {
-                previewText.setVisibility(INVISIBLE);
-            }
-        }
-        PointerTracker.setReleasedKeyGraphicsToAllKeys();
-    }
-
-    // TODO: Move this to MainKeyboardView
-    protected void addKeyPreview(final TextView keyPreview) {
-        locatePreviewPlacerView();
-        mPreviewPlacerView.addView(
-                keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacerView, 0, 0));
-    }
-
-    // TODO: Move this to MainKeyboardView
-    protected void locatePreviewPlacerView() {
-        if (mPreviewPlacerView.getParent() != null) {
-            return;
-        }
-        final int width = getWidth();
-        final int height = getHeight();
-        if (width == 0 || height == 0) {
-            // In transient state.
-            return;
-        }
-        getLocationInWindow(mOriginCoords);
-        final DisplayMetrics dm = getResources().getDisplayMetrics();
-        if (CoordinateUtils.y(mOriginCoords) < dm.heightPixels / 4) {
-            // In transient state.
-            return;
-        }
-        final View rootView = getRootView();
-        if (rootView == null) {
-            Log.w(TAG, "Cannot find root view");
-            return;
-        }
-        final ViewGroup windowContentView = (ViewGroup)rootView.findViewById(android.R.id.content);
-        // Note: It'd be very weird if we get null by android.R.id.content.
-        if (windowContentView == null) {
-            Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
-        } else {
-            windowContentView.addView(mPreviewPlacerView);
-            mPreviewPlacerView.setKeyboardViewGeometry(mOriginCoords, width, height);
-        }
-    }
-
-    public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
-        locatePreviewPlacerView();
-        mPreviewPlacerView.setGestureFloatingPreviewText(suggestedWords);
-    }
-
-    public void dismissGestureFloatingPreviewText() {
-        locatePreviewPlacerView();
-        mDrawingHandler.dismissGestureFloatingPreviewText(mGestureFloatingPreviewTextLingerTimeout);
-    }
-
-    // TODO: Move This to MainKeyboardView
-    public void showGesturePreviewTrail(final PointerTracker tracker,
-            final boolean isOldestTracker) {
-        locatePreviewPlacerView();
-        mPreviewPlacerView.invalidatePointer(tracker, isOldestTracker);
-    }
-
     /**
      * Requests a redraw of the entire keyboard. Calling {@link #invalidate} is not sufficient
      * because the keyboard renders the keys to an off-screen buffer and an invalidate() only
@@ -850,8 +660,6 @@ public class KeyboardView extends View {
     }
 
     public void closing() {
-        dismissAllKeyPreviews();
-        cancelAllMessages();
         mInvalidateAllKeys = true;
         mKeyboard = null;
         requestLayout();
@@ -861,7 +669,6 @@ public class KeyboardView extends View {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         closing();
-        mPreviewPlacerView.removeAllViews();
         freeOffscreenBuffer();
     }
 }
