@@ -39,7 +39,7 @@ public abstract class AbstractDrawingPreview {
      * Draws the preview
      * @param canvas The canvas where the preview is drawn.
      */
-    public abstract void onDraw(final Canvas canvas);
+    public abstract void drawPreview(final Canvas canvas);
 
     /**
      * Set the position of the preview.
