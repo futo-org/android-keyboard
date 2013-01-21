@@ -220,7 +220,7 @@ public final class PreviewPlacerView extends RelativeLayout {
                 // rectangle on the canvas.
             }
         }
-        mGestureFloatingPreviewText.onDraw(canvas);
+        mGestureFloatingPreviewText.drawPreview(canvas);
         if (mShowSlidingKeyInputPreview) {
             drawSlidingKeyInputPreview(canvas);
         }

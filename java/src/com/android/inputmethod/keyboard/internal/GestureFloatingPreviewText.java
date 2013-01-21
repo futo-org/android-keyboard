@@ -130,7 +130,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
      * @param canvas The canvas where preview text is drawn.
      */
     @Override
-    public void onDraw(final Canvas canvas) {
+    public void drawPreview(final Canvas canvas) {
         if (!isPreviewEnabled() || mSuggestedWords.isEmpty()
                 || TextUtils.isEmpty(mSuggestedWords.getWord(0))) {
             return;
