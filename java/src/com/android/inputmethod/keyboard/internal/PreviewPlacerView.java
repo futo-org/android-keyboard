@@ -57,9 +57,7 @@ public final class PreviewPlacerView extends RelativeLayout {
     private final Rect mGesturePreviewTrailBoundsRect = new Rect(); // per trail
     // TODO: Move these AbstractDrawingPvreiew objects to MainKeyboardView.
     private final GestureFloatingPreviewText mGestureFloatingPreviewText;
-    private boolean mShowSlidingKeyInputPreview;
-    private final int[] mRubberBandFrom = CoordinateUtils.newInstance();
-    private final int[] mRubberBandTo = CoordinateUtils.newInstance();
+    private final SlidingKeyInputPreview mSlidingKeyInputPreview;
 
     private final DrawingHandler mDrawingHandler;
 
@@ -107,6 +105,7 @@ public final class PreviewPlacerView extends RelativeLayout {
         // MultiGesturePreviewText, depending on the user's choice in the settings.
         mGestureFloatingPreviewText = new GestureFloatingPreviewText(this, mainKeyboardViewAttr);
         mGesturePreviewTrailParams = new Params(mainKeyboardViewAttr);
+        mSlidingKeyInputPreview = new SlidingKeyInputPreview(this, mainKeyboardViewAttr);
         mainKeyboardViewAttr.recycle();
 
         mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
@@ -125,6 +124,7 @@ public final class PreviewPlacerView extends RelativeLayout {
             final int height) {
         CoordinateUtils.copy(mKeyboardViewOrigin, originCoords);
         mGestureFloatingPreviewText.setKeyboardGeometry(originCoords, width, height);
+        mSlidingKeyInputPreview.setKeyboardGeometry(originCoords, width, height);
         mOffscreenOffsetY = (int)(
                 height * GestureStroke.EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
         mOffscreenWidth = width;
@@ -156,25 +156,21 @@ public final class PreviewPlacerView extends RelativeLayout {
         }
     }
 
+    // TODO: Move this method to MainKeyboardView
     public void showSlidingKeyInputPreview(final PointerTracker tracker) {
-        if (!tracker.isInSlidingKeyInputFromModifier()) {
-            mShowSlidingKeyInputPreview = false;
-            return;
-        }
-        tracker.getDownCoordinates(mRubberBandFrom);
-        tracker.getLastCoordinates(mRubberBandTo);
-        mShowSlidingKeyInputPreview = true;
-        invalidate();
+        mSlidingKeyInputPreview.setPreviewPosition(tracker);
     }
 
+    // TODO: Move this method to MainKeyboardView
     public void dismissSlidingKeyInputPreview() {
-        mShowSlidingKeyInputPreview = false;
+        mSlidingKeyInputPreview.dismissSlidingKeyInputPreview();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mGestureFloatingPreviewText.onDetachFromWindow();
+        mSlidingKeyInputPreview.onDetachFromWindow();
         freeOffscreenBuffer();
     }
 
@@ -221,9 +217,7 @@ public final class PreviewPlacerView extends RelativeLayout {
             }
         }
         mGestureFloatingPreviewText.drawPreview(canvas);
-        if (mShowSlidingKeyInputPreview) {
-            drawSlidingKeyInputPreview(canvas);
-        }
+        mSlidingKeyInputPreview.drawPreview(canvas);
         canvas.translate(-originX, -originY);
     }
 
@@ -253,11 +247,8 @@ public final class PreviewPlacerView extends RelativeLayout {
         return needsUpdatingGesturePreviewTrail;
     }
 
+    // TODO: Move this method to MainKeyboardView.
     public void setGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
         mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
-    }
-
-    private void drawSlidingKeyInputPreview(final Canvas canvas) {
-        // TODO: Implement rubber band preview
     }
 }
