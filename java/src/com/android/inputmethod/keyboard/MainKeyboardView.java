@@ -50,9 +50,12 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
+import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
+import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
 import com.android.inputmethod.keyboard.internal.TouchScreenRegulator;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
@@ -154,6 +157,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Preview placer view
     private final PreviewPlacerView mPreviewPlacerView;
     private final int[] mOriginCoords = CoordinateUtils.newInstance();
+    private final GestureFloatingPreviewText mGestureFloatingPreviewText;
+    private final GestureTrailsPreview mGestureTrailsPreview;
+    private final SlidingKeyInputPreview mSlidingKeyInputPreview;
 
     // Key preview
     private static final int PREVIEW_ALPHA = 240;
@@ -446,8 +452,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 }
                 break;
             case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
-                mainKeyboardView.mPreviewPlacerView.setGestureFloatingPreviewText(
-                        SuggestedWords.EMPTY);
+                mainKeyboardView.showGestureFloatingPreviewText(SuggestedWords.EMPTY);
                 break;
             }
         }
@@ -493,6 +498,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 ResourceUtils.getDeviceOverrideValue(
                         res, R.array.phantom_sudden_move_event_device_list));
         PointerTracker.init(needsPhantomSuddenMoveEventHack);
+        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
 
         final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
@@ -546,6 +552,18 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mGestureFloatingPreviewTextLingerTimeout = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         PointerTracker.setParameters(mainKeyboardViewAttr);
+
+        mGestureFloatingPreviewText = new GestureFloatingPreviewText(
+                mPreviewPlacerView, mainKeyboardViewAttr);
+        mPreviewPlacerView.addPreview(mGestureFloatingPreviewText);
+
+        mGestureTrailsPreview = new GestureTrailsPreview(
+                mPreviewPlacerView, mainKeyboardViewAttr);
+        mPreviewPlacerView.addPreview(mGestureTrailsPreview);
+
+        mSlidingKeyInputPreview = new SlidingKeyInputPreview(
+                mPreviewPlacerView, mainKeyboardViewAttr);
+        mPreviewPlacerView.addPreview(mSlidingKeyInputPreview);
         mainKeyboardViewAttr.recycle();
 
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
@@ -554,8 +572,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 altCodeKeyWhileTypingFadeoutAnimatorResId, this);
         mAltCodeKeyWhileTypingFadeinAnimator = loadObjectAnimator(
                 altCodeKeyWhileTypingFadeinAnimatorResId, this);
-
-        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
     }
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
@@ -864,23 +880,23 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void showSlidingKeyInputPreview(final PointerTracker tracker) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.showSlidingKeyInputPreview(tracker);
+        mSlidingKeyInputPreview.setPreviewPosition(tracker);
     }
 
     @Override
     public void dismissSlidingKeyInputPreview() {
-        mPreviewPlacerView.dismissSlidingKeyInputPreview();
+        mSlidingKeyInputPreview.dismissSlidingKeyInputPreview();
     }
 
     public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
             final boolean drawsGestureFloatingPreviewText) {
-        mPreviewPlacerView.setGesturePreviewMode(
-                drawsGesturePreviewTrail, drawsGestureFloatingPreviewText);
+        mGestureFloatingPreviewText.setPreviewEnabled(drawsGestureFloatingPreviewText);
+        mGestureTrailsPreview.setPreviewEnabled(drawsGesturePreviewTrail);
     }
 
     public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.setGestureFloatingPreviewText(suggestedWords);
+        mGestureFloatingPreviewText.setSuggetedWords(suggestedWords);
     }
 
     public void dismissGestureFloatingPreviewText() {
@@ -888,9 +904,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mDrawingHandler.dismissGestureFloatingPreviewText(mGestureFloatingPreviewTextLingerTimeout);
     }
 
+    @Override
     public void showGesturePreviewTrail(final PointerTracker tracker) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.invalidatePointer(tracker);
+        mGestureFloatingPreviewText.setPreviewPosition(tracker);
+        mGestureTrailsPreview.setPreviewPosition(tracker);
     }
 
     // Note that this method is called from a non-UI thread.
