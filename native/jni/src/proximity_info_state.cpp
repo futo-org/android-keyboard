@@ -23,6 +23,7 @@
 #include "geometry_utils.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
+#include "proximity_info_utils.h"
 
 namespace latinime {
 
@@ -46,7 +47,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
     mMostCommonKeyWidthSquare = proximityInfo->getMostCommonKeyWidthSquare();
-    mLocaleStr = proximityInfo->getLocaleStr();
     mKeyCount = proximityInfo->getKeyCount();
     mCellHeight = proximityInfo->getCellHeight();
     mCellWidth = proximityInfo->getCellWidth();
@@ -324,7 +324,7 @@ void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const
             if (i < mSampledInputSize - 1 && j >= mInputIndice[i + 1]) {
                 break;
             }
-            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += ProximityInfoUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -333,7 +333,7 @@ void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const
                 break;
             }
             // TODO: use mLengthCache instead?
-            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += ProximityInfoUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -388,7 +388,8 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     while (start > 0 && tempBeelineDistance < lookupRadius) {
         tempTime += times[start] - times[start - 1];
         --start;
-        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
+        tempBeelineDistance = ProximityInfoUtils::getDistanceInt(x0, y0, xCoordinates[start],
+                yCoordinates[start]);
     }
     // Exclusive unless this is an edge point
     if (start > 0 && start < actualInputIndex) {
@@ -401,7 +402,8 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     while (end < (inputSize - 1) && tempBeelineDistance < lookupRadius) {
         tempTime += times[end + 1] - times[end];
         ++end;
-        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[end], yCoordinates[end]);
+        tempBeelineDistance = ProximityInfoUtils::getDistanceInt(x0, y0, xCoordinates[end],
+                 yCoordinates[end]);
     }
     // Exclusive unless this is an edge point
     if (end > actualInputIndex && end < (inputSize - 1)) {
@@ -419,7 +421,7 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     const int y2 = yCoordinates[start];
     const int x3 = xCoordinates[end];
     const int y3 = yCoordinates[end];
-    const int beelineDistance = getDistanceInt(x2, y2, x3, y3);
+    const int beelineDistance = ProximityInfoUtils::getDistanceInt(x2, y2, x3, y3);
     int adjustedStartTime = times[start];
     if (start == 0 && actualInputIndex == 0 && inputSize > 1) {
         adjustedStartTime += FIRST_POINT_TIME_OFFSET_MILLIS;
@@ -539,7 +541,8 @@ float ProximityInfoState::getPointScore(
     }
 
     const int baseSampleRate = mProximityInfo->getMostCommonKeyWidth();
-    const int distPrev = getDistanceInt(mSampledInputXs.back(), mSampledInputYs.back(),
+    const int distPrev = ProximityInfoUtils::getDistanceInt(
+            mSampledInputXs.back(), mSampledInputYs.back(),
             mSampledInputXs[size - 2], mSampledInputYs[size - 2]) * DISTANCE_BASE_SCALE;
     float score = 0.0f;
 
@@ -590,13 +593,15 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCode
         }
         // Check if the last point should be skipped.
         if (isLastPoint && size > 0) {
-            if (getDistanceInt(x, y, mSampledInputXs.back(), mSampledInputYs.back())
-                    * LAST_POINT_SKIP_DISTANCE_SCALE < mProximityInfo->getMostCommonKeyWidth()) {
+            if (ProximityInfoUtils::getDistanceInt(x, y, mSampledInputXs.back(),
+                    mSampledInputYs.back()) * LAST_POINT_SKIP_DISTANCE_SCALE
+                            < mProximityInfo->getMostCommonKeyWidth()) {
                 // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
                     AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
                            "width = %d", size, x, y, mSampledInputXs.back(), mSampledInputYs.back(),
-                           getDistanceInt(x, y, mSampledInputXs.back(), mSampledInputYs.back()),
+                           ProximityInfoUtils::getDistanceInt(x, y, mSampledInputXs.back(),
+                                   mSampledInputYs.back()),
                            mProximityInfo->getMostCommonKeyWidth()
                                    / LAST_POINT_SKIP_DISTANCE_SCALE);
                 }
@@ -616,7 +621,7 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCode
     // Pushing point information.
     if (size > 0) {
         mLengthCache.push_back(
-                mLengthCache.back() + getDistanceInt(
+                mLengthCache.back() + ProximityInfoUtils::getDistanceInt(
                         x, y, mSampledInputXs.back(), mSampledInputYs.back()));
     } else {
         mLengthCache.push_back(0);
@@ -867,7 +872,8 @@ float ProximityInfoState::getLineToKeyDistance(
     const int keyX = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
     const int keyY = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
 
-    return pointToLineSegSquaredDistanceFloat(keyX, keyY, x0, y0, x1, y1, extend);
+    return ProximityInfoUtils::pointToLineSegSquaredDistanceFloat(
+            keyX, keyY, x0, y0, x1, y1, extend);
 }
 
 // Updates probabilities of aligning to some keys and skipping.
@@ -986,7 +992,8 @@ void ProximityInfoState::updateAlignPointProbabilities(const int start) {
                         MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION);
         const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate + MIN_STANDERD_DIVIATION;
 
-        NormalDistribution distribution(CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
+        ProximityInfoUtils::NormalDistribution
+                distribution(CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
         static const float PREV_DISTANCE_WEIGHT = 0.5f;
         static const float NEXT_DISTANCE_WEIGHT = 0.6f;
         // Summing up probability densities of all near keys.

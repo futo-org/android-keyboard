@@ -71,10 +71,6 @@ class ProximityInfo {
         return MOST_COMMON_KEY_WIDTH_SQUARE;
     }
 
-    const char *getLocaleStr() const {
-        return mLocaleStr;
-    }
-
     int getKeyCount() const {
         return KEY_COUNT;
     }

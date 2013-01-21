@@ -19,7 +19,6 @@
 
 #include <bitset>
 #include <cstring> // for memset()
-#include <string>
 #include <vector>
 
 #include "char_utils.h"
@@ -55,7 +54,7 @@ class ProximityInfoState {
     /////////////////////////////////////////
     AK_FORCE_INLINE ProximityInfoState()
             : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
-              mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
+              mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mTimes(),
               mInputIndice(), mLengthCache(), mBeelineSpeedPercentiles(), mDistanceCache_G(),
@@ -262,7 +261,6 @@ class ProximityInfoState {
     float mAverageSpeed;
     bool mHasTouchPositionCorrectionData;
     int mMostCommonKeyWidthSquare;
-    std::string mLocaleStr;
     int mKeyCount;
     int mCellHeight;
     int mCellWidth;
