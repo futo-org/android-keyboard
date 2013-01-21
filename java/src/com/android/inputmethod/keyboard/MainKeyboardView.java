@@ -888,10 +888,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mDrawingHandler.dismissGestureFloatingPreviewText(mGestureFloatingPreviewTextLingerTimeout);
     }
 
-    public void showGesturePreviewTrail(final PointerTracker tracker,
-            final boolean isOldestTracker) {
+    public void showGesturePreviewTrail(final PointerTracker tracker) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.invalidatePointer(tracker, isOldestTracker);
+        mPreviewPlacerView.invalidatePointer(tracker);
     }
 
     // Note that this method is called from a non-UI thread.

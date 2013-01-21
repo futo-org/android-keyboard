@@ -133,9 +133,9 @@ public final class PreviewPlacerView extends RelativeLayout {
         mGestureFloatingPreviewText.setPreviewEnabled(drawsGestureFloatingPreviewText);
     }
 
-    public void invalidatePointer(final PointerTracker tracker, final boolean isOldestTracker) {
+    public void invalidatePointer(final PointerTracker tracker) {
         final boolean needsToUpdateLastPointer =
-                isOldestTracker && mGestureFloatingPreviewText.isPreviewEnabled();
+                tracker.isOldestTrackerInQueue() && mGestureFloatingPreviewText.isPreviewEnabled();
         if (needsToUpdateLastPointer) {
             mGestureFloatingPreviewText.setPreviewPosition(tracker);
         }
