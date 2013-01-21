@@ -58,8 +58,6 @@
 
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
-
-        <attr name="backgroundDimAlpha" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">
@@ -105,6 +103,7 @@
         <attr name="keyPreviewLingerTimeout" format="integer" />
         <!-- Layout resource for more keys keyboard -->
         <attr name="moreKeysKeyboardLayout" format="reference" />
+        <attr name="backgroundDimAlpha" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->
