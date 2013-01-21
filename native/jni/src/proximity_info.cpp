@@ -164,7 +164,7 @@ void ProximityInfo::initializeG() {
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
         for (int j = i + 1; j < KEY_COUNT; j++) {
-            mKeyKeyDistancesG[i][j] = ProximityInfoUtils::getDistanceInt(
+            mKeyKeyDistancesG[i][j] = getDistanceInt(
                     mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
             mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
         }
