@@ -57,22 +57,21 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
 
         private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
 
-        public GesturePreviewTextParams(final TypedArray keyboardViewAttr) {
-            // TODO: Move these XML attributes to MainKeyboardView
-            mGesturePreviewTextSize = keyboardViewAttr.getDimensionPixelSize(
-                    R.styleable.KeyboardView_gestureFloatingPreviewTextSize, 0);
-            mGesturePreviewTextColor = keyboardViewAttr.getColor(
-                    R.styleable.KeyboardView_gestureFloatingPreviewTextColor, 0);
-            mGesturePreviewTextOffset = keyboardViewAttr.getDimensionPixelOffset(
-                    R.styleable.KeyboardView_gestureFloatingPreviewTextOffset, 0);
-            mGesturePreviewColor = keyboardViewAttr.getColor(
-                    R.styleable.KeyboardView_gestureFloatingPreviewColor, 0);
-            mGesturePreviewHorizontalPadding = keyboardViewAttr.getDimension(
-                    R.styleable.KeyboardView_gestureFloatingPreviewHorizontalPadding, 0.0f);
-            mGesturePreviewVerticalPadding = keyboardViewAttr.getDimension(
-                    R.styleable.KeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
-            mGesturePreviewRoundRadius = keyboardViewAttr.getDimension(
-                    R.styleable.KeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
+        public GesturePreviewTextParams(final TypedArray mainKeyboardViewAttr) {
+            mGesturePreviewTextSize = mainKeyboardViewAttr.getDimensionPixelSize(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewTextSize, 0);
+            mGesturePreviewTextColor = mainKeyboardViewAttr.getColor(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewTextColor, 0);
+            mGesturePreviewTextOffset = mainKeyboardViewAttr.getDimensionPixelOffset(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewTextOffset, 0);
+            mGesturePreviewColor = mainKeyboardViewAttr.getColor(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewColor, 0);
+            mGesturePreviewHorizontalPadding = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewHorizontalPadding, 0.0f);
+            mGesturePreviewVerticalPadding = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
+            mGesturePreviewRoundRadius = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
 
             final Paint textPaint = new Paint();
             textPaint.setAntiAlias(true);

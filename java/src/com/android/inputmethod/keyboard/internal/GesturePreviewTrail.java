@@ -26,11 +26,11 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResizableIntArray;
 
 /*
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutStartDelay
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutDuration
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailUpdateInterval
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailColor
- * @attr ref R.styleable#KeyboardView_gesturePreviewTrailWidth
+ * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailFadeoutStartDelay
+ * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailFadeoutDuration
+ * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailUpdateInterval
+ * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailColor
+ * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailWidth
  */
 final class GesturePreviewTrail {
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
@@ -53,21 +53,20 @@ final class GesturePreviewTrail {
 
         public final int mTrailLingerDuration;
 
-        public Params(final TypedArray keyboardViewAttr) {
-            // TODO: Move these XML attributes to MainKeyboardView
-            mTrailColor = keyboardViewAttr.getColor(
-                    R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
-            mTrailStartWidth = keyboardViewAttr.getDimension(
-                    R.styleable.KeyboardView_gesturePreviewTrailStartWidth, 0.0f);
-            mTrailEndWidth = keyboardViewAttr.getDimension(
-                    R.styleable.KeyboardView_gesturePreviewTrailEndWidth, 0.0f);
-            mFadeoutStartDelay = keyboardViewAttr.getInt(
-                    R.styleable.KeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
-            mFadeoutDuration = keyboardViewAttr.getInt(
-                    R.styleable.KeyboardView_gesturePreviewTrailFadeoutDuration, 0);
+        public Params(final TypedArray mainKeyboardViewAttr) {
+            mTrailColor = mainKeyboardViewAttr.getColor(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailColor, 0);
+            mTrailStartWidth = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailStartWidth, 0.0f);
+            mTrailEndWidth = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailEndWidth, 0.0f);
+            mFadeoutStartDelay = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
+            mFadeoutDuration = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutDuration, 0);
             mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
-            mUpdateInterval = keyboardViewAttr.getInt(
-                    R.styleable.KeyboardView_gesturePreviewTrailUpdateInterval, 0);
+            mUpdateInterval = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailUpdateInterval, 0);
         }
     }
 
