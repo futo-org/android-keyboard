@@ -140,7 +140,8 @@ float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
-    return getSquaredDistanceFloat(centerX, centerY, touchX, touchY) / SQUARE_FLOAT(keyWidth);
+    return ProximityInfoUtils::getSquaredDistanceFloat(centerX, centerY, touchX, touchY)
+            / SQUARE_FLOAT(keyWidth);
 }
 
 int ProximityInfo::getCodePointOf(const int keyIndex) const {
@@ -163,7 +164,7 @@ void ProximityInfo::initializeG() {
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
         for (int j = i + 1; j < KEY_COUNT; j++) {
-            mKeyKeyDistancesG[i][j] = getDistanceInt(
+            mKeyKeyDistancesG[i][j] = ProximityInfoUtils::getDistanceInt(
                     mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
             mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
         }

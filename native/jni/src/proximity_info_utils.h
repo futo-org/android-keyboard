@@ -17,9 +17,12 @@
 #ifndef LATINIME_PROXIMITY_INFO_UTILS_H
 #define LATINIME_PROXIMITY_INFO_UTILS_H
 
+#include <cmath>
+
 #include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
+#include "geometry_utils.h"
 #include "hash_map_compat.h"
 
 namespace latinime {
@@ -78,11 +81,68 @@ class ProximityInfoUtils {
         }
     }
 
-    AK_FORCE_INLINE static int getStartIndexFromCoordinates(const int maxProximityCharsSize,
+    static AK_FORCE_INLINE int getStartIndexFromCoordinates(const int maxProximityCharsSize,
             const int x, const int y, const int cellHeight, const int cellWidth,
             const int gridWidth) {
         return ((y / cellHeight) * gridWidth + (x / cellWidth)) * maxProximityCharsSize;
     }
+
+    static inline float getSquaredDistanceFloat(const float x1, const float y1, const float x2,
+            const float y2) {
+        return SQUARE_FLOAT(x1 - x2) + SQUARE_FLOAT(y1 - y2);
+    }
+
+    static AK_FORCE_INLINE int getDistanceInt(const int x1, const int y1, const int x2,
+            const int y2) {
+        return static_cast<int>(hypotf(static_cast<float>(x1 - x2), static_cast<float>(y1 - y2)));
+    }
+
+    static inline float pointToLineSegSquaredDistanceFloat(const float x, const float y,
+        const float x1, const float y1, const float x2, const float y2, const bool extend) {
+        const float ray1x = x - x1;
+        const float ray1y = y - y1;
+        const float ray2x = x2 - x1;
+        const float ray2y = y2 - y1;
+
+        const float dotProduct = ray1x * ray2x + ray1y * ray2y;
+        const float lineLengthSqr = SQUARE_FLOAT(ray2x) + SQUARE_FLOAT(ray2y);
+        const float projectionLengthSqr = dotProduct / lineLengthSqr;
+
+        float projectionX;
+        float projectionY;
+        if (!extend && projectionLengthSqr < 0.0f) {
+            projectionX = x1;
+            projectionY = y1;
+        } else if (!extend && projectionLengthSqr > 1.0f) {
+            projectionX = x2;
+            projectionY = y2;
+        } else {
+            projectionX = x1 + projectionLengthSqr * ray2x;
+            projectionY = y1 + projectionLengthSqr * ray2y;
+        }
+        return getSquaredDistanceFloat(x, y, projectionX, projectionY);
+    }
+
+    // Normal distribution N(u, sigma^2).
+    struct NormalDistribution {
+     public:
+        NormalDistribution(const float u, const float sigma)
+                : mU(u), mSigma(sigma),
+                  mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * SQUARE_FLOAT(sigma))),
+                  mPreComputedExponentPart(-1.0f / (2.0f * SQUARE_FLOAT(sigma))) {}
+
+        float getProbabilityDensity(const float x) const {
+            const float shiftedX = x - mU;
+            return mPreComputedNonExpPart * expf(mPreComputedExponentPart * SQUARE_FLOAT(shiftedX));
+        }
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
+        const float mU; // mean value
+        const float mSigma; // standard deviation
+        const float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
+        const float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
+    }; // struct NormalDistribution
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoUtils);

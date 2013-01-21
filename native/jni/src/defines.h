@@ -392,6 +392,8 @@ static inline void prof_out(void) {
 template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
 template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 
+#define M_PI_F 3.14159265f
+
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 
 // The ratio of neutral area radius to sweet spot radius.
