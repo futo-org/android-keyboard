@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -24,6 +23,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.CoordinateUtils;
@@ -98,16 +98,18 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
             PREVIEW_TEXT_ARRAY_CAPACITY);
 
     protected SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    protected final Context mContext;
     public final int[] mLastPointerCoords = CoordinateUtils.newInstance();
 
-    public GestureFloatingPreviewText(final TypedArray typedArray, final Context context) {
+    public GestureFloatingPreviewText(final View drawingView, final TypedArray typedArray) {
+        super(drawingView);
         mParams = new GesturePreviewTextParams(typedArray);
         mHighlightedWordIndex = 0;
-        mContext = context;
     }
 
     public void setSuggetedWords(final SuggestedWords suggestedWords) {
+        if (!isPreviewEnabled()) {
+            return;
+        }
         mSuggestedWords = suggestedWords;
         updatePreviewPosition();
     }
@@ -120,8 +122,13 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
     }
 
     @Override
-    public void setPreviewPosition(final PointerTracker pt) {
-        pt.getLastCoordinates(mLastPointerCoords);
+    public void setPreviewPosition(final PointerTracker tracker) {
+        final boolean needsToUpdateLastPointer =
+                tracker.isOldestTrackerInQueue() && isPreviewEnabled();
+        if (!needsToUpdateLastPointer) {
+            return;
+        }
+        tracker.getLastCoordinates(mLastPointerCoords);
         updatePreviewPosition();
     }
 
@@ -164,7 +171,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
         final float rectWidth = textWidth + hPad * 2.0f;
         final float rectHeight = textHeight + vPad * 2.0f;
 
-        final int displayWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+        final int displayWidth = getDrawingView().getResources().getDisplayMetrics().widthPixels;
         final float rectX = Math.min(
                 Math.max(CoordinateUtils.x(mLastPointerCoords) - rectWidth / 2.0f, 0.0f),
                 displayWidth - rectWidth);
@@ -176,5 +183,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
         final int textY = (int)(rectY + vPad) + textHeight;
         mPreviewTextXArray.add(0, textX);
         mPreviewTextYArray.add(0, textY);
+        // TODO: Should narrow the invalidate region.
+        getDrawingView().invalidate();
     }
 }
