@@ -98,7 +98,7 @@ import java.util.Map;
      * Publish the contents of this LogUnit to researchLog.
      */
     public synchronized void publishTo(final ResearchLog researchLog,
-            final boolean isIncludingPrivateData) {
+            final boolean canIncludePrivateData) {
         // Prepare debugging output if necessary
         final StringWriter debugStringWriter;
         final JsonWriter debugJsonWriter;
@@ -123,7 +123,7 @@ import java.util.Map;
             JsonWriter jsonWriter = null;
             for (int i = 0; i < size; i++) {
                 final LogStatement logStatement = mLogStatementList.get(i);
-                if (!isIncludingPrivateData && logStatement.mIsPotentiallyPrivate) {
+                if (!canIncludePrivateData && logStatement.mIsPotentiallyPrivate) {
                     continue;
                 }
                 if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
@@ -134,7 +134,7 @@ import java.util.Map;
                 // will not have been opened for writing.
                 if (jsonWriter == null) {
                     jsonWriter = researchLog.getValidJsonWriterLocked();
-                    outputLogUnitStart(jsonWriter, isIncludingPrivateData);
+                    outputLogUnitStart(jsonWriter, canIncludePrivateData);
                 }
                 outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
                         mTimeList.get(i));
@@ -145,7 +145,7 @@ import java.util.Map;
             }
             if (jsonWriter != null) {
                 // We must have called logUnitStart earlier, so emit a logUnitStop.
-                outputLogUnitStop(jsonWriter, isIncludingPrivateData);
+                outputLogUnitStop(jsonWriter);
             }
         }
         if (DEBUG) {
@@ -171,11 +171,11 @@ import java.util.Map;
     private static final String LOG_UNIT_END_KEY = "logUnitEnd";
 
     private void outputLogUnitStart(final JsonWriter jsonWriter,
-            final boolean isIncludingPrivateData) {
+            final boolean canIncludePrivateData) {
         try {
             jsonWriter.beginObject();
             jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            if (isIncludingPrivateData) {
+            if (canIncludePrivateData) {
                 jsonWriter.name(WORD_KEY).value(getWord());
             }
             jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_BEGIN_KEY);
@@ -186,8 +186,7 @@ import java.util.Map;
         }
     }
 
-    private void outputLogUnitStop(final JsonWriter jsonWriter,
-            final boolean isIncludingPrivateData) {
+    private void outputLogUnitStop(final JsonWriter jsonWriter) {
         try {
             jsonWriter.beginObject();
             jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
