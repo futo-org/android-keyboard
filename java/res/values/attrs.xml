@@ -67,9 +67,6 @@
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
 
-        <!-- Layout resource for more keys panel -->
-        <attr name="moreKeysLayout" format="reference" />
-
         <attr name="backgroundDimAlpha" format="integer" />
 
         <!-- Attributes for PreviewPlacerView -->
@@ -126,6 +123,8 @@
         <attr name="longPressShiftKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
+        <!-- Layout resource for more keys keyboard -->
+        <attr name="moreKeysKeyboardLayout" format="reference" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
         <!-- Static threshold for gesture after fast typing (msec) -->

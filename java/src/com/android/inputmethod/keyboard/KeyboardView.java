@@ -60,7 +60,6 @@ import java.util.HashSet;
  * A view that renders a virtual {@link Keyboard}.
  *
  * @attr ref R.styleable#KeyboardView_keyBackground
- * @attr ref R.styleable#KeyboardView_moreKeysLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewOffset
  * @attr ref R.styleable#KeyboardView_keyPreviewHeight
@@ -103,8 +102,8 @@ import java.util.HashSet;
  * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintActivatedColor
  * @attr ref R.styleable#Keyboard_Key_keyPreviewTextColor
  */
-public class KeyboardView extends View implements PointerTracker.DrawingProxy,
-        MoreKeysPanel.Controller {
+// TODO: Move PointerTracker.DrawingProxy to MainKeyboardView
+public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
 
     // XML attributes
@@ -115,7 +114,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
     private final float mKeyShiftedLetterHintPadding;
     private final float mKeyTextShadowRadius;
     protected final float mVerticalCorrection;
-    protected final int mMoreKeysLayout;
     protected final Drawable mKeyBackground;
     protected final Rect mKeyBackgroundPadding = new Rect();
     private final int mBackgroundDimAlpha;
@@ -136,12 +134,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
     protected final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
 
     // Preview placer view
-    private final PreviewPlacerView mPreviewPlacerView;
+    // TODO: Move PreviewPlacerView to MainKeyboardView
+    protected final PreviewPlacerView mPreviewPlacerView;
     private final int[] mOriginCoords = CoordinateUtils.newInstance();
-
-    // More keys panel (used by both more keys keyboard and more suggestions view)
-    // TODO: Consider extending to support multiple more keys panels
-    protected MoreKeysPanel mMoreKeysPanel;
 
     // Key preview
     private static final int PREVIEW_ALPHA = 240;
@@ -287,8 +282,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
         }
         mVerticalCorrection = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_verticalCorrection, 0);
-        mMoreKeysLayout = keyboardViewAttr.getResourceId(
-                R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAlpha = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_backgroundDimAlpha, 0);
         mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
@@ -1027,40 +1020,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy,
     public void closing() {
         dismissAllKeyPreviews();
         cancelAllMessages();
-        onCancelMoreKeysPanel();
         mInvalidateAllKeys = true;
         mKeyboard = null;
         requestLayout();
-    }
-
-    @Override
-    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
-        if (isShowingMoreKeysPanel()) {
-            onDismissMoreKeysPanel();
-        }
-        mMoreKeysPanel = panel;
-        mPreviewPlacerView.addView(mMoreKeysPanel.getContainerView());
-    }
-
-    public boolean isShowingMoreKeysPanel() {
-        return (mMoreKeysPanel != null);
-    }
-
-    @Override
-    public void onCancelMoreKeysPanel() {
-        if (isShowingMoreKeysPanel()) {
-            mMoreKeysPanel.dismissMoreKeysPanel();
-        }
-    }
-
-    @Override
-    public boolean onDismissMoreKeysPanel() {
-        if (isShowingMoreKeysPanel()) {
-            mPreviewPlacerView.removeView(mMoreKeysPanel.getContainerView());
-            mMoreKeysPanel = null;
-            return true;
-        }
-        return false;
     }
 
     @Override

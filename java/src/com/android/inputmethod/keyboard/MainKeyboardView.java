@@ -85,6 +85,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_longPressKeyTimeout
  * @attr ref R.styleable#MainKeyboardView_longPressShiftKeyTimeout
  * @attr ref R.styleable#MainKeyboardView_ignoreAltCodeKeyTimeout
+ * @attr ref R.styleable#MainKeyboardView_moreKeysKeyboardLayout
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
  * @attr ref R.styleable#MainKeyboardView_gestureStaticTimeThresholdAfterFastTyping
  * @attr ref R.styleable#MainKeyboardView_gestureDetectFastMoveSpeedThreshold
@@ -99,7 +100,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
 public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
-        TouchScreenRegulator.ProcessMotionEvent {
+        MoreKeysPanel.Controller, TouchScreenRegulator.ProcessMotionEvent {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     // TODO: Kill process when the usability study mode was changed.
@@ -137,11 +138,15 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // More keys keyboard
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
+    private final int mMoreKeysLayout;
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
+    // More keys panel (used by both more keys keyboard and more suggestions view)
+    // TODO: Consider extending to support multiple more keys panels
+    private MoreKeysPanel mMoreKeysPanel;
 
     private final TouchScreenRegulator mTouchScreenRegulator;
 
-    protected KeyDetector mKeyDetector;
+    private KeyDetector mKeyDetector;
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
     private Key mOldKey;
@@ -402,38 +407,41 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                         res, R.array.phantom_sudden_move_event_device_list));
         PointerTracker.init(needsPhantomSuddenMoveEventHack);
 
-        final TypedArray a = context.obtainStyledAttributes(
+        final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
-        mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
+        mAutoCorrectionSpacebarLedEnabled = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
-        mAutoCorrectionSpacebarLedIcon = a.getDrawable(
+        mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
-        mSpacebarTextRatio = a.getFraction(
+        mSpacebarTextRatio = mainKeyboardViewAttr.getFraction(
                 R.styleable.MainKeyboardView_spacebarTextRatio, 1, 1, 1.0f);
-        mSpacebarTextColor = a.getColor(R.styleable.MainKeyboardView_spacebarTextColor, 0);
-        mSpacebarTextShadowColor = a.getColor(
+        mSpacebarTextColor = mainKeyboardViewAttr.getColor(
+                R.styleable.MainKeyboardView_spacebarTextColor, 0);
+        mSpacebarTextShadowColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_spacebarTextShadowColor, 0);
-        mLanguageOnSpacebarFinalAlpha = a.getInt(
+        mLanguageOnSpacebarFinalAlpha = mainKeyboardViewAttr.getInt(
                 R.styleable.MainKeyboardView_languageOnSpacebarFinalAlpha,
                 Constants.Color.ALPHA_OPAQUE);
-        final int languageOnSpacebarFadeoutAnimatorResId = a.getResourceId(
+        final int languageOnSpacebarFadeoutAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
-        final int altCodeKeyWhileTypingFadeoutAnimatorResId = a.getResourceId(
+        final int altCodeKeyWhileTypingFadeoutAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeoutAnimator, 0);
-        final int altCodeKeyWhileTypingFadeinAnimatorResId = a.getResourceId(
+        final int altCodeKeyWhileTypingFadeinAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
-        final float keyHysteresisDistance = a.getDimension(
+        final float keyHysteresisDistance = mainKeyboardViewAttr.getDimension(
                 R.styleable.MainKeyboardView_keyHysteresisDistance, 0);
-        final float keyHysteresisDistanceForSlidingModifier = a.getDimension(
+        final float keyHysteresisDistanceForSlidingModifier = mainKeyboardViewAttr.getDimension(
                 R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0);
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
-        mKeyTimerHandler = new KeyTimerHandler(this, a);
-        mConfigShowMoreKeysKeyboardAtTouchedPoint = a.getBoolean(
+        mKeyTimerHandler = new KeyTimerHandler(this, mainKeyboardViewAttr);
+        mMoreKeysLayout = mainKeyboardViewAttr.getResourceId(
+                R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
+        mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
-        PointerTracker.setParameters(a);
-        a.recycle();
+        PointerTracker.setParameters(mainKeyboardViewAttr);
+        mainKeyboardViewAttr.recycle();
 
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
                 languageOnSpacebarFadeoutAnimatorResId, this);
@@ -591,8 +599,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return onLongPress(parentKey, tracker);
     }
 
-    // This default implementation returns a more keys panel.
-    protected MoreKeysPanel onCreateMoreKeysPanel(final Key parentKey) {
+    private MoreKeysPanel onCreateMoreKeysPanel(final Key parentKey) {
         if (parentKey.mMoreKeys == null) {
             return null;
         }
@@ -613,14 +620,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     /**
-     * Called when a key is long pressed. By default this will open more keys keyboard associated
-     * with this key.
+     * Called when a key is long pressed.
      * @param parentKey the key that was long pressed
      * @param tracker the pointer tracker which pressed the parent key
      * @return true if the long press is handled, false otherwise. Subclasses should call the
      * method on the base class if the subclass doesn't wish to handle the call.
      */
-    protected boolean onLongPress(final Key parentKey, final PointerTracker tracker) {
+    private boolean onLongPress(final Key parentKey, final PointerTracker tracker) {
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.mainKeyboardView_onLongPress();
         }
@@ -695,6 +701,38 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return true;
         }
         return PointerTracker.isAnyInSlidingKeyInput();
+    }
+
+    @Override
+    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        if (isShowingMoreKeysPanel()) {
+            onDismissMoreKeysPanel();
+        }
+        mMoreKeysPanel = panel;
+        mPreviewPlacerView.addView(mMoreKeysPanel.getContainerView());
+    }
+
+    public boolean isShowingMoreKeysPanel() {
+        return (mMoreKeysPanel != null);
+    }
+
+    @Override
+    public void onCancelMoreKeysPanel() {
+        if (isShowingMoreKeysPanel()) {
+            mMoreKeysPanel.dismissMoreKeysPanel();
+        }
+        PointerTracker.dismissAllMoreKeysPanels();
+    }
+
+    @Override
+    public boolean onDismissMoreKeysPanel() {
+        dimEntireKeyboard(false /* dimmed */);
+        if (isShowingMoreKeysPanel()) {
+            mPreviewPlacerView.removeView(mMoreKeysPanel.getContainerView());
+            mMoreKeysPanel = null;
+            return true;
+        }
+        return false;
     }
 
     public int getPointerCount() {
@@ -851,18 +889,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         super.closing();
         onCancelMoreKeysPanel();
         mMoreKeysPanelCache.clear();
-    }
-
-    @Override
-    public void onCancelMoreKeysPanel() {
-        super.onCancelMoreKeysPanel();
-        PointerTracker.dismissAllMoreKeysPanels();
-    }
-
-    @Override
-    public boolean onDismissMoreKeysPanel() {
-        dimEntireKeyboard(false /* dimmed */);
-        return super.onDismissMoreKeysPanel();
     }
 
     /**
