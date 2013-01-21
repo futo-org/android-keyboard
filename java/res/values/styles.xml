@@ -55,10 +55,7 @@
         <item name="keyShiftedLetterHintPadding">@dimen/key_uppercase_letter_padding</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewTextColor">@color/key_text_color_default</item>
-        <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
-        <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
-        <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="keyTextShadowColor">@color/key_text_shadow_color_default</item>
         <item name="keyTextShadowRadius">2.75</item>
@@ -88,6 +85,9 @@
         <item name="longPressKeyTimeout">@integer/config_long_press_key_timeout</item>
         <item name="longPressShiftKeyTimeout">@integer/config_long_press_shift_key_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
+        <item name="keyPreviewHeight">@dimen/key_preview_height</item>
+        <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
         <item name="languageOnSpacebarFinalAlpha">@integer/config_language_on_spacebar_final_alpha</item>

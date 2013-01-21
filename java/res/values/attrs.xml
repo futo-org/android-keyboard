@@ -57,12 +57,6 @@
         <attr name="state_left_edge" format="boolean" />
         <attr name="state_right_edge" format="boolean" />
         <attr name="state_has_morekeys" format="boolean" />
-        <!-- Vertical offset of the key press feedback from the key. -->
-        <attr name="keyPreviewOffset" format="dimension" />
-        <!-- Height of the key press feedback popup. -->
-        <attr name="keyPreviewHeight" format="dimension" />
-        <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
-        <attr name="keyPreviewLingerTimeout" format="integer" />
 
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
@@ -123,6 +117,12 @@
         <attr name="longPressShiftKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
+        <!-- Vertical offset of the key press feedback from the key. -->
+        <attr name="keyPreviewOffset" format="dimension" />
+        <!-- Height of the key press feedback popup. -->
+        <attr name="keyPreviewHeight" format="dimension" />
+        <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
+        <attr name="keyPreviewLingerTimeout" format="integer" />
         <!-- Layout resource for more keys keyboard -->
         <attr name="moreKeysKeyboardLayout" format="reference" />
         <!-- More keys keyboard will shown at touched point. -->
