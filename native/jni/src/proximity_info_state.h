@@ -24,6 +24,7 @@
 #include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
+#include "proximity_info_state_utils.h"
 
 namespace latinime {
 
@@ -230,7 +231,7 @@ class ProximityInfoState {
     }
 
     inline const int *getProximityCodePointsAt(const int index) const {
-        return mInputProximities + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
+        return ProximityInfoStateUtils::getProximityCodePointsAt(mInputProximities, index);
     }
 
     float updateNearKeysDistances(const int x, const int y,

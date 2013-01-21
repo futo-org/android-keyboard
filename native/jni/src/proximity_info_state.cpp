@@ -23,7 +23,7 @@
 #include "geometry_utils.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
-#include "proximity_info_utils.h"
+#include "proximity_info_state_utils.h"
 
 namespace latinime {
 
@@ -94,82 +94,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mSampledInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
-        if (DEBUG_SAMPLING_POINTS) {
-            if (isGeometric) {
-                for (int i = 0; i < inputSize; ++i) {
-                    AKLOGI("(%d) x %d, y %d, time %d",
-                            i, xCoordinates[i], yCoordinates[i], times[i]);
-                }
-            }
-        }
-#ifdef DO_ASSERT_TEST
-        if (times) {
-            for (int i = 0; i < inputSize; ++i) {
-                if (i > 0) {
-                    ASSERT(times[i] >= times[i - 1]);
-                }
-            }
-        }
-#endif
-        const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
-        int lastInputIndex = pushTouchPointStartIndex;
-        for (int i = lastInputIndex; i < inputSize; ++i) {
-            const int pid = pointerIds ? pointerIds[i] : 0;
-            if (pointerId == pid) {
-                lastInputIndex = i;
-            }
-        }
-        if (DEBUG_GEO_FULL) {
-            AKLOGI("Init ProximityInfoState: last input index = %d", lastInputIndex);
-        }
-        // Working space to save near keys distances for current, prev and prevprev input point.
-        NearKeysDistanceMap nearKeysDistances[3];
-        // These pointers are swapped for each inputs points.
-        NearKeysDistanceMap *currentNearKeysDistances = &nearKeysDistances[0];
-        NearKeysDistanceMap *prevNearKeysDistances = &nearKeysDistances[1];
-        NearKeysDistanceMap *prevPrevNearKeysDistances = &nearKeysDistances[2];
-        // "sumAngle" is accumulated by each angle of input points. And when "sumAngle" exceeds
-        // the threshold we save that point, reset sumAngle. This aims to keep the figure of
-        // the curve.
-        float sumAngle = 0.0f;
-
-        for (int i = pushTouchPointStartIndex; i <= lastInputIndex; ++i) {
-            // Assuming pointerId == 0 if pointerIds is null.
-            const int pid = pointerIds ? pointerIds[i] : 0;
-            if (DEBUG_GEO_FULL) {
-                AKLOGI("Init ProximityInfoState: (%d)PID = %d", i, pid);
-            }
-            if (pointerId == pid) {
-                const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCodePointAt(i);
-                const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
-                const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
-                const int time = times ? times[i] : -1;
-
-                if (i > 1) {
-                    const float prevAngle = getAngle(xCoordinates[i - 2], yCoordinates[i - 2],
-                            xCoordinates[i - 1], yCoordinates[i - 1]);
-                    const float currentAngle =
-                            getAngle(xCoordinates[i - 1], yCoordinates[i - 1], x, y);
-                    sumAngle += getAngleDiff(prevAngle, currentAngle);
-                }
-
-                if (pushTouchPoint(i, c, x, y, time, isGeometric /* do sampling */,
-                        i == lastInputIndex, sumAngle, currentNearKeysDistances,
-                        prevNearKeysDistances, prevPrevNearKeysDistances)) {
-                    // Previous point information was popped.
-                    NearKeysDistanceMap *tmp = prevNearKeysDistances;
-                    prevNearKeysDistances = currentNearKeysDistances;
-                    currentNearKeysDistances = tmp;
-                } else {
-                    NearKeysDistanceMap *tmp = prevPrevNearKeysDistances;
-                    prevPrevNearKeysDistances = prevNearKeysDistances;
-                    prevNearKeysDistances = currentNearKeysDistances;
-                    currentNearKeysDistances = tmp;
-                    sumAngle = 0.0f;
-                }
-            }
-        }
-        mSampledInputSize = mSampledInputXs.size();
+        mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(
+                mProximityInfo->getMostCommonKeyWidth(), mProximityInfo, mMaxPointToKeyLength,
+                mInputProximities, xCoordinates, yCoordinates, times, pointerIds, inputSize,
+                isGeometric, pointerId, pushTouchPointStartIndex,
+                &mSampledInputXs, &mSampledInputYs, &mTimes, &mLengthCache, &mInputIndice);
     }
 
     if (mSampledInputSize > 0 && isGeometric) {
@@ -324,7 +253,7 @@ void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const
             if (i < mSampledInputSize - 1 && j >= mInputIndice[i + 1]) {
                 break;
             }
-            length += ProximityInfoUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -333,7 +262,7 @@ void ProximityInfoState::refreshSpeedRates(const int inputSize, const int *const
                 break;
             }
             // TODO: use mLengthCache instead?
-            length += ProximityInfoUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -388,8 +317,7 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     while (start > 0 && tempBeelineDistance < lookupRadius) {
         tempTime += times[start] - times[start - 1];
         --start;
-        tempBeelineDistance = ProximityInfoUtils::getDistanceInt(x0, y0, xCoordinates[start],
-                yCoordinates[start]);
+        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
     }
     // Exclusive unless this is an edge point
     if (start > 0 && start < actualInputIndex) {
@@ -402,8 +330,7 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     while (end < (inputSize - 1) && tempBeelineDistance < lookupRadius) {
         tempTime += times[end + 1] - times[end];
         ++end;
-        tempBeelineDistance = ProximityInfoUtils::getDistanceInt(x0, y0, xCoordinates[end],
-                 yCoordinates[end]);
+        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[end], yCoordinates[end]);
     }
     // Exclusive unless this is an edge point
     if (end > actualInputIndex && end < (inputSize - 1)) {
@@ -421,7 +348,7 @@ float ProximityInfoState::calculateBeelineSpeedRate(
     const int y2 = yCoordinates[start];
     const int x3 = xCoordinates[end];
     const int y3 = yCoordinates[end];
-    const int beelineDistance = ProximityInfoUtils::getDistanceInt(x2, y2, x3, y3);
+    const int beelineDistance = getDistanceInt(x2, y2, x3, y3);
     int adjustedStartTime = times[start];
     if (start == 0 && actualInputIndex == 0 && inputSize > 1) {
         adjustedStartTime += FIRST_POINT_TIME_OFFSET_MILLIS;
@@ -475,166 +402,6 @@ bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSiz
         }
     }
     return true;
-}
-
-// Calculating point to key distance for all near keys and returning the distance between
-// the given point and the nearest key position.
-float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
-        NearKeysDistanceMap *const currentNearKeysDistances) {
-    static const float NEAR_KEY_THRESHOLD = 2.0f;
-
-    currentNearKeysDistances->clear();
-    const int keyCount = mProximityInfo->getKeyCount();
-    float nearestKeyDistance = mMaxPointToKeyLength;
-    for (int k = 0; k < keyCount; ++k) {
-        const float dist = mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
-        if (dist < NEAR_KEY_THRESHOLD) {
-            currentNearKeysDistances->insert(std::pair<int, float>(k, dist));
-        }
-        if (nearestKeyDistance > dist) {
-            nearestKeyDistance = dist;
-        }
-    }
-    return nearestKeyDistance;
-}
-
-// Check if previous point is at local minimum position to near keys.
-bool ProximityInfoState::isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
-        const NearKeysDistanceMap *const prevNearKeysDistances,
-        const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const float MARGIN = 0.01f;
-
-    for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
-        it != prevNearKeysDistances->end(); ++it) {
-        NearKeysDistanceMap::const_iterator itPP = prevPrevNearKeysDistances->find(it->first);
-        NearKeysDistanceMap::const_iterator itC = currentNearKeysDistances->find(it->first);
-        if ((itPP == prevPrevNearKeysDistances->end() || itPP->second > it->second + MARGIN)
-                && (itC == currentNearKeysDistances->end() || itC->second > it->second + MARGIN)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// Calculating a point score that indicates usefulness of the point.
-float ProximityInfoState::getPointScore(
-        const int x, const int y, const int time, const bool lastPoint, const float nearest,
-        const float sumAngle, const NearKeysDistanceMap *const currentNearKeysDistances,
-        const NearKeysDistanceMap *const prevNearKeysDistances,
-        const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const int DISTANCE_BASE_SCALE = 100;
-    static const float NEAR_KEY_THRESHOLD = 0.6f;
-    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 25;
-    static const float NOT_LOCALMIN_DISTANCE_SCORE = -1.0f;
-    static const float LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE = 1.0f;
-    static const float CORNER_ANGLE_THRESHOLD = M_PI_F * 2.0f / 3.0f;
-    static const float CORNER_SUM_ANGLE_THRESHOLD = M_PI_F / 4.0f;
-    static const float CORNER_SCORE = 1.0f;
-
-    const size_t size = mSampledInputXs.size();
-    // If there is only one point, add this point. Besides, if the previous point's distance map
-    // is empty, we re-compute nearby keys distances from the current point.
-    // Note that the current point is the first point in the incremental input that needs to
-    // be re-computed.
-    if (size <= 1 || prevNearKeysDistances->empty()) {
-        return 0.0f;
-    }
-
-    const int baseSampleRate = mProximityInfo->getMostCommonKeyWidth();
-    const int distPrev = ProximityInfoUtils::getDistanceInt(
-            mSampledInputXs.back(), mSampledInputYs.back(),
-            mSampledInputXs[size - 2], mSampledInputYs[size - 2]) * DISTANCE_BASE_SCALE;
-    float score = 0.0f;
-
-    // Location
-    if (!isPrevLocalMin(currentNearKeysDistances, prevNearKeysDistances,
-        prevPrevNearKeysDistances)) {
-        score += NOT_LOCALMIN_DISTANCE_SCORE;
-    } else if (nearest < NEAR_KEY_THRESHOLD) {
-        // Promote points nearby keys
-        score += LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
-    }
-    // Angle
-    const float angle1 = getAngle(x, y, mSampledInputXs.back(), mSampledInputYs.back());
-    const float angle2 = getAngle(mSampledInputXs.back(), mSampledInputYs.back(),
-            mSampledInputXs[size - 2], mSampledInputYs[size - 2]);
-    const float angleDiff = getAngleDiff(angle1, angle2);
-
-    // Save corner
-    if (distPrev > baseSampleRate * CORNER_CHECK_DISTANCE_THRESHOLD_SCALE
-            && (sumAngle > CORNER_SUM_ANGLE_THRESHOLD || angleDiff > CORNER_ANGLE_THRESHOLD)) {
-        score += CORNER_SCORE;
-    }
-    return score;
-}
-
-// Sampling touch point and pushing information to vectors.
-// Returning if previous point is popped or not.
-bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeCodePoint, int x, int y,
-        const int time, const bool sample, const bool isLastPoint, const float sumAngle,
-        NearKeysDistanceMap *const currentNearKeysDistances,
-        const NearKeysDistanceMap *const prevNearKeysDistances,
-        const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
-    static const int LAST_POINT_SKIP_DISTANCE_SCALE = 4;
-
-    size_t size = mSampledInputXs.size();
-    bool popped = false;
-    if (nodeCodePoint < 0 && sample) {
-        const float nearest = updateNearKeysDistances(x, y, currentNearKeysDistances);
-        const float score = getPointScore(x, y, time, isLastPoint, nearest, sumAngle,
-                currentNearKeysDistances, prevNearKeysDistances, prevPrevNearKeysDistances);
-        if (score < 0) {
-            // Pop previous point because it would be useless.
-            popInputData();
-            size = mSampledInputXs.size();
-            popped = true;
-        } else {
-            popped = false;
-        }
-        // Check if the last point should be skipped.
-        if (isLastPoint && size > 0) {
-            if (ProximityInfoUtils::getDistanceInt(x, y, mSampledInputXs.back(),
-                    mSampledInputYs.back()) * LAST_POINT_SKIP_DISTANCE_SCALE
-                            < mProximityInfo->getMostCommonKeyWidth()) {
-                // This point is not used because it's too close to the previous point.
-                if (DEBUG_GEO_FULL) {
-                    AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
-                           "width = %d", size, x, y, mSampledInputXs.back(), mSampledInputYs.back(),
-                           ProximityInfoUtils::getDistanceInt(x, y, mSampledInputXs.back(),
-                                   mSampledInputYs.back()),
-                           mProximityInfo->getMostCommonKeyWidth()
-                                   / LAST_POINT_SKIP_DISTANCE_SCALE);
-                }
-                return popped;
-            }
-        }
-    }
-
-    if (nodeCodePoint >= 0 && (x < 0 || y < 0)) {
-        const int keyId = mProximityInfo->getKeyIndexOf(nodeCodePoint);
-        if (keyId >= 0) {
-            x = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
-            y = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
-        }
-    }
-
-    // Pushing point information.
-    if (size > 0) {
-        mLengthCache.push_back(
-                mLengthCache.back() + ProximityInfoUtils::getDistanceInt(
-                        x, y, mSampledInputXs.back(), mSampledInputYs.back()));
-    } else {
-        mLengthCache.push_back(0);
-    }
-    mSampledInputXs.push_back(x);
-    mSampledInputYs.push_back(y);
-    mTimes.push_back(time);
-    mInputIndice.push_back(inputIndex);
-    if (DEBUG_GEO_FULL) {
-        AKLOGI("pushTouchPoint: x = %03d, y = %03d, time = %d, index = %d, popped ? %01d",
-                x, y, time, inputIndex, popped);
-    }
-    return popped;
 }
 
 float ProximityInfoState::calculateNormalizedSquaredDistance(
@@ -809,11 +576,8 @@ bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int k
 }
 
 void ProximityInfoState::popInputData() {
-    mSampledInputXs.pop_back();
-    mSampledInputYs.pop_back();
-    mTimes.pop_back();
-    mLengthCache.pop_back();
-    mInputIndice.pop_back();
+    ProximityInfoStateUtils::popInputData(&mSampledInputXs, &mSampledInputYs, &mTimes,
+            &mLengthCache, &mInputIndice);
 }
 
 float ProximityInfoState::getDirection(const int index0, const int index1) const {
