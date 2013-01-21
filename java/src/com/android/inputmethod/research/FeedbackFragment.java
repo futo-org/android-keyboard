@@ -32,7 +32,8 @@ import com.android.inputmethod.latin.R;
 
 public class FeedbackFragment extends Fragment {
     private EditText mEditText;
-    private CheckBox mCheckBox;
+    private CheckBox mIncludingHistoryCheckBox;
+    private CheckBox mIncludingAccountNameCheckBox;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +41,10 @@ public class FeedbackFragment extends Fragment {
         final View view = inflater.inflate(R.layout.research_feedback_fragment_layout, container,
                 false);
         mEditText = (EditText) view.findViewById(R.id.research_feedback_contents);
-        mCheckBox = (CheckBox) view.findViewById(R.id.research_feedback_include_history);
+        mIncludingHistoryCheckBox = (CheckBox) view.findViewById(
+                R.id.research_feedback_include_history);
+        mIncludingAccountNameCheckBox = (CheckBox) view.findViewById(
+                R.id.research_feedback_include_account_name);
 
         final Button sendButton = (Button) view.findViewById(
                 R.id.research_feedback_send_button);
@@ -49,8 +53,10 @@ public class FeedbackFragment extends Fragment {
             public void onClick(View v) {
                 final Editable editable = mEditText.getText();
                 final String feedbackContents = editable.toString();
-                final boolean includeHistory = mCheckBox.isChecked();
-                ResearchLogger.getInstance().sendFeedback(feedbackContents, includeHistory);
+                final boolean isIncludingHistory = mIncludingHistoryCheckBox.isChecked();
+                final boolean isIncludingAccountName = mIncludingAccountNameCheckBox.isChecked();
+                ResearchLogger.getInstance().sendFeedback(feedbackContents, isIncludingHistory,
+                        isIncludingAccountName);
                 final Activity activity = FeedbackFragment.this.getActivity();
                 activity.finish();
                 ResearchLogger.getInstance().onLeavingSendFeedbackDialog();

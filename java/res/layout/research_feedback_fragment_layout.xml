@@ -70,6 +70,14 @@
         android:text="@string/research_feedback_include_history_label"
     />
 
+    <CheckBox
+        android:id="@+id/research_feedback_include_account_name"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="8dip"
+        android:checked="false"
+        android:text="@string/research_feedback_include_account_name_label"
+    />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
