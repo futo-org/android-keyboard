@@ -24,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
@@ -98,6 +99,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_keyPreviewHeight
  * @attr ref R.styleable#MainKeyboardView_keyPreviewLingerTimeout
  * @attr ref R.styleable#MainKeyboardView_moreKeysKeyboardLayout
+ * @attr ref R.styleable#MainKeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#MainKeyboardView_showMoreKeysKeyboardAtTouchPoint
  * @attr ref R.styleable#MainKeyboardView_gestureFloatingPreviewTextLingerTimeout
  * @attr ref R.styleable#MainKeyboardView_gestureStaticTimeThresholdAfterFastTyping
@@ -164,6 +166,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private int mKeyPreviewLingerTimeout;
 
     // More keys keyboard
+    private final Paint mBackgroundDimAlphaPaint = new Paint();
+    private boolean mNeedsToDimEntireKeyboard;
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
     private final int mMoreKeysLayout;
@@ -492,6 +496,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
+        final int backgroundDimAlpha = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
+        mBackgroundDimAlphaPaint.setColor(Color.BLACK);
+        mBackgroundDimAlphaPaint.setAlpha(backgroundDimAlpha);
         mAutoCorrectionSpacebarLedEnabled = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = mainKeyboardViewAttr.getDrawable(
@@ -1304,6 +1312,24 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         mAutoCorrectionSpacebarLedOn = isAutoCorrection;
         invalidateKey(mSpaceKey);
+    }
+
+    public void dimEntireKeyboard(final boolean dimmed) {
+        final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
+        mNeedsToDimEntireKeyboard = dimmed;
+        if (needsRedrawing) {
+            invalidateAllKeys();
+        }
+    }
+
+    @Override
+    protected void onDraw(final Canvas canvas) {
+        super.onDraw(canvas);
+
+        // Overlay a dark rectangle to dim.
+        if (mNeedsToDimEntireKeyboard) {
+            canvas.drawRect(0, 0, getWidth(), getHeight(), mBackgroundDimAlphaPaint);
+        }
     }
 
     @Override

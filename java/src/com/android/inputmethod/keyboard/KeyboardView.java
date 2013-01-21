@@ -52,7 +52,6 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
  * @attr ref R.styleable#KeyboardView_keyTextShadowRadius
- * @attr ref R.styleable#KeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#Keyboard_Key_keyTypeface
  * @attr ref R.styleable#Keyboard_Key_keyLetterSize
@@ -83,7 +82,6 @@ public class KeyboardView extends View {
     protected final float mVerticalCorrection;
     protected final Drawable mKeyBackground;
     protected final Rect mKeyBackgroundPadding = new Rect();
-    private final int mBackgroundDimAlpha;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
@@ -101,8 +99,6 @@ public class KeyboardView extends View {
     protected final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
 
     // Drawing
-    /** True if the entire keyboard needs to be dimmed. */
-    private boolean mNeedsToDimEntireKeyboard;
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
@@ -147,8 +143,6 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView_keyTextShadowRadius, 0.0f);
         mVerticalCorrection = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_verticalCorrection, 0);
-        mBackgroundDimAlpha = keyboardViewAttr.getInt(
-                R.styleable.KeyboardView_backgroundDimAlpha, 0);
         keyboardViewAttr.recycle();
 
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
@@ -203,7 +197,7 @@ public class KeyboardView extends View {
     }
 
     @Override
-    public void onDraw(final Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
         if (canvas.isHardwareAccelerated()) {
             onDrawKeyboard(canvas);
@@ -293,15 +287,6 @@ public class KeyboardView extends View {
             }
         }
 
-        // TODO: Move this code block to MainKeyboardView.onDraw
-        // Overlay a dark rectangle to dim.
-        if (mNeedsToDimEntireKeyboard) {
-            paint.setColor(Color.BLACK);
-            paint.setAlpha(mBackgroundDimAlpha);
-            // Note: clipRegion() above is in effect if it was called.
-            canvas.drawRect(0, 0, width, height, paint);
-        }
-
         // ResearchLogging indicator.
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger,
         // and remove this call.
@@ -311,15 +296,6 @@ public class KeyboardView extends View {
 
         mInvalidatedKeys.clear();
         mInvalidateAllKeys = false;
-    }
-
-    // TODO: Move this method to MainKeyboardView.
-    public void dimEntireKeyboard(final boolean dimmed) {
-        final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
-        mNeedsToDimEntireKeyboard = dimmed;
-        if (needsRedrawing) {
-            invalidateAllKeys();
-        }
     }
 
     private void onDrawKey(final Key key, final Canvas canvas, final Paint paint) {
