@@ -52,7 +52,7 @@ import android.widget.TextView;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
@@ -81,7 +81,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ViewGroup mSuggestionsStrip;
-    KeyboardView mKeyboardView;
+    MainKeyboardView mMainKeyboardView;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -610,7 +610,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
      */
     public void setListener(final Listener listener, final View inputView) {
         mListener = listener;
-        mKeyboardView = (KeyboardView)inputView.findViewById(R.id.keyboard_view);
+        mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords) {
@@ -676,13 +676,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             new MoreKeysPanel.Controller() {
         @Override
         public boolean onDismissMoreKeysPanel() {
-            mKeyboardView.dimEntireKeyboard(false /* dimmed */);
-            return mKeyboardView.onDismissMoreKeysPanel();
+            mMainKeyboardView.dimEntireKeyboard(false /* dimmed */);
+            return mMainKeyboardView.onDismissMoreKeysPanel();
         }
 
         @Override
         public void onShowMoreKeysPanel(MoreKeysPanel panel) {
-            mKeyboardView.onShowMoreKeysPanel(panel);
+            mMainKeyboardView.onShowMoreKeysPanel(panel);
         }
 
         @Override
@@ -728,7 +728,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
         mOriginX = mLastX;
         mOriginY = mLastY;
-        mKeyboardView.dimEntireKeyboard(true /* dimmed */);
+        mMainKeyboardView.dimEntireKeyboard(true /* dimmed */);
         for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
             mWords.get(i).setPressed(false);
         }
