@@ -61,7 +61,7 @@
     <skip />
     <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
     <skip />
-    <!-- no translation found for settings_keypress_vibration_duration (489402970497503329) -->
+    <!-- no translation found for abbreviation_unit_milliseconds (8700286094028323363) -->
     <skip />
     <!-- no translation found for use_contacts_dict (4435317977804180815) -->
     <skip />
@@ -258,5 +258,17 @@
     <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
     <skip />
     <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
+    <skip />
+    <!-- no translation found for prefs_read_external_dictionary (2588931418575013067) -->
+    <skip />
+    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
+    <skip />
+    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
+    <skip />
+    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
+    <skip />
+    <!-- no translation found for error (8940763624668513648) -->
+    <skip />
+    <!-- no translation found for button_default (3988017840431881491) -->
     <skip />
 </resources>
