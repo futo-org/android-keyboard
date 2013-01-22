@@ -24,6 +24,7 @@
 #include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
+#include "proximity_info_params.h"
 #include "proximity_info_state_utils.h"
 
 namespace latinime {
@@ -37,10 +38,6 @@ class ProximityInfoState {
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
     static const int NOT_A_CODE;
-    static const int LOOKUP_RADIUS_PERCENTILE;
-    static const int FIRST_POINT_TIME_OFFSET_MILLIS;
-    static const int STRONG_DOUBLE_LETTER_TIME_MILLIS;
-    static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
 
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
@@ -180,7 +177,8 @@ class ProximityInfoState {
         const int beelineSpeedRate = getBeelineSpeedPercentile(id);
         if (beelineSpeedRate == 0) {
             return A_STRONG_DOUBLE_LETTER;
-        } else if (beelineSpeedRate < MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE) {
+        } else if (beelineSpeedRate
+                < ProximityInfoParams::MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE) {
             return A_DOUBLE_LETTER;
         } else {
             return NOT_A_DOUBLE_LETTER;
@@ -249,10 +247,6 @@ class ProximityInfoState {
     void popInputData();
     void updateAlignPointProbabilities(const int start);
     bool suppressCharProbabilities(const int index1, const int index2);
-    void refreshSpeedRates(const int inputSize, const int *const xCoordinates,
-            const int *const yCoordinates, const int *const times, const int lastSavedInputSize);
-    void refreshBeelineSpeedRates(const int inputSize,
-            const int *const xCoordinates, const int *const yCoordinates, const int * times);
     float calculateBeelineSpeedRate(const int id, const int inputSize,
             const int *const xCoordinates, const int *const yCoordinates, const int * times) const;
 
