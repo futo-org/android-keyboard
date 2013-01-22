@@ -17,7 +17,6 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
-#include <bitset>
 #include <cstring> // for memset()
 #include <vector>
 
@@ -33,7 +32,6 @@ class ProximityInfo;
 
 class ProximityInfoState {
  public:
-    typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
@@ -191,10 +189,6 @@ class ProximityInfoState {
     // get xy direction
     float getDirection(const int x, const int y) const;
 
-    float getPointAngle(const int index) const;
-    // Returns angle of three points. x, y, and z are indices.
-    float getPointsAngle(const int index0, const int index1, const int index2) const;
-
     float getMostProbableString(int *const codePointBuf) const;
 
     float getProbability(const int index, const int charCode) const;
@@ -205,7 +199,6 @@ class ProximityInfoState {
     bool isKeyInSerchKeysAfterIndex(const int index, const int keyId) const;
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
-    typedef hash_map_compat<int, float> NearKeysDistanceMap;
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
@@ -226,24 +219,9 @@ class ProximityInfoState {
     inline const int *getProximityCodePointsAt(const int index) const {
         return ProximityInfoStateUtils::getProximityCodePointsAt(mInputProximities, index);
     }
-
-    float updateNearKeysDistances(const int x, const int y,
-            NearKeysDistanceMap *const currentNearKeysDistances);
-    bool isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
-            const NearKeysDistanceMap *const prevNearKeysDistances,
-            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
-    float getPointScore(
-            const int x, const int y, const int time, const bool last, const float nearest,
-            const float sumAngle, const NearKeysDistanceMap *const currentNearKeysDistances,
-            const NearKeysDistanceMap *const prevNearKeysDistances,
-            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
     bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
             const int *const yCoordinates, const int *const times, const bool isGeometric) const;
     void popInputData();
-    void updateAlignPointProbabilities(const int start);
-    bool suppressCharProbabilities(const int index1, const int index2);
-    float calculateBeelineSpeedRate(const int id, const int inputSize,
-            const int *const xCoordinates, const int *const yCoordinates, const int * times) const;
 
     // const
     const ProximityInfo *mProximityInfo;
@@ -272,12 +250,12 @@ class ProximityInfoState {
     // The vector for the key code set which holds nearby keys for each sampled input point
     // 1. Used to calculate the probability of the key
     // 2. Used to calculate mSearchKeysVector
-    std::vector<NearKeycodesSet> mNearKeysVector;
+    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mNearKeysVector;
     // The vector for the key code set which holds nearby keys of some trailing sampled input points
     // for each sampled input point. These nearby keys contain the next characters which can be in
     // the dictionary. Specifically, currently we are looking for keys nearby trailing sampled
     // inputs including the current input point.
-    std::vector<NearKeycodesSet> mSearchKeysVector;
+    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSearchKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];

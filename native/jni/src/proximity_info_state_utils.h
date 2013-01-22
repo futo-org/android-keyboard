@@ -17,9 +17,11 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_UTILS_H
 #define LATINIME_PROXIMITY_INFO_STATE_UTILS_H
 
+#include <bitset>
 #include <vector>
 
 #include "defines.h"
+#include "hash_map_compat.h"
 
 namespace latinime {
 class ProximityInfo;
@@ -27,6 +29,9 @@ class ProximityInfoParams;
 
 class ProximityInfoStateUtils {
  public:
+    typedef hash_map_compat<int, float> NearKeysDistanceMap;
+    typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
+
     static int updateTouchPoints(const int mostCommonKeyWidth,
             const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
             const int *const inputProximities,
@@ -57,11 +62,25 @@ class ProximityInfoStateUtils {
             std::vector<int> *beelineSpeedPercentiles);
     static float getDirection(const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int index0, const int index1);
+    static void updateAlignPointProbabilities(
+            const float maxPointToKeyLength, const int mostCommonKeyWidth, const int keyCount,
+            const int start, const int sampledInputSize,
+            const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs,
+            const std::vector<float> *const sampledSpeedRates,
+            const std::vector<int> *const sampledLengthCache,
+            const std::vector<float> *const distanceCache_G,
+            std::vector<NearKeycodesSet> *nearKeysVector,
+            std::vector<hash_map_compat<int, float> > *charProbabilities);
+    static float getPointToKeyByIdLength(const float maxPointToKeyLength,
+            const std::vector<float> *const distanceCache_G, const int keyCount,
+            const int inputIndex, const int keyId, const float scale);
+    static float getPointToKeyByIdLength(const float maxPointToKeyLength,
+            const std::vector<float> *const distanceCache_G, const int keyCount,
+            const int inputIndex, const int keyId);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoStateUtils);
-
-    typedef hash_map_compat<int, float> NearKeysDistanceMap;
 
     static float updateNearKeysDistances(const ProximityInfo *const proximityInfo,
             const float maxPointToKeyLength, const int x, const int y,
@@ -91,6 +110,17 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             const std::vector<int> *const inputIndice);
+    static float getPointAngle(
+            const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs, const int index);
+    static float getPointsAngle(
+            const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs,
+            const int index0, const int index1, const int index2);
+    static bool suppressCharProbabilities(const int mostCommonKeyWidth,
+            const int sampledInputSize, const std::vector<int> *const lengthCache,
+            const int index0, const int index1,
+            std::vector<hash_map_compat<int, float> > *charProbabilities);
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_STATE_UTILS_H
