@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.suggestions;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import com.android.inputmethod.latin.R;
 
@@ -28,7 +27,6 @@ import com.android.inputmethod.latin.R;
  * key presses and touch movements.
  */
 public final class MoreSuggestionsView extends MoreKeysKeyboardView {
-
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreSuggestionsViewStyle);
     }
@@ -44,32 +42,15 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         return pane.mOccupiedWidth / 2;
     }
 
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard != null) {
-            final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
-            final int height = keyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
-            setMeasuredDimension(width, height);
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
-
     public void updateKeyboardGeometry(final int keyHeight) {
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
     }
 
     @Override
-    public void onCodeInput(final int primaryCode, final int x, final int y) {
-        final int index = primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE;
+    public void onCodeInput(final int code, final int x, final int y) {
+        final int index = code - MoreSuggestions.SUGGESTION_CODE_BASE;
         if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
             mListener.onCustomRequest(index);
         }
-    }
-
-    @Override
-    public boolean isShowingInParent() {
-        return (getContainerView().getParent() != null);
     }
 }

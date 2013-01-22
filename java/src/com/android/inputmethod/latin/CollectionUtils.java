@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -37,6 +38,10 @@ public final class CollectionUtils {
 
     public static <K,V> HashMap<K,V> newHashMap() {
         return new HashMap<K,V>();
+    }
+
+    public static <K, V> WeakHashMap<K, V> newWeakHashMap() {
+        return new WeakHashMap<K, V>();
     }
 
     public static <K,V> TreeMap<K,V> newTreeMap() {

@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
@@ -260,15 +260,15 @@ public final class MoreKeysKeyboard extends Keyboard {
 
         /**
          * The builder of MoreKeysKeyboard.
-         * @param containerView the container of {@link MoreKeysKeyboardView}.
+         * @param context the context of {@link MoreKeysKeyboardView}.
          * @param parentKey the {@link Key} that invokes more keys keyboard.
          * @param parentKeyboardView the {@link KeyboardView} that contains the parentKey.
          * @param keyPreviewDrawParams the parameter to place key preview.
          */
-        public Builder(final View containerView, final Key parentKey,
+        public Builder(final Context context, final Key parentKey,
                 final MainKeyboardView parentKeyboardView,
                 final KeyPreviewDrawParams keyPreviewDrawParams) {
-            super(containerView.getContext(), new MoreKeysKeyboardParams());
+            super(context, new MoreKeysKeyboardParams());
             final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
             load(parentKeyboard.mMoreKeysTemplate, parentKeyboard.mId);
 
