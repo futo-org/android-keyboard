@@ -32,9 +32,7 @@ class ProximityInfo;
 
 class ProximityInfoState {
  public:
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
-    static const float NOT_A_DISTANCE_FLOAT;
+
     static const int NOT_A_CODE;
 
     /////////////////////////////////////////
@@ -52,10 +50,11 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mTimes(),
-              mInputIndice(), mLengthCache(), mBeelineSpeedPercentiles(), mDistanceCache_G(),
-              mSpeedRates(), mDirections(), mCharProbabilities(), mNearKeysVector(),
-              mSearchKeysVector(), mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
+              mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mSampledTimes(),
+              mSampledInputIndice(), mSampledLengthCache(), mBeelineSpeedPercentiles(),
+              mDistanceCache_G(), mSpeedRates(), mDirections(), mCharProbabilities(),
+              mNearKeysVector(), mSearchKeysVector(), mTouchPositionCorrectionEnabled(false),
+              mSampledInputSize(0) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -144,7 +143,7 @@ class ProximityInfoState {
     bool hasSpaceProximity(const int index) const;
 
     int getLengthCache(const int index) const {
-        return mLengthCache[index];
+        return mSampledLengthCache[index];
     }
 
     bool isContinuationPossible() const {
@@ -210,7 +209,6 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
-    inline float square(const float x) const { return x * x; }
 
     bool hasInputCoordinates() const {
         return mSampledInputXs.size() > 0 && mSampledInputYs.size() > 0;
@@ -238,9 +236,9 @@ class ProximityInfoState {
 
     std::vector<int> mSampledInputXs;
     std::vector<int> mSampledInputYs;
-    std::vector<int> mTimes;
-    std::vector<int> mInputIndice;
-    std::vector<int> mLengthCache;
+    std::vector<int> mSampledTimes;
+    std::vector<int> mSampledInputIndice;
+    std::vector<int> mSampledLengthCache;
     std::vector<int> mBeelineSpeedPercentiles;
     std::vector<float> mDistanceCache_G;
     std::vector<float> mSpeedRates;

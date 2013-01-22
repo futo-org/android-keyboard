@@ -27,10 +27,6 @@
 
 namespace latinime {
 
-const int ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
-const int ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
-        1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-const float ProximityInfoState::NOT_A_DISTANCE_FLOAT = -1.0f;
 const int ProximityInfoState::NOT_A_CODE = -1;
 
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
@@ -61,10 +57,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     int pushTouchPointStartIndex = 0;
     int lastSavedInputSize = 0;
     mMaxPointToKeyLength = maxPointToKeyLength;
-    if (mIsContinuationPossible && mInputIndice.size() > 1) {
+    if (mIsContinuationPossible && mSampledInputIndice.size() > 1) {
         // Just update difference.
         // Two points prior is never skipped. Thus, we pop 2 input point data here.
-        pushTouchPointStartIndex = mInputIndice[mInputIndice.size() - 2];
+        pushTouchPointStartIndex = mSampledInputIndice[mSampledInputIndice.size() - 2];
         popInputData();
         popInputData();
         lastSavedInputSize = mSampledInputXs.size();
@@ -72,9 +68,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         // Clear all data.
         mSampledInputXs.clear();
         mSampledInputYs.clear();
-        mTimes.clear();
-        mInputIndice.clear();
-        mLengthCache.clear();
+        mSampledTimes.clear();
+        mSampledInputIndice.clear();
+        mSampledLengthCache.clear();
         mDistanceCache_G.clear();
         mNearKeysVector.clear();
         mSearchKeysVector.clear();
@@ -93,56 +89,33 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(
                 mProximityInfo->getMostCommonKeyWidth(), mProximityInfo, mMaxPointToKeyLength,
                 mInputProximities, xCoordinates, yCoordinates, times, pointerIds, inputSize,
-                isGeometric, pointerId, pushTouchPointStartIndex,
-                &mSampledInputXs, &mSampledInputYs, &mTimes, &mLengthCache, &mInputIndice);
+                isGeometric, pointerId, pushTouchPointStartIndex, &mSampledInputXs,
+                &mSampledInputYs, &mSampledTimes, &mSampledLengthCache, &mSampledInputIndice);
     }
 
     if (mSampledInputSize > 0 && isGeometric) {
         mAverageSpeed = ProximityInfoStateUtils::refreshSpeedRates(
                 inputSize, xCoordinates, yCoordinates, times, lastSavedInputSize,
-                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mTimes, &mLengthCache,
-                &mInputIndice, &mSpeedRates, &mDirections);
+                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledTimes,
+                &mSampledLengthCache, &mSampledInputIndice, &mSpeedRates, &mDirections);
         ProximityInfoStateUtils::refreshBeelineSpeedRates(
                 mProximityInfo->getMostCommonKeyWidth(), mAverageSpeed, inputSize,
                 xCoordinates, yCoordinates, times, mSampledInputSize, &mSampledInputXs,
-                &mSampledInputYs, &mInputIndice, &mBeelineSpeedPercentiles);
-    }
-
-    if (DEBUG_GEO_FULL) {
-        for (int i = 0; i < mSampledInputSize; ++i) {
-            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mSampledInputXs[i],
-                    mSampledInputYs[i], mTimes[i]);
-        }
+                &mSampledInputYs, &mSampledInputIndice, &mBeelineSpeedPercentiles);
     }
 
     if (mSampledInputSize > 0) {
-        const int keyCount = mProximityInfo->getKeyCount();
-        mNearKeysVector.resize(mSampledInputSize);
-        mSearchKeysVector.resize(mSampledInputSize);
-        mDistanceCache_G.resize(mSampledInputSize * keyCount);
-        for (int i = lastSavedInputSize; i < mSampledInputSize; ++i) {
-            mNearKeysVector[i].reset();
-            mSearchKeysVector[i].reset();
-            static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
-            for (int k = 0; k < keyCount; ++k) {
-                const int index = i * keyCount + k;
-                const int x = mSampledInputXs[i];
-                const int y = mSampledInputYs[i];
-                const float normalizedSquaredDistance =
-                        mProximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
-                mDistanceCache_G[index] = normalizedSquaredDistance;
-                if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
-                    mNearKeysVector[i][k] = true;
-                }
-            }
-        }
+        ProximityInfoStateUtils::initGeometricDistanceInfos(
+                mProximityInfo, mProximityInfo->getKeyCount(),
+                mSampledInputSize, lastSavedInputSize, &mSampledInputXs, &mSampledInputYs,
+                &mNearKeysVector, &mSearchKeysVector, &mDistanceCache_G);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
             ProximityInfoStateUtils::updateAlignPointProbabilities(
                     mMaxPointToKeyLength, mProximityInfo->getMostCommonKeyWidth(),
-                    keyCount, lastSavedInputSize, mSampledInputSize, &mSampledInputXs,
-                    &mSampledInputYs, &mSpeedRates, &mLengthCache, &mDistanceCache_G,
-                    &mNearKeysVector, &mCharProbabilities);
+                    mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
+                    &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
+                    &mDistanceCache_G, &mNearKeysVector, &mCharProbabilities);
 
             static const float READ_FORWORD_LENGTH_SCALE = 0.95f;
             const int readForwordLength = static_cast<int>(
@@ -153,7 +126,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                     mSearchKeysVector[i].reset();
                 }
                 for (int j = max(i, lastSavedInputSize); j < mSampledInputSize; ++j) {
-                    if (mLengthCache[j] - mLengthCache[i] >= readForwordLength) {
+                    if (mSampledLengthCache[j] - mSampledLengthCache[i] >= readForwordLength) {
                         break;
                     }
                     mSearchKeysVector[i] |= mNearKeysVector[j];
@@ -163,32 +136,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 
     if (DEBUG_SAMPLING_POINTS) {
-        std::stringstream originalX, originalY, sampledX, sampledY;
-        for (int i = 0; i < inputSize; ++i) {
-            originalX << xCoordinates[i];
-            originalY << yCoordinates[i];
-            if (i != inputSize - 1) {
-                originalX << ";";
-                originalY << ";";
-            }
-        }
-        AKLOGI("===== sampled points =====");
-        for (int i = 0; i < mSampledInputSize; ++i) {
-            if (isGeometric) {
-                AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %d",
-                        i, mSampledInputXs[i], mSampledInputYs[i], mTimes[i], mSpeedRates[i],
-                        getBeelineSpeedPercentile(i));
-            }
-            sampledX << mSampledInputXs[i];
-            sampledY << mSampledInputYs[i];
-            if (i != mSampledInputSize - 1) {
-                sampledX << ";";
-                sampledY << ";";
-            }
-        }
-        AKLOGI("original points:\n%s, %s,\nsampled points:\n%s, %s,\n",
-                originalX.str().c_str(), originalY.str().c_str(), sampledX.str().c_str(),
-                sampledY.str().c_str());
+        ProximityInfoStateUtils::dump(isGeometric, inputSize, xCoordinates, yCoordinates,
+                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mSpeedRates,
+                &mBeelineSpeedPercentiles);
     }
     // end
     ///////////////////////
@@ -198,42 +148,15 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mTouchPositionCorrectionEnabled = mSampledInputSize > 0 && mHasTouchPositionCorrectionData
             && xCoordinates && yCoordinates;
     if (!isGeometric && pointerId == 0) {
-        for (int i = 0; i < inputSize; ++i) {
-            mPrimaryInputWord[i] = getPrimaryCodePointAt(i);
-        }
-
-        for (int i = 0; i < mSampledInputSize && mTouchPositionCorrectionEnabled; ++i) {
-            const int *proximityCodePoints = getProximityCodePointsAt(i);
-            const int primaryKey = proximityCodePoints[0];
-            const int x = xCoordinates[i];
-            const int y = yCoordinates[i];
-            if (DEBUG_PROXIMITY_CHARS) {
-                int a = x + y + primaryKey;
-                a += 0;
-                AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
-            }
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0;
-                    ++j) {
-                const int currentCodePoint = proximityCodePoints[j];
-                const float squaredDistance =
-                        hasInputCoordinates() ? calculateNormalizedSquaredDistance(
-                                mProximityInfo->getKeyIndexOf(currentCodePoint), i) :
-                                NOT_A_DISTANCE_FLOAT;
-                if (squaredDistance >= 0.0f) {
-                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                            (int) (squaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
-                } else {
-                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                            (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
-                                    PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
-                }
-                if (DEBUG_PROXIMITY_CHARS) {
-                    AKLOGI("--- Proximity (%d) = %c", j, currentCodePoint);
-                }
-            }
+        ProximityInfoStateUtils::initPrimaryInputWord(
+                inputSize, mInputProximities, mPrimaryInputWord);
+        if (mTouchPositionCorrectionEnabled) {
+            ProximityInfoStateUtils::initNormalizedSquaredDistances(
+                    mProximityInfo, inputSize, xCoordinates, yCoordinates, mInputProximities,
+                    hasInputCoordinates(), &mSampledInputXs, &mSampledInputYs,
+                    mNormalizedSquaredDistances);
         }
     }
-
     if (DEBUG_GEO_FULL) {
         AKLOGI("ProximityState init finished: %d points out of %d", mSampledInputSize, inputSize);
     }
@@ -244,9 +167,9 @@ bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSiz
         const bool isGeometric) const {
     if (isGeometric) {
         for (int i = 0; i < mSampledInputSize; ++i) {
-            const int index = mInputIndice[i];
+            const int index = mSampledInputIndice[i];
             if (index > inputSize || xCoordinates[index] != mSampledInputXs[i] ||
-                    yCoordinates[index] != mSampledInputYs[i] || times[index] != mTimes[i]) {
+                    yCoordinates[index] != mSampledInputYs[i] || times[index] != mSampledTimes[i]) {
                 return false;
             }
         }
@@ -265,26 +188,9 @@ bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSiz
     return true;
 }
 
-float ProximityInfoState::calculateNormalizedSquaredDistance(
-        const int keyIndex, const int inputIndex) const {
-    if (keyIndex == NOT_AN_INDEX) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    if (!mProximityInfo->hasSweetSpotData(keyIndex)) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    if (NOT_A_COORDINATE == mSampledInputXs[inputIndex]) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(
-            keyIndex, inputIndex);
-    const float squaredRadius = square(mProximityInfo->getSweetSpotRadiiAt(keyIndex));
-    return squaredDistance / squaredRadius;
-}
-
 int ProximityInfoState::getDuration(const int index) const {
     if (index >= 0 && index < mSampledInputSize - 1) {
-        return mTimes[index + 1] - mTimes[index];
+        return mSampledTimes[index + 1] - mSampledTimes[index];
     }
     return 0;
 }
@@ -388,15 +294,6 @@ int ProximityInfoState::getSpaceY() const {
     return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
 }
 
-float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
-        const int keyIndex, const int inputIndex) const {
-    const float sweetSpotCenterX = mProximityInfo->getSweetSpotCenterXAt(keyIndex);
-    const float sweetSpotCenterY = mProximityInfo->getSweetSpotCenterYAt(keyIndex);
-    const float inputX = static_cast<float>(mSampledInputXs[inputIndex]);
-    const float inputY = static_cast<float>(mSampledInputYs[inputIndex]);
-    return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
-}
-
 // Puts possible characters into filter and returns new filter size.
 int ProximityInfoState::getAllPossibleChars(
         const size_t index, int *const filter, const int filterSize) const {
@@ -431,8 +328,8 @@ bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int k
 }
 
 void ProximityInfoState::popInputData() {
-    ProximityInfoStateUtils::popInputData(&mSampledInputXs, &mSampledInputYs, &mTimes,
-            &mLengthCache, &mInputIndice);
+    ProximityInfoStateUtils::popInputData(&mSampledInputXs, &mSampledInputYs, &mSampledTimes,
+            &mSampledLengthCache, &mSampledInputIndice);
 }
 
 float ProximityInfoState::getDirection(const int index0, const int index1) const {
