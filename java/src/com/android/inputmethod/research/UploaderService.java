@@ -51,7 +51,7 @@ public final class UploaderService extends IntentService {
     private static final boolean IS_INHIBITING_AUTO_UPLOAD = false
             && ProductionFlag.IS_EXPERIMENTAL_DEBUG;  // Force false in production
     public static final long RUN_INTERVAL = AlarmManager.INTERVAL_HOUR;
-    private static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
+    public static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
             + ".extra.UPLOAD_UNCONDITIONALLY";
     private static final int BUF_SIZE = 1024 * 8;
     protected static final int TIMEOUT_IN_MS = 1000 * 4;

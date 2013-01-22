@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,10 +31,18 @@ import android.widget.EditText;
 
 import com.android.inputmethod.latin.R;
 
-public class FeedbackFragment extends Fragment {
+public class FeedbackFragment extends Fragment implements OnClickListener {
+    private static final String TAG = FeedbackFragment.class.getSimpleName();
+
+    private static final String KEY_FEEDBACK_STRING = "FeedbackString";
+    private static final String KEY_INCLUDE_ACCOUNT_NAME = "IncludeAccountName";
+    public static final String KEY_HAS_USER_RECORDING = "HasRecording";
+
     private EditText mEditText;
-    private CheckBox mIncludingHistoryCheckBox;
     private CheckBox mIncludingAccountNameCheckBox;
+    private CheckBox mIncludingUserRecordingCheckBox;
+    private Button mSendButton;
+    private Button mCancelButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,39 +50,96 @@ public class FeedbackFragment extends Fragment {
         final View view = inflater.inflate(R.layout.research_feedback_fragment_layout, container,
                 false);
         mEditText = (EditText) view.findViewById(R.id.research_feedback_contents);
-        mIncludingHistoryCheckBox = (CheckBox) view.findViewById(
-                R.id.research_feedback_include_history);
+        mEditText.requestFocus();
         mIncludingAccountNameCheckBox = (CheckBox) view.findViewById(
                 R.id.research_feedback_include_account_name);
+        mIncludingUserRecordingCheckBox = (CheckBox) view.findViewById(
+                R.id.research_feedback_include_recording_checkbox);
+        mIncludingUserRecordingCheckBox.setOnClickListener(this);
 
-        final Button sendButton = (Button) view.findViewById(
-                R.id.research_feedback_send_button);
-        sendButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Editable editable = mEditText.getText();
-                final String feedbackContents = editable.toString();
-                final boolean isIncludingHistory = mIncludingHistoryCheckBox.isChecked();
-                final boolean isIncludingAccountName = mIncludingAccountNameCheckBox.isChecked();
-                ResearchLogger.getInstance().sendFeedback(feedbackContents, isIncludingHistory,
-                        isIncludingAccountName);
-                final Activity activity = FeedbackFragment.this.getActivity();
-                activity.finish();
-                ResearchLogger.getInstance().onLeavingSendFeedbackDialog();
+        mSendButton = (Button) view.findViewById(R.id.research_feedback_send_button);
+        mSendButton.setOnClickListener(this);
+        mCancelButton = (Button) view.findViewById(R.id.research_feedback_cancel_button);
+        mCancelButton.setOnClickListener(this);
+
+        if (savedInstanceState != null) {
+            Log.d(TAG, "restoring from savedInstanceState");
+            restoreState(savedInstanceState);
+        } else {
+            final Bundle bundle = getActivity().getIntent().getExtras();
+            if (bundle != null) {
+                Log.d(TAG, "restoring from getArguments()");
+                restoreState(bundle);
             }
-        });
-
-        final Button cancelButton = (Button) view.findViewById(
-                R.id.research_feedback_cancel_button);
-        cancelButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Activity activity = FeedbackFragment.this.getActivity();
-                activity.finish();
-                ResearchLogger.getInstance().onLeavingSendFeedbackDialog();
-            }
-        });
-
+        }
         return view;
+    }
+
+    @Override
+    public void onClick(final View view) {
+        final ResearchLogger researchLogger = ResearchLogger.getInstance();
+        if (view == mIncludingUserRecordingCheckBox) {
+            if (hasUserRecording()) {
+                // Remove the recording
+                setHasUserRecording(false);
+            } else {
+                final Bundle bundle = new Bundle();
+                onSaveInstanceState(bundle);
+
+                // Let the user make a recording
+                getActivity().finish();
+
+                researchLogger.setFeedbackDialogBundle(bundle);
+                researchLogger.onLeavingSendFeedbackDialog();
+                researchLogger.startRecording();
+            }
+        } else if (view == mSendButton) {
+            final Editable editable = mEditText.getText();
+            final String feedbackContents = editable.toString();
+            final boolean isIncludingAccountName = isIncludingAccountName();
+            researchLogger.sendFeedback(feedbackContents,
+                    false /* isIncludingHistory */, isIncludingAccountName, hasUserRecording());
+            getActivity().finish();
+            researchLogger.setFeedbackDialogBundle(null);
+            researchLogger.onLeavingSendFeedbackDialog();
+        } else if (view == mCancelButton) {
+            Log.d(TAG, "Finishing");
+            getActivity().finish();
+            researchLogger.setFeedbackDialogBundle(null);
+            researchLogger.onLeavingSendFeedbackDialog();
+        } else {
+            Log.e(TAG, "Unknown view passed to FeedbackFragment.onClick()");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle bundle) {
+        final String savedFeedbackString = mEditText.getText().toString();
+
+        bundle.putString(KEY_FEEDBACK_STRING, savedFeedbackString);
+        bundle.putBoolean(KEY_INCLUDE_ACCOUNT_NAME, isIncludingAccountName());
+        bundle.putBoolean(KEY_HAS_USER_RECORDING, hasUserRecording());
+    }
+
+    public void restoreState(final Bundle bundle) {
+        mEditText.setText(bundle.getString(KEY_FEEDBACK_STRING));
+        setIsIncludingAccountName(bundle.getBoolean(KEY_INCLUDE_ACCOUNT_NAME));
+        setHasUserRecording(bundle.getBoolean(KEY_HAS_USER_RECORDING));
+    }
+
+    private boolean hasUserRecording() {
+        return mIncludingUserRecordingCheckBox.isChecked();
+    }
+
+    private void setHasUserRecording(final boolean hasRecording) {
+        mIncludingUserRecordingCheckBox.setChecked(hasRecording);
+    }
+
+    private boolean isIncludingAccountName() {
+        return mIncludingAccountNameCheckBox.isChecked();
+    }
+
+    private void setIsIncludingAccountName(final boolean isIncludingAccountName) {
+        mIncludingAccountNameCheckBox.setChecked(isIncludingAccountName);
     }
 }

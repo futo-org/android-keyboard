@@ -14,107 +14,111 @@
      limitations under the License.
 -->
 
-<LinearLayout
-     xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="fill_parent"
-     android:layout_height="fill_parent"
-     android:orientation="vertical"
->
-
-    <!-- Mimic a dialog title.  Necessary since the dialog is actually an activity, so the normal
-        dialog title construction code is not available. -->
+<!-- Adapted from frameworks/base/core/res/res/layout/alert_dialog_holo.xml.  We
+   want a dialog, but it must be its own activity so we can launch the soft
+   keyboard on it.  A regular dialog will not work since it would be launched from
+   the IME. -->
+<ScrollView>
     <LinearLayout
+         xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="vertical"
-    >
-        <com.android.internal.widget.DialogTitle
-            style="?android:attr/windowTitleStyle"
-            android:singleLine="true"
-            android:ellipsize="end"
+         android:layout_height="match_parent"
+         android:layout_marginStart="8dip"
+         android:layout_marginEnd="8dip"
+         android:orientation="vertical">
+        <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="vertical">
+            <View android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:visibility="gone"
+                android:background="@android:color/holo_blue_light" />
+            <TextView
+                style="?android:attr/windowTitleStyle"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="64dip"
+                android:layout_marginLeft="16dip"
+                android:layout_marginRight="16dip"
+                android:gravity="center_vertical|left"
+                android:text="@string/research_feedback_dialog_title" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:background="@android:color/holo_blue_light" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/research_feedback_contents"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="64dip"
+            android:layout_gravity="fill_horizontal|center_vertical"
+            android:layout_marginLeft="8dip"
+            android:layout_marginRight="8dip"
+            android:layout_marginBottom="8dip"
+            android:layout_marginTop="8dip"
+            android:minLines="2"
+            android:scrollbars="vertical"
+            android:hint="@string/research_feedback_hint"
+            android:inputType="textMultiLine">
+            <requestFocus />
+        </EditText>
+        <CheckBox
+            android:id="@+id/research_feedback_include_account_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:layout_marginLeft="16dip"
             android:layout_marginRight="16dip"
-            android:gravity="center_vertical|left"
-            android:text="@string/research_feedback_dialog_title" />
-        <View
+            android:layout_marginBottom="8dip"
+            android:checked="false"
+            android:text="@string/research_feedback_include_account_name_label" />
+        <CheckBox
+            android:id="@+id/research_feedback_include_recording_checkbox"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="2dip"
-            android:background="@android:color/holo_blue_light" />
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/research_feedback_contents"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_gravity="fill_horizontal|center_vertical"
-        android:layout_marginLeft="8dip"
-        android:layout_marginRight="8dip"
-        android:layout_marginBottom="8dip"
-        android:layout_marginTop="8dip"
-        android:lines="2"
-        android:hint="@string/research_feedback_hint"
-        android:inputType="textMultiLine"
-        android:imeOptions="flagNoFullscreen"
-    >
-        <requestFocus />
-    </EditText>
-
-    <CheckBox
-        android:id="@+id/research_feedback_include_history"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="8dip"
-        android:checked="true"
-        android:text="@string/research_feedback_include_history_label"
-    />
-
-    <CheckBox
-        android:id="@+id/research_feedback_include_account_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="8dip"
-        android:checked="false"
-        android:text="@string/research_feedback_include_account_name_label"
-    />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="?android:attr/dividerHorizontal"
-        android:showDividers="beginning"
-        android:dividerPadding="0dip"
-    >
+            android:layout_marginLeft="16dip"
+            android:layout_marginRight="16dip"
+            android:layout_marginBottom="8dip"
+            android:checked="false"
+            android:text="@string/research_feedback_include_recording_label" />
         <LinearLayout
-            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:measureWithLargestChild="true"
-        >
-            <Button
-                android:id="@+id/research_feedback_cancel_button"
-                android:layout_width="0dip"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:maxLines="2"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textSize="14sp"
-                android:text="@string/research_feedback_cancel"
+            android:orientation="vertical"
+            android:divider="?android:attr/dividerHorizontal"
+            android:showDividers="beginning"
+            android:dividerPadding="0dip">
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-            />
-            <Button
-                android:id="@+id/research_feedback_send_button"
-                android:layout_width="0dip"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:maxLines="2"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textSize="14sp"
-                android:text="@string/research_feedback_send"
-                android:layout_height="wrap_content"
-            />
+                android:orientation="horizontal"
+                android:layoutDirection="locale"
+                android:measureWithLargestChild="true">
+                <Button
+                    android:id="@+id/research_feedback_cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:maxLines="2"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:textSize="14sp"
+                    android:text="@string/research_feedback_cancel"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/research_feedback_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:maxLines="2"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:textSize="14sp"
+                    android:text="@string/research_feedback_send"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>
