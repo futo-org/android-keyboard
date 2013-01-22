@@ -435,5 +435,7 @@
     <declare-styleable name="SeekBarDialogPreference">
         <attr name="valueFormatText" format="reference" />
         <attr name="maxValue" format="integer" />
+        <attr name="minValue" format="integer" />
+        <attr name="stepValue" format="integer" />
     </declare-styleable>
 </resources>
