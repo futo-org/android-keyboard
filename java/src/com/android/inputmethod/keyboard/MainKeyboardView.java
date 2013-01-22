@@ -174,9 +174,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // More keys keyboard
     private final Paint mBackgroundDimAlphaPaint = new Paint();
     private boolean mNeedsToDimEntireKeyboard;
-    private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
-            new WeakHashMap<Key, MoreKeysPanel>();
-    private final int mMoreKeysLayout;
+    private final View mMoreKeysKeyboardContainer;
+    private final WeakHashMap<Key, Keyboard> mMoreKeysKeyboardCache =
+            CollectionUtils.newWeakHashMap();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
     // More keys panel (used by both more keys keyboard and more suggestions view)
     // TODO: Consider extending to support multiple more keys panels
@@ -245,7 +245,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 break;
             case MSG_LONGPRESS_KEY:
                 if (tracker != null) {
-                    keyboardView.openMoreKeysKeyboardIfRequired(tracker.getKey(), tracker);
+                    keyboardView.onLongPress(tracker);
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
                 }
@@ -544,7 +544,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
         }
-        mMoreKeysLayout = mainKeyboardViewAttr.getResourceId(
+        final int moreKeysKeyboardLayoutId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = mainKeyboardViewAttr.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
@@ -566,6 +566,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mPreviewPlacerView.addPreview(mSlidingKeyInputPreview);
         mainKeyboardViewAttr.recycle();
 
+        mMoreKeysKeyboardContainer = LayoutInflater.from(getContext())
+                .inflate(moreKeysKeyboardLayoutId, null);
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
                 languageOnSpacebarFadeoutAnimatorResId, this);
         mAltCodeKeyWhileTypingFadeoutAnimator = loadObjectAnimator(
@@ -653,7 +655,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
         PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboardGeometry(keyboard.mOccupiedWidth);
-        mMoreKeysPanelCache.clear();
+        mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null)
@@ -942,123 +944,105 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
-    private boolean openMoreKeysKeyboardIfRequired(final Key parentKey,
-            final PointerTracker tracker) {
-        // Check if we have a popup layout specified first.
-        if (mMoreKeysLayout == 0) {
-            return false;
-        }
-
-        // Check if we are already displaying popup panel.
-        if (mMoreKeysPanel != null) {
-            return false;
-        }
-        if (parentKey == null) {
-            return false;
-        }
-        return onLongPress(parentKey, tracker);
-    }
-
-    private MoreKeysPanel onCreateMoreKeysPanel(final Key parentKey) {
-        if (parentKey.mMoreKeys == null) {
+    private MoreKeysPanel onCreateMoreKeysPanel(final Key key, final Context context) {
+        if (key.mMoreKeys == null) {
             return null;
         }
-
-        final View container = LayoutInflater.from(getContext()).inflate(mMoreKeysLayout, null);
-        if (container == null) {
-            throw new NullPointerException();
+        Keyboard moreKeysKeyboard = mMoreKeysKeyboardCache.get(key);
+        if (moreKeysKeyboard == null) {
+            moreKeysKeyboard = new MoreKeysKeyboard.Builder(
+                    context, key, this, mKeyPreviewDrawParams).build();
+            mMoreKeysKeyboardCache.put(key, moreKeysKeyboard);
         }
 
+        final View container = mMoreKeysKeyboardContainer;
         final MoreKeysKeyboardView moreKeysKeyboardView =
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
-        final Keyboard moreKeysKeyboard = new MoreKeysKeyboard.Builder(
-                container, parentKey, this, mKeyPreviewDrawParams)
-                .build();
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);
         container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         return moreKeysKeyboardView;
     }
 
     /**
      * Called when a key is long pressed.
-     * @param parentKey the key that was long pressed
      * @param tracker the pointer tracker which pressed the parent key
      * @return true if the long press is handled, false otherwise. Subclasses should call the
      * method on the base class if the subclass doesn't wish to handle the call.
      */
-    private boolean onLongPress(final Key parentKey, final PointerTracker tracker) {
+    private boolean onLongPress(final PointerTracker tracker) {
+        if (isShowingMoreKeysPanel()) {
+            return false;
+        }
+        final Key key = tracker.getKey();
+        if (key == null) {
+            return false;
+        }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.mainKeyboardView_onLongPress();
         }
-        final int primaryCode = parentKey.mCode;
-        if (parentKey.hasEmbeddedMoreKey()) {
-            final int embeddedCode = parentKey.mMoreKeys[0].mCode;
+        final int code = key.mCode;
+        if (key.hasEmbeddedMoreKey()) {
+            final int embeddedCode = key.mMoreKeys[0].mCode;
             tracker.onLongPressed();
             invokeCodeInput(embeddedCode);
-            invokeReleaseKey(primaryCode);
-            KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
+            invokeReleaseKey(code);
+            KeyboardSwitcher.getInstance().hapticAndAudioFeedback(code);
             return true;
         }
-        if (primaryCode == Constants.CODE_SPACE || primaryCode == Constants.CODE_LANGUAGE_SWITCH) {
+        if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
             if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
-                invokeReleaseKey(primaryCode);
+                invokeReleaseKey(code);
                 return true;
             }
         }
-        return openMoreKeysPanel(parentKey, tracker);
+        return openMoreKeysPanel(key, tracker);
     }
 
-    private boolean invokeCustomRequest(final int code) {
-        return mKeyboardActionListener.onCustomRequest(code);
+    private boolean invokeCustomRequest(final int requestCode) {
+        return mKeyboardActionListener.onCustomRequest(requestCode);
     }
 
-    private void invokeCodeInput(final int primaryCode) {
+    private void invokeCodeInput(final int code) {
         mKeyboardActionListener.onCodeInput(
-                primaryCode, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                code, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
     }
 
-    private void invokeReleaseKey(final int primaryCode) {
-        mKeyboardActionListener.onReleaseKey(primaryCode, false);
+    private void invokeReleaseKey(final int code) {
+        mKeyboardActionListener.onReleaseKey(code, false);
     }
 
-    private boolean openMoreKeysPanel(final Key parentKey, final PointerTracker tracker) {
-        MoreKeysPanel moreKeysPanel = mMoreKeysPanelCache.get(parentKey);
+    private boolean openMoreKeysPanel(final Key key, final PointerTracker tracker) {
+        final MoreKeysPanel moreKeysPanel = onCreateMoreKeysPanel(key, getContext());
         if (moreKeysPanel == null) {
-            moreKeysPanel = onCreateMoreKeysPanel(parentKey);
-            if (moreKeysPanel == null) {
-                return false;
-            }
-            mMoreKeysPanelCache.put(parentKey, moreKeysPanel);
+            return false;
         }
 
         final int[] lastCoords = CoordinateUtils.newInstance();
         tracker.getLastCoordinates(lastCoords);
-        final boolean keyPreviewEnabled = isKeyPreviewPopupEnabled() && !parentKey.noKeyPreview();
+        final boolean keyPreviewEnabled = isKeyPreviewPopupEnabled() && !key.noKeyPreview();
         // The more keys keyboard is usually horizontally aligned with the center of the parent key.
         // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
         // keys keyboard is placed at the touch point of the parent key.
         final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint && !keyPreviewEnabled)
                 ? CoordinateUtils.x(lastCoords)
-                : parentKey.mX + parentKey.mWidth / 2;
+                : key.mX + key.mWidth / 2;
         // The more keys keyboard is usually vertically aligned with the top edge of the parent key
         // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
         // aligned with the bottom edge of the visible part of the key preview.
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY = parentKey.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
+        final int pointY = key.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
         moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         final int translatedX = moreKeysPanel.translateX(CoordinateUtils.x(lastCoords));
         final int translatedY = moreKeysPanel.translateY(CoordinateUtils.y(lastCoords));
         tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
-        dimEntireKeyboard(true /* dimmed */);
         return true;
     }
 
     public boolean isInSlidingKeyInput() {
-        if (mMoreKeysPanel != null) {
+        if (isShowingMoreKeysPanel()) {
             return true;
         }
         return PointerTracker.isAnyInSlidingKeyInput();
@@ -1069,19 +1053,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (isShowingMoreKeysPanel()) {
             onDismissMoreKeysPanel();
         }
+        mPreviewPlacerView.addView(panel.getContainerView());
         mMoreKeysPanel = panel;
-        mPreviewPlacerView.addView(mMoreKeysPanel.getContainerView());
+        dimEntireKeyboard(true /* dimmed */);
     }
 
     public boolean isShowingMoreKeysPanel() {
-        return (mMoreKeysPanel != null);
+        return mMoreKeysPanel != null && mMoreKeysPanel.isShowingInParent();
     }
 
     @Override
     public void onCancelMoreKeysPanel() {
-        if (isShowingMoreKeysPanel()) {
-            mMoreKeysPanel.dismissMoreKeysPanel();
-        }
         PointerTracker.dismissAllMoreKeysPanels();
     }
 
@@ -1254,9 +1236,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public void closing() {
         dismissAllKeyPreviews();
         cancelAllMessages();
+        onDismissMoreKeysPanel();
+        mMoreKeysKeyboardCache.clear();
         super.closing();
-        onCancelMoreKeysPanel();
-        mMoreKeysPanelCache.clear();
     }
 
     /**
@@ -1331,7 +1313,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         invalidateKey(mSpaceKey);
     }
 
-    public void dimEntireKeyboard(final boolean dimmed) {
+    private void dimEntireKeyboard(final boolean dimmed) {
         final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
         mNeedsToDimEntireKeyboard = dimmed;
         if (needsRedrawing) {

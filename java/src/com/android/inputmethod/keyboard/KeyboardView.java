@@ -169,11 +169,11 @@ public class KeyboardView extends View {
     public void setKeyboard(final Keyboard keyboard) {
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
-        requestLayout();
-        invalidateAllKeys();
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
         mKeyDrawParams.updateParams(keyHeight, keyboard.mKeyVisualAttributes);
+        invalidateAllKeys();
+        requestLayout();
     }
 
     /**
@@ -638,7 +638,6 @@ public class KeyboardView extends View {
     public void closing() {
         mInvalidateAllKeys = true;
         mKeyboard = null;
-        requestLayout();
     }
 
     @Override
