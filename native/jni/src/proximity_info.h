@@ -28,7 +28,7 @@ class Correction;
 
 class ProximityInfo {
  public:
-    ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
+    ProximityInfo(JNIEnv *env, const jstring localeJStr,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
             const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
             const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
@@ -126,7 +126,6 @@ class ProximityInfo {
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
 
-    const int MAX_PROXIMITY_CHARS_SIZE;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
     const int MOST_COMMON_KEY_WIDTH;

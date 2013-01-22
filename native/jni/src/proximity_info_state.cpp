@@ -208,7 +208,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 a += 0;
                 AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
             }
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL && proximityCodePoints[j] > 0;
+            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0;
                     ++j) {
                 const int currentCodePoint = proximityCodePoints[j];
                 const float squaredDistance =
@@ -216,10 +216,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                                 mProximityInfo->getKeyIndexOf(currentCodePoint), i) :
                                 NOT_A_DISTANCE_FLOAT;
                 if (squaredDistance >= 0.0f) {
-                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
+                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
                             (int) (squaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
                 } else {
-                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
+                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
                             (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
                                     PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
                 }
@@ -355,7 +355,7 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
 
     // Not an exact nor an accent-alike match: search the list of close keys
     int j = 1;
-    while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+    while (j < MAX_PROXIMITY_CHARS_SIZE
             && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
         const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
         if (matched) {
@@ -366,10 +366,10 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
         }
         ++j;
     }
-    if (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+    if (j < MAX_PROXIMITY_CHARS_SIZE
             && currentCodePoints[j] == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
         ++j;
-        while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+        while (j < MAX_PROXIMITY_CHARS_SIZE
                 && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
             const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
             if (matched) {
