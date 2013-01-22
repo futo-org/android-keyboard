@@ -23,11 +23,11 @@
     <integer name="config_device_form_factor">0</integer>
     <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
-    <bool name="config_enable_show_popup_on_keypress_option">true</bool>
+    <bool name="config_enable_show_option_of_key_preview_popup">true</bool>
     <!-- TODO: Disable the following configuration for production. -->
     <bool name="config_enable_usability_study_mode_option">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
-    <bool name="config_default_popup_preview">true</bool>
+    <bool name="config_default_key_preview_popup">true</bool>
     <!-- Default value for next word prediction: after entering a word and a space only, should we look
          at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_next_word_prediction">true</bool>

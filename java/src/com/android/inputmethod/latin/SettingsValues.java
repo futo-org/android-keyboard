@@ -104,9 +104,8 @@ public final class SettingsValues {
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-        mVibrateOn = readVibrationEnabled(prefs, res);
-        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
-                res.getBoolean(R.bool.config_default_sound_enabled));
+        mVibrateOn = Settings.readVibrationEnabled(prefs, res);
+        mSoundOn = Settings.readKeypressSoundEnabled(prefs, res);
         mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);
         mSlidingKeyInputPreviewEnabled = prefs.getBoolean(
                 Settings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
@@ -121,7 +120,7 @@ public final class SettingsValues {
         mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
-        mAutoCorrectEnabled = readAutoCorrectEnabled(res, autoCorrectionThresholdRawValue);
+        mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
         // Compute other readable settings
@@ -133,10 +132,7 @@ public final class SettingsValues {
                 autoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
-        final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
-                R.bool.config_gesture_input_enabled_by_build_config);
-        mGestureInputEnabled = gestureInputEnabledByBuildConfig
-                && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
+        mGestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
         mGesturePreviewTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
@@ -248,20 +244,6 @@ public final class SettingsValues {
             }
         }
         throw new RuntimeException("Bug: visibility string is not configured correctly");
-    }
-
-    private static boolean readVibrationEnabled(final SharedPreferences prefs,
-            final Resources res) {
-        final boolean hasVibrator = AudioAndHapticFeedbackManager.getInstance().hasVibrator();
-        return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
-                res.getBoolean(R.bool.config_default_vibration_enabled));
-    }
-
-    private static boolean readAutoCorrectEnabled(final Resources res,
-            final String currentAutoCorrectionSetting) {
-        final String autoCorrectionOff = res.getString(
-                R.string.auto_correction_threshold_mode_index_off);
-        return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
     }
 
     private static boolean readBigramPredictionEnabled(final SharedPreferences prefs,
