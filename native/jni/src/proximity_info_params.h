@@ -27,8 +27,11 @@ class ProximityInfoParams {
     static const int FIRST_POINT_TIME_OFFSET_MILLIS;
     static const int STRONG_DOUBLE_LETTER_TIME_MILLIS;
     static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+    static const float NOT_A_DISTANCE_FLOAT;
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoParams);
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_PARAMS_H

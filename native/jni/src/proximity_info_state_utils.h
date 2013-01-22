@@ -78,7 +78,29 @@ class ProximityInfoStateUtils {
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
             const std::vector<float> *const distanceCache_G, const int keyCount,
             const int inputIndex, const int keyId);
-
+    static void initGeometricDistanceInfos(
+            const ProximityInfo *const proximityInfo, const int keyCount,
+            const int sampledInputSize, const int lastSavedInputSize,
+            const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs,
+            std::vector<NearKeycodesSet> *nearKeysVector,
+            std::vector<NearKeycodesSet> *searchKeysVector,
+            std::vector<float> *distanceCache_G);
+    static void initPrimaryInputWord(
+            const int inputSize, const int *const inputProximities, int *primaryInputWord);
+    static void initNormalizedSquaredDistances(
+            const ProximityInfo *const proximityInfo, const int inputSize,
+            const int *inputXCoordinates, const int *inputYCoordinates,
+            const int *const inputProximities, const bool hasInputCoordinates,
+            const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs,
+            int *normalizedSquaredDistances);
+    static void dump(const bool isGeometric, const int inputSize,
+            const int *const inputXCoordinates, const int *const inputYCoordinates,
+            const int sampledInputSize, const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs,
+            const std::vector<float> *const sampledSpeedRates,
+            const std::vector<int> *const sampledBeelineSpeedPercentiles);
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoStateUtils);
 
@@ -121,6 +143,13 @@ class ProximityInfoStateUtils {
             const int sampledInputSize, const std::vector<int> *const lengthCache,
             const int index0, const int index1,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
+    static float calculateSquaredDistanceFromSweetSpotCenter(
+            const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs, const int keyIndex,
+            const int inputIndex);
+     static float calculateNormalizedSquaredDistance(
+            const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs, const int keyIndex, const int inputIndex);
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_STATE_UTILS_H

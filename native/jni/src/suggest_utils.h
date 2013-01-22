@@ -18,6 +18,7 @@
 #define LATINIME_SUGGEST_UTILS_H
 
 #include "defines.h"
+#include "proximity_info_params.h"
 #include "proximity_info_state.h"
 
 namespace latinime {
@@ -35,7 +36,7 @@ class SuggestUtils {
         static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
         static const float R2 = HALF_SCORE_SQUARED_RADIUS;
         const float x = normalizedSquaredDistance / static_cast<float>(
-                ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
+                ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
         const float factor = max((x < R1)
                 ? (A * (R1 - x) + B * x) / R1
                 : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);

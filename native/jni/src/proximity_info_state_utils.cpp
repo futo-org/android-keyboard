@@ -24,6 +24,7 @@
 #include "proximity_info_state_utils.h"
 
 namespace latinime {
+
 /* static */ int ProximityInfoStateUtils::updateTouchPoints(const int mostCommonKeyWidth,
         const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
         const int *const inputProximities, const int *const inputXCoordinates,
@@ -126,6 +127,114 @@ namespace latinime {
     return getProximityCodePointsAt(inputProximities, index)[0];
 }
 
+/* static */ void ProximityInfoStateUtils::initPrimaryInputWord(
+        const int inputSize, const int *const inputProximities, int *primaryInputWord) {
+    for (int i = 0; i < inputSize; ++i) {
+        primaryInputWord[i] = getPrimaryCodePointAt(inputProximities, i);
+    }
+}
+
+/* static */ float ProximityInfoStateUtils::calculateSquaredDistanceFromSweetSpotCenter(
+        const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs, const int keyIndex,
+        const int inputIndex) {
+    const float sweetSpotCenterX = proximityInfo->getSweetSpotCenterXAt(keyIndex);
+    const float sweetSpotCenterY = proximityInfo->getSweetSpotCenterYAt(keyIndex);
+    const float inputX = static_cast<float>((*sampledInputXs)[inputIndex]);
+    const float inputY = static_cast<float>((*sampledInputYs)[inputIndex]);
+    return SQUARE_FLOAT(inputX - sweetSpotCenterX) + SQUARE_FLOAT(inputY - sweetSpotCenterY);
+}
+
+/* static */ float ProximityInfoStateUtils::calculateNormalizedSquaredDistance(
+        const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs,
+        const int keyIndex, const int inputIndex) {
+    if (keyIndex == NOT_AN_INDEX) {
+        return ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
+    }
+    if (!proximityInfo->hasSweetSpotData(keyIndex)) {
+        return ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
+    }
+    if (NOT_A_COORDINATE == (*sampledInputXs)[inputIndex]) {
+        return ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
+    }
+    const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(proximityInfo,
+            sampledInputXs, sampledInputYs, keyIndex, inputIndex);
+    const float squaredRadius = SQUARE_FLOAT(proximityInfo->getSweetSpotRadiiAt(keyIndex));
+    return squaredDistance / squaredRadius;
+}
+
+/* static */ void ProximityInfoStateUtils::initNormalizedSquaredDistances(
+        const ProximityInfo *const proximityInfo, const int inputSize,
+        const int *inputXCoordinates, const int *inputYCoordinates,
+        const int *const inputProximities, const bool hasInputCoordinates,
+        const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs,
+        int *normalizedSquaredDistances) {
+    for (int i = 0; i < inputSize; ++i) {
+        const int *proximityCodePoints = getProximityCodePointsAt(inputProximities, i);
+        const int primaryKey = proximityCodePoints[0];
+        const int x = inputXCoordinates[i];
+        const int y = inputYCoordinates[i];
+        if (DEBUG_PROXIMITY_CHARS) {
+            int a = x + y + primaryKey;
+            a += 0;
+            AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
+        }
+        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0;
+                ++j) {
+            const int currentCodePoint = proximityCodePoints[j];
+            const float squaredDistance =
+                    hasInputCoordinates ? calculateNormalizedSquaredDistance(
+                            proximityInfo, sampledInputXs, sampledInputYs,
+                            proximityInfo->getKeyIndexOf(currentCodePoint), i) :
+                            ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
+            if (squaredDistance >= 0.0f) {
+                normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
+                        (int) (squaredDistance
+                                * ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
+            } else {
+                normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
+                        (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
+                                PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
+            }
+            if (DEBUG_PROXIMITY_CHARS) {
+                AKLOGI("--- Proximity (%d) = %c", j, currentCodePoint);
+            }
+        }
+    }
+
+}
+
+/* static */ void ProximityInfoStateUtils::initGeometricDistanceInfos(
+        const ProximityInfo *const proximityInfo, const int keyCount,
+        const int sampledInputSize, const int lastSavedInputSize,
+        const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs,
+        std::vector<NearKeycodesSet> *nearKeysVector,
+        std::vector<NearKeycodesSet> *searchKeysVector,
+        std::vector<float> *distanceCache_G) {
+    nearKeysVector->resize(sampledInputSize);
+    searchKeysVector->resize(sampledInputSize);
+    distanceCache_G->resize(sampledInputSize * keyCount);
+    for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
+        (*nearKeysVector)[i].reset();
+        (*searchKeysVector)[i].reset();
+        static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
+        for (int k = 0; k < keyCount; ++k) {
+            const int index = i * keyCount + k;
+            const int x = (*sampledInputXs)[i];
+            const int y = (*sampledInputYs)[i];
+            const float normalizedSquaredDistance =
+                    proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
+            (*distanceCache_G)[index] = normalizedSquaredDistance;
+            if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
+                (*nearKeysVector)[i][k] = true;
+            }
+        }
+    }
+}
+
 /* static */ void ProximityInfoStateUtils::popInputData(std::vector<int> *sampledInputXs,
         std::vector<int> *sampledInputYs, std::vector<int> *sampledInputTimes,
         std::vector<int> *sampledLengthCache, std::vector<int> *sampledInputIndice) {
@@ -171,7 +280,7 @@ namespace latinime {
             if (i > 0 && j < (*sampledInputIndice)[i - 1]) {
                 break;
             }
-            // TODO: use mLengthCache instead?
+            // TODO: use mSampledLengthCache instead?
             length += getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
@@ -473,7 +582,7 @@ namespace latinime {
     if (DEBUG_DOUBLE_LETTER) {
         AKLOGI("--- (%d, %d) double letter: start = %d, end = %d, dist = %d, time = %d,"
                 " speed = %f, ave = %f, val = %f, start time = %d, end time = %d",
-                id, mInputIndice[id], start, end, beelineDistance, time,
+                id, mSampledInputIndice[id], start, end, beelineDistance, time,
                 (static_cast<float>(beelineDistance) / static_cast<float>(time)), mAverageSpeed,
                 ((static_cast<float>(beelineDistance) / static_cast<float>(time))
                         / mAverageSpeed), adjustedStartTime, adjustedEndTime);
@@ -848,5 +957,46 @@ namespace latinime {
         }
     }
     return true;
+}
+
+/* static */ void ProximityInfoStateUtils::dump(const bool isGeometric, const int inputSize,
+        const int *const inputXCoordinates, const int *const inputYCoordinates,
+        const int sampledInputSize, const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs,
+        const std::vector<float> *const sampledSpeedRates,
+        const std::vector<int> *const sampledBeelineSpeedPercentiles) {
+    if (DEBUG_GEO_FULL) {
+        for (int i = 0; i < sampledInputSize; ++i) {
+            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mSampledInputXs[i],
+                    mSampledInputYs[i], mSampledTimes ? mSampledTimes[i], -1);
+        }
+    }
+
+    std::stringstream originalX, originalY, sampledX, sampledY;
+    for (int i = 0; i < inputSize; ++i) {
+        originalX << inputXCoordinates[i];
+        originalY << inputYCoordinates[i];
+        if (i != inputSize - 1) {
+            originalX << ";";
+            originalY << ";";
+        }
+    }
+    AKLOGI("===== sampled points =====");
+    for (int i = 0; i < sampledInputSize; ++i) {
+        if (isGeometric) {
+            AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %d",
+                    i, mSampledInputXs[i], mSampledInputYs[i], mSampledTimes[i], mSpeedRates[i],
+                    getBeelineSpeedPercentile(i));
+        }
+        sampledX << (*sampledInputXs)[i];
+        sampledY << (*sampledInputYs)[i];
+        if (i != sampledInputSize - 1) {
+            sampledX << ";";
+            sampledY << ";";
+        }
+    }
+    AKLOGI("original points:\n%s, %s,\nsampled points:\n%s, %s,\n",
+            originalX.str().c_str(), originalY.str().c_str(), sampledX.str().c_str(),
+            sampledY.str().c_str());
 }
 } // namespace latinime
