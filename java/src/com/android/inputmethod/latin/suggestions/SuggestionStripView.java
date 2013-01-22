@@ -676,12 +676,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             new MoreKeysPanel.Controller() {
         @Override
         public boolean onDismissMoreKeysPanel() {
-            mMainKeyboardView.dimEntireKeyboard(false /* dimmed */);
             return mMainKeyboardView.onDismissMoreKeysPanel();
         }
 
         @Override
-        public void onShowMoreKeysPanel(MoreKeysPanel panel) {
+        public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
             mMainKeyboardView.onShowMoreKeysPanel(panel);
         }
 
@@ -728,7 +727,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
         mOriginX = mLastX;
         mOriginY = mLastY;
-        mMainKeyboardView.dimEntireKeyboard(true /* dimmed */);
         for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
             mWords.get(i).setPressed(false);
         }
