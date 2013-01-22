@@ -35,9 +35,9 @@ public final class BinaryDictionary extends Dictionary {
     public static final String DICTIONARY_PACK_AUTHORITY =
             "com.android.inputmethod.latin.dictionarypack";
 
-    // Must be identical to MAX_WORD_LENGTH in native/jni/src/defines.h
+    // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
-    // Must be identical to MAX_RESULTS in native/jni/src/defines.h
+    // Must be equal to MAX_RESULTS in native/jni/src/defines.h
     private static final int MAX_RESULTS = 18;
 
     private long mNativeDict;

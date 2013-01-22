@@ -47,15 +47,14 @@ static AK_FORCE_INLINE void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloa
     }
 }
 
-ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
+ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
         const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
         const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
         const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
         const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
         const jfloatArray sweetSpotRadii)
-        : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), GRID_WIDTH(gridWidth),
-          GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
+        : GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
@@ -65,11 +64,17 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
           mProximityCharsArray(new int[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
-                  /* proximityGridLength */]),
+                  /* proximityCharsLength */]),
           mCodeToKeyMap() {
-    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
+    /* Let's check the input array length here to make sure */
+    const jsize proximityCharsLength = env->GetArrayLength(proximityChars);
+    if (proximityCharsLength != GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE) {
+        AKLOGE("Invalid proximityCharsLength: %d", proximityCharsLength);
+        ASSERT(false);
+        return;
+    }
     if (DEBUG_PROXIMITY_INFO) {
-        AKLOGI("Create proximity info array %d", proximityGridLength);
+        AKLOGI("Create proximity info array %d", proximityCharsLength);
     }
     const jsize localeCStrUtf8Length = env->GetStringUTFLength(localeJStr);
     if (localeCStrUtf8Length >= MAX_LOCALE_STRING_LENGTH) {
@@ -78,7 +83,8 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     }
     memset(mLocaleStr, 0, sizeof(mLocaleStr));
     env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), mLocaleStr);
-    safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityGridLength, mProximityCharsArray);
+    safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityCharsLength,
+            mProximityCharsArray);
     safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);
     safeGetOrFillZeroIntArrayRegion(env, keyYCoordinates, KEY_COUNT, mKeyYCoordinates);
     safeGetOrFillZeroIntArrayRegion(env, keyWidths, KEY_COUNT, mKeyWidths);

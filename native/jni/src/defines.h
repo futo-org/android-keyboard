@@ -28,10 +28,13 @@
 #define AK_FORCE_INLINE inline
 #endif // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 
-// Must be identical to Constants.Dictionary.MAX_WORD_LENGTH in Java
+// Must be equal to Constants.Dictionary.MAX_WORD_LENGTH in Java
 #define MAX_WORD_LENGTH 48
-// Must be identical to BinaryDictionary.MAX_RESULTS in Java
+// Must be equal to BinaryDictionary.MAX_RESULTS in Java
 #define MAX_RESULTS 18
+// Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
+#define MAX_PROXIMITY_CHARS_SIZE 16
+#define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <android/log.h>
@@ -249,6 +252,7 @@ static inline void prof_out(void) {
 #define S_INT_MIN (-2147483647 - 1) // -(1 << 31)
 #endif
 
+#define M_PI_F 3.14159265f
 #define MAX_PERCENTILE 100
 
 // Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
@@ -325,12 +329,6 @@ static inline void prof_out(void) {
 #define MAX_FREQ 255
 #define MAX_BIGRAM_FREQ 15
 
-// This must be the same as ProximityInfo#MAX_PROXIMITY_CHARS_SIZE, currently it's 16.
-#define MAX_PROXIMITY_CHARS_SIZE_INTERNAL 16
-
-// This must be equal to ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE in KeyDetector.java
-#define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
-
 // Assuming locale strings such as en_US, sr-Latn etc.
 #define MAX_LOCALE_STRING_LENGTH 10
 
@@ -394,8 +392,6 @@ static inline void prof_out(void) {
 
 template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
 template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
-
-#define M_PI_F 3.14159265f
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 

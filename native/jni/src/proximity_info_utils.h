@@ -61,7 +61,7 @@ class ProximityInfoUtils {
             const int primaryKey = inputCodes[i];
             const int x = inputXCoordinates[i];
             const int y = inputYCoordinates[i];
-            int *proximities = &inputProximities[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL];
+            int *proximities = &inputProximities[i * MAX_PROXIMITY_CHARS_SIZE];
             calculateProximities(keyXCoordinates, keyYCoordinates, keyWidths, keyHeights,
                     proximityCharsArray, maxProximityCharsSize, cellHeight, cellWidth, gridWidth,
                     mostCommonKeyWidth, keyCount, x, y, primaryKey, localeStr, codeToKeyMap,
@@ -71,9 +71,9 @@ class ProximityInfoUtils {
         if (DEBUG_PROXIMITY_CHARS) {
             for (int i = 0; i < inputSize; ++i) {
                 AKLOGI("---");
-                for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL; ++j) {
+                for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE; ++j) {
                     int proximityChar =
-                            inputProximities[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
+                            inputProximities[i * MAX_PROXIMITY_CHARS_SIZE + j];
                     proximityChar += 0;
                     AKLOGI("--- (%d)%c", i, proximityChar);
                 }

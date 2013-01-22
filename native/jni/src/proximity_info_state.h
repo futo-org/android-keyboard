@@ -73,7 +73,7 @@ class ProximityInfoState {
     AK_FORCE_INLINE bool existsCodePointInProximityAt(const int index, const int c) const {
         const int *codePoints = getProximityCodePointsAt(index);
         int i = 0;
-        while (codePoints[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE_INTERNAL) {
+        while (codePoints[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE) {
             if (codePoints[i++] == c) {
                 return true;
             }
@@ -99,7 +99,7 @@ class ProximityInfoState {
     inline int getNormalizedSquaredDistance(
             const int inputIndex, const int proximityIndex) const {
         return mNormalizedSquaredDistances[
-                inputIndex * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + proximityIndex];
+                inputIndex * MAX_PROXIMITY_CHARS_SIZE + proximityIndex];
     }
 
     inline const int *getPrimaryInputWord() const {
@@ -119,7 +119,7 @@ class ProximityInfoState {
             if (*inputProximities != *word) {
                 return false;
             }
-            inputProximities += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
+            inputProximities += MAX_PROXIMITY_CHARS_SIZE;
             word++;
         }
         return true;
@@ -214,11 +214,6 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
-    bool pushTouchPoint(const int inputIndex, const int nodeCodePoint, int x, int y, const int time,
-            const bool sample, const bool isLastPoint, const float sumAngle,
-            NearKeysDistanceMap *const currentNearKeysDistances,
-            const NearKeysDistanceMap *const prevNearKeysDistances,
-            const NearKeysDistanceMap *const prevPrevNearKeysDistances);
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
@@ -284,8 +279,8 @@ class ProximityInfoState {
     // inputs including the current input point.
     std::vector<NearKeycodesSet> mSearchKeysVector;
     bool mTouchPositionCorrectionEnabled;
-    int mInputProximities[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
-    int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH];
+    int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
+    int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mSampledInputSize;
     int mPrimaryInputWord[MAX_WORD_LENGTH];
 };

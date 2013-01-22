@@ -127,7 +127,7 @@ public final class Constants {
     }
 
     public static final class Dictionary {
-        // Must be identical to MAX_WORD_LENGTH in native/jni/src/defines.h
+        // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
         public static final int MAX_WORD_LENGTH = 48;
 
         private Dictionary() {

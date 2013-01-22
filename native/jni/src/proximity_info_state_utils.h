@@ -36,8 +36,7 @@ class ProximityInfoStateUtils {
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs,
             std::vector<int> *sampledInputTimes, std::vector<int> *sampledLengthCache,
             std::vector<int> *sampledInputIndice);
-    static const int *getProximityCodePointsAt(
-            const int *const inputProximities, const int index);
+    static const int *getProximityCodePointsAt(const int *const inputProximities, const int index);
     static int getPrimaryCodePointAt(const int *const inputProximities, const int index);
     static void popInputData(std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs,
             std::vector<int> *sampledInputTimes, std::vector<int> *sampledLengthCache,
@@ -57,8 +56,7 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputYs, const std::vector<int> *const inputIndice,
             std::vector<int> *beelineSpeedPercentiles);
     static float getDirection(const std::vector<int> *const sampledInputXs,
-            const std::vector<int> *const sampledInputYs,
-            const int index0, const int index1);
+            const std::vector<int> *const sampledInputYs, const int index0, const int index1);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoStateUtils);
@@ -71,16 +69,16 @@ class ProximityInfoStateUtils {
     static bool isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances);
-    static float getPointScore(const int mostCommonKeyWidth,
-            const int x, const int y, const int time, const bool lastPoint, const float nearest,
-            const float sumAngle, const NearKeysDistanceMap *const currentNearKeysDistances,
+    static float getPointScore(const int mostCommonKeyWidth, const int x, const int y,
+            const int time, const bool lastPoint, const float nearest, const float sumAngle,
+            const NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances,
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs);
     static bool pushTouchPoint(const int mostCommonKeyWidth,
             const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
-            const int inputIndex, const int nodeCodePoint, int x, int y,
-            const int time, const bool sample, const bool isLastPoint, const float sumAngle,
+            const int inputIndex, const int nodeCodePoint, int x, int y, const int time,
+            const bool doSampling, const bool isLastPoint, const float sumAngle,
             NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances,
