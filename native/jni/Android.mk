@@ -54,7 +54,9 @@ LATIN_IME_CORE_SRC_FILES := \
     dictionary.cpp \
     dic_traverse_wrapper.cpp \
     proximity_info.cpp \
+    proximity_info_params.cpp \
     proximity_info_state.cpp \
+    proximity_info_state_utils.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     suggest/gesture_suggest.cpp \
