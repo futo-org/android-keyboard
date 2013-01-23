@@ -144,6 +144,8 @@
     <string name="not_now" msgid="6172462888202790482">"अभी नहीं"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <skip />
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"कुंजी-स्‍पर्श कंपन अवधि सेटिंग"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"कुंजी-स्‍पर्श ध्‍वनि वॉल्‍यूम सेटिंग"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाहरी डिक्शनरी फ़ाइल पढ़ें"</string>
