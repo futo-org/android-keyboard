@@ -144,16 +144,14 @@
     <string name="not_now" msgid="6172462888202790482">"Ne zdaj"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Isti slog vnosa že obstaja: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Način za preučevanje uporabnosti"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <skip />
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Nastavitve za trajanje vibriranja ob pritisku tipke"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Nastavitve za glasnost zvoka ob pritisku tipke"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Branje zunanje datoteke slovarja"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"V mapi »Prenosi« ni nobene datoteke slovarja"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Izberite datoteko slovarja, ki jo želite namestiti"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Zares želite namestiti to datoteko za jezik <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <string name="error" msgid="8940763624668513648">"Prišlo je do napake"</string>
     <string name="button_default" msgid="3988017840431881491">"Privzeto"</string>
 </resources>
