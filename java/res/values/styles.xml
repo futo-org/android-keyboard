@@ -80,8 +80,7 @@
         <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
         <item name="keyRepeatStartTimeout">@integer/config_key_repeat_start_timeout</item>
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
-        <item name="longPressKeyTimeout">@integer/config_long_press_key_timeout</item>
-        <item name="longPressShiftKeyTimeout">@integer/config_long_press_shift_key_timeout</item>
+        <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>

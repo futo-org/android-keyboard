@@ -164,6 +164,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             getPreferenceScreen().removePreference(gestureTypingSettings);
         }
 
+        setupKeyLongpressTimeoutSettings(prefs, res);
         setupKeypressVibrationDurationSettings(prefs, res);
         setupKeypressSoundVolumeSettings(prefs, res);
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, res);
@@ -295,6 +296,34 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             public void feedbackValue(final int value) {
                 AudioAndHapticFeedbackManager.getInstance().vibrate(value);
             }
+        });
+    }
+
+    private void setupKeyLongpressTimeoutSettings(final SharedPreferences sp,
+            final Resources res) {
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(
+                Settings.PREF_KEY_LONGPRESS_TIMEOUT);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            @Override
+            public void writeValue(final int value, final String key) {
+                sp.edit().putInt(key, value).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return Settings.readKeyLongpressTimeout(sp, res);
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return Settings.readDefaultKeyLongpressTimeout(res);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
         });
     }
 

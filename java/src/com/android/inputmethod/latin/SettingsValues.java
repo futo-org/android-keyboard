@@ -59,6 +59,7 @@ public final class SettingsValues {
     public final boolean mGestureInputEnabled;
     public final boolean mGesturePreviewTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
+    public final int mKeyLongpressTimeout;
 
     // From the input box
     public final InputAttributes mInputAttributes;
@@ -121,6 +122,7 @@ public final class SettingsValues {
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
         // Compute other readable settings
+        mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressVibrationDuration = Settings.readKeypressVibrationDuration(prefs, res);
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);

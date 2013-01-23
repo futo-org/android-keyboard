@@ -65,6 +65,7 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
+import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
@@ -205,8 +206,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         private final int mKeyRepeatStartTimeout;
         private final int mKeyRepeatInterval;
-        private final int mLongPressKeyTimeout;
-        private final int mLongPressShiftKeyTimeout;
+        private final int mLongPressShiftLockTimeout;
         private final int mIgnoreAltCodeKeyTimeout;
         private final int mGestureRecognitionUpdateTime;
 
@@ -218,10 +218,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                     R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
             mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_keyRepeatInterval, 0);
-            mLongPressKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_longPressKeyTimeout, 0);
-            mLongPressShiftKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
+            mLongPressShiftLockTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_longPressShiftLockTimeout, 0);
             mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
             mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
@@ -285,7 +283,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final int delay;
             switch (code) {
             case Constants.CODE_SHIFT:
-                delay = mLongPressShiftKeyTimeout;
+                delay = mLongPressShiftLockTimeout;
                 break;
             default:
                 delay = 0;
@@ -306,15 +304,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final int delay;
             switch (key.mCode) {
             case Constants.CODE_SHIFT:
-                delay = mLongPressShiftKeyTimeout;
+                delay = mLongPressShiftLockTimeout;
                 break;
             default:
+                final int longpressTimeout =
+                        Settings.getInstance().getCurrent().mKeyLongpressTimeout;
                 if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
                     // We use longer timeout for sliding finger input started from the symbols
                     // mode key.
-                    delay = mLongPressKeyTimeout * 3;
+                    delay = longpressTimeout * 3;
                 } else {
-                    delay = mLongPressKeyTimeout;
+                    delay = longpressTimeout;
                 }
                 break;
             }
