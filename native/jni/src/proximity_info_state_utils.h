@@ -72,6 +72,12 @@ class ProximityInfoStateUtils {
             const std::vector<float> *const distanceCache_G,
             std::vector<NearKeycodesSet> *nearKeysVector,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
+    static void updateSearchKeysVector(
+            const ProximityInfo *const proximityInfo, const int sampledInputSize,
+            const int lastSavedInputSize,
+            const std::vector<int> *const sampledLengthCache,
+            const std::vector<NearKeycodesSet> *const nearKeysVector,
+            std::vector<NearKeycodesSet> *searchKeysVector);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
             const std::vector<float> *const distanceCache_G, const int keyCount,
             const int inputIndex, const int keyId, const float scale);
@@ -99,6 +105,7 @@ class ProximityInfoStateUtils {
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int sampledInputSize, const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
+            const std::vector<int> *const sampledTimes,
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledBeelineSpeedPercentiles);
  private:

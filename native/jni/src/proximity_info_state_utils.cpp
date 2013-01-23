@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <cmath>
 #include <sstream> // for debug prints
 #include <vector>
 
@@ -37,7 +38,7 @@ namespace latinime {
         if (times) {
             for (int i = 0; i < inputSize; ++i) {
                 AKLOGI("(%d) x %d, y %d, time %d",
-                        i, xCoordinates[i], yCoordinates[i], times[i]);
+                        i, inputXCoordinates[i], inputYCoordinates[i], times[i]);
             }
         }
     }
@@ -45,7 +46,10 @@ namespace latinime {
     if (times) {
         for (int i = 0; i < inputSize; ++i) {
             if (i > 0) {
-                ASSERT(times[i] >= times[i - 1]);
+                if (times[i] < times[i - 1]) {
+                    AKLOGI("Invalid time sequence. %d, %d", times[i], times[i - 1]);
+                    ASSERT(false);
+                }
             }
         }
     }
@@ -469,11 +473,10 @@ namespace latinime {
                 // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
                     AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
-                           "width = %d", size, x, y, mSampledInputXs.back(),
-                           mSampledInputYs.back(), ProximityInfoUtils::getDistanceInt(
-                                   x, y, mSampledInputXs.back(), mSampledInputYs.back()),
-                           mProximityInfo->getMostCommonKeyWidth()
-                                   / LAST_POINT_SKIP_DISTANCE_SCALE);
+                           "width = %d", size, x, y, sampledInputXs->back(),
+                           sampledInputYs->back(), getDistanceInt(
+                                   x, y, sampledInputXs->back(), sampledInputYs->back()),
+                           mostCommonKeyWidth / LAST_POINT_SKIP_DISTANCE_SCALE);
                 }
                 return popped;
             }
@@ -511,11 +514,12 @@ namespace latinime {
         const float averageSpeed, const int id, const int inputSize, const int *const xCoordinates,
         const int *const yCoordinates, const int *times, const int sampledInputSize,
         const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs, const std::vector<int> *const inputIndice) {
+        const std::vector<int> *const sampledInputYs,
+        const std::vector<int> *const sampledInputIndices) {
     if (sampledInputSize <= 0 || averageSpeed < 0.001f) {
         if (DEBUG_SAMPLING_POINTS) {
             AKLOGI("--- invalid state: cancel. size = %d, ave = %f",
-                    mSampledInputSize, mAverageSpeed);
+                    sampledInputSize, averageSpeed);
         }
         return 1.0f;
     }
@@ -523,7 +527,7 @@ namespace latinime {
             * ProximityInfoParams::LOOKUP_RADIUS_PERCENTILE / MAX_PERCENTILE;
     const int x0 = (*sampledInputXs)[id];
     const int y0 = (*sampledInputYs)[id];
-    const int actualInputIndex = (*inputIndice)[id];
+    const int actualInputIndex = (*sampledInputIndices)[id];
     int tempTime = 0;
     int tempBeelineDistance = 0;
     int start = actualInputIndex;
@@ -582,10 +586,10 @@ namespace latinime {
     if (DEBUG_DOUBLE_LETTER) {
         AKLOGI("--- (%d, %d) double letter: start = %d, end = %d, dist = %d, time = %d,"
                 " speed = %f, ave = %f, val = %f, start time = %d, end time = %d",
-                id, mSampledInputIndice[id], start, end, beelineDistance, time,
-                (static_cast<float>(beelineDistance) / static_cast<float>(time)), mAverageSpeed,
+                id, (*sampledInputIndices)[id], start, end, beelineDistance, time,
+                (static_cast<float>(beelineDistance) / static_cast<float>(time)), averageSpeed,
                 ((static_cast<float>(beelineDistance) / static_cast<float>(time))
-                        / mAverageSpeed), adjustedStartTime, adjustedEndTime);
+                        / averageSpeed), adjustedStartTime, adjustedEndTime);
     }
     // Offset 1%
     // TODO: Detect double letter more smartly
@@ -850,7 +854,6 @@ namespace latinime {
         }
     }
 
-
     if (DEBUG_POINTS_PROBABILITY) {
         for (int i = 0; i < sampledInputSize; ++i) {
             std::stringstream sstream;
@@ -916,6 +919,29 @@ namespace latinime {
     }
 }
 
+/* static */ void ProximityInfoStateUtils::updateSearchKeysVector(
+        const ProximityInfo *const proximityInfo, const int sampledInputSize,
+        const int lastSavedInputSize,
+        const std::vector<int> *const sampledLengthCache,
+        const std::vector<NearKeycodesSet> *const nearKeysVector,
+        std::vector<NearKeycodesSet> *searchKeysVector) {
+    const int readForwordLength = static_cast<int>(
+            hypotf(proximityInfo->getKeyboardWidth(), proximityInfo->getKeyboardHeight())
+                    * ProximityInfoParams::SEARCH_KEY_RADIUS_RATIO);
+    for (int i = 0; i < sampledInputSize; ++i) {
+        if (i >= lastSavedInputSize) {
+            (*searchKeysVector)[i].reset();
+        }
+        for (int j = max(i, lastSavedInputSize); j < sampledInputSize; ++j) {
+            // TODO: Investigate if this is required. This may not fail.
+            if ((*sampledLengthCache)[j] - (*sampledLengthCache)[i] >= readForwordLength) {
+                break;
+            }
+            (*searchKeysVector)[i] |= (*nearKeysVector)[j];
+        }
+    }
+}
+
 // Decreases char probabilities of index0 by checking probabilities of a near point (index1) and
 // increases char probabilities of index1 by checking probabilities of index0.
 /* static */ bool ProximityInfoStateUtils::suppressCharProbabilities(const int mostCommonKeyWidth,
@@ -963,12 +989,13 @@ namespace latinime {
         const int *const inputXCoordinates, const int *const inputYCoordinates,
         const int sampledInputSize, const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
+        const std::vector<int> *const sampledTimes,
         const std::vector<float> *const sampledSpeedRates,
         const std::vector<int> *const sampledBeelineSpeedPercentiles) {
     if (DEBUG_GEO_FULL) {
         for (int i = 0; i < sampledInputSize; ++i) {
-            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mSampledInputXs[i],
-                    mSampledInputYs[i], mSampledTimes ? mSampledTimes[i], -1);
+            AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, (*sampledInputXs)[i],
+                    (*sampledInputYs)[i], sampledTimes ? (*sampledTimes)[i] : -1);
         }
     }
 
@@ -985,8 +1012,8 @@ namespace latinime {
     for (int i = 0; i < sampledInputSize; ++i) {
         if (isGeometric) {
             AKLOGI("%d: x = %d, y = %d, time = %d, relative speed = %.4f, beeline speed = %d",
-                    i, mSampledInputXs[i], mSampledInputYs[i], mSampledTimes[i], mSpeedRates[i],
-                    getBeelineSpeedPercentile(i));
+                    i, (*sampledInputXs)[i], (*sampledInputYs)[i], (*sampledTimes)[i],
+                    (*sampledSpeedRates)[i], (*sampledBeelineSpeedPercentiles)[i]);
         }
         sampledX << (*sampledInputXs)[i];
         sampledY << (*sampledInputYs)[i];
