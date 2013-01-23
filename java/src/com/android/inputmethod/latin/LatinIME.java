@@ -1647,7 +1647,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0);
+            ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
         }
         // Space state must be updated before calling updateShiftState
         mSpaceState = SPACE_STATE_PHANTOM;
@@ -2123,8 +2123,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
             }
             if (ProductionFlag.IS_EXPERIMENTAL) {
+                final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
-                        separatorString, mWordComposer.isBatchMode());
+                        separatorString, mWordComposer.isBatchMode(), suggestedWords);
             }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,

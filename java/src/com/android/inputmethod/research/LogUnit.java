@@ -17,6 +17,7 @@
 package com.android.inputmethod.research;
 
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.JsonWriter;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -57,16 +58,32 @@ import java.util.Map;
     // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
     // mTimeList.
     private final ArrayList<Long> mTimeList;
+    // Word that this LogUnit generates.  Should be null if the LogUnit does not generate a genuine
+    // word (i.e. separators alone do not count as a word).  Should never be empty.
     private String mWord;
     private boolean mMayContainDigit;
     private boolean mIsPartOfMegaword;
     private boolean mContainsCorrection;
+
+    // mCorrectionType indicates whether the word was corrected at all, and if so, whether it was
+    // to a different word or just a "typo" correction.  It is considered a "typo" if the final
+    // word was listed in the suggestions available the first time the word was gestured or
+    // tapped.
+    private int mCorrectionType;
+    public static final int CORRECTIONTYPE_NO_CORRECTION = 0;
+    public static final int CORRECTIONTYPE_CORRECTION = 1;
+    public static final int CORRECTIONTYPE_DIFFERENT_WORD = 2;
+    public static final int CORRECTIONTYPE_TYPO = 3;
+
+    private SuggestedWords mSuggestedWords;
 
     public LogUnit() {
         mLogStatementList = new ArrayList<LogStatement>();
         mValuesList = new ArrayList<Object[]>();
         mTimeList = new ArrayList<Long>();
         mIsPartOfMegaword = false;
+        mCorrectionType = CORRECTIONTYPE_NO_CORRECTION;
+        mSuggestedWords = null;
     }
 
     private LogUnit(final ArrayList<LogStatement> logStatementList,
@@ -77,6 +94,8 @@ import java.util.Map;
         mValuesList = valuesList;
         mTimeList = timeList;
         mIsPartOfMegaword = isPartOfMegaword;
+        mCorrectionType = CORRECTIONTYPE_NO_CORRECTION;
+        mSuggestedWords = null;
     }
 
     private static final Object[] NULL_VALUES = new Object[0];
@@ -167,6 +186,7 @@ import java.util.Map;
     private static final String UPTIME_KEY = "_ut";
     private static final String EVENT_TYPE_KEY = "_ty";
     private static final String WORD_KEY = "_wo";
+    private static final String CORRECTION_TYPE_KEY = "_corType";
     private static final String LOG_UNIT_BEGIN_KEY = "logUnitStart";
     private static final String LOG_UNIT_END_KEY = "logUnitEnd";
 
@@ -177,6 +197,7 @@ import java.util.Map;
             jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
             if (canIncludePrivateData) {
                 jsonWriter.name(WORD_KEY).value(getWord());
+                jsonWriter.name(CORRECTION_TYPE_KEY).value(getCorrectionType());
             }
             jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_BEGIN_KEY);
             jsonWriter.endObject();
@@ -254,7 +275,33 @@ import java.util.Map;
         return true;
     }
 
-    public void setWord(String word) {
+    /**
+     * Mark the current logUnit as containing data to generate {@code word}.
+     *
+     * If {@code setWord()} was previously called for this LogUnit, then the method will try to
+     * determine what kind of correction it is, and update its internal state of the correctionType
+     * accordingly.
+     *
+     * @param word The word this LogUnit generates.  Caller should not pass null or the empty
+     * string.
+     */
+    public void setWord(final String word) {
+        if (mWord != null) {
+            // The word was already set once, and it is now being changed.  See if the new word
+            // is close to the old word.  If so, then the change is probably a typo correction.
+            // If not, the user may have decided to enter a different word, so flag it.
+            if (mSuggestedWords != null) {
+                if (isInSuggestedWords(word, mSuggestedWords)) {
+                    mCorrectionType = CORRECTIONTYPE_TYPO;
+                } else {
+                    mCorrectionType = CORRECTIONTYPE_DIFFERENT_WORD;
+                }
+            } else {
+                // No suggested words, so it's not clear whether it's a typo or different word.
+                // Mark it as a generic correction.
+                mCorrectionType = CORRECTIONTYPE_CORRECTION;
+            }
+        }
         mWord = word;
     }
 
@@ -280,6 +327,14 @@ import java.util.Map;
 
     public boolean containsCorrection() {
         return mContainsCorrection;
+    }
+
+    public void setCorrectionType(final int correctionType) {
+        mCorrectionType = correctionType;
+    }
+
+    public int getCorrectionType() {
+        return mCorrectionType;
     }
 
     public boolean isEmpty() {
@@ -328,8 +383,43 @@ import java.util.Map;
         mValuesList.addAll(logUnit.mValuesList);
         mTimeList.addAll(logUnit.mTimeList);
         mWord = null;
+        if (logUnit.mWord != null) {
+            setWord(logUnit.mWord);
+        }
         mMayContainDigit = mMayContainDigit || logUnit.mMayContainDigit;
         mContainsCorrection = mContainsCorrection || logUnit.mContainsCorrection;
         mIsPartOfMegaword = false;
+    }
+
+    public SuggestedWords getSuggestions() {
+        return mSuggestedWords;
+    }
+
+    /**
+     * Initialize the suggestions.
+     *
+     * Once set to a non-null value, the suggestions may not be changed again.  This is to keep
+     * track of the list of words that are close to the user's initial effort to type the word.
+     * Only words that are close to the initial effort are considered typo corrections.
+     */
+    public void initializeSuggestions(final SuggestedWords suggestedWords) {
+        if (mSuggestedWords == null) {
+            mSuggestedWords = suggestedWords;
+        }
+    }
+
+    private static boolean isInSuggestedWords(final String queryWord,
+            final SuggestedWords suggestedWords) {
+        if (TextUtils.isEmpty(queryWord)) {
+            return false;
+        }
+        final int size = suggestedWords.size();
+        for (int i = 0; i < size; i++) {
+            final SuggestedWordInfo wordInfo = suggestedWords.getInfo(i);
+            if (queryWord.equals(wordInfo.mWord)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
