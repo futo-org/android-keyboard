@@ -25,4 +25,6 @@ const int ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 
 const int ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
         1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
 const float ProximityInfoParams::NOT_A_DISTANCE_FLOAT = -1.0f;
+// TODO: Investigate if this is required
+const float ProximityInfoParams::SEARCH_KEY_RADIUS_RATIO = 0.95f;
 } // namespace latinime
