@@ -146,7 +146,7 @@
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"可用性研究模式"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"按键振动持续时间设置"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"按键音量设置"</string>
-    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部字典文件"</string>
+    <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"读取外部词典文件"</string>
     <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
     <skip />
     <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->

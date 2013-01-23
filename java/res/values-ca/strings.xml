@@ -147,13 +147,9 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Configuració de durada de vibracions en prémer tecles"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Configuració del volum de so en prémer tecles"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Lectura d\'un fitxer de diccionari extern"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"No hi ha cap fitxer de diccionari a la carpeta Baixades"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecció d\'un fitxer de diccionari per instal·lar"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Realment vols instal·lar aquest fitxer per a <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <string name="error" msgid="8940763624668513648">"S\'ha produït un error"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminat"</string>
 </resources>

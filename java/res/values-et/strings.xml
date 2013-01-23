@@ -147,13 +147,9 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Klahvivajutuse vibratsiooni kestuse seaded"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Klahvivajutuse helitugevuse seaded"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Välise sõnastikufaili lugemine"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Kaustas Allalaadimised pole ühtegi sõnastikufaili"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Installitava sõnastikufaili valimine"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Kas soovite tõesti installida faili lokaadile <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <string name="error" msgid="8940763624668513648">"Ilmnes viga"</string>
     <string name="button_default" msgid="3988017840431881491">"Vaikeväärtus"</string>
 </resources>

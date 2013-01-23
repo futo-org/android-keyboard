@@ -147,13 +147,9 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"ቁልፍ ተጫን በቅንጅቶች ወቅት ንዝረት"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"ቁልፍ ተጫን የድምጽ መጠን ቅንብሮች"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ውጫዊ የመዝገበቃላት ፋይል አንብብ"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"በውርዶች አቃፊው ውስጥ ምንም የመዝገበ-ፋይሎች የሉም"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"የሚጭኑት የመዝገበ-ቃላት ፋይል ይምረጡ"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"እውን ይሄ ፋይል ለ<xliff:g id="LOCALE_NAME">%s</xliff:g> ይጫን?"</string>
+    <string name="error" msgid="8940763624668513648">"ስህተት ተከስቶ ነበር"</string>
     <string name="button_default" msgid="3988017840431881491">"ነባሪ"</string>
 </resources>
