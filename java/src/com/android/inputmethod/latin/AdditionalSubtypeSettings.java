@@ -72,7 +72,8 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
         }
 
         public SubtypeLocaleItem(final String localeString) {
-            this(localeString, SubtypeLocale.getSubtypeLocaleDisplayName(localeString));
+            this(localeString,
+                    SubtypeLocale.getSubtypeLocaleDisplayNameInSystemLocale(localeString));
         }
 
         @Override
@@ -103,7 +104,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 if (DEBUG_SUBTYPE_ID) {
                     android.util.Log.d(TAG, String.format("%-6s 0x%08x %11d %s",
                             subtype.getLocale(), subtype.hashCode(), subtype.hashCode(),
-                            SubtypeLocale.getSubtypeDisplayName(subtype)));
+                            SubtypeLocale.getSubtypeDisplayNameInSystemLocale(subtype)));
                 }
                 if (subtype.containsExtraValueKey(ASCII_CAPABLE)) {
                     items.add(createItem(context, subtype.getLocale()));
@@ -205,7 +206,8 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 setDialogTitle(R.string.add_style);
                 setKey(KEY_NEW_SUBTYPE);
             } else {
-                final String displayName = SubtypeLocale.getSubtypeDisplayName(subtype);
+                final String displayName =
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(subtype);
                 setTitle(displayName);
                 setDialogTitle(displayName);
                 setKey(KEY_PREFIX + subtype.getLocale() + "_"
@@ -497,7 +499,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
         final Context context = getActivity();
         final Resources res = context.getResources();
         final String message = res.getString(R.string.custom_input_style_already_exists,
-                SubtypeLocale.getSubtypeDisplayName(subtype));
+                SubtypeLocale.getSubtypeDisplayNameInSystemLocale(subtype));
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 

@@ -120,17 +120,13 @@
     </string-array>
 
     <!-- Subtype locale display name exceptions.
-         For each exception, there should be related string resource for display name that has
-         explicit keyboard layout. The string resource name must be "subtype_with_layout_<locale>. -->
+         For each exception, there should be related string resources for display name that may have
+         explicit keyboard layout. The string resource name must be "subtype_<locale>" or
+         "subtype_with_layout_<locale>. Please refer to strings.xml for these resources. -->
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
         <item>es_US</item>
-    </string-array>
-    <string-array name="subtype_locale_exception_values">
-        <item>English (US)</item>
-        <item>English (UK)</item>
-        <item>Español (EE.UU.)</item>
     </string-array>
 
     <!-- Generic subtype label -->
