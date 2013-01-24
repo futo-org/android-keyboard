@@ -319,12 +319,17 @@
     <string name="subtype_en_GB">English (UK)</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_en_US">English (US)</string>
+    <!-- Description for Spanish (United States) keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_es_US">Spanish (US)</string>
     <!-- Description for English (United Kingdom) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
          This should be identical to subtype_en_GB aside from the trailing (%s). -->
     <string name="subtype_with_layout_en_GB">English (UK) (<xliff:g id="layout">%s</xliff:g>)</string>
     <!-- Description for English (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
          This should be identical to subtype_en_US aside from the trailing (%s). -->
     <string name="subtype_with_layout_en_US">English (US) (<xliff:g id="layout">%s</xliff:g>)</string>
+    <!-- Description for Spanish (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_es_US aside from the trailing (%s). -->
+    <string name="subtype_with_layout_es_US">Spanish (US) (<xliff:g id="layout">%s</xliff:g>)</string>
     <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
          Description for Serbian Cyrillic keyboard subtype [CHAR LIMIT=25]
     <string name="subtype_serbian_cyrillic">Serbian (Cyrillic)</string>

@@ -42,8 +42,10 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     InputMethodSubtype ZZ;
     InputMethodSubtype DE_QWERTY;
     InputMethodSubtype FR_QWERTZ;
-    InputMethodSubtype US_AZERTY;
-    InputMethodSubtype ZZ_AZERTY;
+    InputMethodSubtype EN_US_AZERTY;
+    InputMethodSubtype EN_UK_DVORAK;
+    InputMethodSubtype ES_US_COLEMAK;
+    InputMethodSubtype ZZ_PC;
 
     @Override
     protected void setUp() throws Exception {
@@ -72,10 +74,14 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), "qwerty", null);
         FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
                 Locale.FRENCH.toString(), "qwertz", null);
-        US_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+        EN_US_AZERTY = AdditionalSubtype.createAdditionalSubtype(
                 Locale.US.toString(), "azerty", null);
-        ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
-                SubtypeLocale.NO_LANGUAGE, "azerty", null);
+        EN_UK_DVORAK = AdditionalSubtype.createAdditionalSubtype(
+                Locale.UK.toString(), "dvorak", null);
+        ES_US_COLEMAK = AdditionalSubtype.createAdditionalSubtype(
+                "es_US", "colemak", null);
+        ZZ_PC = AdditionalSubtype.createAdditionalSubtype(
+                SubtypeLocale.NO_LANGUAGE, "pcqwerty", null);
 
     }
 
@@ -106,8 +112,10 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     //  zz    qwerty  F  No language (QWERTY)    in system locale
     //  fr    qwertz  T  Français (QWERTZ)
     //  de    qwerty  T  Deutsch (QWERTY)
-    //  en_US azerty  T  English (US) (AZERTY)
-    //  zz    azerty  T  No language (AZERTY)    in system locale
+    //  en_US azerty  T  English (US) (AZERTY)   exception
+    //  en_UK dvorak  T  English (UK) (Dvorak)   exception
+    //  es_US colemak T  Español (EE.UU.) (Colemak)  exception
+    //  zz    pc      T  No language (PC)        in system locale
 
     public void testPredefinedSubtypesInEnglish() {
         assertEquals("en_US", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_US));
@@ -150,9 +158,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 assertEquals("de qwerty",    "Deutsch (QWERTY)",
                         SubtypeLocale.getSubtypeDisplayName(DE_QWERTY));
                 assertEquals("en_US azerty", "English (US) (AZERTY)",
-                        SubtypeLocale.getSubtypeDisplayName(US_AZERTY));
-                assertEquals("zz azerty",    "No language (AZERTY)",
-                        SubtypeLocale.getSubtypeDisplayName(ZZ_AZERTY));
+                        SubtypeLocale.getSubtypeDisplayName(EN_US_AZERTY));
+                assertEquals("en_UK dvorak", "English (UK) (Dvorak)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_UK_DVORAK));
+                assertEquals("es_US colemak","Español (EE.UU.) (Colemak)",
+                        SubtypeLocale.getSubtypeDisplayName(ES_US_COLEMAK));
+                assertEquals("zz pc",        "No language (PC)",
+                        SubtypeLocale.getSubtypeDisplayName(ZZ_PC));
                 return null;
             }
         };
@@ -192,9 +204,149 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 assertEquals("de qwerty",    "Deutsch (QWERTY)",
                         SubtypeLocale.getSubtypeDisplayName(DE_QWERTY));
                 assertEquals("en_US azerty", "English (US) (AZERTY)",
-                        SubtypeLocale.getSubtypeDisplayName(US_AZERTY));
-                assertEquals("zz azerty",    "Aucune langue (AZERTY)",
-                        SubtypeLocale.getSubtypeDisplayName(ZZ_AZERTY));
+                        SubtypeLocale.getSubtypeDisplayName(EN_US_AZERTY));
+                assertEquals("en_UK dvorak", "English (UK) (Dvorak)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_UK_DVORAK));
+                assertEquals("es_US colemak","Español (EE.UU.) (Colemak)",
+                        SubtypeLocale.getSubtypeDisplayName(ES_US_COLEMAK));
+                assertEquals("zz azerty",    "Aucune langue (PC)",
+                        SubtypeLocale.getSubtypeDisplayName(ZZ_PC));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.FRENCH);
+    }
+
+    // InputMethodSubtype's display name in system locale (en_US).
+    //        isAdditionalSubtype (T=true, F=false)
+    // locale layout  |  display name
+    // ------ ------- - ----------------------
+    //  en_US qwerty  F  English (US)            exception
+    //  en_GB qwerty  F  English (UK)            exception
+    //  es_US spanish F  Spanish (US)            exception
+    //  fr    azerty  F  French
+    //  fr_CA qwerty  F  French (Canada)
+    //  de    qwertz  F  German
+    //  zz    qwerty  F  No language (QWERTY)
+    //  fr    qwertz  T  French (QWERTZ)
+    //  de    qwerty  T  German (QWERTY)
+    //  en_US azerty  T  English (US) (AZERTY)   exception
+    //  en_UK dvorak  T  English (UK) (Dvorak)   exception
+    //  es_US colemak T  Spanish (US) (Colemak)  exception
+    //  zz    pc      T  No language (PC)
+
+    public void testPredefinedSubtypesInEnglishSystemLocale() {
+        assertEquals("en_US", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_US));
+        assertEquals("en_GB", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(EN_GB));
+        assertEquals("es_US", "spanish", SubtypeLocale.getKeyboardLayoutSetName(ES_US));
+        assertEquals("fr   ", "azerty", SubtypeLocale.getKeyboardLayoutSetName(FR));
+        assertEquals("fr_CA", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(FR_CA));
+        assertEquals("de   ", "qwertz", SubtypeLocale.getKeyboardLayoutSetName(DE));
+        assertEquals("zz   ", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(ZZ));
+
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("en_US", "English (US)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_US));
+                assertEquals("en_GB", "English (UK)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_GB));
+                assertEquals("es_US", "Spanish (US)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ES_US));
+                assertEquals("fr   ", "French",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR));
+                assertEquals("fr_CA", "French (Canada)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR_CA));
+                assertEquals("de   ", "German",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(DE));
+                assertEquals("zz   ", "No language (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ZZ));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.ENGLISH);
+    }
+
+    public void testAdditionalSubtypesInEnglishSystemLocale() {
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("fr qwertz",    "French (QWERTZ)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR_QWERTZ));
+                assertEquals("de qwerty",    "German (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(DE_QWERTY));
+                assertEquals("en_US azerty", "English (US) (AZERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_US_AZERTY));
+                assertEquals("en_UK dvorak", "English (UK) (Dvorak)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_UK_DVORAK));
+                assertEquals("es_US colemak","Spanish (US) (Colemak)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ES_US_COLEMAK));
+                assertEquals("zz azerty",    "No language (PC)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ZZ_PC));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.ENGLISH);
+    }
+
+    // InputMethodSubtype's display name in system locale (fr).
+    //        isAdditionalSubtype (T=true, F=false)
+    // locale layout  |  display name
+    // ------ ------- - ----------------------
+    //  en_US qwerty  F  Anglais (États-Unis)            exception
+    //  en_GB qwerty  F  Anglais (Royaume-Uni)            exception
+    //  es_US spanish F  Espagnol (États-Unis)            exception
+    //  fr    azerty  F  Français
+    //  fr_CA qwerty  F  Français (Canada)
+    //  de    qwertz  F  Allemand
+    //  zz    qwerty  F  Pas de langue (QWERTY)
+    //  fr    qwertz  T  Français (QWERTZ)
+    //  de    qwerty  T  Allemand (QWERTY)
+    //  en_US azerty  T  Anglais (États-Unis) (AZERTY)   exception
+    //  en_UK dvorak  T  Anglais (Royaume-Uni) (Dvorak)   exception
+    //  es_US colemak T  Espagnol (États-Unis) (Colemak)  exception
+    //  zz    pc      T  Aucune langue (PC)
+
+    public void testPredefinedSubtypesInFrenchSystemLocale() {
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("en_US", "Anglais (États-Unis)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_US));
+                assertEquals("en_GB", "Anglais (Royaume-Uni)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_GB));
+                assertEquals("es_US", "Espagnol (États-Unis)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ES_US));
+                assertEquals("fr   ", "Français",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR));
+                assertEquals("fr_CA", "Français (Canada)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR_CA));
+                assertEquals("de   ", "Allemand",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(DE));
+                assertEquals("zz   ", "Pas de langue (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ZZ));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.FRENCH);
+    }
+
+    public void testAdditionalSubtypesInFrenchSystemLocale() {
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("fr qwertz",    "Français (QWERTZ)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(FR_QWERTZ));
+                assertEquals("de qwerty",    "Allemand (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(DE_QWERTY));
+                assertEquals("en_US azerty", "Anglais (États-Unis) (AZERTY)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_US_AZERTY));
+                assertEquals("en_UK dvorak", "Anglais (Royaume-Uni) (Dvorak)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(EN_UK_DVORAK));
+                assertEquals("es_US colemak","Espagnol (États-Unis) (Colemak)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ES_US_COLEMAK));
+                assertEquals("zz azerty",    "Aucune langue (PC)",
+                        SubtypeLocale.getSubtypeDisplayNameInSystemLocale(ZZ_PC));
                 return null;
             }
         };
