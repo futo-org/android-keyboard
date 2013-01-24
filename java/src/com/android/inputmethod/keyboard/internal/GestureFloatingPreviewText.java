@@ -157,6 +157,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
      */
     protected void updatePreviewPosition() {
         if (mSuggestedWords.isEmpty() || TextUtils.isEmpty(mSuggestedWords.getWord(0))) {
+            getDrawingView().invalidate();
             return;
         }
         final String text = mSuggestedWords.getWord(0);
