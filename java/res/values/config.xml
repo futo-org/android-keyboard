@@ -46,14 +46,7 @@
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
     <string name="config_default_keyboard_theme_index" translatable="false">5</string>
     <integer name="config_max_more_keys_column">5</integer>
-    <!--
-         Configuration for KeyboardView
-    -->
-    <integer name="config_key_preview_linger_timeout">70</integer>
-    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
-    <integer name="config_gesture_preview_trail_fadeout_start_delay">100</integer>
-    <integer name="config_gesture_preview_trail_fadeout_duration">800</integer>
-    <integer name="config_gesture_preview_trail_update_interval">20</integer>
+
     <!--
          Configuration for MainKeyboardView
     -->
@@ -61,7 +54,10 @@
     <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
     <integer name="config_touch_noise_threshold_time">40</integer>
     <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+    <integer name="config_key_preview_linger_timeout">70</integer>
     <bool name="config_sliding_key_input_enabled">true</bool>
+    <!-- Sliding key input preview parameters -->
+    <dimen name="config_sliding_key_input_preview_width">8.0dp</dimen>
     <integer name="config_key_repeat_start_timeout">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_default_longpress_key_timeout">300</integer>  <!-- milliseconds -->
@@ -74,6 +70,10 @@
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
+    <integer name="config_gesture_preview_trail_fadeout_start_delay">100</integer>
+    <integer name="config_gesture_preview_trail_fadeout_duration">800</integer>
+    <integer name="config_gesture_preview_trail_update_interval">20</integer>
     <!-- Static threshold for gesture after fast typing (msec) -->
     <integer name="config_gesture_static_time_threshold_after_fast_typing">500</integer>
     <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->

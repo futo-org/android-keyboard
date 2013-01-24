@@ -951,12 +951,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
 
-        if (isShowingMoreKeysPanel()) {
-            final int translatedX = mMoreKeysPanel.translateX(x);
-            final int translatedY = mMoreKeysPanel.translateY(y);
-            mMoreKeysPanel.onMoveEvent(translatedX, translatedY, mPointerId, eventTime);
-        }
-
         if (sShouldHandleGesture && me != null) {
             // Add historical points to gesture path.
             final int pointerIndex = me.findPointerIndex(mPointerId);
@@ -971,7 +965,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (isShowingMoreKeysPanel()) {
-            // Do not handle sliding keys (or show key pop-ups) when the MoreKeysPanel is visible.
+            final int translatedX = mMoreKeysPanel.translateX(x);
+            final int translatedY = mMoreKeysPanel.translateY(y);
+            mMoreKeysPanel.onMoveEvent(translatedX, translatedY, mPointerId, eventTime);
+            onMoveKey(x, y);
+            mDrawingProxy.showSlidingKeyInputPreview(this);
             return;
         }
         onMoveEventInternal(x, y, eventTime);

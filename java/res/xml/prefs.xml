@@ -142,6 +142,11 @@
                 android:key="custom_input_styles"
                 android:title="@string/custom_input_styles_title" />
             <!-- Values for popup dismiss delay are added programatically -->
+            <CheckBoxPreference
+                android:key="pref_sliding_key_input_preview"
+                android:title="@string/sliding_key_input_preview"
+                android:persistent="true"
+                android:defaultValue="true" />
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />

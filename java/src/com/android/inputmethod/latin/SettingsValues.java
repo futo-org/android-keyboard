@@ -59,6 +59,7 @@ public final class SettingsValues {
     public final boolean mGestureInputEnabled;
     public final boolean mGesturePreviewTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
+    public final boolean mSlidingKeyInputPreviewEnabled;
     public final int mKeyLongpressTimeout;
 
     // From the input box
@@ -107,6 +108,8 @@ public final class SettingsValues {
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
         mKeyPreviewPopupOn = Settings.readKeyPreviewPopupEnabled(prefs, res);
+        mSlidingKeyInputPreviewEnabled = prefs.getBoolean(
+                Settings.PREF_SLIDING_KEY_INPUT_PREVIEW, true);
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
         mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);

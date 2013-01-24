@@ -69,6 +69,9 @@
     <!-- Option summary for showing language switch key [CHAR LIMIT=65] -->
     <string name="show_language_switch_key_summary">Show when multiple input languages are enabled</string>
 
+    <!-- Option to enable sliding key input preview. The user can see a rubber band during sliding key input. [CHAR LIMIT=30]-->
+    <string name="sliding_key_input_preview">Sliding key input preview</string>
+
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
     <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
     <!-- Description for delay for dismissing a popup on keypress: no delay [CHAR LIMIT=15] -->
