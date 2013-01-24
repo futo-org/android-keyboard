@@ -983,6 +983,34 @@ namespace latinime {
     return true;
 }
 
+/* static */ bool ProximityInfoStateUtils::checkAndReturnIsContinuationPossible(const int inputSize,
+        const int *const xCoordinates, const int *const yCoordinates, const int *const times,
+        const int sampledInputSize, const std::vector<int> *const sampledInputXs,
+        const std::vector<int> *const sampledInputYs,
+        const std::vector<int> *const sampledTimes,
+        const std::vector<int> *const sampledInputIndices) {
+    if (inputSize < sampledInputSize) {
+        return false;
+    }
+    for (int i = 0; i < sampledInputSize; ++i) {
+        const int index = (*sampledInputIndices)[i];
+        if (index >= inputSize) {
+            return false;
+        }
+        if (xCoordinates[index] != (*sampledInputXs)[i]
+                || yCoordinates[index] != (*sampledInputYs)[i]) {
+            return false;
+        }
+        if (!times) {
+            continue;
+        }
+        if (times[index] != (*sampledTimes)[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /* static */ void ProximityInfoStateUtils::dump(const bool isGeometric, const int inputSize,
         const int *const inputXCoordinates, const int *const inputYCoordinates,
         const int sampledInputSize, const std::vector<int> *const sampledInputXs,
