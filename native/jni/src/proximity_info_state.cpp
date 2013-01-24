@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <cstring> // for memset()
+#include <cstring> // for memset() and memcpy()
 #include <sstream> // for debug prints
 
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
@@ -59,12 +59,15 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     int pushTouchPointStartIndex = 0;
     int lastSavedInputSize = 0;
     mMaxPointToKeyLength = maxPointToKeyLength;
+    mSampledInputSize = 0;
+    mMostProbableStringProbability = 0.0f;
+
     if (mIsContinuationPossible && mSampledInputIndice.size() > 1) {
         // Just update difference.
-        // Two points prior is never skipped. Thus, we pop 2 input point data here.
-        pushTouchPointStartIndex = mSampledInputIndice[mSampledInputIndice.size() - 2];
-        popInputData();
-        popInputData();
+        // Previous two points are never skipped. Thus, we pop 2 input point data here.
+        pushTouchPointStartIndex = ProximityInfoStateUtils::trimLastTwoTouchPoints(
+                &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSampledLengthCache,
+                &mSampledInputIndice);
         lastSavedInputSize = mSampledInputXs.size();
     } else {
         // Clear all data.
@@ -81,11 +84,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mCharProbabilities.clear();
         mDirections.clear();
     }
+
     if (DEBUG_GEO_FULL) {
         AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
                 pushTouchPointStartIndex, lastSavedInputSize);
     }
-    mSampledInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
         mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(
@@ -121,6 +124,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             ProximityInfoStateUtils::updateSampledSearchKeysVector(mProximityInfo,
                     mSampledInputSize, lastSavedInputSize, &mSampledLengthCache,
                     &mSampledNearKeysVector, &mSampledSearchKeysVector);
+            mMostProbableStringProbability = ProximityInfoStateUtils::getMostProbableString(
+                    mProximityInfo, mSampledInputSize, &mCharProbabilities, mMostProbableString);
+
         }
     }
 
@@ -132,8 +138,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     // end
     ///////////////////////
 
-    memset(mNormalizedSquaredDistances, NOT_A_DISTANCE, sizeof(mNormalizedSquaredDistances));
-    memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
     mTouchPositionCorrectionEnabled = mSampledInputSize > 0 && mHasTouchPositionCorrectionData
             && xCoordinates && yCoordinates;
     if (!isGeometric && pointerId == 0) {
@@ -142,8 +146,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         if (mTouchPositionCorrectionEnabled) {
             ProximityInfoStateUtils::initNormalizedSquaredDistances(
                     mProximityInfo, inputSize, xCoordinates, yCoordinates, mInputProximities,
-                    hasInputCoordinates(), &mSampledInputXs, &mSampledInputYs,
-                    mNormalizedSquaredDistances);
+                    &mSampledInputXs, &mSampledInputYs, mNormalizedSquaredDistances);
         }
     }
     if (DEBUG_GEO_FULL) {
@@ -278,14 +281,8 @@ int ProximityInfoState::getAllPossibleChars(
 }
 
 bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int keyId) const {
-    ASSERT(keyId >= 0);
-    ASSERT(index >= 0 && index < mSampledInputSize);
+    ASSERT(keyId >= 0 && index >= 0 && index < mSampledInputSize);
     return mSampledSearchKeysVector[index].test(keyId);
-}
-
-void ProximityInfoState::popInputData() {
-    ProximityInfoStateUtils::popInputData(&mSampledInputXs, &mSampledInputYs, &mSampledTimes,
-            &mSampledLengthCache, &mSampledInputIndice);
 }
 
 float ProximityInfoState::getDirection(const int index0, const int index1) const {
@@ -313,33 +310,9 @@ float ProximityInfoState::getLineToKeyDistance(
             keyX, keyY, x0, y0, x1, y1, extend);
 }
 
-// Get a word that is detected by tracing the most probable string into codePointBuf and
-// returns probability of generating the word.
 float ProximityInfoState::getMostProbableString(int *const codePointBuf) const {
-    static const float DEMOTION_LOG_PROBABILITY = 0.3f;
-    int index = 0;
-    float sumLogProbability = 0.0f;
-    // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
-    for (int i = 0; i < mSampledInputSize && index < MAX_WORD_LENGTH - 1; ++i) {
-        float minLogProbability = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
-        int character = NOT_AN_INDEX;
-        for (hash_map_compat<int, float>::const_iterator it = mCharProbabilities[i].begin();
-                it != mCharProbabilities[i].end(); ++it) {
-            const float logProbability = (it->first != NOT_AN_INDEX)
-                    ? it->second + DEMOTION_LOG_PROBABILITY : it->second;
-            if (logProbability < minLogProbability) {
-                minLogProbability = logProbability;
-                character = it->first;
-            }
-        }
-        if (character != NOT_AN_INDEX) {
-            codePointBuf[index] = mProximityInfo->getCodePointOf(character);
-            index++;
-        }
-        sumLogProbability += minLogProbability;
-    }
-    codePointBuf[index] = '\0';
-    return sumLogProbability;
+    memcpy(codePointBuf, mMostProbableString, sizeof(mMostProbableString));
+    return mMostProbableStringProbability;
 }
 
 bool ProximityInfoState::hasSpaceProximity(const int index) const {
