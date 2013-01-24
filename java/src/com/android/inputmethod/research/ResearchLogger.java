@@ -184,7 +184,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private Suggest mSuggest;
     private MainKeyboardView mMainKeyboardView;
     // TODO: Check whether a superclass can be used instead of LatinIME.
-    private LatinIME mLatinIME;
+    /* package for test */ LatinIME mLatinIME;
     private final Statistics mStatistics;
     private final MotionEventReader mMotionEventReader = new MotionEventReader();
     private final Replayer mReplayer = new Replayer();
