@@ -72,5 +72,16 @@ inline static bool isSkippableCodePoint(const int codePoint) {
     // TODO: Do not hardcode here
     return codePoint == KEYCODE_SINGLE_QUOTE || codePoint == KEYCODE_HYPHEN_MINUS;
 }
+
+inline static int getCodePointCount(const int arraySize, const int *const codePoints) {
+    int size = 0;
+    for (; size < arraySize; ++size) {
+        if (codePoints[size] == '\0') {
+            break;
+        }
+    }
+    return size;
+}
+
 } // namespace latinime
 #endif // LATINIME_CHAR_UTILS_H
