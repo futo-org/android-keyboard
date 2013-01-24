@@ -78,6 +78,8 @@
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
         <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_default</item>
+        <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
         <item name="keyRepeatStartTimeout">@integer/config_key_repeat_start_timeout</item>
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
         <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
@@ -336,6 +338,7 @@
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="keyTextShadowColor">@color/key_text_shadow_color_ics</item>
         <item name="keyTextShadowRadius">0.0</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
         <item name="gesturePreviewTrailColor">@color/highlight_color_ics</item>
     </style>
