@@ -413,9 +413,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void onCreate() {
         Settings.init(this);
         LatinImeLogger.init(this);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this);
-        }
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
         SubtypeSwitcher.init(this);
@@ -431,6 +428,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         loadSettings();
         initSuggest();
 
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().init(this);
+        }
         mDisplayOrientation = getResources().getConfiguration().orientation;
 
         // Register to receive ringer mode change and network state change.
