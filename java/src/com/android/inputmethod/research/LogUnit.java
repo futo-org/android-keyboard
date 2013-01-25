@@ -286,7 +286,7 @@ import java.util.Map;
      * string.
      */
     public void setWord(final String word) {
-        if (mWord != null) {
+        if (hasWord()) {
             // The word was already set once, and it is now being changed.  See if the new word
             // is close to the old word.  If so, then the change is probably a typo correction.
             // If not, the user may have decided to enter a different word, so flag it.
@@ -310,7 +310,7 @@ import java.util.Map;
     }
 
     public boolean hasWord() {
-        return mWord != null;
+        return mWord != null && !TextUtils.isEmpty(mWord.trim());
     }
 
     public void setMayContainDigit() {

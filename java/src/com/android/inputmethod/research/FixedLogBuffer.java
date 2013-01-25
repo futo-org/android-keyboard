@@ -61,7 +61,7 @@ public class FixedLogBuffer extends LogBuffer {
      */
     @Override
     public void shiftIn(final LogUnit newLogUnit) {
-        if (newLogUnit.getWord() == null) {
+        if (!newLogUnit.hasWord()) {
             // This LogUnit isn't a word, so it doesn't count toward the word-limit.
             super.shiftIn(newLogUnit);
             return;
@@ -153,8 +153,7 @@ public class FixedLogBuffer extends LogBuffer {
         for (int i = 0; i < length && n > 0; i++) {
             final LogUnit logUnit = logUnits.get(i);
             list.add(logUnit);
-            final String word = logUnit.getWord();
-            if (word != null) {
+            if (logUnit.hasWord()) {
                 n--;
             }
         }
