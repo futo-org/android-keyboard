@@ -47,7 +47,7 @@ namespace latinime {
         for (int i = 0; i < inputSize; ++i) {
             if (i > 0) {
                 if (times[i] < times[i - 1]) {
-                    AKLOGI("Invalid time sequence. %d, %d", times[i], times[i - 1]);
+                    AKLOGI("Invalid time sequence. %d, %d", times[i - 1], times[i]);
                     ASSERT(false);
                 }
             }
