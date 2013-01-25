@@ -32,6 +32,9 @@ class ProximityInfoStateUtils {
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
     typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
 
+    static int trimLastTwoTouchPoints(std::vector<int> *sampledInputXs,
+            std::vector<int> *sampledInputYs, std::vector<int> *sampledInputTimes,
+            std::vector<int> *sampledLengthCache, std::vector<int> *sampledInputIndice);
     static int updateTouchPoints(const int mostCommonKeyWidth,
             const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
             const int *const inputProximities,
@@ -96,7 +99,7 @@ class ProximityInfoStateUtils {
     static void initNormalizedSquaredDistances(
             const ProximityInfo *const proximityInfo, const int inputSize,
             const int *inputXCoordinates, const int *inputYCoordinates,
-            const int *const inputProximities, const bool hasInputCoordinates,
+            const int *const inputProximities,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             int *normalizedSquaredDistances);
@@ -113,6 +116,12 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputYs,
             const std::vector<int> *const sampledTimes,
             const std::vector<int> *const sampledInputIndices);
+    // TODO: Move to most_probable_string_utils.h
+    static float getMostProbableString(
+            const ProximityInfo *const proximityInfo, const int sampledInputSize,
+            const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+            int *const codePointBuf);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoStateUtils);
 

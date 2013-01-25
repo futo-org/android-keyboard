@@ -15,6 +15,7 @@
  */
 
 #include <cmath>
+#include <cstring> // for memset()
 #include <sstream> // for debug prints
 #include <vector>
 
@@ -25,6 +26,17 @@
 #include "proximity_info_state_utils.h"
 
 namespace latinime {
+
+/* static */ int ProximityInfoStateUtils::trimLastTwoTouchPoints(std::vector<int> *sampledInputXs,
+        std::vector<int> *sampledInputYs, std::vector<int> *sampledInputTimes,
+        std::vector<int> *sampledLengthCache, std::vector<int> *sampledInputIndice) {
+    const int nextStartIndex = (*sampledInputIndice)[sampledInputIndice->size() - 2];
+    popInputData(sampledInputXs, sampledInputYs, sampledInputTimes, sampledLengthCache,
+            sampledInputIndice);
+    popInputData(sampledInputXs, sampledInputYs, sampledInputTimes, sampledLengthCache,
+            sampledInputIndice);
+    return nextStartIndex;
+}
 
 /* static */ int ProximityInfoStateUtils::updateTouchPoints(const int mostCommonKeyWidth,
         const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
@@ -133,6 +145,7 @@ namespace latinime {
 
 /* static */ void ProximityInfoStateUtils::initPrimaryInputWord(
         const int inputSize, const int *const inputProximities, int *primaryInputWord) {
+    memset(primaryInputWord, 0, sizeof(primaryInputWord[0]) * MAX_WORD_LENGTH);
     for (int i = 0; i < inputSize; ++i) {
         primaryInputWord[i] = getPrimaryCodePointAt(inputProximities, i);
     }
@@ -171,10 +184,13 @@ namespace latinime {
 /* static */ void ProximityInfoStateUtils::initNormalizedSquaredDistances(
         const ProximityInfo *const proximityInfo, const int inputSize,
         const int *inputXCoordinates, const int *inputYCoordinates,
-        const int *const inputProximities, const bool hasInputCoordinates,
+        const int *const inputProximities,
         const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
         int *normalizedSquaredDistances) {
+    memset(normalizedSquaredDistances, NOT_A_DISTANCE,
+            sizeof(normalizedSquaredDistances[0]) * MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH);
+    const bool hasInputCoordinates = sampledInputXs->size() > 0 && sampledInputYs->size() > 0;
     for (int i = 0; i < inputSize; ++i) {
         const int *proximityCodePoints = getProximityCodePointsAt(inputProximities, i);
         const int primaryKey = proximityCodePoints[0];
@@ -1009,6 +1025,40 @@ namespace latinime {
         }
     }
     return true;
+}
+
+// Get a word that is detected by tracing the most probable string into codePointBuf and
+// returns probability of generating the word.
+/* static */ float ProximityInfoStateUtils::getMostProbableString(
+        const ProximityInfo *const proximityInfo, const int sampledInputSize,
+        const std::vector<hash_map_compat<int, float> > *const charProbabilities,
+        int *const codePointBuf) {
+    ASSERT(charProbabilities->size() >= 0 && sampledInputSize >= 0);
+    memset(codePointBuf, 0, sizeof(codePointBuf[0]) * MAX_WORD_LENGTH);
+    static const float DEMOTION_LOG_PROBABILITY = 0.3f;
+    int index = 0;
+    float sumLogProbability = 0.0f;
+    // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
+    for (int i = 0; i < sampledInputSize && index < MAX_WORD_LENGTH - 1; ++i) {
+        float minLogProbability = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+        int character = NOT_AN_INDEX;
+        for (hash_map_compat<int, float>::const_iterator it = (*charProbabilities)[i].begin();
+                it != (*charProbabilities)[i].end(); ++it) {
+            const float logProbability = (it->first != NOT_AN_INDEX)
+                    ? it->second + DEMOTION_LOG_PROBABILITY : it->second;
+            if (logProbability < minLogProbability) {
+                minLogProbability = logProbability;
+                character = it->first;
+            }
+        }
+        if (character != NOT_AN_INDEX) {
+            codePointBuf[index] = proximityInfo->getCodePointOf(character);
+            index++;
+        }
+        sumLogProbability += minLogProbability;
+    }
+    codePointBuf[index] = '\0';
+    return sumLogProbability;
 }
 
 /* static */ void ProximityInfoStateUtils::dump(const bool isGeometric, const int inputSize,

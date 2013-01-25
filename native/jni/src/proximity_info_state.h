@@ -54,10 +54,12 @@ class ProximityInfoState {
               mSampledInputIndice(), mSampledLengthCache(), mBeelineSpeedPercentiles(),
               mSampledDistanceCache_G(), mSpeedRates(), mDirections(), mCharProbabilities(),
               mSampledNearKeysVector(), mSampledSearchKeysVector(),
-              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0) {
+              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0),
+              mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
+        memset(mMostProbableString, 0, sizeof(mMostProbableString));
     }
 
     // Non virtual inline destructor -- never inherit this class
@@ -65,6 +67,21 @@ class ProximityInfoState {
 
     inline int getPrimaryCodePointAt(const int index) const {
         return getProximityCodePointsAt(index)[0];
+    }
+
+    inline bool sameAsTyped(const int *word, int length) const {
+        if (length != mSampledInputSize) {
+            return false;
+        }
+        const int *inputProximities = mInputProximities;
+        while (length--) {
+            if (*inputProximities != *word) {
+                return false;
+            }
+            inputProximities += MAX_PROXIMITY_CHARS_SIZE;
+            word++;
+        }
+        return true;
     }
 
     AK_FORCE_INLINE bool existsCodePointInProximityAt(const int index, const int c) const {
@@ -105,21 +122,6 @@ class ProximityInfoState {
 
     inline bool touchPositionCorrectionEnabled() const {
         return mTouchPositionCorrectionEnabled;
-    }
-
-    inline bool sameAsTyped(const int *word, int length) const {
-        if (length != mSampledInputSize) {
-            return false;
-        }
-        const int *inputProximities = mInputProximities;
-        while (length--) {
-            if (*inputProximities != *word) {
-                return false;
-            }
-            inputProximities += MAX_PROXIMITY_CHARS_SIZE;
-            word++;
-        }
-        return true;
     }
 
     bool isUsed() const {
@@ -208,14 +210,9 @@ class ProximityInfoState {
     // Defined here                        //
     /////////////////////////////////////////
 
-    bool hasInputCoordinates() const {
-        return mSampledInputXs.size() > 0 && mSampledInputYs.size() > 0;
-    }
-
     inline const int *getProximityCodePointsAt(const int index) const {
         return ProximityInfoStateUtils::getProximityCodePointsAt(mInputProximities, index);
     }
-    void popInputData();
 
     // const
     const ProximityInfo *mProximityInfo;
@@ -255,6 +252,8 @@ class ProximityInfoState {
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mSampledInputSize;
     int mPrimaryInputWord[MAX_WORD_LENGTH];
+    float mMostProbableStringProbability;
+    int mMostProbableString[MAX_WORD_LENGTH];
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_STATE_H
