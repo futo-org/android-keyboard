@@ -2490,7 +2490,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private void launchSubActivity(final Class<? extends Activity> activityClass) {
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, activityClass);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
