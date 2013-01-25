@@ -69,29 +69,28 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputYs,
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<float> *const distanceCache_G,
-            std::vector<NearKeycodesSet> *nearKeysVector,
+            const std::vector<float> *const SampledDistanceCache_G,
+            std::vector<NearKeycodesSet> *SampledNearKeysVector,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
-    static void updateSearchKeysVector(
+    static void updateSampledSearchKeysVector(
             const ProximityInfo *const proximityInfo, const int sampledInputSize,
             const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<NearKeycodesSet> *const nearKeysVector,
-            std::vector<NearKeycodesSet> *searchKeysVector);
+            const std::vector<NearKeycodesSet> *const SampledNearKeysVector,
+            std::vector<NearKeycodesSet> *sampledSearchKeysVector);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
-            const std::vector<float> *const distanceCache_G, const int keyCount,
+            const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
             const int inputIndex, const int keyId, const float scale);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
-            const std::vector<float> *const distanceCache_G, const int keyCount,
+            const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
             const int inputIndex, const int keyId);
     static void initGeometricDistanceInfos(
             const ProximityInfo *const proximityInfo, const int keyCount,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
-            std::vector<NearKeycodesSet> *nearKeysVector,
-            std::vector<NearKeycodesSet> *searchKeysVector,
-            std::vector<float> *distanceCache_G);
+            std::vector<NearKeycodesSet> *SampledNearKeysVector,
+            std::vector<float> *SampledDistanceCache_G);
     static void initPrimaryInputWord(
             const int inputSize, const int *const inputProximities, int *primaryInputWord);
     static void initNormalizedSquaredDistances(
