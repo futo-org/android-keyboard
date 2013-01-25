@@ -1443,9 +1443,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     //  fr_CA qwerty  F  Fr  Français  Français (Canada)
     //  de    qwertz  F  De  Deutsch   Deutsch
     //  zz    qwerty  F      QWERTY    QWERTY
-    //  fr    qwertz  T  Fr  Français  Français (QWERTZ)
-    //  de    qwerty  T  De  Deutsch   Deutsch (QWERTY)
-    //  en_US azerty  T  En  English   English (US) (AZERTY)
+    //  fr    qwertz  T  Fr  Français  Français
+    //  de    qwerty  T  De  Deutsch   Deutsch
+    //  en_US azerty  T  En  English   English (US)
     //  zz    azerty  T      AZERTY    AZERTY
 
     // Get InputMethodSubtype's full display name in its locale.
@@ -1453,8 +1453,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (SubtypeLocale.isNoLanguage(subtype)) {
             return SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype);
         }
-
-        return SubtypeLocale.getSubtypeDisplayName(subtype);
+        return SubtypeLocale.getSubtypeLocaleDisplayName(subtype.getLocale());
     }
 
     // Get InputMethodSubtype's short display name in its locale.
@@ -1472,6 +1471,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype);
         }
         final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
-        return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+        return SubtypeLocale.getSubtypeLocaleDisplayName(locale.getLanguage());
     }
 }
