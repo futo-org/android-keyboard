@@ -18,8 +18,11 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 
+import android.util.Log;
+
 // TODO: This class is not thread-safe.
 public final class InputPointers {
+    private static final String TAG = InputPointers.class.getSimpleName();
     private final int mDefaultCapacity;
     private final ResizableIntArray mXCoordinates;
     private final ResizableIntArray mYCoordinates;
@@ -126,6 +129,11 @@ public final class InputPointers {
     }
 
     public int[] getTimes() {
+        if (LatinImeLogger.sDBG) {
+            if (!isValidTimeStamps()) {
+                throw new RuntimeException("Time stamps are invalid.");
+            }
+        }
         return mTimes.getPrimitiveArray();
     }
 
@@ -133,5 +141,19 @@ public final class InputPointers {
     public String toString() {
         return "size=" + getPointerSize() + " id=" + mPointerIds + " time=" + mTimes
                 + " x=" + mXCoordinates + " y=" + mYCoordinates;
+    }
+
+    private boolean isValidTimeStamps() {
+        final int[] times = mTimes.getPrimitiveArray();
+        for (int i = 1; i < getPointerSize(); ++i) {
+            if (times[i] < times[i - 1]) {
+                // dump
+                for (int j = 0; j < times.length; ++j) {
+                    Log.d(TAG, "--- (" + j + ") " + times[j]);
+                }
+                return false;
+            }
+        }
+        return true;
     }
 }
