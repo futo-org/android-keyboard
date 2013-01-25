@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -35,7 +34,6 @@ public class SpacebarTextTests extends AndroidTestCase {
     private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
 
     private RichInputMethodManager mRichImm;
-    private Resources mRes;
 
     @Override
     protected void setUp() throws Exception {
@@ -43,14 +41,13 @@ public class SpacebarTextTests extends AndroidTestCase {
         final Context context = getContext();
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
-        mRes = context.getResources();
         SubtypeLocale.init(context);
     }
 
     public void testAllFullDisplayName() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype, mRes);
-            final String spacebarText = MainKeyboardView.getFullDisplayName(subtype, mRes);
+            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype);
+            final String spacebarText = MainKeyboardView.getFullDisplayName(subtype);
             final String languageName =
                     SubtypeLocale.getSubtypeLocaleDisplayName(subtype.getLocale());
             if (SubtypeLocale.isNoLanguage(subtype)) {
@@ -63,7 +60,7 @@ public class SpacebarTextTests extends AndroidTestCase {
 
    public void testAllMiddleDisplayName() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype, mRes);
+            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype);
             final String spacebarText = MainKeyboardView.getMiddleDisplayName(subtype);
             if (SubtypeLocale.isNoLanguage(subtype)) {
                 assertEquals(subtypeName,
@@ -78,7 +75,7 @@ public class SpacebarTextTests extends AndroidTestCase {
 
     public void testAllShortDisplayName() {
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype, mRes);
+            final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype);
             final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
             final String spacebarText = MainKeyboardView.getShortDisplayName(subtype);
             final String languageCode = StringUtils.toTitleCase(locale.getLanguage(), locale);
@@ -120,17 +117,17 @@ public class SpacebarTextTests extends AndroidTestCase {
                 SubtypeLocale.NO_LANGUAGE, "qwerty");
 
         assertEquals("en_US", "English (US)",
-                MainKeyboardView.getFullDisplayName(EN_US, mRes));
+                MainKeyboardView.getFullDisplayName(EN_US));
         assertEquals("en_GB", "English (UK)",
-                MainKeyboardView.getFullDisplayName(EN_GB, mRes));
+                MainKeyboardView.getFullDisplayName(EN_GB));
         assertEquals("fr   ", "Français",
-                MainKeyboardView.getFullDisplayName(FR, mRes));
+                MainKeyboardView.getFullDisplayName(FR));
         assertEquals("fr_CA", "Français (Canada)",
-                MainKeyboardView.getFullDisplayName(FR_CA, mRes));
+                MainKeyboardView.getFullDisplayName(FR_CA));
         assertEquals("de   ", "Deutsch",
-                MainKeyboardView.getFullDisplayName(DE, mRes));
+                MainKeyboardView.getFullDisplayName(DE));
         assertEquals("zz   ", "QWERTY",
-                MainKeyboardView.getFullDisplayName(ZZ, mRes));
+                MainKeyboardView.getFullDisplayName(ZZ));
 
         assertEquals("en_US", "English",  MainKeyboardView.getMiddleDisplayName(EN_US));
         assertEquals("en_GB", "English",  MainKeyboardView.getMiddleDisplayName(EN_GB));
@@ -158,13 +155,13 @@ public class SpacebarTextTests extends AndroidTestCase {
                 SubtypeLocale.NO_LANGUAGE, "azerty", null);
 
         assertEquals("fr qwertz",    "Français (QWERTZ)",
-                MainKeyboardView.getFullDisplayName(FR_QWERTZ, mRes));
+                MainKeyboardView.getFullDisplayName(FR_QWERTZ));
         assertEquals("de qwerty",    "Deutsch (QWERTY)",
-                MainKeyboardView.getFullDisplayName(DE_QWERTY, mRes));
+                MainKeyboardView.getFullDisplayName(DE_QWERTY));
         assertEquals("en_US azerty", "English (US) (AZERTY)",
-                MainKeyboardView.getFullDisplayName(US_AZERTY, mRes));
+                MainKeyboardView.getFullDisplayName(US_AZERTY));
         assertEquals("zz azerty",    "AZERTY",
-                MainKeyboardView.getFullDisplayName(ZZ_AZERTY, mRes));
+                MainKeyboardView.getFullDisplayName(ZZ_AZERTY));
 
         assertEquals("fr qwertz",    "Français", MainKeyboardView.getMiddleDisplayName(FR_QWERTZ));
         assertEquals("de qwerty",    "Deutsch",  MainKeyboardView.getMiddleDisplayName(DE_QWERTY));

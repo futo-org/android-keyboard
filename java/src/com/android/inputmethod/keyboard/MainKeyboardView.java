@@ -1371,7 +1371,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private String layoutLanguageOnSpacebar(final Paint paint, final InputMethodSubtype subtype,
             final int width) {
         // Choose appropriate language name to fit into the width.
-        final String fullText = getFullDisplayName(subtype, getResources());
+        final String fullText = getFullDisplayName(subtype);
         if (fitsTextIntoWidth(width, fullText, paint)) {
             return fullText;
         }
@@ -1445,12 +1445,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     //  zz    azerty  T      AZERTY    AZERTY
 
     // Get InputMethodSubtype's full display name in its locale.
-    static String getFullDisplayName(final InputMethodSubtype subtype, final Resources res) {
+    static String getFullDisplayName(final InputMethodSubtype subtype) {
         if (SubtypeLocale.isNoLanguage(subtype)) {
             return SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype);
         }
 
-        return SubtypeLocale.getSubtypeDisplayName(subtype, res);
+        return SubtypeLocale.getSubtypeDisplayName(subtype);
     }
 
     // Get InputMethodSubtype's short display name in its locale.
