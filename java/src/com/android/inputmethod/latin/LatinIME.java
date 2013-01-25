@@ -1481,6 +1481,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     @Override
     public void onStartBatchInput() {
         BatchInputUpdater.getInstance().onStartBatchInput(this);
+        mHandler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             if (ProductionFlag.IS_INTERNAL) {
