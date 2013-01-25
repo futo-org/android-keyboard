@@ -33,8 +33,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
-    mIsContinuationPossible = checkAndReturnIsContinuationPossible(
-            inputSize, xCoordinates, yCoordinates, times, isGeometric);
+    ASSERT(isGeometric || (inputSize < MAX_WORD_LENGTH));
+    mIsContinuationPossible = ProximityInfoStateUtils::checkAndReturnIsContinuationPossible(
+            inputSize, xCoordinates, yCoordinates, times, mSampledInputSize, &mSampledInputXs,
+            &mSampledInputYs, &mSampledTimes, &mSampledInputIndice);
 
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
@@ -147,39 +149,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (DEBUG_GEO_FULL) {
         AKLOGI("ProximityState init finished: %d points out of %d", mSampledInputSize, inputSize);
     }
-}
-
-bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
-        const int *const xCoordinates, const int *const yCoordinates, const int *const times,
-        const bool isGeometric) const {
-    if (isGeometric) {
-        for (int i = 0; i < mSampledInputSize; ++i) {
-            const int index = mSampledInputIndice[i];
-            if (index > inputSize || xCoordinates[index] != mSampledInputXs[i] ||
-                    yCoordinates[index] != mSampledInputYs[i] || times[index] != mSampledTimes[i]) {
-                return false;
-            }
-        }
-    } else {
-        if (inputSize < mSampledInputSize) {
-            // Assuming the cache is invalid if the previous input size is larger than the new one.
-            return false;
-        }
-        for (int i = 0; i < mSampledInputSize && i < MAX_WORD_LENGTH; ++i) {
-            if (xCoordinates[i] != mSampledInputXs[i]
-                    || yCoordinates[i] != mSampledInputYs[i]) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-int ProximityInfoState::getDuration(const int index) const {
-    if (index >= 0 && index < mSampledInputSize - 1) {
-        return mSampledTimes[index + 1] - mSampledTimes[index];
-    }
-    return 0;
 }
 
 // TODO: Remove the "scale" parameter

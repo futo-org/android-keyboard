@@ -122,8 +122,6 @@ class ProximityInfoState {
         return true;
     }
 
-    int getDuration(const int index) const;
-
     bool isUsed() const {
         return mSampledInputSize > 0;
     }
@@ -217,8 +215,6 @@ class ProximityInfoState {
     inline const int *getProximityCodePointsAt(const int index) const {
         return ProximityInfoStateUtils::getProximityCodePointsAt(mInputProximities, index);
     }
-    bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
-            const int *const yCoordinates, const int *const times, const bool isGeometric) const;
     void popInputData();
 
     // const
