@@ -18,25 +18,40 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.CoordinateUtils;
+import com.android.inputmethod.latin.R;
 
 /**
  * Draw rubber band preview graphics during sliding key input.
  */
 public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
+    private final int mPreviewWidth;
+
     private boolean mShowSlidingKeyInputPreview;
-    private final int[] mRubberBandFrom = CoordinateUtils.newInstance();
-    private final int[] mRubberBandTo = CoordinateUtils.newInstance();
+    private final int[] mPreviewFrom = CoordinateUtils.newInstance();
+    private final int[] mPreviewTo = CoordinateUtils.newInstance();
+
+    // TODO: Finalize the rubber band preview implementation.
+    private final RoundedLine mRoundedLine = new RoundedLine();
+    private final Paint mPaint = new Paint();
 
     public SlidingKeyInputPreview(final View drawingView, final TypedArray mainKeyboardViewAttr) {
         super(drawingView);
+        final int previewColor = mainKeyboardViewAttr.getColor(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0);
+        mPreviewWidth = mainKeyboardViewAttr.getDimensionPixelSize(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewWidth, 0);
+        mPaint.setColor(previewColor);
     }
 
     public void dismissSlidingKeyInputPreview() {
         mShowSlidingKeyInputPreview = false;
+        getDrawingView().invalidate();
     }
 
     /**
@@ -45,10 +60,16 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
      */
     @Override
     public void drawPreview(final Canvas canvas) {
-        if (!isPreviewEnabled() || mShowSlidingKeyInputPreview == false) {
+        if (!isPreviewEnabled() || !mShowSlidingKeyInputPreview) {
             return;
         }
-        // TODO: Implement rubber band preview
+
+        // TODO: Finalize the rubber band preview implementation.
+        final int radius = mPreviewWidth / 2;
+        final Path path = mRoundedLine.makePath(
+                CoordinateUtils.x(mPreviewFrom), CoordinateUtils.y(mPreviewFrom), radius,
+                CoordinateUtils.x(mPreviewTo), CoordinateUtils.y(mPreviewTo), radius);
+        canvas.drawPath(path, mPaint);
     }
 
     /**
@@ -61,8 +82,8 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
             mShowSlidingKeyInputPreview = false;
             return;
         }
-        tracker.getDownCoordinates(mRubberBandFrom);
-        tracker.getLastCoordinates(mRubberBandTo);
+        tracker.getDownCoordinates(mPreviewFrom);
+        tracker.getLastCoordinates(mPreviewTo);
         mShowSlidingKeyInputPreview = true;
         getDrawingView().invalidate();
     }

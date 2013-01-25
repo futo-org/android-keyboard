@@ -71,7 +71,6 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Utils.Stats;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -653,6 +652,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
+        final SettingsValues currentSettings = mSettings.getCurrent();
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
@@ -706,7 +706,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             accessUtils.onStartInputViewInternal(mainKeyboardView, editorInfo, restarting);
         }
 
-        final boolean inputTypeChanged = !mSettings.getCurrent().isSameInputType(editorInfo);
+        final boolean inputTypeChanged = !currentSettings.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
@@ -737,12 +737,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mainKeyboardView.closing();
             loadSettings();
 
-            if (mSuggest != null && mSettings.getCurrent().mCorrectionEnabled) {
-                mSuggest.setAutoCorrectionThreshold(
-                        mSettings.getCurrent().mAutoCorrectionThreshold);
+            if (mSuggest != null && currentSettings.mCorrectionEnabled) {
+                mSuggest.setAutoCorrectionThreshold(currentSettings.mAutoCorrectionThreshold);
             }
 
-            switcher.loadKeyboard(editorInfo, mSettings.getCurrent());
+            switcher.loadKeyboard(editorInfo, currentSettings);
         } else if (restarting) {
             // TODO: Come up with a more comprehensive way to reset the keyboard layout when
             // a keyboard layout set doesn't get reloaded in this method.
@@ -764,12 +763,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.cancelDoubleSpacePeriodTimer();
 
         mainKeyboardView.setMainDictionaryAvailability(mIsMainDictionaryAvailable);
-        mainKeyboardView.setKeyPreviewPopupEnabled(mSettings.getCurrent().mKeyPreviewPopupOn,
-                mSettings.getCurrent().mKeyPreviewPopupDismissDelay);
+        mainKeyboardView.setKeyPreviewPopupEnabled(currentSettings.mKeyPreviewPopupOn,
+                currentSettings.mKeyPreviewPopupDismissDelay);
+        mainKeyboardView.setSlidingKeyInputPreviewEnabled(
+                currentSettings.mSlidingKeyInputPreviewEnabled);
         mainKeyboardView.setGestureHandlingEnabledByUser(
-                mSettings.getCurrent().mGestureInputEnabled);
-        mainKeyboardView.setGesturePreviewMode(mSettings.getCurrent().mGesturePreviewTrailEnabled,
-                mSettings.getCurrent().mGestureFloatingPreviewTextEnabled);
+                currentSettings.mGestureInputEnabled);
+        mainKeyboardView.setGesturePreviewMode(currentSettings.mGesturePreviewTrailEnabled,
+                currentSettings.mGestureFloatingPreviewTextEnabled);
 
         // If we have a user dictionary addition in progress, we should check now if we should
         // replace the previously committed string with the word that has actually been added

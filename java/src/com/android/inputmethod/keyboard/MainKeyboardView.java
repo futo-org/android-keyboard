@@ -879,6 +879,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mDrawingHandler.dismissKeyPreview(mKeyPreviewLingerTimeout, tracker);
     }
 
+    public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
+        mSlidingKeyInputPreview.setPreviewEnabled(enabled);
+    }
+
     @Override
     public void showSlidingKeyInputPreview(final PointerTracker tracker) {
         locatePreviewPlacerView();

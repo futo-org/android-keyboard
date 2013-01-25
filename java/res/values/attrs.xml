@@ -83,6 +83,8 @@
         <attr name="touchNoiseThresholdDistance" format="dimension" />
         <!-- Sliding key input enable -->
         <attr name="slidingKeyInputEnable" format="boolean" />
+        <attr name="slidingKeyInputPreviewColor" format="color" />
+        <attr name="slidingKeyInputPreviewWidth" format="dimension" />
         <!-- Key repeat start timeout -->
         <attr name="keyRepeatStartTimeout" format="integer" />
         <!-- Key repeat interval in millisecond. -->

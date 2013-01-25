@@ -17,6 +17,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Color resources for default, and Gingerbread theme. -->
     <color name="highlight_color_default">#FFFCAE00</color>
+    <color name="highlight_translucent_color_default">#99FCAE00</color>
     <color name="key_text_color_default">@android:color/white</color>
     <color name="key_text_shadow_color_default">#BB000000</color>
     <color name="key_text_inactivated_color_default">@android:color/white</color>
@@ -39,7 +40,9 @@
     <color name="spacebar_text_color_stone">@android:color/black</color>
     <color name="spacebar_text_shadow_color_stone">#D0FFFFFF</color>
     <!-- Color resources for IceCreamSandwich theme. -->
+    <!-- android:color/holo_blue_light value is #FF33B5E5 -->
     <color name="highlight_color_ics">@android:color/holo_blue_light</color>
+    <color name="highlight_translucent_color_ics">#9933B5E5</color>
     <color name="key_text_color_ics">@android:color/white</color>
     <color name="key_text_shadow_color_ics">@android:color/transparent</color>
     <color name="key_text_inactivated_color_ics">#66E0E4E5</color>
