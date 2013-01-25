@@ -116,28 +116,14 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                     mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
                     &mDistanceCache_G, &mNearKeysVector, &mCharProbabilities);
-
-            static const float READ_FORWORD_LENGTH_SCALE = 0.95f;
-            const int readForwordLength = static_cast<int>(
-                    hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
-                            * READ_FORWORD_LENGTH_SCALE);
-            for (int i = 0; i < mSampledInputSize; ++i) {
-                if (i >= lastSavedInputSize) {
-                    mSearchKeysVector[i].reset();
-                }
-                for (int j = max(i, lastSavedInputSize); j < mSampledInputSize; ++j) {
-                    if (mSampledLengthCache[j] - mSampledLengthCache[i] >= readForwordLength) {
-                        break;
-                    }
-                    mSearchKeysVector[i] |= mNearKeysVector[j];
-                }
-            }
+            ProximityInfoStateUtils::updateSearchKeysVector(mProximityInfo, mSampledInputSize,
+                    lastSavedInputSize, &mSampledLengthCache, &mNearKeysVector, &mSearchKeysVector);
         }
     }
 
     if (DEBUG_SAMPLING_POINTS) {
         ProximityInfoStateUtils::dump(isGeometric, inputSize, xCoordinates, yCoordinates,
-                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mSpeedRates,
+                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSpeedRates,
                 &mBeelineSpeedPercentiles);
     }
     // end

@@ -29,6 +29,7 @@ class ProximityInfoParams {
     static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
+    static const float SEARCH_KEY_RADIUS_RATIO;
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoParams);
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
