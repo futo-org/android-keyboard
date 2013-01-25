@@ -22,10 +22,10 @@
     <!-- Device form factor. This value must be aligned with {@link KeyboardId.FORM_FACTOR_TABLET10} -->
     <integer name="config_device_form_factor">2</integer>
     <bool name="config_enable_show_voice_key_option">false</bool>
-    <bool name="config_enable_show_popup_on_keypress_option">false</bool>
+    <bool name="config_enable_show_option_of_key_preview_popup">false</bool>
     <bool name="config_enable_bigram_suggestions_option">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
-    <bool name="config_default_popup_preview">false</bool>
+    <bool name="config_default_key_preview_popup">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->

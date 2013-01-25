@@ -114,23 +114,22 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_VIBRATION_DURATION_SETTINGS, advancedSettings);
         }
 
-        final boolean showKeyPreviewPopupOption = res.getBoolean(
-                R.bool.config_enable_show_popup_on_keypress_option);
         mKeyPreviewPopupDismissDelay =
                 (ListPreference) findPreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
-        if (!showKeyPreviewPopupOption) {
+        if (!Settings.readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
             removePreference(Settings.PREF_POPUP_ON, generalSettings);
             removePreference(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY, advancedSettings);
         } else {
-            final String[] entries = new String[] {
-                    res.getString(R.string.key_preview_popup_dismiss_no_delay),
-                    res.getString(R.string.key_preview_popup_dismiss_default_delay),
-            };
             final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
                     R.integer.config_key_preview_linger_timeout));
-            mKeyPreviewPopupDismissDelay.setEntries(entries);
-            mKeyPreviewPopupDismissDelay.setEntryValues(
-                    new String[] { "0", popupDismissDelayDefaultValue });
+            mKeyPreviewPopupDismissDelay.setEntries(new String[] {
+                    res.getString(R.string.key_preview_popup_dismiss_no_delay),
+                    res.getString(R.string.key_preview_popup_dismiss_default_delay),
+            });
+            mKeyPreviewPopupDismissDelay.setEntryValues(new String[] {
+                    "0",
+                    popupDismissDelayDefaultValue
+            });
             if (null == mKeyPreviewPopupDismissDelay.getValue()) {
                 mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
             }
@@ -152,9 +151,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
-        final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
-                R.bool.config_gesture_input_enabled_by_build_config);
-        if (!gestureInputEnabledByBuildConfig) {
+        if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
             removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());
         }
 
@@ -188,23 +185,17 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         (new BackupManager(getActivity())).dataChanged();
+        final Resources res = getResources();
         if (key.equals(Settings.PREF_POPUP_ON)) {
             setPreferenceEnabled(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
-                    prefs.getBoolean(Settings.PREF_POPUP_ON, true));
+                    Settings.readKeyPreviewPopupEnabled(prefs, res));
         } else if (key.equals(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
             setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
                     Settings.readShowsLanguageSwitchKey(prefs));
         } else if (key.equals(Settings.PREF_GESTURE_INPUT)) {
-            final boolean gestureInputEnabledByConfig = getResources().getBoolean(
-                    R.bool.config_gesture_input_enabled_by_build_config);
-            if (gestureInputEnabledByConfig) {
-                final boolean gestureInputEnabledByUser = prefs.getBoolean(
-                        Settings.PREF_GESTURE_INPUT, true);
-                setPreferenceEnabled(Settings.PREF_GESTURE_PREVIEW_TRAIL,
-                        gestureInputEnabledByUser);
-                setPreferenceEnabled(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT,
-                        gestureInputEnabledByUser);
-            }
+            final boolean gestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
+            setPreferenceEnabled(Settings.PREF_GESTURE_PREVIEW_TRAIL, gestureInputEnabled);
+            setPreferenceEnabled(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, gestureInputEnabled);
         }
         ensureConsistencyOfAutoCorrectionSettings();
         updateVoiceModeSummary();
@@ -258,16 +249,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
             final SharedPreferences sp, final Resources res) {
-        final boolean hasVibratorHardware =
-                AudioAndHapticFeedbackManager.getInstance().hasVibrator();
-        final boolean vibrateOnByUser = sp.getBoolean(Settings.PREF_VIBRATE_ON,
-                res.getBoolean(R.bool.config_default_vibration_enabled));
         setPreferenceEnabled(Settings.PREF_VIBRATION_DURATION_SETTINGS,
-                hasVibratorHardware && vibrateOnByUser);
-
-        final boolean soundOn = sp.getBoolean(Settings.PREF_SOUND_ON,
-                res.getBoolean(R.bool.config_default_sound_enabled));
-        setPreferenceEnabled(Settings.PREF_KEYPRESS_SOUND_VOLUME, soundOn);
+                Settings.readVibrationEnabled(sp, res));
+        setPreferenceEnabled(Settings.PREF_KEYPRESS_SOUND_VOLUME,
+                Settings.readKeypressSoundEnabled(sp, res));
     }
 
     private void setupKeypressVibrationDurationSettings(final SharedPreferences sp,

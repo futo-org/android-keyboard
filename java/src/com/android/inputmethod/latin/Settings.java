@@ -126,13 +126,49 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     // Accessed from the settings interface, hence public
+    public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        return prefs.getBoolean(Settings.PREF_SOUND_ON,
+                res.getBoolean(R.bool.config_default_sound_enabled));
+    }
+
+    public static boolean readVibrationEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        final boolean hasVibrator = AudioAndHapticFeedbackManager.getInstance().hasVibrator();
+        return hasVibrator && prefs.getBoolean(PREF_VIBRATE_ON,
+                res.getBoolean(R.bool.config_default_vibration_enabled));
+    }
+
+    public static boolean readAutoCorrectEnabled(final String currentAutoCorrectionSetting,
+            final Resources res) {
+        final String autoCorrectionOff = res.getString(
+                R.string.auto_correction_threshold_mode_index_off);
+        return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
+    }
+
+    public static boolean readFromBuildConfigIfGestureInputEnabled(final Resources res) {
+        return res.getBoolean(R.bool.config_gesture_input_enabled_by_build_config);
+    }
+
+    public static boolean readGestureInputEnabled(final SharedPreferences prefs,
+            final Resources res) {
+        return readFromBuildConfigIfGestureInputEnabled(res)
+                && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
+    }
+
+    public static boolean readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(
+            final Resources res) {
+        return res.getBoolean(R.bool.config_enable_show_option_of_key_preview_popup);
+    }
+
     public static boolean readKeyPreviewPopupEnabled(final SharedPreferences prefs,
             final Resources res) {
-        final boolean showPopupOption = res.getBoolean(
-                R.bool.config_enable_show_popup_on_keypress_option);
-        if (!showPopupOption) return res.getBoolean(R.bool.config_default_popup_preview);
-        return prefs.getBoolean(PREF_POPUP_ON,
-                res.getBoolean(R.bool.config_default_popup_preview));
+        final boolean defaultKeyPreviewPopup = res.getBoolean(
+                R.bool.config_default_key_preview_popup);
+        if (!readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
+            return defaultKeyPreviewPopup;
+        }
+        return prefs.getBoolean(PREF_POPUP_ON, defaultKeyPreviewPopup);
     }
 
     public static int readKeyPreviewPopupDismissDelay(final SharedPreferences prefs,
