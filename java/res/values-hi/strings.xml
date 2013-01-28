@@ -39,6 +39,7 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"भाषा स्विच कुंजी"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"एकाधिक इनपुट भाषाएं सक्षम होने पर दिखाएं"</string>
+    <string name="sliding_key_input_preview" msgid="8793911873468181898">"स्लाइडिंग कुंजी इनपुट पूर्वाव."</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
@@ -123,8 +124,10 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"स्पेनिश (यूएस)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"अंग्रेज़ी (यूके) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"अंग्रेज़ी (यूएस) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"स्पेनिश (यूएस) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"कोई भाषा नहीं"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"कोई भाषा नहीं (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"कोई भाषा नहीं (QWERTZ)"</string>
@@ -144,18 +147,13 @@
     <string name="not_now" msgid="6172462888202790482">"अभी नहीं"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ऐसी ही इनपुट शैली पहले से मौजूद है: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"कुंजी को देर तक दबाने के विलंब की सेटिंग"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"कुंजी-स्‍पर्श कंपन अवधि सेटिंग"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"कुंजी-स्‍पर्श ध्‍वनि वॉल्‍यूम सेटिंग"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाहरी डिक्शनरी फ़ाइल पढ़ें"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फ़ोल्डर में कोई शब्दकोश फ़ाइल नहीं है"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"<xliff:g id="LOCALE_NAME">%s</xliff:g> के लिए वास्तव में यह फ़ाइल इंस्टॉल करें?"</string>
+    <string name="error" msgid="8940763624668513648">"कोई त्रुटि हुई थी"</string>
     <string name="button_default" msgid="3988017840431881491">"डिफ़ॉल्ट"</string>
 </resources>

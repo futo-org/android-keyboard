@@ -39,6 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten til sprogskift gælder også for andre inputmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tast til sprogskift"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Vis, når der er aktiveret flere inputsprog"</string>
+    <!-- no translation found for sliding_key_input_preview (8793911873468181898) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Forsink. afvis. af taste-pop op"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Ingen forsink."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
@@ -123,8 +125,12 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturtema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannien)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
+    <!-- no translation found for subtype_es_US (5583145191430180200) -->
+    <skip />
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engelsk (Storbritannien) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engelsk (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
+    <skip />
     <string name="subtype_no_language" msgid="141420857808801746">"Intet sprog"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ingen sprog (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Intet sprog (QWERTZ)"</string>

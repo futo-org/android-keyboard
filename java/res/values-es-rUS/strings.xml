@@ -39,6 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma abarca otros métodos de entrada."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de selección de idioma"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando se habiliten varios idiomas de entrada"</string>
+    <!-- no translation found for sliding_key_input_preview (8793911873468181898) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso en rechazo de alerta de tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin demora"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminada"</string>
@@ -123,8 +125,12 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EE.UU.)"</string>
+    <!-- no translation found for subtype_es_US (5583145191430180200) -->
+    <skip />
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Inglés (Reino Unido) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Inglés (EE.UU.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
+    <skip />
     <string name="subtype_no_language" msgid="141420857808801746">"Ningún idioma"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ningún idioma (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Sin idioma (QWERTZ)"</string>
@@ -149,13 +155,9 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Duración de vibración al presionar teclas"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volumen de sonido al presionar teclas"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Leer archivo de diccionario externo"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"No hay archivos de diccionario en la carpeta de descargas."</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Seleccionar archivo de diccionario para instalar"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"¿Realmente quieres instalar este archivo para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
+    <string name="error" msgid="8940763624668513648">"Se produjo un error."</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
 </resources>

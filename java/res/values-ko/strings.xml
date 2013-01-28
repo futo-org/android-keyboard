@@ -39,6 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"언어 전환 키가 제공하는 기타 입력 방법"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"언어 전환 키"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"여러 입력 언어를 사용하도록 설정할 때 표시"</string>
+    <!-- no translation found for sliding_key_input_preview (8793911873468181898) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"키 팝업 해제 지연"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"지연 없음"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
@@ -123,8 +125,12 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"영어(미국)"</string>
+    <!-- no translation found for subtype_es_US (5583145191430180200) -->
+    <skip />
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"영어(영국) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"영어(미국) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
+    <skip />
     <string name="subtype_no_language" msgid="141420857808801746">"언어가 없음"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"언어가 없음(QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"언어 없음(QWERTZ)"</string>
@@ -149,13 +155,9 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"키를 누를 때 진동 시간 설정"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"키를 누를 때 효과음 설정"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"외부 사전 파일 읽기"</string>
-    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
-    <skip />
-    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
-    <skip />
-    <!-- no translation found for error (8940763624668513648) -->
-    <skip />
+    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"다운로드 폴더에 사전 파일이 없음"</string>
+    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"설치할 사전 파일 선택"</string>
+    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"이 파일을 <xliff:g id="LOCALE_NAME">%s</xliff:g>(으)로 설치하시겠습니까?"</string>
+    <string name="error" msgid="8940763624668513648">"오류 발생"</string>
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
 </resources>
