@@ -39,7 +39,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Taal-wisselsleutel dek ook ander invoermetodes"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Taal-wisselsleutel"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Wys wanneer meervoudige invoertale geaktiveer is"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"Glysleutelinvoer-voorbeskou"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Sleutelopspringer-wagperiode"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Geen wagperiode nie"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Verstek"</string>
@@ -124,10 +123,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Sleutelbordtema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engels (VK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engels (VS)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"Spaans (VS)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engels (VK) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engels (VS) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Spaans (VS) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Geen taal nie"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Geen taal (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Geen taal nie (QWERTZ)"</string>
@@ -147,7 +144,8 @@
     <string name="not_now" msgid="6172462888202790482">"Nie nou nie"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Dieselfde invoerstyl bestaan ​​reeds: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Bruikbaarheidstudie-modus"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Sleutellangdrukvertraging-instellings"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <skip />
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Sleuteldruk se vibrasie-tydsduurinstellings"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Sleuteldruk se klankvolume-instellings"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Lees eksterne woordeboeklêer"</string>

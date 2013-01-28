@@ -39,7 +39,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tipka za prebacivanje jezika pokriva i druge načine unosa"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tipka za izmjenjivanje jezika"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Prikaži kada je omogućen unos na više jezika"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"Pregled unosa klizne tipke"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Odgoda prikaza tipki"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez odgode"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Zadano"</string>
@@ -124,10 +123,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema tipkovnice"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engleski (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engleski (SAD)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"španjolski (SAD)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"engleski (UK) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"engleski (SAD) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"španjolski (SAD) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Nema jezika"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nema jezika (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Nema jezika (QWERTZ)"</string>
@@ -147,7 +144,8 @@
     <string name="not_now" msgid="6172462888202790482">"Ne sada"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Već postoji isti stil unosa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Način studije upotrebljivosti"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Postavke odgode dugog pritiska na tipke"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <skip />
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Postavke trajanja vibracije kod pritiska tipke"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Postavke glasnoće zvuka kod pritiska tipke"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Čitanje datoteke vanjskog rječnika"</string>

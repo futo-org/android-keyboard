@@ -39,7 +39,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"A nyelvkapcsoló gomb egyéb beviteli módokat is tartalmaz"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"A nyelvkapcsoló"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Megjelenítés, ha több beviteli nyelv engedélyezett"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"Csúszógomb beviteli előnézete"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Gombeltüntetés késése"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Nincs késés"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Alapbeállítás"</string>
@@ -124,10 +123,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"angol (brit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angol (amerikai)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"spanyol (USA)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"angol (brit) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"angol (amerikai) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"spanyol (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Nincs nyelv"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nincs nyelv (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Nincs nyelv (QWERTZ)"</string>
@@ -147,7 +144,8 @@
     <string name="not_now" msgid="6172462888202790482">"Most nem"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ugyanez a bemenetstílus már létezik: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Használhatósági teszt"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Gomb hosszú megnyomásának késleltetési beállítása"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <skip />
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Gombnyomás rezgési időtartamának beállításai"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Gombnyomás hangerejének beállításai"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Külső szótárfájl olvasása"</string>

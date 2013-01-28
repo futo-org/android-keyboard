@@ -39,8 +39,6 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"言語切り替えキーは他の入力方法にも対応しています"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"言語切り替えキー"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"複数の入力言語が有効なときに表示"</string>
-    <!-- no translation found for sliding_key_input_preview (8793911873468181898) -->
-    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"キーのポップアップ時間"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"すぐに消去"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"デフォルト"</string>
@@ -123,21 +121,17 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"英語 (英国)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"英語 (米国)"</string>
-    <!-- no translation found for subtype_es_US (5583145191430180200) -->
-    <skip />
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"英語 (英国) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"英語 (米国) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
-    <skip />
+    <string name="subtype_en_GB" msgid="88170601942311355">"英語（英国）"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"英語（米国）"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"英語（英国）（<xliff:g id="LAYOUT">%s</xliff:g>）"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"英語（米国）（<xliff:g id="LAYOUT">%s</xliff:g>）"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"言語設定なし"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"言語設定なし (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"言語設定なし (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"言語設定なし (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"言語設定なし (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"言語設定なし (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"言語設定なし (PC)"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"言語設定なし（QWERTY）"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"言語設定なし（QWERTZ）"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"言語設定なし（AZERTY）"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"言語設定なし（Dvorak）"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"言語設定なし（Colemak）"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"言語設定なし（PC）"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"カスタム入力スタイル"</string>
     <string name="add_style" msgid="6163126614514489951">"スタイル追加"</string>
     <string name="add" msgid="8299699805688017798">"追加"</string>
@@ -155,9 +149,13 @@
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"キー操作バイブの振動時間の設定"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"キー操作音の音量設定"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"外部辞書ファイルの読み取り"</string>
-    <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ダウンロードフォルダに辞書ファイルはありません"</string>
-    <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"インストールする辞書ファイルの選択"</string>
-    <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"この<xliff:g id="LOCALE_NAME">%s</xliff:g>のファイルをインストールしてもよろしいですか？"</string>
-    <string name="error" msgid="8940763624668513648">"エラーが発生しました"</string>
+    <!-- no translation found for read_external_dictionary_no_files_message (4947420942224623792) -->
+    <skip />
+    <!-- no translation found for read_external_dictionary_multiple_files_title (7637749044265808628) -->
+    <skip />
+    <!-- no translation found for read_external_dictionary_confirm_install_message (6898610163768980870) -->
+    <skip />
+    <!-- no translation found for error (8940763624668513648) -->
+    <skip />
     <string name="button_default" msgid="3988017840431881491">"デフォルト"</string>
 </resources>
