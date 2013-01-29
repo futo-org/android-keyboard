@@ -145,6 +145,7 @@
             <CheckBoxPreference
                 android:key="pref_sliding_key_input_preview"
                 android:title="@string/sliding_key_input_preview"
+                android:summary="@string/sliding_key_input_preview_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
             <ListPreference
