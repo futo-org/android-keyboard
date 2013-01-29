@@ -64,8 +64,8 @@ class Correction {
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos, const bool useFullEditDistance,
             const bool doAutoCompletion, const int maxErrors);
-    void checkState();
-    bool sameAsTyped();
+    void checkState() const;
+    bool sameAsTyped() const;
     bool initProcessState(const int index);
 
     int getInputIndex() const;
@@ -77,7 +77,7 @@ class Correction {
     }
 
     int getFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
-            const int wordCount, const bool isSpaceProximity, const int *word);
+            const int wordCount, const bool isSpaceProximity, const int *word) const;
     int getFinalProbability(const int probability, int **word, int *wordLength);
     int getFinalProbabilityForSubQueue(const int probability, int **word, int *wordLength,
             const int inputSize);
