@@ -211,7 +211,7 @@ namespace latinime {
                             ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
             if (squaredDistance >= 0.0f) {
                 normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        (int) (squaredDistance
+                        static_cast<int>(squaredDistance
                                 * ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
             } else {
                 normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =

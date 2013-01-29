@@ -314,7 +314,7 @@ static inline int childrenAddressSize(const uint8_t flags) {
 }
 
 static AK_FORCE_INLINE int shortcutByteSize(const uint8_t *const dict, const int pos) {
-    return ((int)(dict[pos] << 8)) + (dict[pos + 1]);
+    return (static_cast<int>(dict[pos] << 8)) + (dict[pos + 1]);
 }
 
 inline int BinaryFormat::skipChildrenPosition(const uint8_t flags, const int pos) {
