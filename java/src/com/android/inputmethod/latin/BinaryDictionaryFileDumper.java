@@ -149,7 +149,7 @@ public final class BinaryDictionaryFileDumper {
         final int MODE_MAX = NONE;
 
         final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
-        final String finalFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+        final String finalFileName = DictionaryInfoUtils.getCacheFileName(id, locale, context);
         String tempFileName;
         try {
             tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
