@@ -32,9 +32,6 @@ class ProximityInfo;
 
 class ProximityInfoState {
  public:
-
-    static const int NOT_A_CODE;
-
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
@@ -196,6 +193,7 @@ class ProximityInfoState {
             const int from, const int to, const int keyId, const bool extend) const;
 
     bool isKeyInSerchKeysAfterIndex(const int index, const int keyId) const;
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     /////////////////////////////////////////

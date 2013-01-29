@@ -19,7 +19,6 @@
 
 #include "defines.h"
 #include "proximity_info_params.h"
-#include "proximity_info_state.h"
 
 namespace latinime {
 class SuggestUtils {
