@@ -988,20 +988,35 @@ public final class BinaryDictIOUtils {
      * This is quite resource intensive - don't call when performance is critical.
      *
      * @param file The file to read.
+     * @param offset The offset in the file where to start reading the data.
+     * @param length The length of the data file.
      */
     private static final int HEADER_READING_BUFFER_SIZE = 16384;
-    public static FileHeader getDictionaryFileHeader(final File file)
-        throws FileNotFoundException, IOException, UnsupportedFormatException {
+    public static FileHeader getDictionaryFileHeader(
+            final File file, final long offset, final long length)
+            throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
         final FileInputStream inStream = new FileInputStream(file);
         try {
             inStream.read(buffer);
             final BinaryDictInputOutput.ByteBufferWrapper wrapper =
                     new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
-                            FileChannel.MapMode.READ_ONLY, 0, file.length()));
+                            FileChannel.MapMode.READ_ONLY, offset, length));
             return BinaryDictInputOutput.readHeader(wrapper);
         } finally {
             inStream.close();
+        }
+    }
+
+    public static FileHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
+            final long length) {
+        try {
+            final FileHeader header = getDictionaryFileHeader(file, offset, length);
+            return header;
+        } catch (UnsupportedFormatException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
         }
     }
 }

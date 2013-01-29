@@ -76,7 +76,7 @@ final class BinaryDictionaryGetter {
     /**
      * Returns a file address from a resource, or null if it cannot be opened.
      */
-    private static AssetFileAddress loadFallbackResource(final Context context,
+    public static AssetFileAddress loadFallbackResource(final Context context,
             final int fallbackResId) {
         final AssetFileDescriptor afd = context.getResources().openRawResourceFd(fallbackResId);
         if (afd == null) {
@@ -149,7 +149,7 @@ final class BinaryDictionaryGetter {
      * @param context the context on which to open the files upon.
      * @return an array of binary dictionary files, which may be empty but may not be null.
      */
-    private static File[] getCachedWordLists(final String locale, final Context context) {
+    public static File[] getCachedWordLists(final String locale, final Context context) {
         final File[] directoryList = DictionaryInfoUtils.getCachedDirectoryList(context);
         if (null == directoryList) return EMPTY_FILE_ARRAY;
         final HashMap<String, FileAndMatchLevel> cacheFiles = CollectionUtils.newHashMap();
