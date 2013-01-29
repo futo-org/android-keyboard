@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
+import android.content.res.Configuration;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
@@ -62,8 +63,10 @@ public final class KeyboardId {
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
     public final int mDeviceFormFactor;
+    // TODO: Remove this member. It is used only for logging purpose.
     public final int mOrientation;
     public final int mWidth;
+    public final int mHeight;
     public final int mMode;
     public final int mElementId;
     private final EditorInfo mEditorInfo;
@@ -81,7 +84,8 @@ public final class KeyboardId {
         mLocale = SubtypeLocale.getSubtypeLocale(mSubtype);
         mDeviceFormFactor = params.mDeviceFormFactor;
         mOrientation = params.mOrientation;
-        mWidth = params.mWidth;
+        mWidth = params.mKeyboardWidth;
+        mHeight = params.mKeyboardHeight;
         mMode = params.mMode;
         mElementId = elementId;
         mEditorInfo = params.mEditorInfo;
@@ -108,6 +112,7 @@ public final class KeyboardId {
                 id.mElementId,
                 id.mMode,
                 id.mWidth,
+                id.mHeight,
                 id.passwordInput(),
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
@@ -130,6 +135,7 @@ public final class KeyboardId {
                 && other.mElementId == mElementId
                 && other.mMode == mMode
                 && other.mWidth == mWidth
+                && other.mHeight == mHeight
                 && other.passwordInput() == passwordInput()
                 && other.mClobberSettingsKey == mClobberSettingsKey
                 && other.mShortcutKeyEnabled == mShortcutKeyEnabled
@@ -187,11 +193,13 @@ public final class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s:%s %s-%s:%d %s %s %s%s%s%s%s%s%s%s%s]",
+        final String orientation = (mOrientation == Configuration.ORIENTATION_PORTRAIT)
+                ? "port" : "land";
+        return String.format("[%s %s:%s %s-%s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                deviceFormFactor(mDeviceFormFactor), (mOrientation == 1 ? "port" : "land"), mWidth,
+                deviceFormFactor(mDeviceFormFactor), orientation, mWidth, mHeight,
                 modeName(mMode),
                 imeAction(),
                 (navigateNext() ? "navigateNext" : ""),

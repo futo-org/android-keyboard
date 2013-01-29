@@ -20,9 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -138,7 +136,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     protected final KP mParams;
     protected final Context mContext;
     protected final Resources mResources;
-    private final DisplayMetrics mDisplayMetrics;
 
     private int mCurrentY = 0;
     private KeyboardRow mCurrentRow = null;
@@ -150,7 +147,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mContext = context;
         final Resources res = context.getResources();
         mResources = res;
-        mDisplayMetrics = res.getDisplayMetrics();
 
         mParams = params;
 
@@ -232,39 +228,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void parseKeyboardAttributes(final XmlPullParser parser) {
-        final int displayWidth = mDisplayMetrics.widthPixels;
         final TypedArray keyboardAttr = mContext.obtainStyledAttributes(
                 Xml.asAttributeSet(parser), R.styleable.Keyboard, R.attr.keyboardStyle,
                 R.style.Keyboard);
         final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
         try {
-            final int displayHeight = mDisplayMetrics.heightPixels;
-            final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
-                    mResources, R.array.keyboard_heights);
-            final float keyboardHeight;
-            if (TextUtils.isEmpty(keyboardHeightString)) {
-                keyboardHeight = keyboardAttr.getDimension(
-                        R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
-            } else {
-                keyboardHeight = Float.parseFloat(keyboardHeightString)
-                        * mDisplayMetrics.density;
-            }
-            final float maxKeyboardHeight = ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);
-            float minKeyboardHeight = ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_minKeyboardHeight, displayHeight, displayHeight / 2);
-            if (minKeyboardHeight < 0) {
-                // Specified fraction was negative, so it should be calculated against display
-                // width.
-                minKeyboardHeight = -ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                        R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
-            }
             final KeyboardParams params = mParams;
-            // Keyboard height will not exceed maxKeyboardHeight and will not be less than
-            // minKeyboardHeight.
-            params.mOccupiedHeight = (int)Math.max(
-                    Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
+            params.mOccupiedHeight = params.mId.mHeight;
             params.mOccupiedWidth = params.mId.mWidth;
             params.mTopPadding = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyboardTopPadding, params.mOccupiedHeight, 0);
