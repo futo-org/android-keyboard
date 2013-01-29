@@ -65,10 +65,6 @@ class Dictionary {
     int getDictBufAdjust() const { return mDictBufAdjust; }
     virtual ~Dictionary();
 
-    // public static utility methods
-    // static inline methods should be defined in the header file
-    static int wideStrLen(int *str);
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
     const uint8_t *mDict;
@@ -84,17 +80,5 @@ class Dictionary {
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
 };
-
-// public static utility methods
-// static inline methods should be defined in the header file
-inline int Dictionary::wideStrLen(int *str) {
-    if (!str) return 0;
-    int length = 0;
-    while (*str) {
-        str++;
-        length++;
-    }
-    return length;
-}
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_H

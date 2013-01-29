@@ -21,6 +21,7 @@
 #include "bigram_dictionary.h"
 #include "binary_format.h"
 #include "bloom_filter.h"
+#include "char_utils.h"
 #include "defines.h"
 #include "dictionary.h"
 
@@ -50,7 +51,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
     int insertAt = 0;
     while (insertAt < MAX_RESULTS) {
         if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
-                && length < Dictionary::wideStrLen(
+                && length < getCodePointCount(MAX_WORD_LENGTH,
                         bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
             break;
         }
