@@ -31,9 +31,6 @@ import java.util.Locale;
  */
 public final class DictionaryFactory {
     private static final String TAG = DictionaryFactory.class.getSimpleName();
-    // This class must be located in the same package as LatinIME.java.
-    private static final String RESOURCE_PACKAGE_NAME =
-            DictionaryFactory.class.getPackage().getName();
 
     /**
      * Initializes a main dictionary collection from a dictionary pack, with explicit flags.
@@ -96,8 +93,8 @@ public final class DictionaryFactory {
             final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
-            final int resId =
-                    getMainDictionaryResourceIdIfAvailableForLocale(context.getResources(), locale);
+            final int resId = DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
+                    context.getResources(), locale);
             if (0 == resId) return null;
             afd = context.getResources().openRawResourceFd(resId);
             if (afd == null) {
@@ -154,47 +151,7 @@ public final class DictionaryFactory {
      */
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
         final Resources res = context.getResources();
-        return 0 != getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
-    }
-
-    private static final String DEFAULT_MAIN_DICT = "main";
-    private static final String MAIN_DICT_PREFIX = "main_";
-
-    /**
-     * Helper method to return a dictionary res id for a locale, or 0 if none.
-     * @param locale dictionary locale
-     * @return main dictionary resource id
-     */
-    private static int getMainDictionaryResourceIdIfAvailableForLocale(final Resources res,
-            final Locale locale) {
-        int resId;
-        // Try to find main_language_country dictionary.
-        if (!locale.getCountry().isEmpty()) {
-            final String dictLanguageCountry = MAIN_DICT_PREFIX + locale.toString().toLowerCase();
-            if ((resId = res.getIdentifier(
-                    dictLanguageCountry, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
-                return resId;
-            }
-        }
-
-        // Try to find main_language dictionary.
-        final String dictLanguage = MAIN_DICT_PREFIX + locale.getLanguage();
-        if ((resId = res.getIdentifier(dictLanguage, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
-            return resId;
-        }
-
-        // Not found, return 0
-        return 0;
-    }
-
-    /**
-     * Returns a main dictionary resource id
-     * @param locale dictionary locale
-     * @return main dictionary resource id
-     */
-    public static int getMainDictionaryResourceId(final Resources res, final Locale locale) {
-        int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
-        if (0 != resourceId) return resourceId;
-        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", RESOURCE_PACKAGE_NAME);
+        return 0 != DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
+                res, locale);
     }
 }

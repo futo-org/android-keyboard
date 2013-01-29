@@ -35,11 +35,14 @@ final class AssetFileAddress {
         mLength = length;
     }
 
+    public static AssetFileAddress makeFromFile(final File file) {
+        if (!file.isFile()) return null;
+        return new AssetFileAddress(file.getAbsolutePath(), 0L, file.length());
+    }
+
     public static AssetFileAddress makeFromFileName(final String filename) {
         if (null == filename) return null;
-        final File f = new File(filename);
-        if (!f.isFile()) return null;
-        return new AssetFileAddress(filename, 0l, f.length());
+        return makeFromFile(new File(filename));
     }
 
     public static AssetFileAddress makeFromFileNameAndOffset(final String filename,
