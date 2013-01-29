@@ -30,11 +30,11 @@ import com.android.inputmethod.latin.Constants;
  * <p>The layout file for a keyboard contains XML that looks like the following snippet:</p>
  * <pre>
  * &lt;Keyboard
- *         latin:keyWidth="%10p"
- *         latin:keyHeight="50px"
- *         latin:horizontalGap="2px"
- *         latin:verticalGap="2px" &gt;
- *     &lt;Row latin:keyWidth="32px" &gt;
+ *         latin:keyWidth="10%p"
+ *         latin:rowHeight="50px"
+ *         latin:horizontalGap="2%p"
+ *         latin:verticalGap="2%p" &gt;
+ *     &lt;Row latin:keyWidth="10%p" &gt;
  *         &lt;Key latin:keyLabel="A" /&gt;
  *         ...
  *     &lt;/Row&gt;

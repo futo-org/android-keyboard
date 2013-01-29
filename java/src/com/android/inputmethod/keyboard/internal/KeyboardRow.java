@@ -54,17 +54,16 @@ public final class KeyboardRow {
     public KeyboardRow(final Resources res, final KeyboardParams params, final XmlPullParser parser,
             final int y) {
         mParams = params;
-        TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
+        final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mRowHeight = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
                 R.styleable.Keyboard_rowHeight,
                 params.mBaseHeight, params.mDefaultRowHeight);
         keyboardAttr.recycle();
-        TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
+        final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
-        mDefaultKeyWidth = ResourceUtils.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_keyWidth,
-                params.mBaseWidth, params.mDefaultKeyWidth);
+        mDefaultKeyWidth = keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
+                params.mBaseWidth, params.mBaseWidth, params.mDefaultKeyWidth);
         mDefaultBackgroundType = keyAttr.getInt(R.styleable.Keyboard_Key_backgroundType,
                 Key.BACKGROUND_TYPE_NORMAL);
         keyAttr.recycle();
@@ -115,8 +114,8 @@ public final class KeyboardRow {
         final int keyboardRightEdge = mParams.mOccupiedWidth
                 - mParams.mHorizontalEdgesPadding;
         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
-            final float keyXPos = ResourceUtils.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyXPos, mParams.mBaseWidth, 0);
+            final float keyXPos = keyAttr.getFraction(R.styleable.Keyboard_Key_keyXPos,
+                    mParams.mBaseWidth, mParams.mBaseWidth, 0);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be
                 // keyboardWidth + keyXPos.
@@ -146,9 +145,8 @@ public final class KeyboardRow {
             // out the area up to the right edge of the keyboard.
             return keyboardRightEdge - keyXPos;
         default: // KEYWIDTH_NOT_ENUM
-            return ResourceUtils.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyWidth,
-                    mParams.mBaseWidth, mDefaultKeyWidth);
+            return keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
+                    mParams.mBaseWidth, mParams.mBaseWidth, mDefaultKeyWidth);
         }
     }
 }

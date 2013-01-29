@@ -41,7 +41,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardRow;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -225,8 +224,8 @@ public class Key implements Comparable<Key> {
     public Key(final Resources res, final KeyboardParams params, final KeyboardRow row,
             final XmlPullParser parser) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
-        final int keyHeight = row.mRowHeight;
-        mHeight = keyHeight - params.mVerticalGap;
+        final int rowHeight = row.mRowHeight;
+        mHeight = rowHeight - params.mVerticalGap;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -241,17 +240,18 @@ public class Key implements Comparable<Key> {
         mY = keyYPos;
         mWidth = Math.round(keyWidth - horizontalGap);
         mHitBox.set(Math.round(keyXPos), keyYPos, Math.round(keyXPos + keyWidth) + 1,
-                keyYPos + keyHeight);
+                keyYPos + rowHeight);
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, row.getDefaultBackgroundType());
 
-        final int visualInsetsLeft = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0));
-        final int visualInsetsRight = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0));
+        final int baseWidth = params.mBaseWidth;
+        final int visualInsetsLeft = Math.round(keyAttr.getFraction(
+                R.styleable.Keyboard_Key_visualInsetsLeft, baseWidth, baseWidth, 0));
+        final int visualInsetsRight = Math.round(keyAttr.getFraction(
+                R.styleable.Keyboard_Key_visualInsetsRight, baseWidth, baseWidth, 0));
         mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon));
         final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
