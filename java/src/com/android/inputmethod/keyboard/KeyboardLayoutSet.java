@@ -28,9 +28,11 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
+import android.view.ViewDebug.HierarchyTraceType;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -44,6 +46,7 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -106,7 +109,8 @@ public final class KeyboardLayoutSet {
         InputMethodSubtype mSubtype;
         int mDeviceFormFactor;
         int mOrientation;
-        int mWidth;
+        int mKeyboardWidth;
+        int mKeyboardHeight;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
                 CollectionUtils.newSparseArray();
@@ -214,13 +218,41 @@ public final class KeyboardLayoutSet {
                     mPackageName, NO_SETTINGS_KEY, mEditorInfo);
         }
 
-        public Builder setScreenGeometry(final int deviceFormFactor, final int orientation,
-                final int widthPixels) {
+        public Builder setScreenGeometry(final int deviceFormFactor, final int widthPixels,
+                final int heightPixels) {
             final Params params = mParams;
             params.mDeviceFormFactor = deviceFormFactor;
-            params.mOrientation = orientation;
-            params.mWidth = widthPixels;
+            params.mOrientation = (heightPixels > widthPixels)
+                    ? Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
+            setDefaultKeyboardSize(widthPixels, heightPixels);
             return this;
+        }
+
+        private void setDefaultKeyboardSize(final int widthPixels, final int heightPixels) {
+            final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
+                    mResources, R.array.keyboard_heights);
+            final float keyboardHeight;
+            if (TextUtils.isEmpty(keyboardHeightString)) {
+                keyboardHeight = mResources.getDimension(R.dimen.keyboardHeight);
+            } else {
+                keyboardHeight = Float.parseFloat(keyboardHeightString)
+                        * mResources.getDisplayMetrics().density;
+            }
+            final float maxKeyboardHeight = mResources.getFraction(
+                    R.fraction.maxKeyboardHeight, heightPixels, heightPixels);
+            float minKeyboardHeight = mResources.getFraction(
+                    R.fraction.minKeyboardHeight, heightPixels, heightPixels);
+            if (minKeyboardHeight < 0.0f) {
+                // Specified fraction was negative, so it should be calculated against display
+                // width.
+                minKeyboardHeight = -mResources.getFraction(
+                        R.fraction.minKeyboardHeight, widthPixels, widthPixels);
+            }
+            // Keyboard height will not exceed maxKeyboardHeight and will not be less than
+            // minKeyboardHeight.
+            mParams.mKeyboardHeight = (int)Math.max(
+                    Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
+            mParams.mKeyboardWidth = widthPixels;
         }
 
         public Builder setSubtype(final InputMethodSubtype subtype) {
