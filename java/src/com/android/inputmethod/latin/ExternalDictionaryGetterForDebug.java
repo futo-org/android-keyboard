@@ -21,11 +21,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
-import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -44,22 +41,11 @@ public class ExternalDictionaryGetterForDebug {
             + "/Download";
     private static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
 
-    private static FileHeader getDictionaryFileHeaderOrNull(final File file) {
-        try {
-            final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeader(file);
-            return header;
-        } catch (UnsupportedFormatException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
     private static String[] findDictionariesInTheDownloadedFolder() {
         final File[] files = new File(SOURCE_FOLDER).listFiles();
         final ArrayList<String> eligibleList = CollectionUtils.newArrayList();
         for (File f : files) {
-            final FileHeader header = getDictionaryFileHeaderOrNull(f);
+            final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
             if (null == header) continue;
             eligibleList.add(f.getName());
         }
@@ -102,7 +88,7 @@ public class ExternalDictionaryGetterForDebug {
 
     private static void askInstallFile(final Context context, final String fileName) {
         final File file = new File(SOURCE_FOLDER, fileName.toString());
-        final FileHeader header = getDictionaryFileHeaderOrNull(file);
+        final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
         final StringBuilder message = new StringBuilder();
         final String locale =
                 header.mDictionaryOptions.mAttributes.get(DICTIONARY_LOCALE_ATTRIBUTE);
@@ -143,7 +129,7 @@ public class ExternalDictionaryGetterForDebug {
             final String id = BinaryDictionaryGetter.MAIN_DICTIONARY_CATEGORY
                     + BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR + locale;
             final String finalFileName =
-                    BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+                    DictionaryInfoUtils.getCacheFileName(id, locale, context);
             final String tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
             tempFile = new File(tempFileName);
             tempFile.delete();
