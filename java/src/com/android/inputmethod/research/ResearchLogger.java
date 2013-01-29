@@ -614,7 +614,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void startRecordingInternal() {
-        commitCurrentLogUnit();
         if (mUserRecordingLog != null) {
             mUserRecordingLog.abort();
         }
