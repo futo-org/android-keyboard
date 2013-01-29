@@ -87,7 +87,7 @@ class WordsPriorityQueue {
         }
     }
 
-    SuggestedWord *top() {
+    SuggestedWord *top() const {
         if (mSuggestions.empty()) return 0;
         SuggestedWord *sw = mSuggestions.top();
         return sw;

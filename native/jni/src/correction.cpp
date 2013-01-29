@@ -112,7 +112,7 @@ void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
     mMaxErrors = maxErrors;
 }
 
-void Correction::checkState() {
+void Correction::checkState() const {
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (mSkipPos >= 0) ++inputCount;
@@ -121,12 +121,12 @@ void Correction::checkState() {
     }
 }
 
-bool Correction::sameAsTyped() {
+bool Correction::sameAsTyped() const {
     return mProximityInfoState.sameAsTyped(mWord, mOutputIndex);
 }
 
 int Correction::getFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
-        const int wordCount, const bool isSpaceProximity, const int *word) {
+        const int wordCount, const bool isSpaceProximity, const int *word) const {
     return Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(freqArray, wordLengthArray,
             wordCount, this, isSpaceProximity, word);
 }
