@@ -44,11 +44,11 @@ class WordsPriorityQueuePool {
         }
     }
 
-    WordsPriorityQueue *getMasterQueue() {
+    WordsPriorityQueue *getMasterQueue() const {
         return mMasterQueue;
     }
 
-    WordsPriorityQueue *getSubQueue(const int wordIndex, const int inputWordLength) {
+    WordsPriorityQueue *getSubQueue(const int wordIndex, const int inputWordLength) const {
         if (wordIndex >= MULTIPLE_WORDS_SUGGESTION_MAX_WORDS) {
             return 0;
         }
@@ -77,7 +77,7 @@ class WordsPriorityQueuePool {
         }
     }
 
-    void dumpSubQueue1TopSuggestions() {
+    void dumpSubQueue1TopSuggestions() const {
         AKLOGI("DUMP SUBQUEUE1 TOP SUGGESTIONS");
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
             getSubQueue(0, i)->dumpTopWord();

@@ -27,8 +27,6 @@
 
 namespace latinime {
 
-const int ProximityInfoState::NOT_A_CODE = -1;
-
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,

@@ -110,7 +110,7 @@ class WordsPriorityQueue {
         }
     }
 
-    AK_FORCE_INLINE void dumpTopWord() {
+    AK_FORCE_INLINE void dumpTopWord() const {
         if (size() <= 0) {
             return;
         }
@@ -118,7 +118,7 @@ class WordsPriorityQueue {
     }
 
     AK_FORCE_INLINE float getHighestNormalizedScore(const int *before, const int beforeLength,
-            int **outWord, int *outScore, int *outLength) {
+            int **outWord, int *outScore, int *outLength) const {
         if (!mHighestSuggestedWord) {
             return 0.0f;
         }
@@ -137,7 +137,7 @@ class WordsPriorityQueue {
         }
     };
 
-    SuggestedWord *getFreeSuggestedWord(int score, int *word, int wordLength, int type) {
+    SuggestedWord *getFreeSuggestedWord(int score, int *word, int wordLength, int type) const {
         for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
             if (!mSuggestedWords[i].mUsed) {
                 mSuggestedWords[i].setParams(score, word, wordLength, type);
