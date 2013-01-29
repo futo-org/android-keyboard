@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -140,8 +141,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
+        final DisplayMetrics dm = res.getDisplayMetrics();
         builder.setScreenGeometry(res.getInteger(R.integer.config_device_form_factor),
-                res.getConfiguration().orientation, res.getDisplayMetrics().widthPixels);
+                dm.widthPixels, dm.heightPixels);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
