@@ -73,9 +73,8 @@ class ProximityInfo {
             const int *const inputYCoordinates, const int inputSize, int *allInputCodes) const {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
                 inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
-                mProximityCharsArray, MAX_PROXIMITY_CHARS_SIZE, CELL_HEIGHT, CELL_WIDTH,
-                GRID_WIDTH, MOST_COMMON_KEY_WIDTH, KEY_COUNT, mLocaleStr, &mCodeToKeyMap,
-                allInputCodes);
+                mProximityCharsArray, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, MOST_COMMON_KEY_WIDTH,
+                KEY_COUNT, mLocaleStr, &mCodeToKeyMap, allInputCodes);
     }
 
     int getKeyIndexOf(const int c) const {

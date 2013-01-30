@@ -110,8 +110,8 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
         return false;
     }
 
-    const int startIndex = ProximityInfoUtils::getStartIndexFromCoordinates(
-            MAX_PROXIMITY_CHARS_SIZE, x, y, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH);
+    const int startIndex = ProximityInfoUtils::getStartIndexFromCoordinates(x, y,
+            CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH);
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
