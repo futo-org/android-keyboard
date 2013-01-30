@@ -87,7 +87,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         AKLOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
         return 0;
     }
-    int ret = fseek(file, (long)dictOffset, SEEK_SET);
+    int ret = fseek(file, static_cast<long>(dictOffset), SEEK_SET);
     if (ret != 0) {
         AKLOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
         return 0;
@@ -121,7 +121,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     }
     PROF_END(66);
     PROF_CLOSE;
-    return (jlong)dictionary;
+    return reinterpret_cast<jlong>(dictionary);
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
@@ -216,7 +216,7 @@ static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jclass clazz, jl
 static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jclass clazz, jlong dict,
         jintArray wordArray1, jintArray wordArray2) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return (jboolean) false;
+    if (!dictionary) return JNI_FALSE;
     const jsize codePointLength1 = env->GetArrayLength(wordArray1);
     const jsize codePointLength2 = env->GetArrayLength(wordArray2);
     int codePoints1[codePointLength1];
