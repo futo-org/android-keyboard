@@ -119,9 +119,9 @@
         name="MoreKeysKeyboard"
         parent="Keyboard"
     >
-        <item name="keyboardTopPadding">0dp</item>
-        <item name="keyboardBottomPadding">0dp</item>
-        <item name="horizontalGap">0dp</item>
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
         <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
@@ -224,9 +224,9 @@
         name="MoreKeysKeyboard.Stone"
         parent="Keyboard.Stone"
     >
-        <item name="keyboardTopPadding">0dp</item>
-        <item name="keyboardBottomPadding">0dp</item>
-        <item name="horizontalGap">0dp</item>
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
         <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
@@ -294,9 +294,9 @@
         name="MoreKeysKeyboard.Gingerbread"
         parent="Keyboard.Gingerbread"
     >
-        <item name="keyboardTopPadding">0dp</item>
-        <item name="keyboardBottomPadding">0dp</item>
-        <item name="horizontalGap">0dp</item>
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
         <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style
@@ -353,9 +353,9 @@
         name="MoreKeysKeyboard.IceCreamSandwich"
         parent="Keyboard.IceCreamSandwich"
     >
-        <item name="keyboardTopPadding">0dp</item>
-        <item name="keyboardBottomPadding">0dp</item>
-        <item name="horizontalGap">0dp</item>
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
         <item name="touchPositionCorrectionData">@null</item>
     </style>
     <style

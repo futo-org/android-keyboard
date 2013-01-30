@@ -173,18 +173,18 @@
         <attr name="themeId" format="integer" />
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
-        <!-- Keyboard top, bottom, both horizontal edges paddings. -->
-        <attr name="keyboardTopPadding" format="dimension|fraction" />
-        <attr name="keyboardBottomPadding" format="dimension|fraction" />
-        <attr name="keyboardHorizontalEdgesPadding" format="dimension|fraction" />
-        <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
+        <!-- Keyboard top, bottom edges paddings, in propotion of keyboard height. -->
+        <attr name="keyboardTopPadding" format="fraction" />
+        <attr name="keyboardBottomPadding" format="fraction" />
+        <!-- Keyboard both horizontal edges paddings, in propotion of keyboard width. -->
+        <attr name="keyboardHorizontalEdgesPadding" format="fraction" />
+        <!-- Default height of a row (key height + vertical gap), in pixels or in the proportion of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />
-        <!-- Default horizontal gap between keys, in pixels or percentage of keyboard width. -->
-        <attr name="horizontalGap" format="dimension|fraction" />
-        <!-- Default vertical gap between rows of keys, in pixels or percentage of keyboard
-             height. -->
-        <attr name="verticalGap" format="dimension|fraction" />
+        <!-- Default horizontal gap between keys, in the proportion of keyboard width. -->
+        <attr name="horizontalGap" format="fraction" />
+        <!-- Default vertical gap between rows of keys, in the proportion of keyboard height. -->
+        <attr name="verticalGap" format="fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
         <!-- Icon set for key top and key preview.
@@ -288,19 +288,20 @@
         <attr name="keyIconPreview" format="string" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
-        <!-- Visual insets -->
-        <attr name="visualInsetsLeft" format="dimension|fraction" />
-        <attr name="visualInsetsRight" format="dimension|fraction" />
-        <!-- Width of the key, in pixels or percentage of display width.
-             If the value is fillRight, the actual key width will be determined to fill out the area
-             up to the right edge of the keyboard. -->
+        <!-- Visual insets, in the proportion of keyboard width. -->
+        <attr name="visualInsetsLeft" format="fraction" />
+        <attr name="visualInsetsRight" format="fraction" />
+        <!-- Width of the key, in the proportion of keyboard width.
+             If the value is fillRight, the actual key width will be determined to fill out the
+             area up to the right edge of the keyboard. -->
         <!-- This should be aligned with KeyboardBuilder.Row.KEYWIDTH_* -->
-        <attr name="keyWidth" format="dimension|fraction|enum">
+        <attr name="keyWidth" format="fraction|enum">
             <enum name="fillRight" value="-1" />
         </attr>
-        <!-- The X-coordinate of upper right corner of this key including horizontal gap.
+        <!-- The X-coordinate of upper right corner of this key including horizontal gap, in the
+             proportion of keyboard width.
              If the value is negative, the origin is the right edge of the keyboard. -->
-        <attr name="keyXPos" format="dimension|fraction" />
+        <attr name="keyXPos" format="fraction" />
 
         <!-- Key top visual attributes -->
         <attr name="keyTypeface" format="enum">

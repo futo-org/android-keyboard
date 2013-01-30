@@ -235,31 +235,36 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 R.styleable.Keyboard_Key);
         try {
             final KeyboardParams params = mParams;
-            params.mOccupiedHeight = params.mId.mHeight;
-            params.mOccupiedWidth = params.mId.mWidth;
-            params.mTopPadding = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyboardTopPadding, params.mOccupiedHeight, 0);
-            params.mBottomPadding = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyboardBottomPadding, params.mOccupiedHeight, 0);
-            params.mHorizontalEdgesPadding = (int)ResourceUtils.getDimensionOrFraction(
-                    keyboardAttr,
-                    R.styleable.Keyboard_keyboardHorizontalEdgesPadding,
-                    mParams.mOccupiedWidth, 0);
+            final int height = params.mId.mHeight;
+            final int width = params.mId.mWidth;
+            params.mOccupiedHeight = height;
+            params.mOccupiedWidth = width;
+            params.mTopPadding = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardTopPadding, height, height, 0);
+            params.mBottomPadding = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardBottomPadding, height, height, 0);
+            // TODO: Split keyboardHorizontalEdgesPadding into two, keyboardLeftPaddings and
+            // keyboardRightPaddings.
+            params.mHorizontalEdgesPadding = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardHorizontalEdgesPadding, width, width, 0);
 
-            params.mBaseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
+            final int baseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
                     - params.mHorizontalCenterPadding;
-            params.mDefaultKeyWidth = (int)ResourceUtils.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyWidth, params.mBaseWidth,
-                    params.mBaseWidth / DEFAULT_KEYBOARD_COLUMNS);
-            params.mHorizontalGap = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_horizontalGap, params.mBaseWidth, 0);
-            params.mVerticalGap = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_verticalGap, params.mOccupiedHeight, 0);
-            params.mBaseHeight = params.mOccupiedHeight - params.mTopPadding
+            params.mBaseWidth = baseWidth;
+            params.mDefaultKeyWidth = (int)keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
+                    baseWidth, baseWidth, baseWidth / DEFAULT_KEYBOARD_COLUMNS);
+            params.mHorizontalGap = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_horizontalGap, baseWidth, baseWidth, 0);
+            // TODO: Fix keyboard geometry calculation clearer. Historically vertical gap between
+            // rows are determined based on the entire keyboard height including top and bottom
+            // paddings.
+            params.mVerticalGap = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_verticalGap, height, height, 0);
+            final int baseHeight = params.mOccupiedHeight - params.mTopPadding
                     - params.mBottomPadding + params.mVerticalGap;
+            params.mBaseHeight = baseHeight;
             params.mDefaultRowHeight = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_rowHeight, params.mBaseHeight,
-                    params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
+                    R.styleable.Keyboard_rowHeight, baseHeight, baseHeight / DEFAULT_KEYBOARD_ROWS);
 
             params.mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
 
