@@ -49,9 +49,9 @@ class ProximityInfoUtils {
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int inputSize, const int *const keyXCoordinates,
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
-            const int *const proximityCharsArray, const int maxProximityCharsSize,
-            const int cellHeight, const int cellWidth, const int gridWidth,
-            const int mostCommonKeyWidth, const int keyCount, const char *const localeStr,
+            const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
+            const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
+            const char *const localeStr,
             const hash_map_compat<int, int> *const codeToKeyMap, int *inputProximities) {
         // Initialize
         // - mInputCodes
@@ -63,9 +63,8 @@ class ProximityInfoUtils {
             const int y = inputYCoordinates[i];
             int *proximities = &inputProximities[i * MAX_PROXIMITY_CHARS_SIZE];
             calculateProximities(keyXCoordinates, keyYCoordinates, keyWidths, keyHeights,
-                    proximityCharsArray, maxProximityCharsSize, cellHeight, cellWidth, gridWidth,
-                    mostCommonKeyWidth, keyCount, x, y, primaryKey, localeStr, codeToKeyMap,
-                    proximities);
+                    proximityCharsArray, cellHeight, cellWidth, gridWidth, mostCommonKeyWidth,
+                    keyCount, x, y, primaryKey, localeStr, codeToKeyMap, proximities);
         }
 
         if (DEBUG_PROXIMITY_CHARS) {
@@ -81,10 +80,9 @@ class ProximityInfoUtils {
         }
     }
 
-    static AK_FORCE_INLINE int getStartIndexFromCoordinates(const int maxProximityCharsSize,
-            const int x, const int y, const int cellHeight, const int cellWidth,
-            const int gridWidth) {
-        return ((y / cellHeight) * gridWidth + (x / cellWidth)) * maxProximityCharsSize;
+    static AK_FORCE_INLINE int getStartIndexFromCoordinates(const int x, const int y,
+            const int cellHeight, const int cellWidth, const int gridWidth) {
+        return ((y / cellHeight) * gridWidth + (x / cellWidth)) * MAX_PROXIMITY_CHARS_SIZE;
     }
 
     static inline float getSquaredDistanceFloat(const float x1, const float y1, const float x2,
@@ -153,21 +151,18 @@ class ProximityInfoUtils {
         return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
     }
 
-    static void calculateProximities(
-            const int *const keyXCoordinates, const int *const keyYCoordinates,
-            const int *const keyWidths, const int *keyHeights,
-            const int *const proximityCharsArray,
-            const int maxProximityCharsSize, const int cellHeight, const int cellWidth,
+    static void calculateProximities(const int *const keyXCoordinates,
+            const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
+            const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const int x, const int y, const int primaryKey, const char *const localeStr,
             const hash_map_compat<int, int> *const codeToKeyMap, int *proximities) {
         const int mostCommonKeyWidthSquare = mostCommonKeyWidth * mostCommonKeyWidth;
         int insertPos = 0;
         proximities[insertPos++] = primaryKey;
-        const int startIndex = getStartIndexFromCoordinates(
-                maxProximityCharsSize, x, y, cellHeight, cellWidth, gridWidth);
+        const int startIndex = getStartIndexFromCoordinates(x, y, cellHeight, cellWidth, gridWidth);
         if (startIndex >= 0) {
-            for (int i = 0; i < maxProximityCharsSize; ++i) {
+            for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
                 const int c = proximityCharsArray[startIndex + i];
                 if (c < KEYCODE_SPACE || c == primaryKey) {
                     continue;
@@ -179,7 +174,7 @@ class ProximityInfoUtils {
                         keyWidths, keyHeights, keyIndex, x, y);
                 if (onKey || distance < mostCommonKeyWidthSquare) {
                     proximities[insertPos++] = c;
-                    if (insertPos >= maxProximityCharsSize) {
+                    if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                         if (DEBUG_DICT) {
                             ASSERT(false);
                         }
@@ -191,7 +186,7 @@ class ProximityInfoUtils {
                     AdditionalProximityChars::getAdditionalCharsSize(localeStr, primaryKey);
             if (additionalProximitySize > 0) {
                 proximities[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
-                if (insertPos >= maxProximityCharsSize) {
+                if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                     if (DEBUG_DICT) {
                         ASSERT(false);
                     }
@@ -212,7 +207,7 @@ class ProximityInfoUtils {
                         continue;
                     }
                     proximities[insertPos++] = ac;
-                    if (insertPos >= maxProximityCharsSize) {
+                    if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                         if (DEBUG_DICT) {
                             ASSERT(false);
                         }
@@ -222,7 +217,7 @@ class ProximityInfoUtils {
             }
         }
         // Add a delimiter for the proximity characters
-        for (int i = insertPos; i < maxProximityCharsSize; ++i) {
+        for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
             proximities[i] = NOT_A_CODE_POINT;
         }
     }
