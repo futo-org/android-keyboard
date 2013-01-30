@@ -39,7 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Το κλειδί αλλαγής γλώσσας καλύπτει και άλλες μεθόδους εισόδου"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Πλήκτρο εναλλαγής γλώσσας"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Εμφάνιση κατά την ενεργοποίηση πολλών γλωσσών εισόδου"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"Προεπ.εισόδ.πλήκτρ.ολίσθησης"</string>
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Εμφάνιση δείκτη ολίσθησης"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Εμφ.ένδειξης κατά την ολίσθηση από το Shift ή τα πλήκτρα συμβόλων"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Χρόνος εξαφ. αναδ. παραθ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Χωρίς καθυστέρ."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Προεπιλογή"</string>

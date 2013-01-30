@@ -39,7 +39,9 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma abarca otros métodos de entrada."</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de selección de idioma"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando se habiliten varios idiomas de entrada"</string>
-    <!-- no translation found for sliding_key_input_preview (8793911873468181898) -->
+    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
+    <skip />
+    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
     <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso en rechazo de alerta de tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin demora"</string>
@@ -125,12 +127,10 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EE.UU.)"</string>
-    <!-- no translation found for subtype_es_US (5583145191430180200) -->
-    <skip />
+    <string name="subtype_es_US" msgid="5583145191430180200">"Español (EE.UU.)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Inglés (Reino Unido) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Inglés (EE.UU.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
-    <skip />
+    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Español (EE.UU.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Ningún idioma"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ningún idioma (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Sin idioma (QWERTZ)"</string>
@@ -150,8 +150,7 @@
     <string name="not_now" msgid="6172462888202790482">"Ahora no"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ya existe el estilo de entrada <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudio de usabilidad"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Configuración de retraso de presión prolongada"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Duración de vibración al presionar teclas"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volumen de sonido al presionar teclas"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Leer archivo de diccionario externo"</string>

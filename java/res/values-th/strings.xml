@@ -39,7 +39,10 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"แป้นสลับภาษาครอบคลุมวิธีการป้อนข้อมูลอื่นๆ ด้วย"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"แป้นสลับภาษา"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"แสดงเมื่อเปิดใช้งานภาษาสำหรับอินพุตหลายภาษา"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"ตัวอย่างอินพุตของการเลื่อนแป้น"</string>
+    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
+    <skip />
+    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"หน่วงเวลาก่อนปิดป๊อปอัพหลัก"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ไม่มีการหน่วงเวลา"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ค่าเริ่มต้น"</string>
@@ -147,7 +150,7 @@
     <string name="not_now" msgid="6172462888202790482">"ข้ามไปก่อน"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"รูปแบบการป้อนข้อมูลเดียวกันนี้มีอยู่แล้ว: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"โหมดศึกษาประโยชน์ในการใช้งาน"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"การตั้งค่าความล่าช้าของการกดแป้นค้าง"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"การตั้งค่าความหน่วงของการกดแป้นค้าง"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"การตั้งค่าระยะเวลาการสั่นเมื่อกดแป้นพิมพ์"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"การตั้งค่าระดับเสียงเมื่อกดแป้นพิมพ์"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"อ่านไฟล์พจนานุกรมภายนอก"</string>
