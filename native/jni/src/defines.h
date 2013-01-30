@@ -370,7 +370,7 @@ static inline void prof_out(void) {
 
 // TODO: Remove
 #define MAX_POINTER_COUNT 1
-#define MAX_POINTER_COUNT_FOR_G 2
+#define MAX_POINTER_COUNT_G 2
 
 // Size, in bytes, of the bloom filter index for bigrams
 // 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
