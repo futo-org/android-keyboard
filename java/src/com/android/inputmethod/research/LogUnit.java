@@ -26,15 +26,12 @@ import android.view.inputmethod.CompletionInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.research.ResearchLogger.LogStatement;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A group of log statements related to each other.
@@ -53,6 +50,7 @@ import java.util.Map;
 /* package */ class LogUnit {
     private static final String TAG = LogUnit.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+
     private final ArrayList<LogStatement> mLogStatementList;
     private final ArrayList<Object[]> mValuesList;
     // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
@@ -142,10 +140,10 @@ import java.util.Map;
             JsonWriter jsonWriter = null;
             for (int i = 0; i < size; i++) {
                 final LogStatement logStatement = mLogStatementList.get(i);
-                if (!canIncludePrivateData && logStatement.mIsPotentiallyPrivate) {
+                if (!canIncludePrivateData && logStatement.isPotentiallyPrivate()) {
                     continue;
                 }
-                if (mIsPartOfMegaword && logStatement.mIsPotentiallyRevealing) {
+                if (mIsPartOfMegaword && logStatement.isPotentiallyRevealing()) {
                     continue;
                 }
                 // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
@@ -228,16 +226,16 @@ import java.util.Map;
     private boolean outputLogStatementToLocked(final JsonWriter jsonWriter,
             final LogStatement logStatement, final Object[] values, final Long time) {
         if (DEBUG) {
-            if (logStatement.mKeys.length != values.length) {
-                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.mName);
+            if (logStatement.getKeys().length != values.length) {
+                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.getType());
             }
         }
         try {
             jsonWriter.beginObject();
             jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
             jsonWriter.name(UPTIME_KEY).value(time);
-            jsonWriter.name(EVENT_TYPE_KEY).value(logStatement.mName);
-            final String[] keys = logStatement.mKeys;
+            jsonWriter.name(EVENT_TYPE_KEY).value(logStatement.getType());
+            final String[] keys = logStatement.getKeys();
             final int length = values.length;
             for (int i = 0; i < length; i++) {
                 jsonWriter.name(keys[i]);
@@ -261,8 +259,8 @@ import java.util.Map;
                 } else if (value == null) {
                     jsonWriter.nullValue();
                 } else {
-                    Log.w(TAG, "Unrecognized type to be logged: " +
-                            (value == null ? "<null>" : value.getClass().getName()));
+                    Log.w(TAG, "Unrecognized type to be logged: "
+                            + (value == null ? "<null>" : value.getClass().getName()));
                     jsonWriter.nullValue();
                 }
             }
@@ -421,5 +419,124 @@ import java.util.Map;
             }
         }
         return false;
+    }
+
+    /**
+     * Remove data associated with selecting the Research button.
+     *
+     * A LogUnit will capture all user interactions with the IME, including the "meta-interactions"
+     * of using the Research button to control the logging (e.g. by starting and stopping recording
+     * of a test case).  Because meta-interactions should not be part of the normal log, calling
+     * this method will set a field in the LogStatements of the motion events to indiciate that
+     * they should be disregarded.
+     *
+     * This implementation assumes that the data recorded by the meta-interaction takes the
+     * form of all events following the first MotionEvent.ACTION_DOWN before the first long-press
+     * before the last onCodeEvent containing a code matching {@code LogStatement.VALUE_RESEARCH}.
+     *
+     * @returns true if data was removed
+     */
+    public boolean removeResearchButtonInvocation() {
+        // This method is designed to be idempotent.
+
+        // First, find last invocation of "research" key
+        final int indexOfLastResearchKey = findLastIndexContainingKeyValue(
+                LogStatement.TYPE_POINTER_TRACKER_CALL_LISTENER_ON_CODE_INPUT,
+                LogStatement.KEY_CODE, LogStatement.VALUE_RESEARCH);
+        if (indexOfLastResearchKey < 0) {
+            // Could not find invocation of "research" key.  Leave log as is.
+            if (DEBUG) {
+                Log.d(TAG, "Could not find research key");
+            }
+            return false;
+        }
+
+        // Look for the long press that started the invocation of the research key code input.
+        final int indexOfLastLongPressBeforeResearchKey =
+                findLastIndexBefore(LogStatement.TYPE_LATIN_KEYBOARD_VIEW_ON_LONG_PRESS,
+                        indexOfLastResearchKey);
+
+        // Look for DOWN event preceding the long press
+        final int indexOfLastDownEventBeforeLongPress =
+                findLastIndexContainingKeyValueBefore(
+                        LogStatement.TYPE_LATIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENTS,
+                        LogStatement.ACTION, LogStatement.VALUE_DOWN,
+                        indexOfLastLongPressBeforeResearchKey);
+
+        // Flag all LatinKeyboardViewProcessMotionEvents from the DOWN event to the research key as
+        // logging-related
+        final int startingIndex = indexOfLastDownEventBeforeLongPress == -1 ? 0
+                : indexOfLastDownEventBeforeLongPress;
+        for (int index = startingIndex; index < indexOfLastResearchKey; index++) {
+            final LogStatement logStatement = mLogStatementList.get(index);
+            final String type = logStatement.getType();
+            final Object[] values = mValuesList.get(index);
+            if (type.equals(LogStatement.TYPE_LATIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENTS)) {
+                logStatement.setValue(LogStatement.KEY_LOGGING_RELATED, values, true);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Find the index of the last LogStatement before {@code startingIndex} of type {@code type}.
+     *
+     * @param queryType a String that must be {@code String.equals()} to the LogStatement type
+     * @param startingIndex the index to start the backward search from.  Must be less than the
+     * length of mLogStatementList, or an IndexOutOfBoundsException is thrown.  Can be negative,
+     * in which case -1 is returned.
+     *
+     * @return The index of the last LogStatement, -1 if none exists.
+     */
+    private int findLastIndexBefore(final String queryType, final int startingIndex) {
+        return findLastIndexContainingKeyValueBefore(queryType, null, null, startingIndex);
+    }
+
+    /**
+     * Find the index of the last LogStatement before {@code startingIndex} of type {@code type}
+     * containing the given key-value pair.
+     *
+     * @param queryType a String that must be {@code String.equals()} to the LogStatement type
+     * @param queryKey a String that must be {@code String.equals()} to a key in the LogStatement
+     * @param queryValue an Object that must be {@code String.equals()} to the key's corresponding
+     * value
+     *
+     * @return The index of the last LogStatement, -1 if none exists.
+     */
+    private int findLastIndexContainingKeyValue(final String queryType, final String queryKey,
+            final Object queryValue) {
+        return findLastIndexContainingKeyValueBefore(queryType, queryKey, queryValue,
+                mLogStatementList.size() - 1);
+    }
+
+    /**
+     * Find the index of the last LogStatement before {@code startingIndex} of type {@code type}
+     * containing the given key-value pair.
+     *
+     * @param queryType a String that must be {@code String.equals()} to the LogStatement type
+     * @param queryKey a String that must be {@code String.equals()} to a key in the LogStatement
+     * @param queryValue an Object that must be {@code String.equals()} to the key's corresponding
+     * value
+     * @param startingIndex the index to start the backward search from.  Must be less than the
+     * length of mLogStatementList, or an IndexOutOfBoundsException is thrown.  Can be negative,
+     * in which case -1 is returned.
+     *
+     * @return The index of the last LogStatement, -1 if none exists.
+     */
+    private int findLastIndexContainingKeyValueBefore(final String queryType, final String queryKey,
+            final Object queryValue, final int startingIndex) {
+        if (startingIndex < 0) {
+            return -1;
+        }
+        for (int index = startingIndex; index >= 0; index--) {
+            final LogStatement logStatement = mLogStatementList.get(index);
+            final String type = logStatement.getType();
+            if (type.equals(queryType) && (queryKey == null
+                    || logStatement.containsKeyValuePair(queryKey, queryValue,
+                            mValuesList.get(index)))) {
+                return index;
+            }
+        }
+        return -1;
     }
 }
