@@ -39,6 +39,8 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -70,8 +72,17 @@ import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.MotionEventReader.ReplayData;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -88,8 +99,18 @@ import java.util.UUID;
  * This functionality is off by default. See {@link ProductionFlag#IS_EXPERIMENTAL}.
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
+    // TODO: This class has grown quite large and combines several concerns that should be
+    // separated.  The following refactorings will be applied as soon as possible after adding
+    // support for replaying historical events, fixing some replay bugs, adding some ui constraints
+    // on the feedback dialog, and adding the survey dialog.
+    // TODO: Refactor.  Move splash screen code into separate class.
+    // TODO: Refactor.  Move feedback screen code into separate class.
+    // TODO: Refactor.  Move logging invocations into their own class.
+    // TODO: Refactor.  Move currentLogUnit management into separate class.
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG_REPLAY_AFTER_FEEDBACK = false
+            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     // Whether the TextView contents are logged at the end of the session.  true will disclose
     // private info.
     private static final boolean LOG_FULL_TEXTVIEW_CONTENTS = false
@@ -153,7 +174,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package for test */ static final String WORD_REPLACEMENT_STRING = "\uE001";
     private static final String PREF_LAST_CLEANUP_TIME = "pref_last_cleanup_time";
     private static final long DURATION_BETWEEN_DIR_CLEANUP_IN_MS = DateUtils.DAY_IN_MILLIS;
-    private static final long MAX_LOGFILE_AGE_IN_MS = DateUtils.DAY_IN_MILLIS;
+    private static final long MAX_LOGFILE_AGE_IN_MS = 4 * DateUtils.DAY_IN_MILLIS;
     protected static final int SUSPEND_DURATION_IN_MINUTES = 1;
     // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
@@ -162,12 +183,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // used to check whether words are not unique
     private Suggest mSuggest;
     private MainKeyboardView mMainKeyboardView;
+    // TODO: Check whether a superclass can be used instead of LatinIME.
     private LatinIME mLatinIME;
     private final Statistics mStatistics;
     private final MotionEventReader mMotionEventReader = new MotionEventReader();
     private final Replayer mReplayer = new Replayer();
 
     private Intent mUploadIntent;
+    private Intent mUploadNowIntent;
 
     private LogUnit mCurrentLogUnit = new LogUnit();
 
@@ -176,6 +199,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // thereby leaking private data, we store the time of the down event that started the second
     // gesture, and when committing the earlier word, split the LogUnit.
     private long mSavedDownEventTime;
+    private Bundle mFeedbackDialogBundle = null;
+    private boolean mInFeedbackDialog = false;
+    // The feedback dialog causes stop() to be called for the keyboard connected to the original
+    // window.  This is because the feedback dialog must present its own EditText box that displays
+    // a keyboard.  stop() normally causes mFeedbackLogBuffer, which contains the user's data, to be
+    // cleared, and causes mFeedbackLog, which is ready to collect information in case the user
+    // wants to upload, to be closed.  This is good because we don't need to log information about
+    // what the user is typing in the feedback dialog, but bad because this data must be uploaded.
+    // Here we save the LogBuffer and Log so the feedback dialog can later access their data.
+    private LogBuffer mSavedFeedbackLogBuffer;
+    private ResearchLog mSavedFeedbackLog;
+    private Handler mUserRecordingTimeoutHandler;
+    private static final long USER_RECORDING_TIMEOUT_MS = 30L * DateUtils.SECOND_IN_MILLIS;
+
     private ResearchLogger() {
         mStatistics = Statistics.getInstance();
     }
@@ -221,6 +258,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mLatinIME = latinIME;
         mPrefs = prefs;
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
+        mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
+        mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
         mReplayer.setKeyboardSwitcher(keyboardSwitcher);
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -540,16 +579,41 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         presentFeedbackDialog(latinIME);
     }
 
-    private void cancelRecording() {
-        if (mUserRecordingLog != null) {
-            mUserRecordingLog.abort();
+    public void presentFeedbackDialog(LatinIME latinIME) {
+        if (isMakingUserRecording()) {
+            saveRecording();
         }
-        mUserRecordingLog = null;
-        mUserRecordingLogBuffer = null;
+        mInFeedbackDialog = true;
+        mSavedFeedbackLogBuffer = mFeedbackLogBuffer;
+        mSavedFeedbackLog = mFeedbackLog;
+        // Set the non-saved versions to null so that the stop() caused by switching to the
+        // Feedback dialog will not close them.
+        mFeedbackLogBuffer = null;
+        mFeedbackLog = null;
+
+        Intent intent = new Intent();
+        intent.setClass(mLatinIME, FeedbackActivity.class);
+        if (mFeedbackDialogBundle != null) {
+            Log.d(TAG, "putting extra in feedbackdialogbundle");
+            intent.putExtras(mFeedbackDialogBundle);
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        latinIME.startActivity(intent);
     }
 
-    private void startRecording() {
-        // Don't record the "start recording" motion.
+    public void setFeedbackDialogBundle(final Bundle bundle) {
+        mFeedbackDialogBundle = bundle;
+    }
+
+    public void startRecording() {
+        final Resources res = mLatinIME.getResources();
+        Toast.makeText(mLatinIME,
+                res.getString(R.string.research_feedback_demonstration_instructions),
+                Toast.LENGTH_LONG).show();
+        startRecordingInternal();
+    }
+
+    private void startRecordingInternal() {
         commitCurrentLogUnit();
         if (mUserRecordingLog != null) {
             mUserRecordingLog.abort();
@@ -557,6 +621,46 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mUserRecordingFile = createUserRecordingFile(mFilesDir);
         mUserRecordingLog = new ResearchLog(mUserRecordingFile, mLatinIME);
         mUserRecordingLogBuffer = new LogBuffer();
+        resetRecordingTimer();
+    }
+
+    private boolean isMakingUserRecording() {
+        return mUserRecordingLog != null;
+    }
+
+    private void resetRecordingTimer() {
+        if (mUserRecordingTimeoutHandler == null) {
+            mUserRecordingTimeoutHandler = new Handler();
+        }
+        clearRecordingTimer();
+        mUserRecordingTimeoutHandler.postDelayed(mRecordingHandlerTimeoutRunnable,
+                USER_RECORDING_TIMEOUT_MS);
+    }
+
+    private void clearRecordingTimer() {
+        mUserRecordingTimeoutHandler.removeCallbacks(mRecordingHandlerTimeoutRunnable);
+    }
+
+    private Runnable mRecordingHandlerTimeoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            cancelRecording();
+            requestIndicatorRedraw();
+            final Resources res = mLatinIME.getResources();
+            Toast.makeText(mLatinIME, res.getString(R.string.research_feedback_recording_failure),
+                    Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private void cancelRecording() {
+        if (mUserRecordingLog != null) {
+            mUserRecordingLog.abort();
+        }
+        mUserRecordingLog = null;
+        mUserRecordingLogBuffer = null;
+        if (mFeedbackDialogBundle != null) {
+            mFeedbackDialogBundle.putBoolean("HasRecording", false);
+        }
     }
 
     private void saveRecording() {
@@ -565,29 +669,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mUserRecordingLog.close(null);
         mUserRecordingLog = null;
         mUserRecordingLogBuffer = null;
-    }
 
-    private boolean mInFeedbackDialog = false;
-
-    // The feedback dialog causes stop() to be called for the keyboard connected to the original
-    // window.  This is because the feedback dialog must present its own EditText box that displays
-    // a keyboard.  stop() normally causes mFeedbackLogBuffer, which contains the user's data, to be
-    // cleared, and causes mFeedbackLog, which is ready to collect information in case the user
-    // wants to upload, to be closed.  This is good because we don't need to log information about
-    // what the user is typing in the feedback dialog, but bad because this data must be uploaded.
-    // Here we save the LogBuffer and Log so the feedback dialog can later access their data.
-    private LogBuffer mSavedFeedbackLogBuffer;
-    private ResearchLog mSavedFeedbackLog;
-
-    public void presentFeedbackDialog(LatinIME latinIME) {
-        mInFeedbackDialog = true;
-        mSavedFeedbackLogBuffer = mFeedbackLogBuffer;
-        mSavedFeedbackLog = mFeedbackLog;
-        // Set the non-saved versions to null so that the stop() caused by switching to the
-        // Feedback dialog will not close them.
-        mFeedbackLogBuffer = null;
-        mFeedbackLog = null;
-        latinIME.launchKeyboardedDialogActivity(FeedbackActivity.class);
+        if (mFeedbackDialogBundle != null) {
+            mFeedbackDialogBundle.putBoolean(FeedbackFragment.KEY_HAS_USER_RECORDING, true);
+        }
+        clearRecordingTimer();
     }
 
     // TODO: currently unreachable.  Remove after being sure enable/disable is
@@ -650,19 +736,38 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final LogStatement LOGSTATEMENT_FEEDBACK =
-            new LogStatement("UserFeedback", false, false, "contents", "accountName");
+            new LogStatement("UserFeedback", false, false, "contents", "accountName", "recording");
     public void sendFeedback(final String feedbackContents, final boolean includeHistory,
-            final boolean isIncludingAccountName) {
+            final boolean isIncludingAccountName, final boolean isIncludingRecording) {
         if (mSavedFeedbackLogBuffer == null) {
             return;
         }
         if (!includeHistory) {
             mSavedFeedbackLogBuffer.clear();
         }
+        String recording = "";
+        if (isIncludingRecording) {
+            // Try to read recording from recently written json file
+            if (mUserRecordingFile != null) {
+                try {
+                    final FileChannel channel =
+                            new FileInputStream(mUserRecordingFile).getChannel();
+                    final MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0,
+                            channel.size());
+                    // Android's openFileOutput() creates the file, so we use Android's default
+                    // Charset (UTF-8) here to read it.
+                    recording = Charset.defaultCharset().decode(buffer).toString();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         final LogUnit feedbackLogUnit = new LogUnit();
         final String accountName = isIncludingAccountName ? getAccountName() : "";
         feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
-                feedbackContents, accountName);
+                feedbackContents, accountName, recording);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
         mSavedFeedbackLog.close(new Runnable() {
@@ -671,13 +776,25 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 uploadNow();
             }
         });
+
+        if (isIncludingRecording && DEBUG_REPLAY_AFTER_FEEDBACK) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final ReplayData replayData =
+                            mMotionEventReader.readMotionEventData(mUserRecordingFile);
+                    mReplayer.replay(replayData);
+                }
+            }, 1000);
+        }
     }
 
     public void uploadNow() {
         if (DEBUG) {
             Log.d(TAG, "calling uploadNow()");
         }
-        mLatinIME.startService(mUploadIntent);
+        mLatinIME.startService(mUploadNowIntent);
     }
 
     public void onLeavingSendFeedbackDialog() {
@@ -720,11 +837,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             int height) {
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger
         // and remove this method.
-        // The check for MainKeyboardView ensures that a red border is only placed around
-        // the main keyboard, not every keyboard.
+        // The check for MainKeyboardView ensures that the indicator only decorates the main
+        // keyboard, not every keyboard.
         if (IS_SHOWING_INDICATOR && isAllowedToLog() && view instanceof MainKeyboardView) {
             final int savedColor = paint.getColor();
-            paint.setColor(Color.RED);
+            paint.setColor(isMakingUserRecording() ? Color.YELLOW : Color.RED);
             final Style savedStyle = paint.getStyle();
             paint.setStyle(Style.STROKE);
             final float savedStrokeWidth = paint.getStrokeWidth();
@@ -733,10 +850,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 canvas.drawLine(0, 0, 0, height, paint);
                 canvas.drawLine(width, 0, width, height, paint);
             } else {
-                // Put a tiny red dot on the screen so a knowledgeable user can check whether
-                // it is enabled.  The dot is actually a zero-width, zero-height rectangle,
-                // placed at the lower-right corner of the canvas, painted with a non-zero border
-                // width.
+                // Put a tiny dot on the screen so a knowledgeable user can check whether it is
+                // enabled.  The dot is actually a zero-width, zero-height rectangle, placed at the
+                // lower-right corner of the canvas, painted with a non-zero border width.
                 paint.setStrokeWidth(3);
                 canvas.drawRect(width, height, width, height, paint);
             }
@@ -1069,6 +1185,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 // Subtract 1 from eventTime so the down event is included in the later
                 // LogUnit, not the earlier (the test is for inequality).
                 researchLogger.setSavedDownEventTime(eventTime - 1);
+            }
+            // Refresh the timer in case we are capturing user feedback.
+            if (researchLogger.isMakingUserRecording()) {
+                researchLogger.resetRecordingTimer();
             }
         }
     }
