@@ -31,7 +31,8 @@
 
     <fraction name="keyboard_top_padding">1.556%p</fraction>
     <fraction name="keyboard_bottom_padding">4.669%p</fraction>
-    <fraction name="keyboard_horizontal_edges_padding">0%p</fraction>
+    <fraction name="keyboard_left_padding">0%p</fraction>
+    <fraction name="keyboard_right_padding">0%p</fraction>
     <fraction name="key_bottom_gap">6.250%p</fraction>
     <fraction name="key_horizontal_gap">1.352%p</fraction>
 

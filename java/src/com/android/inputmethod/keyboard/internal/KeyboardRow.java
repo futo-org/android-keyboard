@@ -111,8 +111,6 @@ public final class KeyboardRow {
     }
 
     public float getKeyX(final TypedArray keyAttr) {
-        final int keyboardRightEdge = mParams.mOccupiedWidth
-                - mParams.mHorizontalEdgesPadding;
         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
             final float keyXPos = keyAttr.getFraction(R.styleable.Keyboard_Key_keyXPos,
                     mParams.mBaseWidth, mParams.mBaseWidth, 0);
@@ -122,9 +120,10 @@ public final class KeyboardRow {
                 // keyXPos shouldn't be less than mCurrentX because drawable area for this
                 // key starts at mCurrentX. Or, this key will overlaps the adjacent key on
                 // its left hand side.
+                final int keyboardRightEdge = mParams.mOccupiedWidth - mParams.mRightPadding;
                 return Math.max(keyXPos + keyboardRightEdge, mCurrentX);
             } else {
-                return keyXPos + mParams.mHorizontalEdgesPadding;
+                return keyXPos + mParams.mLeftPadding;
             }
         }
         return mCurrentX;
@@ -139,10 +138,9 @@ public final class KeyboardRow {
                 R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
         switch (widthType) {
         case KEYWIDTH_FILL_RIGHT:
-            final int keyboardRightEdge =
-                    mParams.mOccupiedWidth - mParams.mHorizontalEdgesPadding;
             // If keyWidth is fillRight, the actual key width will be determined to fill
             // out the area up to the right edge of the keyboard.
+            final int keyboardRightEdge = mParams.mOccupiedWidth - mParams.mRightPadding;
             return keyboardRightEdge - keyXPos;
         default: // KEYWIDTH_NOT_ENUM
             return keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,

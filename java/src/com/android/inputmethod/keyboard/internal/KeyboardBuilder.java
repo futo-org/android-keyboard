@@ -243,13 +243,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_keyboardTopPadding, height, height, 0);
             params.mBottomPadding = (int)keyboardAttr.getFraction(
                     R.styleable.Keyboard_keyboardBottomPadding, height, height, 0);
-            // TODO: Split keyboardHorizontalEdgesPadding into two, keyboardLeftPaddings and
-            // keyboardRightPaddings.
-            params.mHorizontalEdgesPadding = (int)keyboardAttr.getFraction(
-                    R.styleable.Keyboard_keyboardHorizontalEdgesPadding, width, width, 0);
+            params.mLeftPadding = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardLeftPadding, width, width, 0);
+            params.mRightPadding = (int)keyboardAttr.getFraction(
+                    R.styleable.Keyboard_keyboardRightPadding, width, width, 0);
 
-            final int baseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
-                    - params.mHorizontalCenterPadding;
+            final int baseWidth =
+                    params.mOccupiedWidth - params.mLeftPadding - params.mRightPadding;
             params.mBaseWidth = baseWidth;
             params.mDefaultKeyWidth = (int)keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
                     baseWidth, baseWidth, baseWidth / DEFAULT_KEYBOARD_COLUMNS);
@@ -742,7 +742,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void startRow(final KeyboardRow row) {
-        addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
+        addEdgeSpace(mParams.mLeftPadding, row);
         mCurrentRow = row;
         mLeftEdge = true;
         mRightEdgeKey = null;
@@ -756,7 +756,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             mRightEdgeKey.markAsRightEdge(mParams);
             mRightEdgeKey = null;
         }
-        addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
+        addEdgeSpace(mParams.mRightPadding, row);
         mCurrentY += row.mRowHeight;
         mCurrentRow = null;
         mTopEdge = false;
