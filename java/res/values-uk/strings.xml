@@ -39,6 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Клавіша зміни мови дозволяє змінювати методи введення"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Клавіша зміни мови"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Показувати, коли ввімкнено декілька мов введення"</string>
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Показати індикатор проведення"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Показувати сигнал під час проведення від клавіш символів чи Shift"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Затримка клавіши закриття"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без затримки"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"За умовчанням"</string>
@@ -123,8 +125,10 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійська (Великобританія)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійська (США)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"іспанська (США)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Англійська (Великобр.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Англійська (США) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"іспанська (США) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Мову не вибрано"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Немає мови (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Без мови (QWERTZ)"</string>
@@ -144,8 +148,7 @@
     <string name="not_now" msgid="6172462888202790482">"Не зараз"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Такий стиль введення вже існує: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Налаштування довгого натискання"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Налаштування тривалості вібрації під час натискання клавіші"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Налаштування гучності звуку під час натискання клавіші"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Читати файл зовнішнього словника"</string>

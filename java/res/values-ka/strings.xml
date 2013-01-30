@@ -58,6 +58,10 @@
     <skip />
     <!-- no translation found for show_language_switch_key_summary (7343403647474265713) -->
     <skip />
+    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
+    <skip />
+    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
+    <skip />
     <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
     <skip />
     <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
@@ -221,9 +225,13 @@
     <skip />
     <!-- no translation found for subtype_en_US (6160452336634534239) -->
     <skip />
+    <!-- no translation found for subtype_es_US (5583145191430180200) -->
+    <skip />
     <!-- no translation found for subtype_with_layout_en_GB (2179097748724725906) -->
     <skip />
     <!-- no translation found for subtype_with_layout_en_US (1362581347576714579) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_es_US (6261791057007890189) -->
     <skip />
     <!-- no translation found for subtype_no_language (141420857808801746) -->
     <skip />
