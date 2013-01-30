@@ -39,7 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Ukhiye wokushintsha ulimi ubandakanya ezinye izindlela zokungenayo"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Ukhiye wokushintsha ullimi"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Bonisa uma izilimi zokufaka zinikwe amandla"</string>
-    <string name="sliding_key_input_preview" msgid="8793911873468181898">"Ukuhlola kuqala kokufakwayo lokhiye wokushelelisa"</string>
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Bonisa isikhombi sesilayidi"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Bonisa isiboniso ngenkathi uslayida kusukela kukhiye ongu-Shift noma i-Symbol"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Ukuvela kokhiye cashisa ukulibazisa"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Cha ukulibazisa"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Okuzenzakalelayo"</string>
@@ -147,7 +148,7 @@
     <string name="not_now" msgid="6172462888202790482">"Hhayi manje"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Isitayela sokufaka esifanayo sesivele sikhona: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Imodi yesitadi yokusebenziseka"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Izilungiselelo zokulibazisa zokhiye omude womkhakha wezindaba"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Izilungiselelo zokulibazisa ukucindezelwa ukhiye isikhathi eside"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Izilungiselelo ze-keypress vibration duraton"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Izilungiselelo zevolumu yomsindo wekeypress"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Funda ifayela elangaphandle lesichazamazwi"</string>
