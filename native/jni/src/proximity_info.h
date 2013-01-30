@@ -47,57 +47,21 @@ class ProximityInfo {
         // the radius of the key is assigned to zero.
         return mSweetSpotRadii[keyIndex] > 0.0f;
     }
-    float getSweetSpotRadiiAt(int keyIndex) const {
-        return mSweetSpotRadii[keyIndex];
-    }
-    float getSweetSpotCenterXAt(int keyIndex) const {
-        return mSweetSpotCenterXs[keyIndex];
-    }
-    float getSweetSpotCenterYAt(int keyIndex) const {
-        return mSweetSpotCenterYs[keyIndex];
-    }
+    float getSweetSpotRadiiAt(int keyIndex) const { return mSweetSpotRadii[keyIndex]; }
+    float getSweetSpotCenterXAt(int keyIndex) const { return mSweetSpotCenterXs[keyIndex]; }
+    float getSweetSpotCenterYAt(int keyIndex) const { return mSweetSpotCenterYs[keyIndex]; }
     void calculateNearbyKeyCodes(
             const int x, const int y, const int primaryKey, int *inputCodes) const;
-
-    bool hasTouchPositionCorrectionData() const {
-        return HAS_TOUCH_POSITION_CORRECTION_DATA;
-    }
-
-    int getMostCommonKeyWidth() const {
-        return MOST_COMMON_KEY_WIDTH;
-    }
-
-    int getMostCommonKeyWidthSquare() const {
-        return MOST_COMMON_KEY_WIDTH_SQUARE;
-    }
-
-    int getKeyCount() const {
-        return KEY_COUNT;
-    }
-
-    int getCellHeight() const {
-        return CELL_HEIGHT;
-    }
-
-    int getCellWidth() const {
-        return CELL_WIDTH;
-    }
-
-    int getGridWidth() const {
-        return GRID_WIDTH;
-    }
-
-    int getGridHeight() const {
-        return GRID_HEIGHT;
-    }
-
-    int getKeyboardWidth() const {
-        return KEYBOARD_WIDTH;
-    }
-
-    int getKeyboardHeight() const {
-        return KEYBOARD_HEIGHT;
-    }
+    bool hasTouchPositionCorrectionData() const { return HAS_TOUCH_POSITION_CORRECTION_DATA; }
+    int getMostCommonKeyWidth() const { return MOST_COMMON_KEY_WIDTH; }
+    int getMostCommonKeyWidthSquare() const { return MOST_COMMON_KEY_WIDTH_SQUARE; }
+    int getKeyCount() const { return KEY_COUNT; }
+    int getCellHeight() const { return CELL_HEIGHT; }
+    int getCellWidth() const { return CELL_WIDTH; }
+    int getGridWidth() const { return GRID_WIDTH; }
+    int getGridHeight() const { return GRID_HEIGHT; }
+    int getKeyboardWidth() const { return KEYBOARD_WIDTH; }
+    int getKeyboardHeight() const { return KEYBOARD_HEIGHT; }
 
     int getKeyCenterXOfCodePointG(int charCode) const;
     int getKeyCenterYOfCodePointG(int charCode) const;

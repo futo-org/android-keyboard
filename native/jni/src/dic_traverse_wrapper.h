@@ -31,8 +31,8 @@ class DicTraverseWrapper {
         }
         return 0;
     }
-    static void initDicTraverseSession(void *traverseSession,
-            const Dictionary *const dictionary, const int *prevWord, const int prevWordLength) {
+    static void initDicTraverseSession(void *traverseSession, const Dictionary *const dictionary,
+            const int *prevWord, const int prevWordLength) {
         if (sDicTraverseSessionInitMethod) {
             sDicTraverseSessionInitMethod(traverseSession, dictionary, prevWord, prevWordLength);
         }
@@ -42,8 +42,7 @@ class DicTraverseWrapper {
             sDicTraverseSessionReleaseMethod(traverseSession);
         }
     }
-    static void setTraverseSessionFactoryMethod(
-            void *(*factoryMethod)(JNIEnv *, jstring)) {
+    static void setTraverseSessionFactoryMethod(void *(*factoryMethod)(JNIEnv *, jstring)) {
         sDicTraverseSessionFactoryMethod = factoryMethod;
     }
     static void setTraverseSessionInitMethod(
@@ -53,6 +52,7 @@ class DicTraverseWrapper {
     static void setTraverseSessionReleaseMethod(void (*releaseMethod)(void *)) {
         sDicTraverseSessionReleaseMethod = releaseMethod;
     }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicTraverseWrapper);
     static void *(*sDicTraverseSessionFactoryMethod)(JNIEnv *, jstring);
