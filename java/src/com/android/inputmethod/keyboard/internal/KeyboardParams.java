@@ -42,8 +42,8 @@ public class KeyboardParams {
 
     public int mTopPadding;
     public int mBottomPadding;
-    public int mHorizontalEdgesPadding;
-    public int mHorizontalCenterPadding;
+    public int mLeftPadding;
+    public int mRightPadding;
 
     public KeyVisualAttributes mKeyVisualAttributes;
 

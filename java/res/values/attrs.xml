@@ -173,11 +173,11 @@
         <attr name="themeId" format="integer" />
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
-        <!-- Keyboard top, bottom edges paddings, in propotion of keyboard height. -->
+        <!-- Keyboard top, bottom, left, right edges paddings, in propotion of keyboard height. -->
         <attr name="keyboardTopPadding" format="fraction" />
         <attr name="keyboardBottomPadding" format="fraction" />
-        <!-- Keyboard both horizontal edges paddings, in propotion of keyboard width. -->
-        <attr name="keyboardHorizontalEdgesPadding" format="fraction" />
+        <attr name="keyboardLeftPadding" format="fraction" />
+        <attr name="keyboardRightPadding" format="fraction" />
         <!-- Default height of a row (key height + vertical gap), in pixels or in the proportion of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />

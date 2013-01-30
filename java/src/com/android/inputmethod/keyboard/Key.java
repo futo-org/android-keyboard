@@ -470,11 +470,11 @@ public class Key implements Comparable<Key> {
     }
 
     public void markAsLeftEdge(final KeyboardParams params) {
-        mHitBox.left = params.mHorizontalEdgesPadding;
+        mHitBox.left = params.mLeftPadding;
     }
 
     public void markAsRightEdge(final KeyboardParams params) {
-        mHitBox.right = params.mOccupiedWidth - params.mHorizontalEdgesPadding;
+        mHitBox.right = params.mOccupiedWidth - params.mRightPadding;
     }
 
     public void markAsTopEdge(final KeyboardParams params) {
