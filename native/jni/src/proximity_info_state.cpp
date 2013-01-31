@@ -246,11 +246,6 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
     return UNRELATED_CHAR;
 }
 
-int ProximityInfoState::getSpaceY() const {
-    const int keyId = mProximityInfo->getKeyIndexOf(KEYCODE_SPACE);
-    return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
-}
-
 // Puts possible characters into filter and returns new filter size.
 int ProximityInfoState::getAllPossibleChars(
         const size_t index, int *const filter, const int filterSize) const {
