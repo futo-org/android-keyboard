@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.inputmethod.latin.R;
 
@@ -96,12 +98,18 @@ public class FeedbackFragment extends Fragment implements OnClickListener {
         } else if (view == mSendButton) {
             final Editable editable = mEditText.getText();
             final String feedbackContents = editable.toString();
-            final boolean isIncludingAccountName = isIncludingAccountName();
-            researchLogger.sendFeedback(feedbackContents,
-                    false /* isIncludingHistory */, isIncludingAccountName, hasUserRecording());
-            getActivity().finish();
-            researchLogger.setFeedbackDialogBundle(null);
-            researchLogger.onLeavingSendFeedbackDialog();
+            if (TextUtils.isEmpty(feedbackContents)) {
+                Toast.makeText(getActivity(),
+                        R.string.research_feedback_empty_feedback_error_message,
+                        Toast.LENGTH_LONG).show();
+            } else {
+                final boolean isIncludingAccountName = isIncludingAccountName();
+                researchLogger.sendFeedback(feedbackContents,
+                        false /* isIncludingHistory */, isIncludingAccountName, hasUserRecording());
+                getActivity().finish();
+                researchLogger.setFeedbackDialogBundle(null);
+                researchLogger.onLeavingSendFeedbackDialog();
+            }
         } else if (view == mCancelButton) {
             Log.d(TAG, "Finishing");
             getActivity().finish();

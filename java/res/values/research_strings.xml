@@ -23,4 +23,7 @@
     <string name="research_splash_content" translatable="false"></string>
     <string name="research_account_type" translatable="false"></string>
     <string name="research_allowed_account_domain" translatable="false"></string>
+    <!-- Message informing the user that the feedback string must not be empty [CHAR LIMIT=100] -->
+    <!-- TODO: remove translatable=false attribute once text is stable -->
+    <string name="research_feedback_empty_feedback_error_message" translatable="false">The feedback field must not be empty.</string>
 </resources>
