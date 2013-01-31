@@ -1033,7 +1033,7 @@ namespace latinime {
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const std::vector<hash_map_compat<int, float> > *const charProbabilities,
         int *const codePointBuf) {
-    ASSERT(charProbabilities->size() >= 0 && sampledInputSize >= 0);
+    ASSERT(sampledInputSize >= 0);
     memset(codePointBuf, 0, sizeof(codePointBuf[0]) * MAX_WORD_LENGTH);
     static const float DEMOTION_LOG_PROBABILITY = 0.3f;
     int index = 0;
