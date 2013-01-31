@@ -101,7 +101,7 @@ public class MotionEventReader {
         jsonReader.endObject();
 
         if (logStatementType != null && time != null && x != null && y != null && actionType != null
-                && logStatementType.equals("MainKeyboardViewProcessMotionEvent")
+                && logStatementType.equals("MotionEvent")
                 && !loggingRelated) {
             replayData.mActions.add(actionType);
             replayData.mXCoords.add(x);

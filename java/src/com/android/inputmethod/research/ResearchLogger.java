@@ -1162,7 +1162,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      *
      */
     private static final LogStatement LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT =
-            new LogStatement("MotionEvent", true, false, "action", "MotionEvent", "loggingRelated");
+            new LogStatement("MotionEvent", true, false, "action",
+                    LogStatement.KEY_IS_LOGGING_RELATED, "motionEvent");
     public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
             final long eventTime, final int index, final int id, final int x, final int y) {
         if (me != null) {
@@ -1179,7 +1180,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
-                    actionString, MotionEvent.obtain(me), false);
+                    actionString, false /* IS_LOGGING_RELATED */, MotionEvent.obtain(me));
             if (action == MotionEvent.ACTION_DOWN) {
                 // Subtract 1 from eventTime so the down event is included in the later
                 // LogUnit, not the earlier (the test is for inequality).
