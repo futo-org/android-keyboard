@@ -170,11 +170,10 @@ class Correction {
         if (n <= 0) return 1;
         if (base == 2) {
             return n < 31 ? 1 << n : S_INT_MAX;
-        } else {
-            int ret = base;
-            for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
-            return ret;
         }
+        int ret = base;
+        for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
+        return ret;
     }
 
     AK_FORCE_INLINE static void multiplyRate(const int rate, int *freq) {
@@ -318,13 +317,11 @@ AK_FORCE_INLINE Correction::CorrectionType Correction::processSkipChar(const int
     addCharToCurrentWord(c);
     mTerminalInputIndex = mInputIndex - (inputIndexIncremented ? 1 : 0);
     mTerminalOutputIndex = mOutputIndex;
+    incrementOutputIndex();
     if (mNeedsToTraverseAllNodes && isTerminal) {
-        incrementOutputIndex();
         return TRAVERSE_ALL_ON_TERMINAL;
-    } else {
-        incrementOutputIndex();
-        return TRAVERSE_ALL_NOT_ON_TERMINAL;
     }
+    return TRAVERSE_ALL_NOT_ON_TERMINAL;
 }
 
 inline Correction::CorrectionType Correction::processUnrelatedCorrectionType() {

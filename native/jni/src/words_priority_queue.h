@@ -63,10 +63,9 @@ class WordsPriorityQueue {
             const int minScore = sw->mScore;
             if (minScore >= score) {
                 return;
-            } else {
-                sw->mUsed = false;
-                mSuggestions.pop();
             }
+            sw->mUsed = false;
+            mSuggestions.pop();
         }
         if (sw == 0) {
             sw = getFreeSuggestedWord(score, word, wordLength, type);
