@@ -138,13 +138,13 @@ namespace latinime {
     return inputProximities + (index * MAX_PROXIMITY_CHARS_SIZE);
 }
 
-/* static */ int ProximityInfoStateUtils::getPrimaryCodePointAt(
-        const int *const inputProximities, const int index) {
+/* static */ int ProximityInfoStateUtils::getPrimaryCodePointAt(const int *const inputProximities,
+        const int index) {
     return getProximityCodePointsAt(inputProximities, index)[0];
 }
 
-/* static */ void ProximityInfoStateUtils::initPrimaryInputWord(
-        const int inputSize, const int *const inputProximities, int *primaryInputWord) {
+/* static */ void ProximityInfoStateUtils::initPrimaryInputWord(const int inputSize,
+        const int *const inputProximities, int *primaryInputWord) {
     memset(primaryInputWord, 0, sizeof(primaryInputWord[0]) * MAX_WORD_LENGTH);
     for (int i = 0; i < inputSize; ++i) {
         primaryInputWord[i] = getPrimaryCodePointAt(inputProximities, i);
@@ -153,8 +153,7 @@ namespace latinime {
 
 /* static */ float ProximityInfoStateUtils::calculateSquaredDistanceFromSweetSpotCenter(
         const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs, const int keyIndex,
-        const int inputIndex) {
+        const std::vector<int> *const sampledInputYs, const int keyIndex, const int inputIndex) {
     const float sweetSpotCenterX = proximityInfo->getSweetSpotCenterXAt(keyIndex);
     const float sweetSpotCenterY = proximityInfo->getSweetSpotCenterYAt(keyIndex);
     const float inputX = static_cast<float>((*sampledInputXs)[inputIndex]);
@@ -164,8 +163,7 @@ namespace latinime {
 
 /* static */ float ProximityInfoStateUtils::calculateNormalizedSquaredDistance(
         const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs,
-        const int keyIndex, const int inputIndex) {
+        const std::vector<int> *const sampledInputYs, const int keyIndex, const int inputIndex) {
     if (keyIndex == NOT_AN_INDEX) {
         return ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
     }
@@ -182,11 +180,9 @@ namespace latinime {
 }
 
 /* static */ void ProximityInfoStateUtils::initNormalizedSquaredDistances(
-        const ProximityInfo *const proximityInfo, const int inputSize,
-        const int *inputXCoordinates, const int *inputYCoordinates,
-        const int *const inputProximities,
-        const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs,
+        const ProximityInfo *const proximityInfo, const int inputSize, const int *inputXCoordinates,
+        const int *inputYCoordinates, const int *const inputProximities,
+        const std::vector<int> *const sampledInputXs, const std::vector<int> *const sampledInputYs,
         int *normalizedSquaredDistances) {
     memset(normalizedSquaredDistances, NOT_A_DISTANCE,
             sizeof(normalizedSquaredDistances[0]) * MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH);
@@ -201,8 +197,7 @@ namespace latinime {
             a += 0;
             AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
         }
-        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0;
-                ++j) {
+        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0; ++j) {
             const int currentCodePoint = proximityCodePoints[j];
             const float squaredDistance =
                     hasInputCoordinates ? calculateNormalizedSquaredDistance(
@@ -227,9 +222,8 @@ namespace latinime {
 }
 
 /* static */ void ProximityInfoStateUtils::initGeometricDistanceInfos(
-        const ProximityInfo *const proximityInfo, const int keyCount,
-        const int sampledInputSize, const int lastSavedInputSize,
-        const std::vector<int> *const sampledInputXs,
+        const ProximityInfo *const proximityInfo, const int keyCount, const int sampledInputSize,
+        const int lastSavedInputSize, const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
         std::vector<NearKeycodesSet> *SampledNearKeysVector,
         std::vector<float> *SampledDistanceCache_G) {
@@ -237,7 +231,6 @@ namespace latinime {
     SampledDistanceCache_G->resize(sampledInputSize * keyCount);
     for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
         (*SampledNearKeysVector)[i].reset();
-        static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
         for (int k = 0; k < keyCount; ++k) {
             const int index = i * keyCount + k;
             const int x = (*sampledInputXs)[i];
@@ -245,7 +238,8 @@ namespace latinime {
             const float normalizedSquaredDistance =
                     proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
             (*SampledDistanceCache_G)[index] = normalizedSquaredDistance;
-            if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
+            if (normalizedSquaredDistance
+                    < ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
                 (*SampledNearKeysVector)[i][k] = true;
             }
         }
@@ -265,8 +259,7 @@ namespace latinime {
 /* static */ float ProximityInfoStateUtils::refreshSpeedRates(const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int lastSavedInputSize, const int sampledInputSize,
-        const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs,
+        const std::vector<int> *const sampledInputXs, const std::vector<int> *const sampledInputYs,
         const std::vector<int> *const sampledInputTimes,
         const std::vector<int> *const sampledLengthCache,
         const std::vector<int> *const sampledInputIndice, std::vector<float> *sampledSpeedRates,
@@ -359,14 +352,12 @@ namespace latinime {
 /* static */ float ProximityInfoStateUtils::updateNearKeysDistances(
         const ProximityInfo *const proximityInfo, const float maxPointToKeyLength, const int x,
         const int y, NearKeysDistanceMap *const currentNearKeysDistances) {
-    static const float NEAR_KEY_THRESHOLD = 2.0f;
-
     currentNearKeysDistances->clear();
     const int keyCount = proximityInfo->getKeyCount();
     float nearestKeyDistance = maxPointToKeyLength;
     for (int k = 0; k < keyCount; ++k) {
         const float dist = proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y);
-        if (dist < NEAR_KEY_THRESHOLD) {
+        if (dist < ProximityInfoParams::NEAR_KEY_THRESHOLD_FOR_DISTANCE) {
             currentNearKeysDistances->insert(std::pair<int, float>(k, dist));
         }
         if (nearestKeyDistance > dist) {
@@ -381,14 +372,15 @@ namespace latinime {
         const NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
-    static const float MARGIN = 0.01f;
-
     for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
             it != prevNearKeysDistances->end(); ++it) {
         NearKeysDistanceMap::const_iterator itPP = prevPrevNearKeysDistances->find(it->first);
         NearKeysDistanceMap::const_iterator itC = currentNearKeysDistances->find(it->first);
-        if ((itPP == prevPrevNearKeysDistances->end() || itPP->second > it->second + MARGIN)
-                && (itC == currentNearKeysDistances->end() || itC->second > it->second + MARGIN)) {
+        const bool isPrevPrevNear = (itPP == prevPrevNearKeysDistances->end()
+                || itPP->second > it->second + ProximityInfoParams::MARGIN_FOR_PREV_LOCAL_MIN);
+        const bool isCurrentNear = (itC == currentNearKeysDistances->end()
+                || itC->second > it->second + ProximityInfoParams::MARGIN_FOR_PREV_LOCAL_MIN);
+        if (isPrevPrevNear && isCurrentNear) {
             return true;
         }
     }
@@ -402,15 +394,6 @@ namespace latinime {
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances,
         std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs) {
-    static const int DISTANCE_BASE_SCALE = 100;
-    static const float NEAR_KEY_THRESHOLD = 0.6f;
-    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 25;
-    static const float NOT_LOCALMIN_DISTANCE_SCORE = -1.0f;
-    static const float LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE = 1.0f;
-    static const float CORNER_ANGLE_THRESHOLD = M_PI_F * 2.0f / 3.0f;
-    static const float CORNER_SUM_ANGLE_THRESHOLD = M_PI_F / 4.0f;
-    static const float CORNER_SCORE = 1.0f;
-
     const size_t size = sampledInputXs->size();
     // If there is only one point, add this point. Besides, if the previous point's distance map
     // is empty, we re-compute nearby keys distances from the current point.
@@ -422,16 +405,17 @@ namespace latinime {
 
     const int baseSampleRate = mostCommonKeyWidth;
     const int distPrev = getDistanceInt(sampledInputXs->back(), sampledInputYs->back(),
-            (*sampledInputXs)[size - 2], (*sampledInputYs)[size - 2]) * DISTANCE_BASE_SCALE;
+            (*sampledInputXs)[size - 2], (*sampledInputYs)[size - 2])
+                    * ProximityInfoParams::DISTANCE_BASE_SCALE;
     float score = 0.0f;
 
     // Location
     if (!isPrevLocalMin(currentNearKeysDistances, prevNearKeysDistances,
         prevPrevNearKeysDistances)) {
-        score += NOT_LOCALMIN_DISTANCE_SCORE;
-    } else if (nearest < NEAR_KEY_THRESHOLD) {
+        score += ProximityInfoParams::NOT_LOCALMIN_DISTANCE_SCORE;
+    } else if (nearest < ProximityInfoParams::NEAR_KEY_THRESHOLD_FOR_POINT_SCORE) {
         // Promote points nearby keys
-        score += LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
+        score += ProximityInfoParams::LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
     }
     // Angle
     const float angle1 = getAngle(x, y, sampledInputXs->back(), sampledInputYs->back());
@@ -440,9 +424,10 @@ namespace latinime {
     const float angleDiff = getAngleDiff(angle1, angle2);
 
     // Save corner
-    if (distPrev > baseSampleRate * CORNER_CHECK_DISTANCE_THRESHOLD_SCALE
-            && (sumAngle > CORNER_SUM_ANGLE_THRESHOLD || angleDiff > CORNER_ANGLE_THRESHOLD)) {
-        score += CORNER_SCORE;
+    if (distPrev > baseSampleRate * ProximityInfoParams::CORNER_CHECK_DISTANCE_THRESHOLD_SCALE
+            && (sumAngle > ProximityInfoParams::CORNER_SUM_ANGLE_THRESHOLD
+                    || angleDiff > ProximityInfoParams::CORNER_ANGLE_THRESHOLD_FOR_POINT_SCORE)) {
+        score += ProximityInfoParams::CORNER_SCORE;
     }
     return score;
 }

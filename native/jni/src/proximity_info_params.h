@@ -30,6 +30,26 @@ class ProximityInfoParams {
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
     static const float SEARCH_KEY_RADIUS_RATIO;
+
+    // Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
+    static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD;
+
+    // Used by ProximityInfoStateUtils::updateNearKeysDistances()
+    static const float NEAR_KEY_THRESHOLD_FOR_DISTANCE;
+
+    // Used by ProximityInfoStateUtils::isPrevLocalMin()
+    static const float MARGIN_FOR_PREV_LOCAL_MIN;
+
+    // Used by ProximityInfoStateUtils::getPointScore()
+    static const int DISTANCE_BASE_SCALE;
+    static const float NEAR_KEY_THRESHOLD_FOR_POINT_SCORE;
+    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE;
+    static const float NOT_LOCALMIN_DISTANCE_SCORE;
+    static const float LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
+    static const float CORNER_ANGLE_THRESHOLD_FOR_POINT_SCORE;
+    static const float CORNER_SUM_ANGLE_THRESHOLD;
+    static const float CORNER_SCORE;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoParams);
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
