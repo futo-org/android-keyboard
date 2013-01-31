@@ -115,6 +115,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // private info.
     private static final boolean LOG_FULL_TEXTVIEW_CONTENTS = false
             && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    // Whether the feedback dialog preserves the editable text across invocations.  Should be false
+    // for normal research builds so users do not have to delete the same feedback string they
+    // entered earlier.  Should be true for builds internal to a development team so when the text
+    // field holds a channel name, the developer does not have to re-enter it when using the
+    // feedback mechanism to generate multiple tests.
+    private static final boolean FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD = false;
     public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 5;
@@ -140,6 +146,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
+    private static final String PREF_RESEARCH_SAVED_CHANNEL = "pref_research_saved_channel";
 
     private static final ResearchLogger sInstance = new ResearchLogger();
     private static String sAccountType = null;
@@ -591,12 +598,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mFeedbackLogBuffer = null;
         mFeedbackLog = null;
 
-        Intent intent = new Intent();
+        final Intent intent = new Intent();
         intent.setClass(mLatinIME, FeedbackActivity.class);
-        if (mFeedbackDialogBundle != null) {
-            Log.d(TAG, "putting extra in feedbackdialogbundle");
-            intent.putExtras(mFeedbackDialogBundle);
+        if (mFeedbackDialogBundle == null) {
+            // Restore feedback field with channel name
+            final Bundle bundle = new Bundle();
+            bundle.putBoolean(FeedbackFragment.KEY_INCLUDE_ACCOUNT_NAME, true);
+            bundle.putBoolean(FeedbackFragment.KEY_HAS_USER_RECORDING, false);
+            if (FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD) {
+                final String savedChannelName = mPrefs.getString(PREF_RESEARCH_SAVED_CHANNEL, "");
+                bundle.putString(FeedbackFragment.KEY_FEEDBACK_STRING, savedChannelName);
+            }
+            mFeedbackDialogBundle = bundle;
         }
+        intent.putExtras(mFeedbackDialogBundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         latinIME.startActivity(intent);
     }
@@ -786,6 +801,18 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     mReplayer.replay(replayData);
                 }
             }, 1000);
+        }
+
+        if (FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD) {
+            // Use feedback string as a channel name to label feedback strings.  Here we record the
+            // string for prepopulating the field next time.
+            final String channelName = feedbackContents;
+            if (mPrefs == null) {
+                return;
+            }
+            final Editor e = mPrefs.edit();
+            e.putString(PREF_RESEARCH_SAVED_CHANNEL, channelName);
+            e.apply();
         }
     }
 

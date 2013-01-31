@@ -36,8 +36,8 @@ import com.android.inputmethod.latin.R;
 public class FeedbackFragment extends Fragment implements OnClickListener {
     private static final String TAG = FeedbackFragment.class.getSimpleName();
 
-    private static final String KEY_FEEDBACK_STRING = "FeedbackString";
-    private static final String KEY_INCLUDE_ACCOUNT_NAME = "IncludeAccountName";
+    public static final String KEY_FEEDBACK_STRING = "FeedbackString";
+    public static final String KEY_INCLUDE_ACCOUNT_NAME = "IncludeAccountName";
     public static final String KEY_HAS_USER_RECORDING = "HasRecording";
 
     private EditText mEditText;
