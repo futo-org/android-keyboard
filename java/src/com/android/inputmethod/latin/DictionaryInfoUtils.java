@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -40,6 +42,18 @@ public class DictionaryInfoUtils {
     private static final String MAIN_DICT_PREFIX = "main_";
     // 6 digits - unicode is limited to 21 bits
     private static final int MAX_HEX_DIGITS_FOR_CODEPOINT = 6;
+
+    public static class DictionaryInfo {
+        public final Locale mLocale;
+        public final AssetFileAddress mFileAddress;
+        public final int mVersion;
+        public DictionaryInfo(final Locale locale, final AssetFileAddress fileAddress,
+                final int version) {
+            mLocale = locale;
+            mFileAddress = fileAddress;
+            mVersion = version;
+        }
+    }
 
     private DictionaryInfoUtils() {
         // Private constructor to forbid instantation of this helper class.
@@ -234,12 +248,79 @@ public class DictionaryInfoUtils {
 
     public static FileHeader getDictionaryFileHeaderOrNull(final File file) {
         try {
-            final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeader(file);
-            return header;
+            return BinaryDictIOUtils.getDictionaryFileHeader(file, 0, file.length());
         } catch (UnsupportedFormatException e) {
             return null;
         } catch (IOException e) {
             return null;
         }
+    }
+
+    private static DictionaryInfo createDictionaryInfoFromFileAddress(
+            final AssetFileAddress fileAddress) {
+        final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
+                new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
+        final Locale locale = LocaleUtils.constructLocaleFromString(header.getLocaleString());
+        final String version = header.getVersion();
+        return new DictionaryInfo(locale, fileAddress, Integer.parseInt(version));
+    }
+
+    private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
+            final DictionaryInfo newElement) {
+        for (final DictionaryInfo info : dictList) {
+            if (info.mLocale.equals(newElement.mLocale)) {
+                if (newElement.mVersion <= info.mVersion) {
+                    return;
+                }
+                dictList.remove(info);
+            }
+        }
+        dictList.add(newElement);
+    }
+
+    public static ArrayList<DictionaryInfo> getCurrentDictionaryFileNameAndVersionInfo(
+            final Context context) {
+        final ArrayList<DictionaryInfo> dictList = CollectionUtils.newArrayList();
+
+        // Retrieve downloaded dictionaries
+        final File[] directoryList = getCachedDirectoryList(context);
+        for (final File directory : directoryList) {
+            final String localeString = getWordListIdFromFileName(directory.getName());
+            File[] dicts = BinaryDictionaryGetter.getCachedWordLists(localeString, context);
+            for (final File dict : dicts) {
+                final String wordListId = getWordListIdFromFileName(dict.getName());
+                if (!DictionaryInfoUtils.isMainWordListId(wordListId)) continue;
+                final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
+                final AssetFileAddress fileAddress = AssetFileAddress.makeFromFile(dict);
+                final DictionaryInfo dictionaryInfo =
+                        createDictionaryInfoFromFileAddress(fileAddress);
+                // Protect against cases of a less-specific dictionary being found, like an
+                // en dictionary being used for an en_US locale. In this case, the en dictionary
+                // should be used for en_US but discounted for listing purposes.
+                if (!dictionaryInfo.mLocale.equals(locale)) continue;
+                addOrUpdateDictInfo(dictList, dictionaryInfo);
+            }
+        }
+
+        // Retrieve files from assets
+        final Resources resources = context.getResources();
+        final AssetManager assets = resources.getAssets();
+        for (final String localeString : assets.getLocales()) {
+            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
+            final int resourceId =
+                    DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
+                            context.getResources(), locale);
+            if (0 == resourceId) continue;
+            final AssetFileAddress fileAddress =
+                    BinaryDictionaryGetter.loadFallbackResource(context, resourceId);
+            final DictionaryInfo dictionaryInfo = createDictionaryInfoFromFileAddress(fileAddress);
+            // Protect against cases of a less-specific dictionary being found, like an
+            // en dictionary being used for an en_US locale. In this case, the en dictionary
+            // should be used for en_US but discounted for listing purposes.
+            if (!dictionaryInfo.mLocale.equals(locale)) continue;
+            addOrUpdateDictInfo(dictList, dictionaryInfo);
+        }
+
+        return dictList;
     }
 }
