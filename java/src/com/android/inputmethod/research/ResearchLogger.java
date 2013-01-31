@@ -1003,15 +1003,23 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Publish all the logUnits in the logBuffer, without doing any privacy filtering.
+     */
     /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
-            final ResearchLog researchLog, final boolean isIncludingPrivateData) {
-        publishLogUnits(logBuffer.getLogUnits(), researchLog, isIncludingPrivateData);
+            final ResearchLog researchLog, final boolean canIncludePrivateData) {
+        publishLogUnits(logBuffer.getLogUnits(), researchLog, canIncludePrivateData);
     }
 
     private static final LogStatement LOGSTATEMENT_LOG_SEGMENT_OPENING =
             new LogStatement("logSegmentStart", false, false, "isIncludingPrivateData");
     private static final LogStatement LOGSTATEMENT_LOG_SEGMENT_CLOSING =
             new LogStatement("logSegmentEnd", false, false);
+    /**
+     * Publish all LogUnits in a list.
+     *
+     * Any privacy checks should be performed before calling this method.
+     */
     /* package for test */ void publishLogUnits(final List<LogUnit> logUnits,
             final ResearchLog researchLog, final boolean canIncludePrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
@@ -1392,7 +1400,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int index, final String suggestion, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
         if (!replacedWord.equals(suggestion.toString())) {
-            // The user choose something other than what was already there.
+            // The user chose something other than what was already there.
             researchLogger.setCurrentLogUnitContainsCorrection();
             researchLogger.setCurrentLogUnitCorrectionType(LogUnit.CORRECTIONTYPE_TYPO);
         }

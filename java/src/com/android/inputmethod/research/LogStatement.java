@@ -16,6 +16,18 @@
 
 package com.android.inputmethod.research;
 
+import android.content.SharedPreferences;
+import android.util.JsonWriter;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.inputmethod.CompletionInfo;
+
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.define.ProductionFlag;
+
+import java.io.IOException;
+
 /**
  * A template for typed information stored in the logs.
  *
@@ -24,6 +36,9 @@ package com.android.inputmethod.research;
  * actual values are stored separately.
  */
 class LogStatement {
+    private static final String TAG = LogStatement.class.getSimpleName();
+    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+
     // Constants for particular statements
     public static final String TYPE_POINTER_TRACKER_CALL_LISTENER_ON_CODE_INPUT =
             "PointerTrackerCallListenerOnCodeInput";
@@ -35,6 +50,11 @@ class LogStatement {
     public static final String VALUE_DOWN = "DOWN";
     public static final String TYPE_MOTION_EVENT = "MotionEvent";
     public static final String KEY_IS_LOGGING_RELATED = "isLoggingRelated";
+
+    // Keys for internal key/value pairs
+    private static final String CURRENT_TIME_KEY = "_ct";
+    private static final String UPTIME_KEY = "_ut";
+    private static final String EVENT_TYPE_KEY = "_ty";
 
     // Name specifying the LogStatement type.
     private final String mType;
@@ -141,5 +161,62 @@ class LogStatement {
             }
         }
         return false;
+    }
+
+    /**
+     * Write the contents out through jsonWriter.
+     *
+     * Note that this method is not thread safe for the same jsonWriter.  Callers must ensure
+     * thread safety.
+     */
+    public boolean outputToLocked(final JsonWriter jsonWriter, final Long time,
+            final Object... values) {
+        if (DEBUG) {
+            if (mKeys.length != values.length) {
+                Log.d(TAG, "Key and Value list sizes do not match. " + mType);
+            }
+        }
+        try {
+            jsonWriter.beginObject();
+            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
+            jsonWriter.name(UPTIME_KEY).value(time);
+            jsonWriter.name(EVENT_TYPE_KEY).value(mType);
+            final int length = values.length;
+            for (int i = 0; i < length; i++) {
+                jsonWriter.name(mKeys[i]);
+                final Object value = values[i];
+                if (value instanceof CharSequence) {
+                    jsonWriter.value(value.toString());
+                } else if (value instanceof Number) {
+                    jsonWriter.value((Number) value);
+                } else if (value instanceof Boolean) {
+                    jsonWriter.value((Boolean) value);
+                } else if (value instanceof CompletionInfo[]) {
+                    JsonUtils.writeJson((CompletionInfo[]) value, jsonWriter);
+                } else if (value instanceof SharedPreferences) {
+                    JsonUtils.writeJson((SharedPreferences) value, jsonWriter);
+                } else if (value instanceof Key[]) {
+                    JsonUtils.writeJson((Key[]) value, jsonWriter);
+                } else if (value instanceof SuggestedWords) {
+                    JsonUtils.writeJson((SuggestedWords) value, jsonWriter);
+                } else if (value instanceof MotionEvent) {
+                    JsonUtils.writeJson((MotionEvent) value, jsonWriter);
+                } else if (value == null) {
+                    jsonWriter.nullValue();
+                } else {
+                    if (DEBUG) {
+                        Log.w(TAG, "Unrecognized type to be logged: "
+                                + (value == null ? "<null>" : value.getClass().getName()));
+                    }
+                    jsonWriter.nullValue();
+                }
+            }
+            jsonWriter.endObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Error in JsonWriter; skipping LogStatement");
+            return false;
+        }
+        return true;
     }
 }
