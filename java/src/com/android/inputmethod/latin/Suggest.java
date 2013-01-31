@@ -57,6 +57,8 @@ public final class Suggest {
     private ContactsBinaryDictionary mContactsDict;
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             CollectionUtils.newConcurrentHashMap();
+    @UsedForTesting
+    private boolean mIsCurrentlyWaitingForMainDictionary = false;
 
     public static final int MAX_SUGGESTIONS = 18;
 
@@ -98,6 +100,7 @@ public final class Suggest {
 
     public void resetMainDict(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
+        mIsCurrentlyWaitingForMainDictionary = true;
         mMainDictionary = null;
         if (listener != null) {
             listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
@@ -112,6 +115,7 @@ public final class Suggest {
                 if (listener != null) {
                     listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
                 }
+                mIsCurrentlyWaitingForMainDictionary = false;
             }
         }.start();
     }
@@ -120,6 +124,11 @@ public final class Suggest {
     // of this method.
     public boolean hasMainDictionary() {
         return null != mMainDictionary && mMainDictionary.isInitialized();
+    }
+
+    @UsedForTesting
+    public boolean isCurrentlyWaitingForMainDictionary() {
+        return mIsCurrentlyWaitingForMainDictionary;
     }
 
     public Dictionary getMainDictionary() {

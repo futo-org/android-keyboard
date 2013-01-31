@@ -231,8 +231,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void waitForDictionaryToBeLoaded() {
-        int remainingAttempts = 10;
-        while (remainingAttempts > 0 && !mLatinIME.mSuggest.hasMainDictionary()) {
+        int remainingAttempts = 300;
+        while (remainingAttempts > 0 && mLatinIME.mSuggest.isCurrentlyWaitingForMainDictionary()) {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
