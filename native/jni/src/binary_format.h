@@ -18,9 +18,9 @@
 #define LATINIME_BINARY_FORMAT_H
 
 #include <cstdlib>
-#include <limits>
 #include <map>
 #include <stdint.h>
+
 #include "bloom_filter.h"
 #include "char_utils.h"
 
@@ -66,8 +66,8 @@ class BinaryFormat {
     static int detectFormat(const uint8_t *const dict);
     static int getHeaderSize(const uint8_t *const dict);
     static int getFlags(const uint8_t *const dict);
-    static void readHeaderValue(const uint8_t *const dict, const char *const key,
-            int *outValue, const int outValueSize);
+    static void readHeaderValue(const uint8_t *const dict, const char *const key, int *outValue,
+            const int outValueSize);
     static int readHeaderValueInt(const uint8_t *const dict, const char *const key);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t *const dict, int *pos);
@@ -168,7 +168,7 @@ inline int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
         // See the format of the header in the comment in detectFormat() above
         return (dict[8] << 24) + (dict[9] << 16) + (dict[10] << 8) + dict[11];
     default:
-        return std::numeric_limits<int>::max();
+        return S_INT_MAX;
     }
 }
 
@@ -197,8 +197,7 @@ inline void BinaryFormat::readHeaderValue(const uint8_t *const dict, const char 
             if (codePoint == NOT_A_CODE_POINT && key[keyIndex] == 0) {
                 // We found the key! Copy and return the value.
                 codePoint = getCodePointAndForwardPointer(dict, &index);
-                while (codePoint != NOT_A_CODE_POINT
-                        && outValueIndex < outValueSize) {
+                while (codePoint != NOT_A_CODE_POINT && outValueIndex < outValueSize) {
                     outValue[outValueIndex++] = codePoint;
                     codePoint = getCodePointAndForwardPointer(dict, &index);
                 }
@@ -664,9 +663,8 @@ inline int BinaryFormat::getProbability(const int position, const std::map<int, 
     if (bigramFreqIt != bigramMap->end()) {
         const int bigramFreq = bigramFreqIt->second;
         return computeFrequencyForBigram(unigramFreq, bigramFreq);
-    } else {
-        return backoff(unigramFreq);
     }
+    return backoff(unigramFreq);
 }
 } // namespace latinime
 #endif // LATINIME_BINARY_FORMAT_H
