@@ -155,8 +155,6 @@ class ProximityInfoState {
     ProximityType getMatchedProximityId(const int index, const int c,
             const bool checkProximityChars, int *proximityIndex = 0) const;
 
-    int getSpaceY() const;
-
     int getAllPossibleChars(const size_t startIndex, int *const filter, const int filterSize) const;
 
     float getSpeedRate(const int index) const {
