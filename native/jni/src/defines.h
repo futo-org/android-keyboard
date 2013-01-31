@@ -267,21 +267,6 @@ static inline void prof_out(void) {
 // loading time, and acceptable even for several initial lookups which involve page faults.
 #define USE_MMAP_FOR_DICTIONARY
 
-// 22-bit address = ~4MB dictionary size limit, which on average would be about 200k-300k words
-#define ADDRESS_MASK 0x3FFFFF
-
-// The bit that decides if an address follows in the next 22 bits
-#define FLAG_ADDRESS_MASK 0x40
-// The bit that decides if this is a terminal node for a word. The node could still have children,
-// if the word has other endings.
-#define FLAG_TERMINAL_MASK 0x80
-
-#define FLAG_BIGRAM_READ 0x80
-#define FLAG_BIGRAM_CHILDEXIST 0x40
-#define FLAG_BIGRAM_CONTINUED 0x80
-#define FLAG_BIGRAM_FREQ 0x7F
-
-#define DICTIONARY_VERSION_MIN 200
 #define NOT_VALID_WORD (-99)
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
@@ -297,10 +282,6 @@ static inline void prof_out(void) {
 #define KEYCODE_HYPHEN_MINUS '-'
 
 #define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
-
-#define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
-#define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
-#define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
 #define SUGGEST_MULTIPLE_WORDS true
 
 // The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
@@ -366,7 +347,6 @@ static inline void prof_out(void) {
 #define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
 
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
-#define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
 // TODO: Remove
 #define MAX_POINTER_COUNT 1
@@ -390,13 +370,10 @@ static inline void prof_out(void) {
 #error "BIGRAM_FILTER_MODULO is larger than BIGRAM_FILTER_BYTE_SIZE"
 #endif
 
-template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
-template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
+template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
+template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
-
-// The ratio of neutral area radius to sweet spot radius.
-#define NEUTRAL_AREA_RADIUS_RATIO 1.3f
 
 // DEBUG
 #define INPUTLENGTH_FOR_DEBUG (-1)
