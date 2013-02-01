@@ -83,7 +83,6 @@ class ProximityInfo {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
-    static const float NOT_A_DISTANCE_FLOAT;
 
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
