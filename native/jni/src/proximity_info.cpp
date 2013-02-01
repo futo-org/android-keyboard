@@ -27,8 +27,6 @@
 
 namespace latinime {
 
-/* static */ const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
-
 static AK_FORCE_INLINE void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray,
         jsize len, jint *buffer) {
     if (jArray && buffer) {

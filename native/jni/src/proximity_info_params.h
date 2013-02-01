@@ -23,13 +23,8 @@ namespace latinime {
 
 class ProximityInfoParams {
  public:
-    static const int LOOKUP_RADIUS_PERCENTILE;
-    static const int FIRST_POINT_TIME_OFFSET_MILLIS;
-    static const int STRONG_DOUBLE_LETTER_TIME_MILLIS;
-    static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
     static const float NOT_A_DISTANCE_FLOAT;
-    static const float SEARCH_KEY_RADIUS_RATIO;
+    static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
 
     // Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
     static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD;
@@ -94,9 +89,19 @@ class ProximityInfoParams {
     // Used by ProximityInfoStateUtils::getMostProbableString()
     static const float DEMOTION_LOG_PROBABILITY;
 
+    // Used by ProximityInfoStateUtils::updateSampledSearchKeysVector()
+    static const float SEARCH_KEY_RADIUS_RATIO;
+
+    // Used by ProximityInfoStateUtils::calculateBeelineSpeedRate()
+    static const int LOOKUP_RADIUS_PERCENTILE;
+    static const int FIRST_POINT_TIME_OFFSET_MILLIS;
+    static const int STRONG_DOUBLE_LETTER_TIME_MILLIS;
+
+    // Used by ProximityInfoStateUtils::calculateNormalizedSquaredDistance()
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoParams);
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_PARAMS_H
