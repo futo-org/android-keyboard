@@ -38,7 +38,7 @@ namespace latinime {
     return nextStartIndex;
 }
 
-/* static */ int ProximityInfoStateUtils::updateTouchPoints(const int mostCommonKeyWidth,
+/* static */ int ProximityInfoStateUtils::updateTouchPoints(
         const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
         const int *const inputProximities, const int *const inputXCoordinates,
         const int *const inputYCoordinates, const int *const times, const int *const pointerIds,
@@ -106,15 +106,14 @@ namespace latinime {
                 const float prevAngle = getAngle(
                         inputXCoordinates[i - 2], inputYCoordinates[i - 2],
                         inputXCoordinates[i - 1], inputYCoordinates[i - 1]);
-                const float currentAngle =
-                        getAngle(inputXCoordinates[i - 1], inputYCoordinates[i - 1], x, y);
+                const float currentAngle = getAngle(
+                        inputXCoordinates[i - 1], inputYCoordinates[i - 1], x, y);
                 sumAngle += getAngleDiff(prevAngle, currentAngle);
             }
 
-            if (pushTouchPoint(mostCommonKeyWidth, proximityInfo, maxPointToKeyLength,
-                    i, c, x, y, time, isGeometric /* doSampling */,
-                    i == lastInputIndex, sumAngle, currentNearKeysDistances,
-                    prevNearKeysDistances, prevPrevNearKeysDistances,
+            if (pushTouchPoint(proximityInfo, maxPointToKeyLength, i, c, x, y, time,
+                    isGeometric /* doSampling */, i == lastInputIndex, sumAngle,
+                    currentNearKeysDistances, prevNearKeysDistances, prevPrevNearKeysDistances,
                     sampledInputXs, sampledInputYs, sampledInputTimes, sampledLengthCache,
                     sampledInputIndice)) {
                 // Previous point information was popped.
@@ -222,12 +221,13 @@ namespace latinime {
 }
 
 /* static */ void ProximityInfoStateUtils::initGeometricDistanceInfos(
-        const ProximityInfo *const proximityInfo, const int keyCount, const int sampledInputSize,
+        const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize, const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
         std::vector<NearKeycodesSet> *SampledNearKeysVector,
         std::vector<float> *SampledDistanceCache_G) {
     SampledNearKeysVector->resize(sampledInputSize);
+    const int keyCount = proximityInfo->getKeyCount();
     SampledDistanceCache_G->resize(sampledInputSize * keyCount);
     for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
         (*SampledNearKeysVector)[i].reset();
@@ -275,10 +275,11 @@ namespace latinime {
         int duration = 0;
 
         // Calculate velocity by using distances and durations of
-        // NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and backward.
-        static const int NUM_POINTS_FOR_SPEED_CALCULATION = 2;
-        for (int j = index; j < min(inputSize - 1, index + NUM_POINTS_FOR_SPEED_CALCULATION);
-                ++j) {
+        // ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION points for both forward and
+        // backward.
+        const int forwardNumPoints = min(inputSize - 1,
+                index + ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION);
+        for (int j = index; j < forwardNumPoints; ++j) {
             if (i < sampledInputSize - 1 && j >= (*sampledInputIndice)[i + 1]) {
                 break;
             }
@@ -286,7 +287,9 @@ namespace latinime {
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
-        for (int j = index - 1; j >= max(0, index - NUM_POINTS_FOR_SPEED_CALCULATION); --j) {
+        const int backwardNumPoints = max(0,
+                index - ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION);
+        for (int j = index - 1; j >= backwardNumPoints; --j) {
             if (i > 0 && j < (*sampledInputIndice)[i - 1]) {
                 break;
             }
@@ -434,9 +437,8 @@ namespace latinime {
 
 // Sampling touch point and pushing information to vectors.
 // Returning if previous point is popped or not.
-/* static */ bool ProximityInfoStateUtils::pushTouchPoint(const int mostCommonKeyWidth,
-        const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
-        const int inputIndex, const int nodeCodePoint, int x, int y,
+/* static */ bool ProximityInfoStateUtils::pushTouchPoint(const ProximityInfo *const proximityInfo,
+        const int maxPointToKeyLength, const int inputIndex, const int nodeCodePoint, int x, int y,
         const int time, const bool doSampling, const bool isLastPoint, const float sumAngle,
         NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
@@ -444,7 +446,7 @@ namespace latinime {
         std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs,
         std::vector<int> *sampledInputTimes, std::vector<int> *sampledLengthCache,
         std::vector<int> *sampledInputIndice) {
-    static const int LAST_POINT_SKIP_DISTANCE_SCALE = 4;
+    const int mostCommonKeyWidth = proximityInfo->getMostCommonKeyWidth();
 
     size_t size = sampledInputXs->size();
     bool popped = false;
@@ -465,16 +467,16 @@ namespace latinime {
         }
         // Check if the last point should be skipped.
         if (isLastPoint && size > 0) {
-            if (getDistanceInt(x, y, sampledInputXs->back(),
-                    sampledInputYs->back()) * LAST_POINT_SKIP_DISTANCE_SCALE
-                            < mostCommonKeyWidth) {
+            if (getDistanceInt(x, y, sampledInputXs->back(), sampledInputYs->back())
+                    * ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE < mostCommonKeyWidth) {
                 // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
                     AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
                            "width = %d", size, x, y, sampledInputXs->back(),
                            sampledInputYs->back(), getDistanceInt(
                                    x, y, sampledInputXs->back(), sampledInputYs->back()),
-                           mostCommonKeyWidth / LAST_POINT_SKIP_DISTANCE_SCALE);
+                           mostCommonKeyWidth
+                                   / ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE);
                 }
                 return popped;
             }
@@ -664,35 +666,14 @@ namespace latinime {
         const std::vector<float> *const SampledDistanceCache_G,
         std::vector<NearKeycodesSet> *SampledNearKeysVector,
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
-    static const float MIN_PROBABILITY = 0.000001f;
-    static const float MAX_SKIP_PROBABILITY = 0.95f;
-    static const float SKIP_FIRST_POINT_PROBABILITY = 0.01f;
-    static const float SKIP_LAST_POINT_PROBABILITY = 0.1f;
-    static const float MIN_SPEED_RATE_FOR_SKIP_PROBABILITY = 0.15f;
-    static const float SPEED_WEIGHT_FOR_SKIP_PROBABILITY = 0.9f;
-    static const float SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY = 0.6f;
-    static const float NEAREST_DISTANCE_WEIGHT = 0.5f;
-    static const float NEAREST_DISTANCE_BIAS = 0.5f;
-    static const float NEAREST_DISTANCE_WEIGHT_FOR_LAST = 0.6f;
-    static const float NEAREST_DISTANCE_BIAS_FOR_LAST = 0.4f;
-
-    static const float ANGLE_WEIGHT = 0.90f;
-    static const float DEEP_CORNER_ANGLE_THRESHOLD = M_PI_F * 60.0f / 180.0f;
-    static const float SKIP_DEEP_CORNER_PROBABILITY = 0.1f;
-    static const float CORNER_ANGLE_THRESHOLD = M_PI_F * 30.0f / 180.0f;
-    static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F * 15.0f / 180.0f;
-    static const float SKIP_CORNER_PROBABILITY = 0.4f;
-    static const float SPEED_MARGIN = 0.1f;
-    static const float CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION = 0.0f;
-
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
     // for each point.
     for (int i = start; i < sampledInputSize; ++i) {
         (*charProbabilities)[i].clear();
-        // First, calculates skip probability. Starts form MIN_SKIP_PROBABILITY.
+        // First, calculates skip probability. Starts from MAX_SKIP_PROBABILITY.
         // Note that all values that are multiplied to this probability should be in [0.0, 1.0];
-        float skipProbability = MAX_SKIP_PROBABILITY;
+        float skipProbability = ProximityInfoParams::MAX_SKIP_PROBABILITY;
 
         const float currentAngle = getPointAngle(sampledInputXs, sampledInputYs, i);
         const float speedRate = (*sampledSpeedRates)[i];
@@ -709,78 +690,74 @@ namespace latinime {
         }
 
         if (i == 0) {
-            skipProbability *= min(1.0f, nearestKeyDistance * NEAREST_DISTANCE_WEIGHT
-                    + NEAREST_DISTANCE_BIAS);
+            skipProbability *= min(1.0f,
+                    nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT
+                            + ProximityInfoParams::NEAREST_DISTANCE_BIAS);
             // Promote the first point
-            skipProbability *= SKIP_FIRST_POINT_PROBABILITY;
+            skipProbability *= ProximityInfoParams::SKIP_FIRST_POINT_PROBABILITY;
         } else if (i == sampledInputSize - 1) {
-            skipProbability *= min(1.0f, nearestKeyDistance * NEAREST_DISTANCE_WEIGHT_FOR_LAST
-                    + NEAREST_DISTANCE_BIAS_FOR_LAST);
+            skipProbability *= min(1.0f,
+                    nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT_FOR_LAST
+                            + ProximityInfoParams::NEAREST_DISTANCE_BIAS_FOR_LAST);
             // Promote the last point
-            skipProbability *= SKIP_LAST_POINT_PROBABILITY;
+            skipProbability *= ProximityInfoParams::SKIP_LAST_POINT_PROBABILITY;
         } else {
             // If the current speed is relatively slower than adjacent keys, we promote this point.
-            if ((*sampledSpeedRates)[i - 1] - SPEED_MARGIN > speedRate
-                    && speedRate < (*sampledSpeedRates)[i + 1] - SPEED_MARGIN) {
-                if (currentAngle < CORNER_ANGLE_THRESHOLD) {
+            if ((*sampledSpeedRates)[i - 1] - ProximityInfoParams::SPEED_MARGIN > speedRate
+                    && speedRate
+                            < (*sampledSpeedRates)[i + 1] - ProximityInfoParams::SPEED_MARGIN) {
+                if (currentAngle < ProximityInfoParams::CORNER_ANGLE_THRESHOLD) {
                     skipProbability *= min(1.0f, speedRate
-                            * SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY);
+                            * ProximityInfoParams::SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY);
                 } else {
                     // If the angle is small enough, we promote this point more. (e.g. pit vs put)
-                    skipProbability *= min(1.0f, speedRate * SPEED_WEIGHT_FOR_SKIP_PROBABILITY
-                            + MIN_SPEED_RATE_FOR_SKIP_PROBABILITY);
+                    skipProbability *= min(1.0f,
+                            speedRate * ProximityInfoParams::SPEED_WEIGHT_FOR_SKIP_PROBABILITY
+                                    + ProximityInfoParams::MIN_SPEED_RATE_FOR_SKIP_PROBABILITY);
                 }
             }
 
-            skipProbability *= min(1.0f, speedRate * nearestKeyDistance *
-                    NEAREST_DISTANCE_WEIGHT + NEAREST_DISTANCE_BIAS);
+            skipProbability *= min(1.0f,
+                    speedRate * nearestKeyDistance * ProximityInfoParams::NEAREST_DISTANCE_WEIGHT
+                            + ProximityInfoParams::NEAREST_DISTANCE_BIAS);
 
             // Adjusts skip probability by a rate depending on angle.
             // ANGLE_RATE of skipProbability is adjusted by current angle.
-            skipProbability *= (M_PI_F - currentAngle) / M_PI_F * ANGLE_WEIGHT
-                    + (1.0f - ANGLE_WEIGHT);
-            if (currentAngle > DEEP_CORNER_ANGLE_THRESHOLD) {
-                skipProbability *= SKIP_DEEP_CORNER_PROBABILITY;
+            skipProbability *= (M_PI_F - currentAngle) / M_PI_F * ProximityInfoParams::ANGLE_WEIGHT
+                    + (1.0f - ProximityInfoParams::ANGLE_WEIGHT);
+            if (currentAngle > ProximityInfoParams::DEEP_CORNER_ANGLE_THRESHOLD) {
+                skipProbability *= ProximityInfoParams::SKIP_DEEP_CORNER_PROBABILITY;
             }
             // We assume the angle of this point is the angle for point[i], point[i - 2]
             // and point[i - 3]. The reason why we don't use the angle for point[i], point[i - 1]
             // and point[i - 2] is this angle can be more affected by the noise.
             const float prevAngle = getPointsAngle(sampledInputXs, sampledInputYs, i, i - 2, i - 3);
-            if (i >= 3 && prevAngle < STRAIGHT_ANGLE_THRESHOLD
-                    && currentAngle > CORNER_ANGLE_THRESHOLD) {
-                skipProbability *= SKIP_CORNER_PROBABILITY;
+            if (i >= 3 && prevAngle < ProximityInfoParams::STRAIGHT_ANGLE_THRESHOLD
+                    && currentAngle > ProximityInfoParams::CORNER_ANGLE_THRESHOLD) {
+                skipProbability *= ProximityInfoParams::SKIP_CORNER_PROBABILITY;
             }
         }
 
-        // probabilities must be in [0.0, MAX_SKIP_PROBABILITY];
+        // probabilities must be in [0.0, ProximityInfoParams::MAX_SKIP_PROBABILITY];
         ASSERT(skipProbability >= 0.0f);
-        ASSERT(skipProbability <= MAX_SKIP_PROBABILITY);
+        ASSERT(skipProbability <= ProximityInfoParams::MAX_SKIP_PROBABILITY);
         (*charProbabilities)[i][NOT_AN_INDEX] = skipProbability;
 
         // Second, calculates key probabilities by dividing the rest probability
         // (1.0f - skipProbability).
         const float inputCharProbability = 1.0f - skipProbability;
 
-        // TODO: The variance is critical for accuracy; thus, adjusting these parameter by machine
-        // learning or something would be efficient.
-        static const float SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION = 0.3f;
-        static const float MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION = 0.25f;
-        static const float SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION = 0.5f;
-        static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION = 0.15f;
-        static const float MIN_STANDERD_DIVIATION = 0.37f;
-
         const float speedxAngleRate = min(speedRate * currentAngle / M_PI_F
-                * SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION,
-                        MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION);
+                * ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION,
+                        ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION);
         const float speedxNearestKeyDistanceRate = min(speedRate * nearestKeyDistance
-                * SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION,
-                        MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION);
-        const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate + MIN_STANDERD_DIVIATION;
+                * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION,
+                        ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION);
+        const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate
+                + ProximityInfoParams::MIN_STANDERD_DIVIATION;
 
         ProximityInfoUtils::NormalDistribution
-                distribution(CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
-        static const float PREV_DISTANCE_WEIGHT = 0.5f;
-        static const float NEXT_DISTANCE_WEIGHT = 0.6f;
+                distribution(ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
@@ -797,8 +774,9 @@ namespace latinime {
                         // points because the first touch by the user can be sloppy.
                         // So we promote the first point if the distance of that point is larger
                         // than the distance of the next point.
-                        distance = (distance + nextDistance * NEXT_DISTANCE_WEIGHT)
-                                / (1.0f + NEXT_DISTANCE_WEIGHT);
+                        distance = (distance
+                                + nextDistance * ProximityInfoParams::NEXT_DISTANCE_WEIGHT)
+                                        / (1.0f + ProximityInfoParams::NEXT_DISTANCE_WEIGHT);
                     }
                 } else if (i != 0 && i == sampledInputSize - 1) {
                     // For the first point, weighted average of distances from last point and
@@ -810,8 +788,9 @@ namespace latinime {
                         // because the last touch by the user can be sloppy. So we promote the
                         // last point if the distance of that point is larger than the distance of
                         // the previous point.
-                        distance = (distance + previousDistance * PREV_DISTANCE_WEIGHT)
-                                / (1.0f + PREV_DISTANCE_WEIGHT);
+                        distance = (distance
+                                + previousDistance * ProximityInfoParams::PREV_DISTANCE_WEIGHT)
+                                        / (1.0f + ProximityInfoParams::PREV_DISTANCE_WEIGHT);
                     }
                 }
                 // TODO: Promote the first point when the extended line from the next input is near
@@ -831,8 +810,9 @@ namespace latinime {
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(
                             maxPointToKeyLength, SampledDistanceCache_G, keyCount, i + 1, j));
                     if (prevDistance < distance) {
-                        distance = (distance + prevDistance * NEXT_DISTANCE_WEIGHT)
-                                / (1.0f + NEXT_DISTANCE_WEIGHT);
+                        distance = (distance
+                                + prevDistance * ProximityInfoParams::NEXT_DISTANCE_WEIGHT)
+                                        / (1.0f + ProximityInfoParams::NEXT_DISTANCE_WEIGHT);
                     }
                 } else if (i != 0 && i == sampledInputSize - 1) {
                     // For the first point, weighted average of distances from last point and
@@ -840,8 +820,9 @@ namespace latinime {
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(
                             maxPointToKeyLength, SampledDistanceCache_G, keyCount, i - 1, j));
                     if (prevDistance < distance) {
-                        distance = (distance + prevDistance * PREV_DISTANCE_WEIGHT)
-                                / (1.0f + PREV_DISTANCE_WEIGHT);
+                        distance = (distance
+                                + prevDistance * ProximityInfoParams::PREV_DISTANCE_WEIGHT)
+                                        / (1.0f + ProximityInfoParams::PREV_DISTANCE_WEIGHT);
                     }
                 }
                 const float probabilityDensity = distribution.getProbabilityDensity(distance);
@@ -905,7 +886,7 @@ namespace latinime {
             hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].find(j);
             if (it == (*charProbabilities)[i].end()){
                 (*SampledNearKeysVector)[i].reset(j);
-            } else if(it->second < MIN_PROBABILITY) {
+            } else if(it->second < ProximityInfoParams::MIN_PROBABILITY) {
                 // Erases from near keys vector because it has very low probability.
                 (*SampledNearKeysVector)[i].reset(j);
                 (*charProbabilities)[i].erase(j);
@@ -949,20 +930,14 @@ namespace latinime {
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
     ASSERT(0 <= index0 && index0 < sampledInputSize);
     ASSERT(0 <= index1 && index1 < sampledInputSize);
-
-    static const float SUPPRESSION_LENGTH_WEIGHT = 1.5f;
-    static const float MIN_SUPPRESSION_RATE = 0.1f;
-    static const float SUPPRESSION_WEIGHT = 0.5f;
-    static const float SUPPRESSION_WEIGHT_FOR_PROBABILITY_GAIN = 0.1f;
-    static const float SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN = 0.3f;
-
     const float keyWidthFloat = static_cast<float>(mostCommonKeyWidth);
     const float diff = fabsf(static_cast<float>((*lengthCache)[index0] - (*lengthCache)[index1]));
-    if (diff > keyWidthFloat * SUPPRESSION_LENGTH_WEIGHT) {
+    if (diff > keyWidthFloat * ProximityInfoParams::SUPPRESSION_LENGTH_WEIGHT) {
         return false;
     }
-    const float suppressionRate = MIN_SUPPRESSION_RATE
-            + diff / keyWidthFloat / SUPPRESSION_LENGTH_WEIGHT * SUPPRESSION_WEIGHT;
+    const float suppressionRate = ProximityInfoParams::MIN_SUPPRESSION_RATE
+            + diff / keyWidthFloat / ProximityInfoParams::SUPPRESSION_LENGTH_WEIGHT
+                    * ProximityInfoParams::SUPPRESSION_WEIGHT;
     for (hash_map_compat<int, float>::iterator it = (*charProbabilities)[index0].begin();
             it != (*charProbabilities)[index0].end(); ++it) {
         hash_map_compat<int, float>::iterator it2 =  (*charProbabilities)[index1].find(it->first);
@@ -974,9 +949,10 @@ namespace latinime {
             (*charProbabilities)[index0][NOT_AN_INDEX] += suppression;
 
             // Add the probability of the same key nearby index1
-            const float probabilityGain = min(suppression * SUPPRESSION_WEIGHT_FOR_PROBABILITY_GAIN,
+            const float probabilityGain = min(suppression
+                    * ProximityInfoParams::SUPPRESSION_WEIGHT_FOR_PROBABILITY_GAIN,
                     (*charProbabilities)[index1][NOT_AN_INDEX]
-                            * SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN);
+                            * ProximityInfoParams::SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN);
             it2->second += probabilityGain;
             (*charProbabilities)[index1][NOT_AN_INDEX] -= probabilityGain;
         }
@@ -1020,7 +996,6 @@ namespace latinime {
         int *const codePointBuf) {
     ASSERT(sampledInputSize >= 0);
     memset(codePointBuf, 0, sizeof(codePointBuf[0]) * MAX_WORD_LENGTH);
-    static const float DEMOTION_LOG_PROBABILITY = 0.3f;
     int index = 0;
     float sumLogProbability = 0.0f;
     // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
@@ -1030,7 +1005,7 @@ namespace latinime {
         for (hash_map_compat<int, float>::const_iterator it = (*charProbabilities)[i].begin();
                 it != (*charProbabilities)[i].end(); ++it) {
             const float logProbability = (it->first != NOT_AN_INDEX)
-                    ? it->second + DEMOTION_LOG_PROBABILITY : it->second;
+                    ? it->second + ProximityInfoParams::DEMOTION_LOG_PROBABILITY : it->second;
             if (logProbability < minLogProbability) {
                 minLogProbability = logProbability;
                 character = it->first;

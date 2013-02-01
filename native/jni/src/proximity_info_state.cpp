@@ -89,29 +89,28 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 
     if (xCoordinates && yCoordinates) {
-        mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(
-                mProximityInfo->getMostCommonKeyWidth(), mProximityInfo, mMaxPointToKeyLength,
-                mInputProximities, xCoordinates, yCoordinates, times, pointerIds, inputSize,
-                isGeometric, pointerId, pushTouchPointStartIndex, &mSampledInputXs,
-                &mSampledInputYs, &mSampledTimes, &mSampledLengthCache, &mSampledInputIndice);
+        mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(mProximityInfo,
+                mMaxPointToKeyLength, mInputProximities, xCoordinates, yCoordinates, times,
+                pointerIds, inputSize, isGeometric, pointerId, pushTouchPointStartIndex,
+                &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSampledLengthCache,
+                &mSampledInputIndice);
     }
 
     if (mSampledInputSize > 0 && isGeometric) {
-        mAverageSpeed = ProximityInfoStateUtils::refreshSpeedRates(
-                inputSize, xCoordinates, yCoordinates, times, lastSavedInputSize,
-                mSampledInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledTimes,
-                &mSampledLengthCache, &mSampledInputIndice, &mSpeedRates, &mDirections);
-        ProximityInfoStateUtils::refreshBeelineSpeedRates(
-                mProximityInfo->getMostCommonKeyWidth(), mAverageSpeed, inputSize,
-                xCoordinates, yCoordinates, times, mSampledInputSize, &mSampledInputXs,
-                &mSampledInputYs, &mSampledInputIndice, &mBeelineSpeedPercentiles);
+        mAverageSpeed = ProximityInfoStateUtils::refreshSpeedRates(inputSize, xCoordinates,
+                yCoordinates, times, lastSavedInputSize, mSampledInputSize, &mSampledInputXs,
+                &mSampledInputYs, &mSampledTimes, &mSampledLengthCache, &mSampledInputIndice,
+                &mSpeedRates, &mDirections);
+        ProximityInfoStateUtils::refreshBeelineSpeedRates(mProximityInfo->getMostCommonKeyWidth(),
+                mAverageSpeed, inputSize, xCoordinates, yCoordinates, times, mSampledInputSize,
+                &mSampledInputXs, &mSampledInputYs, &mSampledInputIndice,
+                &mBeelineSpeedPercentiles);
     }
 
     if (mSampledInputSize > 0) {
-        ProximityInfoStateUtils::initGeometricDistanceInfos(
-                mProximityInfo, mProximityInfo->getKeyCount(),
-                mSampledInputSize, lastSavedInputSize, &mSampledInputXs, &mSampledInputYs,
-                &mSampledNearKeysVector, &mSampledDistanceCache_G);
+        ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
+                lastSavedInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledNearKeysVector,
+                &mSampledDistanceCache_G);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
             ProximityInfoStateUtils::updateAlignPointProbabilities(
