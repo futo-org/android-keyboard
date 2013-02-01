@@ -39,10 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten til sprogskift gælder også for andre inputmetoder"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tast til sprogskift"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Vis, når der er aktiveret flere inputsprog"</string>
-    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
-    <skip />
-    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
-    <skip />
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Vis indikator ved glidning"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Vis et visuelt tip, når du glider fra Shift eller symboltaster"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Forsink. afvis. af taste-pop op"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Ingen forsink."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
