@@ -453,13 +453,12 @@ import java.util.List;
 
         // Look for the long press that started the invocation of the research key code input.
         final int indexOfLastLongPressBeforeResearchKey =
-                findLastIndexBefore(LogStatement.TYPE_LATIN_KEYBOARD_VIEW_ON_LONG_PRESS,
+                findLastIndexBefore(LogStatement.TYPE_MAIN_KEYBOARD_VIEW_ON_LONG_PRESS,
                         indexOfLastResearchKey);
 
         // Look for DOWN event preceding the long press
         final int indexOfLastDownEventBeforeLongPress =
-                findLastIndexContainingKeyValueBefore(
-                        LogStatement.TYPE_LATIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENTS,
+                findLastIndexContainingKeyValueBefore(LogStatement.TYPE_MOTION_EVENT,
                         LogStatement.ACTION, LogStatement.VALUE_DOWN,
                         indexOfLastLongPressBeforeResearchKey);
 
@@ -471,8 +470,8 @@ import java.util.List;
             final LogStatement logStatement = mLogStatementList.get(index);
             final String type = logStatement.getType();
             final Object[] values = mValuesList.get(index);
-            if (type.equals(LogStatement.TYPE_LATIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENTS)) {
-                logStatement.setValue(LogStatement.KEY_LOGGING_RELATED, values, true);
+            if (type.equals(LogStatement.TYPE_MOTION_EVENT)) {
+                logStatement.setValue(LogStatement.KEY_IS_LOGGING_RELATED, values, true);
             }
         }
         return true;
