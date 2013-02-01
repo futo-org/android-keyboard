@@ -24,6 +24,7 @@
 #include "geometry_utils.h"
 #include "jni.h"
 #include "proximity_info.h"
+#include "proximity_info_params.h"
 
 namespace latinime {
 
@@ -127,17 +128,15 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
         const int keyId, const int x, const int y) const {
-    const static float verticalSweetSpotScaleForGeometric = 1.1f;
     const bool correctTouchPosition = hasTouchPositionCorrectionData();
-    const float centerX = static_cast<float>(correctTouchPosition
-            ? getSweetSpotCenterXAt(keyId)
+    const float centerX = static_cast<float>(correctTouchPosition ? getSweetSpotCenterXAt(keyId)
             : getKeyCenterXOfKeyIdG(keyId));
     const float visualKeyCenterY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
     float centerY;
     if (correctTouchPosition) {
         const float sweetSpotCenterY = static_cast<float>(getSweetSpotCenterYAt(keyId));
         const float gapY = sweetSpotCenterY - visualKeyCenterY;
-        centerY = visualKeyCenterY + gapY * verticalSweetSpotScaleForGeometric;
+        centerY = visualKeyCenterY + gapY * ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G;
     } else {
         centerY = visualKeyCenterY;
     }
