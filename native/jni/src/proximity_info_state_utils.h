@@ -35,9 +35,8 @@ class ProximityInfoStateUtils {
     static int trimLastTwoTouchPoints(std::vector<int> *sampledInputXs,
             std::vector<int> *sampledInputYs, std::vector<int> *sampledInputTimes,
             std::vector<int> *sampledLengthCache, std::vector<int> *sampledInputIndice);
-    static int updateTouchPoints(const int mostCommonKeyWidth,
-            const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
-            const int *const inputProximities,
+    static int updateTouchPoints(const ProximityInfo *const proximityInfo,
+            const int maxPointToKeyLength, const int *const inputProximities,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int *const times, const int *const pointerIds, const int inputSize,
             const bool isGeometric, const int pointerId, const int pushTouchPointStartIndex,
@@ -65,19 +64,17 @@ class ProximityInfoStateUtils {
             std::vector<int> *beelineSpeedPercentiles);
     static float getDirection(const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int index0, const int index1);
-    static void updateAlignPointProbabilities(
-            const float maxPointToKeyLength, const int mostCommonKeyWidth, const int keyCount,
-            const int start, const int sampledInputSize,
-            const std::vector<int> *const sampledInputXs,
+    static void updateAlignPointProbabilities(const float maxPointToKeyLength,
+            const int mostCommonKeyWidth, const int keyCount, const int start,
+            const int sampledInputSize, const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledLengthCache,
             const std::vector<float> *const SampledDistanceCache_G,
             std::vector<NearKeycodesSet> *SampledNearKeysVector,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
-    static void updateSampledSearchKeysVector(
-            const ProximityInfo *const proximityInfo, const int sampledInputSize,
-            const int lastSavedInputSize,
+    static void updateSampledSearchKeysVector(const ProximityInfo *const proximityInfo,
+            const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
             const std::vector<NearKeycodesSet> *const SampledNearKeysVector,
             std::vector<NearKeycodesSet> *sampledSearchKeysVector);
@@ -87,22 +84,18 @@ class ProximityInfoStateUtils {
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
             const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
             const int inputIndex, const int keyId);
-    static void initGeometricDistanceInfos(
-            const ProximityInfo *const proximityInfo, const int keyCount,
+    static void initGeometricDistanceInfos(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             std::vector<NearKeycodesSet> *SampledNearKeysVector,
             std::vector<float> *SampledDistanceCache_G);
-    static void initPrimaryInputWord(
-            const int inputSize, const int *const inputProximities, int *primaryInputWord);
-    static void initNormalizedSquaredDistances(
-            const ProximityInfo *const proximityInfo, const int inputSize,
-            const int *inputXCoordinates, const int *inputYCoordinates,
-            const int *const inputProximities,
-            const std::vector<int> *const sampledInputXs,
-            const std::vector<int> *const sampledInputYs,
-            int *normalizedSquaredDistances);
+    static void initPrimaryInputWord(const int inputSize, const int *const inputProximities,
+            int *primaryInputWord);
+    static void initNormalizedSquaredDistances(const ProximityInfo *const proximityInfo,
+            const int inputSize, const int *inputXCoordinates, const int *inputYCoordinates,
+            const int *const inputProximities, const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs, int *normalizedSquaredDistances);
     static void dump(const bool isGeometric, const int inputSize,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int sampledInputSize, const std::vector<int> *const sampledInputXs,
@@ -117,8 +110,8 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledTimes,
             const std::vector<int> *const sampledInputIndices);
     // TODO: Move to most_probable_string_utils.h
-    static float getMostProbableString(
-            const ProximityInfo *const proximityInfo, const int sampledInputSize,
+    static float getMostProbableString(const ProximityInfo *const proximityInfo,
+            const int sampledInputSize,
             const std::vector<hash_map_compat<int, float> > *const charProbabilities,
             int *const codePointBuf);
 
@@ -137,11 +130,10 @@ class ProximityInfoStateUtils {
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances,
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs);
-    static bool pushTouchPoint(const int mostCommonKeyWidth,
-            const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
-            const int inputIndex, const int nodeCodePoint, int x, int y, const int time,
-            const bool doSampling, const bool isLastPoint, const float sumAngle,
-            NearKeysDistanceMap *const currentNearKeysDistances,
+    static bool pushTouchPoint(const ProximityInfo *const proximityInfo,
+            const int maxPointToKeyLength, const int inputIndex, const int nodeCodePoint, int x,
+            int y, const int time, const bool doSampling, const bool isLastPoint,
+            const float sumAngle, NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances,
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs,
@@ -153,23 +145,20 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             const std::vector<int> *const inputIndice);
-    static float getPointAngle(
-            const std::vector<int> *const sampledInputXs,
+    static float getPointAngle(const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int index);
-    static float getPointsAngle(
-            const std::vector<int> *const sampledInputXs,
-            const std::vector<int> *const sampledInputYs,
-            const int index0, const int index1, const int index2);
+    static float getPointsAngle(const std::vector<int> *const sampledInputXs,
+            const std::vector<int> *const sampledInputYs, const int index0, const int index1,
+            const int index2);
     static bool suppressCharProbabilities(const int mostCommonKeyWidth,
-            const int sampledInputSize, const std::vector<int> *const lengthCache,
-            const int index0, const int index1,
-            std::vector<hash_map_compat<int, float> > *charProbabilities);
+            const int sampledInputSize, const std::vector<int> *const lengthCache, const int index0,
+            const int index1, std::vector<hash_map_compat<int, float> > *charProbabilities);
     static float calculateSquaredDistanceFromSweetSpotCenter(
             const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int keyIndex,
             const int inputIndex);
-     static float calculateNormalizedSquaredDistance(
-            const ProximityInfo *const proximityInfo, const std::vector<int> *const sampledInputXs,
+     static float calculateNormalizedSquaredDistance(const ProximityInfo *const proximityInfo,
+            const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs, const int keyIndex, const int inputIndex);
 };
 } // namespace latinime

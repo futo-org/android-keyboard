@@ -50,6 +50,50 @@ class ProximityInfoParams {
     static const float CORNER_SUM_ANGLE_THRESHOLD;
     static const float CORNER_SCORE;
 
+    // Used by ProximityInfoStateUtils::refreshSpeedRates()
+    static const int NUM_POINTS_FOR_SPEED_CALCULATION;
+
+    // Used by ProximityInfoStateUtils::pushTouchPoint()
+    static const int LAST_POINT_SKIP_DISTANCE_SCALE;
+
+    // Used by ProximityInfoStateUtils::updateAlignPointProbabilities()
+    static const float MIN_PROBABILITY;
+    static const float MAX_SKIP_PROBABILITY;
+    static const float SKIP_FIRST_POINT_PROBABILITY;
+    static const float SKIP_LAST_POINT_PROBABILITY;
+    static const float MIN_SPEED_RATE_FOR_SKIP_PROBABILITY;
+    static const float SPEED_WEIGHT_FOR_SKIP_PROBABILITY;
+    static const float SLOW_STRAIGHT_WEIGHT_FOR_SKIP_PROBABILITY;
+    static const float NEAREST_DISTANCE_WEIGHT;
+    static const float NEAREST_DISTANCE_BIAS;
+    static const float NEAREST_DISTANCE_WEIGHT_FOR_LAST;
+    static const float NEAREST_DISTANCE_BIAS_FOR_LAST;
+    static const float ANGLE_WEIGHT;
+    static const float DEEP_CORNER_ANGLE_THRESHOLD;
+    static const float SKIP_DEEP_CORNER_PROBABILITY;
+    static const float CORNER_ANGLE_THRESHOLD;
+    static const float STRAIGHT_ANGLE_THRESHOLD;
+    static const float SKIP_CORNER_PROBABILITY;
+    static const float SPEED_MARGIN;
+    static const float CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION;
+    static const float SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION;
+    static const float MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION;
+    static const float SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION;
+    static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION;
+    static const float MIN_STANDERD_DIVIATION;
+    static const float PREV_DISTANCE_WEIGHT;
+    static const float NEXT_DISTANCE_WEIGHT;
+
+    // Used by ProximityInfoStateUtils::suppressCharProbabilities()
+    static const float SUPPRESSION_LENGTH_WEIGHT;
+    static const float MIN_SUPPRESSION_RATE;
+    static const float SUPPRESSION_WEIGHT;
+    static const float SUPPRESSION_WEIGHT_FOR_PROBABILITY_GAIN;
+    static const float SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN;
+
+    // Used by ProximityInfoStateUtils::getMostProbableString()
+    static const float DEMOTION_LOG_PROBABILITY;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoParams);
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
