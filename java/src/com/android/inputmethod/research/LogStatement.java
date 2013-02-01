@@ -29,13 +29,12 @@ class LogStatement {
             "PointerTrackerCallListenerOnCodeInput";
     public static final String KEY_CODE = "code";
     public static final String VALUE_RESEARCH = "research";
-    public static final String TYPE_LATIN_KEYBOARD_VIEW_ON_LONG_PRESS =
-            "LatinKeyboardViewOnLongPress";
+    public static final String TYPE_MAIN_KEYBOARD_VIEW_ON_LONG_PRESS =
+            "MainKeyboardViewOnLongPress";
     public static final String ACTION = "action";
     public static final String VALUE_DOWN = "DOWN";
-    public static final String TYPE_LATIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENTS =
-            "LatinKeyboardViewProcessMotionEvents";
-    public static final String KEY_LOGGING_RELATED = "loggingRelated";
+    public static final String TYPE_MOTION_EVENT = "MotionEvent";
+    public static final String KEY_IS_LOGGING_RELATED = "isLoggingRelated";
 
     // Name specifying the LogStatement type.
     private final String mType;
