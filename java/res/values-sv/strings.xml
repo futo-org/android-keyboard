@@ -40,7 +40,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Knapp för att byta språk"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Visa när flera inmatningsspråk är aktiverade"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Visa dragreglage"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Visa en visuell kö när du drar från Skift- eller Symboltangenten"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Visa svepning när du drar från Skift- eller Symboltangenten"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Ta bort popup-fördröjning"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fördröj inte"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>

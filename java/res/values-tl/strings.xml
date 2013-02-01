@@ -39,10 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Saklaw din ng key ng pagpalit ng wika ang ibang paraan ng input"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Key ng panlipat ng wika"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Ipakita kapag maraming wika ng input na pinagana"</string>
-    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
-    <skip />
-    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
-    <skip />
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Ipakita ang indicator ng slide"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Magpakita ng visual cue kapag nag-i-slide sa Shift o Symbol key"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Balewala antala key popup"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Walang antala"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>

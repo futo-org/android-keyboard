@@ -39,10 +39,8 @@
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Khóa chuyển ngôn ngữ bao gồm cả các phương thức nhập liệu khác"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Phím chuyển đổi ngôn ngữ"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Hiển thị khi nhiều ngôn ngữ đầu vào được bật"</string>
-    <!-- no translation found for sliding_key_input_preview (6604262359510068370) -->
-    <skip />
-    <!-- no translation found for sliding_key_input_preview_summary (6340524345729093886) -->
-    <skip />
+    <string name="sliding_key_input_preview" msgid="6604262359510068370">"Hiển thị chỉ báo trượt"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Hiển thị tín hiệu hình ảnh trong khi trượt từ phím Shift hoặc phím Biểu tượng"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Loại bỏ hiển thị phím trễ"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Không có tgian trễ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Mặc định"</string>
