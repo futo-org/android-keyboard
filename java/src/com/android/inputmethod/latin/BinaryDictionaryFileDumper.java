@@ -56,11 +56,11 @@ public final class BinaryDictionaryFileDumper {
 
     private static final String DICTIONARY_PROJECTION[] = { "id" };
 
-    public static final String QUERY_PARAMETER_MAY_PROMPT_USER = "mayPrompt";
-    public static final String QUERY_PARAMETER_TRUE = "true";
-    public static final String QUERY_PARAMETER_DELETE_RESULT = "result";
-    public static final String QUERY_PARAMETER_SUCCESS = "success";
-    public static final String QUERY_PARAMETER_FAILURE = "failure";
+    private static final String QUERY_PARAMETER_MAY_PROMPT_USER = "mayPrompt";
+    private static final String QUERY_PARAMETER_TRUE = "true";
+    private static final String QUERY_PARAMETER_DELETE_RESULT = "result";
+    private static final String QUERY_PARAMETER_SUCCESS = "success";
+    private static final String QUERY_PARAMETER_FAILURE = "failure";
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
