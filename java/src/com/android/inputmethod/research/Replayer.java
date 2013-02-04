@@ -22,6 +22,8 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.MotionEvent.PointerCoords;
+import android.view.MotionEvent.PointerProperties;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
@@ -62,7 +64,6 @@ public class Replayer {
         if (mIsReplaying) {
             return;
         }
-
         mIsReplaying = true;
         final int numActions = replayData.mActions.size();
         if (DEBUG) {
@@ -95,25 +96,36 @@ public class Replayer {
                 case MSG_MOTION_EVENT:
                     final int index = msg.arg1;
                     final int action = replayData.mActions.get(index);
-                    final int x = replayData.mXCoords.get(index);
-                    final int y = replayData.mYCoords.get(index);
+                    final PointerProperties[] pointerPropertiesArray =
+                            replayData.mPointerPropertiesArrays.get(index);
+                    final PointerCoords[] pointerCoordsArray =
+                            replayData.mPointerCoordsArrays.get(index);
                     final long origTime = replayData.mTimes.get(index);
                     if (action == MotionEvent.ACTION_DOWN) {
                         mOrigDownTime = origTime;
                     }
 
                     final MotionEvent me = MotionEvent.obtain(mOrigDownTime + timeAdjustment,
-                            origTime + timeAdjustment, action, x, y, 0);
+                            origTime + timeAdjustment, action,
+                            pointerPropertiesArray.length, pointerPropertiesArray,
+                            pointerCoordsArray, 0, 0, 1.0f, 1.0f, 0, 0, 0, 0);
                     mainKeyboardView.processMotionEvent(me);
                     me.recycle();
                     break;
                 case MSG_DONE:
                     mIsReplaying = false;
+                    ResearchLogger.getInstance().requestIndicatorRedraw();
                     break;
                 }
             }
         };
 
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ResearchLogger.getInstance().requestIndicatorRedraw();
+            }
+        });
         for (int i = 0; i < numActions; i++) {
             final Message msg = Message.obtain(handler, MSG_MOTION_EVENT, i, 0);
             final long msgTime = replayData.mTimes.get(i) + timeAdjustment;
