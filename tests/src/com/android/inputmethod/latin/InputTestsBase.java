@@ -31,16 +31,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 
-import java.util.HashMap;
 import java.util.Locale;
 
 public class InputTestsBase extends ServiceTestCase<LatinIME> {

@@ -16,8 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.test.suitebuilder.annotation.LargeTest;
+
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 
+@LargeTest
 public class InputLogicTestsNonEnglish extends InputTestsBase {
     final String NEXT_WORD_PREDICTION_OPTION = "next_word_prediction";
 

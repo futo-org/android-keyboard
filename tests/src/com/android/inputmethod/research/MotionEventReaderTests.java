@@ -17,6 +17,7 @@
 package com.android.inputmethod.research;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.util.JsonReader;
 
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
@@ -24,6 +25,7 @@ import com.android.inputmethod.research.MotionEventReader.ReplayData;
 import java.io.IOException;
 import java.io.StringReader;
 
+@SmallTest
 public class MotionEventReaderTests extends AndroidTestCase {
     private MotionEventReader mMotionEventReader = new MotionEventReader();
     private ReplayData mReplayData;

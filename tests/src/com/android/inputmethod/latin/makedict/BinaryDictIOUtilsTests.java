@@ -16,32 +16,30 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import android.test.AndroidTestCase;
+import android.test.MoreAsserts;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.ByteBufferWrapper;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
-import android.util.Log;
-
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+@LargeTest
 public class BinaryDictIOUtilsTests  extends AndroidTestCase {
     private static final String TAG = BinaryDictIOUtilsTests.class.getSimpleName();
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =

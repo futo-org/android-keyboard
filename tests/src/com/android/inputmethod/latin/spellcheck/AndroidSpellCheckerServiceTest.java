@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import android.text.SpannableStringBuilder;
-import android.text.style.CharacterStyle;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.text.style.SuggestionSpan;
 
 import com.android.inputmethod.latin.InputTestsBase;
 
+@LargeTest
 public class AndroidSpellCheckerServiceTest extends InputTestsBase {
     public void testSpellchecker() {
         mTextView.onAttachedToWindow();

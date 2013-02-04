@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -25,6 +26,7 @@ import android.view.inputmethod.InputConnectionWrapper;
 
 import com.android.inputmethod.latin.RichInputConnection.Range;
 
+@SmallTest
 public class RichInputConnectionTests extends AndroidTestCase {
 
     // The following is meant to be a reasonable default for

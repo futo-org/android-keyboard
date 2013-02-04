@@ -17,7 +17,9 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
+@SmallTest
 public class PointerTrackerQueueTests extends AndroidTestCase {
     public static class Element implements PointerTrackerQueue.Element {
         public static int sPhantomUpCount;
