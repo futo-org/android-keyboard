@@ -62,7 +62,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.EventInterpreter;
@@ -2512,7 +2511,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 di.dismiss();
                 switch (position) {
                 case 0:
-                    Intent intent = CompatUtils.getInputLanguageSelectionIntent(
+                    final Intent intent = IntentUtils.getInputLanguageSelectionIntent(
                             mRichImm.getInputMethodIdOfThisIme(),
                             Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
