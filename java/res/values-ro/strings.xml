@@ -40,7 +40,7 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tastă comutare limbi"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Afişaţi când sunt activate mai multe limbi de intrare"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Afișați indicator glisare"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Afișați sugestie vizuală la glisarea de la Shift sau Simbol"</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Afișați un indicator în timpul glisării de la Shift sau tasta de simboluri"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Înt. înch. pop-up esenţ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fără întârziere"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
