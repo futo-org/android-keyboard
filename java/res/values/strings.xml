@@ -71,7 +71,7 @@
 
     <!-- Option to enable sliding key input indicator. The user can see a rubber band-like effect during sliding key input. [CHAR LIMIT=30]-->
     <string name="sliding_key_input_preview">Show slide indicator</string>
-    <!-- Option summary to enable sliding key input indicator. The user can see a rubber band-like effect during sliding key input. [CHAR LIMIT=65]-->
+    <!-- Option summary to enable sliding key input indicator. The user can see a rubber band-like effect during sliding key input. [CHAR LIMIT=66]-->
     <string name="sliding_key_input_preview_summary">Display visual cue while sliding from Shift or Symbol keys</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
