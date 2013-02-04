@@ -819,7 +819,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
+        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog
+                && !isReplaying();
     }
 
     public void requestIndicatorRedraw() {
@@ -832,15 +833,30 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mMainKeyboardView.invalidateAllKeys();
     }
 
+    private boolean isReplaying() {
+        return mReplayer.isReplaying();
+    }
+
+    private int getIndicatorColor() {
+        if (isMakingUserRecording()) {
+            return Color.YELLOW;
+        }
+        if (isReplaying()) {
+            return Color.GREEN;
+        }
+        return Color.RED;
+    }
+
     public void paintIndicator(KeyboardView view, Paint paint, Canvas canvas, int width,
             int height) {
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger
         // and remove this method.
         // The check for MainKeyboardView ensures that the indicator only decorates the main
         // keyboard, not every keyboard.
-        if (IS_SHOWING_INDICATOR && isAllowedToLog() && view instanceof MainKeyboardView) {
+        if (IS_SHOWING_INDICATOR && (isAllowedToLog() || isReplaying())
+                && view instanceof MainKeyboardView) {
             final int savedColor = paint.getColor();
-            paint.setColor(isMakingUserRecording() ? Color.YELLOW : Color.RED);
+            paint.setColor(getIndicatorColor());
             final Style savedStyle = paint.getStyle();
             paint.setStyle(Style.STROKE);
             final float savedStrokeWidth = paint.getStrokeWidth();

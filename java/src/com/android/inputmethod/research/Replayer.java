@@ -130,4 +130,8 @@ public class Replayer {
             handler.postAtTime(callback, presentDoneTime + 1);
         }
     }
+
+    public boolean isReplaying() {
+        return mIsReplaying;
+    }
 }
