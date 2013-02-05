@@ -63,7 +63,7 @@
             android:minLines="2"
             android:scrollbars="vertical"
             android:hint="@string/research_feedback_hint"
-            android:inputType="textMultiLine">
+            android:inputType="textMultiLine|textCapSentences">
             <requestFocus />
         </EditText>
         <CheckBox
