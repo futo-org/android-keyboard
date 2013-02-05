@@ -16,6 +16,12 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import android.test.AndroidTestCase;
+import android.test.MoreAsserts;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+import android.util.SparseArray;
+
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
@@ -23,11 +29,6 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
-import android.util.Log;
-import android.util.SparseArray;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +48,7 @@ import java.util.Set;
 /**
  * Unit tests for BinaryDictInputOutput
  */
+@LargeTest
 public class BinaryDictIOTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOTests.class.getSimpleName();
     private static final int MAX_UNIGRAMS = 1000;

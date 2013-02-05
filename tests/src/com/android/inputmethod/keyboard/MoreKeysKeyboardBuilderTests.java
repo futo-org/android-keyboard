@@ -17,9 +17,11 @@
 package com.android.inputmethod.keyboard;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.keyboard.MoreKeysKeyboard.MoreKeysKeyboardParams;
 
+@SmallTest
 public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
     private static final int WIDTH = 10;
     private static final int HEIGHT = 10;

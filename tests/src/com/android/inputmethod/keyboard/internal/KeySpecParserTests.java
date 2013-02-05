@@ -21,12 +21,14 @@ import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.Constants;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+@SmallTest
 public class KeySpecParserTests extends AndroidTestCase {
     private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();

@@ -16,15 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.UserHistoryDictionary;
-
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +31,7 @@ import java.util.Set;
 /**
  * Unit tests for UserHistoryDictionary
  */
+@LargeTest
 public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
     private SharedPreferences mPrefs;

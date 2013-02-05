@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
+@SmallTest
 public class ForgettingCurveTests extends AndroidTestCase {
     public void testFcToFreq() {
         for (int i = 0; i < Byte.MAX_VALUE; ++i) {

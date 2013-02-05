@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
+@SmallTest
 public class EditDistanceTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
