@@ -44,8 +44,6 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-import com.android.inputmethod.compat.CompatUtils;
-
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -519,7 +517,7 @@ public final class AdditionalSubtypeSettings extends PreferenceFragment {
                 .setPositiveButton(R.string.enable, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final Intent intent = CompatUtils.getInputLanguageSelectionIntent(
+                        final Intent intent = IntentUtils.getInputLanguageSelectionIntent(
                                 mRichImm.getInputMethodIdOfThisIme(),
                                 Intent.FLAG_ACTIVITY_NEW_TASK
                                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED

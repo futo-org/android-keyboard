@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.compat;
 
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -26,23 +25,9 @@ import java.lang.reflect.Method;
 
 public final class CompatUtils {
     private static final String TAG = CompatUtils.class.getSimpleName();
-    private static final String EXTRA_INPUT_METHOD_ID = "input_method_id";
-    // TODO: Can these be constants instead of literal String constants?
-    private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
-            "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
 
-    public static Intent getInputLanguageSelectionIntent(final String inputMethodId,
-            final int flagsForSubtypeSettings) {
-        // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
-        final String action = INPUT_METHOD_SUBTYPE_SETTINGS;
-        final Intent intent = new Intent(action);
-        if (!TextUtils.isEmpty(inputMethodId)) {
-            intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
-        }
-        if (flagsForSubtypeSettings > 0) {
-            intent.setFlags(flagsForSubtypeSettings);
-        }
-        return intent;
+    private CompatUtils() {
+        // This utility class is not publicly instantiable.
     }
 
     public static Class<?> getClass(final String className) {
