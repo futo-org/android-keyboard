@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.test.suitebuilder.annotation.SmallTest;
+
+@SmallTest
 public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
     // Shift key in alphabet.
     public void testShiftAlphabet() {

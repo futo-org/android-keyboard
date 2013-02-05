@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 /**
  * Unit test for FusionDictionary
  */
+@SmallTest
 public class FusionDictionaryTests extends AndroidTestCase {
     public void testFindWordInTree() {
         FusionDictionary dict = new FusionDictionary(new Node(),

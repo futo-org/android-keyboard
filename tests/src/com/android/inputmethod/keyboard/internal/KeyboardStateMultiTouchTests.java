@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.test.suitebuilder.annotation.SmallTest;
+
+@SmallTest
 public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     // Chording input in alphabet.
     public void testChordingAlphabet() {

@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.res.Resources;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
@@ -26,6 +27,7 @@ import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import java.util.ArrayList;
 import java.util.Locale;
 
+@SmallTest
 public class SubtypeLocaleTests extends AndroidTestCase {
     // Locale to subtypes list.
     private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();

@@ -17,9 +17,11 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import java.util.Arrays;
 
+@SmallTest
 public class InputPointersTests extends AndroidTestCase {
     private static final int DEFAULT_CAPACITY = 48;
 

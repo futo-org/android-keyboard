@@ -16,9 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.test.suitebuilder.annotation.LargeTest;
 import android.text.style.SuggestionSpan;
 import android.text.style.UnderlineSpan;
 
+@LargeTest
 public class BlueUnderlineTests extends InputTestsBase {
 
     public void testBlueUnderline() {

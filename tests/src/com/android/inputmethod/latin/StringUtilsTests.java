@@ -17,10 +17,12 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.text.TextUtils;
 
 import java.util.Locale;
 
+@SmallTest
 public class StringUtilsTests extends AndroidTestCase {
     public void testContainsInArray() {
         assertFalse("empty array", StringUtils.containsInArray("key", new String[0]));

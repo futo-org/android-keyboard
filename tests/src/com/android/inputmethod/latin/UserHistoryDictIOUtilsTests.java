@@ -16,16 +16,16 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.Context;
+import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
+
 import com.android.inputmethod.latin.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils.OnAddWordListener;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
-
-import android.content.Context;
-import android.test.AndroidTestCase;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,6 +39,7 @@ import java.util.HashMap;
 /**
  * Unit tests for UserHistoryDictIOUtils
  */
+@LargeTest
 public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     implements BigramDictionaryInterface {
 

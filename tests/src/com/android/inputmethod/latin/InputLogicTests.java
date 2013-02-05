@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import android.test.suitebuilder.annotation.LargeTest;
+
+@LargeTest
 public class InputLogicTests extends InputTestsBase {
 
     public void testTypeWord() {
