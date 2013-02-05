@@ -81,10 +81,7 @@ public class ResearchLog {
         }
     }
 
-    public ResearchLog(final File outputFile, Context context) {
-        if (outputFile == null) {
-            throw new IllegalArgumentException();
-        }
+    public ResearchLog(final File outputFile, final Context context) {
         mExecutor = Executors.newSingleThreadScheduledExecutor();
         mFile = outputFile;
         mContext = context;
@@ -112,7 +109,7 @@ public class ResearchLog {
                     Log.d(TAG, "error when closing ResearchLog:");
                     e.printStackTrace();
                 } finally {
-                    if (mFile.exists()) {
+                    if (mFile != null && mFile.exists()) {
                         mFile.setWritable(false, false);
                     }
                     if (onClosed != null) {
@@ -139,7 +136,9 @@ public class ResearchLog {
                         mHasWrittenData = false;
                     }
                 } finally {
-                    mIsAbortSuccessful = mFile.delete();
+                    if (mFile != null) {
+                        mIsAbortSuccessful = mFile.delete();
+                    }
                 }
                 return null;
             }
@@ -209,7 +208,7 @@ public class ResearchLog {
      */
     public JsonWriter getValidJsonWriterLocked() {
         try {
-            if (mJsonWriter == NULL_JSON_WRITER) {
+            if (mJsonWriter == NULL_JSON_WRITER && mFile != null) {
                 final FileOutputStream fos =
                         mContext.openFileOutput(mFile.getName(), Context.MODE_PRIVATE);
                 mJsonWriter = new JsonWriter(new BufferedWriter(new OutputStreamWriter(fos)));

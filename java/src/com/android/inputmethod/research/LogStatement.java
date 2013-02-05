@@ -35,7 +35,7 @@ import java.io.IOException;
  * associated with the {@code String[] keys} are likely to reveal information about the user.  The
  * actual values are stored separately.
  */
-class LogStatement {
+public class LogStatement {
     private static final String TAG = LogStatement.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
@@ -165,6 +165,8 @@ class LogStatement {
 
     /**
      * Write the contents out through jsonWriter.
+     *
+     * The JsonWriter class must have already had {@code JsonWriter.beginArray} called on it.
      *
      * Note that this method is not thread safe for the same jsonWriter.  Callers must ensure
      * thread safety.
