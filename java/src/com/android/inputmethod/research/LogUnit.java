@@ -17,13 +17,11 @@
 package com.android.inputmethod.research;
 
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.JsonWriter;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.inputmethod.CompletionInfo;
 
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -153,11 +151,10 @@ import java.util.List;
                     jsonWriter = researchLog.getValidJsonWriterLocked();
                     outputLogUnitStart(jsonWriter, canIncludePrivateData);
                 }
-                outputLogStatementToLocked(jsonWriter, mLogStatementList.get(i), mValuesList.get(i),
-                        mTimeList.get(i));
+                logStatement.outputToLocked(jsonWriter, mTimeList.get(i), mValuesList.get(i));
                 if (DEBUG) {
-                    outputLogStatementToLocked(debugJsonWriter, mLogStatementList.get(i),
-                            mValuesList.get(i), mTimeList.get(i));
+                    logStatement.outputToLocked(debugJsonWriter, mTimeList.get(i),
+                            mValuesList.get(i));
                 }
             }
             if (jsonWriter != null) {
@@ -180,97 +177,34 @@ import java.util.List;
         }
     }
 
-    private static final String CURRENT_TIME_KEY = "_ct";
-    private static final String UPTIME_KEY = "_ut";
-    private static final String EVENT_TYPE_KEY = "_ty";
     private static final String WORD_KEY = "_wo";
     private static final String CORRECTION_TYPE_KEY = "_corType";
     private static final String LOG_UNIT_BEGIN_KEY = "logUnitStart";
     private static final String LOG_UNIT_END_KEY = "logUnitEnd";
 
+    final LogStatement LOGSTATEMENT_LOG_UNIT_BEGIN_WITH_PRIVATE_DATA =
+            new LogStatement(LOG_UNIT_BEGIN_KEY, false /* isPotentiallyPrivate */,
+                    false /* isPotentiallyRevealing */, WORD_KEY, CORRECTION_TYPE_KEY);
+    final LogStatement LOGSTATEMENT_LOG_UNIT_BEGIN_WITHOUT_PRIVATE_DATA =
+            new LogStatement(LOG_UNIT_BEGIN_KEY, false /* isPotentiallyPrivate */,
+                    false /* isPotentiallyRevealing */);
     private void outputLogUnitStart(final JsonWriter jsonWriter,
             final boolean canIncludePrivateData) {
-        try {
-            jsonWriter.beginObject();
-            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            if (canIncludePrivateData) {
-                jsonWriter.name(WORD_KEY).value(getWord());
-                jsonWriter.name(CORRECTION_TYPE_KEY).value(getCorrectionType());
-            }
-            jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_BEGIN_KEY);
-            jsonWriter.endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.w(TAG, "Error in JsonWriter; cannot write LogUnitStart");
+        final LogStatement logStatement;
+        if (canIncludePrivateData) {
+            LOGSTATEMENT_LOG_UNIT_BEGIN_WITH_PRIVATE_DATA.outputToLocked(jsonWriter,
+                    SystemClock.uptimeMillis(), getWord(), getCorrectionType());
+        } else {
+            LOGSTATEMENT_LOG_UNIT_BEGIN_WITHOUT_PRIVATE_DATA.outputToLocked(jsonWriter,
+                    SystemClock.uptimeMillis());
         }
     }
 
+    final LogStatement LOGSTATEMENT_LOG_UNIT_END =
+            new LogStatement(LOG_UNIT_END_KEY, false /* isPotentiallyPrivate */,
+                    false /* isPotentiallyRevealing */);
     private void outputLogUnitStop(final JsonWriter jsonWriter) {
-        try {
-            jsonWriter.beginObject();
-            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            jsonWriter.name(EVENT_TYPE_KEY).value(LOG_UNIT_END_KEY);
-            jsonWriter.endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.w(TAG, "Error in JsonWriter; cannot write LogUnitStop");
-        }
-    }
-
-    /**
-     * Write the logStatement and its contents out through jsonWriter.
-     *
-     * Note that this method is not thread safe for the same jsonWriter.  Callers must ensure
-     * thread safety.
-     */
-    private boolean outputLogStatementToLocked(final JsonWriter jsonWriter,
-            final LogStatement logStatement, final Object[] values, final Long time) {
-        if (DEBUG) {
-            if (logStatement.getKeys().length != values.length) {
-                Log.d(TAG, "Key and Value list sizes do not match. " + logStatement.getType());
-            }
-        }
-        try {
-            jsonWriter.beginObject();
-            jsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            jsonWriter.name(UPTIME_KEY).value(time);
-            jsonWriter.name(EVENT_TYPE_KEY).value(logStatement.getType());
-            final String[] keys = logStatement.getKeys();
-            final int length = values.length;
-            for (int i = 0; i < length; i++) {
-                jsonWriter.name(keys[i]);
-                final Object value = values[i];
-                if (value instanceof CharSequence) {
-                    jsonWriter.value(value.toString());
-                } else if (value instanceof Number) {
-                    jsonWriter.value((Number) value);
-                } else if (value instanceof Boolean) {
-                    jsonWriter.value((Boolean) value);
-                } else if (value instanceof CompletionInfo[]) {
-                    JsonUtils.writeJson((CompletionInfo[]) value, jsonWriter);
-                } else if (value instanceof SharedPreferences) {
-                    JsonUtils.writeJson((SharedPreferences) value, jsonWriter);
-                } else if (value instanceof Key[]) {
-                    JsonUtils.writeJson((Key[]) value, jsonWriter);
-                } else if (value instanceof SuggestedWords) {
-                    JsonUtils.writeJson((SuggestedWords) value, jsonWriter);
-                } else if (value instanceof MotionEvent) {
-                    JsonUtils.writeJson((MotionEvent) value, jsonWriter);
-                } else if (value == null) {
-                    jsonWriter.nullValue();
-                } else {
-                    Log.w(TAG, "Unrecognized type to be logged: "
-                            + (value == null ? "<null>" : value.getClass().getName()));
-                    jsonWriter.nullValue();
-                }
-            }
-            jsonWriter.endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.w(TAG, "Error in JsonWriter; skipping LogStatement");
-            return false;
-        }
-        return true;
+        LOGSTATEMENT_LOG_UNIT_END.outputToLocked(jsonWriter, SystemClock.uptimeMillis());
     }
 
     /**
