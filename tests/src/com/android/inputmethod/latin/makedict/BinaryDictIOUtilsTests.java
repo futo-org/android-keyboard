@@ -246,7 +246,7 @@ public class BinaryDictIOUtilsTests  extends AndroidTestCase {
                     inStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length()));
             final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
             assertEquals(word, BinaryDictInputOutput.getWordAtAddress(buffer, header.mHeaderSize,
-                    position - header.mHeaderSize, header.mFormatOptions));
+                    position - header.mHeaderSize, header.mFormatOptions).mWord);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         } finally {
