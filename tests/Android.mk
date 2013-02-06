@@ -19,8 +19,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := tests
 LOCAL_CERTIFICATE := shared
 
-LOCAL_JAVA_LIBRARIES := android.test.runner
-
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS += -0 .dict
 # Do not compress test data file
@@ -32,5 +30,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_PACKAGE_NAME := LatinIMETests
 
 LOCAL_INSTRUMENTATION_FOR := LatinIME
+
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_PACKAGE)
