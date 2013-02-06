@@ -62,6 +62,13 @@ public final class BinaryDictionaryFileDumper {
     private static final String QUERY_PARAMETER_SUCCESS = "success";
     private static final String QUERY_PARAMETER_FAILURE = "failure";
 
+    // Using protocol version 2 to communicate with the dictionary pack
+    private static final String QUERY_PARAMETER_PROTOCOL = "protocol";
+    private static final String QUERY_PARAMETER_PROTOCOL_VALUE = "2";
+
+    // The path fragment to append after the client ID for dictionary info requests.
+    private static final String QUERY_PATH_DICT_INFO = "dict";
+
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
     }
@@ -85,7 +92,11 @@ public final class BinaryDictionaryFileDumper {
     private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
         final ContentResolver resolver = context.getContentResolver();
-        final Uri.Builder builder = getProviderUriBuilder(locale.toString());
+        final String clientId = context.getString(R.string.dictionary_pack_client_id);
+        final Uri.Builder builder = getProviderUriBuilder(clientId);
+        builder.appendPath(QUERY_PATH_DICT_INFO);
+        builder.appendPath(locale.toString());
+        builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
         if (!hasDefaultWordList) {
             builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER, QUERY_PARAMETER_TRUE);
         }
