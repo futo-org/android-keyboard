@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -68,6 +69,10 @@ public final class BinaryDictionaryFileDumper {
 
     // The path fragment to append after the client ID for dictionary info requests.
     private static final String QUERY_PATH_DICT_INFO = "dict";
+    // The path fragment to append after the client ID for updating the metadata URI.
+    private static final String QUERY_PATH_METADATA = "metadata";
+    private static final String INSERT_METADATA_CLIENT_ID_COLUMN = "clientid";
+    private static final String INSERT_METADATA_METADATA_URI_COLUMN = "uri";
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
@@ -103,7 +108,10 @@ public final class BinaryDictionaryFileDumper {
         final Uri dictionaryPackUri = builder.build();
 
         final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
-        if (null == c) return Collections.<WordListInfo>emptyList();
+        if (null == c) {
+            reinitializeClientRecordInDictionaryContentProvider(context, resolver, clientId);
+            return Collections.<WordListInfo>emptyList();
+        }
         if (c.getCount() <= 0 || !c.moveToFirst()) {
             c.close();
             return Collections.<WordListInfo>emptyList();
@@ -334,5 +342,23 @@ public final class BinaryDictionaryFileDumper {
         for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
             output.write(buffer, 0, readBytes);
         input.close();
+    }
+
+    private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
+            final ContentResolver resolver, final String clientId) {
+        final String metadataFileUri = context.getString(R.string.dictionary_pack_metadata_uri);
+        if (TextUtils.isEmpty(metadataFileUri)) return;
+        // Tell the content provider to reset all information about this client id
+        final Uri metadataContentUri = getProviderUriBuilder(clientId)
+                .appendPath(QUERY_PATH_METADATA)
+                .appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE)
+                .build();
+        resolver.delete(metadataContentUri, null, null);
+        // Update the metadata URI
+        final ContentValues metadataValues = new ContentValues();
+        metadataValues.put(INSERT_METADATA_CLIENT_ID_COLUMN, clientId);
+        metadataValues.put(INSERT_METADATA_METADATA_URI_COLUMN, metadataFileUri);
+        resolver.insert(metadataContentUri, metadataValues);
+        // TODO: Update the versions of the dictionaries
     }
 }
