@@ -16,9 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
@@ -39,19 +41,40 @@ public class DictionaryInfoUtils {
     private static final String RESOURCE_PACKAGE_NAME =
             DictionaryInfoUtils.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
+    private static final String ID_CATEGORY_SEPARATOR =
+            BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR;
     private static final String MAIN_DICT_PREFIX = "main_";
     // 6 digits - unicode is limited to 21 bits
     private static final int MAX_HEX_DIGITS_FOR_CODEPOINT = 6;
 
     public static class DictionaryInfo {
+        private static final String LOCALE_COLUMN = "locale";
+        private static final String WORDLISTID_COLUMN = "id";
+        private static final String LOCAL_FILENAME_COLUMN = "filename";
+        private static final String DATE_COLUMN = "date";
+        private static final String FILESIZE_COLUMN = "filesize";
+        private static final String VERSION_COLUMN = "version";
         public final Locale mLocale;
         public final AssetFileAddress mFileAddress;
         public final int mVersion;
+        public final String mId;
         public DictionaryInfo(final Locale locale, final AssetFileAddress fileAddress,
                 final int version) {
             mLocale = locale;
             mFileAddress = fileAddress;
             mVersion = version;
+            mId = DEFAULT_MAIN_DICT + ID_CATEGORY_SEPARATOR + mLocale;
+        }
+        public ContentValues toContentValues() {
+            final ContentValues values = new ContentValues();
+            values.put(WORDLISTID_COLUMN, mId);
+            values.put(LOCALE_COLUMN, mLocale.toString());
+            values.put(LOCAL_FILENAME_COLUMN, mFileAddress.mFilename);
+            values.put(DATE_COLUMN,
+                    new File(mFileAddress.mFilename).lastModified() / DateUtils.SECOND_IN_MILLIS);
+            values.put(FILESIZE_COLUMN, mFileAddress.mLength);
+            values.put(VERSION_COLUMN, mVersion);
+            return values;
         }
     }
 
@@ -284,21 +307,23 @@ public class DictionaryInfoUtils {
 
         // Retrieve downloaded dictionaries
         final File[] directoryList = getCachedDirectoryList(context);
-        for (final File directory : directoryList) {
-            final String localeString = getWordListIdFromFileName(directory.getName());
-            File[] dicts = BinaryDictionaryGetter.getCachedWordLists(localeString, context);
-            for (final File dict : dicts) {
-                final String wordListId = getWordListIdFromFileName(dict.getName());
-                if (!DictionaryInfoUtils.isMainWordListId(wordListId)) continue;
-                final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-                final AssetFileAddress fileAddress = AssetFileAddress.makeFromFile(dict);
-                final DictionaryInfo dictionaryInfo =
-                        createDictionaryInfoFromFileAddress(fileAddress);
-                // Protect against cases of a less-specific dictionary being found, like an
-                // en dictionary being used for an en_US locale. In this case, the en dictionary
-                // should be used for en_US but discounted for listing purposes.
-                if (!dictionaryInfo.mLocale.equals(locale)) continue;
-                addOrUpdateDictInfo(dictList, dictionaryInfo);
+        if (null != directoryList) {
+            for (final File directory : directoryList) {
+                final String localeString = getWordListIdFromFileName(directory.getName());
+                File[] dicts = BinaryDictionaryGetter.getCachedWordLists(localeString, context);
+                for (final File dict : dicts) {
+                    final String wordListId = getWordListIdFromFileName(dict.getName());
+                    if (!DictionaryInfoUtils.isMainWordListId(wordListId)) continue;
+                    final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
+                    final AssetFileAddress fileAddress = AssetFileAddress.makeFromFile(dict);
+                    final DictionaryInfo dictionaryInfo =
+                            createDictionaryInfoFromFileAddress(fileAddress);
+                    // Protect against cases of a less-specific dictionary being found, like an
+                    // en dictionary being used for an en_US locale. In this case, the en dictionary
+                    // should be used for en_US but discounted for listing purposes.
+                    if (!dictionaryInfo.mLocale.equals(locale)) continue;
+                    addOrUpdateDictInfo(dictList, dictionaryInfo);
+                }
             }
         }
 

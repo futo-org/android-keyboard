@@ -25,6 +25,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.latin.DictionaryInfoUtils.DictionaryInfo;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -33,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -359,6 +362,19 @@ public final class BinaryDictionaryFileDumper {
         metadataValues.put(INSERT_METADATA_CLIENT_ID_COLUMN, clientId);
         metadataValues.put(INSERT_METADATA_METADATA_URI_COLUMN, metadataFileUri);
         resolver.insert(metadataContentUri, metadataValues);
-        // TODO: Update the versions of the dictionaries
+
+        // Update the dictionary list.
+        final Uri dictionaryContentUriBase = getProviderUriBuilder(clientId)
+                .appendPath(QUERY_PATH_DICT_INFO)
+                .appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE)
+                .build();
+        final ArrayList<DictionaryInfo> dictionaryList =
+                DictionaryInfoUtils.getCurrentDictionaryFileNameAndVersionInfo(context);
+        final int length = dictionaryList.size();
+        for (int i = 0; i < length; ++i) {
+            final DictionaryInfo info = dictionaryList.get(i);
+            resolver.insert(Uri.withAppendedPath(dictionaryContentUriBase, info.mId),
+                    info.toContentValues());
+        }
     }
 }
