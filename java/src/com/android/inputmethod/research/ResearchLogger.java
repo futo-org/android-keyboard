@@ -763,18 +763,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (isIncludingRecording) {
             // Try to read recording from recently written json file
             if (mUserRecordingFile != null) {
+                FileChannel channel = null;
                 try {
-                    final FileChannel channel =
-                            new FileInputStream(mUserRecordingFile).getChannel();
+                    channel = new FileInputStream(mUserRecordingFile).getChannel();
                     final MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0,
                             channel.size());
                     // Android's openFileOutput() creates the file, so we use Android's default
                     // Charset (UTF-8) here to read it.
                     recording = Charset.defaultCharset().decode(buffer).toString();
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Could not find recording file", e);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error reading recording file", e);
+                } finally {
+                    if (channel != null) {
+                        try {
+                            channel.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error closing recording file", e);
+                        }
+                    }
                 }
             }
         }
