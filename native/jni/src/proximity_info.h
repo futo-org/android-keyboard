@@ -62,6 +62,7 @@ class ProximityInfo {
     int getGridHeight() const { return GRID_HEIGHT; }
     int getKeyboardWidth() const { return KEYBOARD_WIDTH; }
     int getKeyboardHeight() const { return KEYBOARD_HEIGHT; }
+    float getKeyboardHypotenuse() const { return KEYBOARD_HYPOTENUSE; }
 
     int getKeyCenterXOfCodePointG(int charCode) const;
     int getKeyCenterYOfCodePointG(int charCode) const;
@@ -97,6 +98,7 @@ class ProximityInfo {
     const int KEY_COUNT;
     const int KEYBOARD_WIDTH;
     const int KEYBOARD_HEIGHT;
+    const float KEYBOARD_HYPOTENUSE;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int *mProximityCharsArray;
