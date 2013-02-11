@@ -117,19 +117,19 @@ public final class BinaryDictionaryFileDumper {
      */
     private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
-        try {
-            final ContentResolver resolver = context.getContentResolver();
-            final String clientId = context.getString(R.string.dictionary_pack_client_id);
-            final Uri.Builder builder = getProviderUriBuilder(clientId);
-            builder.appendPath(QUERY_PATH_DICT_INFO);
-            builder.appendPath(locale.toString());
-            builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
-            if (!hasDefaultWordList) {
-                builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER,
-                        QUERY_PARAMETER_TRUE);
-            }
-            final Uri dictionaryPackUri = builder.build();
+        final String clientId = context.getString(R.string.dictionary_pack_client_id);
+        final Uri.Builder builder = getProviderUriBuilder(clientId);
+        builder.appendPath(QUERY_PATH_DICT_INFO);
+        builder.appendPath(locale.toString());
+        builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
+        if (!hasDefaultWordList) {
+            builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER,
+                    QUERY_PARAMETER_TRUE);
+        }
+        final Uri dictionaryPackUri = builder.build();
 
+        final ContentResolver resolver = context.getContentResolver();
+        try {
             final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
                     null);
             if (null == c) {
@@ -153,8 +153,11 @@ public final class BinaryDictionaryFileDumper {
             c.close();
             return list;
         } catch (IllegalArgumentException e) {
-            // Since we are testing for the dictionary pack presence before doing anything that may
-            // crash, it's probably impossible for the code to come here. However it's very
+            // Any method call on the content resolver may unexpectedly crash without notice
+            // if the content provider is not present (for example, while crypting a device).
+            // Testing seems to indicate that ContentResolver#query() merely returns null
+            // while ContentResolver#delete throws IllegalArgumentException but this is
+            // undocumented, so all ContentResolver methods should be protected. A crash here is
             // dangerous because crashing here would brick any encrypted device - we need the
             // keyboard to be up and working to enter the password. So let's be as safe as possible.
             Log.e(TAG, "IllegalArgumentException: the dictionary pack can't be contacted?", e);
@@ -162,7 +165,7 @@ public final class BinaryDictionaryFileDumper {
         } catch (Exception e) {
             // Just in case we hit a problem in communication with the dictionary pack.
             // We don't want to die.
-            Log.e(TAG, "Exception communicating with the dictionary pack : " + e);
+            Log.e(TAG, "Exception communicating with the dictionary pack", e);
             return Collections.<WordListInfo>emptyList();
         }
     }
@@ -277,7 +280,7 @@ public final class BinaryDictionaryFileDumper {
                 return AssetFileAddress.makeFromFileName(finalFileName);
             } catch (Exception e) {
                 if (DEBUG) {
-                    Log.i(TAG, "Can't open word list in mode " + mode + " : " + e);
+                    Log.i(TAG, "Can't open word list in mode " + mode, e);
                 }
                 if (null != outputFile) {
                     // This may or may not fail. The file may not have been created if the
@@ -295,12 +298,12 @@ public final class BinaryDictionaryFileDumper {
                     if (null != decryptedStream) decryptedStream.close();
                     if (null != bufferedInputStream) bufferedInputStream.close();
                 } catch (Exception e) {
-                    Log.e(TAG, "Exception while closing a file descriptor : " + e);
+                    Log.e(TAG, "Exception while closing a file descriptor", e);
                 }
                 try {
                     if (null != bufferedOutputStream) bufferedOutputStream.close();
                 } catch (Exception e) {
-                    Log.e(TAG, "Exception while closing a file : " + e);
+                    Log.e(TAG, "Exception while closing a file", e);
                 }
             }
         }
