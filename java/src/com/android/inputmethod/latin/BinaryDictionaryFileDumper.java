@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -94,33 +95,54 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
+     * Finds out whether the dictionary pack is available on this device.
+     * @param context A context to get the content resolver.
+     * @return whether the dictionary pack is present or not.
+     */
+    private static boolean isDictionaryPackPresent(final Context context) {
+        final ContentResolver cr = context.getContentResolver();
+        final ContentProviderClient client =
+                cr.acquireContentProviderClient(getProviderUriBuilder("").build());
+        if (client != null) {
+            client.release();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Queries a content provider for the list of word lists for a specific locale
      * available to copy into Latin IME.
      */
     private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
-        final ContentResolver resolver = context.getContentResolver();
-        final String clientId = context.getString(R.string.dictionary_pack_client_id);
-        final Uri.Builder builder = getProviderUriBuilder(clientId);
-        builder.appendPath(QUERY_PATH_DICT_INFO);
-        builder.appendPath(locale.toString());
-        builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
-        if (!hasDefaultWordList) {
-            builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER, QUERY_PARAMETER_TRUE);
-        }
-        final Uri dictionaryPackUri = builder.build();
-
-        final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
-        if (null == c) {
-            reinitializeClientRecordInDictionaryContentProvider(context, resolver, clientId);
-            return Collections.<WordListInfo>emptyList();
-        }
-        if (c.getCount() <= 0 || !c.moveToFirst()) {
-            c.close();
-            return Collections.<WordListInfo>emptyList();
-        }
-
         try {
+            final ContentResolver resolver = context.getContentResolver();
+            final String clientId = context.getString(R.string.dictionary_pack_client_id);
+            final Uri.Builder builder = getProviderUriBuilder(clientId);
+            builder.appendPath(QUERY_PATH_DICT_INFO);
+            builder.appendPath(locale.toString());
+            builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
+            if (!hasDefaultWordList) {
+                builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER,
+                        QUERY_PARAMETER_TRUE);
+            }
+            final Uri dictionaryPackUri = builder.build();
+    
+            final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
+                    null);
+            if (null == c) {
+                if (isDictionaryPackPresent(context)) {
+                    reinitializeClientRecordInDictionaryContentProvider(context, resolver,
+                            clientId);
+                }
+                return Collections.<WordListInfo>emptyList();
+            }
+            if (c.getCount() <= 0 || !c.moveToFirst()) {
+                c.close();
+                return Collections.<WordListInfo>emptyList();
+            }
             final List<WordListInfo> list = CollectionUtils.newArrayList();
             do {
                 final String wordListId = c.getString(0);
@@ -130,6 +152,13 @@ public final class BinaryDictionaryFileDumper {
             } while (c.moveToNext());
             c.close();
             return list;
+        } catch (IllegalArgumentException e) {
+            // Since we are testing for the dictionary pack presence before doing anything that may
+            // crash, it's probably impossible for the code to come here. However it's very
+            // dangerous because crashing here would brick any encrypted device - we need the
+            // keyboard to be up and working to enter the password. So let's be as safe as possible.
+            Log.e(TAG, "IllegalArgumentException: the dictionary pack can't be contacted?", e);
+            return Collections.<WordListInfo>emptyList();
         } catch (Exception e) {
             // Just in case we hit a problem in communication with the dictionary pack.
             // We don't want to die.
