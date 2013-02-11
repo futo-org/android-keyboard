@@ -129,7 +129,7 @@ public final class BinaryDictionaryFileDumper {
                         QUERY_PARAMETER_TRUE);
             }
             final Uri dictionaryPackUri = builder.build();
-    
+
             final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
                     null);
             if (null == c) {
