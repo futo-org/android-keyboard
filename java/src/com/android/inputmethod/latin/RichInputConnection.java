@@ -221,7 +221,7 @@ public final class RichInputConnection {
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
-        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale,
+        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale,
                 hasSpaceBefore);
     }
 

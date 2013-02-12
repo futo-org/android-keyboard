@@ -96,7 +96,7 @@ public final class PositionalInfoForUserDictPendingAddition {
         if (currentCursorPosition != mCursorPos) return true;
         // We have made all the checks : do the replacement and report success
         // If this was auto-capitalized, we need to restore the case before committing
-        final String wordWithCaseFixed = StringUtils.applyAutoCapsMode(mActualWordBeingAdded,
+        final String wordWithCaseFixed = CapsModeUtils.applyAutoCapsMode(mActualWordBeingAdded,
                 mCapitalizedMode, locale);
         connection.setComposingRegion(currentCursorPosition - mOriginalWord.length(),
                 currentCursorPosition);
