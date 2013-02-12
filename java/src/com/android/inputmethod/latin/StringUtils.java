@@ -372,4 +372,42 @@ public final class StringUtils {
         // Here we arrived at the start of the line. This should behave exactly like whitespace.
         return (START == state || LETTER == state) ? noCaps : caps;
     }
+
+    public static String[] parseCsvString(final String text) {
+        final int size = text.length();
+        if (size == 0) {
+            return null;
+        }
+        if (codePointCount(text) == 1) {
+            return text.codePointAt(0) == Constants.CSV_SEPARATOR ? null : new String[] { text };
+        }
+
+        ArrayList<String> list = null;
+        int start = 0;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == Constants.CSV_SEPARATOR) {
+                // Skip empty entry.
+                if (pos - start > 0) {
+                    if (list == null) {
+                        list = CollectionUtils.newArrayList();
+                    }
+                    list.add(text.substring(start, pos));
+                }
+                // Skip comma
+                start = pos + 1;
+            } else if (c == Constants.CSV_ESCAPE) {
+                // Skip escape character and escaped character.
+                pos++;
+            }
+        }
+        final String remain = (size - start > 0) ? text.substring(start) : null;
+        if (list == null) {
+            return remain != null ? new String[] { remain } : null;
+        }
+        if (remain != null) {
+            list.add(remain);
+        }
+        return list.toArray(new String[list.size()]);
+    }
 }

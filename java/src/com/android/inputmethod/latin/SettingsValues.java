@@ -89,8 +89,8 @@ public final class SettingsValues {
         mWordConnectors =
                 StringUtils.toCodePointArray(res.getString(R.string.symbols_word_connectors));
         Arrays.sort(mWordConnectors);
-        final String[] suggestPuncsSpec = KeySpecParser.parseCsvString(
-                res.getString(R.string.suggested_punctuations), null);
+        final String[] suggestPuncsSpec = StringUtils.parseCsvString(res.getString(
+                R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = res.getString(R.string.symbols_word_separators);
         mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
@@ -211,6 +211,7 @@ public final class SettingsValues {
         final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
+                // TODO: Stop using KeySpceParser.getLabel().
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
                         Dictionary.TYPE_HARDCODED));
