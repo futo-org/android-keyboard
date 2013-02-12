@@ -122,9 +122,9 @@ public final class UserHistoryDictIOUtils {
             BinaryDictInputOutput.writeDictionaryBinary(destination, fusionDict, formatOptions);
             Log.d(TAG, "end writing");
         } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file: " + e);
+            Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported fomat: " + e);
+            Log.e(TAG, "Unsupported format", e);
         }
     }
 
@@ -184,11 +184,11 @@ public final class UserHistoryDictIOUtils {
             BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
                     bigrams);
         } catch (IOException e) {
-            Log.e(TAG, "IO exception while reading file: " + e);
+            Log.e(TAG, "IO exception while reading file", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format: " + e);
+            Log.e(TAG, "Unsupported format", e);
         } catch (ArrayIndexOutOfBoundsException e) {
-            Log.e(TAG, "ArrayIndexOutOfBoundsException while reading file: " + e);
+            Log.e(TAG, "ArrayIndexOutOfBoundsException while reading file", e);
         }
         addWordsFromWordMap(unigrams, frequencies, bigrams, dict);
     }

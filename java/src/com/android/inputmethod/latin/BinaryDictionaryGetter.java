@@ -210,7 +210,7 @@ final class BinaryDictionaryGetter {
                 }
             }
         } catch (java.io.IOException e) {
-            Log.e(TAG, "IOException trying to cleanup files : " + e);
+            Log.e(TAG, "IOException trying to cleanup files", e);
         }
     }
 
