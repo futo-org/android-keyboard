@@ -116,13 +116,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
             }
         } catch (IOException e) {
-            Log.e(TAG, "IOException while making buffer: " + e);
+            Log.e(TAG, "IOException while making buffer", e);
         } finally {
             if (inStream != null) {
                 try {
                     inStream.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "IOException while closing stream: " + e);
+                    Log.e(TAG, "IOException while closing stream", e);
                 }
             }
         }
@@ -195,9 +195,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
             out.flush();
             out.close();
         } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file: " + e);
+            Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "UnsupportedFormatException: " + e);
+            Log.e(TAG, "UnsupportedFormatException", e);
         }
 
         return diff;
@@ -257,9 +257,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
             dict = BinaryDictInputOutput.readDictionaryBinary(buffer, null);
             diff  = System.currentTimeMillis() - now;
         } catch (IOException e) {
-            Log.e(TAG, "IOException while reading dictionary: " + e);
+            Log.e(TAG, "IOException while reading dictionary", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format: " + e);
+            Log.e(TAG, "Unsupported format", e);
         }
 
         checkDictionary(dict, words, bigrams, shortcutMap);
@@ -275,7 +275,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         try {
             file = File.createTempFile("runReadAndWrite", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e);
+            Log.e(TAG, "IOException", e);
         }
         assertNotNull(file);
 
@@ -392,9 +392,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
                     resultBigrams);
             diff = System.currentTimeMillis() - now;
         } catch (IOException e) {
-            Log.e(TAG, "IOException " + e);
+            Log.e(TAG, "IOException", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "UnsupportedFormatException: " + e);
+            Log.e(TAG, "UnsupportedFormatException", e);
         } finally {
             if (inStream != null) {
                 try {
@@ -416,7 +416,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         try {
             file = File.createTempFile("runReadUnigrams", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e);
+            Log.e(TAG, "IOException", e);
         }
         assertNotNull(file);
 
@@ -499,9 +499,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
             position = BinaryDictIOUtils.getTerminalPosition(buffer, word);
             diff = System.nanoTime() - now;
         } catch (IOException e) {
-            Log.e(TAG, "IOException while getTerminalPosition: " + e);
+            Log.e(TAG, "IOException while getTerminalPosition", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "UnsupportedFormatException while getTermianlPosition: " + e);
+            Log.e(TAG, "UnsupportedFormatException while getTerminalPosition", e);
         }
 
         assertEquals(FormatSpec.NOT_VALID_WORD != position, contained);

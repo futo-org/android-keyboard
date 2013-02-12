@@ -352,7 +352,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             if (DBG) {
                 throw e;
             } else {
-                Log.e(TAG, "Exception while spellcheking: " + e);
+                Log.e(TAG, "Exception while spellcheking", e);
                 return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
             }
         }

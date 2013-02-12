@@ -321,9 +321,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             tempFile.renameTo(file);
             clearFusionDictionary();
         } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file: " + e);
+            Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format: " + e);
+            Log.e(TAG, "Unsupported format", e);
         } finally {
             if (out != null) {
                 try {
