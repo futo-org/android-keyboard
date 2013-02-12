@@ -1228,7 +1228,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             return;
         }
         final String wordToEdit;
-        if (StringUtils.isAutoCapsMode(mLastComposedWord.mCapitalizedMode)) {
+        if (CapsModeUtils.isAutoCapsMode(mLastComposedWord.mCapitalizedMode)) {
             wordToEdit = word.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
         } else {
             wordToEdit = word;
