@@ -1403,7 +1403,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY =
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
-                    "suggestion", "x", "y");
+                    "suggestion", "x", "y", "isBatchMode");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, final String suggestion, final boolean isBatchMode) {
         final ResearchLogger researchLogger = getInstance();
@@ -1416,7 +1416,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
-                Constants.SUGGESTION_STRIP_COORDINATE);
+                Constants.SUGGESTION_STRIP_COORDINATE, isBatchMode);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());
     }
