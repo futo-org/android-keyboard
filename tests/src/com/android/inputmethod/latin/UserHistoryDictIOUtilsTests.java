@@ -140,7 +140,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
             out.flush();
             out.close();
         } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file: " + e);
+            Log.e(TAG, "IO exception while writing file", e);
         }
     }
 
@@ -155,9 +155,9 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
             UserHistoryDictIOUtils.readDictionaryBinary(
                     new UserHistoryDictIOUtils.ByteArrayWrapper(buffer), listener);
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "file not found: " + e);
+            Log.e(TAG, "file not found", e);
         } catch (IOException e) {
-            Log.e(TAG, "IOException: " + e);
+            Log.e(TAG, "IOException", e);
         } finally {
             if (inStream != null) {
                 try {
@@ -191,7 +191,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         try {
             file = File.createTempFile("testReadAndWrite", ".dict", getContext().getCacheDir());
         } catch (IOException e) {
-            Log.d(TAG, "IOException while creating a temporary file: " + e);
+            Log.d(TAG, "IOException while creating a temporary file", e);
         }
         assertNotNull(file);
 

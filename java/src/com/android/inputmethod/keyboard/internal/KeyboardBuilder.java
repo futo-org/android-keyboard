@@ -164,10 +164,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             parseKeyboard(parser);
         } catch (XmlPullParserException e) {
-            Log.w(BUILDER_TAG, "keyboard XML parse error: " + e);
+            Log.w(BUILDER_TAG, "keyboard XML parse error", e);
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            Log.w(BUILDER_TAG, "keyboard XML parse error: " + e);
+            Log.w(BUILDER_TAG, "keyboard XML parse error", e);
             throw new RuntimeException(e);
         } finally {
             parser.close();
