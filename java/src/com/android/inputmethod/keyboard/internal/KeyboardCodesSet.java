@@ -74,6 +74,7 @@ public final class KeyboardCodesSet {
     private static final int CODE_LEFT_CURLY_BRACKET = '{';
     private static final int CODE_RIGHT_CURLY_BRACKET = '}';
 
+    // This array should be aligned with the array RTL below.
     private static final int[] DEFAULT = {
         Constants.CODE_TAB,
         Constants.CODE_ENTER,
@@ -117,6 +118,7 @@ public final class KeyboardCodesSet {
         DEFAULT[12],
         DEFAULT[13],
         DEFAULT[14],
+        DEFAULT[15],
         CODE_RIGHT_PARENTHESIS,
         CODE_LEFT_PARENTHESIS,
         CODE_GREATER_THAN_SIGN,
@@ -140,6 +142,9 @@ public final class KeyboardCodesSet {
     };
 
     static {
+        if (DEFAULT.length != RTL.length) {
+            throw new RuntimeException("Internal inconsistency");
+        }
         for (int i = 0; i < ID_TO_NAME.length; i++) {
             sNameToIdMap.put(ID_TO_NAME[i], i);
         }
