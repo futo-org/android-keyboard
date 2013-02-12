@@ -21,6 +21,7 @@ import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -74,7 +75,8 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
     }
 
     private void assertTextArray(String message, String value, String ... expectedArray) {
-        final String[] actual = KeySpecParser.parseCsvString(value, mTextsSet);
+        final String resolvedActual = KeySpecParser.resolveTextReference(value, mTextsSet);
+        final String[] actual = StringUtils.parseCsvString(resolvedActual);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
     }

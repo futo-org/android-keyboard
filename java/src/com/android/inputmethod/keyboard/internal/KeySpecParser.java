@@ -53,8 +53,6 @@ public final class KeySpecParser {
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
 
     // Constants for parsing.
-    private static int COMMA = ',';
-    private static final char ESCAPE_CHAR = '\\';
     private static final char LABEL_END = '|';
     private static final String PREFIX_TEXT = "!text/";
     static final String PREFIX_ICON = "!icon/";
@@ -80,14 +78,14 @@ public final class KeySpecParser {
     }
 
     private static String parseEscape(final String text) {
-        if (text.indexOf(ESCAPE_CHAR) < 0) {
+        if (text.indexOf(Constants.CSV_ESCAPE) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == Constants.CSV_ESCAPE && pos + 1 < length) {
                 // Skip escape char
                 pos++;
                 sb.append(text.charAt(pos));
@@ -99,7 +97,7 @@ public final class KeySpecParser {
     }
 
     private static int indexOfLabelEnd(final String moreKeySpec, final int start) {
-        if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
+        if (moreKeySpec.indexOf(Constants.CSV_ESCAPE, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0) {
                 throw new KeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
@@ -109,7 +107,7 @@ public final class KeySpecParser {
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == Constants.CSV_ESCAPE && pos + 1 < length) {
                 // Skip escape char
                 pos++;
             } else if (c == LABEL_END) {
@@ -353,7 +351,7 @@ public final class KeySpecParser {
                     final String name = text.substring(pos + prefixLen, end);
                     sb.append(textsSet.getText(name));
                     pos = end - 1;
-                } else if (c == ESCAPE_CHAR) {
+                } else if (c == Constants.CSV_ESCAPE) {
                     if (sb != null) {
                         // Append both escape character and escaped character.
                         sb.append(text.substring(pos, Math.min(pos + 2, size)));
@@ -383,45 +381,6 @@ public final class KeySpecParser {
             return pos;
         }
         return size;
-    }
-
-    public static String[] parseCsvString(final String rawText, final KeyboardTextsSet textsSet) {
-        final String text = resolveTextReference(rawText, textsSet);
-        final int size = text.length();
-        if (size == 0) {
-            return null;
-        }
-        if (StringUtils.codePointCount(text) == 1) {
-            return text.codePointAt(0) == COMMA ? null : new String[] { text };
-        }
-
-        ArrayList<String> list = null;
-        int start = 0;
-        for (int pos = 0; pos < size; pos++) {
-            final char c = text.charAt(pos);
-            if (c == COMMA) {
-                // Skip empty entry.
-                if (pos - start > 0) {
-                    if (list == null) {
-                        list = CollectionUtils.newArrayList();
-                    }
-                    list.add(text.substring(start, pos));
-                }
-                // Skip comma
-                start = pos + 1;
-            } else if (c == ESCAPE_CHAR) {
-                // Skip escape character and escaped character.
-                pos++;
-            }
-        }
-        final String remain = (size - start > 0) ? text.substring(start) : null;
-        if (list == null) {
-            return remain != null ? new String[] { remain } : null;
-        }
-        if (remain != null) {
-            list.add(remain);
-        }
-        return list.toArray(new String[list.size()]);
     }
 
     public static int getIntValue(final String[] moreKeys, final String key,
