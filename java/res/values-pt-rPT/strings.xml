@@ -72,10 +72,10 @@
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Pré-visual. flutuante dinâmica"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Ver palavra sugerida enquanto toca"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Avançar"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Ant."</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Feito"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"OK"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Esp."</string>
