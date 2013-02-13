@@ -110,7 +110,13 @@ import java.util.List;
     }
 
     /**
-     * Publish the contents of this LogUnit to researchLog.
+     * Publish the contents of this LogUnit to {@code researchLog}.
+     *
+     * For each publishable {@code LogStatement}, invoke {@link LogStatement#outputToLocked}.
+     *
+     * @param researchLog where to publish the contents of this {@code LogUnit}
+     * @param canIncludePrivateData whether the private data in this {@code LogUnit} should be
+     * included
      */
     public synchronized void publishTo(final ResearchLog researchLog,
             final boolean canIncludePrivateData) {
