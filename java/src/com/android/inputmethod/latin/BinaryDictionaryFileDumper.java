@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -95,23 +96,6 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Finds out whether the dictionary pack is available on this device.
-     * @param context A context to get the content resolver.
-     * @return whether the dictionary pack is present or not.
-     */
-    private static boolean isDictionaryPackPresent(final Context context) {
-        final ContentResolver cr = context.getContentResolver();
-        final ContentProviderClient client =
-                cr.acquireContentProviderClient(getProviderUriBuilder("").build());
-        if (client != null) {
-            client.release();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Queries a content provider for the list of word lists for a specific locale
      * available to copy into Latin IME.
      */
@@ -128,15 +112,14 @@ public final class BinaryDictionaryFileDumper {
         }
         final Uri dictionaryPackUri = builder.build();
 
-        final ContentResolver resolver = context.getContentResolver();
+        final ContentProviderClient client = context.getContentResolver().
+                acquireContentProviderClient(getProviderUriBuilder("").build());
+        if (null == client) return Collections.<WordListInfo>emptyList();
         try {
-            final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
+            final Cursor c = client.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
                     null);
             if (null == c) {
-                if (isDictionaryPackPresent(context)) {
-                    reinitializeClientRecordInDictionaryContentProvider(context, resolver,
-                            clientId);
-                }
+                reinitializeClientRecordInDictionaryContentProvider(context, client, clientId);
                 return Collections.<WordListInfo>emptyList();
             }
             if (c.getCount() <= 0 || !c.moveToFirst()) {
@@ -152,21 +135,20 @@ public final class BinaryDictionaryFileDumper {
             } while (c.moveToNext());
             c.close();
             return list;
-        } catch (IllegalArgumentException e) {
-            // Any method call on the content resolver may unexpectedly crash without notice
-            // if the content provider is not present (for example, while crypting a device).
-            // Testing seems to indicate that ContentResolver#query() merely returns null
-            // while ContentResolver#delete throws IllegalArgumentException but this is
-            // undocumented, so all ContentResolver methods should be protected. A crash here is
-            // dangerous because crashing here would brick any encrypted device - we need the
-            // keyboard to be up and working to enter the password. So let's be as safe as possible.
-            Log.e(TAG, "IllegalArgumentException: the dictionary pack can't be contacted?", e);
+        } catch (RemoteException e) {
+            // The documentation is unclear as to in which cases this may happen, but it probably
+            // happens when the content provider got suddenly killed because it crashed or because
+            // the user disabled it through Settings.
+            Log.e(TAG, "RemoteException: communication with the dictionary pack cut", e);
             return Collections.<WordListInfo>emptyList();
         } catch (Exception e) {
-            // Just in case we hit a problem in communication with the dictionary pack.
-            // We don't want to die.
-            Log.e(TAG, "Exception communicating with the dictionary pack", e);
+            // A crash here is dangerous because crashing here would brick any encrypted device -
+            // we need the keyboard to be up and working to enter the password, so we don't want
+            // to die no matter what. So let's be as safe as possible.
+            Log.e(TAG, "Unexpected exception communicating with the dictionary pack", e);
             return Collections.<WordListInfo>emptyList();
+        } finally {
+            client.release();
         }
     }
 
@@ -380,7 +362,7 @@ public final class BinaryDictionaryFileDumper {
     }
 
     private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
-            final ContentResolver resolver, final String clientId) {
+            final ContentProviderClient client, final String clientId) throws RemoteException {
         final String metadataFileUri = context.getString(R.string.dictionary_pack_metadata_uri);
         if (TextUtils.isEmpty(metadataFileUri)) return;
         // Tell the content provider to reset all information about this client id
@@ -388,12 +370,12 @@ public final class BinaryDictionaryFileDumper {
                 .appendPath(QUERY_PATH_METADATA)
                 .appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE)
                 .build();
-        resolver.delete(metadataContentUri, null, null);
+        client.delete(metadataContentUri, null, null);
         // Update the metadata URI
         final ContentValues metadataValues = new ContentValues();
         metadataValues.put(INSERT_METADATA_CLIENT_ID_COLUMN, clientId);
         metadataValues.put(INSERT_METADATA_METADATA_URI_COLUMN, metadataFileUri);
-        resolver.insert(metadataContentUri, metadataValues);
+        client.insert(metadataContentUri, metadataValues);
 
         // Update the dictionary list.
         final Uri dictionaryContentUriBase = getProviderUriBuilder(clientId)
@@ -405,7 +387,7 @@ public final class BinaryDictionaryFileDumper {
         final int length = dictionaryList.size();
         for (int i = 0; i < length; ++i) {
             final DictionaryInfo info = dictionaryList.get(i);
-            resolver.insert(Uri.withAppendedPath(dictionaryContentUriBase, info.mId),
+            client.insert(Uri.withAppendedPath(dictionaryContentUriBase, info.mId),
                     info.toContentValues());
         }
     }
