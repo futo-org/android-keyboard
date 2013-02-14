@@ -53,4 +53,9 @@
     <color name="spacebar_text_color_ics">#FFC0C0C0</color>
     <color name="spacebar_text_shadow_color_ics">#80000000</color>
     <color name="typed_word_color_ics">@color/highlight_color_ics</color>
+    <!-- Color resources for setup wizard and tutorial -->
+    <color name="setup_background">#FFEBEBEB</color>
+    <color name="setup_text_dark">#FF707070</color>
+    <color name="setup_text_action">@android:color/holo_blue_light</color>
+    <color name="setup_step_background">@android:color/background_light</color>
 </resources>
