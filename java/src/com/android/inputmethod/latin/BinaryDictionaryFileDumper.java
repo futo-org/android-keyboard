@@ -96,32 +96,62 @@ public final class BinaryDictionaryFileDumper {
     }
 
     /**
+     * Gets the content URI builder for a specified type.
+     *
+     * Supported types include QUERY_PATH_DICT_INFO, which takes the locale as
+     * the extraPath argument, and QUERY_PATH_DATAFILE, which needs a wordlist ID
+     * as the extraPath argument.
+     *
+     * @param clientId the clientId to use
+     * @param contentProviderClient the instance of content provider client
+     * @param queryPathType the path element encoding the type
+     * @param extraPath optional extra argument for this type (typically word list id)
+     * @return a builder that can build the URI for the best supported protocol version
+     * @throws RemoteException if the client can't be contacted
+     */
+    private static Uri.Builder getContentUriBuilderForType(final String clientId,
+            final ContentProviderClient contentProviderClient, final String queryPathType,
+            final String extraPath) throws RemoteException {
+        // Check whether protocol v2 is supported by building a v2 URI and calling getType()
+        // on it. If this returns null, v2 is not supported.
+        final Uri.Builder uriV2Builder = getProviderUriBuilder(clientId);
+        uriV2Builder.appendPath(queryPathType);
+        uriV2Builder.appendPath(extraPath);
+        uriV2Builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL,
+                QUERY_PARAMETER_PROTOCOL_VALUE);
+        if (null != contentProviderClient.getType(uriV2Builder.build())) return uriV2Builder;
+        // Protocol v2 is not supported, so create and return the protocol v1 uri.
+        return getProviderUriBuilder(extraPath);
+    }
+
+    /**
      * Queries a content provider for the list of word lists for a specific locale
      * available to copy into Latin IME.
      */
     private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
         final String clientId = context.getString(R.string.dictionary_pack_client_id);
-        final Uri.Builder builder = getProviderUriBuilder(clientId);
-        builder.appendPath(QUERY_PATH_DICT_INFO);
-        builder.appendPath(locale.toString());
-        builder.appendQueryParameter(QUERY_PARAMETER_PROTOCOL, QUERY_PARAMETER_PROTOCOL_VALUE);
-        if (!hasDefaultWordList) {
-            builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER,
-                    QUERY_PARAMETER_TRUE);
-        }
-        final Uri dictionaryPackUri = builder.build();
-
         final ContentProviderClient client = context.getContentResolver().
                 acquireContentProviderClient(getProviderUriBuilder("").build());
         if (null == client) return Collections.<WordListInfo>emptyList();
+
         try {
-            final Cursor c = client.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null,
-                    null);
-            if (null == c) {
-                reinitializeClientRecordInDictionaryContentProvider(context, client, clientId);
-                return Collections.<WordListInfo>emptyList();
+            final Uri.Builder builder = getContentUriBuilderForType(clientId, client,
+                    QUERY_PATH_DICT_INFO, locale.toString());
+            if (!hasDefaultWordList) {
+                builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER,
+                        QUERY_PARAMETER_TRUE);
             }
+            final Uri queryUri = builder.build();
+            final boolean isProtocolV2 = (QUERY_PARAMETER_PROTOCOL_VALUE.equals(
+                    queryUri.getQueryParameter(QUERY_PARAMETER_PROTOCOL)));
+
+            Cursor c = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
+            if (isProtocolV2 && null == c) {
+                reinitializeClientRecordInDictionaryContentProvider(context, client, clientId);
+                c = client.query(queryUri, DICTIONARY_PROJECTION, null, null, null);
+            }
+            if (null == c) return Collections.<WordListInfo>emptyList();
             if (c.getCount() <= 0 || !c.moveToFirst()) {
                 c.close();
                 return Collections.<WordListInfo>emptyList();
