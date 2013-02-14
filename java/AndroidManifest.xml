@@ -20,8 +20,8 @@
 
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="17" />
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
@@ -48,23 +48,31 @@
             <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
         </service>
 
+        <activity android:name=".setup.SetupActivity"
+                android:label="@string/aosp_android_keyboard_ime_name"
+                android:icon="@mipmap/ic_ime_settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <activity android:name="SettingsActivity" android:label="@string/english_ime_settings"
                   android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
         <activity android:name="com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsActivity"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
         <activity android:name="DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
