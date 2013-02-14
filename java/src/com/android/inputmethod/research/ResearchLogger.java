@@ -154,6 +154,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_SAVED_CHANNEL = "pref_research_saved_channel";
 
+    private static final long RESEARCHLOG_CLOSE_TIMEOUT_IN_MS = 5 * 1000;
+    private static final long RESEARCHLOG_ABORT_TIMEOUT_IN_MS = 5 * 1000;
+
     private static final ResearchLogger sInstance = new ResearchLogger();
     private static String sAccountType = null;
     private static String sAllowedAccountDomain = null;
@@ -502,42 +505,29 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             commitCurrentLogUnit();
             mMainLogBuffer.setIsStopping();
             mMainLogBuffer.shiftAndPublishAll();
-            mMainResearchLog.close(null /* callback */);
+            mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
             mMainLogBuffer = null;
         }
         if (mFeedbackLogBuffer != null) {
-            mFeedbackLog.close(null /* callback */);
+            mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
             mFeedbackLogBuffer = null;
         }
     }
 
-    public boolean abort() {
+    public void abort() {
         if (DEBUG) {
             Log.d(TAG, "abort called");
         }
-        boolean didAbortMainLog = false;
         if (mMainLogBuffer != null) {
             mMainLogBuffer.clear();
-            try {
-                didAbortMainLog = mMainResearchLog.blockingAbort();
-            } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
-            }
+            mMainResearchLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
             mMainLogBuffer = null;
         }
-        boolean didAbortFeedbackLog = false;
         if (mFeedbackLogBuffer != null) {
             mFeedbackLogBuffer.clear();
-            try {
-                didAbortFeedbackLog = mFeedbackLog.blockingAbort();
-            } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
-            }
+            mFeedbackLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
             mFeedbackLogBuffer = null;
         }
-        return didAbortMainLog && didAbortFeedbackLog;
     }
 
     private void restart() {
@@ -620,7 +610,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void startRecordingInternal() {
         if (mUserRecordingLog != null) {
-            mUserRecordingLog.abort();
+            mUserRecordingLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
         }
         mUserRecordingFile = createUserRecordingFile(mFilesDir);
         mUserRecordingLog = new ResearchLog(mUserRecordingFile, mLatinIME);
@@ -658,7 +648,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void cancelRecording() {
         if (mUserRecordingLog != null) {
-            mUserRecordingLog.abort();
+            mUserRecordingLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
         }
         mUserRecordingLog = null;
         mUserRecordingLogBuffer = null;
@@ -670,7 +660,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private void saveRecording() {
         commitCurrentLogUnit();
         publishLogBuffer(mUserRecordingLogBuffer, mUserRecordingLog, true);
-        mUserRecordingLog.close(null);
+        mUserRecordingLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
         mUserRecordingLog = null;
         mUserRecordingLogBuffer = null;
 
@@ -782,12 +772,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 feedbackContents, accountName, recording);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
-        mSavedFeedbackLog.close(new Runnable() {
-            @Override
-            public void run() {
-                uploadNow();
-            }
-        });
+        mSavedFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
+        uploadNow();
 
         if (isIncludingRecording && DEBUG_REPLAY_AFTER_FEEDBACK) {
             final Handler handler = new Handler();

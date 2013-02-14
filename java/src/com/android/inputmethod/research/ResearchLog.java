@@ -20,11 +20,11 @@ import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -54,7 +54,6 @@ public class ResearchLog {
     private static final String TAG = ResearchLog.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
-    private static final int ABORT_TIMEOUT_IN_MS = 1000 * 4;
 
     /* package */ final ScheduledExecutorService mExecutor;
     /* package */ final File mFile;
@@ -100,7 +99,7 @@ public class ResearchLog {
      *
      * See class comment for details about {@code JsonWriter} construction.
      */
-    public synchronized void close(final Runnable onClosed) {
+    private synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -131,15 +130,22 @@ public class ResearchLog {
         mExecutor.shutdown();
     }
 
-    private boolean mIsAbortSuccessful;
+    /**
+     * Block until the research log has shut down and spooled out all output or {@code timeout}
+     * occurs.
+     *
+     * @param timeout time to wait for close in milliseconds
+     */
+    public void blockingClose(final long timeout) {
+        close(null);
+        awaitTermination(timeout, TimeUnit.MILLISECONDS);
+    }
 
     /**
-     * Waits for publication requests to finish, closes the {@link JsonWriter}, but then deletes the
-     * backing file used for output.
-     *
-     * See class comment for details about {@code JsonWriter} construction.
+     * Waits for publication requests to finish, closes the JsonWriter, but then deletes the backing
+     * output file.
      */
-    public synchronized void abort() {
+    private synchronized void abort() {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -151,7 +157,7 @@ public class ResearchLog {
                     }
                 } finally {
                     if (mFile != null) {
-                        mIsAbortSuccessful = mFile.delete();
+                        mFile.delete();
                     }
                 }
                 return null;
@@ -161,14 +167,25 @@ public class ResearchLog {
         mExecutor.shutdown();
     }
 
-    public boolean blockingAbort() throws InterruptedException {
+    /**
+     * Block until the research log has aborted or {@code timeout} occurs.
+     *
+     * @param timeout time to wait for close in milliseconds
+     */
+    public void blockingAbort(final long timeout) {
         abort();
-        mExecutor.awaitTermination(ABORT_TIMEOUT_IN_MS, TimeUnit.MILLISECONDS);
-        return mIsAbortSuccessful;
+        awaitTermination(timeout, TimeUnit.MILLISECONDS);
     }
 
-    public void awaitTermination(int delay, TimeUnit timeUnit) throws InterruptedException {
-        mExecutor.awaitTermination(delay, timeUnit);
+    @UsedForTesting
+    public void awaitTermination(final long delay, final TimeUnit timeUnit) {
+        try {
+            if (!mExecutor.awaitTermination(delay, timeUnit)) {
+                Log.e(TAG, "ResearchLog executor timed out while awaiting terminaion");
+            }
+        } catch (final InterruptedException e) {
+            Log.e(TAG, "ResearchLog executor interrupted while awaiting terminaion", e);
+        }
     }
 
     /* package */ synchronized void flush() {
