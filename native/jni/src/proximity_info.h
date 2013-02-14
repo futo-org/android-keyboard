@@ -70,15 +70,16 @@ class ProximityInfo {
     int getKeyCenterYOfKeyIdG(int keyId) const;
     int getKeyKeyDistanceG(int keyId0, int keyId1) const;
 
-    void initializeProximities(const int *const inputCodes, const int *const inputXCoordinates,
-            const int *const inputYCoordinates, const int inputSize, int *allInputCodes) const {
+    void AK_FORCE_INLINE initializeProximities(const int *const inputCodes,
+            const int *const inputXCoordinates, const int *const inputYCoordinates,
+            const int inputSize, int *allInputCodes) const {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
                 inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
                 mProximityCharsArray, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, MOST_COMMON_KEY_WIDTH,
                 KEY_COUNT, mLocaleStr, &mCodeToKeyMap, allInputCodes);
     }
 
-    int getKeyIndexOf(const int c) const {
+    int AK_FORCE_INLINE getKeyIndexOf(const int c) const {
         return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mCodeToKeyMap);
     }
 
