@@ -28,7 +28,7 @@
 namespace latinime {
 class ProximityInfoUtils {
  public:
-    static int getKeyIndexOf(const int keyCount, const int c,
+    static AK_FORCE_INLINE int getKeyIndexOf(const int keyCount, const int c,
             const hash_map_compat<int, int> *const codeToKeyMap) {
         if (keyCount == 0) {
             // We do not have the coordinate data
@@ -45,7 +45,7 @@ class ProximityInfoUtils {
         return NOT_AN_INDEX;
     }
 
-    static void initializeProximities(const int *const inputCodes,
+    static AK_FORCE_INLINE void initializeProximities(const int *const inputCodes,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int inputSize, const int *const keyXCoordinates,
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
@@ -151,7 +151,7 @@ class ProximityInfoUtils {
         return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
     }
 
-    static void calculateProximities(const int *const keyXCoordinates,
+    static AK_FORCE_INLINE void calculateProximities(const int *const keyXCoordinates,
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
