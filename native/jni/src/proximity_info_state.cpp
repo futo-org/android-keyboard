@@ -16,6 +16,7 @@
 
 #include <cstring> // for memset() and memcpy()
 #include <sstream> // for debug prints
+#include <vector>
 
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
@@ -75,8 +76,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mSampledInputIndice.clear();
         mSampledLengthCache.clear();
         mSampledDistanceCache_G.clear();
-        mSampledNearKeysVector.clear();
-        mSampledSearchKeysVector.clear();
+        mSampledNearKeySets.clear();
+        mSampledSearchKeySets.clear();
         mSpeedRates.clear();
         mBeelineSpeedPercentiles.clear();
         mCharProbabilities.clear();
@@ -109,7 +110,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     if (mSampledInputSize > 0) {
         ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
-                lastSavedInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledNearKeysVector,
+                lastSavedInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledNearKeySets,
                 &mSampledDistanceCache_G);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
@@ -117,10 +118,11 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                     mMaxPointToKeyLength, mProximityInfo->getMostCommonKeyWidth(),
                     mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
-                    &mSampledDistanceCache_G, &mSampledNearKeysVector, &mCharProbabilities);
-            ProximityInfoStateUtils::updateSampledSearchKeysVector(mProximityInfo,
+                    &mSampledDistanceCache_G, &mSampledNearKeySets, &mCharProbabilities);
+            ProximityInfoStateUtils::updateSampledSearchKeySets(mProximityInfo,
                     mSampledInputSize, lastSavedInputSize, &mSampledLengthCache,
-                    &mSampledNearKeysVector, &mSampledSearchKeysVector);
+                    &mSampledNearKeySets, &mSampledSearchKeySets,
+                    &mSampledSearchKeyVectors);
             mMostProbableStringProbability = ProximityInfoStateUtils::getMostProbableString(
                     mProximityInfo, mSampledInputSize, &mCharProbabilities, mMostProbableString);
 
@@ -245,36 +247,9 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
     return UNRELATED_CHAR;
 }
 
-// Puts possible characters into filter and returns new filter size.
-int ProximityInfoState::getAllPossibleChars(
-        const size_t index, int *const filter, const int filterSize) const {
-    if (index >= mSampledInputXs.size()) {
-        return filterSize;
-    }
-    int newFilterSize = filterSize;
-    const int keyCount = mProximityInfo->getKeyCount();
-    for (int j = 0; j < keyCount; ++j) {
-        if (mSampledSearchKeysVector[index].test(j)) {
-            const int keyCodePoint = mProximityInfo->getCodePointOf(j);
-            bool insert = true;
-            // TODO: Avoid linear search
-            for (int k = 0; k < filterSize; ++k) {
-                if (filter[k] == keyCodePoint) {
-                    insert = false;
-                    break;
-                }
-            }
-            if (insert) {
-                filter[newFilterSize++] = keyCodePoint;
-            }
-        }
-    }
-    return newFilterSize;
-}
-
 bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int keyId) const {
     ASSERT(keyId >= 0 && index >= 0 && index < mSampledInputSize);
-    return mSampledSearchKeysVector[index].test(keyId);
+    return mSampledSearchKeySets[index].test(keyId);
 }
 
 float ProximityInfoState::getDirection(const int index0, const int index1) const {

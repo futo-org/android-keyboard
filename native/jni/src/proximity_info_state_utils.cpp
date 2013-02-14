@@ -224,13 +224,13 @@ namespace latinime {
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize, const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
-        std::vector<NearKeycodesSet> *SampledNearKeysVector,
+        std::vector<NearKeycodesSet> *SampledNearKeySets,
         std::vector<float> *SampledDistanceCache_G) {
-    SampledNearKeysVector->resize(sampledInputSize);
+    SampledNearKeySets->resize(sampledInputSize);
     const int keyCount = proximityInfo->getKeyCount();
     SampledDistanceCache_G->resize(sampledInputSize * keyCount);
     for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
-        (*SampledNearKeysVector)[i].reset();
+        (*SampledNearKeySets)[i].reset();
         for (int k = 0; k < keyCount; ++k) {
             const int index = i * keyCount + k;
             const int x = (*sampledInputXs)[i];
@@ -240,7 +240,7 @@ namespace latinime {
             (*SampledDistanceCache_G)[index] = normalizedSquaredDistance;
             if (normalizedSquaredDistance
                     < ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
-                (*SampledNearKeysVector)[i][k] = true;
+                (*SampledNearKeySets)[i][k] = true;
             }
         }
     }
@@ -664,7 +664,7 @@ namespace latinime {
         const std::vector<float> *const sampledSpeedRates,
         const std::vector<int> *const sampledLengthCache,
         const std::vector<float> *const SampledDistanceCache_G,
-        std::vector<NearKeycodesSet> *SampledNearKeysVector,
+        std::vector<NearKeycodesSet> *SampledNearKeySets,
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
@@ -680,7 +680,7 @@ namespace latinime {
 
         float nearestKeyDistance = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeysVector)[i].test(j)) {
+            if ((*SampledNearKeySets)[i].test(j)) {
                 const float distance = getPointToKeyByIdLength(
                         maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j);
                 if (distance < nearestKeyDistance) {
@@ -761,7 +761,7 @@ namespace latinime {
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeysVector)[i].test(j)) {
+            if ((*SampledNearKeySets)[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(
                         maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j));
                 if (i == 0 && i != sampledInputSize - 1) {
@@ -801,7 +801,7 @@ namespace latinime {
 
         // Split the probability of an input point to keys that are close to the input point.
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeysVector)[i].test(j)) {
+            if ((*SampledNearKeySets)[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(
                         maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j));
                 if (i == 0 && i != sampledInputSize - 1) {
@@ -885,10 +885,10 @@ namespace latinime {
         for (int j = 0; j < keyCount; ++j) {
             hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].find(j);
             if (it == (*charProbabilities)[i].end()){
-                (*SampledNearKeysVector)[i].reset(j);
+                (*SampledNearKeySets)[i].reset(j);
             } else if(it->second < ProximityInfoParams::MIN_PROBABILITY) {
                 // Erases from near keys vector because it has very low probability.
-                (*SampledNearKeysVector)[i].reset(j);
+                (*SampledNearKeySets)[i].reset(j);
                 (*charProbabilities)[i].erase(j);
             } else {
                 it->second = -logf(it->second);
@@ -898,26 +898,42 @@ namespace latinime {
     }
 }
 
-/* static */ void ProximityInfoStateUtils::updateSampledSearchKeysVector(
+/* static */ void ProximityInfoStateUtils::updateSampledSearchKeySets(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize,
         const std::vector<int> *const sampledLengthCache,
-        const std::vector<NearKeycodesSet> *const SampledNearKeysVector,
-        std::vector<NearKeycodesSet> *sampledSearchKeysVector) {
-    sampledSearchKeysVector->resize(sampledInputSize);
+        const std::vector<NearKeycodesSet> *const SampledNearKeySets,
+        std::vector<NearKeycodesSet> *sampledSearchKeySets,
+        std::vector<std::vector<int> > *sampledSearchKeyVectors) {
+    sampledSearchKeySets->resize(sampledInputSize);
+    sampledSearchKeyVectors->resize(sampledInputSize);
     const int readForwordLength = static_cast<int>(
             hypotf(proximityInfo->getKeyboardWidth(), proximityInfo->getKeyboardHeight())
                     * ProximityInfoParams::SEARCH_KEY_RADIUS_RATIO);
     for (int i = 0; i < sampledInputSize; ++i) {
         if (i >= lastSavedInputSize) {
-            (*sampledSearchKeysVector)[i].reset();
+            (*sampledSearchKeySets)[i].reset();
         }
         for (int j = max(i, lastSavedInputSize); j < sampledInputSize; ++j) {
             // TODO: Investigate if this is required. This may not fail.
             if ((*sampledLengthCache)[j] - (*sampledLengthCache)[i] >= readForwordLength) {
                 break;
             }
-            (*sampledSearchKeysVector)[i] |= (*SampledNearKeysVector)[j];
+            (*sampledSearchKeySets)[i] |= (*SampledNearKeySets)[j];
+        }
+    }
+    const int keyCount = proximityInfo->getKeyCount();
+    for (int i = 0; i < sampledInputSize; ++i) {
+        std::vector<int> *searchKeyVector = &(*sampledSearchKeyVectors)[i];
+        searchKeyVector->clear();
+        for (int j = 0; j < keyCount; ++j) {
+            if ((*sampledSearchKeySets)[i].test(j)) {
+                const int keyCodePoint = proximityInfo->getCodePointOf(j);
+                if (std::find(searchKeyVector->begin(), searchKeyVector->end(), keyCodePoint)
+                        == searchKeyVector->end()) {
+                    searchKeyVector->push_back(keyCodePoint);
+                }
+            }
         }
     }
 }

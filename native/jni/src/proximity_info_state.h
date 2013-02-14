@@ -50,7 +50,7 @@ class ProximityInfoState {
               mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mSampledTimes(),
               mSampledInputIndice(), mSampledLengthCache(), mBeelineSpeedPercentiles(),
               mSampledDistanceCache_G(), mSpeedRates(), mDirections(), mCharProbabilities(),
-              mSampledNearKeysVector(), mSampledSearchKeysVector(),
+              mSampledNearKeySets(), mSampledSearchKeySets(), mSampledSearchKeyVectors(),
               mTouchPositionCorrectionEnabled(false), mSampledInputSize(0),
               mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
@@ -155,7 +155,9 @@ class ProximityInfoState {
     ProximityType getMatchedProximityId(const int index, const int c,
             const bool checkProximityChars, int *proximityIndex = 0) const;
 
-    int getAllPossibleChars(const size_t startIndex, int *const filter, const int filterSize) const;
+    const std::vector<int> *getSearchKeyVector(const int index) const {
+        return &mSampledSearchKeyVectors[index];
+    }
 
     float getSpeedRate(const int index) const {
         return mSpeedRates[index];
@@ -236,13 +238,14 @@ class ProximityInfoState {
     std::vector<hash_map_compat<int, float> > mCharProbabilities;
     // The vector for the key code set which holds nearby keys for each sampled input point
     // 1. Used to calculate the probability of the key
-    // 2. Used to calculate mSampledSearchKeysVector
-    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledNearKeysVector;
+    // 2. Used to calculate mSampledSearchKeySets
+    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledNearKeySets;
     // The vector for the key code set which holds nearby keys of some trailing sampled input points
     // for each sampled input point. These nearby keys contain the next characters which can be in
     // the dictionary. Specifically, currently we are looking for keys nearby trailing sampled
     // inputs including the current input point.
-    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledSearchKeysVector;
+    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledSearchKeySets;
+    std::vector<std::vector<int> > mSampledSearchKeyVectors;
     bool mTouchPositionCorrectionEnabled;
     int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
