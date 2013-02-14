@@ -71,13 +71,14 @@ class ProximityInfoStateUtils {
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledLengthCache,
             const std::vector<float> *const SampledDistanceCache_G,
-            std::vector<NearKeycodesSet> *SampledNearKeysVector,
+            std::vector<NearKeycodesSet> *SampledNearKeySets,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
-    static void updateSampledSearchKeysVector(const ProximityInfo *const proximityInfo,
+    static void updateSampledSearchKeySets(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<NearKeycodesSet> *const SampledNearKeysVector,
-            std::vector<NearKeycodesSet> *sampledSearchKeysVector);
+            const std::vector<NearKeycodesSet> *const SampledNearKeySets,
+            std::vector<NearKeycodesSet> *sampledSearchKeySets,
+            std::vector<std::vector<int> > *sampledSearchKeyVectors);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
             const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
             const int inputIndex, const int keyId, const float scale);
@@ -88,7 +89,7 @@ class ProximityInfoStateUtils {
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
-            std::vector<NearKeycodesSet> *SampledNearKeysVector,
+            std::vector<NearKeycodesSet> *SampledNearKeySets,
             std::vector<float> *SampledDistanceCache_G);
     static void initPrimaryInputWord(const int inputSize, const int *const inputProximities,
             int *primaryInputWord);

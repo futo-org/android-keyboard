@@ -90,7 +90,7 @@ class ProximityInfoParams {
     // Used by ProximityInfoStateUtils::getMostProbableString()
     static const float DEMOTION_LOG_PROBABILITY;
 
-    // Used by ProximityInfoStateUtils::updateSampledSearchKeysVector()
+    // Used by ProximityInfoStateUtils::updateSampledSearchKeySets()
     static const float SEARCH_KEY_RADIUS_RATIO;
 
     // Used by ProximityInfoStateUtils::calculateBeelineSpeedRate()

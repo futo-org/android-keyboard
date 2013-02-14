@@ -88,7 +88,7 @@ const float ProximityInfoParams::SKIP_PROBABALITY_WEIGHT_FOR_PROBABILITY_GAIN = 
 // Used by ProximityInfoStateUtils::getMostProbableString()
 const float ProximityInfoParams::DEMOTION_LOG_PROBABILITY = 0.3f;
 
-// Used by ProximityInfoStateUtils::updateSampledSearchKeysVector()
+// Used by ProximityInfoStateUtils::updateSampledSearchKeySets()
 // TODO: Investigate if this is required
 const float ProximityInfoParams::SEARCH_KEY_RADIUS_RATIO = 0.95f;
 
