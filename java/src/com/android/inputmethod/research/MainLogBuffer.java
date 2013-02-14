@@ -67,7 +67,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
 
     // TODO: Remove dependence on Suggest, and pass in Dictionary as a parameter to an appropriate
     // method.
-    private Suggest mSuggest;
+    private final Suggest mSuggest;
     @UsedForTesting
     private Dictionary mDictionaryForTesting;
     private boolean mIsStopping = false;
@@ -78,13 +78,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // after a sample is taken.
     /* package for test */ int mNumWordsUntilSafeToSample;
 
-    public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore) {
+    public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore,
+            final Suggest suggest) {
         super(N_GRAM_SIZE + wordsBetweenSamples);
         mNumWordsBetweenNGrams = wordsBetweenSamples;
         mNumWordsUntilSafeToSample = DEBUG ? 0 : numInitialWordsToIgnore;
-    }
-
-    public void setSuggest(final Suggest suggest) {
         mSuggest = suggest;
     }
 
