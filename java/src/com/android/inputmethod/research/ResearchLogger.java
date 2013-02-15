@@ -1226,17 +1226,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
             final long eventTime, final int index, final int id, final int x, final int y) {
         if (me != null) {
-            final String actionString;
-            switch (action) {
-                case MotionEvent.ACTION_CANCEL: actionString = "CANCEL"; break;
-                case MotionEvent.ACTION_UP: actionString = "UP"; break;
-                case MotionEvent.ACTION_DOWN: actionString = "DOWN"; break;
-                case MotionEvent.ACTION_POINTER_UP: actionString = "POINTER_UP"; break;
-                case MotionEvent.ACTION_POINTER_DOWN: actionString = "POINTER_DOWN"; break;
-                case MotionEvent.ACTION_MOVE: actionString = "MOVE"; break;
-                case MotionEvent.ACTION_OUTSIDE: actionString = "OUTSIDE"; break;
-                default: actionString = "ACTION_" + action; break;
-            }
+            final String actionString = LoggingUtils.getMotionEventActionTypeString(action);
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
                     actionString, false /* IS_LOGGING_RELATED */, MotionEvent.obtain(me));
