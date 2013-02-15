@@ -38,12 +38,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * Logs the use of the LatinIME keyboard.
  *
- * This class logs operations on the IME keyboard, including what the user has typed.
- * Data is stored locally in a file in app-specific storage.
+ * This class logs operations on the IME keyboard, including what the user has typed.  Data is
+ * written to a {@link JsonWriter}, which will write to a local file.
+ *
+ * The JsonWriter is created on-demand by calling {@link #getInitializedJsonWriterLocked}.
+ *
+ * This class uses an executor to perform file-writing operations on a separate thread.  It also
+ * tries to avoid creating unnecessary files if there is nothing to write.  It also handles
+ * flushing, making sure it happens, but not too frequently.
  *
  * This functionality is off by default. See {@link ProductionFlag#IS_EXPERIMENTAL}.
  */
 public class ResearchLog {
+    // TODO: Automatically initialize the JsonWriter rather than requiring the caller to manage it.
     private static final String TAG = ResearchLog.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
@@ -87,6 +94,12 @@ public class ResearchLog {
         mContext = context;
     }
 
+    /**
+     * Waits for any publication requests to finish and closes the {@link JsonWriter} used for
+     * output.
+     *
+     * See class comment for details about {@code JsonWriter} construction.
+     */
     public synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
             @Override
@@ -106,8 +119,7 @@ public class ResearchLog {
                         }
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "error when closing ResearchLog:");
-                    e.printStackTrace();
+                    Log.d(TAG, "error when closing ResearchLog:", e);
                 } finally {
                     if (mFile != null && mFile.exists()) {
                         mFile.setWritable(false, false);
@@ -125,6 +137,12 @@ public class ResearchLog {
 
     private boolean mIsAbortSuccessful;
 
+    /**
+     * Waits for publication requests to finish, closes the {@link JsonWriter}, but then deletes the
+     * backing file used for output.
+     *
+     * See class comment for details about {@code JsonWriter} construction.
+     */
     public synchronized void abort() {
         mExecutor.submit(new Callable<Object>() {
             @Override
@@ -184,6 +202,12 @@ public class ResearchLog {
         mFlushFuture = mExecutor.schedule(mFlushCallable, FLUSH_DELAY_IN_MS, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Queues up {@code logUnit} to be published in the background.
+     *
+     * @param logUnit the {@link LogUnit} to be published
+     * @param canIncludePrivateData whether private data in the LogUnit should be included
+     */
     public synchronized void publish(final LogUnit logUnit, final boolean canIncludePrivateData) {
         try {
             mExecutor.submit(new Callable<Object>() {
