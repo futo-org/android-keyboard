@@ -93,6 +93,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         mSuggest = suggest;
     }
 
+    private Dictionary getDictionary() {
+        if (mSuggest == null || !mSuggest.hasMainDictionary()) return null;
+        return mSuggest.getMainDictionary();
+    }
+
     public void resetWordCounter() {
         mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
     }
@@ -137,16 +142,13 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         if (mNumWordsUntilSafeToSample > 0) {
             return false;
         }
-        if (mSuggest == null || !mSuggest.hasMainDictionary()) {
+        // Reload the dictionary in case it has changed (e.g., because the user has changed
+        // languages).
+        final Dictionary dictionary = getDictionary();
+        if (dictionary == null) {
             // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a
             // word is out-of-vocabulary or not.  Therefore, we must judge the entire buffer
             // contents to potentially pose a privacy risk.
-            return false;
-        }
-        // Reload the dictionary in case it has changed (e.g., because the user has changed
-        // languages).
-        final Dictionary dictionary = mSuggest.getMainDictionary();
-        if (dictionary == null) {
             return false;
         }
 
