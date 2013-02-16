@@ -74,6 +74,8 @@ public final class BinaryDictionaryFileDumper {
 
     // The path fragment to append after the client ID for dictionary info requests.
     private static final String QUERY_PATH_DICT_INFO = "dict";
+    // The path fragment to append after the client ID for dictionary datafile requests.
+    private static final String QUERY_PATH_DATAFILE = "datafile";
     // The path fragment to append after the client ID for updating the metadata URI.
     private static final String QUERY_PATH_METADATA = "metadata";
     private static final String INSERT_METADATA_CLIENT_ID_COLUMN = "clientid";
@@ -156,7 +158,7 @@ public final class BinaryDictionaryFileDumper {
                 c.close();
                 return Collections.<WordListInfo>emptyList();
             }
-            final List<WordListInfo> list = CollectionUtils.newArrayList();
+            final ArrayList<WordListInfo> list = CollectionUtils.newArrayList();
             do {
                 final String wordListId = c.getString(0);
                 final String wordListLocale = c.getString(1);
@@ -186,13 +188,18 @@ public final class BinaryDictionaryFileDumper {
     /**
      * Helper method to encapsulate exception handling.
      */
-    private static AssetFileDescriptor openAssetFileDescriptor(final ContentResolver resolver,
-            final Uri uri) {
+    private static AssetFileDescriptor openAssetFileDescriptor(
+            final ContentProviderClient providerClient, final Uri uri) {
         try {
-            return resolver.openAssetFileDescriptor(uri, "r");
+            return providerClient.openAssetFile(uri, "r");
         } catch (FileNotFoundException e) {
-            // I don't want to log the word list URI here for security concerns
-            Log.e(TAG, "Could not find a word list from the dictionary provider.");
+            // I don't want to log the word list URI here for security concerns. The exception
+            // contains the name of the file, so let's not pass it to Log.e here.
+            Log.e(TAG, "Could not find a word list from the dictionary provider."
+                    /* intentionally don't pass the exception (see comment above) */);
+            return null;
+        } catch (RemoteException e) {
+            Log.e(TAG, "Can't communicate with the dictionary pack", e);
             return null;
         }
     }
@@ -202,9 +209,8 @@ public final class BinaryDictionaryFileDumper {
      * to the cache file name designated by its id and locale, overwriting it if already present
      * and creating it (and its containing directory) if necessary.
      */
-    private static AssetFileAddress cacheWordList(final String id, final String locale,
-            final ContentResolver resolver, final Context context) {
-
+    private static AssetFileAddress cacheWordList(final String wordlistId, final String locale,
+            final ContentProviderClient providerClient, final Context context) {
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
         final int CRYPTED_COMPRESSED = 1;
         final int COMPRESSED_CRYPTED = 2;
@@ -214,11 +220,20 @@ public final class BinaryDictionaryFileDumper {
         final int MODE_MIN = COMPRESSED_CRYPTED_COMPRESSED;
         final int MODE_MAX = NONE;
 
-        final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
-        final String finalFileName = DictionaryInfoUtils.getCacheFileName(id, locale, context);
+        final String clientId = context.getString(R.string.dictionary_pack_client_id);
+        final Uri.Builder wordListUriBuilder;
+        try {
+            wordListUriBuilder = getContentUriBuilderForType(clientId,
+                    providerClient, QUERY_PATH_DATAFILE, wordlistId /* extraPath */);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Can't communicate with the dictionary pack", e);
+            return null;
+        }
+        final String finalFileName =
+                DictionaryInfoUtils.getCacheFileName(wordlistId, locale, context);
         String tempFileName;
         try {
-            tempFileName = BinaryDictionaryGetter.getTempFileName(id, context);
+            tempFileName = BinaryDictionaryGetter.getTempFileName(wordlistId, context);
         } catch (IOException e) {
             Log.e(TAG, "Can't open the temporary file", e);
             return null;
@@ -236,7 +251,7 @@ public final class BinaryDictionaryFileDumper {
             final Uri wordListUri = wordListUriBuilder.build();
             try {
                 // Open input.
-                afd = openAssetFileDescriptor(resolver, wordListUri);
+                afd = openAssetFileDescriptor(providerClient, wordListUri);
                 // If we can't open it at all, don't even try a number of times.
                 if (null == afd) return null;
                 originalSourceStream = afd.createInputStream();
@@ -284,10 +299,10 @@ public final class BinaryDictionaryFileDumper {
                 }
                 wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                         QUERY_PARAMETER_SUCCESS);
-                if (0 >= resolver.delete(wordListUriBuilder.build(), null, null)) {
+                if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
-                BinaryDictionaryGetter.removeFilesWithIdExcept(context, id, finalFile);
+                BinaryDictionaryGetter.removeFilesWithIdExcept(context, wordlistId, finalFile);
                 // Success! Close files (through the finally{} clause) and return.
                 return AssetFileAddress.makeFromFileName(finalFileName);
             } catch (Exception e) {
@@ -327,8 +342,12 @@ public final class BinaryDictionaryFileDumper {
         // as invalid.
         wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                 QUERY_PARAMETER_FAILURE);
-        if (0 >= resolver.delete(wordListUriBuilder.build(), null, null)) {
-            Log.e(TAG, "In addition, we were unable to delete it.");
+        try {
+            if (0 >= providerClient.delete(wordListUriBuilder.build(), null, null)) {
+                Log.e(TAG, "In addition, we were unable to delete it.");
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "In addition, communication with the dictionary provider was cut", e);
         }
         return null;
     }
@@ -345,17 +364,27 @@ public final class BinaryDictionaryFileDumper {
      */
     public static List<AssetFileAddress> cacheWordListsFromContentProvider(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
-        final ContentResolver resolver = context.getContentResolver();
-        final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
-                hasDefaultWordList);
-        final List<AssetFileAddress> fileAddressList = CollectionUtils.newArrayList();
-        for (WordListInfo id : idList) {
-            final AssetFileAddress afd = cacheWordList(id.mId, id.mLocale, resolver, context);
-            if (null != afd) {
-                fileAddressList.add(afd);
-            }
+        final ContentProviderClient providerClient = context.getContentResolver().
+                acquireContentProviderClient(getProviderUriBuilder("").build());
+        if (null == providerClient) {
+            Log.e(TAG, "Can't establish communication with the dictionary provider");
+            return CollectionUtils.newArrayList();
         }
-        return fileAddressList;
+        try {
+            final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
+                    hasDefaultWordList);
+            final ArrayList<AssetFileAddress> fileAddressList = CollectionUtils.newArrayList();
+            for (WordListInfo id : idList) {
+                final AssetFileAddress afd =
+                        cacheWordList(id.mId, id.mLocale, providerClient, context);
+                if (null != afd) {
+                    fileAddressList.add(afd);
+                }
+            }
+            return fileAddressList;
+        } finally {
+            providerClient.release();
+        }
     }
 
     /**
