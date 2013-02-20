@@ -36,6 +36,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mIsContinuationPossible = ProximityInfoStateUtils::checkAndReturnIsContinuationPossible(
             inputSize, xCoordinates, yCoordinates, times, mSampledInputSize, &mSampledInputXs,
             &mSampledInputYs, &mSampledTimes, &mSampledInputIndice);
+    if (DEBUG_DICT) {
+        AKLOGI("isContinuationPossible = %s", (mIsContinuationPossible ? "true" : "false"));
+    }
 
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
