@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.research;
 
-import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.JsonWriter;
