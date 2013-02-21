@@ -222,10 +222,10 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             final boolean canIncludePrivateData);
 
     @Override
-    protected void shiftOutWords(int numWords) {
-        int oldNumActualWords = getNumActualWords();
+    protected void shiftOutWords(final int numWords) {
+        final int oldNumActualWords = getNumActualWords();
         super.shiftOutWords(numWords);
-        int numWordsShifted = oldNumActualWords - getNumActualWords();
+        final int numWordsShifted = oldNumActualWords - getNumActualWords();
         mNumWordsUntilSafeToSample -= numWordsShifted;
         if (DEBUG) {
             Log.d(TAG, "wordsUntilSafeToSample now at " + mNumWordsUntilSafeToSample);
