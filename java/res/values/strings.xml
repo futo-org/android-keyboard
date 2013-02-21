@@ -408,4 +408,29 @@
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
+
+    <!-- Title of the setup wizard. [CHAR LIMT=40] -->
+    <string name="setup_title">"Installing <xliff:g id="application_name">%s</xliff:g>"</string>
+    <!-- Ordinal number of the 1st step in the setup wizard. [CHAR LIMIT=5] -->
+    <string name="setup_step1_bullet">1</string>
+    <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
+    <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g> in settings."</string>
+    <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=80] -->
+    <string name="setup_step1_instruction">"For security, please check \"<xliff:g id="application_name">%s</xliff:g>\""</string>
+    <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
+    <string name="setup_step2_bullet">2</string>
+    <!-- Title of the 2nd step in the setup wizard. [CHAR LIMIT=64] -->
+    <string name="setup_step2_title">"Switch to <xliff:g id="application_name">%s</xliff:g>."</string>
+    <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=80] -->
+    <string name="setup_step2_instruction">"Now that you've enabled <xliff:g id="application_name">%s</xliff:g>, you can switch to it."</string>
+    <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
+    <string name="setup_step3_bullet">3</string>
+    <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
+    <string name="setup_step3_title">"Congratulations, you're all set!"</string>
+    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=80] -->
+    <string name="setup_step3_instruction">Configure additional languages</string>
+    <!-- Title of the Language & input settings. This should be aligned with msgid="5292716747264442359" -->
+    <string name="language_settings">Language &amp; input</string>
+    <!-- Title of the Input method picker. This should be aligned with msgid="4653387336791222978" -->
+    <string name="select_input_method">Choose input method</string>
 </resources>
