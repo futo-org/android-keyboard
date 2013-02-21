@@ -206,7 +206,7 @@ public class ResearchLog {
      * Return a JsonWriter for this ResearchLog.  It is initialized the first time this method is
      * called.  The cached value is returned in future calls.
      */
-    public JsonWriter getValidJsonWriterLocked() {
+    public JsonWriter getInitializedJsonWriterLocked() {
         try {
             if (mJsonWriter == NULL_JSON_WRITER && mFile != null) {
                 final FileOutputStream fos =

@@ -151,10 +151,10 @@ import java.util.List;
                     continue;
                 }
                 // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
-                // researchLog.getValidJsonWriterLocked() will not ever be called, and the file
-                // will not have been opened for writing.
+                // researchLog.getInitializedJsonWriterLocked() will not ever be called, and the
+                // file will not have been opened for writing.
                 if (jsonWriter == null) {
-                    jsonWriter = researchLog.getValidJsonWriterLocked();
+                    jsonWriter = researchLog.getInitializedJsonWriterLocked();
                     outputLogUnitStart(jsonWriter, canIncludePrivateData);
                 }
                 logStatement.outputToLocked(jsonWriter, mTimeList.get(i), mValuesList.get(i));
