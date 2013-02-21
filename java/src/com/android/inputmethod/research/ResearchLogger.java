@@ -88,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -132,13 +133,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String USER_RECORDING_FILENAME_SUFFIX = ".txt";
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
             new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
+    // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
+    // testing.
+    /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
+            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    // The number of words between n-grams to omit from the log.
+    private static final int NUMBER_OF_WORDS_BETWEEN_SAMPLES =
+            IS_LOGGING_EVERYTHING ? 0 : (DEBUG ? 2 : 18);
+
     // Whether to show an indicator on the screen that logging is on.  Currently a very small red
     // dot in the lower right hand corner.  Most users should not notice it.
     private static final boolean IS_SHOWING_INDICATOR = true;
     // Change the default indicator to something very visible.  Currently two red vertical bars on
     // either side of they keyboard.
     private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false ||
-            (MainLogBuffer.IS_LOGGING_EVERYTHING && ProductionFlag.IS_EXPERIMENTAL_DEBUG);
+            (IS_LOGGING_EVERYTHING && ProductionFlag.IS_EXPERIMENTAL_DEBUG);
     // FEEDBACK_WORD_BUFFER_SIZE should add 1 because it must also hold the feedback LogUnit itself.
     public static final int FEEDBACK_WORD_BUFFER_SIZE = (Integer.MAX_VALUE - 1) + 1;
 
@@ -464,11 +473,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (mMainLogBuffer == null) {
             mMainResearchLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
-            mMainLogBuffer = new MainLogBuffer() {
+            final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
+            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore) {
                 @Override
                 protected void publish(final ArrayList<LogUnit> logUnits,
                         boolean canIncludePrivateData) {
-                    canIncludePrivateData |= MainLogBuffer.IS_LOGGING_EVERYTHING;
+                    canIncludePrivateData |= IS_LOGGING_EVERYTHING;
                     final int length = logUnits.size();
                     for (int i = 0; i < length; i++) {
                         final LogUnit logUnit = logUnits.get(i);
@@ -1190,7 +1200,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
-                        OUTPUT_FORMAT_VERSION, MainLogBuffer.IS_LOGGING_EVERYTHING,
+                        OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
                         ProductionFlag.IS_EXPERIMENTAL_DEBUG);
             } catch (NameNotFoundException e) {
                 e.printStackTrace();

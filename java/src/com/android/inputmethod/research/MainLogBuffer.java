@@ -64,15 +64,6 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
 
-    // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
-    // testing.
-    /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
-            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
-
-    // The number of words between n-grams to omit from the log.
-    private static final int DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES =
-            IS_LOGGING_EVERYTHING ? 0 : (DEBUG ? 2 : 18);
-
     private Suggest mSuggest;
     private boolean mIsStopping = false;
 
@@ -82,11 +73,10 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // after a sample is taken.
     /* package for test */ int mNumWordsUntilSafeToSample;
 
-    public MainLogBuffer() {
-        super(N_GRAM_SIZE + DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES);
-        mNumWordsBetweenNGrams = DEFAULT_NUMBER_OF_WORDS_BETWEEN_SAMPLES;
-        final Random random = new Random();
-        mNumWordsUntilSafeToSample = DEBUG ? 0 : random.nextInt(mNumWordsBetweenNGrams + 1);
+    public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore) {
+        super(N_GRAM_SIZE + wordsBetweenSamples);
+        mNumWordsBetweenNGrams = wordsBetweenSamples;
+        mNumWordsUntilSafeToSample = DEBUG ? 0 : numInitialWordsToIgnore;
     }
 
     public void setSuggest(final Suggest suggest) {
@@ -119,7 +109,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
      */
     private boolean isSafeNGram(final ArrayList<LogUnit> logUnits, final int minNGramSize) {
         // Bypass privacy checks when debugging.
-        if (IS_LOGGING_EVERYTHING) {
+        if (ResearchLogger.IS_LOGGING_EVERYTHING) {
             if (mIsStopping) {
                 return true;
             }
