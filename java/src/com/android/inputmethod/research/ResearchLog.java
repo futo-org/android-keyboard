@@ -209,26 +209,37 @@ public class ResearchLog {
     public JsonWriter getInitializedJsonWriterLocked() {
         try {
             if (mJsonWriter == NULL_JSON_WRITER && mFile != null) {
-                final FileOutputStream fos =
-                        mContext.openFileOutput(mFile.getName(), Context.MODE_PRIVATE);
-                mJsonWriter = new JsonWriter(new BufferedWriter(new OutputStreamWriter(fos)));
-                mJsonWriter.beginArray();
-                mHasWrittenData = true;
+                final JsonWriter jsonWriter = createJsonWriter(mContext, mFile);
+                if (jsonWriter != null) {
+                    jsonWriter.beginArray();
+                    mJsonWriter = jsonWriter;
+                    mHasWrittenData = true;
+                }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.w(TAG, "Error in JsonWriter; disabling logging");
+            Log.w(TAG, "Error in JsonWriter; disabling logging", e);
             try {
                 mJsonWriter.close();
             } catch (IllegalStateException e1) {
                 // Assume that this is just the json not being terminated properly.
                 // Ignore
             } catch (IOException e1) {
-                e1.printStackTrace();
+                Log.w(TAG, "Error in closing JsonWriter; disabling logging", e1);
             } finally {
                 mJsonWriter = NULL_JSON_WRITER;
             }
         }
         return mJsonWriter;
+    }
+
+    /**
+     * Create the JsonWriter to write the ResearchLog to.
+     *
+     * This method may be overriden in testing to redirect the output.
+     */
+    /* package for test */ JsonWriter createJsonWriter(final Context context, final File file)
+            throws IOException {
+        return new JsonWriter(new BufferedWriter(new OutputStreamWriter(
+                context.openFileOutput(file.getName(), Context.MODE_PRIVATE))));
     }
 }
