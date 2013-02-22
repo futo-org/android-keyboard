@@ -144,7 +144,7 @@
     <string name="subtype_locale" msgid="8576443440738143764">"Lugha"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Mpangilio"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Mtindo wa ingizo lako maalum unahitaji kuwa umewezeshwa kabla uanze kulitumia. Unataka kuuwesha sasa?"</string>
-    <string name="enable" msgid="5031294444630523247">"Wezesha"</string>
+    <string name="enable" msgid="5031294444630523247">"Washa"</string>
     <string name="not_now" msgid="6172462888202790482">"Sio sasa"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Mfumo sawa wa maingizo tayari upo: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>
@@ -157,4 +157,28 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Isakinishe faili hii kwa <xliff:g id="LOCALE_NAME">%s</xliff:g> kweli?"</string>
     <string name="error" msgid="8940763624668513648">"Kulikuwa na hitilafu"</string>
     <string name="button_default" msgid="3988017840431881491">"Chaguo-msingi"</string>
+    <!-- no translation found for setup_title (747642322299536064) -->
+    <skip />
+    <!-- no translation found for setup_step1_bullet (1963433060317624853) -->
+    <skip />
+    <!-- no translation found for setup_step1_title (7316009176808245440) -->
+    <skip />
+    <!-- no translation found for setup_step1_instruction (600886471143563141) -->
+    <skip />
+    <!-- no translation found for setup_step2_bullet (1827848024009574912) -->
+    <skip />
+    <!-- no translation found for setup_step2_title (7272709575177957189) -->
+    <skip />
+    <!-- no translation found for setup_step2_instruction (954968636921544464) -->
+    <skip />
+    <!-- no translation found for setup_step3_bullet (1599279767555395777) -->
+    <skip />
+    <!-- no translation found for setup_step3_title (3154757183631490281) -->
+    <skip />
+    <!-- no translation found for setup_step3_instruction (3095456922436793809) -->
+    <skip />
+    <!-- no translation found for language_settings (1671153053201809031) -->
+    <skip />
+    <!-- no translation found for select_input_method (4301602374609275003) -->
+    <skip />
 </resources>
