@@ -207,23 +207,22 @@ public class ResearchLog {
      * called.  The cached value is returned in future calls.
      */
     public JsonWriter getInitializedJsonWriterLocked() {
+        if (mJsonWriter != NULL_JSON_WRITER || mFile == null) return mJsonWriter;
         try {
-            if (mJsonWriter == NULL_JSON_WRITER && mFile != null) {
-                final JsonWriter jsonWriter = createJsonWriter(mContext, mFile);
-                if (jsonWriter != null) {
-                    jsonWriter.beginArray();
-                    mJsonWriter = jsonWriter;
-                    mHasWrittenData = true;
-                }
+            final JsonWriter jsonWriter = createJsonWriter(mContext, mFile);
+            if (jsonWriter != null) {
+                jsonWriter.beginArray();
+                mJsonWriter = jsonWriter;
+                mHasWrittenData = true;
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Log.w(TAG, "Error in JsonWriter; disabling logging", e);
             try {
                 mJsonWriter.close();
-            } catch (IllegalStateException e1) {
+            } catch (final IllegalStateException e1) {
                 // Assume that this is just the json not being terminated properly.
                 // Ignore
-            } catch (IOException e1) {
+            } catch (final IOException e1) {
                 Log.w(TAG, "Error in closing JsonWriter; disabling logging", e1);
             } finally {
                 mJsonWriter = NULL_JSON_WRITER;
