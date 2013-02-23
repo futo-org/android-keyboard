@@ -68,9 +68,13 @@ final class BinaryDictionaryGetter {
     /**
      * Generates a unique temporary file name in the app cache directory.
      */
-    public static String getTempFileName(String id, Context context) throws IOException {
-        return File.createTempFile(DictionaryInfoUtils.replaceFileNameDangerousCharacters(id),
-                null).getAbsolutePath();
+    public static String getTempFileName(final String id, final Context context)
+            throws IOException {
+        final String safeId = DictionaryInfoUtils.replaceFileNameDangerousCharacters(id);
+        // If the first argument is less than three chars, createTempFile throws a
+        // RuntimeException. We don't really care about what name we get, so just
+        // put a three-chars prefix makes us safe.
+        return File.createTempFile("xxx" + safeId, null).getAbsolutePath();
     }
 
     /**
