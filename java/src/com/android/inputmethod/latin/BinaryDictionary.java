@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
