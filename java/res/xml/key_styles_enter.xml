@@ -104,7 +104,7 @@
         latin:parentStyle="defaultEnterKeyStyle" />
     <key-style
         latin:styleName="defaultActionEnterKeyStyle"
-        latin:code="!code/key_action_enter"
+        latin:code="!code/key_enter"
         latin:keyIcon="!icon/undefined"
         latin:backgroundType="action"
         latin:parentStyle="defaultEnterKeyStyle" />

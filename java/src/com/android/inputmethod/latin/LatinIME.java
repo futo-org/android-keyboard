@@ -165,7 +165,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
-    private int mActionId;
     private TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
 
     // Member variables for remembering the current device orientation.
@@ -756,7 +755,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         mLastSelectionStart = editorInfo.initialSelStart;
         mLastSelectionEnd = editorInfo.initialSelEnd;
-        mActionId = InputTypeUtils.getConcreteActionIdFromEditorInfo(editorInfo);
 
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
@@ -1393,13 +1391,28 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 ResearchLogger.getInstance().onResearchKeySelected(this);
             }
             break;
-        case Constants.CODE_ACTION_ENTER:
-            if (EditorInfo.IME_ACTION_NONE != mActionId
-                && EditorInfo.IME_ACTION_UNSPECIFIED != mActionId) {
-                performEditorAction(mActionId);
-                break;
+        case Constants.CODE_ENTER:
+            final EditorInfo editorInfo = getCurrentInputEditorInfo();
+            final int imeOptionsActionId =
+                    InputTypeUtils.getImeOptionsActionIdFromEditorInfo(editorInfo);
+            if (InputTypeUtils.IME_ACTION_CUSTOM_LABEL == imeOptionsActionId) {
+                // Either we have an actionLabel and we should performEditorAction with actionId
+                // regardless of its value.
+                performEditorAction(editorInfo.actionId);
+            } else if (EditorInfo.IME_ACTION_NONE != imeOptionsActionId) {
+                // We didn't have an actionLabel, but we had another action to execute.
+                // EditorInfo.IME_ACTION_NONE explicitly means no action. In contrast,
+                // EditorInfo.IME_ACTION_UNSPECIFIED is the default value for an action, so it
+                // means there should be an action and the app didn't bother to set a specific
+                // code for it - presumably it only handles one. It does not have to be treated
+                // in any specific way: anything that is not IME_ACTION_NONE should be sent to
+                // performEditorAction.
+                performEditorAction(imeOptionsActionId);
+            } else {
+                // No action label, and the action from imeOptions is NONE: this is a regular
+                // enter key that should input a carriage return.
+                didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
             }
-            didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
             break;
         case Constants.CODE_SHIFT_ENTER:
             didAutoCorrect = handleNonSpecialCharacter(Constants.CODE_ENTER, x, y, spaceState);
