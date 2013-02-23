@@ -954,7 +954,13 @@ inline static int editDistanceInternal(int *editDistanceTable, const int *before
 
 
 // In dictionary.cpp, getSuggestion() method,
-// suggestion scores are computed using the below formula.
+// When USE_SUGGEST_INTERFACE_FOR_TYPING is true:
+//   SUGGEST_INTERFACE_OUTPUT_SCALE was multiplied to the original suggestion scores to convert
+//   them to integers.
+//     score = (int)((original score) * SUGGEST_INTERFACE_OUTPUT_SCALE)
+//   Undo the scaling here to recover the original score.
+//     normalizedScore = ((float)score) / SUGGEST_INTERFACE_OUTPUT_SCALE
+// Otherwise: suggestion scores are computed using the below formula.
 // original score
 //  := powf(mTypedLetterMultiplier (this is defined 2),
 //         (the number of matched characters between typed word and suggested word))
@@ -991,16 +997,20 @@ inline static int editDistanceInternal(int *editDistanceTable, const int *before
         return 0.0f;
     }
 
+    // add a weight based on edit distance.
+    // distance <= max(afterLength, beforeLength) == afterLength,
+    // so, 0 <= distance / afterLength <= 1
+    const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
+
+    if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
+        return (static_cast<float>(score) / SUGGEST_INTERFACE_OUTPUT_SCALE) * weight;
+    }
     const float maxScore = score >= S_INT_MAX ? static_cast<float>(S_INT_MAX)
             : static_cast<float>(MAX_INITIAL_SCORE)
                     * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
                             static_cast<float>(min(beforeLength, afterLength - spaceCount)))
                     * static_cast<float>(FULL_WORD_MULTIPLIER);
 
-    // add a weight based on edit distance.
-    // distance <= max(afterLength, beforeLength) == afterLength,
-    // so, 0 <= distance / afterLength <= 1
-    const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
     return (static_cast<float>(score) / maxScore) * weight;
 }
 } // namespace latinime
