@@ -60,7 +60,11 @@
            <intent
               android:action="android.intent.action.MAIN"
               android:targetPackage="@string/dictionary_pack_package_name"
-              android:targetClass="@string/dictionary_pack_settings_activity" />
+              android:targetClass="@string/dictionary_pack_settings_activity">
+             <extra
+                 android:name="clientId"
+                 android:value="@string/dictionary_pack_client_id" />
+           </intent>
         </PreferenceScreen>
         <ListPreference
             android:key="auto_correction_threshold"
