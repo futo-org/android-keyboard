@@ -259,6 +259,7 @@ public final class FormatSpec {
         private static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
         private static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
         private static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
+        private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {
             mHeaderSize = headerSize;
@@ -279,6 +280,13 @@ public final class FormatSpec {
         // Helper method to get the dictionary ID as a String
         public String getId() {
             return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_ID_ATTRIBUTE);
+        }
+
+        // Helper method to get the description
+        public String getDescription() {
+            // TODO: Right now each dictionary file comes with a description in its own language.
+            // It will display as is no matter the device's locale. It should be internationalized.
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_DESCRIPTION_ATTRIBUTE);
         }
     }
 
