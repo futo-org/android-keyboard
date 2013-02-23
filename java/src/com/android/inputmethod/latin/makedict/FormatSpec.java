@@ -258,6 +258,7 @@ public final class FormatSpec {
         public final FormatOptions mFormatOptions;
         private static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
         private static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
+        private static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {
             mHeaderSize = headerSize;
@@ -273,6 +274,11 @@ public final class FormatSpec {
         // Helper method to get the version String
         public String getVersion() {
             return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_VERSION_ATTRIBUTE);
+        }
+
+        // Helper method to get the dictionary ID as a String
+        public String getId() {
+            return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_ID_ATTRIBUTE);
         }
     }
 
