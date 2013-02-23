@@ -41,8 +41,6 @@ public class DictionaryInfoUtils {
     private static final String RESOURCE_PACKAGE_NAME =
             DictionaryInfoUtils.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
-    private static final String ID_CATEGORY_SEPARATOR =
-            BinaryDictionaryGetter.ID_CATEGORY_SEPARATOR;
     private static final String MAIN_DICT_PREFIX = "main_";
     // 6 digits - unicode is limited to 21 bits
     private static final int MAX_HEX_DIGITS_FOR_CODEPOINT = 6;
@@ -58,12 +56,12 @@ public class DictionaryInfoUtils {
         public final AssetFileAddress mFileAddress;
         public final int mVersion;
         public final String mId;
-        public DictionaryInfo(final Locale locale, final AssetFileAddress fileAddress,
-                final int version) {
+        public DictionaryInfo(final String id, final Locale locale,
+                final AssetFileAddress fileAddress, final int version) {
+            mId = id;
             mLocale = locale;
             mFileAddress = fileAddress;
             mVersion = version;
-            mId = DEFAULT_MAIN_DICT + ID_CATEGORY_SEPARATOR + mLocale;
         }
         public ContentValues toContentValues() {
             final ContentValues values = new ContentValues();
@@ -283,9 +281,10 @@ public class DictionaryInfoUtils {
             final AssetFileAddress fileAddress) {
         final FileHeader header = BinaryDictIOUtils.getDictionaryFileHeaderOrNull(
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
+        final String id = header.getId();
         final Locale locale = LocaleUtils.constructLocaleFromString(header.getLocaleString());
         final String version = header.getVersion();
-        return new DictionaryInfo(locale, fileAddress, Integer.parseInt(version));
+        return new DictionaryInfo(id, locale, fileAddress, Integer.parseInt(version));
     }
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
