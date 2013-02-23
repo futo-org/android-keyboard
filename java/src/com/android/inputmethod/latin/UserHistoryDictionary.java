@@ -263,9 +263,10 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
             UserHistoryDictIOUtils.readDictionaryBinary(
                     new UserHistoryDictIOUtils.ByteArrayWrapper(buffer), listener);
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "when loading: file not found" + e);
+            // This is an expected condition: we don't have a user history dictionary for this
+            // language yet. It will be created sometime later.
         } catch (IOException e) {
-            Log.e(TAG, "IOException when open bytebuffer: " + e);
+            Log.e(TAG, "IOException on opening a bytebuffer", e);
         } finally {
             if (inStream != null) {
                 try {
@@ -328,7 +329,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
                     Thread.sleep(15000);
                     Log.w(TAG, "End stress in closing");
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "In stress test: " + e);
+                    Log.e(TAG, "In stress test", e);
                 }
             }
 
@@ -343,7 +344,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
                 out.flush();
                 out.close();
             } catch (IOException e) {
-                Log.e(TAG, "IO Exception while writing file: " + e);
+                Log.e(TAG, "IO Exception while writing file", e);
             } finally {
                 if (out != null) {
                     try {
