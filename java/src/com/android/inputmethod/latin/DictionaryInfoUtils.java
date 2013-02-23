@@ -49,17 +49,20 @@ public class DictionaryInfoUtils {
         private static final String LOCALE_COLUMN = "locale";
         private static final String WORDLISTID_COLUMN = "id";
         private static final String LOCAL_FILENAME_COLUMN = "filename";
+        private static final String DESCRIPTION_COLUMN = "description";
         private static final String DATE_COLUMN = "date";
         private static final String FILESIZE_COLUMN = "filesize";
         private static final String VERSION_COLUMN = "version";
+        public final String mId;
         public final Locale mLocale;
+        public final String mDescription;
         public final AssetFileAddress mFileAddress;
         public final int mVersion;
-        public final String mId;
-        public DictionaryInfo(final String id, final Locale locale,
+        public DictionaryInfo(final String id, final Locale locale, final String description,
                 final AssetFileAddress fileAddress, final int version) {
             mId = id;
             mLocale = locale;
+            mDescription = description;
             mFileAddress = fileAddress;
             mVersion = version;
         }
@@ -67,6 +70,7 @@ public class DictionaryInfoUtils {
             final ContentValues values = new ContentValues();
             values.put(WORDLISTID_COLUMN, mId);
             values.put(LOCALE_COLUMN, mLocale.toString());
+            values.put(DESCRIPTION_COLUMN, mDescription);
             values.put(LOCAL_FILENAME_COLUMN, mFileAddress.mFilename);
             values.put(DATE_COLUMN,
                     new File(mFileAddress.mFilename).lastModified() / DateUtils.SECOND_IN_MILLIS);
@@ -283,8 +287,9 @@ public class DictionaryInfoUtils {
                 new File(fileAddress.mFilename), fileAddress.mOffset, fileAddress.mLength);
         final String id = header.getId();
         final Locale locale = LocaleUtils.constructLocaleFromString(header.getLocaleString());
+        final String description = header.getDescription();
         final String version = header.getVersion();
-        return new DictionaryInfo(id, locale, fileAddress, Integer.parseInt(version));
+        return new DictionaryInfo(id, locale, description, fileAddress, Integer.parseInt(version));
     }
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
