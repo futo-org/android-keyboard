@@ -179,14 +179,13 @@ public final class Constants {
     public static final int CODE_DELETE = -4;
     public static final int CODE_SETTINGS = -5;
     public static final int CODE_SHORTCUT = -6;
-    public static final int CODE_ACTION_ENTER = -7;
-    public static final int CODE_ACTION_NEXT = -8;
-    public static final int CODE_ACTION_PREVIOUS = -9;
-    public static final int CODE_LANGUAGE_SWITCH = -10;
-    public static final int CODE_RESEARCH = -11;
-    public static final int CODE_SHIFT_ENTER = -12;
+    public static final int CODE_ACTION_NEXT = -7;
+    public static final int CODE_ACTION_PREVIOUS = -8;
+    public static final int CODE_LANGUAGE_SWITCH = -9;
+    public static final int CODE_RESEARCH = -10;
+    public static final int CODE_SHIFT_ENTER = -11;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -13;
+    public static final int CODE_UNSPECIFIED = -12;
 
     public static boolean isLetterCode(final int code) {
         return code >= CODE_SPACE;
@@ -200,7 +199,6 @@ public final class Constants {
         case CODE_DELETE: return "delete";
         case CODE_SETTINGS: return "settings";
         case CODE_SHORTCUT: return "shortcut";
-        case CODE_ACTION_ENTER: return "actionEnter";
         case CODE_ACTION_NEXT: return "actionNext";
         case CODE_ACTION_PREVIOUS: return "actionPrevious";
         case CODE_LANGUAGE_SWITCH: return "languageSwitch";

@@ -48,7 +48,6 @@ public final class KeyboardCodesSet {
         "key_delete",
         "key_settings",
         "key_shortcut",
-        "key_action_enter",
         "key_action_next",
         "key_action_previous",
         "key_shift_enter",
@@ -85,7 +84,6 @@ public final class KeyboardCodesSet {
         Constants.CODE_DELETE,
         Constants.CODE_SETTINGS,
         Constants.CODE_SHORTCUT,
-        Constants.CODE_ACTION_ENTER,
         Constants.CODE_ACTION_NEXT,
         Constants.CODE_ACTION_PREVIOUS,
         Constants.CODE_SHIFT_ENTER,
@@ -118,7 +116,6 @@ public final class KeyboardCodesSet {
         DEFAULT[12],
         DEFAULT[13],
         DEFAULT[14],
-        DEFAULT[15],
         CODE_RIGHT_PARENTHESIS,
         CODE_LEFT_PARENTHESIS,
         CODE_GREATER_THAN_SIGN,
@@ -142,7 +139,7 @@ public final class KeyboardCodesSet {
     };
 
     static {
-        if (DEFAULT.length != RTL.length) {
+        if (DEFAULT.length != RTL.length || DEFAULT.length != ID_TO_NAME.length) {
             throw new RuntimeException("Internal inconsistency");
         }
         for (int i = 0; i < ID_TO_NAME.length; i++) {

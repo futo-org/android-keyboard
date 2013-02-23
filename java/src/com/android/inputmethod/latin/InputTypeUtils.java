@@ -106,18 +106,13 @@ public final class InputTypeUtils implements InputType {
     }
 
     public static int getImeOptionsActionIdFromEditorInfo(final EditorInfo editorInfo) {
-        final int actionId = editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
         if ((editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             return EditorInfo.IME_ACTION_NONE;
         } else if (editorInfo.actionLabel != null) {
             return IME_ACTION_CUSTOM_LABEL;
         } else {
-            return actionId;
+            // Note: this is different from editorInfo.actionId, hence "ImeOptionsActionId"
+            return editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
         }
-    }
-
-    public static int getConcreteActionIdFromEditorInfo(final EditorInfo editorInfo) {
-        final int actionId = getImeOptionsActionIdFromEditorInfo(editorInfo);
-        return actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL ? editorInfo.actionId : actionId;
     }
 }

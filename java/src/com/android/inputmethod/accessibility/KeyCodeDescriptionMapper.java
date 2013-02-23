@@ -110,7 +110,9 @@ public final class KeyCodeDescriptionMapper {
             return getDescriptionForShiftKey(context, keyboard);
         }
 
-        if (code == Constants.CODE_ACTION_ENTER) {
+        if (code == Constants.CODE_ENTER) {
+            // The following function returns the correct description in all action and
+            // regular enter cases, taking care of all modes.
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
