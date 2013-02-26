@@ -180,14 +180,15 @@ public final class LocaleUtils {
             synchronized (sLockForRunInLocale) {
                 final Configuration conf = res.getConfiguration();
                 final Locale oldLocale = conf.locale;
+                final boolean needsChange = (newLocale != null && !newLocale.equals(oldLocale));
                 try {
-                    if (newLocale != null && !newLocale.equals(oldLocale)) {
+                    if (needsChange) {
                         conf.locale = newLocale;
                         res.updateConfiguration(conf, null);
                     }
                     return job(res);
                 } finally {
-                    if (newLocale != null && !newLocale.equals(oldLocale)) {
+                    if (needsChange) {
                         conf.locale = oldLocale;
                         res.updateConfiguration(conf, null);
                     }
