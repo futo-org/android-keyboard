@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.setup;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
@@ -43,7 +44,7 @@ public final class SetupActivity extends Activity {
     private SetupStepIndicatorView mStepIndicatorView;
     private final SetupStepGroup mSetupSteps = new SetupStepGroup();
     private static final String STATE_STEP = "step";
-    private int mStepNo;
+    private int mStepNumber;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
     private static final int STEP_3 = 3;
@@ -63,7 +64,7 @@ public final class SetupActivity extends Activity {
             final SetupActivity setupActivity = getOuterInstance();
             switch (msg.what) {
             case MSG_POLLING_IME_SETTINGS:
-                if (setupActivity.isMyImeEnabled()) {
+                if (SetupActivity.isThisImeEnabled(setupActivity)) {
                     setupActivity.invokeSetupWizardOfThisIme();
                     return;
                 }
@@ -92,12 +93,12 @@ public final class SetupActivity extends Activity {
         RichInputMethodManager.init(this);
 
         if (savedInstanceState == null) {
-            mStepNo = determineSetupStepNo();
+            mStepNumber = determineSetupStepNumber();
         } else {
-            mStepNo = savedInstanceState.getInt(STATE_STEP);
+            mStepNumber = savedInstanceState.getInt(STATE_STEP);
         }
 
-        if (mStepNo == STEP_3) {
+        if (mStepNumber == STEP_3) {
             // This IME already has been enabled and set as current IME.
             // TODO: Implement tutorial.
             invokeSettingsOfThisIme();
@@ -182,8 +183,16 @@ public final class SetupActivity extends Activity {
         startActivity(intent);
     }
 
-    private boolean isMyImeEnabled() {
-        final String packageName = getPackageName();
+    /**
+     * Check if the IME specified by the context is enabled.
+     * Note that {@link RichInputMethodManager} must have been initialized before calling this
+     * method.
+     *
+     * @param context package context of the IME to be checked.
+     * @return true if this IME is enabled.
+     */
+    public static boolean isThisImeEnabled(final Context context) {
+        final String packageName = context.getPackageName();
         final InputMethodManager imm = RichInputMethodManager.getInstance().getInputMethodManager();
         for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
             if (packageName.equals(imi.getPackageName())) {
@@ -193,20 +202,28 @@ public final class SetupActivity extends Activity {
         return false;
     }
 
-    private boolean isMyImeCurrent() {
+    /**
+     * Check if the IME specified by the context is the current IME.
+     * Note that {@link RichInputMethodManager} must have been initialized before calling this
+     * method.
+     *
+     * @param context package context of the IME to be checked.
+     * @return true if this IME is the current IME.
+     */
+    public static boolean isThisImeCurrent(final Context context) {
         final InputMethodInfo myImi =
                 RichInputMethodManager.getInstance().getInputMethodInfoOfThisIme();
         final String currentImeId = Settings.Secure.getString(
-                getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+                context.getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
         return myImi.getId().equals(currentImeId);
     }
 
-    private int determineSetupStepNo() {
+    private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
-        if (!isMyImeEnabled()) {
+        if (!isThisImeEnabled(this)) {
             return STEP_1;
         }
-        if (!isMyImeCurrent()) {
+        if (!isThisImeCurrent(this)) {
             return STEP_2;
         }
         return STEP_3;
@@ -215,25 +232,25 @@ public final class SetupActivity extends Activity {
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_STEP, mStepNo);
+        outState.putInt(STATE_STEP, mStepNumber);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mStepNo = savedInstanceState.getInt(STATE_STEP);
+        mStepNumber = savedInstanceState.getInt(STATE_STEP);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mStepNo = determineSetupStepNo();
+        mStepNumber = determineSetupStepNumber();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        mStepNo = determineSetupStepNo();
+        mStepNumber = determineSetupStepNumber();
     }
 
     @Override
@@ -248,15 +265,15 @@ public final class SetupActivity extends Activity {
         if (!hasFocus) {
             return;
         }
-        mStepNo = determineSetupStepNo();
+        mStepNumber = determineSetupStepNumber();
         updateSetupStepView();
     }
 
     private void updateSetupStepView() {
         final int layoutDirection = ViewCompatUtils.getLayoutDirection(mStepIndicatorView);
         mStepIndicatorView.setIndicatorPosition(
-                getIndicatorPosition(mStepNo, mSetupSteps.getTotalStep(), layoutDirection));
-        mSetupSteps.enableStep(mStepNo);
+                getIndicatorPosition(mStepNumber, mSetupSteps.getTotalStep(), layoutDirection));
+        mSetupSteps.enableStep(mStepNumber);
     }
 
     private static float getIndicatorPosition(final int step, final int totalStep,
