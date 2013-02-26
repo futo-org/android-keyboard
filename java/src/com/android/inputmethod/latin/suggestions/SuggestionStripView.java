@@ -644,10 +644,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return false;
     }
 
-    public SuggestedWords getSuggestions() {
-        return mSuggestedWords;
-    }
-
     public void clear() {
         mSuggestionsStrip.removeAllViews();
         removeAllViews();
