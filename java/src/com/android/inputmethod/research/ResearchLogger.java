@@ -208,7 +208,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private Intent mUploadIntent;
     private Intent mUploadNowIntent;
 
-    private LogUnit mCurrentLogUnit = new LogUnit();
+    /* package for test */ LogUnit mCurrentLogUnit = new LogUnit();
 
     // Gestured or tapped words may be committed after the gesture of the next word has started.
     // To ensure that the gesture data of the next word is not associated with the previous word,
