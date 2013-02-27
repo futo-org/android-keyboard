@@ -143,14 +143,7 @@ public final class Uploader {
             connection.setDoOutput(true);
             connection.setFixedLengthStreamingMode(contentLength);
             final OutputStream outputStream = connection.getOutputStream();
-            final byte[] buf = new byte[BUF_SIZE];
-            int numBytesRead;
-            while ((numBytesRead = fileInputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, numBytesRead);
-                if (DEBUG) {
-                    Log.d(TAG, new String(buf));
-                }
-            }
+            uploadContents(fileInputStream, outputStream);
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 Log.d(TAG, "upload failed: " + connection.getResponseCode());
                 final InputStream netInputStream = connection.getInputStream();
@@ -183,5 +176,15 @@ public final class Uploader {
             }
         }
         return success;
+    }
+
+    private static void uploadContents(final InputStream is, final OutputStream os)
+            throws IOException {
+        // TODO: Switch to NIO.
+        final byte[] buf = new byte[BUF_SIZE];
+        int numBytesRead;
+        while ((numBytesRead = is.read(buf)) != -1) {
+            os.write(buf, 0, numBytesRead);
+        }
     }
 }
