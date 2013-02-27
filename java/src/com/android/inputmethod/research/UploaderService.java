@@ -110,6 +110,10 @@ public final class UploaderService extends IntentService {
         return false;
     }
 
+    private boolean isConvenientToUpload() {
+        return isExternallyPowered() && hasWifiConnection();
+    }
+
     private boolean isExternallyPowered() {
         final Intent intent = registerReceiver(null, new IntentFilter(
                 Intent.ACTION_BATTERY_CHANGED));
@@ -126,10 +130,7 @@ public final class UploaderService extends IntentService {
     }
 
     private void doUpload(final boolean isUploadingUnconditionally) {
-        if (!isUploadingUnconditionally && (!isExternallyPowered() || !hasWifiConnection()
-                || IS_INHIBITING_AUTO_UPLOAD)) {
-            return;
-        }
+        if (!(isUploadingUnconditionally || isConvenientToUpload())) return;
         if (mFilesDir == null) {
             return;
         }
