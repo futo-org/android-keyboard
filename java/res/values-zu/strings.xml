@@ -167,6 +167,6 @@
     <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Siyakuhalalisela, usumi ngomumo!"</string>
     <string name="setup_step3_instruction" msgid="3095456922436793809">"Lungiselela izilimi ezingeziwe"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Ulimi nokokufaka"</string>
+    <string name="language_settings" msgid="1671153053201809031">"Ulimi nokokufakwayo"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Khetha indlela yokufaka"</string>
 </resources>

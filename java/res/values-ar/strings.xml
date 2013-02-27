@@ -165,7 +165,7 @@
     <string name="setup_step2_title" msgid="7272709575177957189">"الانتقال إلى <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="954968636921544464">"الآن وبعد تمكين <xliff:g id="APPLICATION_NAME">%s</xliff:g>، يمكنك الانتقال إليه."</string>
     <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"تهانينا، بهذا تكون قد انتهيت!"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"تهانينا، بهذا تكون قد انتهيت من الإعداد"</string>
     <string name="setup_step3_instruction" msgid="3095456922436793809">"تهيئة اللغات الإضافية"</string>
     <string name="language_settings" msgid="1671153053201809031">"اللغة والإدخال"</string>
     <string name="select_input_method" msgid="4301602374609275003">"اختيار أسلوب الإدخال"</string>
