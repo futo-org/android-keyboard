@@ -322,6 +322,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mMainKeyboardView = null;
     }
 
+    public void onDestroy() {
+        if (mPrefs != null) {
+            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
+    }
+
     private boolean hasSeenSplash() {
         return mPrefs.getBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, false);
     }

@@ -561,6 +561,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mSettings.onDestroy();
         unregisterReceiver(mReceiver);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().onDestroy();
+        }
         // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
         if (!ProductionFlag.IS_EXPERIMENTAL) {
             unregisterReceiver(mDictionaryPackInstallReceiver);
