@@ -116,23 +116,15 @@ public final class Uploader {
                         && !pathname.canWrite();
             }
         });
-        // TODO: Remove local variable
-        boolean success = true;
-        if (files.length == 0) {
-            success = false;
-        }
         for (final File file : files) {
-            if (!uploadFile(file)) {
-                success = false;
-            }
+            uploadFile(file);
         }
     }
 
-    private boolean uploadFile(final File file) {
+    private void uploadFile(final File file) {
         if (DEBUG) {
             Log.d(TAG, "attempting upload of " + file.getAbsolutePath());
         }
-        boolean success = false;
         final int contentLength = (int) file.length();
         HttpURLConnection connection = null;
         InputStream fileInputStream = null;
@@ -154,10 +146,9 @@ public final class Uploader {
                     Log.d(TAG, "| " + reader.readLine());
                 }
                 reader.close();
-                return success;
+                return;
             }
             file.delete();
-            success = true;
             if (DEBUG) {
                 Log.d(TAG, "upload successful");
             }
@@ -175,7 +166,6 @@ public final class Uploader {
                 connection.disconnect();
             }
         }
-        return success;
     }
 
     private static void uploadContents(final InputStream is, final OutputStream os)
