@@ -267,11 +267,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
-        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
-
         if (ProductionFlag.IS_EXPERIMENTAL) {
             scheduleUploadingService(mLatinIME);
         }
+        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
     }
 
     /**
@@ -555,7 +554,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (key == null || prefs == null) {
             return;
         }
@@ -577,7 +576,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         presentFeedbackDialog(latinIME);
     }
 
-    public void presentFeedbackDialog(LatinIME latinIME) {
+    public void presentFeedbackDialog(final LatinIME latinIME) {
         if (isMakingUserRecording()) {
             saveRecording();
         }
@@ -809,9 +808,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mPrefs == null) {
                 return;
             }
-            final Editor e = mPrefs.edit();
-            e.putString(PREF_RESEARCH_SAVED_CHANNEL, channelName);
-            e.apply();
+            mPrefs.edit().putString(PREF_RESEARCH_SAVED_CHANNEL, channelName).apply();
         }
     }
 
