@@ -118,6 +118,8 @@ public class ResearchLog {
                 } catch (Exception e) {
                     Log.d(TAG, "error when closing ResearchLog:", e);
                 } finally {
+                    // Marking the file as read-only signals that this log file is ready to be
+                    // uploaded.
                     if (mFile != null && mFile.exists()) {
                         mFile.setWritable(false, false);
                     }

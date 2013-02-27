@@ -26,6 +26,8 @@ public final class ResearchSettings {
             "pref_research_logger_enabled_flag";
     public static final String PREF_RESEARCH_LOGGER_HAS_SEEN_SPLASH =
             "pref_research_logger_has_seen_splash";
+    public static final String PREF_RESEARCH_LAST_DIR_CLEANUP_TIME =
+            "pref_research_last_dir_cleanup_time";
 
     private ResearchSettings() {
         // Intentional empty constructor for singleton.
@@ -57,5 +59,14 @@ public final class ResearchSettings {
     public static void writeHasSeenSplash(final SharedPreferences prefs,
             final boolean hasSeenSplash) {
         prefs.edit().putBoolean(PREF_RESEARCH_LOGGER_HAS_SEEN_SPLASH, hasSeenSplash).apply();
+    }
+
+    public static long readResearchLastDirCleanupTime(final SharedPreferences prefs) {
+        return prefs.getLong(PREF_RESEARCH_LAST_DIR_CLEANUP_TIME, 0L);
+    }
+
+    public static void writeResearchLastDirCleanupTime(final SharedPreferences prefs,
+            final long lastDirCleanupTime) {
+        prefs.edit().putLong(PREF_RESEARCH_LAST_DIR_CLEANUP_TIME, lastDirCleanupTime).apply();
     }
 }

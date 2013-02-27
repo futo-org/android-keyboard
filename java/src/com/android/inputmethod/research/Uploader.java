@@ -17,7 +17,6 @@
 package com.android.inputmethod.research;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,7 +32,6 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,12 +53,12 @@ public final class Uploader {
     private static final int BUF_SIZE = 1024 * 8;
 
     private final Context mContext;
-    private final File mFilesDir;
+    private final ResearchLogDirectory mResearchLogDirectory;
     private final URL mUrl;
 
     public Uploader(final Context context) {
         mContext = context;
-        mFilesDir = context.getFilesDir();
+        mResearchLogDirectory = new ResearchLogDirectory(context);
 
         final String urlString = context.getString(R.string.research_logger_upload_url);
         if (TextUtils.isEmpty(urlString)) {
@@ -106,16 +104,8 @@ public final class Uploader {
     }
 
     public void doUpload() {
-        if (mFilesDir == null) {
-            return;
-        }
-        final File[] files = mFilesDir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                return pathname.getName().startsWith(ResearchLogger.LOG_FILENAME_PREFIX)
-                        && !pathname.canWrite();
-            }
-        });
+        final File[] files = mResearchLogDirectory.getUploadableLogFiles();
+        if (files == null) return;
         for (final File file : files) {
             uploadFile(file);
         }
