@@ -154,7 +154,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
-    private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
     private static final String PREF_RESEARCH_SAVED_CHANNEL = "pref_research_saved_channel";
 
     private static final ResearchLogger sInstance = new ResearchLogger();
@@ -162,7 +161,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static String sAllowedAccountDomain = null;
     // to write to a different filename, e.g., for testing, set mFile before calling start()
     /* package */ File mFilesDir;
-    /* package */ String mUUIDString;
     /* package */ ResearchLog mMainResearchLog;
     // mFeedbackLog records all events for the session, private or not (excepting
     // passwords).  It is written to permanent storage only if the user explicitly commands
@@ -249,7 +247,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
         if (prefs != null) {
-            mUUIDString = getUUID(prefs);
             if (!prefs.contains(PREF_USABILITY_STUDY_MODE)) {
                 Editor e = prefs.edit();
                 e.putBoolean(PREF_USABILITY_STUDY_MODE, DEFAULT_USABILITY_STUDY_MODE);
@@ -413,7 +410,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private File createLogFile(final File filesDir) {
         final StringBuilder sb = new StringBuilder();
         sb.append(LOG_FILENAME_PREFIX).append('-');
-        sb.append(mUUIDString).append('-');
+        final String uuid = ResearchSettings.readResearchLoggerUuid(mPrefs);
+        sb.append(uuid).append('-');
         sb.append(TIMESTAMP_DATEFORMAT.format(new Date())).append('-');
         // Sometimes logFiles are created within milliseconds of each other.  Append a counter to
         // separate these.
@@ -431,7 +429,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private File createUserRecordingFile(final File filesDir) {
         final StringBuilder sb = new StringBuilder();
         sb.append(USER_RECORDING_FILENAME_PREFIX).append('-');
-        sb.append(mUUIDString).append('-');
+        final String uuid = ResearchSettings.readResearchLoggerUuid(mPrefs);
+        sb.append(uuid).append('-');
         sb.append(TIMESTAMP_DATEFORMAT.format(new Date()));
         sb.append(USER_RECORDING_FILENAME_SUFFIX);
         return new File(filesDir, sb.toString());
@@ -1143,18 +1142,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private static String getUUID(final SharedPreferences prefs) {
-        String uuidString = prefs.getString(PREF_RESEARCH_LOGGER_UUID_STRING, null);
-        if (null == uuidString) {
-            UUID uuid = UUID.randomUUID();
-            uuidString = uuid.toString();
-            Editor editor = prefs.edit();
-            editor.putString(PREF_RESEARCH_LOGGER_UUID_STRING, uuidString);
-            editor.apply();
-        }
-        return uuidString;
-    }
-
     private String scrubWord(String word) {
         final Dictionary dictionary = getDictionary();
         if (dictionary == null) {
@@ -1201,9 +1188,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         0);
                 final Integer versionCode = packageInfo.versionCode;
                 final String versionName = packageInfo.versionName;
+                final String uuid = ResearchSettings.readResearchLoggerUuid(researchLogger.mPrefs);
                 researchLogger.enqueueEvent(LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL,
-                        researchLogger.mUUIDString, editorInfo.packageName,
-                        Integer.toHexString(editorInfo.inputType),
+                        uuid, editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
                         OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
