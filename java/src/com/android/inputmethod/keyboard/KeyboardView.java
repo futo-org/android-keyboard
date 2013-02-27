@@ -635,15 +635,9 @@ public class KeyboardView extends View {
         invalidate(x, y, x + key.mWidth, y + key.mHeight);
     }
 
-    // TODO: Remove this method.
-    public void closing() {
-        mInvalidateAllKeys = true;
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        closing();
         freeOffscreenBuffer();
     }
 }
