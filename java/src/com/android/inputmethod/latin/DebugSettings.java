@@ -57,7 +57,7 @@ public final class DebugSettings extends PreferenceFragment
         if (usabilityStudyPref instanceof CheckBoxPreference) {
             final CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
             checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
-                    ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
+                    LatinImeLogger.getUsabilityStudyMode(prefs)));
             checkbox.setSummary(R.string.settings_warning_researcher_mode);
         }
         final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING);
