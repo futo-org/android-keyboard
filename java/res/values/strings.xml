@@ -415,7 +415,7 @@
     <string name="setup_step1_bullet">1</string>
     <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g> in settings."</string>
-    <!-- Detailed instruction of the 1st step in the setup wizard. "Check application_name" means "enable application_name by ticking the checkbox". [CHAR LIMIT=80] -->
+    <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=80] -->
     <string name="setup_step1_instruction">"For security, please check \"<xliff:g id="application_name">%s</xliff:g>\""</string>
     <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step2_bullet">2</string>
