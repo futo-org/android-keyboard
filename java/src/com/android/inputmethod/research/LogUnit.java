@@ -45,7 +45,7 @@ import java.util.List;
  * will not violate the user's privacy.  Checks for this may include whether other LogUnits have
  * been published recently, or whether the LogUnit contains numbers, etc.
  */
-/* package */ class LogUnit {
+public class LogUnit {
     private static final String TAG = LogUnit.class.getSimpleName();
     private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
 
