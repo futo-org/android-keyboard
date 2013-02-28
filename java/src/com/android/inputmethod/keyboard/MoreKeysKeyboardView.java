@@ -174,7 +174,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     public boolean dismissMoreKeysPanel() {
-        super.closing();
         if (mController == null) return false;
         return mController.onDismissMoreKeysPanel();
     }

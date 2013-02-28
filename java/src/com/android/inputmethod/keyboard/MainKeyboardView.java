@@ -1236,13 +1236,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mDrawingHandler.cancelAllMessages();
     }
 
-    @Override
     public void closing() {
         dismissAllKeyPreviews();
         cancelAllMessages();
         onDismissMoreKeysPanel();
         mMoreKeysKeyboardCache.clear();
-        super.closing();
     }
 
     /**
