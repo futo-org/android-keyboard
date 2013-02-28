@@ -25,9 +25,10 @@ import android.content.Intent;
  */
 public final class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            ResearchLogger.scheduleUploadingService(context);
+            UploaderService.cancelAndRescheduleUploadingService(context,
+                    true /* needsRescheduling */);
         }
     }
 }

@@ -20,16 +20,13 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
@@ -74,22 +71,16 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Logs the use of the LatinIME keyboard.
@@ -254,7 +245,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            scheduleUploadingService(mLatinIME);
+            UploaderService.cancelAndRescheduleUploadingService(mLatinIME,
+                    true /* needsRescheduling */);
         }
         mReplayer.setKeyboardSwitcher(keyboardSwitcher);
     }
@@ -266,25 +258,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final long oldestAllowedFileTime = now - MAX_LOGFILE_AGE_IN_MS;
         mResearchLogDirectory.cleanupLogFilesOlderThan(oldestAllowedFileTime);
         ResearchSettings.writeResearchLastDirCleanupTime(mPrefs, now);
-    }
-
-    /**
-     * Arrange for the UploaderService to be run on a regular basis.
-     *
-     * Any existing scheduled invocation of UploaderService is removed and rescheduled.  This may
-     * cause problems if this method is called often and frequent updates are required, but since
-     * the user will likely be sleeping at some point, if the interval is less that the expected
-     * sleep duration and this method is not called during that time, the service should be invoked
-     * at some point.
-     */
-    public static void scheduleUploadingService(Context context) {
-        final Intent intent = new Intent(context, UploaderService.class);
-        final PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-        final AlarmManager manager =
-                (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        manager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                UploaderService.RUN_INTERVAL, UploaderService.RUN_INTERVAL, pendingIntent);
     }
 
     public void mainKeyboardView_onAttachedToWindow(final MainKeyboardView mainKeyboardView) {
