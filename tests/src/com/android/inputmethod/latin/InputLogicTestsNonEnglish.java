@@ -74,15 +74,22 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
     public void testWordThenSpaceDisplaysPredictions() {
         final String WORD_TO_TYPE = "beaujolais ";
         final String EXPECTED_RESULT = "nouveau";
-        changeLanguage("fr");
-        type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        final SuggestionStripView suggestionStripView =
-                (SuggestionStripView)mInputView.findViewById(R.id.suggestion_strip_view);
-        final SuggestedWords suggestedWords = suggestionStripView.getSuggestions();
-        assertEquals("type word then type space yields predictions for French",
-                EXPECTED_RESULT, suggestedWords.getWord(0));
+        final boolean defaultNextWordPredictionOption =
+                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_prediction);
+        final boolean previousNextWordPredictionOption =
+                setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, true,
+                        defaultNextWordPredictionOption);
+        try {
+            changeLanguage("fr");
+            type(WORD_TO_TYPE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            runMessages();
+            assertEquals("type word then type space yields predictions for French",
+                    EXPECTED_RESULT, mLatinIME.getFirstSuggestedWord());
+        } finally {
+            setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
+                    defaultNextWordPredictionOption);
+        }
     }
 
     public void testAutoCorrectForGerman() {
