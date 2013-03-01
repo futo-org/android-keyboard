@@ -108,13 +108,13 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modalità lettere"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modalità telefono"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modalità simboli telefono"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Tasto immissione vocale"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tasto input vocale"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Su tastiera principale"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Su tastiera simboli"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Non attivo"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Microfono su tastiera principale"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Microfono su tastiera simboli"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Comandi vocali disatt."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Input vocale disatt."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura metodi di immissione"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
     <string name="select_language" msgid="3693815588777926848">"Lingue comandi"</string>
@@ -157,28 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Installare questo file per <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Si è verificato un errore"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinito"</string>
-    <!-- no translation found for setup_title (747642322299536064) -->
-    <skip />
-    <!-- no translation found for setup_step1_bullet (1963433060317624853) -->
-    <skip />
-    <!-- no translation found for setup_step1_title (7316009176808245440) -->
-    <skip />
-    <!-- no translation found for setup_step1_instruction (600886471143563141) -->
-    <skip />
-    <!-- no translation found for setup_step2_bullet (1827848024009574912) -->
-    <skip />
-    <!-- no translation found for setup_step2_title (7272709575177957189) -->
-    <skip />
-    <!-- no translation found for setup_step2_instruction (954968636921544464) -->
-    <skip />
-    <!-- no translation found for setup_step3_bullet (1599279767555395777) -->
-    <skip />
-    <!-- no translation found for setup_step3_title (3154757183631490281) -->
-    <skip />
-    <!-- no translation found for setup_step3_instruction (3095456922436793809) -->
-    <skip />
-    <!-- no translation found for language_settings (1671153053201809031) -->
-    <skip />
-    <!-- no translation found for select_input_method (4301602374609275003) -->
-    <skip />
+    <string name="language_settings" msgid="1671153053201809031">"Lingua e input"</string>
+    <string name="select_input_method" msgid="4301602374609275003">"Scegli il metodo di immissione"</string>
 </resources>
