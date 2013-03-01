@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"ติดตั้งไฟล์นี้สำหรับ <xliff:g id="LOCALE_NAME">%s</xliff:g> จริงๆ หรือ"</string>
     <string name="error" msgid="8940763624668513648">"เกิดข้อผิดพลาด"</string>
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
-    <string name="setup_title" msgid="747642322299536064">"กำลังติดตั้ง <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"เปิดใช้งาน <xliff:g id="APPLICATION_NAME">%s</xliff:g> ในการตั้งค่า"</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"เพื่อความปลอดภัย โปรดตรวจสอบ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\""</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"สลับไปใช้ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"เมื่อคุณเปิดใช้งาน <xliff:g id="APPLICATION_NAME">%s</xliff:g> แล้ว คุณสามารถสลับไปใช้งานแอปดังกล่าวได้"</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"ยินดีด้วย คุณพร้อมใช้งานแล้ว!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"กำหนดค่าภาษาเพิ่มเติม"</string>
     <string name="language_settings" msgid="1671153053201809031">"ภาษาและการป้อนข้อมูล"</string>
     <string name="select_input_method" msgid="4301602374609275003">"เลือกวิธีการป้อนข้อมูล"</string>
 </resources>

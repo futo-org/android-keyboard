@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Isakinishe faili hii kwa <xliff:g id="LOCALE_NAME">%s</xliff:g> kweli?"</string>
     <string name="error" msgid="8940763624668513648">"Kulikuwa na hitilafu"</string>
     <string name="button_default" msgid="3988017840431881491">"Chaguo-msingi"</string>
-    <string name="setup_title" msgid="747642322299536064">"Inasakinisha <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"Washa <xliff:g id="APPLICATION_NAME">%s</xliff:g> katika mipangilio."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"Kwa usalama, tafadhali angalia \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\""</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"Badili kwa <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"Kwa kuwa sasa umewasha <xliff:g id="APPLICATION_NAME">%s</xliff:g>, unaweza kubadili."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Hongera, uko tayari!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"Sanidi lugha za ziada"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Uingizaji lugha"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Chagua njia ya ingizo"</string>
+    <string name="language_settings" msgid="1671153053201809031">"Lugha na uingizaji"</string>
+    <string name="select_input_method" msgid="4301602374609275003">"Chagua mbinu ya kuingiza data"</string>
 </resources>
