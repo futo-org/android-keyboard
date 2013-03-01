@@ -400,6 +400,8 @@ typedef enum {
     NEAR_PROXIMITY_CHAR,
     // It is an unrelated char
     UNRELATED_CHAR,
+    // It is an unrelated char and not a substitution
+    UNRELATED_AND_NOT_SUBSTITUTION_CHAR,
     // Additional proximity char which can differ by language.
     ADDITIONAL_PROXIMITY_CHAR
 } ProximityType;
