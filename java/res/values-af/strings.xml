@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Moet hierdie lêer regtig vir <xliff:g id="LOCALE_NAME">%s</xliff:g> geïnstalleer word?"</string>
     <string name="error" msgid="8940763624668513648">"Daar was \'n fout"</string>
     <string name="button_default" msgid="3988017840431881491">"Verstek"</string>
-    <string name="setup_title" msgid="747642322299536064">"Installeer <xliff:g id="APPLICATION_NAME">%s</xliff:g> tans"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"Aktiveer <xliff:g id="APPLICATION_NAME">%s</xliff:g> in instellings."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"Vir sekuriteit, gaan asseblief \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" na"</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"Skakel oor na <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"Noudat jy <xliff:g id="APPLICATION_NAME">%s</xliff:g> geaktiveer het, kan jy oorskakel daarheen."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Veels geluk, jy\'s gereed!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"Stel bykomende tale op"</string>
     <string name="language_settings" msgid="1671153053201809031">"Taal en invoer"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Kies invoermetode"</string>
 </resources>

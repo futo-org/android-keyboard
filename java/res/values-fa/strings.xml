@@ -161,16 +161,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"این فایل واقعاً برای <xliff:g id="LOCALE_NAME">%s</xliff:g> نصب شود؟"</string>
     <string name="error" msgid="8940763624668513648">"خطایی روی داد"</string>
     <string name="button_default" msgid="3988017840431881491">"پیش‌فرض"</string>
-    <string name="setup_title" msgid="747642322299536064">"نصب <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"۱"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> را در تنظیمات فعال کنید."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"برای امنیت بیشتر، لطفاً «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» را بررسی کنید"</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"۲"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"به <xliff:g id="APPLICATION_NAME">%s</xliff:g> بروید."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"اکنون که شما <xliff:g id="APPLICATION_NAME">%s</xliff:g> را فعال کرده‌اید، می‌توانید به آن بروید."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"۳"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"تبریک می‌گوییم، اکنون کاملاً آماده هستید!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"پیکربندی زبان‌های دیگر"</string>
     <string name="language_settings" msgid="1671153053201809031">"زبان و ورودی"</string>
     <string name="select_input_method" msgid="4301602374609275003">"انتخاب روش ورودی"</string>
 </resources>

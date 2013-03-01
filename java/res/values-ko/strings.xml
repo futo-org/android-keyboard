@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"이 파일을 <xliff:g id="LOCALE_NAME">%s</xliff:g>(으)로 설치하시겠습니까?"</string>
     <string name="error" msgid="8940763624668513648">"오류 발생"</string>
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
-    <string name="setup_title" msgid="747642322299536064">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 설치"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"설정에서 <xliff:g id="APPLICATION_NAME">%s</xliff:g> 사용 설정"</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"보안을 위해 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 확인하세요."</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>(으)로 전환"</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"이제 <xliff:g id="APPLICATION_NAME">%s</xliff:g>이(가) 사용 설정되었으며 입력 방법을 전환할 수 있습니다."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"모든 설정이 완료되었습니다."</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"추가 언어 설정"</string>
     <string name="language_settings" msgid="1671153053201809031">"언어 및 키보드"</string>
     <string name="select_input_method" msgid="4301602374609275003">"입력 방법 선택"</string>
 </resources>

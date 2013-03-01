@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Installare questo file per <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Si è verificato un errore"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinito"</string>
-    <string name="setup_title" msgid="747642322299536064">"Installazione di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"Attiva <xliff:g id="APPLICATION_NAME">%s</xliff:g> nelle impostazioni."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"Per sicurezza, controlla \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\"."</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"Passa a <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"Ora che hai attivato <xliff:g id="APPLICATION_NAME">%s</xliff:g> puoi passare all\'app."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Congratulazioni, hai finito."</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"Configura altre lingue."</string>
     <string name="language_settings" msgid="1671153053201809031">"Lingua e input"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Scegli il metodo di immissione"</string>
 </resources>

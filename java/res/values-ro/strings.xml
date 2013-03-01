@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Doriți să instalați acest fișier pentru <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"A apărut o eroare"</string>
     <string name="button_default" msgid="3988017840431881491">"Prestabilit"</string>
-    <string name="setup_title" msgid="747642322299536064">"Instalarea <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"Activați <xliff:g id="APPLICATION_NAME">%s</xliff:g> din setări."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"Pentru securitate, bifați „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”"</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"Comutați la <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"Acum, după ce ați activat <xliff:g id="APPLICATION_NAME">%s</xliff:g>, puteți comuta la aceasta."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Felicitări, sunteți gata!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"Configurați limbi suplimentare"</string>
     <string name="language_settings" msgid="1671153053201809031">"Limbă și introducere de text"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Alegeți metoda de introducere de text"</string>
 </resources>

@@ -157,28 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Желите ли стварно да инсталирате ову датотеку за <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Дошло је до грешке"</string>
     <string name="button_default" msgid="3988017840431881491">"Подразумевано"</string>
-    <!-- no translation found for setup_title (747642322299536064) -->
-    <skip />
-    <!-- no translation found for setup_step1_bullet (1963433060317624853) -->
-    <skip />
-    <!-- no translation found for setup_step1_title (7316009176808245440) -->
-    <skip />
-    <!-- no translation found for setup_step1_instruction (600886471143563141) -->
-    <skip />
-    <!-- no translation found for setup_step2_bullet (1827848024009574912) -->
-    <skip />
-    <!-- no translation found for setup_step2_title (7272709575177957189) -->
-    <skip />
-    <!-- no translation found for setup_step2_instruction (954968636921544464) -->
-    <skip />
-    <!-- no translation found for setup_step3_bullet (1599279767555395777) -->
-    <skip />
-    <!-- no translation found for setup_step3_title (3154757183631490281) -->
-    <skip />
-    <!-- no translation found for setup_step3_instruction (3095456922436793809) -->
-    <skip />
-    <!-- no translation found for language_settings (1671153053201809031) -->
-    <skip />
-    <!-- no translation found for select_input_method (4301602374609275003) -->
-    <skip />
+    <string name="language_settings" msgid="1671153053201809031">"Језик и унос"</string>
+    <string name="select_input_method" msgid="4301602374609275003">"Избор метода уноса"</string>
 </resources>

@@ -157,16 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Instalar mesmo este ficheiro para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Ocorreu um erro"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinido"</string>
-    <string name="setup_title" msgid="747642322299536064">"A instalar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_bullet" msgid="1963433060317624853">"1"</string>
-    <string name="setup_step1_title" msgid="7316009176808245440">"Ative <xliff:g id="APPLICATION_NAME">%s</xliff:g> nas definições."</string>
-    <string name="setup_step1_instruction" msgid="600886471143563141">"Por uma questão de segurança, verifique \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\""</string>
-    <string name="setup_step2_bullet" msgid="1827848024009574912">"2"</string>
-    <string name="setup_step2_title" msgid="7272709575177957189">"Mudar para <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
-    <string name="setup_step2_instruction" msgid="954968636921544464">"Agora que ativou <xliff:g id="APPLICATION_NAME">%s</xliff:g>, pode mudar para lá."</string>
-    <string name="setup_step3_bullet" msgid="1599279767555395777">"3"</string>
-    <string name="setup_step3_title" msgid="3154757183631490281">"Parabéns, está pronto para começar!"</string>
-    <string name="setup_step3_instruction" msgid="3095456922436793809">"Configurar idiomas adicionais"</string>
     <string name="language_settings" msgid="1671153053201809031">"Idioma e entrada de som"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Escolher o método de entrada"</string>
 </resources>
