@@ -108,13 +108,13 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modalità lettere"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modalità telefono"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modalità simboli telefono"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Tasto immissione vocale"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tasto input vocale"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Su tastiera principale"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Su tastiera simboli"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Non attivo"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Microfono su tastiera principale"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Microfono su tastiera simboli"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Comandi vocali disatt."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Input vocale disatt."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura metodi di immissione"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
     <string name="select_language" msgid="3693815588777926848">"Lingue comandi"</string>
