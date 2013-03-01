@@ -398,10 +398,10 @@ typedef enum {
     EQUIVALENT_CHAR,
     // It is a char located nearby on the keyboard
     NEAR_PROXIMITY_CHAR,
-    // It is an unrelated char
+    // It is an unrelated char and could be a substitution char
     UNRELATED_CHAR,
-    // It is an unrelated char and not a substitution
-    UNRELATED_AND_NOT_SUBSTITUTION_CHAR,
+    // It is an unrelated char nor a substitution char
+    UNRELATED_NOR_SUBSTITUTION_CHAR,
     // Additional proximity char which can differ by language.
     ADDITIONAL_PROXIMITY_CHAR
 } ProximityType;
