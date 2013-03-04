@@ -411,4 +411,18 @@ typedef enum {
     A_DOUBLE_LETTER,
     A_STRONG_DOUBLE_LETTER
 } DoubleLetterLevel;
+
+typedef enum {
+    CT_MATCH,
+    CT_OMISSION,
+    CT_INSERTION,
+    CT_TRANSPOSITION,
+    CT_SUBSTITUTION,
+    CT_SPACE_SUBSTITUTION,
+    CT_SPACE_OMISSION,
+    CT_COMPLETION,
+    CT_TERMINAL,
+    CT_NEW_WORD,
+    CT_NEW_WORD_BIGRAM,
+} CorrectionType;
 #endif // LATINIME_DEFINES_H
