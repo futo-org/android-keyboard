@@ -122,7 +122,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // field holds a channel name, the developer does not have to re-enter it when using the
     // feedback mechanism to generate multiple tests.
     private static final boolean FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD = false;
-    public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 5;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
@@ -249,12 +248,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mSuggest = suggest;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
         if (prefs != null) {
-            if (!prefs.contains(PREF_USABILITY_STUDY_MODE)) {
-                Editor e = prefs.edit();
-                e.putBoolean(PREF_USABILITY_STUDY_MODE, DEFAULT_USABILITY_STUDY_MODE);
-                e.apply();
-            }
-            sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
+            sIsLogging = ResearchSettings.readResearchLoggerEnabledFlag(prefs);
             prefs.registerOnSharedPreferenceChangeListener(this);
 
             final long lastCleanupTime = prefs.getLong(PREF_LAST_CLEANUP_TIME, 0L);
@@ -397,13 +391,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         restart();
     }
 
-    private void setLoggingAllowed(boolean enableLogging) {
-        if (mPrefs == null) {
-            return;
-        }
-        Editor e = mPrefs.edit();
-        e.putBoolean(PREF_USABILITY_STUDY_MODE, enableLogging);
-        e.apply();
+    private void setLoggingAllowed(final boolean enableLogging) {
+        if (mPrefs == null) return;
+        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, enableLogging);
         sIsLogging = enableLogging;
     }
 

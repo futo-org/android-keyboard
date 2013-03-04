@@ -37,6 +37,10 @@ public final class LatinImeLogger implements SharedPreferences.OnSharedPreferenc
     public static void commit() {
     }
 
+    public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
+        return false;
+    }
+
     public static void onDestroy() {
     }
 

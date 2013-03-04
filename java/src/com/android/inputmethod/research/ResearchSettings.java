@@ -22,6 +22,8 @@ import java.util.UUID;
 
 public final class ResearchSettings {
     public static final String PREF_RESEARCH_LOGGER_UUID = "pref_research_logger_uuid";
+    public static final String PREF_RESEARCH_LOGGER_ENABLED_FLAG =
+            "pref_research_logger_enabled_flag";
 
     private ResearchSettings() {
         // Intentional empty constructor for singleton.
@@ -35,5 +37,14 @@ public final class ResearchSettings {
         final String newUuid = UUID.randomUUID().toString();
         prefs.edit().putString(PREF_RESEARCH_LOGGER_UUID, newUuid).apply();
         return newUuid;
+    }
+
+    public static boolean readResearchLoggerEnabledFlag(final SharedPreferences prefs) {
+        return prefs.getBoolean(PREF_RESEARCH_LOGGER_ENABLED_FLAG, false);
+    }
+
+    public static void writeResearchLoggerEnabledFlag(final SharedPreferences prefs,
+            final boolean isEnabled) {
+        prefs.edit().putBoolean(PREF_RESEARCH_LOGGER_ENABLED_FLAG, isEnabled).apply();
     }
 }
