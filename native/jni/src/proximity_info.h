@@ -70,7 +70,7 @@ class ProximityInfo {
     int getKeyCenterYOfKeyIdG(int keyId) const;
     int getKeyKeyDistanceG(int keyId0, int keyId1) const;
 
-    void AK_FORCE_INLINE initializeProximities(const int *const inputCodes,
+    AK_FORCE_INLINE void initializeProximities(const int *const inputCodes,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
             const int inputSize, int *allInputCodes) const {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
@@ -79,8 +79,12 @@ class ProximityInfo {
                 KEY_COUNT, mLocaleStr, &mCodeToKeyMap, allInputCodes);
     }
 
-    int AK_FORCE_INLINE getKeyIndexOf(const int c) const {
+    AK_FORCE_INLINE int getKeyIndexOf(const int c) const {
         return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mCodeToKeyMap);
+    }
+
+    AK_FORCE_INLINE bool isCodePointOnKeyboard(const int codePoint) const {
+        return getKeyIndexOf(codePoint) != NOT_AN_INDEX;
     }
 
  private:
