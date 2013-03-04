@@ -81,7 +81,7 @@ public final class CompatUtils {
         try {
             return constructor.newInstance(args);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in newInstance: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in newInstance", e);
         }
         return null;
     }
@@ -92,7 +92,7 @@ public final class CompatUtils {
         try {
             return method.invoke(receiver, args);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in invoke: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in invoke", e);
         }
         return defaultValue;
     }
@@ -103,7 +103,7 @@ public final class CompatUtils {
         try {
             return field.get(receiver);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in getFieldValue: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in getFieldValue", e);
         }
         return defaultValue;
     }
@@ -113,7 +113,7 @@ public final class CompatUtils {
         try {
             field.set(receiver, value);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in setFieldValue: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in setFieldValue", e);
         }
     }
 }
