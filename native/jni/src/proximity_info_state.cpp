@@ -193,20 +193,20 @@ float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const in
 // the same position. We want to see if c is in it: if so, then the word contains at that position
 // a character close to what the user typed.
 // What the user typed is actually the first character of the array.
-// proximityIndex is a pointer to the variable where getMatchedProximityId returns the index of c
+// proximityIndex is a pointer to the variable where getProximityType returns the index of c
 // in the proximity chars of the input index.
 // Notice : accented characters do not have a proximity list, so they are alone in their list. The
 // non-accented version of the character should be considered "close", but not the other keys close
 // to the non-accented version.
-ProximityType ProximityInfoState::getMatchedProximityId(const int index, const int c,
+ProximityType ProximityInfoState::getProximityType(const int index, const int codePoint,
         const bool checkProximityChars, int *proximityIndex) const {
     const int *currentCodePoints = getProximityCodePointsAt(index);
     const int firstCodePoint = currentCodePoints[0];
-    const int baseLowerC = toBaseLowerCase(c);
+    const int baseLowerC = toBaseLowerCase(codePoint);
 
     // The first char in the array is what user typed. If it matches right away, that means the
     // user typed that same char for this pos.
-    if (firstCodePoint == baseLowerC || firstCodePoint == c) {
+    if (firstCodePoint == baseLowerC || firstCodePoint == codePoint) {
         return EQUIVALENT_CHAR;
     }
 
@@ -222,7 +222,8 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
     int j = 1;
     while (j < MAX_PROXIMITY_CHARS_SIZE
             && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
-        const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
+        const bool matched = (currentCodePoints[j] == baseLowerC
+                || currentCodePoints[j] == codePoint);
         if (matched) {
             if (proximityIndex) {
                 *proximityIndex = j;
@@ -236,7 +237,8 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
         ++j;
         while (j < MAX_PROXIMITY_CHARS_SIZE
                 && currentCodePoints[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
-            const bool matched = (currentCodePoints[j] == baseLowerC || currentCodePoints[j] == c);
+            const bool matched = (currentCodePoints[j] == baseLowerC
+                    || currentCodePoints[j] == codePoint);
             if (matched) {
                 if (proximityIndex) {
                     *proximityIndex = j;
@@ -248,6 +250,21 @@ ProximityType ProximityInfoState::getMatchedProximityId(const int index, const i
     }
     // Was not included, signal this as an unrelated character.
     return UNRELATED_CHAR;
+}
+
+ProximityType ProximityInfoState::getProximityTypeG(const int index, const int codePoint) const {
+    if (!isUsed()) {
+        return UNRELATED_NOR_SUBSTITUTION_CHAR;
+    }
+    const int lowerCodePoint = toLowerCase(codePoint);
+    const int baseLowerCodePoint = toBaseCodePoint(lowerCodePoint);
+    for (int i = 0; i < static_cast<int>(mSampledSearchKeyVectors[index].size()); ++i) {
+        if (mSampledSearchKeyVectors[index][i] == lowerCodePoint
+                || mSampledSearchKeyVectors[index][i] == baseLowerCodePoint) {
+            return EQUIVALENT_CHAR;
+        }
+    }
+    return UNRELATED_NOR_SUBSTITUTION_CHAR;
 }
 
 bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int keyId) const {

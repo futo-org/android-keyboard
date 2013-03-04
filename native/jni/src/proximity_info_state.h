@@ -152,8 +152,10 @@ class ProximityInfoState {
     float getPointToKeyLength(const int inputIndex, const int codePoint, const float scale) const;
     float getPointToKeyLength_G(const int inputIndex, const int codePoint) const;
 
-    ProximityType getMatchedProximityId(const int index, const int c,
+    ProximityType getProximityType(const int index, const int codePoint,
             const bool checkProximityChars, int *proximityIndex = 0) const;
+
+    ProximityType getProximityTypeG(const int index, const int codePoint) const;
 
     const std::vector<int> *getSearchKeyVector(const int index) const {
         return &mSampledSearchKeyVectors[index];

@@ -214,7 +214,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputSize - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
-            const ProximityType matchId = mProximityInfoState.getMatchedProximityId(
+            const ProximityType matchId = mProximityInfoState.getProximityType(
                     mInputIndex, c, true, &proximityIndex);
             if (isEquivalentChar(matchId)) {
                 mLastCharExceeded = false;
@@ -268,7 +268,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
 
     bool secondTransposing = false;
     if (mTransposedCount % 2 == 1) {
-        if (isEquivalentChar(mProximityInfoState.getMatchedProximityId(
+        if (isEquivalentChar(mProximityInfoState.getProximityType(
                 mInputIndex - 1, c, false))) {
             ++mTransposedCount;
             secondTransposing = true;
@@ -300,7 +300,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
 
     ProximityType matchedProximityCharId = secondTransposing
             ? EQUIVALENT_CHAR
-            : mProximityInfoState.getMatchedProximityId(
+            : mProximityInfoState.getProximityType(
                     mInputIndex, c, checkProximityChars, &proximityIndex);
 
     if (UNRELATED_CHAR == matchedProximityCharId
@@ -308,7 +308,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         if (canTryCorrection && mOutputIndex > 0
                 && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mExceeding
-                && isEquivalentChar(mProximityInfoState.getMatchedProximityId(
+                && isEquivalentChar(mProximityInfoState.getProximityType(
                         mInputIndex, mWord[mOutputIndex - 1], false))) {
             if (DEBUG_CORRECTION
                     && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
@@ -327,7 +327,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
             // Here, we are doing something equivalent to matchedProximityCharId,
             // but we already know that "excessive char correction" just happened
             // so that we just need to check "mProximityCount == 0".
-            matchedProximityCharId = mProximityInfoState.getMatchedProximityId(
+            matchedProximityCharId = mProximityInfoState.getProximityType(
                     mInputIndex, c, mProximityCount == 0, &proximityIndex);
         }
     }
@@ -344,10 +344,10 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         if (mInputIndex < mInputSize - 1 && mOutputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
-                && isEquivalentChar(mProximityInfoState.getMatchedProximityId(
+                && isEquivalentChar(mProximityInfoState.getProximityType(
                         mInputIndex, mWord[mOutputIndex - 1], false))
                 && isEquivalentChar(
-                        mProximityInfoState.getMatchedProximityId(mInputIndex + 1, c, false))) {
+                        mProximityInfoState.getProximityType(mInputIndex + 1, c, false))) {
             // Conversion t->e
             // Example:
             // occaisional -> occa   sional
@@ -359,7 +359,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
                 && isEquivalentChar(
-                        mProximityInfoState.getMatchedProximityId(mInputIndex - 1, c, false))) {
+                        mProximityInfoState.getProximityType(mInputIndex - 1, c, false))) {
             // Conversion t->s
             // Example:
             // chcolate -> chocolate
@@ -371,7 +371,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
                 && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mSkipping
                 && isEquivalentChar(
-                        mProximityInfoState.getMatchedProximityId(mInputIndex - 1, c, false))) {
+                        mProximityInfoState.getProximityType(mInputIndex - 1, c, false))) {
             // Conversion p->s
             // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
             // proximity chars of "s", but it should rather be handled as a skipped char.
@@ -383,7 +383,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
                 && mCorrectionStates[mOutputIndex].mSkipping
                 && mCorrectionStates[mOutputIndex].mAdditionalProximityMatching
                 && isProximityCharOrEquivalentChar(
-                        mProximityInfoState.getMatchedProximityId(mInputIndex + 1, c, false))) {
+                        mProximityInfoState.getProximityType(mInputIndex + 1, c, false))) {
             // Conversion s->a
             incrementInputIndex();
             --mSkippedCount;
@@ -392,7 +392,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
             mDistances[mOutputIndex] = ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO;
         } else if ((mExceeding || mTransposing) && mInputIndex - 1 < mInputSize
                 && isEquivalentChar(
-                        mProximityInfoState.getMatchedProximityId(mInputIndex + 1, c, false))) {
+                        mProximityInfoState.getProximityType(mInputIndex + 1, c, false))) {
             // 1.2. Excessive or transpose correction
             if (mTransposing) {
                 ++mTransposedCount;
@@ -614,7 +614,7 @@ inline static bool isUpperCase(unsigned short c) {
         multiplyIntCapped(matchWeight, &finalFreq);
     }
 
-    if (proximityInfoState->getMatchedProximityId(0, word[0], true) == UNRELATED_CHAR) {
+    if (proximityInfoState->getProximityType(0, word[0], true) == UNRELATED_CHAR) {
         multiplyRate(FIRST_CHAR_DIFFERENT_DEMOTION_RATE, &finalFreq);
     }
 
