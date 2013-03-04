@@ -428,7 +428,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         initSuggest();
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, mKeyboardSwitcher);
+            ResearchLogger.getInstance().init(this, mKeyboardSwitcher, mSuggest);
         }
         mDisplayOrientation = getResources().getConfiguration().orientation;
 
