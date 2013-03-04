@@ -235,7 +235,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher) {
+    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher,
+            final Suggest suggest) {
         assert latinIME != null;
         if (latinIME == null) {
             Log.w(TAG, "IMS is null; logging is off");
@@ -245,6 +246,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Log.w(TAG, "IME storage directory does not exist.");
             }
         }
+        mSuggest = suggest;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
         if (prefs != null) {
             if (!prefs.contains(PREF_USABILITY_STUDY_MODE)) {
@@ -479,7 +481,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mMainLogBuffer == null) {
             mMainResearchLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
             final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
-            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore) {
+            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
+                    mSuggest) {
                 @Override
                 protected void publish(final ArrayList<LogUnit> logUnits,
                         boolean canIncludePrivateData) {
@@ -502,7 +505,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
             };
-            mMainLogBuffer.setSuggest(mSuggest);
         }
         if (mFeedbackLogBuffer == null) {
             resetFeedbackLogging();
@@ -850,10 +852,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInFeedbackDialog = false;
     }
 
-    public void initSuggest(Suggest suggest) {
+    public void initSuggest(final Suggest suggest) {
         mSuggest = suggest;
+        // MainLogBuffer has out-of-date Suggest object.  Need to close it down and create a new
+        // one.
         if (mMainLogBuffer != null) {
-            mMainLogBuffer.setSuggest(mSuggest);
+            stop();
+            start();
         }
     }
 
