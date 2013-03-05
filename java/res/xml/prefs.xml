@@ -145,7 +145,7 @@
                 android:fragment="com.android.inputmethod.latin.AdditionalSubtypeSettings"
                 android:key="custom_input_styles"
                 android:title="@string/custom_input_styles_title" />
-            <!-- Values for popup dismiss delay are added programatically -->
+            <!-- Values for popup dismiss delay are added programmatically -->
             <CheckBoxPreference
                 android:key="pref_sliding_key_input_preview"
                 android:title="@string/sliding_key_input_preview"
@@ -171,6 +171,11 @@
                 android:key="pref_keypress_sound_volume"
                 android:title="@string/prefs_keypress_sound_volume_settings"
                 latin:maxValue="100" /> <!-- percent -->
+            <!-- The show setup wizard icon settings shouldn't be persistent and the default value
+                 is added programmatically. -->
+            <CheckBoxPreference
+                android:key="pref_show_setup_wizard_icon"
+                android:title="@string/show_setup_wizard_icon" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="debug_settings"
