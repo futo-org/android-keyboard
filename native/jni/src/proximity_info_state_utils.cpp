@@ -645,7 +645,7 @@ namespace latinime {
         return min((*SampledDistanceCache_G)[index] * scale, maxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
-    return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+    return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
 }
 
 /* static */ float ProximityInfoStateUtils::getPointToKeyByIdLength(const float maxPointToKeyLength,
@@ -678,7 +678,7 @@ namespace latinime {
         const float currentAngle = getPointAngle(sampledInputXs, sampledInputYs, i);
         const float speedRate = (*sampledSpeedRates)[i];
 
-        float nearestKeyDistance = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+        float nearestKeyDistance = static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
         for (int j = 0; j < keyCount; ++j) {
             if ((*SampledNearKeySets)[i].test(j)) {
                 const float distance = getPointToKeyByIdLength(
@@ -1016,7 +1016,7 @@ namespace latinime {
     float sumLogProbability = 0.0f;
     // TODO: Current implementation is greedy algorithm. DP would be efficient for many cases.
     for (int i = 0; i < sampledInputSize && index < MAX_WORD_LENGTH - 1; ++i) {
-        float minLogProbability = static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+        float minLogProbability = static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
         int character = NOT_AN_INDEX;
         for (hash_map_compat<int, float>::const_iterator it = (*charProbabilities)[i].begin();
                 it != (*charProbabilities)[i].end(); ++it) {

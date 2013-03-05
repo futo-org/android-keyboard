@@ -170,7 +170,7 @@ float ProximityInfoState::getPointToKeyLength(
         return 0.0f;
     }
     // If the char is not a key on the keyboard then return the max length.
-    return MAX_POINT_TO_KEY_LENGTH;
+    return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
 }
 
 float ProximityInfoState::getPointToKeyLength_G(const int inputIndex, const int codePoint) const {
@@ -314,6 +314,6 @@ float ProximityInfoState::getProbability(const int index, const int keyIndex) co
     if (it != mCharProbabilities[index].end()) {
         return it->second;
     }
-    return static_cast<float>(MAX_POINT_TO_KEY_LENGTH);
+    return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
 }
 } // namespace latinime

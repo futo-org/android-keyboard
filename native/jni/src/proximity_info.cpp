@@ -204,6 +204,6 @@ int ProximityInfo::getKeyKeyDistanceG(const int keyId0, const int keyId1) const 
     if (keyId0 >= 0 && keyId1 >= 0) {
         return mKeyKeyDistancesG[keyId0][keyId1];
     }
-    return MAX_POINT_TO_KEY_LENGTH;
+    return MAX_VALUE_FOR_WEIGHTING;
 }
 } // namespace latinime

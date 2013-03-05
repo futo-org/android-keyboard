@@ -119,7 +119,7 @@ class Correction {
     // proximity info state
     void initInputParams(const ProximityInfo *proximityInfo, const int *inputCodes,
             const int inputSize, const int *xCoordinates, const int *yCoordinates) {
-        mProximityInfoState.initInputParams(0, MAX_POINT_TO_KEY_LENGTH,
+        mProximityInfoState.initInputParams(0, static_cast<float>(MAX_VALUE_FOR_WEIGHTING),
                 proximityInfo, inputCodes, inputSize, xCoordinates, yCoordinates, 0, 0, false);
     }
 

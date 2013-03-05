@@ -226,7 +226,7 @@ class ProximityInfoUtils {
             const int *const keyYCoordinates, const int *const keyWidths, const int *keyHeights,
             const int keyId, const int x, const int y) {
         // NOT_A_ID is -1, but return whenever < 0 just in case
-        if (keyId < 0) return MAX_POINT_TO_KEY_LENGTH;
+        if (keyId < 0) return MAX_VALUE_FOR_WEIGHTING;
         const int left = keyXCoordinates[keyId];
         const int top = keyYCoordinates[keyId];
         const int right = left + keyWidths[keyId];

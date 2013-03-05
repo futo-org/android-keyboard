@@ -341,8 +341,9 @@ static inline void prof_out(void) {
 #define MAX_DEPTH_MULTIPLIER 3
 #define FIRST_WORD_INDEX 0
 
-// Max Distance between point to key
-#define MAX_POINT_TO_KEY_LENGTH 10000000
+// Max value for length, distance and probability which are used in weighting
+// TODO: Remove
+#define MAX_VALUE_FOR_WEIGHTING 10000000
 
 // The max number of the keys in one keyboard layout
 #define MAX_KEY_COUNT_IN_A_KEYBOARD 64
