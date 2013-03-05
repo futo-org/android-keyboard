@@ -125,7 +125,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 5;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    private static final String PREF_RESEARCH_HAS_SEEN_SPLASH = "pref_research_has_seen_splash";
     /* package */ static final String LOG_FILENAME_PREFIX = "researchLog";
     private static final String LOG_FILENAME_SUFFIX = ".txt";
     /* package */ static final String USER_RECORDING_FILENAME_PREFIX = "recording";
@@ -321,14 +320,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private boolean hasSeenSplash() {
-        return mPrefs.getBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, false);
-    }
-
     private Dialog mSplashDialog = null;
 
     private void maybeShowSplashScreen() {
-        if (hasSeenSplash()) {
+        if (ResearchSettings.readHasSeenSplash(mPrefs)) {
             return;
         }
         if (mSplashDialog != null && mSplashDialog.isShowing()) {
@@ -381,20 +376,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void onUserLoggingConsent() {
-        setLoggingAllowed(true);
         if (mPrefs == null) {
-            return;
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
+            if (mPrefs == null) return;
         }
-        final Editor e = mPrefs.edit();
-        e.putBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, true);
-        e.apply();
+        sIsLogging = true;
+        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, true);
+        ResearchSettings.writeHasSeenSplash(mPrefs, true);
         restart();
-    }
-
-    private void setLoggingAllowed(final boolean enableLogging) {
-        if (mPrefs == null) return;
-        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, enableLogging);
-        sIsLogging = enableLogging;
     }
 
     private static int sLogFileCounter = 0;
