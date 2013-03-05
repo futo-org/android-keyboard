@@ -16,18 +16,19 @@
 
 package com.android.inputmethod.latin.setup;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.inputmethod.compat.IntentCompatUtils;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.Settings;
 
 /**
  * This class detects the {@link Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME
@@ -60,11 +61,7 @@ public final class LauncherIconVisibilityManager extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
         if (shouldHandleThisIntent(intent, context)) {
-            if (isInSystemImage(context)) {
-                disableActivity(context, SetupActivity.class);
-            } else {
-                Log.i(TAG, "This package isn't in system image: " + context.getPackageName());
-            }
+            updateSetupWizardIconVisibility(context);
         }
 
         // The process that hosts this broadcast receiver is invoked and remains alive even after
@@ -94,32 +91,32 @@ public final class LauncherIconVisibilityManager extends BroadcastReceiver {
         return false;
     }
 
-    /**
-     * Disable an activity of the specified package. Disabling an activity will also hide its
-     * icon from the launcher.
-     *
-     * @param context package context of an activity to be disabled
-     * @param activityClass activity class to be disabled
-     */
-    private static void disableActivity(final Context context,
-            final Class<? extends Activity> activityClass) {
-        final ComponentName activityComponent = new ComponentName(context, activityClass);
-        final PackageManager pm = context.getPackageManager();
-        final int activityComponentState = pm.getComponentEnabledSetting(activityComponent);
-        if (activityComponentState == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-            // This activity is already disabled.
-            Log.i(TAG, "Activity has already been disabled: " + activityComponent);
-            return;
+    public static void updateSetupWizardIconVisibility(final Context context) {
+        final ComponentName setupWizardActivity = new ComponentName(context, SetupActivity.class);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final boolean stateHasSet;
+        if (Settings.readShowSetupWizardIcon(prefs, context)) {
+            stateHasSet = setActivityState(context, setupWizardActivity,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
+            Log.i(TAG, (stateHasSet ? "Enable activity: " : "Activity has already been enabled: ")
+                    + setupWizardActivity);
+        } else {
+            stateHasSet = setActivityState(context, setupWizardActivity,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED);
+            Log.i(TAG, (stateHasSet ? "Disable activity: " : "Activity has already been disabled: ")
+                    + setupWizardActivity);
         }
-        // Disabling an activity will also hide its icon from the launcher.
-        pm.setComponentEnabledSetting(activityComponent,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP);
-        Log.i(TAG, "Disable activity: " + activityComponent);
     }
 
-    private static boolean isInSystemImage(final Context context) {
-        final ApplicationInfo appInfo = context.getApplicationInfo();
-        return (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+    private static boolean setActivityState(final Context context,
+            final ComponentName activityComponent, final int activityState) {
+        final PackageManager pm = context.getPackageManager();
+        final int activityComponentState = pm.getComponentEnabledSetting(activityComponent);
+        if (activityComponentState == activityState) {
+            return false;
+        }
+        pm.setComponentEnabledSetting(
+                activityComponent, activityState, PackageManager.DONT_KILL_APP);
+        return true;
     }
 }

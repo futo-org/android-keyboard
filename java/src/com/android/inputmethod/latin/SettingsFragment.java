@@ -31,6 +31,7 @@ import android.preference.PreferenceScreen;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
@@ -155,6 +156,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());
         }
 
+        final CheckBoxPreference showSetupWizardIcon =
+                (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
+        showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, context));
+
         setupKeyLongpressTimeoutSettings(prefs, res);
         setupKeypressVibrationDurationSettings(prefs, res);
         setupKeypressSoundVolumeSettings(prefs, res);
@@ -196,6 +201,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             final boolean gestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
             setPreferenceEnabled(Settings.PREF_GESTURE_PREVIEW_TRAIL, gestureInputEnabled);
             setPreferenceEnabled(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, gestureInputEnabled);
+        } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
+            LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
         ensureConsistencyOfAutoCorrectionSettings();
         updateVoiceModeSummary();

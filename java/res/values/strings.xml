@@ -434,4 +434,6 @@
     <string name="language_settings">Language &amp; input</string>
     <!-- Title of the Input method picker. This should be aligned with msgid="4653387336791222978" -->
     <string name="select_input_method">Choose input method</string>
+    <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
+    <string name="show_setup_wizard_icon" translatable="false">Show setup wizard icon</string>
 </resources>
