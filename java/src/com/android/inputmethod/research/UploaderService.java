@@ -99,12 +99,15 @@ public final class UploaderService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (!isPossibleToUpload()) return;
-        boolean isUploadingUnconditionally = false;
-        Bundle bundle = intent.getExtras();
-        if (bundle != null && bundle.containsKey(EXTRA_UPLOAD_UNCONDITIONALLY)) {
-            isUploadingUnconditionally = bundle.getBoolean(EXTRA_UPLOAD_UNCONDITIONALLY);
+        doUpload(isUploadingUnconditionally(intent.getExtras()));
+    }
+
+    private boolean isUploadingUnconditionally(final Bundle bundle) {
+        if (bundle == null) return false;
+        if (bundle.containsKey(EXTRA_UPLOAD_UNCONDITIONALLY)) {
+            return bundle.getBoolean(EXTRA_UPLOAD_UNCONDITIONALLY);
         }
-        doUpload(isUploadingUnconditionally);
+        return false;
     }
 
     private boolean isExternallyPowered() {
