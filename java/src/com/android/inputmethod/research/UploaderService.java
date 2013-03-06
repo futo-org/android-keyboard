@@ -72,10 +72,7 @@ public final class UploaderService extends IntentService {
         mFilesDir = null;
         mUrl = null;
 
-        final PackageManager packageManager = getPackageManager();
-        final boolean hasPermission = packageManager.checkPermission(Manifest.permission.INTERNET,
-                getPackageName()) == PackageManager.PERMISSION_GRANTED;
-        if (!hasPermission) {
+        if (!hasUploadingPermission()) {
             return;
         }
 
@@ -90,6 +87,12 @@ public final class UploaderService extends IntentService {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean hasUploadingPermission() {
+        final PackageManager packageManager = getPackageManager();
+        return packageManager.checkPermission(Manifest.permission.INTERNET,
+                getPackageName()) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
