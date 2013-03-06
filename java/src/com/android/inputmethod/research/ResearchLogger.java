@@ -236,43 +236,41 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher,
             final Suggest suggest) {
         assert latinIME != null;
-        if (latinIME == null) {
-            Log.w(TAG, "IMS is null; logging is off");
-        } else {
-            mFilesDir = latinIME.getFilesDir();
-            if (mFilesDir == null || !mFilesDir.exists()) {
-                Log.w(TAG, "IME storage directory does not exist.");
-            }
+        mLatinIME = latinIME;
+        mFilesDir = latinIME.getFilesDir();
+        if (mFilesDir == null || !mFilesDir.exists()) {
+            Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
+            return;
         }
-        mSuggest = suggest;
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
-        if (prefs != null) {
-            sIsLogging = ResearchSettings.readResearchLoggerEnabledFlag(prefs);
-            prefs.registerOnSharedPreferenceChangeListener(this);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-            final long lastCleanupTime = prefs.getLong(PREF_LAST_CLEANUP_TIME, 0L);
-            final long now = System.currentTimeMillis();
-            if (lastCleanupTime + DURATION_BETWEEN_DIR_CLEANUP_IN_MS < now) {
-                final long timeHorizon = now - MAX_LOGFILE_AGE_IN_MS;
-                cleanupLoggingDir(mFilesDir, timeHorizon);
-                Editor e = prefs.edit();
-                e.putLong(PREF_LAST_CLEANUP_TIME, now);
-                e.apply();
-            }
-        }
+        // Initialize fields from preferences
+        sIsLogging = ResearchSettings.readResearchLoggerEnabledFlag(mPrefs);
+
+        // Initialize fields from resources
         final Resources res = latinIME.getResources();
         sAccountType = res.getString(R.string.research_account_type);
         sAllowedAccountDomain = res.getString(R.string.research_allowed_account_domain);
-        mLatinIME = latinIME;
-        mPrefs = prefs;
+
+        // Cleanup logging directory
+        // TODO: Move this and other file-related components to separate file.
+        final long lastCleanupTime = mPrefs.getLong(PREF_LAST_CLEANUP_TIME, 0L);
+        final long now = System.currentTimeMillis();
+        if (now - lastCleanupTime > DURATION_BETWEEN_DIR_CLEANUP_IN_MS) {
+            final long timeHorizon = now - MAX_LOGFILE_AGE_IN_MS;
+            cleanupLoggingDir(mFilesDir, timeHorizon);
+            mPrefs.edit().putLong(PREF_LAST_CLEANUP_TIME, now).apply();
+        }
+
+        // Initialize external services
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
-        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
-
         if (ProductionFlag.IS_EXPERIMENTAL) {
             scheduleUploadingService(mLatinIME);
         }
+        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
     }
 
     /**
@@ -453,10 +451,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             // Log.w(TAG, "not in usability mode; not logging");
             return;
         }
-        if (mFilesDir == null || !mFilesDir.exists()) {
-            Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
-            return;
-        }
         if (mMainLogBuffer == null) {
             mMainResearchLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
             final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
@@ -560,7 +554,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (key == null || prefs == null) {
             return;
         }
@@ -582,7 +576,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         presentFeedbackDialog(latinIME);
     }
 
-    public void presentFeedbackDialog(LatinIME latinIME) {
+    public void presentFeedbackDialog(final LatinIME latinIME) {
         if (isMakingUserRecording()) {
             saveRecording();
         }
@@ -814,9 +808,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mPrefs == null) {
                 return;
             }
-            final Editor e = mPrefs.edit();
-            e.putString(PREF_RESEARCH_SAVED_CHANNEL, channelName);
-            e.apply();
+            mPrefs.edit().putString(PREF_RESEARCH_SAVED_CHANNEL, channelName).apply();
         }
     }
 
