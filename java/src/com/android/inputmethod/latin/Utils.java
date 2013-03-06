@@ -28,6 +28,7 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.BufferedReader;
@@ -77,6 +78,7 @@ public final class Utils {
         private RingCharBuffer() {
             // Intentional empty constructor for singleton.
         }
+        @UsedForTesting
         public static RingCharBuffer getInstance() {
             return sRingCharBuffer;
         }
@@ -93,6 +95,7 @@ public final class Utils {
             return ret < 0 ? ret + BUFSIZE : ret;
         }
         // TODO: accept code points
+        @UsedForTesting
         public void push(char c, int x, int y) {
             if (!mEnabled) return;
             mCharBuf[mEnd] = c;
