@@ -99,7 +99,9 @@ public final class UploaderService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (!isPossibleToUpload()) return;
-        doUpload(isUploadingUnconditionally(intent.getExtras()));
+        if (isUploadingUnconditionally(intent.getExtras()) || isConvenientToUpload()) {
+            doUpload();
+        }
     }
 
     private boolean isUploadingUnconditionally(final Bundle bundle) {
@@ -129,8 +131,7 @@ public final class UploaderService extends IntentService {
         return wifiInfo.isConnected();
     }
 
-    private void doUpload(final boolean isUploadingUnconditionally) {
-        if (!(isUploadingUnconditionally || isConvenientToUpload())) return;
+    private void doUpload() {
         if (mFilesDir == null) {
             return;
         }
