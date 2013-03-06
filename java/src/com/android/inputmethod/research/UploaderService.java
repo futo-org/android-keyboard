@@ -56,7 +56,6 @@ public final class UploaderService extends IntentService {
     private static final int BUF_SIZE = 1024 * 8;
     protected static final int TIMEOUT_IN_MS = 1000 * 4;
 
-    private boolean mCanUpload;
     private File mFilesDir;
     private URL mUrl;
 
@@ -68,7 +67,6 @@ public final class UploaderService extends IntentService {
     public void onCreate() {
         super.onCreate();
 
-        mCanUpload = false;
         mFilesDir = null;
         mUrl = null;
 
@@ -83,10 +81,13 @@ public final class UploaderService extends IntentService {
             }
             mFilesDir = getFilesDir();
             mUrl = new URL(urlString);
-            mCanUpload = true;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPossibleToUpload() {
+        return hasUploadingPermission() && mUrl != null && !IS_INHIBITING_AUTO_UPLOAD;
     }
 
     private boolean hasUploadingPermission() {
@@ -97,9 +98,7 @@ public final class UploaderService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (!mCanUpload) {
-            return;
-        }
+        if (!isPossibleToUpload()) return;
         boolean isUploadingUnconditionally = false;
         Bundle bundle = intent.getExtras();
         if (bundle != null && bundle.containsKey(EXTRA_UPLOAD_UNCONDITIONALLY)) {
