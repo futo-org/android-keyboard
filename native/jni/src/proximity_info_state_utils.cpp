@@ -209,7 +209,7 @@ namespace latinime {
                                 * ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
             } else {
                 normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
+                        (j == 0) ? MATCH_CHAR_WITHOUT_DISTANCE_INFO :
                                 PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
             }
             if (DEBUG_PROXIMITY_CHARS) {
