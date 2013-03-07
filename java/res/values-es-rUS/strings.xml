@@ -157,6 +157,6 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"¿Realmente quieres instalar este archivo para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Se produjo un error."</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Idioma &amp; entrada"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Seleccionar método de introducción"</string>
+    <string name="language_settings" msgid="1671153053201809031">"Teclado e idioma"</string>
+    <string name="select_input_method" msgid="4301602374609275003">"Seleccionar método de entrada"</string>
 </resources>
