@@ -190,11 +190,11 @@ bool Correction::needsToPrune() const {
 }
 
 inline static bool isEquivalentChar(ProximityType type) {
-    return type == EQUIVALENT_CHAR;
+    return type == MATCH_CHAR;
 }
 
 inline static bool isProximityCharOrEquivalentChar(ProximityType type) {
-    return type == EQUIVALENT_CHAR || type == NEAR_PROXIMITY_CHAR;
+    return type == MATCH_CHAR || type == PROXIMITY_CHAR;
 }
 
 Correction::CorrectionType Correction::processCharAndCalcState(const int c, const bool isTerminal) {
@@ -221,7 +221,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
                 --mExcessiveCount;
                 mDistances[mOutputIndex] =
                         mProximityInfoState.getNormalizedSquaredDistance(mInputIndex, 0);
-            } else if (matchId == NEAR_PROXIMITY_CHAR) {
+            } else if (matchId == PROXIMITY_CHAR) {
                 mLastCharExceeded = false;
                 --mExcessiveCount;
                 ++mProximityCount;
@@ -299,11 +299,11 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
             : (noCorrectionsHappenedSoFar && mProximityCount == 0);
 
     ProximityType matchedProximityCharId = secondTransposing
-            ? EQUIVALENT_CHAR
+            ? MATCH_CHAR
             : mProximityInfoState.getProximityType(
                     mInputIndex, c, checkProximityChars, &proximityIndex);
 
-    if (UNRELATED_CHAR == matchedProximityCharId
+    if (SUBSTITUTION_CHAR == matchedProximityCharId
             || ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
         if (canTryCorrection && mOutputIndex > 0
                 && mCorrectionStates[mOutputIndex].mProximityMatching
@@ -332,7 +332,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         }
     }
 
-    if (UNRELATED_CHAR == matchedProximityCharId
+    if (SUBSTITUTION_CHAR == matchedProximityCharId
             || ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
         if (ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
             mAdditionalProximityMatching = true;
@@ -455,7 +455,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(const int c, cons
         mMatching = true;
         ++mEquivalentCharCount;
         mDistances[mOutputIndex] = mProximityInfoState.getNormalizedSquaredDistance(mInputIndex, 0);
-    } else if (NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
+    } else if (PROXIMITY_CHAR == matchedProximityCharId) {
         mProximityMatching = true;
         ++mProximityCount;
         mDistances[mOutputIndex] =
@@ -614,7 +614,7 @@ inline static bool isUpperCase(unsigned short c) {
         multiplyIntCapped(matchWeight, &finalFreq);
     }
 
-    if (proximityInfoState->getProximityType(0, word[0], true) == UNRELATED_CHAR) {
+    if (proximityInfoState->getProximityType(0, word[0], true) == SUBSTITUTION_CHAR) {
         multiplyRate(FIRST_CHAR_DIFFERENT_DEMOTION_RATE, &finalFreq);
     }
 

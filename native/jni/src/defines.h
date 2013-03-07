@@ -275,7 +275,7 @@ static inline void prof_out(void) {
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
 #define NOT_A_COORDINATE (-1)
-#define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO (-2)
+#define MATCH_CHAR_WITHOUT_DISTANCE_INFO (-2)
 #define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO (-3)
 #define ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO (-4)
 #define NOT_AN_INDEX (-1)
@@ -396,15 +396,15 @@ template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { retu
 // Used as a return value for character comparison
 typedef enum {
     // Same char, possibly with different case or accent
-    EQUIVALENT_CHAR,
+    MATCH_CHAR,
     // It is a char located nearby on the keyboard
-    NEAR_PROXIMITY_CHAR,
-    // It is an unrelated char and could be a substitution char
-    UNRELATED_CHAR,
-    // It is an unrelated char nor a substitution char
-    UNRELATED_NOR_SUBSTITUTION_CHAR,
+    PROXIMITY_CHAR,
     // Additional proximity char which can differ by language.
-    ADDITIONAL_PROXIMITY_CHAR
+    ADDITIONAL_PROXIMITY_CHAR,
+    // It is a substitution char
+    SUBSTITUTION_CHAR,
+    // It is an unrelated char
+    UNRELATED_CHAR,
 } ProximityType;
 
 typedef enum {
@@ -415,15 +415,16 @@ typedef enum {
 
 typedef enum {
     CT_MATCH,
+    CT_PROXIMITY,
+    CT_ADDITIONAL_PROXIMITY,
+    CT_SUBSTITUTION,
     CT_OMISSION,
     CT_INSERTION,
     CT_TRANSPOSITION,
-    CT_SUBSTITUTION,
     CT_SPACE_SUBSTITUTION,
     CT_SPACE_OMISSION,
     CT_COMPLETION,
     CT_TERMINAL,
     CT_NEW_WORD,
-    CT_NEW_WORD_BIGRAM,
 } CorrectionType;
 #endif // LATINIME_DEFINES_H
