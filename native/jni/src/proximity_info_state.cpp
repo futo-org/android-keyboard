@@ -197,15 +197,15 @@ ProximityType ProximityInfoState::getProximityType(const int index, const int co
     // The first char in the array is what user typed. If it matches right away, that means the
     // user typed that same char for this pos.
     if (firstCodePoint == baseLowerC || firstCodePoint == codePoint) {
-        return EQUIVALENT_CHAR;
+        return MATCH_CHAR;
     }
 
-    if (!checkProximityChars) return UNRELATED_CHAR;
+    if (!checkProximityChars) return SUBSTITUTION_CHAR;
 
     // If the non-accented, lowercased version of that first character matches c, then we have a
     // non-accented version of the accented character the user typed. Treat it as a close char.
     if (toBaseLowerCase(firstCodePoint) == baseLowerC) {
-        return NEAR_PROXIMITY_CHAR;
+        return PROXIMITY_CHAR;
     }
 
     // Not an exact nor an accent-alike match: search the list of close keys
@@ -218,7 +218,7 @@ ProximityType ProximityInfoState::getProximityType(const int index, const int co
             if (proximityIndex) {
                 *proximityIndex = j;
             }
-            return NEAR_PROXIMITY_CHAR;
+            return PROXIMITY_CHAR;
         }
         ++j;
     }
@@ -238,23 +238,23 @@ ProximityType ProximityInfoState::getProximityType(const int index, const int co
             ++j;
         }
     }
-    // Was not included, signal this as an unrelated character.
-    return UNRELATED_CHAR;
+    // Was not included, signal this as a substitution character.
+    return SUBSTITUTION_CHAR;
 }
 
 ProximityType ProximityInfoState::getProximityTypeG(const int index, const int codePoint) const {
     if (!isUsed()) {
-        return UNRELATED_NOR_SUBSTITUTION_CHAR;
+        return UNRELATED_CHAR;
     }
     const int lowerCodePoint = toLowerCase(codePoint);
     const int baseLowerCodePoint = toBaseCodePoint(lowerCodePoint);
     for (int i = 0; i < static_cast<int>(mSampledSearchKeyVectors[index].size()); ++i) {
         if (mSampledSearchKeyVectors[index][i] == lowerCodePoint
                 || mSampledSearchKeyVectors[index][i] == baseLowerCodePoint) {
-            return EQUIVALENT_CHAR;
+            return MATCH_CHAR;
         }
     }
-    return UNRELATED_NOR_SUBSTITUTION_CHAR;
+    return UNRELATED_CHAR;
 }
 
 bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int keyId) const {
