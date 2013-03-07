@@ -156,15 +156,14 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 }
 
-// TODO: Remove the "scale" parameter
 // This function basically converts from a length to an edit distance. Accordingly, it's obviously
 // wrong to compare with mMaxPointToKeyLength.
 float ProximityInfoState::getPointToKeyLength(
-        const int inputIndex, const int codePoint, const float scale) const {
+        const int inputIndex, const int codePoint) const {
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mSampledDistanceCache_G[index] * scale, mMaxPointToKeyLength);
+        return min(mSampledDistanceCache_G[index], mMaxPointToKeyLength);
     }
     if (isSkippableCodePoint(codePoint)) {
         return 0.0f;
@@ -173,19 +172,10 @@ float ProximityInfoState::getPointToKeyLength(
     return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
 }
 
-float ProximityInfoState::getPointToKeyLength_G(const int inputIndex, const int codePoint) const {
-    return getPointToKeyLength(inputIndex, codePoint, 1.0f);
-}
-
-// TODO: Remove the "scale" parameter
 float ProximityInfoState::getPointToKeyByIdLength(
-        const int inputIndex, const int keyId, const float scale) const {
+        const int inputIndex, const int keyId) const {
     return ProximityInfoStateUtils::getPointToKeyByIdLength(mMaxPointToKeyLength,
-            &mSampledDistanceCache_G, mProximityInfo->getKeyCount(), inputIndex, keyId, scale);
-}
-
-float ProximityInfoState::getPointToKeyByIdLength(const int inputIndex, const int keyId) const {
-    return getPointToKeyByIdLength(inputIndex, keyId, 1.0f);
+            &mSampledDistanceCache_G, mProximityInfo->getKeyCount(), inputIndex, keyId);
 }
 
 // In the following function, c is the current character of the dictionary word currently examined.

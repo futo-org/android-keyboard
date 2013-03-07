@@ -634,25 +634,17 @@ namespace latinime {
     return getAngleDiff(previousDirection, nextDirection);
 }
 
-// TODO: Remove the "scale" parameter
 // This function basically converts from a length to an edit distance. Accordingly, it's obviously
 // wrong to compare with mMaxPointToKeyLength.
 /* static */ float ProximityInfoStateUtils::getPointToKeyByIdLength(const float maxPointToKeyLength,
         const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
-        const int inputIndex, const int keyId, const float scale) {
+        const int inputIndex, const int keyId) {
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * keyCount + keyId;
-        return min((*SampledDistanceCache_G)[index] * scale, maxPointToKeyLength);
+        return min((*SampledDistanceCache_G)[index], maxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
     return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
-}
-
-/* static */ float ProximityInfoStateUtils::getPointToKeyByIdLength(const float maxPointToKeyLength,
-        const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
-        const int inputIndex, const int keyId) {
-    return getPointToKeyByIdLength(
-            maxPointToKeyLength, SampledDistanceCache_G, keyCount, inputIndex, keyId, 1.0f);
 }
 
 // Updates probabilities of aligning to some keys and skipping.

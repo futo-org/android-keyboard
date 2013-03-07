@@ -81,9 +81,6 @@ class ProximityInfoStateUtils {
             std::vector<std::vector<int> > *sampledSearchKeyVectors);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
             const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
-            const int inputIndex, const int keyId, const float scale);
-    static float getPointToKeyByIdLength(const float maxPointToKeyLength,
-            const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
             const int inputIndex, const int keyId);
     static void initGeometricDistanceInfos(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,

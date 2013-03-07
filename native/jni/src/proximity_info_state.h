@@ -147,10 +147,8 @@ class ProximityInfoState {
         return mIsContinuationPossible;
     }
 
-    float getPointToKeyByIdLength(const int inputIndex, const int keyId, const float scale) const;
     float getPointToKeyByIdLength(const int inputIndex, const int keyId) const;
-    float getPointToKeyLength(const int inputIndex, const int codePoint, const float scale) const;
-    float getPointToKeyLength_G(const int inputIndex, const int codePoint) const;
+    float getPointToKeyLength(const int inputIndex, const int codePoint) const;
 
     ProximityType getProximityType(const int index, const int codePoint,
             const bool checkProximityChars, int *proximityIndex = 0) const;
