@@ -223,6 +223,29 @@
     <!-- Spoken feedback after changing to the shifted phone dialer (symbols) keyboard. -->
     <string name="spoken_description_mode_phone_shift">Phone symbols mode</string>
 
+    <!-- Spoken feedback when the keyboard is hidden. -->
+    <string name="announce_keyboard_hidden">Keyboard hidden</string>
+    <!-- Spoken feedback when the keyboard mode changes. -->
+    <string name="announce_keyboard_mode">Showing <xliff:g id="mode" example="email">%s</xliff:g> keyboard</string>
+    <!-- Description of the keyboard mode for entering dates. -->
+    <string name="keyboard_mode_date">date</string>
+    <!-- Description of the keyboard mode for entering dates and times. -->
+    <string name="keyboard_mode_date_time">date and time</string>
+    <!-- Description of the keyboard mode for entering email addresses. -->
+    <string name="keyboard_mode_email">email</string>
+    <!-- Description of the keyboard mode for entering text messages. -->
+    <string name="keyboard_mode_im">messaging</string>
+    <!-- Description of the keyboard mode for entering numbers. -->
+    <string name="keyboard_mode_number">number</string>
+    <!-- Description of the keyboard mode for entering phone numbers. -->
+    <string name="keyboard_mode_phone">phone</string>
+    <!-- Description of the keyboard mode for entering generic text. -->
+    <string name="keyboard_mode_text">text</string>
+    <!-- Description of the keyboard mode for entering times. -->
+    <string name="keyboard_mode_time">time</string>
+    <!-- Description of the keyboard mode for entering URLs. -->
+    <string name="keyboard_mode_url">URL</string>
+
     <!-- Preferences item for enabling speech input -->
     <string name="voice_input">Voice input key</string>
 
