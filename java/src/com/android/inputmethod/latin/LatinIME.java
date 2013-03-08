@@ -958,6 +958,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         LatinImeLogger.commit();
         mKeyboardSwitcher.onHideWindow();
 
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            AccessibleKeyboardViewProxy.getInstance().onHideWindow();
+        }
+
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
             mOptionsDialog.dismiss();
