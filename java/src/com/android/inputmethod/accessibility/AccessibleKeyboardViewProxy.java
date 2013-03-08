@@ -22,8 +22,11 @@ import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
+import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -34,6 +37,21 @@ import com.android.inputmethod.latin.R;
 
 public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
+
+    /** Map of keyboard modes to resource IDs. */
+    private static final SparseIntArray KEYBOARD_MODE_RES_IDS = new SparseIntArray();
+
+    static {
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_DATE, R.string.keyboard_mode_date);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_DATETIME, R.string.keyboard_mode_date_time);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_EMAIL, R.string.keyboard_mode_email);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_IM, R.string.keyboard_mode_im);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_NUMBER, R.string.keyboard_mode_number);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_PHONE, R.string.keyboard_mode_phone);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_TEXT, R.string.keyboard_mode_text);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_TIME, R.string.keyboard_mode_time);
+        KEYBOARD_MODE_RES_IDS.put(KeyboardId.MODE_URL, R.string.keyboard_mode_url);
+    }
 
     private InputMethodService mInputMethod;
     private MainKeyboardView mView;
@@ -85,11 +103,75 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         mAccessibilityNodeProvider.setView(view);
     }
 
+    /**
+     * Called when the keyboard layout changes.
+     * <p>
+     * <b>Note:</b> This method will be called even if accessibility is not
+     * enabled.
+     */
     public void setKeyboard() {
-        if (mAccessibilityNodeProvider == null) {
+        if (mAccessibilityNodeProvider != null) {
+            mAccessibilityNodeProvider.setKeyboard();
+        }
+
+        // Since this method is called even when accessibility is off, make sure
+        // to check the state before announcing anything.
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+            announceKeyboardMode();
+        }
+    }
+
+    /**
+     * Called when the keyboard is hidden and accessibility is enabled.
+     */
+    public void onHideWindow() {
+        announceKeyboardHidden();
+    }
+
+    /**
+     * Announces which type of keyboard is being displayed. If the keyboard type
+     * is unknown, no announcement is made.
+     */
+    private void announceKeyboardMode() {
+        final Keyboard keyboard = mView.getKeyboard();
+        final int resId = KEYBOARD_MODE_RES_IDS.get(keyboard.mId.mMode);
+        if (resId == 0) {
             return;
         }
-        mAccessibilityNodeProvider.setKeyboard();
+
+        final Context context = mView.getContext();
+        final String keyboardMode = context.getString(resId);
+        final String text = context.getString(R.string.announce_keyboard_mode, keyboardMode);
+
+        sendWindowStateChanged(text);
+    }
+
+    /**
+     * Announces that the keyboard has been hidden.
+     */
+    private void announceKeyboardHidden() {
+        final Context context = mView.getContext();
+        final String text = context.getString(R.string.announce_keyboard_hidden);
+
+        sendWindowStateChanged(text);
+    }
+
+    /**
+     * Sends a window state change event with the specified text.
+     *
+     * @param text
+     */
+    private void sendWindowStateChanged(final String text) {
+        final AccessibilityEvent stateChange = AccessibilityEvent.obtain(
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        mView.onInitializeAccessibilityEvent(stateChange);
+        stateChange.getText().add(text);
+        stateChange.setContentDescription(null);
+
+        final ViewParent parent = mView.getParent();
+        if (parent != null) {
+            parent.requestSendAccessibilityEvent(mView, stateChange);
+        }
     }
 
     /**

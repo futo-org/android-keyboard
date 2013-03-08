@@ -80,16 +80,24 @@ public final class AccessibilityUtils {
     }
 
     /**
+     * Returns {@code true} if accessibility is enabled. Currently, this means
+     * that the kill switch is off and system accessibility is turned on.
+     *
+     * @return {@code true} if accessibility is enabled.
+     */
+    public boolean isAccessibilityEnabled() {
+        return ENABLE_ACCESSIBILITY && mAccessibilityManager.isEnabled();
+    }
+
+    /**
      * Returns {@code true} if touch exploration is enabled. Currently, this
      * means that the kill switch is off, the device supports touch exploration,
-     * and a spoken feedback service is turned on.
+     * and system accessibility is turned on.
      *
      * @return {@code true} if touch exploration is enabled.
      */
     public boolean isTouchExplorationEnabled() {
-        return ENABLE_ACCESSIBILITY
-                && mAccessibilityManager.isEnabled()
-                && mAccessibilityManager.isTouchExplorationEnabled();
+        return isAccessibilityEnabled() && mAccessibilityManager.isTouchExplorationEnabled();
     }
 
     /**
@@ -113,6 +121,7 @@ public final class AccessibilityUtils {
      *
      * @return {@code true} if the device should obscure password characters.
      */
+    @SuppressWarnings("deprecation")
     public boolean shouldObscureInput(final EditorInfo editorInfo) {
         if (editorInfo == null) return false;
 
