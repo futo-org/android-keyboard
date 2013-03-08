@@ -519,11 +519,11 @@ public class Key implements Comparable<Key> {
         // TODO: Handle "bold" here too?
         if ((mLabelFlags & LABEL_FLAGS_FONT_NORMAL) != 0) {
             return Typeface.DEFAULT;
-        } else if ((mLabelFlags & LABEL_FLAGS_FONT_MONO_SPACE) != 0) {
-            return Typeface.MONOSPACE;
-        } else {
-            return params.mTypeface;
         }
+        if ((mLabelFlags & LABEL_FLAGS_FONT_MONO_SPACE) != 0) {
+            return Typeface.MONOSPACE;
+        }
+        return params.mTypeface;
     }
 
     public final int selectTextSize(final KeyDrawParams params) {
@@ -550,26 +550,49 @@ public class Key implements Comparable<Key> {
     public final int selectHintTextSize(final KeyDrawParams params) {
         if (hasHintLabel()) {
             return params.mHintLabelSize;
-        } else if (hasShiftedLetterHint()) {
-            return params.mShiftedLetterHintSize;
-        } else {
-            return params.mHintLetterSize;
         }
+        if (hasShiftedLetterHint()) {
+            return params.mShiftedLetterHintSize;
+        }
+        return params.mHintLetterSize;
     }
 
     public final int selectHintTextColor(final KeyDrawParams params) {
         if (hasHintLabel()) {
             return params.mHintLabelColor;
-        } else if (hasShiftedLetterHint()) {
+        }
+        if (hasShiftedLetterHint()) {
             return isShiftedLetterActivated() ? params.mShiftedLetterHintActivatedColor
                     : params.mShiftedLetterHintInactivatedColor;
-        } else {
-            return params.mHintLetterColor;
         }
+        return params.mHintLetterColor;
     }
 
     public final int selectMoreKeyTextSize(final KeyDrawParams params) {
         return hasLabelsInMoreKeys() ? params.mLabelSize : params.mLetterSize;
+    }
+
+    public final String getPreviewLabel() {
+        return isShiftedLetterActivated() ? mHintLabel : mLabel;
+    }
+
+    private boolean previewHasLetterSize() {
+        return (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO) != 0
+                || StringUtils.codePointCount(getPreviewLabel()) == 1;
+    }
+
+    public final int selectPreviewTextSize(final KeyDrawParams params) {
+        if (previewHasLetterSize()) {
+            return params.mPreviewTextSize;
+        }
+        return params.mLetterSize;
+    }
+
+    public Typeface selectPreviewTypeface(final KeyDrawParams params) {
+        if (previewHasLetterSize()) {
+            return selectTypeface(params);
+        }
+        return Typeface.DEFAULT_BOLD;
     }
 
     public final boolean isAlignLeft() {
