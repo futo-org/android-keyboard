@@ -811,18 +811,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             background.setState(KEY_PREVIEW_BACKGROUND_DEFAULT_STATE);
             background.setAlpha(PREVIEW_ALPHA);
         }
-        final String label = key.isShiftedLetterActivated() ? key.mHintLabel : key.mLabel;
+        final String label = key.getPreviewLabel();
         // What we show as preview should match what we show on a key top in onDraw().
         if (label != null) {
             // TODO Should take care of temporaryShiftLabel here.
             previewText.setCompoundDrawables(null, null, null, null);
-            if (StringUtils.codePointCount(label) > 1) {
-                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, drawParams.mLetterSize);
-                previewText.setTypeface(Typeface.DEFAULT_BOLD);
-            } else {
-                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, drawParams.mPreviewTextSize);
-                previewText.setTypeface(key.selectTypeface(drawParams));
-            }
+            previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    key.selectPreviewTextSize(drawParams));
+            previewText.setTypeface(key.selectPreviewTypeface(drawParams));
             previewText.setText(label);
         } else {
             previewText.setCompoundDrawables(null, null, null,
