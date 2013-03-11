@@ -96,37 +96,11 @@
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
-            <!-- U+094B: "ो" DEVANAGARI VOWEL SIGN O
-                 U+094B/U+0902: "қं" DEVANAGARI VOWEL SIGN O/DEVANAGARI SIGN ANUSVARA
-                 U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O
-                 U+094A: "ॊ" DEVANAGARI VOWEL SIGN SHORT O -->
-            <Key
-                latin:keyLabel="&#x094B;"
-                latin:moreKeys="&#x094B;&#x0902;,&#x0949;,&#x094A;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+0947: "े" DEVANAGARI VOWEL SIGN E
-                 U+0947/U+0902: "ें" DEVANAGARI VOWEL SIGN E/DEVANAGARI SIGN ANUSVARA -->
-            <Key
-                latin:keyLabel="&#x0947;"
-                latin:moreKeys="&#x0947;&#x0902;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
-            <Key
-                latin:keyLabel="&#x094D;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+093F: "ि" DEVANAGARI VOWEL SIGN I
-                 U+093F/U+0902: "िं" DEVANAGARI VOWEL SIGN I/DEVANAGARI SIGN ANUSVARA -->
-            <Key
-                latin:keyLabel="&#x093F;"
-                latin:moreKeys="&#x093F;&#x0902;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- U+0941: "ु" DEVANAGARI VOWEL SIGN U
-                 U+0941/U+0902: "ुं" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN ANUSVARA
-                 U+0941/U+0901: "ुँ" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN CANDRABINDU -->
-            <Key
-                latin:keyLabel="&#x0941;"
-                latin:moreKeys="&#x0941;&#x0902;,&#x0941;&#x0901;"
-                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of Hindi, different set of
+                 Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keys_hindi2_left5" />
             <!-- U+092A: "प" DEVANAGARI LETTER PA -->
             <Key
                 latin:keyLabel="&#x092A;"
