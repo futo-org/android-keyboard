@@ -55,4 +55,8 @@
     <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
          U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE -->
     <string name="more_keys_for_n">&#x00F1;,&#x0144;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>
