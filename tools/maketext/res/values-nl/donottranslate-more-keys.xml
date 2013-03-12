@@ -63,4 +63,6 @@
     <string name="more_keys_for_n">&#x00F1;,&#x0144;</string>
     <!-- U+0133: "ĳ" LATIN SMALL LIGATURE IJ -->
     <string name="more_keys_for_y">&#x0133;</string>
+    <string name="single_quotes">!text/single_9qm_rqm</string>
+    <string name="double_quotes">!text/double_9qm_rqm</string>
 </resources>

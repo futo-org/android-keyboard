@@ -99,31 +99,11 @@
          U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
          U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
          U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-         U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-         The following characters don't need BIDI mirroring.
-         U+2018: "‘" LEFT SINGLE QUOTATION MARK
-         U+2019: "’" RIGHT SINGLE QUOTATION MARK
-         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-         U+201C: "“" LEFT DOUBLE QUOTATION MARK
-         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+         U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK -->
     <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&#x00AB;|&#x00BB;</string>
     <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&#x00BB;|&#x00AB;</string>
-    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
-    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
-    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
-    <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
-    <!-- U+00A2: "¢" CENT SIGN
-         U+00A3: "£" POUND SIGN
-         U+20AC: "€" EURO SIGN
-         U+00A5: "¥" YEN SIGN
-         U+20B1: "₱" PESO SIGN
-         U+FDFC: "﷼" RIAL SIGN -->
-    <string name="more_keys_for_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;,&#xFDFC;</string>
+    <string name="single_angle_quotes">!text/single_laqm_raqm_rtl</string>
+    <string name="double_angle_quotes">!text/double_laqm_raqm_rtl</string>
     <!-- U+0655: "ٕ" ARABIC HAMZA BELOW
          U+0654: "ٔ" ARABIC HAMZA ABOVE
          U+0652: "ْ" ARABIC SUKUN

@@ -28,19 +28,9 @@
             <Key
                 latin:keyLabel=";"
                 latin:moreKeys=":" />
-            <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
-                 U+2019: "’" RIGHT SINGLE QUOTATION MARK
-                 U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-                 U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-                 U+201C: "“" LEFT DOUBLE QUOTATION MARK
-                 U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-                 U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-                 U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-            <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
-                 moreKeys="!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x2018;,&#x2019;,&#x201A;,&#x201B;" -->
             <Key
                 latin:keyLabel="\'"
-                latin:moreKeys="!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x2018;,&#x2019;,&#x201A;,&#x201B;,&quot;" />
+                latin:moreKeys="!fixedColumnOrder!3,!text/double_quotes,!text/single_quotes" />
         </case>
         <default>
             <Key
@@ -48,20 +38,10 @@
                 latin:keyHintLabel=":"
                 latin:moreKeys=":"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
-            <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
-                 U+2019: "’" RIGHT SINGLE QUOTATION MARK
-                 U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-                 U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-                 U+201C: "“" LEFT DOUBLE QUOTATION MARK
-                 U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-                 U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-                 U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-            <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
-                 moreKeys="!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x2018;,&#x2019;,&#x201A;,&#x201B;" -->
             <Key
                 latin:keyLabel="\'"
                 latin:keyHintLabel="&quot;"
-                latin:moreKeys="!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x2018;,&#x2019;,&#x201A;,&#x201B;,&quot;"
+                latin:moreKeys="!fixedColumnOrder!4,!text/double_quotes,&quot;,!text/single_quotes"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>

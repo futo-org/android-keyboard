@@ -42,4 +42,6 @@
     <string name="more_keys_for_s">&#x0219;,&#x00DF;,&#x015B;,&#x0161;</string>
     <!-- U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW -->
     <string name="more_keys_for_t">&#x021B;</string>
+    <string name="single_quotes">!text/single_9qm_rqm</string>
+    <string name="double_quotes">!text/double_9qm_rqm</string>
 </resources>

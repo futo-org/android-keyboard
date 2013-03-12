@@ -41,4 +41,6 @@
          U+0411: "Б" CYRILLIC CAPITAL LETTER BE
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
     <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

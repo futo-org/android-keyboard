@@ -103,4 +103,6 @@
     <!-- U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
          U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE -->
     <string name="more_keys_for_g">&#x0123;,&#x011F;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>

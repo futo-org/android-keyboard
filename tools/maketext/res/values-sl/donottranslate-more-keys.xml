@@ -27,4 +27,8 @@
     <string name="more_keys_for_d">&#x0111;</string>
     <!-- U+017E: "ž" LATIN SMALL LETTER Z WITH CARON -->
     <string name="more_keys_for_z">&#x017E;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
+    <string name="single_angle_quotes">!text/single_raqm_laqm</string>
+    <string name="double_angle_quotes">!text/double_raqm_laqm</string>
 </resources>

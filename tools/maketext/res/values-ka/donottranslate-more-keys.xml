@@ -23,4 +23,6 @@
          U+10D1: "ბ" GEORGIAN LETTER BAN
          U+10D2: "გ" GEORGIAN LETTER GAN -->
     <string name="label_to_alpha_key">&#x10D0;&#x10D1;&#x10D2;</string>
+    <string name="single_quotes">!text/single_9qm_lqm</string>
+    <string name="double_quotes">!text/double_9qm_lqm</string>
 </resources>
