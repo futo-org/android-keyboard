@@ -108,6 +108,17 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Način pisanja slova"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefonski način rada"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Način unosa telefonskih simbola"</string>
+    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Tipkovnica je skrivena"</string>
+    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Način prikazane tipkovnice: <xliff:g id="MODE">%s</xliff:g>"</string>
+    <string name="keyboard_mode_date" msgid="3137520166817128102">"datum"</string>
+    <string name="keyboard_mode_date_time" msgid="339593358488851072">"datum i vrijeme"</string>
+    <string name="keyboard_mode_email" msgid="6216248078128294262">"e-pošta"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"slanje poruka"</string>
+    <string name="keyboard_mode_number" msgid="7991623440699957069">"brojevi"</string>
+    <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefon"</string>
+    <string name="keyboard_mode_text" msgid="6479436687899701619">"tekst"</string>
+    <string name="keyboard_mode_time" msgid="4381856885582143277">"vrijeme"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tipka za glasovni unos"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na glavnoj tipkovnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na tipkovnici simb."</string>
