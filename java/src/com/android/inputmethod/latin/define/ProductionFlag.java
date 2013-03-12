@@ -29,5 +29,5 @@ public final class ProductionFlag {
     // for any released build.
     public static final boolean IS_EXPERIMENTAL_DEBUG = false;
 
-    public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = true;
+    public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 }
