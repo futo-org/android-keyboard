@@ -1451,7 +1451,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         } else {
             didAutoCorrect = false;
             if (SPACE_STATE_PHANTOM == spaceState) {
-                if (ProductionFlag.IS_INTERNAL) {
+                if (mSettings.isInternal()) {
                     if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
                         Stats.onAutoCorrection(
                                 "", mWordComposer.getTypedWord(), " ", mWordComposer);
@@ -1506,7 +1506,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            if (ProductionFlag.IS_INTERNAL) {
+            if (mSettings.isInternal()) {
                 if (mWordComposer.isBatchMode()) {
                     Stats.onAutoCorrection("", mWordComposer.getTypedWord(), " ", mWordComposer);
                 }
@@ -1736,7 +1736,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
-                if (ProductionFlag.IS_INTERNAL) {
+                if (mSettings.isInternal()) {
                     Stats.onAutoCorrectionCancellation();
                 }
                 revertCommit();
@@ -1895,7 +1895,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (null != mSuggestionStripView) mSuggestionStripView.dismissAddToDictionaryHint();
         }
         mHandler.postUpdateSuggestionStrip();
-        if (ProductionFlag.IS_INTERNAL) {
+        if (mSettings.isInternal()) {
             Utils.Stats.onNonSeparator((char)primaryCode, x, y);
         }
     }
@@ -1962,7 +1962,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // already displayed or not, so it's okay.
             setPunctuationSuggestions();
         }
-        if (ProductionFlag.IS_INTERNAL) {
+        if (mSettings.isInternal()) {
             Utils.Stats.onSeparator((char)primaryCode, x, y);
         }
 
@@ -2145,7 +2145,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
             }
-            if (ProductionFlag.IS_INTERNAL) {
+            if (mSettings.isInternal()) {
                 Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
             }
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -2244,7 +2244,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // If the suggestion is not in the dictionary, the hint should be shown.
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
-        if (ProductionFlag.IS_INTERNAL) {
+        if (mSettings.isInternal()) {
             Stats.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
@@ -2368,7 +2368,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
         }
         mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
-        if (ProductionFlag.IS_INTERNAL) {
+        if (mSettings.isInternal()) {
             Stats.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
@@ -2500,12 +2500,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private void launchSettings() {
         handleClose();
         launchSubActivity(SettingsActivity.class);
-    }
-
-    // Called from debug code only
-    public void launchDebugSettings() {
-        handleClose();
-        launchSubActivity(DebugSettingsActivity.class);
     }
 
     public void launchKeyboardedDialogActivity(final Class<? extends Activity> activityClass) {

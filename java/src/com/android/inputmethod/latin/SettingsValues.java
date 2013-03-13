@@ -76,6 +76,9 @@ public final class SettingsValues {
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
+    // Debug settings
+    public final boolean mIsInternal;
+
     public SettingsValues(final SharedPreferences prefs, final Resources res,
             final InputAttributes inputAttributes) {
         // Get the resources
@@ -141,6 +144,7 @@ public final class SettingsValues {
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
         mSuggestionVisibility = createSuggestionVisibility(res, showSuggestionsSetting);
+        mIsInternal = Settings.isInternal(prefs);
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {

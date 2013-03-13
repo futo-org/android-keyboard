@@ -70,6 +70,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
+    public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
 
     // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
     // This is being used only for the backward compatibility.
@@ -125,6 +126,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // TODO: Remove this method and add proxy method to SettingsValues.
     public SettingsValues getCurrent() {
         return mSettingsValues;
+    }
+
+    public boolean isInternal() {
+        return mSettingsValues.mIsInternal;
     }
 
     // Accessed from the settings interface, hence public
@@ -273,5 +278,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             return !isApplicationInSystemImage;
         }
         return prefs.getBoolean(Settings.PREF_SHOW_SETUP_WIZARD_ICON, false);
+    }
+
+    public static boolean isInternal(final SharedPreferences prefs) {
+        return prefs.getBoolean(Settings.PREF_KEY_IS_INTERNAL, false);
     }
 }
