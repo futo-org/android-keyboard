@@ -92,7 +92,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         final Preference debugSettings = findPreference(Settings.PREF_DEBUG_SETTINGS);
         if (debugSettings != null) {
-            if (ProductionFlag.IS_INTERNAL) {
+            if (Settings.isInternal(prefs)) {
                 final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
                 debugSettingsIntent.setClassName(
                         context.getPackageName(), DebugSettingsActivity.class.getName());
