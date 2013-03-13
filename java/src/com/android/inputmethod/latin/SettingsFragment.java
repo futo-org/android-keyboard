@@ -156,10 +156,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());
         }
 
-        final CheckBoxPreference showSetupWizardIcon =
-                (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
-        showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, context));
-
         setupKeyLongpressTimeoutSettings(prefs, res);
         setupKeypressVibrationDurationSettings(prefs, res);
         setupKeypressSoundVolumeSettings(prefs, res);
@@ -175,6 +171,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         } else {
             getPreferenceScreen().removePreference(mVoicePreference);
         }
+        final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        final CheckBoxPreference showSetupWizardIcon =
+                (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
+        showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
         updateCustomInputStylesSummary();
