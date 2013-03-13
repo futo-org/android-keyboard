@@ -98,6 +98,8 @@ public class ResearchLog {
      * output.
      *
      * See class comment for details about {@code JsonWriter} construction.
+     *
+     * @param onClosed run after the close() operation has completed asynchronously
      */
     private synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
@@ -144,8 +146,10 @@ public class ResearchLog {
     /**
      * Waits for publication requests to finish, closes the JsonWriter, but then deletes the backing
      * output file.
+     *
+     * @param onAbort run after the abort() operation has completed asynchronously
      */
-    private synchronized void abort() {
+    private synchronized void abort(final Runnable onAbort) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -158,6 +162,9 @@ public class ResearchLog {
                 } finally {
                     if (mFile != null) {
                         mFile.delete();
+                    }
+                    if (onAbort != null) {
+                        onAbort.run();
                     }
                 }
                 return null;
@@ -173,7 +180,7 @@ public class ResearchLog {
      * @param timeout time to wait for close in milliseconds
      */
     public void blockingAbort(final long timeout) {
-        abort();
+        abort(null);
         awaitTermination(timeout, TimeUnit.MILLISECONDS);
     }
 
@@ -231,10 +238,10 @@ public class ResearchLog {
                     return null;
                 }
             });
-        } catch (RejectedExecutionException e) {
+        } catch (final RejectedExecutionException e) {
             // TODO: Add code to record loss of data, and report.
             if (DEBUG) {
-                Log.d(TAG, "ResearchLog.publish() rejecting scheduled execution");
+                Log.d(TAG, "ResearchLog.publish() rejecting scheduled execution", e);
             }
         }
     }
