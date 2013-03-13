@@ -68,7 +68,7 @@ AK_FORCE_INLINE static int toBaseLowerCase(const int c) {
     return toLowerCase(toBaseCodePoint(c));
 }
 
-inline static bool isSkippableCodePoint(const int codePoint) {
+inline static bool isIntentionalOmissionCodePoint(const int codePoint) {
     // TODO: Do not hardcode here
     return codePoint == KEYCODE_SINGLE_QUOTE || codePoint == KEYCODE_HYPHEN_MINUS;
 }
