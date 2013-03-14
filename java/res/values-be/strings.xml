@@ -108,6 +108,17 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Рэжым лiтар"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Рэжым тэлефона"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Рэжым тэлефонных знакаў"</string>
+    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"Клавіятура схавана"</string>
+    <string name="announce_keyboard_mode" msgid="4729081055438508321">"Паказана клавiятура ў рэжыме \" <xliff:g id="MODE">%s</xliff:g>\""</string>
+    <string name="keyboard_mode_date" msgid="3137520166817128102">"дата"</string>
+    <string name="keyboard_mode_date_time" msgid="339593358488851072">"дата i час"</string>
+    <string name="keyboard_mode_email" msgid="6216248078128294262">"электронная пошта"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"абмен паведамленнямі"</string>
+    <string name="keyboard_mode_number" msgid="7991623440699957069">"нумар"</string>
+    <string name="keyboard_mode_phone" msgid="6851627527401433229">"тэлефон"</string>
+    <string name="keyboard_mode_text" msgid="6479436687899701619">"тэкст"</string>
+    <string name="keyboard_mode_time" msgid="4381856885582143277">"час"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ галасавога ўводу"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На асн. клавіятуры"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На сімв. клавіятуры"</string>
