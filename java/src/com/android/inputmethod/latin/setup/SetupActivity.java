@@ -62,6 +62,9 @@ public final class SetupActivity extends Activity {
         @Override
         public void handleMessage(final Message msg) {
             final SetupActivity setupActivity = getOuterInstance();
+            if (setupActivity == null) {
+                return;
+            }
             switch (msg.what) {
             case MSG_POLLING_IME_SETTINGS:
                 if (SetupActivity.isThisImeEnabled(setupActivity)) {
