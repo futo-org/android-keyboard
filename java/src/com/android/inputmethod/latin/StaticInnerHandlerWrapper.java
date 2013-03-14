@@ -22,17 +22,17 @@ import android.os.Looper;
 import java.lang.ref.WeakReference;
 
 public class StaticInnerHandlerWrapper<T> extends Handler {
-    final private WeakReference<T> mOuterInstanceRef;
+    private final WeakReference<T> mOuterInstanceRef;
 
-    public StaticInnerHandlerWrapper(T outerInstance) {
-        super();
-        if (outerInstance == null) throw new NullPointerException("outerInstance is null");
-        mOuterInstanceRef = new WeakReference<T>(outerInstance);
+    public StaticInnerHandlerWrapper(final T outerInstance) {
+        this(outerInstance, Looper.myLooper());
     }
 
-    public StaticInnerHandlerWrapper(T outerInstance, Looper looper) {
+    public StaticInnerHandlerWrapper(final T outerInstance, final Looper looper) {
         super(looper);
-        if (outerInstance == null) throw new NullPointerException("outerInstance is null");
+        if (outerInstance == null) {
+            throw new NullPointerException("outerInstance is null");
+        }
         mOuterInstanceRef = new WeakReference<T>(outerInstance);
     }
 
