@@ -108,6 +108,17 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"문자 모드"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"다이얼 모드"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"전화 기호 모드"</string>
+    <string name="announce_keyboard_hidden" msgid="8718927835531429807">"키보드 숨김"</string>
+    <string name="announce_keyboard_mode" msgid="4729081055438508321">"<xliff:g id="MODE">%s</xliff:g> 키보드 표시"</string>
+    <string name="keyboard_mode_date" msgid="3137520166817128102">"날짜"</string>
+    <string name="keyboard_mode_date_time" msgid="339593358488851072">"날짜 및 시간"</string>
+    <string name="keyboard_mode_email" msgid="6216248078128294262">"이메일"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"문자 메시지"</string>
+    <string name="keyboard_mode_number" msgid="7991623440699957069">"숫자"</string>
+    <string name="keyboard_mode_phone" msgid="6851627527401433229">"전화번호"</string>
+    <string name="keyboard_mode_text" msgid="6479436687899701619">"텍스트"</string>
+    <string name="keyboard_mode_time" msgid="4381856885582143277">"시간"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"음성 입력 키"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"기본 키보드"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"기호 키보드"</string>
