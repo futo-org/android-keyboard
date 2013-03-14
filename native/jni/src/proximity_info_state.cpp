@@ -165,7 +165,7 @@ float ProximityInfoState::getPointToKeyLength(
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
         return min(mSampledDistanceCache_G[index], mMaxPointToKeyLength);
     }
-    if (isSkippableCodePoint(codePoint)) {
+    if (isIntentionalOmissionCodePoint(codePoint)) {
         return 0.0f;
     }
     // If the char is not a key on the keyboard then return the max length.
