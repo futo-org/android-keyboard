@@ -119,22 +119,6 @@ public class LogUnit {
      */
     public synchronized void publishTo(final ResearchLog researchLog,
             final boolean canIncludePrivateData) {
-        // Prepare debugging output if necessary
-        final StringWriter debugStringWriter;
-        final JsonWriter debugJsonWriter;
-        if (DEBUG) {
-            debugStringWriter = new StringWriter();
-            debugJsonWriter = new JsonWriter(debugStringWriter);
-            debugJsonWriter.setIndent("  ");
-            try {
-                debugJsonWriter.beginArray();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not open array in JsonWriter", e);
-            }
-        } else {
-            debugStringWriter = null;
-            debugJsonWriter = null;
-        }
         // Write out any logStatement that passes the privacy filter.
         final int size = mLogStatementList.size();
         if (size != 0) {
@@ -157,27 +141,10 @@ public class LogUnit {
                     outputLogUnitStart(jsonWriter, canIncludePrivateData);
                 }
                 logStatement.outputToLocked(jsonWriter, mTimeList.get(i), mValuesList.get(i));
-                if (DEBUG) {
-                    logStatement.outputToLocked(debugJsonWriter, mTimeList.get(i),
-                            mValuesList.get(i));
-                }
             }
             if (jsonWriter != null) {
                 // We must have called logUnitStart earlier, so emit a logUnitStop.
                 outputLogUnitStop(jsonWriter);
-            }
-        }
-        if (DEBUG) {
-            try {
-                debugJsonWriter.endArray();
-                debugJsonWriter.flush();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close array in JsonWriter", e);
-            }
-            final String bigString = debugStringWriter.getBuffer().toString();
-            final String[] lines = bigString.split("\n");
-            for (String line : lines) {
-                Log.d(TAG, line);
             }
         }
     }
