@@ -170,4 +170,36 @@
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="language_settings" msgid="1671153053201809031">"Language &amp; input"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Choose input method"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Dictionary Provider"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Dictionary Provider"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Dictionary Service"</string>
+    <string name="download_description" msgid="3274861514695032954">"Dictionary update information"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Add-on dictionaries"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Dictionary available"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Settings for dictionaries"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"User dictionaries"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"User dictionary"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Dictionary available"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Currently downloading"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Installed"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Installed, disabled"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Problem while connecting to dictionary service"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"No dictionaries available"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Refresh"</string>
+    <string name="last_update" msgid="3101549719827600346">"Last updated"</string>
+    <string name="message_updating" msgid="820186276704134720">"Checking for updates"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Loading..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Main dictionary"</string>
+    <string name="cancel" msgid="5586531736609183304">"Cancel"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Install"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Cancel download"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Disable"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Enable"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Delete"</string>
+    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"The selected language on your mobile device has an available dictionary.&lt;br/&gt; We recommend &lt;b&gt;downloading&lt;/b&gt; the <xliff:g id="LANGUAGE">%1$s</xliff:g> dictionary to improve your typing experience.&lt;br/&gt; &lt;br/&gt; The download could take a minute or two over 3G. Charges may apply if you don\'t have an &lt;b&gt;unlimited data plan&lt;/b&gt;.&lt;br/&gt; If you are not sure which data plan you have, we recommend finding a Wifi connection to start the download automatically.&lt;br/&gt; &lt;br/&gt; Tip: You can download and remove dictionaries by going to &lt;b&gt;Language &amp; input&lt;/b&gt; in the &lt;b&gt;Settings&lt;/b&gt; menu of your mobile device."</string>
+    <string name="download_over_metered" msgid="4024013764937850061">"Download now (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Download over Wifi"</string>
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"A dictionary is available for <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Press to review and download"</string>
 </resources>

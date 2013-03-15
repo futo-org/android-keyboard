@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.os.Binder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.textservice.SentenceSuggestionsInfo;
@@ -133,22 +134,27 @@ public final class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheck
     @Override
     public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfos,
             int suggestionsLimit, boolean sequentialWords) {
-        final int length = textInfos.length;
-        final SuggestionsInfo[] retval = new SuggestionsInfo[length];
-        for (int i = 0; i < length; ++i) {
-            final String prevWord;
-            if (sequentialWords && i > 0) {
+        long ident = Binder.clearCallingIdentity();
+        try {
+            final int length = textInfos.length;
+            final SuggestionsInfo[] retval = new SuggestionsInfo[length];
+            for (int i = 0; i < length; ++i) {
+                final String prevWord;
+                if (sequentialWords && i > 0) {
                 final String prevWordCandidate = textInfos[i - 1].getText();
                 // Note that an empty string would be used to indicate the initial word
                 // in the future.
                 prevWord = TextUtils.isEmpty(prevWordCandidate) ? null : prevWordCandidate;
-            } else {
-                prevWord = null;
+                } else {
+                    prevWord = null;
+                }
+                retval[i] = onGetSuggestionsInternal(textInfos[i], prevWord, suggestionsLimit);
+                retval[i].setCookieAndSequence(textInfos[i].getCookie(),
+                        textInfos[i].getSequence());
             }
-            retval[i] = onGetSuggestions(textInfos[i], prevWord, suggestionsLimit);
-            retval[i].setCookieAndSequence(textInfos[i].getCookie(),
-                    textInfos[i].getSequence());
+            return retval;
+        } finally {
+            Binder.restoreCallingIdentity(ident);
         }
-        return retval;
     }
 }

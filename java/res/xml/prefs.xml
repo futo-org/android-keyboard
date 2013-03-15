@@ -59,7 +59,6 @@
             android:title="@string/configure_dictionaries_title">
            <intent
               android:action="android.intent.action.MAIN"
-              android:targetPackage="@string/dictionary_pack_package_name"
               android:targetClass="@string/dictionary_pack_settings_activity">
              <extra
                  android:name="clientId"

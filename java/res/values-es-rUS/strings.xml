@@ -170,4 +170,36 @@
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
     <string name="language_settings" msgid="1671153053201809031">"Teclado e idioma"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Seleccionar método de entrada"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Proveedor de diccionarios"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Proveedor de diccionarios"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Servicio de diccionarios"</string>
+    <string name="download_description" msgid="3274861514695032954">"Información acerca de la actualización del diccionario"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Diccionarios complementarios"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Diccionario disponible"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Configuración de los diccionarios"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Diccionarios del usuario"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Diccionario del usuario"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Diccionario disponible"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Descarga en curso"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Instalado"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Instalado, inhabilitado"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Err. conex. con dic."</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"No hay diccionarios."</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Actualizar"</string>
+    <string name="last_update" msgid="3101549719827600346">"Última actualización"</string>
+    <string name="message_updating" msgid="820186276704134720">"Buscando las actualizaciones"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Cargando…"</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Diccionario principal"</string>
+    <string name="cancel" msgid="5586531736609183304">"Cancelar"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Instalar"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Cancelar la descarga"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Inhabilitar"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Activar"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Eliminar"</string>
+    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE">%1$s</xliff:g> para mejorar tu experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;, es posible que se apliquen cargos.&lt;br/&gt; Si no conoces las características de tu plan de datos, te recomendamos que uses una conexión Wi-Fi para iniciar la descarga automáticamente.&lt;br/&gt; &lt;br/&gt; Sugerencia: Puedes descargar y eliminar diccionarios en la sección &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; del menú &lt;b&gt;Ajustes&lt;/b&gt; del dispositivo móvil."</string>
+    <string name="download_over_metered" msgid="4024013764937850061">"Descargar ahora ( <xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Descargar mediante Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Hay un diccionario disponible de <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Pulsa para consultar y descargar"</string>
 </resources>

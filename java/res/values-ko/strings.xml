@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
     <string name="language_settings" msgid="1671153053201809031">"언어 및 키보드"</string>
     <string name="select_input_method" msgid="4301602374609275003">"입력 방법 선택"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"사전 제공업체"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"사전 제공업체"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"사전 서비스"</string>
+    <string name="download_description" msgid="3274861514695032954">"사전 업데이트 정보"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"사전 추가"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"사전 사용 가능"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"사전 설정"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"사용자 사전"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"사용자 사전"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"사전 사용 가능"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"현재 다운로드 중"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"설치됨"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"설치 완료되었으나 사용 중지됨"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"사전 서비스에 연결하는 동안 문제가 발생했습니다."</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"사용할 수 있는 사전이 없습니다."</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"새로고침"</string>
+    <string name="last_update" msgid="3101549719827600346">"최근 업데이트"</string>
+    <string name="message_updating" msgid="820186276704134720">"업데이트를 확인하는 중"</string>
+    <string name="message_loading" msgid="8611339149825047446">"로드 중..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"기본 사전"</string>
+    <string name="cancel" msgid="5586531736609183304">"취소"</string>
+    <string name="install_dict" msgid="5525005524697607865">"설치"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"다운로드 취소"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"사용 중지"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"사용"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"삭제"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"<xliff:g id="LANGUAGE">%1$s</xliff:g> 사전을 사용할 수 있습니다."</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"검토하고 다운로드하려면 누르세요."</string>
 </resources>

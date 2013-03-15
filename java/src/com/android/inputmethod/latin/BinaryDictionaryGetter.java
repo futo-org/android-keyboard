@@ -96,18 +96,8 @@ final class BinaryDictionaryGetter {
     private static final class DictPackSettings {
         final SharedPreferences mDictPreferences;
         public DictPackSettings(final Context context) {
-            Context dictPackContext = null;
-            try {
-                final String dictPackName =
-                        context.getString(R.string.dictionary_pack_package_name);
-                dictPackContext = context.createPackageContext(dictPackName, 0);
-            } catch (NameNotFoundException e) {
-                // The dictionary pack is not installed...
-                // TODO: fallback on the built-in dict, see the TODO above
-                Log.e(TAG, "Could not find a dictionary pack");
-            }
-            mDictPreferences = null == dictPackContext ? null
-                    : dictPackContext.getSharedPreferences(COMMON_PREFERENCES_NAME,
+            mDictPreferences = null == context ? null
+                    : context.getSharedPreferences(COMMON_PREFERENCES_NAME,
                             Context.MODE_WORLD_READABLE | Context.MODE_MULTI_PROCESS);
         }
         public boolean isWordListActive(final String dictId) {

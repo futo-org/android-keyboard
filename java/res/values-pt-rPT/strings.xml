@@ -170,4 +170,36 @@
     <string name="button_default" msgid="3988017840431881491">"Predefinido"</string>
     <string name="language_settings" msgid="1671153053201809031">"Idioma e entrada de som"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Escolher o método de entrada"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Fornecedor de Dicionário"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Fornecedor de Dicionário"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Serviço de Dicionário"</string>
+    <string name="download_description" msgid="3274861514695032954">"Informações de atualização do dicionário"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Dicionários suplementares"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Dicionário disponível"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Definições dos dicionários"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Dicionários do utilizador"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Dicionário do utilizador"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Dicionário disponível"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Transferência em curso"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Instalado"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Instalado, desativado"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Problema ao ligar ao serviço de dicionário"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Sem dicionários disponíveis"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Atualizar"</string>
+    <string name="last_update" msgid="3101549719827600346">"Última atualização"</string>
+    <string name="message_updating" msgid="820186276704134720">"A verificar existência de atualizações"</string>
+    <string name="message_loading" msgid="8611339149825047446">"A carregar..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Dicionário principal"</string>
+    <string name="cancel" msgid="5586531736609183304">"Cancelar"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Instalar"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Cancelar transferência"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Desativar"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Ativar"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Eliminar"</string>
+    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"O idioma selecionado no seu dispositivo móvel tem um dicionário disponível.&lt;br/&gt; Recomendamos que &lt;b&gt;transfira&lt;/b&gt; o dicionário <xliff:g id="LANGUAGE">%1$s</xliff:g> para melhorar a sua experiência de introdução.&lt;br/&gt; &lt;br/&gt; A transferência pode demorar um ou dois minutos via 3G. Poderão ser aplicadas taxas se não tiver um &lt;b&gt;plano de dados ilimitado&lt;/b&gt;.&lt;br/&gt; Se não tiver a certeza do plano de dados que tem, recomendamos que localize uma ligação Wi-Fi para começar a transferência automaticamente.&lt;br/&gt; &lt;br/&gt; Sugestão: pode transferir e remover dicionários acedendo a &lt;b&gt;Idioma e introdução&lt;/b&gt; no menu &lt;b&gt;Definições&lt;/b&gt; do seu dispositivo móvel."</string>
+    <string name="download_over_metered" msgid="4024013764937850061">"Transferir agora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Transferir via Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Está disponível um dicionário para <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Prima para consultar e transferir"</string>
 </resources>
