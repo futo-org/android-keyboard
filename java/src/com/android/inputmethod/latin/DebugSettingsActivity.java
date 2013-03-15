@@ -21,15 +21,18 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 public final class DebugSettingsActivity extends PreferenceActivity {
+    private static final String DEFAULT_FRAGMENT = DebugSettings.class.getName();
+
     @Override
     public Intent getIntent() {
-        final Intent modIntent = new Intent(super.getIntent());
-        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, DebugSettings.class.getName());
-        return modIntent;
+        final Intent intent = super.getIntent();
+        intent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
+        intent.putExtra(EXTRA_NO_HEADERS, true);
+        return intent;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.english_ime_debug_settings);
     }
