@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
@@ -290,8 +291,13 @@ final class BinaryDictionaryGetter {
         // list of everything we ever cached, so we ignore the return value.
         // TODO: The experimental version is not supported by the Dictionary Pack Service yet
         if (!ProductionFlag.IS_EXPERIMENTAL) {
-            BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
-                    hasDefaultWordList);
+            // We need internet access to do the following. Only do this if the package actually
+            // has the permission.
+            if (context.checkCallingOrSelfPermission(android.Manifest.permission.INTERNET)
+                    == PackageManager.PERMISSION_GRANTED) {
+                BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
+                        hasDefaultWordList);
+            }
         }
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
         final String mainDictId = DictionaryInfoUtils.getMainDictId(locale);
