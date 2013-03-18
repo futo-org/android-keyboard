@@ -118,7 +118,7 @@
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"телефон"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"текст"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"време"</string>
-    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL адреса"</string>
+    <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Тастер за гласовни унос"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На главној тастатури"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На тастатури са симболима"</string>
