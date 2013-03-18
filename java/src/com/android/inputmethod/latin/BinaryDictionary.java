@@ -91,7 +91,7 @@ public final class BinaryDictionary extends Dictionary {
 
     private static native long openNative(String sourceDir, long dictOffset, long dictSize);
     private static native void closeNative(long dict);
-    private static native int getFrequencyNative(long dict, int[] word);
+    private static native int getProbabilityNative(long dict, int[] word);
     private static native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
@@ -186,7 +186,7 @@ public final class BinaryDictionary extends Dictionary {
     public int getFrequency(final String word) {
         if (word == null) return -1;
         int[] codePoints = StringUtils.toCodePointArray(word);
-        return getFrequencyNative(mNativeDict, codePoints);
+        return getProbabilityNative(mNativeDict, codePoints);
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni

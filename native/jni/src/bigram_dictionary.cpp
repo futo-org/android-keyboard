@@ -36,21 +36,21 @@ BigramDictionary::BigramDictionary(const uint8_t *const streamStart) : DICT_ROOT
 BigramDictionary::~BigramDictionary() {
 }
 
-void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *bigramFreq,
+void BigramDictionary::addWordBigram(int *word, int length, int probability, int *bigramProbability,
         int *bigramCodePoints, int *outputTypes) const {
     word[length] = 0;
     if (DEBUG_DICT) {
 #ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = static_cast<char>(word[i]);
-        AKLOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
+        AKLOGI("Bigram: Found word = %s, freq = %d :", s, probability);
 #endif
     }
 
     // Find the right insertion point
     int insertAt = 0;
     while (insertAt < MAX_RESULTS) {
-        if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
+        if (probability > bigramProbability[insertAt] || (bigramProbability[insertAt] == probability
                 && length < getCodePointCount(MAX_WORD_LENGTH,
                         bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
             break;
@@ -63,10 +63,10 @@ void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
     if (insertAt >= MAX_RESULTS) {
         return;
     }
-    memmove(bigramFreq + (insertAt + 1),
-            bigramFreq + insertAt,
-            (MAX_RESULTS - insertAt - 1) * sizeof(bigramFreq[0]));
-    bigramFreq[insertAt] = frequency;
+    memmove(bigramProbability + (insertAt + 1),
+            bigramProbability + insertAt,
+            (MAX_RESULTS - insertAt - 1) * sizeof(bigramProbability[0]));
+    bigramProbability[insertAt] = probability;
     outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
     memmove(bigramCodePoints + (insertAt + 1) * MAX_WORD_LENGTH,
             bigramCodePoints + insertAt * MAX_WORD_LENGTH,
@@ -87,7 +87,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
  * inputCodePoints: what user typed, in the same format as for UnigramDictionary::getSuggestions.
  * inputSize: the size of the codes array.
  * bigramCodePoints: an array for output, at the same format as outwords for getSuggestions.
- * bigramFreq: an array to output frequencies.
+ * bigramProbability: an array to output frequencies.
  * outputTypes: an array to output types.
  * This method returns the number of bigrams this word has, for backward compatibility.
  * Note: this is not the number of bigrams output in the array, which is the number of
@@ -98,7 +98,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int frequency, int *
  * reduce their scope to the ones that match the first letter.
  */
 int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *inputCodePoints,
-        int inputSize, int *bigramCodePoints, int *bigramFreq, int *outputTypes) const {
+        int inputSize, int *bigramCodePoints, int *bigramProbability, int *outputTypes) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
@@ -118,23 +118,24 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
         int bigramBuffer[MAX_WORD_LENGTH];
-        int unigramFreq = 0;
+        int unigramProbability = 0;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
-                bigramBuffer, &unigramFreq);
+                bigramBuffer, &unigramProbability);
 
         // inputSize == 0 means we are trying to find bigram predictions.
         if (inputSize < 1 || checkFirstCharacter(bigramBuffer, inputCodePoints)) {
-            const int bigramFreqTemp = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
-            // Due to space constraints, the frequency for bigrams is approximate - the lower the
-            // unigram frequency, the worse the precision. The theoritical maximum error in
-            // resulting frequency is 8 - although in the practice it's never bigger than 3 or 4
+            const int bigramProbabilityTemp =
+                    BinaryFormat::MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
+            // Due to space constraints, the probability for bigrams is approximate - the lower the
+            // unigram probability, the worse the precision. The theoritical maximum error in
+            // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
             // in very bad cases. This means that sometimes, we'll see some bigrams interverted
             // here, but it can't get too bad.
-            const int frequency =
-                    BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreqTemp);
-            addWordBigram(bigramBuffer, length, frequency, bigramFreq, bigramCodePoints,
+            const int probability = BinaryFormat::computeProbabilityForBigram(
+                    unigramProbability, bigramProbabilityTemp);
+            addWordBigram(bigramBuffer, length, probability, bigramProbability, bigramCodePoints,
                     outputTypes);
             ++bigramCount;
         }
@@ -159,13 +160,13 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     }
-    pos = BinaryFormat::skipFrequency(flags, pos);
+    pos = BinaryFormat::skipProbability(flags, pos);
     pos = BinaryFormat::skipChildrenPosition(flags, pos);
     pos = BinaryFormat::skipShortcuts(root, flags, pos);
     return pos;
 }
 
-void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int *prevWord,
+void BigramDictionary::fillBigramAddressToProbabilityMapAndFilter(const int *prevWord,
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
     const uint8_t *const root = DICT_ROOT;
@@ -181,10 +182,10 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int *prevW
     uint8_t bigramFlags;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        const int frequency = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+        const int probability = BinaryFormat::MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
-        (*map)[bigramPos] = frequency;
+        (*map)[bigramPos] = probability;
         setInFilter(filter, bigramPos);
     } while (0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }

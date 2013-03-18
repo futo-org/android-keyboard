@@ -62,7 +62,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
     } else {
         std::map<int, int> bigramMap;
         uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordCodePoints,
+        mBigramDictionary->fillBigramAddressToProbabilityMapAndFilter(prevWordCodePoints,
                 prevWordLength, &bigramMap, bigramFilter);
         result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
                 inputCodePoints, inputSize, &bigramMap, bigramFilter, useFullEditDistance, outWords,
@@ -78,8 +78,8 @@ int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, in
             frequencies, outputTypes);
 }
 
-int Dictionary::getFrequency(const int *word, int length) const {
-    return mUnigramDictionary->getFrequency(word, length);
+int Dictionary::getProbability(const int *word, int length) const {
+    return mUnigramDictionary->getProbability(word, length);
 }
 
 bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
