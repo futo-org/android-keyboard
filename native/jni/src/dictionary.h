@@ -52,7 +52,7 @@ class Dictionary {
     int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
 
-    int getFrequency(const int *word, int length) const;
+    int getProbability(const int *word, int length) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     const uint8_t *getDict() const { // required to release dictionary buffer
         return mDict;

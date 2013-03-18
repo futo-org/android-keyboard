@@ -72,11 +72,11 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *source, const int sour
 }
 
 static inline void dumpWordInfo(const int *word, const int length, const int rank,
-        const int frequency) {
+        const int probability) {
     static char charBuf[50];
     const int N = intArrayToCharArray(word, length, charBuf);
     if (N > 1) {
-        AKLOGI("%2d [ %s ] (%d)", rank, charBuf, frequency);
+        AKLOGI("%2d [ %s ] (%d)", rank, charBuf, probability);
     }
 }
 
@@ -312,8 +312,8 @@ static inline void prof_out(void) {
 #define ZERO_DISTANCE_PROMOTION_RATE 110.0f
 #define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
-#define MAX_FREQ 255
-#define MAX_BIGRAM_FREQ 15
+#define MAX_PROBABILITY 255
+#define MAX_BIGRAM_ENCODED_PROBABILITY 15
 
 // Assuming locale strings such as en_US, sr-Latn etc.
 #define MAX_LOCALE_STRING_LENGTH 10
@@ -335,8 +335,8 @@ static inline void prof_out(void) {
 
 #define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35f
 #define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185f
-/* heuristic... This should be changed if we change the unit of the frequency. */
-#define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_FREQ * 58 / 100)
+/* heuristic... This should be changed if we change the unit of the probability. */
+#define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_PROBABILITY * 58 / 100)
 
 #define MAX_DEPTH_MULTIPLIER 3
 #define FIRST_WORD_INDEX 0

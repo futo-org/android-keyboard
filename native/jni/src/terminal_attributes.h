@@ -51,7 +51,7 @@ class TerminalAttributes {
                 if (NOT_A_CODE_POINT == codePoint) break;
                 outWord[i] = codePoint;
             }
-            *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
+            *outFreq = BinaryFormat::getAttributeProbabilityFromFlags(shortcutFlags);
             return i;
         }
 

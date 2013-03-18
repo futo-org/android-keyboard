@@ -40,7 +40,7 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
     UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags);
-    int getFrequency(const int *const inWord, const int length) const;
+    int getProbability(const int *const inWord, const int length) const;
     int getBigramPosition(int pos, int *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *inputCodePoints, const int inputSize,
@@ -89,9 +89,9 @@ class UnigramDictionary {
             const uint8_t *bigramFilter, Correction *correction, int *newCount,
             int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
             const int currentWordIndex) const;
-    int getMostFrequentWordLike(const int startInputIndex, const int inputSize,
+    int getMostProbableWordLike(const int startInputIndex, const int inputSize,
             Correction *correction, int *word) const;
-    int getMostFrequentWordLikeInner(const int *const inWord, const int inputSize,
+    int getMostProbableWordLikeInner(const int *const inWord, const int inputSize,
             int *outWord) const;
     int getSubStringSuggestion(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
