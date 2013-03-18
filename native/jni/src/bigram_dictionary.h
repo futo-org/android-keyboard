@@ -29,14 +29,14 @@ class BigramDictionary {
     BigramDictionary(const uint8_t *const streamStart);
     int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
-    void fillBigramAddressToFrequencyMapAndFilter(const int *prevWord, const int prevWordLength,
+    void fillBigramAddressToProbabilityMapAndFilter(const int *prevWord, const int prevWordLength,
             std::map<int, int> *map, uint8_t *filter) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
-    void addWordBigram(int *word, int length, int frequency, int *bigramFreq, int *bigramCodePoints,
-            int *outputTypes) const;
+    void addWordBigram(int *word, int length, int probability, int *bigramProbability,
+            int *bigramCodePoints, int *outputTypes) const;
     bool checkFirstCharacter(int *word, int *inputCodePoints) const;
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;

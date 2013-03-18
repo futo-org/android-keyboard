@@ -203,14 +203,14 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     return count;
 }
 
-static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jclass clazz, jlong dict,
+static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,
         jintArray wordArray) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     const jsize codePointLength = env->GetArrayLength(wordArray);
     int codePoints[codePointLength];
     env->GetIntArrayRegion(wordArray, 0, codePointLength, codePoints);
-    return dictionary->getFrequency(codePoints, codePointLength);
+    return dictionary->getProbability(codePoints, codePointLength);
 }
 
 static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jclass clazz, jlong dict,
@@ -285,8 +285,8 @@ static JNINativeMethod sMethods[] = {
     {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I",
             reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
-    {"getFrequencyNative", "(J[I)I",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_getFrequency)},
+    {"getProbabilityNative", "(J[I)I",
+            reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)},
     {"isValidBigramNative", "(J[I[I)Z",
             reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)},
     {"calcNormalizedScoreNative", "([I[II)F",

@@ -52,8 +52,8 @@ UnigramDictionary::~UnigramDictionary() {
 }
 
 // TODO: This needs to take a const int* and not tinker with its contents
-static void addWord(int *word, int length, int frequency, WordsPriorityQueue *queue, int type) {
-    queue->push(frequency, word, length, type);
+static void addWord(int *word, int length, int probability, WordsPriorityQueue *queue, int type) {
+    queue->push(probability, word, length, type);
 }
 
 // Return the replacement code point for a digraph, or 0 if none.
@@ -158,7 +158,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
             queuePool);
 }
 
-// bigramMap contains the association <bigram address> -> <bigram frequency>
+// bigramMap contains the association <bigram address> -> <bigram probability>
 // bigramFilter is a bloom filter for fast rejection: see functions setInFilter and isInFilter
 // in bigram_dictionary.cpp
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -399,7 +399,7 @@ void UnigramDictionary::onTerminal(const int probability,
                     MAX_WORD_LENGTH, shortcutTarget, &shortcutFrequency);
             int shortcutScore;
             int kind;
-            if (shortcutFrequency == BinaryFormat::WHITELIST_SHORTCUT_FREQUENCY
+            if (shortcutFrequency == BinaryFormat::WHITELIST_SHORTCUT_PROBABILITY
                     && correction->sameAsTyped()) {
                 shortcutScore = S_INT_MAX;
                 kind = Dictionary::KIND_WHITELIST;
@@ -483,7 +483,7 @@ int UnigramDictionary::getSubStringSuggestion(
             inputSize, correction);
 
     int word[MAX_WORD_LENGTH];
-    int freq = getMostFrequentWordLike(
+    int freq = getMostProbableWordLike(
             inputWordStartPos, inputWordLength, correction, word);
     if (freq > 0) {
         nextWordLength = inputWordLength;
@@ -679,15 +679,15 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
             outputWord);
 }
 
-// Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
+// Wrapper for getMostProbableWordLikeInner, which matches it to the previous
 // interface.
-int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex, const int inputSize,
+int UnigramDictionary::getMostProbableWordLike(const int startInputIndex, const int inputSize,
         Correction *correction, int *word) const {
     int inWord[inputSize];
     for (int i = 0; i < inputSize; ++i) {
         inWord[i] = correction->getPrimaryCodePointAt(startInputIndex + i);
     }
-    return getMostFrequentWordLikeInner(inWord, inputSize, word);
+    return getMostProbableWordLikeInner(inWord, inputSize, word);
 }
 
 // This function will take the position of a character array within a CharGroup,
@@ -738,9 +738,9 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
 }
 
 // This function is invoked when a word like the word searched for is found.
-// It will compare the frequency to the max frequency, and if greater, will
+// It will compare the probability to the max probability, and if greater, will
 // copy the word into the output buffer. In output value maxFreq, it will
-// write the new maximum frequency if it changed.
+// write the new maximum probability if it changed.
 static inline void onTerminalWordLike(const int freq, int *newWord, const int length, int *outWord,
         int *maxFreq) {
     if (freq > *maxFreq) {
@@ -752,9 +752,9 @@ static inline void onTerminalWordLike(const int freq, int *newWord, const int le
     }
 }
 
-// Will find the highest frequency of the words like the one passed as an argument,
+// Will find the highest probability of the words like the one passed as an argument,
 // that is, everything that only differs by case/accents.
-int UnigramDictionary::getMostFrequentWordLikeInner(const int *const inWord, const int inputSize,
+int UnigramDictionary::getMostProbableWordLikeInner(const int *const inWord, const int inputSize,
         int *outWord) const {
     int newWord[MAX_WORD_LENGTH];
     int depth = 0;
@@ -775,17 +775,18 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const int *const inWord, con
             int inputIndex = stackInputIndex[depth];
             const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
             // Test whether all chars in this group match with the word we are searching for. If so,
-            // we want to traverse its children (or if the inputSize match, evaluate its frequency).
-            // Note that this function will output the position regardless, but will only write
-            // into inputIndex if there is a match.
+            // we want to traverse its children (or if the inputSize match, evaluate its
+            // probability). Note that this function will output the position regardless, but will
+            // only write into inputIndex if there is a match.
             const bool isAlike = testCharGroupForContinuedLikeness(flags, root, pos, inWord,
                     inputIndex, inputSize, newWord, &inputIndex, &pos);
             if (isAlike && (!(BinaryFormat::FLAG_IS_NOT_A_WORD & flags))
                     && (BinaryFormat::FLAG_IS_TERMINAL & flags) && (inputIndex == inputSize)) {
-                const int frequency = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
-                onTerminalWordLike(frequency, newWord, inputIndex, outWord, &maxFreq);
+                const int probability =
+                        BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
+                onTerminalWordLike(probability, newWord, inputIndex, outWord, &maxFreq);
             }
-            pos = BinaryFormat::skipFrequency(flags, pos);
+            pos = BinaryFormat::skipProbability(flags, pos);
             const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(root, flags, pos);
             const int childrenNodePos = BinaryFormat::readChildrenPosition(root, flags, pos);
             // If we had a match and the word has children, we want to traverse them. We don't have
@@ -816,7 +817,7 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const int *const inWord, con
     return maxFreq;
 }
 
-int UnigramDictionary::getFrequency(const int *const inWord, const int length) const {
+int UnigramDictionary::getProbability(const int *const inWord, const int length) const {
     const uint8_t *const root = DICT_ROOT;
     int pos = BinaryFormat::getTerminalPosition(root, inWord, length,
             false /* forceLowerCaseSearch */);
@@ -826,7 +827,7 @@ int UnigramDictionary::getFrequency(const int *const inWord, const int length) c
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
     if (flags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD)) {
         // If this is not a word, or if it's a blacklisted entry, it should behave as
-        // having no frequency outside of the suggestion process (where it should be used
+        // having no probability outside of the suggestion process (where it should be used
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
@@ -836,8 +837,8 @@ int UnigramDictionary::getFrequency(const int *const inWord, const int length) c
     } else {
         BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos);
     }
-    const int unigramFreq = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
-    return unigramFreq;
+    const int unigramProbability = BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
+    return unigramProbability;
 }
 
 // TODO: remove this function.
@@ -884,7 +885,7 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
 
     // This gets only ONE character from the stream. Next there will be:
     // if FLAG_HAS_MULTIPLE CHARS: the other characters of the same node
-    // else if FLAG_IS_TERMINAL: the frequency
+    // else if FLAG_IS_TERMINAL: the probability
     // else if MASK_GROUP_ADDRESS_TYPE is not NONE: the children address
     // Note that you can't have a node that both is not a terminal and has no children.
     int c = BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos);
@@ -917,14 +918,14 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
             // We found that this is an unrelated character, so we should give up traversing
             // this node and its children entirely.
             // However we may not be on the last virtual node yet so we skip the remaining
-            // characters in this node, the frequency if it's there, read the next sibling
+            // characters in this node, the probability if it's there, read the next sibling
             // position to output it, then return false.
             // We don't have to output other values because we return false, as in
             // "don't traverse children".
             if (!isLastChar) {
                 pos = BinaryFormat::skipOtherCharacters(DICT_ROOT, pos);
             }
-            pos = BinaryFormat::skipFrequency(flags, pos);
+            pos = BinaryFormat::skipProbability(flags, pos);
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
             return false;
@@ -937,16 +938,17 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     } while (NOT_A_CODE_POINT != c);
 
     if (isTerminalNode) {
-        // The frequency should be here, because we come here only if this is actually
+        // The probability should be here, because we come here only if this is actually
         // a terminal node, and we are on its last char.
-        const int unigramFreq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-        const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
+        const int unigramProbability =
+                BinaryFormat::readProbabilityWithoutMovingPointer(DICT_ROOT, pos);
+        const int childrenAddressPos = BinaryFormat::skipProbability(flags, pos);
         const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
         // bigramMap contains the bigram frequencies indexed by addresses for fast lookup.
         // bigramFilter is a bloom filter of said frequencies for even faster rejection.
         const int probability = BinaryFormat::getProbability(initialPos, bigramMap, bigramFilter,
-                unigramFreq);
+                unigramProbability);
         onTerminal(probability, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
                 currentWordIndex);
 
@@ -961,7 +963,7 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
         // Note that !hasChildren implies isLastChar, so we know we don't have to skip any
         // remaining char in this group for there can't be any.
         if (!hasChildren) {
-            pos = BinaryFormat::skipFrequency(flags, pos);
+            pos = BinaryFormat::skipProbability(flags, pos);
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
             return false;
@@ -969,7 +971,7 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
 
         // Optimization: Prune out words that are too long compared to how much was typed.
         if (correction->needsToPrune()) {
-            pos = BinaryFormat::skipFrequency(flags, pos);
+            pos = BinaryFormat::skipProbability(flags, pos);
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
             if (DEBUG_DICT_FULL) {
@@ -983,13 +985,13 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     // children, we can't come here.
     ASSERT(BinaryFormat::hasChildrenInFlags(flags));
 
-    // If this node was a terminal it still has the frequency under the pointer (it may have been
-    // read, but not skipped - see readFrequencyWithoutMovingPointer).
+    // If this node was a terminal it still has the probability under the pointer (it may have been
+    // read, but not skipped - see readProbabilityWithoutMovingPointer).
     // Next come the children position, then possibly attributes (attributes are bigrams only for
     // now, maybe something related to shortcuts in the future).
     // Once this is read, we still need to output the number of nodes in the immediate children of
     // this node, so we read and output it before returning true, as in "please traverse children".
-    pos = BinaryFormat::skipFrequency(flags, pos);
+    pos = BinaryFormat::skipProbability(flags, pos);
     int childrenPos = BinaryFormat::readChildrenPosition(DICT_ROOT, flags, pos);
     *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
     *newCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &childrenPos);
