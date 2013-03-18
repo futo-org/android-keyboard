@@ -115,7 +115,7 @@
     <string name="keyboard_mode_email" msgid="6216248078128294262">"e-mail"</string>
     <string name="keyboard_mode_im" msgid="1137405089766557048">"beskeder"</string>
     <string name="keyboard_mode_number" msgid="7991623440699957069">"tal"</string>
-    <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefon"</string>
+    <string name="keyboard_mode_phone" msgid="6851627527401433229">"telefonnummer"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"tekst"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"klokkeslæt"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"Webadresse"</string>
