@@ -23,7 +23,8 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 
 public class Statistics {
     private static final String TAG = Statistics.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
     // TODO: Cleanup comments to only including those giving meaningful information.
     // Number of characters entered during a typing session

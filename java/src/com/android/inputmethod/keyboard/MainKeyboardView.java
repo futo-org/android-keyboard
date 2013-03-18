@@ -662,7 +662,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_setKeyboard(keyboard);
         }
 
@@ -925,10 +925,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        // Notify the research logger that the keyboard view has been attached.  This is needed
-        // to properly show the splash screen, which requires that the window token of the
-        // KeyboardView be non-null.
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        // Notify the ResearchLogger (development only diagnostics) that the keyboard view has
+        // been attached.  This is needed to properly show the splash screen, which requires that
+        // the window token of the KeyboardView be non-null.
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow(this);
         }
     }
@@ -937,9 +937,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mPreviewPlacerView.removeAllViews();
-        // Notify the research logger that the keyboard view has been detached.  This is needed
-        // to invalidate the reference of {@link MainKeyboardView} to null.
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        // Notify the ResearchLogger (development only diagnostics) that the keyboard view has
+        // been detached.  This is needed to invalidate the reference of {@link MainKeyboardView}
+        // to null.
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().mainKeyboardView_onDetachedFromWindow();
         }
     }
@@ -977,7 +978,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key == null) {
             return false;
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_onLongPress();
         }
         final int code = key.mCode;
@@ -1125,7 +1126,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         // TODO: This should be moved to the tracker.processMotionEvent() call below.
         // Currently the same "move" event is being logged twice.
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_processMotionEvent(
                     me, action, eventTime, index, id, x, y);
         }
@@ -1185,7 +1186,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     writeUsabilityStudyLog(me, action, eventTime, i, pointerId, px, py);
                 }
-                if (ProductionFlag.IS_EXPERIMENTAL) {
+                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.mainKeyboardView_processMotionEvent(
                             me, action, eventTime, i, pointerId, px, py);
                 }
