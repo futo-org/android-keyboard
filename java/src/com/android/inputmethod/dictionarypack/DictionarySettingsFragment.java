@@ -123,7 +123,8 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         UpdateHandler.unregisterUpdateEventListener(this);
         activity.unregisterReceiver(mConnectivityChangedReceiver);
         if (mChangedSettings) {
-            final Intent newDictBroadcast = new Intent(UpdateHandler.NEW_DICTIONARY_INTENT_ACTION);
+            final Intent newDictBroadcast =
+                    new Intent(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
             activity.sendBroadcast(newDictBroadcast);
             mChangedSettings = false;
         }

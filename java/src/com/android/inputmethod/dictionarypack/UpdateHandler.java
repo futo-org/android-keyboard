@@ -88,14 +88,6 @@ public final class UpdateHandler {
     // Name of the category for the main dictionary
     public static final String MAIN_DICTIONARY_CATEGORY = "main";
 
-    /**
-     * The action of the intent for publishing that new dictionary data is available.
-     */
-    // TODO: make this different across different packages. A suggested course of action is
-    // to use the package name inside this string.
-    public static final String NEW_DICTIONARY_INTENT_ACTION =
-            "com.android.inputmethod.dictionarypack.newdict";
-
     // The id for the "dictionary available" notification.
     static final int DICT_AVAILABLE_NOTIFICATION_ID = 1;
 
@@ -552,7 +544,8 @@ public final class UpdateHandler {
      * Warn Android Keyboard that the state of dictionaries changed and it should refresh its data.
      */
     private static void signalNewDictionaryState(final Context context) {
-        final Intent newDictBroadcast = new Intent(NEW_DICTIONARY_INTENT_ACTION);
+        final Intent newDictBroadcast =
+                new Intent(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
         context.sendBroadcast(newDictBroadcast);
     }
 

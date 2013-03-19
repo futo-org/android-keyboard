@@ -27,6 +27,7 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.latin.DictionaryInfoUtils.DictionaryInfo;
 
 import java.io.BufferedInputStream;
@@ -93,8 +94,7 @@ public final class BinaryDictionaryFileDumper {
      */
     private static Uri.Builder getProviderUriBuilder(final String path) {
         return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
-                .authority(BinaryDictionary.DICTIONARY_PACK_AUTHORITY).appendPath(
-                        path);
+                .authority(DictionaryPackConstants.AUTHORITY).appendPath(path);
     }
 
     /**

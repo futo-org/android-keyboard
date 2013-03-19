@@ -64,6 +64,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.event.EventInterpreter;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -450,8 +451,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
 
             final IntentFilter newDictFilter = new IntentFilter();
-            newDictFilter.addAction(
-                    DictionaryPackInstallBroadcastReceiver.NEW_DICTIONARY_INTENT_ACTION);
+            newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
             registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
         }
     }
