@@ -41,11 +41,13 @@ import java.util.concurrent.TimeUnit;
  * This class logs operations on the IME keyboard, including what the user has typed.
  * Data is stored locally in a file in app-specific storage.
  *
- * This functionality is off by default. See {@link ProductionFlag#IS_EXPERIMENTAL}.
+ * This functionality is off by default. See
+ * {@link ProductionFlag#USES_DEVELOPMENT_ONLY_DIAGNOSTICS}.
  */
 public class ResearchLog {
     private static final String TAG = ResearchLog.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
     private static final int ABORT_TIMEOUT_IN_MS = 1000 * 4;
 

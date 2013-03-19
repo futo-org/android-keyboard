@@ -147,8 +147,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        // TODO: The experimental version is not supported by the Dictionary Pack Service yet
-        if (ProductionFlag.IS_EXPERIMENTAL || 0 >= number) {
+        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
+        // Service yet
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS || 0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 

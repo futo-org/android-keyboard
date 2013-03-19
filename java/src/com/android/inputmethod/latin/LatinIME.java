@@ -173,9 +173,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private int mDisplayOrientation;
 
     // Object for reacting to adding/removing a dictionary pack.
-    // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
+    // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
+    // Service yet.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
-            ProductionFlag.IS_EXPERIMENTAL
+            ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
                     ? null : new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
@@ -427,7 +428,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         loadSettings();
         initSuggest();
 
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().init(this, mKeyboardSwitcher);
         }
         mDisplayOrientation = getResources().getConfiguration().orientation;
@@ -439,8 +440,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
 
-        // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
-        if (!ProductionFlag.IS_EXPERIMENTAL) {
+        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
+        // Service yet.
+        if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             final IntentFilter packageFilter = new IntentFilter();
             packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
             packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -492,7 +494,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
 
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().initSuggest(mSuggest);
         }
 
@@ -563,8 +565,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mSettings.onDestroy();
         unregisterReceiver(mReceiver);
-        // TODO: The experimental version is not supported by the Dictionary Pack Service yet.
-        if (!ProductionFlag.IS_EXPERIMENTAL) {
+        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
+        // Service yet.
+        if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             unregisterReceiver(mDictionaryPackInstallReceiver);
         }
         LatinImeLogger.commit();
@@ -672,7 +675,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     + ", word caps = "
                     + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS) != 0));
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, prefs);
         }
@@ -797,7 +800,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onWindowHidden() {
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onWindowHidden(mLastSelectionStart, mLastSelectionEnd,
                     getCurrentInputConnection());
         }
@@ -828,7 +831,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         resetComposingState(true /* alsoResetLastComposedWord */);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().latinIME_onFinishInputViewInternal();
         }
     }
@@ -849,7 +852,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     + ", cs=" + composingSpanStart
                     + ", ce=" + composingSpanEnd);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             final boolean expectingUpdateSelectionFromLogger =
                     ResearchLogger.getAndClearLatinIMEExpectingUpdateSelection();
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
@@ -981,7 +984,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
         if (applicationSpecifiedCompletions == null) {
             clearSuggestionStrip();
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_onDisplayCompletions(null);
             }
             return;
@@ -1002,7 +1005,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         setSuggestedWords(suggestedWords, isAutoCorrection);
         setAutoCorrectionIndicator(isAutoCorrection);
         setSuggestionStripShown(true);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
         }
     }
@@ -1141,7 +1144,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (typedWord.length() > 0) {
             commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
                     separatorString);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
             }
         }
@@ -1181,7 +1184,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mConnection.deleteSurroundingText(2, 0);
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_swapSwapperAndSpace(lastTwo, text);
             }
             mKeyboardSwitcher.updateShiftState();
@@ -1201,7 +1204,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mConnection.deleteSurroundingText(2, 0);
             final String textToInsert = ". ";
             mConnection.commitText(textToInsert, 1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,
                         false /* isBatchMode */);
             }
@@ -1316,7 +1319,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private void sendKeyCodePoint(final int code) {
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_sendKeyCodePoint(code);
         }
         // TODO: Remove this special handling of digit letters.
@@ -1342,7 +1345,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(final int primaryCode, final int x, final int y) {
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
         }
         final long when = SystemClock.uptimeMillis();
@@ -1394,7 +1397,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             handleLanguageSwitchKey();
             break;
         case Constants.CODE_RESEARCH:
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.getInstance().onResearchKeySelected(this);
             }
             break;
@@ -1486,7 +1489,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             promotePhantomSpace();
         }
         mConnection.commitText(text, 1);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onTextInput(text, false /* isBatchMode */);
         }
         mConnection.endBatchEdit();
@@ -1667,7 +1670,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
         }
         // Space state must be updated before calling updateShiftState
@@ -1716,7 +1719,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int length = mWordComposer.size();
             if (length > 0) {
                 if (mWordComposer.isBatchMode()) {
-                    if (ProductionFlag.IS_EXPERIMENTAL) {
+                    if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                         final String word = mWordComposer.getTypedWord();
                         ResearchLogger.latinIME_handleBackspace_batch(word, 1);
                         ResearchLogger.getInstance().uncommitCurrentLogUnit(
@@ -1777,7 +1780,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 // later (typically, in a subsequent press on backspace).
                 mLastSelectionEnd = mLastSelectionStart;
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
-                if (ProductionFlag.IS_EXPERIMENTAL) {
+                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.latinIME_handleBackspace(numCharsDeleted);
                 }
             } else {
@@ -1796,12 +1799,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 } else {
                     mConnection.deleteSurroundingText(1, 0);
                 }
-                if (ProductionFlag.IS_EXPERIMENTAL) {
+                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.latinIME_handleBackspace(1);
                 }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     mConnection.deleteSurroundingText(1, 0);
-                    if (ProductionFlag.IS_EXPERIMENTAL) {
+                    if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                         ResearchLogger.latinIME_handleBackspace(1);
                     }
                 }
@@ -1900,7 +1903,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Returns true if we did an autocorrection, false otherwise.
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.recordTimeForLogUnitSplit();
             ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
@@ -2145,7 +2148,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             if (mSettings.isInternal()) {
                 Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
             }
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 final SuggestedWords suggestedWords = mSuggestedWords;
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
                         separatorString, mWordComposer.isBatchMode(), suggestedWords);
@@ -2181,7 +2184,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_punctuationSuggestion(index, suggestion,
                         false /* isBatchMode */, suggestedWords.mIsPrediction);
             }
@@ -2222,7 +2225,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
                     mWordComposer.isBatchMode());
         }
@@ -2323,7 +2326,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             restartSuggestionsOnWordBeforeCursor(word);
             // TODO: Handle the case where the user manually moves the cursor and then backs up over
             // a separator.  In that case, the current log unit should not be uncommitted.
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.getInstance().uncommitCurrentLogUnit(word.toString(),
                         true /* dumpCurrentLogUnit */);
             }
@@ -2369,7 +2372,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             Stats.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
                     mWordComposer.isBatchMode(), mLastComposedWord.mSeparatorString);
             ResearchLogger.getInstance().uncommitCurrentLogUnit(committedWord,
@@ -2386,7 +2389,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     public void promotePhantomSpace() {
         if (mSettings.getCurrent().shouldInsertSpacesAutomatically()) {
             sendKeyCodePoint(Constants.CODE_SPACE);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();
             }
         }

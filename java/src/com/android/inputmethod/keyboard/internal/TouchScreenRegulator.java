@@ -145,7 +145,7 @@ public final class TouchScreenRegulator {
         if (handleSuddenJumping(me)) {
             if (DEBUG_MODE)
                 Log.w(TAG, "onTouchEvent: ignore sudden jump " + me);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.suddenJumpingTouchEventHandler_onTouchEvent(me);
             }
             return true;

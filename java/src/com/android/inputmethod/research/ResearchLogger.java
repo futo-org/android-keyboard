@@ -97,7 +97,8 @@ import java.util.UUID;
  * This class logs operations on the IME keyboard, including what the user has typed.
  * Data is stored locally in a file in app-specific storage.
  *
- * This functionality is off by default. See {@link ProductionFlag#IS_EXPERIMENTAL}.
+ * This functionality is off by default. See
+ * {@link ProductionFlag#USES_DEVELOPMENT_ONLY_DIAGNOSTICS}.
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     // TODO: This class has grown quite large and combines several concerns that should be
@@ -109,13 +110,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // TODO: Refactor.  Move logging invocations into their own class.
     // TODO: Refactor.  Move currentLogUnit management into separate class.
     private static final String TAG = ResearchLogger.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final boolean DEBUG_REPLAY_AFTER_FEEDBACK = false
-            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // Whether the TextView contents are logged at the end of the session.  true will disclose
     // private info.
     private static final boolean LOG_FULL_TEXTVIEW_CONTENTS = false
-            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // Whether the feedback dialog preserves the editable text across invocations.  Should be false
     // for normal research builds so users do not have to delete the same feedback string they
     // entered earlier.  Should be true for builds internal to a development team so when the text
@@ -136,7 +138,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
     // testing.
     /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
-            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // The number of words between n-grams to omit from the log.
     private static final int NUMBER_OF_WORDS_BETWEEN_SAMPLES =
             IS_LOGGING_EVERYTHING ? 0 : (DEBUG ? 2 : 18);
@@ -147,7 +149,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // Change the default indicator to something very visible.  Currently two red vertical bars on
     // either side of they keyboard.
     private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false ||
-            (IS_LOGGING_EVERYTHING && ProductionFlag.IS_EXPERIMENTAL_DEBUG);
+            (IS_LOGGING_EVERYTHING && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG);
     // FEEDBACK_WORD_BUFFER_SIZE should add 1 because it must also hold the feedback LogUnit itself.
     public static final int FEEDBACK_WORD_BUFFER_SIZE = (Integer.MAX_VALUE - 1) + 1;
 
@@ -278,7 +280,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
         mReplayer.setKeyboardSwitcher(keyboardSwitcher);
 
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             scheduleUploadingService(mLatinIME);
         }
     }
@@ -1179,7 +1181,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinImeOnStartInputViewInternal", false, false, "uuid",
                     "packageName", "inputType", "imeOptions", "fieldId", "display", "model",
                     "prefs", "versionCode", "versionName", "outputFormatVersion", "logEverything",
-                    "isExperimentalDebug");
+                    "isUsingDevelopmentOnlyDiagnosticsDebug");
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
@@ -1201,7 +1203,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
                         OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
-                        ProductionFlag.IS_EXPERIMENTAL_DEBUG);
+                        ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG);
             } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }

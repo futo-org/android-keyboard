@@ -37,7 +37,8 @@ import java.io.IOException;
  */
 public class LogStatement {
     private static final String TAG = LogStatement.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
     // Constants for particular statements
     public static final String TYPE_POINTER_TRACKER_CALL_LISTENER_ON_CODE_INPUT =
