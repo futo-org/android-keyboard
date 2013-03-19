@@ -177,6 +177,9 @@
                 android:title="@string/show_setup_wizard_icon" />
         </PreferenceScreen>
         <PreferenceScreen
+            android:key="send_feedback"
+            android:title="@string/send_feedback" />
+        <PreferenceScreen
             android:key="debug_settings"
             android:title="Debug settings"
             android:persistent="true"
