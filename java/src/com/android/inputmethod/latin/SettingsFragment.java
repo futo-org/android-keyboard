@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.app.Activity;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.inputmethod.InputMethodSubtype;
@@ -100,6 +102,25 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 debugSettings.setIntent(debugSettingsIntent);
             } else {
                 miscSettings.removePreference(debugSettings);
+            }
+        }
+
+        final Preference feedbackSettings = findPreference(Settings.PREF_SEND_FEEDBACK);
+        if (feedbackSettings != null) {
+            if (FeedbackUtils.isFeedbackFormSupported()) {
+                feedbackSettings.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference arg0) {
+                        final Activity activity = getActivity();
+                        FeedbackUtils.showFeedbackForm(activity);
+                        if (!activity.isFinishing()) {
+                            activity.finish();
+                        }
+                        return true;
+                    }
+                });
+            } else {
+                miscSettings.removePreference(feedbackSettings);
             }
         }
 
