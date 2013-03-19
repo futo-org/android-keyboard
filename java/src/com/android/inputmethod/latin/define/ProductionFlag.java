@@ -21,12 +21,12 @@ public final class ProductionFlag {
         // This class is not publicly instantiable.
     }
 
-    public static final boolean IS_EXPERIMENTAL = false;
+    public static final boolean USES_DEVELOPMENT_ONLY_DIAGNOSTICS = false;
 
-    // When false, IS_EXPERIMENTAL_DEBUG suggests that all guarded class-private DEBUG flags should
-    // be false, and any privacy controls should be enforced.  IS_EXPERIMENTAL_DEBUG should be false
-    // for any released build.
-    public static final boolean IS_EXPERIMENTAL_DEBUG = false;
+    // When false, USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG suggests that all guarded
+    // class-private DEBUG flags should be false, and any privacy controls should be enforced.
+    // USES_DEVELOPMENT_ONLY_DIAGNOSTICS must be false for any production build.
+    public static final boolean USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG = false;
 
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = true;
 }

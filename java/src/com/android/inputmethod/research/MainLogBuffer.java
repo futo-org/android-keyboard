@@ -60,7 +60,8 @@ import java.util.Random;
  */
 public abstract class MainLogBuffer extends FixedLogBuffer {
     private static final String TAG = MainLogBuffer.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;

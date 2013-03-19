@@ -47,12 +47,14 @@ import java.util.concurrent.TimeUnit;
  * tries to avoid creating unnecessary files if there is nothing to write.  It also handles
  * flushing, making sure it happens, but not too frequently.
  *
- * This functionality is off by default. See {@link ProductionFlag#IS_EXPERIMENTAL}.
+ * This functionality is off by default. See
+ * {@link ProductionFlag#USES_DEVELOPMENT_ONLY_DIAGNOSTICS}.
  */
 public class ResearchLog {
     // TODO: Automatically initialize the JsonWriter rather than requiring the caller to manage it.
     private static final String TAG = ResearchLog.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
 
     /* package */ final ScheduledExecutorService mExecutor;

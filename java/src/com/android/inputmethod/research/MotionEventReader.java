@@ -34,7 +34,8 @@ import java.util.ArrayList;
 
 public class MotionEventReader {
     private static final String TAG = MotionEventReader.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // Assumes that MotionEvent.ACTION_MASK does not have all bits set.`
     private static final int UNINITIALIZED_ACTION = ~MotionEvent.ACTION_MASK;
     // No legitimate int is negative
