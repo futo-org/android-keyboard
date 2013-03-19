@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"Alapértelmezett"</string>
     <string name="language_settings" msgid="1671153053201809031">"Nyelv és bevitel"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Beviteli mód kiválasztása"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Szótárszolgáltató"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Szótárszolgáltató"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Szótár szolgáltatás"</string>
+    <string name="download_description" msgid="3274861514695032954">"Szótárfrissítéssel kapcsolatos információk"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Bővítmények: szótárak"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Van rendelkezésre álló szótár"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Szótárak beállításai"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Felhasználói szótárak"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Felhasználói szótár"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Van rendelkezésre álló szótár"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Jelenlegi letöltések"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Telepítve"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Telepítve, kikapcsolva"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Csatlakozási hiba"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Nincs szótár"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Frissítés"</string>
+    <string name="last_update" msgid="3101549719827600346">"Utoljára frissítve"</string>
+    <string name="message_updating" msgid="820186276704134720">"Frissítések keresése"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Betöltés..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Fő szótár"</string>
+    <string name="cancel" msgid="5586531736609183304">"Mégse"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Telepítés"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Letöltés megszakítása"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Kikapcsolás"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Bekapcsolás"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Törlés"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"<xliff:g id="LANGUAGE">%1$s</xliff:g> nyelvhez van rendelkezésre álló szótár"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Nyomja meg az áttekintéshez és letöltéshez"</string>
 </resources>

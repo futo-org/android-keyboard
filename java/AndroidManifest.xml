@@ -23,8 +23,11 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
+    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@mipmap/ic_ime_settings"
@@ -91,5 +94,44 @@
                 <action android:name="android.text.style.SUGGESTION_PICKED" />
             </intent-filter>
         </receiver>
+
+        <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
+                  android:grantUriPermissions="true"
+                  android:exported="false"
+                  android:authorities="@string/authority"
+                  android:multiprocess="false"
+                  android:label="@string/dictionary_provider_name">
+        </provider>
+
+        <service android:name="com.android.inputmethod.dictionarypack.DictionaryService"
+                 android:label="@string/dictionary_service_name">
+        </service>
+
+        <receiver android:name="com.android.inputmethod.dictionarypack.EventHandler">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="com.android.inputmethod.latin.dictionarypack.UPDATE_NOW" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
+                  android:label="@string/dictionary_settings_title"
+                  android:icon="@mipmap/ic_ime_settings"
+                  android:theme="@android:style/Theme.Holo"
+                  android:uiOptions="splitActionBarWhenNarrow">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.android.inputmethod.dictionarypack.DownloadOverMeteredDialog"
+                  android:label="@string/dictionary_install_over_metered_network_prompt"
+                  android:icon="@mipmap/ic_ime_settings"
+                  android:theme="@android:style/Theme.Holo">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"Padrão"</string>
     <string name="language_settings" msgid="1671153053201809031">"Idioma e entrada"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Selecione o método de entrada"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Provedor de dicionário"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Provedor de dicionário"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Serviço de dicionário"</string>
+    <string name="download_description" msgid="3274861514695032954">"Informações de atualização do dicionário"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Dicionários complementares"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Dicionário disponível"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Configurações dos dicionários"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Dicionário do usuário"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Dicionário do usuário"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Dicionário disponível"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Download em andamento"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Instalado"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Instalado, desativado"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Prob. de conexão c/ dic. de serv."</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Nenhum dicionário disponível"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Atualizar"</string>
+    <string name="last_update" msgid="3101549719827600346">"Última atualização"</string>
+    <string name="message_updating" msgid="820186276704134720">"Verificando atualizações"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Carregando..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Dicionário principal"</string>
+    <string name="cancel" msgid="5586531736609183304">"Cancelar"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Instalar"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Cancelar download"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Desativar"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Permitir"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Excluir"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Há um dicionário disponível para <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Pressione para consultar e fazer o download"</string>
 </resources>

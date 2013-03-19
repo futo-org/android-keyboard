@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.dictionarypack.UpdateHandler;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +36,7 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
      * The action of the intent for publishing that new dictionary data is available.
      */
     /* package */ static final String NEW_DICTIONARY_INTENT_ACTION =
-            "com.android.inputmethod.latin.dictionarypack.newdict";
+            UpdateHandler.NEW_DICTIONARY_INTENT_ACTION;
 
     public DictionaryPackInstallBroadcastReceiver(final LatinIME service) {
         mService = service;
