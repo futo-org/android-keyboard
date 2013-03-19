@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.inputmethod.dictionarypack.DictionaryProvider;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -32,7 +31,6 @@ import java.util.Locale;
  */
 public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
-    public static final String DICTIONARY_PACK_AUTHORITY = DictionaryProvider.AUTHORITY;
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
