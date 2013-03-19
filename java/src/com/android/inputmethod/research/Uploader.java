@@ -46,10 +46,11 @@ import java.net.URL;
  */
 public final class Uploader {
     private static final String TAG = Uploader.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // Set IS_INHIBITING_AUTO_UPLOAD to true for local testing
     private static final boolean IS_INHIBITING_AUTO_UPLOAD = false
-            && ProductionFlag.IS_EXPERIMENTAL_DEBUG;  // Force false for non-debug builds
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final int BUF_SIZE = 1024 * 8;
 
     private final Context mContext;

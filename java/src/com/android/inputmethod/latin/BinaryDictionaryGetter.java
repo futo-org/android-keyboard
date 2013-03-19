@@ -289,8 +289,9 @@ final class BinaryDictionaryGetter {
         // cacheWordListsFromContentProvider returns the list of files it copied to local
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
-        // TODO: The experimental version is not supported by the Dictionary Pack Service yet
-        if (!ProductionFlag.IS_EXPERIMENTAL) {
+        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
+        // Service yet
+        if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             // We need internet access to do the following. Only do this if the package actually
             // has the permission.
             if (context.checkCallingOrSelfPermission(android.Manifest.permission.INTERNET)

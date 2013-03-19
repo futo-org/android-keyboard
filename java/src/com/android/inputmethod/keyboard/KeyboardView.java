@@ -287,10 +287,10 @@ public class KeyboardView extends View {
             }
         }
 
-        // ResearchLogging indicator.
+        // Research Logging (Development Only Diagnostics) indicator.
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger,
         // and remove this call.
-        if (ProductionFlag.IS_EXPERIMENTAL) {
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().paintIndicator(this, paint, canvas, width, height);
         }
 

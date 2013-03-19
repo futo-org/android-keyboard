@@ -46,7 +46,8 @@ import java.util.List;
  */
 public class LogUnit {
     private static final String TAG = LogUnit.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
     private final ArrayList<LogStatement> mLogStatementList;
     private final ArrayList<Object[]> mValuesList;

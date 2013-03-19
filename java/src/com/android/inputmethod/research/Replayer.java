@@ -37,7 +37,8 @@ import com.android.inputmethod.research.MotionEventReader.ReplayData;
  */
 public class Replayer {
     private static final String TAG = Replayer.class.getSimpleName();
-    private static final boolean DEBUG = false && ProductionFlag.IS_EXPERIMENTAL_DEBUG;
+    private static final boolean DEBUG = false
+            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final long START_TIME_DELAY_MS = 500;
 
     private boolean mIsReplaying = false;
