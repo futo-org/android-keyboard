@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"Varsayılan"</string>
     <string name="language_settings" msgid="1671153053201809031">"Dil ve giriş"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Giriş yöntemini seçin"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Sözlük Sağlayıcı"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Sözlük Sağlayıcı"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Sözlük Hizmeti"</string>
+    <string name="download_description" msgid="3274861514695032954">"Sözlük güncelleme bilgileri"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Ekli sözlükler"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Kullanılabilecek sözlük var"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Sözlükler için ayarlar"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Kullanıcı sözlükleri"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Kullanıcı sözlüğü"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Sözlük kullanılabilir"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Şu anda indiriliyor"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Yüklendi"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Yüklendi, devre dışı"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Sözlük hizmetine bağlantı yok"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Kullanılabilir sözlük yok"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Yenile"</string>
+    <string name="last_update" msgid="3101549719827600346">"Son güncelleme tarihi"</string>
+    <string name="message_updating" msgid="820186276704134720">"Güncellemeler denetleniyor..."</string>
+    <string name="message_loading" msgid="8611339149825047446">"Yükleniyor..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Ana sözlük"</string>
+    <string name="cancel" msgid="5586531736609183304">"İptal"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Yükle"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"İndirmeyi iptal et"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Devre dışı bırak"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Etkinleştir"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Sil"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"<xliff:g id="LANGUAGE">%1$s</xliff:g> için kullanılabilecek bir sözlük var"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"İncelemek ve indirmek için tıklayın"</string>
 </resources>

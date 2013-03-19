@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.spellcheck;
 
 import android.content.ContentResolver;
 import android.database.ContentObserver;
+import android.os.Binder;
 import android.provider.UserDictionary.Words;
 import android.service.textservice.SpellCheckerService.Session;
 import android.text.TextUtils;
@@ -234,13 +235,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
      * corrections for the text passed as an argument. It may split or group words, and
      * even perform grammatical analysis.
      */
-    @Override
-    public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
+    private SuggestionsInfo onGetSuggestionsInternal(final TextInfo textInfo,
             final int suggestionsLimit) {
-        return onGetSuggestions(textInfo, null, suggestionsLimit);
+        return onGetSuggestionsInternal(textInfo, null, suggestionsLimit);
     }
 
-    protected SuggestionsInfo onGetSuggestions(
+    protected SuggestionsInfo onGetSuggestionsInternal(
             final TextInfo textInfo, final String prevWord, final int suggestionsLimit) {
         try {
             final String inText = textInfo.getText();
@@ -355,6 +355,24 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 Log.e(TAG, "Exception while spellcheking", e);
                 return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
             }
+        }
+    }
+
+    /*
+     * The spell checker acts on its own behalf. That is needed, in particular, to be able to
+     * access the dictionary files, which the provider restricts to the identity of Latin IME.
+     * Since it's called externally by the application, the spell checker is using the identity
+     * of the application by default unless we clearCallingIdentity.
+     * That's what the following method does.
+     */
+    @Override
+    public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
+            final int suggestionsLimit) {
+        long ident = Binder.clearCallingIdentity();
+        try {
+            return onGetSuggestionsInternal(textInfo, suggestionsLimit);
+        } finally {
+            Binder.restoreCallingIdentity(ident);
         }
     }
 }

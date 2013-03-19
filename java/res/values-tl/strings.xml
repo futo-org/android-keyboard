@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="language_settings" msgid="1671153053201809031">"Wika at input"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Pumili ng pamamaraan ng pag-input"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Provider ng Diksyunaryo"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Provider ng Diksyunaryo"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Serbisyo ng Diksyunaryo"</string>
+    <string name="download_description" msgid="3274861514695032954">"Impormasyon ng pag-update sa diksyunaryo"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Mga diksyunaryo na add-on"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Available ang diksyunaryo"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Mga setting para sa mga diksyunaryo"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Mga diksyunaryo ng user"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Diksyunaryo ng user"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Available ang diksyunaryo"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Kasalukuyang nagda-download"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Naka-install"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Naka-install, hindi pinagana"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Problema sa pagkonekta sa serbisyo ng diksyunaryo"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Walang available na mga diksyunaryo"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"I-refresh"</string>
+    <string name="last_update" msgid="3101549719827600346">"Huling na-update"</string>
+    <string name="message_updating" msgid="820186276704134720">"Tumitingin ng mga update"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Naglo-load..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Pangunahing diksyunaryo"</string>
+    <string name="cancel" msgid="5586531736609183304">"Kanselahin"</string>
+    <string name="install_dict" msgid="5525005524697607865">"I-install"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Kanselahin ang pag-download"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Huwag paganahin"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Paganahin"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Tanggalin"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Available ang isang diksyunaryo para sa <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Pindutin upang suriin at i-download"</string>
 </resources>

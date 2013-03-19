@@ -170,4 +170,36 @@
     <string name="button_default" msgid="3988017840431881491">"Standaard"</string>
     <string name="language_settings" msgid="1671153053201809031">"Taal en invoer"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Invoermethode selecteren"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Woordenboekleverancier"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Woordenboekleverancier"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Woordenboekservice"</string>
+    <string name="download_description" msgid="3274861514695032954">"Informatie over woordenboekupdate"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Woordenboeken toevoegen"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Woordenboek beschikbaar"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Instellingen voor woordenboeken"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Gebruikerswoordenboeken"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Gebruikerswoordenboek"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Woordenboek beschikbaar"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Wordt gedownload"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Geïnstalleerd"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Geïnstalleerd, uitgeschakeld"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Verbindingsprobleem woordenboekservice"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Geen woordenboeken"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Vernieuwen"</string>
+    <string name="last_update" msgid="3101549719827600346">"Laatst bijgewerkt"</string>
+    <string name="message_updating" msgid="820186276704134720">"Controleren op updates"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Laden..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Algemeen woordenboek"</string>
+    <string name="cancel" msgid="5586531736609183304">"Annuleren"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Installeren"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Download annuleren"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Uitschakelen"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Inschakelen"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Verwijderen"</string>
+    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Er is een woordenboek beschikbaar voor de geselecteerde taal op uw mobiele apparaat.&lt;br/&gt; We raden u aan het woordenboek voor het <xliff:g id="LANGUAGE">%1$s</xliff:g> te &lt;b&gt;downloaden&lt;/b&gt; om uw typevaardigheid te verbeteren.&lt;br/&gt; &lt;br/&gt; De download kan een of twee minuten duren via 3G. Er kunnen kosten worden berekend als u geen &lt;b&gt;onbeperkt gegevensabonnement&lt;/b&gt; heeft.&lt;br/&gt; Als u niet zeker weet welk gegevensabonnement u heeft, raden we u aan een wifi-verbinding te zoeken om de download automatisch te starten.&lt;br/&gt; &lt;br/&gt; Tip: u kunt woordenboeken downloaden en verwijderen door naar &lt;b&gt;Taal en invoer&lt;/b&gt; in het menu &lt;b&gt;Instellingen&lt;/b&gt; van uw mobiele apparaat te gaan."</string>
+    <string name="download_over_metered" msgid="4024013764937850061">"Nu downloaden (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Downloaden via wifi"</string>
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Er is een woordenboek beschikbaar voor <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Druk om te controleren en te downloaden"</string>
 </resources>

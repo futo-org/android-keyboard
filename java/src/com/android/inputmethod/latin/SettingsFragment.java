@@ -30,6 +30,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
@@ -146,6 +147,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
+        intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
         // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
         // Service yet

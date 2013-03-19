@@ -459,4 +459,78 @@
     <string name="select_input_method">Choose input method</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
     <string name="show_setup_wizard_icon" translatable="false">Show setup wizard icon</string>
+
+    <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
+    <string name="app_name">Dictionary Provider</string>
+    <!-- The dictionary provider ContentProvider name. Visible in Settings/Applications/Running services. -->
+    <string name="dictionary_provider_name">Dictionary Provider</string>
+    <!-- The dictionary provider Service name. Visible in Settings/Applications/Running services. -->
+    <string name="dictionary_service_name">Dictionary Service</string>
+
+    <!-- Downloadable dictionaries will get update information through the network. This describes the associated download. -->
+    <string name="download_description">Dictionary update information</string>
+
+    <!-- Title and summary of the dictionary settings screen -->
+    <string name="dictionary_settings_title">Add-on dictionaries</string>
+    <!-- Title for the prompt dialog which informs the user that a dictionary is available for the current language and asks to decide whether to download it over 3g -->
+    <string name="dictionary_install_over_metered_network_prompt">Dictionary available</string>
+    <string name="dictionary_settings_summary">Settings for dictionaries</string>
+    <!-- Name of the user dictionaries settings category -->
+    <string name="user_dictionaries">User dictionaries</string>
+    <!-- Name for the "user dictionary" preference item when there is only one -->
+    <string name="default_user_dict_pref_name">User dictionary</string>
+    <!-- Message about some dictionary indicating it can be downloaded, but hasn't been yet -->
+    <string name="dictionary_available">Dictionary available</string>
+    <!-- Message about some dictionary indicating it is downloading and should be available soon -->
+    <string name="dictionary_downloading">Currently downloading</string>
+    <!-- Message about some dictionary indicating it is already installed -->
+    <string name="dictionary_installed">Installed</string>
+    <!-- Message about some dictionary indicating the file is installed, but the dictionary is disabled -->
+    <string name="dictionary_disabled">Installed, disabled</string>
+
+    <!-- Message to display in the dictionaries setting screen when some error prevented us to list installed dictionaries [CHAR LIMIT=20] -->
+    <string name="cannot_connect_to_dict_service">Problem connecting to dictionary service</string>
+    <!-- Message to display in the dictionaries setting screen when we found that no dictionaries are available [CHAR LIMIT=20]-->
+    <string name="no_dictionaries_available">No dictionaries available</string>
+
+    <!-- Title of the options to press to refresh the list (as in, check for updates now) [CHAR_LIMIT=50] -->
+    <string name="check_for_updates_now">Refresh</string>
+    <!-- Hint to tell when the data was last updated. Usage : "Last updated [date]", may contain a : or so. [CHAR LIMIT=45] -->
+    <string name="last_update">Last updated</string>
+
+    <!-- Message to display in a dialog box while we are actively updating the word list [CHAR LIMIT=60] -->
+    <string name="message_updating">Checking for updates</string>
+    <!-- Message to display while the add-on dictionary list is updating [no space constraints on this, there is plenty of space but shorter is better because it's only on the screen for a second] -->
+    <string name="message_loading">Loading...</string>
+
+    <!-- String to explain this dictionary is the main dictionary for this language [CHAR_LIMIT=30] -->
+    <string name="main_dict_description">Main dictionary</string>
+
+    <!-- Standard message to dismiss a dialog box -->
+    <string name="cancel">Cancel</string>
+
+    <!-- Action to download and install a dictionary [CHAR_LIMIT=15] -->
+    <string name="install_dict">Install</string>
+    <!-- Action to cancel the ongoing download of a dictionary file [CHAR_LIMIT=25] -->
+    <string name="cancel_download_dict">Cancel</string>
+    <!-- Action to delete a dictionary file [CHAR_LIMIT=15] -->
+    <string name="delete_dict">Delete</string>
+
+    <!-- Message in the popup informing the user a dictionary is available for their language, and asking for a decision to download over their mobile data plan or not. The reason we ask for this is, the data is large and may be downloaded over a paid-per-megabyte connection but a dictionary is also essential to type comfortably, so we ask the user. This only pops in selected cases, when there is no dictionary at all currently, and the only available network seems to be metered. The "Language & input" part should be set to the actual name of the option (message ID 5292716747264442359 in the translation console). [CHAR_LIMIT=700] -->
+    <string name="should_download_over_metered_prompt">The selected language on your mobile device has an available dictionary.&lt;br/>
+We recommend &lt;b>downloading&lt;/b> the <xliff:g id="language" example="English">%1$s</xliff:g> dictionary to improve your typing experience.&lt;br/>
+&lt;br/>
+The download could take a minute or two over 3G. Charges may apply if you don\'t have an &lt;b>unlimited data plan&lt;/b>.&lt;br/>
+If you are not sure which data plan you have, we recommend finding a Wi-Fi connection to start the download automatically.&lt;br/>
+&lt;br/>
+Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; input&lt;/b> in the &lt;b>Settings&lt;/b> menu of your mobile device.</string>
+    <string name="download_over_metered">Download now (<xliff:g id="size_in_megabytes" example="0.7">%1$.1f</xliff:g>MB)</string>
+    <string name="do_not_download_over_metered">Download over Wi-Fi</string>
+    <!-- The text of the "dictionary available" notification. -->
+    <string name="dict_available_notification_title">A dictionary is available for <xliff:g id="language" example="English">%1$s</xliff:g></string>
+    <!-- The small subtext in the "dictionary available" notification. -->
+    <string name="dict_available_notification_description">Press to review and download</string>
+
+    <!-- The text of the toast warning a download is starting automatically to enable suggestions for the selected language [CHAR LIMIT=100] -->
+    <string name="toast_downloading_suggestions">Downloading: suggestions for <xliff:g id="language" example="English">%1$s</xliff:g> will be ready soon.</string>
 </resources>

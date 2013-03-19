@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"Numatytieji"</string>
     <string name="language_settings" msgid="1671153053201809031">"Kalba ir įvestis"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Pasirinkite įvesties metodą"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"Žodyno teikėjas"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"Žodyno teikėjas"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"Žodyno paslauga"</string>
+    <string name="download_description" msgid="3274861514695032954">"Žodyno atnaujinimo informacija"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"Papildomi žodynai"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Žodynas galimas"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Žodynų nustatymai"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"Naudotojo žodynai"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Naudotojo žodynas"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"Žodynas galimas"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"Šiuo metu atsisiunčiama"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"Įdiegta"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"Įdiegta, neleidžiama"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Prisijungimo prie žodyno paslaugos problema"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"Nėra galimų žodynų"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"Atnaujinti"</string>
+    <string name="last_update" msgid="3101549719827600346">"Paskutinį kartą atnaujinta"</string>
+    <string name="message_updating" msgid="820186276704134720">"Ieškoma naujinių"</string>
+    <string name="message_loading" msgid="8611339149825047446">"Įkeliama..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"Pagrindinis žodynas"</string>
+    <string name="cancel" msgid="5586531736609183304">"Atšaukti"</string>
+    <string name="install_dict" msgid="5525005524697607865">"Įdiegti"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"Atšaukti atsisiuntimą"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"Neleisti"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"Įgalinti"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"Ištrinti"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"Galimas <xliff:g id="LANGUAGE">%1$s</xliff:g> žodynas"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"Paspauskite, kad peržiūrėtumėte ir atsisiųstumėte"</string>
 </resources>

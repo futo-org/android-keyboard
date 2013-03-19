@@ -123,4 +123,13 @@
             4 = ?
     -->
     <integer name="log_screen_metrics">0</integer>
+
+    <!-- Settings for the dictionary pack -->
+    <bool name="allow_over_metered">false</bool>
+    <bool name="allow_over_roaming">false</bool>
+    <bool name="dict_downloads_visible_in_download_UI">false</bool>
+    <bool name="metadata_downloads_visible_in_download_UI">false</bool>
+    <bool name="display_notification_for_auto_update">false</bool>
+    <bool name="display_notification_for_user_requested_update">false</bool>
+
 </resources>

@@ -170,4 +170,39 @@
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
     <string name="language_settings" msgid="1671153053201809031">"ภาษาและการป้อนข้อมูล"</string>
     <string name="select_input_method" msgid="4301602374609275003">"เลือกวิธีการป้อนข้อมูล"</string>
+
+    <string name="app_name" msgid="1017058186322714405">"ผู้ให้บริการพจนานุกรม"</string>
+    <string name="dictionary_provider_name" msgid="7710415599371161092">"ผู้ให้บริการพจนานุกรม"</string>
+    <string name="dictionary_service_name" msgid="551650697348202056">"บริการพจนานุกรม"</string>
+    <string name="download_description" msgid="3274861514695032954">"ข้อมูลอัปเดตสำหรับพจนานุกรม"</string>
+    <string name="dictionary_settings_title" msgid="7243930967845020407">"พจนานุกรม Add-On"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"มีพจนานุกรมให้ใช้งาน"</string>
+    <string name="dictionary_settings_summary" msgid="8599679434799749053">"การตั้งค่าสำหรับพจนานุกรม"</string>
+    <string name="user_dictionaries" msgid="7519736232423929124">"พจนานุกรมผู้ใช้"</string>
+    <string name="default_user_dict_pref_name" msgid="522125152757607790">"พจนานุกรมผู้ใช้"</string>
+    <string name="dictionary_available" msgid="3192920608520618083">"มีพจนานุกรมให้ใช้งาน"</string>
+    <string name="dictionary_downloading" msgid="859497476266309596">"กำลังดาวน์โหลดอยู่"</string>
+    <string name="dictionary_installed" msgid="6425586899671378160">"ติดตั้งแล้ว"</string>
+    <string name="dictionary_disabled" msgid="3448571280490746032">"ติดตั้งแล้วแต่ปิดใช้งาน"</string>
+    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"พบปัญหาขณะเชื่อมต่อ"</string>
+    <string name="no_dictionaries_available" msgid="5206225077945637810">"ไม่มีพจนานุกรม"</string>
+    <string name="check_for_updates_now" msgid="642057986127624986">"รีเฟรช"</string>
+    <string name="last_update" msgid="3101549719827600346">"ปรับปรุงล่าสุดเมื่อ"</string>
+    <string name="message_updating" msgid="820186276704134720">"กำลังตรวจสอบการอัปเดต..."</string>
+    <string name="message_loading" msgid="8611339149825047446">"กำลังโหลด..."</string>
+    <string name="main_dict_description" msgid="1679964306980098570">"พจนานุกรมหลัก"</string>
+    <string name="cancel" msgid="5586531736609183304">"ยกเลิก"</string>
+    <string name="install_dict" msgid="5525005524697607865">"ติดตั้ง"</string>
+    <string name="cancel_download_dict" msgid="7163173650298838367">"ยกเลิกการดาวน์โหลด"</string>
+    <string name="disable_dict" msgid="7685810040236497700">"ปิดใช้งาน"</string>
+    <string name="enable_dict" msgid="3848179784702473680">"เปิดใช้งาน"</string>
+    <string name="delete_dict" msgid="5817159290503843766">"ลบ"</string>
+    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
+    <skip />
+    <!-- no translation found for download_over_metered (4024013764937850061) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
+    <skip />
+    <string name="dict_available_notification_title" msgid="4560576379680660047">"มีพจนานุกรมให้ใช้งานในภาษา <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="355515381285317832">"กดเพื่อตรวจสอบและดาวน์โหลด"</string>
 </resources>
