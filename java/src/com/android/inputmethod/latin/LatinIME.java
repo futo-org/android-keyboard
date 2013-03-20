@@ -803,10 +803,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     @Override
     public void onWindowHidden() {
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_onWindowHidden(mLastSelectionStart, mLastSelectionEnd,
-                    getCurrentInputConnection());
-        }
         super.onWindowHidden();
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
@@ -834,8 +830,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         resetComposingState(true /* alsoResetLastComposedWord */);
+        // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().latinIME_onFinishInputViewInternal();
+            ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput, mLastSelectionStart,
+                    mLastSelectionEnd, getCurrentInputConnection());
         }
     }
 
