@@ -110,6 +110,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * enabled.
      */
     public void setKeyboard() {
+        if (mView == null) {
+            return;
+        }
+
         if (mAccessibilityNodeProvider != null) {
             mAccessibilityNodeProvider.setKeyboard();
         }
@@ -125,6 +129,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Called when the keyboard is hidden and accessibility is enabled.
      */
     public void onHideWindow() {
+        if (mView == null) {
+            return;
+        }
+
         announceKeyboardHidden();
     }
 
@@ -179,10 +187,15 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * version 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) and higher to obtain the virtual
      * node hierarchy provider.
      *
+     * @param host The host view for the provider.
      * @return The accessibility node provider for the current keyboard.
      */
     @Override
     public AccessibilityEntityProvider getAccessibilityNodeProvider(final View host) {
+        if (mView == null) {
+            return null;
+        }
+
         return getAccessibilityNodeProvider();
     }
 
@@ -206,6 +219,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * @return {@code true} if the event is handled
      */
     public boolean dispatchHoverEvent(final MotionEvent event, final PointerTracker tracker) {
+        if (mView == null) {
+            return false;
+        }
+
         final int x = (int) event.getX();
         final int y = (int) event.getY();
         final Key previousKey = mLastHoverKey;
@@ -326,6 +343,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Notifies the user of changes in the keyboard shift state.
      */
     public void notifyShiftState() {
+        if (mView == null) {
+            return;
+        }
+
         final Keyboard keyboard = mView.getKeyboard();
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
@@ -352,6 +373,10 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      * Notifies the user of changes in the keyboard symbols state.
      */
     public void notifySymbolsState() {
+        if (mView == null) {
+            return;
+        }
+
         final Keyboard keyboard = mView.getKeyboard();
         final Context context = mView.getContext();
         final KeyboardId keyboardId = keyboard.mId;
