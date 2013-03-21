@@ -407,11 +407,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     public DictAndProximity createDictAndProximity(final Locale locale) {
         final int script = getScriptFromLocale(locale);
-        final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo(
-                SpellCheckerProximityInfo.getProximityForScript(script),
-                SpellCheckerProximityInfo.ROW_SIZE,
-                SpellCheckerProximityInfo.PROXIMITY_GRID_WIDTH,
-                SpellCheckerProximityInfo.PROXIMITY_GRID_HEIGHT);
+        final ProximityInfo proximityInfo = new SpellCheckerProximityInfo(script);
         final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createMainDictionaryFromManager(this, locale,
                         true /* useFullEditDistance */);

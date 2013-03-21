@@ -16,38 +16,41 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 
 import java.util.TreeMap;
 
-public final class SpellCheckerProximityInfo {
-    @UsedForTesting
-    final public static int NUL = Constants.NOT_A_CODE;
+public final class SpellCheckerProximityInfo extends ProximityInfo {
+    public SpellCheckerProximityInfo(final int script) {
+        super(getProximityForScript(script), PROXIMITY_GRID_WIDTH, PROXIMITY_GRID_HEIGHT);
+    }
+
+    private static final int NUL = Constants.NOT_A_CODE;
 
     // This must be the same as MAX_PROXIMITY_CHARS_SIZE else it will not work inside
     // native code - this value is passed at creation of the binary object and reused
     // as the size of the passed array afterwards so they can't be different.
-    final public static int ROW_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
+    private static final int ROW_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
 
     // The number of keys in a row of the grid used by the spell checker.
-    final public static int PROXIMITY_GRID_WIDTH = 11;
+    private static final int PROXIMITY_GRID_WIDTH = 11;
     // The number of rows in the grid used by the spell checker.
-    final public static int PROXIMITY_GRID_HEIGHT = 3;
+    private static final int PROXIMITY_GRID_HEIGHT = 3;
 
-    final private static int NOT_AN_INDEX = -1;
-    final public static int NOT_A_COORDINATE_PAIR = -1;
+    private static final int NOT_AN_INDEX = -1;
+    public static final int NOT_A_COORDINATE_PAIR = -1;
 
     // Helper methods
-    final protected static void buildProximityIndices(final int[] proximity,
+    static void buildProximityIndices(final int[] proximity,
             final TreeMap<Integer, Integer> indices) {
         for (int i = 0; i < proximity.length; i += ROW_SIZE) {
             if (NUL != proximity[i]) indices.put(proximity[i], i / ROW_SIZE);
         }
     }
-    final protected static int computeIndex(final int characterCode,
+
+    static int computeIndex(final int characterCode,
             final TreeMap<Integer, Integer> indices) {
         final Integer result = indices.get(characterCode);
         if (null == result) return NOT_AN_INDEX;
@@ -61,7 +64,7 @@ public final class SpellCheckerProximityInfo {
         // character.
         // Since we need to build such an array, we want to be able to search in our big proximity
         // data quickly by character, and a map is probably the best way to do this.
-        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
+        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
 
         // The proximity here is the union of
         // - the proximity for a QWERTY keyboard.
@@ -79,7 +82,7 @@ public final class SpellCheckerProximityInfo {
              a s d f g h j k l
                z x c v b n m
         */
-        final static int[] PROXIMITY = {
+        static final int[] PROXIMITY = {
             // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
             // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
             // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
@@ -121,16 +124,18 @@ public final class SpellCheckerProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
+
         static {
             buildProximityIndices(PROXIMITY, INDICES);
         }
+
         static int getIndexOf(int characterCode) {
             return computeIndex(characterCode, INDICES);
         }
     }
 
     private static final class Cyrillic {
-        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
+        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.
         /*
@@ -207,7 +212,7 @@ public final class SpellCheckerProximityInfo {
         private static final int CY_SOFT_SIGN = '\u044C'; // ь
         private static final int CY_BE = '\u0431'; // б
         private static final int CY_YU = '\u044E'; // ю
-        final static int[] PROXIMITY = {
+        static final int[] PROXIMITY = {
             // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
             // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
             // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
@@ -280,16 +285,18 @@ public final class SpellCheckerProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
+
         static {
             buildProximityIndices(PROXIMITY, INDICES);
         }
+
         static int getIndexOf(int characterCode) {
             return computeIndex(characterCode, INDICES);
         }
     }
 
     private static final class Greek {
-        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
+        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Greek
         // speakers on commonly misspelled words/letters.
         /*
@@ -354,7 +361,7 @@ public final class SpellCheckerProximityInfo {
         private static final int GR_BETA = '\u03B2'; // β
         private static final int GR_NU = '\u03BD'; // ν
         private static final int GR_MU = '\u03BC'; // μ
-        final static int[] PROXIMITY = {
+        static final int[] PROXIMITY = {
             // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
             // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
             // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
@@ -419,37 +426,39 @@ public final class SpellCheckerProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
+
         static {
             buildProximityIndices(PROXIMITY, INDICES);
         }
+
         static int getIndexOf(int characterCode) {
             return computeIndex(characterCode, INDICES);
         }
     }
 
-    public static int[] getProximityForScript(final int script) {
+    private static int[] getProximityForScript(final int script) {
         switch (script) {
-            case AndroidSpellCheckerService.SCRIPT_LATIN:
-                return Latin.PROXIMITY;
-            case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-                return Cyrillic.PROXIMITY;
-            case AndroidSpellCheckerService.SCRIPT_GREEK:
-                return Greek.PROXIMITY;
-            default:
-                throw new RuntimeException("Wrong script supplied: " + script);
+        case AndroidSpellCheckerService.SCRIPT_LATIN:
+            return Latin.PROXIMITY;
+        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+            return Cyrillic.PROXIMITY;
+        case AndroidSpellCheckerService.SCRIPT_GREEK:
+            return Greek.PROXIMITY;
+        default:
+            throw new RuntimeException("Wrong script supplied: " + script);
         }
     }
 
     private static int getIndexOfCodeForScript(final int codePoint, final int script) {
         switch (script) {
-            case AndroidSpellCheckerService.SCRIPT_LATIN:
-                return Latin.getIndexOf(codePoint);
-            case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-                return Cyrillic.getIndexOf(codePoint);
-            case AndroidSpellCheckerService.SCRIPT_GREEK:
-                return Greek.getIndexOf(codePoint);
-            default:
-                throw new RuntimeException("Wrong script supplied: " + script);
+        case AndroidSpellCheckerService.SCRIPT_LATIN:
+            return Latin.getIndexOf(codePoint);
+        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+            return Cyrillic.getIndexOf(codePoint);
+        case AndroidSpellCheckerService.SCRIPT_GREEK:
+            return Greek.getIndexOf(codePoint);
+        default:
+            throw new RuntimeException("Wrong script supplied: " + script);
         }
     }
 
