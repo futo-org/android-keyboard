@@ -24,7 +24,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
-import android.view.InflateException;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
@@ -750,7 +749,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void endRow(final KeyboardRow row) {
         if (mCurrentRow == null) {
-            throw new InflateException("orphan end row tag");
+            throw new RuntimeException("orphan end row tag");
         }
         if (mRightEdgeKey != null) {
             mRightEdgeKey.markAsRightEdge(mParams);
