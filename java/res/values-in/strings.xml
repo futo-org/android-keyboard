@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Masukan suara dinonaktifkan"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan metode masukan"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Bahasa masukan"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Kirim masukan"</string>
     <string name="select_language" msgid="3693815588777926848">"Bahasa masukan"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Sentuh lagi untuk menyimpan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus yang tersedia"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Default"</string>
     <string name="language_settings" msgid="1671153053201809031">"Bahasa &amp; masukan"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Pilih metode masukan"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Penyedia Kamus"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Penyedia Kamus"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Layanan Kamus"</string>
-    <string name="download_description" msgid="3274861514695032954">"Informasi pembaruan kamus"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Kamus pengaya"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Kamus tersedia"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Setelan untuk kamus"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Kamus pengguna"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Kamus pengguna"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Kamus yang tersedia"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Saat ini sedang mengunduh"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Terpasang"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Terpasang, dinonaktifkan"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Masalah koneksi ke layanan kamus"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Tidak tersedia kamus"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Segarkan"</string>
-    <string name="last_update" msgid="3101549719827600346">"Terakhir diperbarui"</string>
-    <string name="message_updating" msgid="820186276704134720">"Memeriksa pembaruan"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Memuat..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Kamus utama"</string>
-    <string name="cancel" msgid="5586531736609183304">"Batal"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Pasang"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Batalkan unduhan"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Nonaktifkan"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Aktifkan"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Hapus"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Kamus tersedia untuk bahasa <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Tekan untuk meninjau dan mengunduh"</string>
+    <string name="app_name" msgid="6320102637491234792">"Penyedia Kamus"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Penyedia Kamus"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Layanan Kamus"</string>
+    <string name="download_description" msgid="6014835283119198591">"Informasi pembaruan kamus"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Kamus add-on"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Kamus yang tersedia"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Setelan untuk kamus"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Kamus pengguna"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kamus pengguna"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Kamus yang tersedia"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Saat ini sedang mengunduh"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Terpasang"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Terpasang, dinonaktifkan"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Problem koneksi kamus"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Tidak tersedia kamus"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Segarkan"</string>
+    <string name="last_update" msgid="730467549913588780">"Terakhir diperbarui"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Memeriksa pembaruan"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Memuat..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Kamus utama"</string>
+    <string name="cancel" msgid="6830980399865683324">"Batal"</string>
+    <string name="install_dict" msgid="180852772562189365">"Pasang"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Batal"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Hapus"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Bahasa pilihan pada perangkat seluler Anda memiliki kamus yang tersedia.&lt;br/&gt; Silakan &lt;b&gt;mengunduh&lt;/b&gt; kamus <xliff:g id="LANGUAGE">%1$s</xliff:g> untuk meningkatkan pengalaman pengetikan.&lt;br/&gt; &lt;br/&gt; Unduhan dapat berlangsung selama satu atau dua menit melalui 3G. Mungkin dikenakan tagihan data jika Anda tidak memiliki &lt;b&gt;paket data tak terbatas&lt;/b&gt;.&lt;br/&gt; Jika tidak yakin paket data mana yang Anda miliki, sebaiknya Anda mencari sambungan Wi-Fi untuk memulai unduhan secara otomatis.&lt;br/&gt; &lt;br/&gt; Kiat: Anda dapat mengunduh atau menghapus kamus dengan membuka &lt;b&gt;Bahasa &amp; masukan&lt;/b&gt; di menu &lt;b&gt;Setelan&lt;/b&gt; perangkat seluler Anda."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Unduh sekarang (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Unduh melalui Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Kamus tersedia untuk bahasa <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Tekan untuk meninjau dan mengunduh"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Mengunduh: saran untuk bahasa <xliff:g id="LANGUAGE">%1$s</xliff:g> akan segera tersedia."</string>
 </resources>

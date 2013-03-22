@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"음성 입력이 사용 중지됨"</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"의견 보내기"</string>
     <string name="select_language" msgid="3693815588777926848">"입력 언어"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"저장하려면 다시 터치"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"기본값"</string>
     <string name="language_settings" msgid="1671153053201809031">"언어 및 키보드"</string>
     <string name="select_input_method" msgid="4301602374609275003">"입력 방법 선택"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"사전 제공업체"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"사전 제공업체"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"사전 서비스"</string>
-    <string name="download_description" msgid="3274861514695032954">"사전 업데이트 정보"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"사전 추가"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"사전 사용 가능"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"사전 설정"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"사용자 사전"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"사용자 사전"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"사전 사용 가능"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"현재 다운로드 중"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"설치됨"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"설치 완료되었으나 사용 중지됨"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"사전 서비스에 연결하는 동안 문제가 발생했습니다."</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"사용할 수 있는 사전이 없습니다."</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"새로고침"</string>
-    <string name="last_update" msgid="3101549719827600346">"최근 업데이트"</string>
-    <string name="message_updating" msgid="820186276704134720">"업데이트를 확인하는 중"</string>
-    <string name="message_loading" msgid="8611339149825047446">"로드 중..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"기본 사전"</string>
-    <string name="cancel" msgid="5586531736609183304">"취소"</string>
-    <string name="install_dict" msgid="5525005524697607865">"설치"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"다운로드 취소"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"사용 중지"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"사용"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"삭제"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"<xliff:g id="LANGUAGE">%1$s</xliff:g> 사전을 사용할 수 있습니다."</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"검토하고 다운로드하려면 누르세요."</string>
+    <string name="app_name" msgid="6320102637491234792">"사전 제공업체"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"사전 제공업체"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"사전 서비스"</string>
+    <string name="download_description" msgid="6014835283119198591">"사전 업데이트 정보"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"사전 추가"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"사전 사용 가능"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"사전 설정"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"사용자 사전"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"사용자 사전"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"사전 사용 가능"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"현재 다운로드 중"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"설치됨"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"설치 완료되었으나 사용 중지됨"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"사전 서비스에 연결하는 중에 문제가 발생했습니다."</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"사용할 수 있는 사전이 없습니다."</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"새로고침"</string>
+    <string name="last_update" msgid="730467549913588780">"최종 업데이트"</string>
+    <string name="message_updating" msgid="4457761393932375219">"업데이트를 확인하는 중"</string>
+    <string name="message_loading" msgid="8689096636874758814">"로드 중..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"기본 사전"</string>
+    <string name="cancel" msgid="6830980399865683324">"취소"</string>
+    <string name="install_dict" msgid="180852772562189365">"설치"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"취소"</string>
+    <string name="delete_dict" msgid="756853268088330054">"삭제"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"기기에서 선택한 언어로 사용할 수 있는 사전이 있습니다.&lt;br/&gt; <xliff:g id="LANGUAGE">%1$s</xliff:g> 사전을 &lt;b&gt;다운로드&lt;/b&gt;하여 입력 환경을 개선해 보세요..&lt;br/&gt; &lt;br/&gt; 3G로 다운로드하는 경우 1-2분 정도 걸립니다. &lt;b&gt;무제한 데이터 요금제&lt;/b&gt;가 아닌 경우 요금이 청구됩니다.&lt;br/&gt; 사용 중인 데이터 요금제를 잘 모르는 경우 Wi-Fi에 연결할 수 있는 곳을 찾아 자동 다운로드를 시작하는 것이 좋습니다.&lt;br/&gt; &lt;br/&gt; 도움말: 사전을 다운로드하거나 삭제하려면 &lt;b&gt;언어 및 키보드&lt;/b&gt;로 이동하면 되며 이는 휴대기기의 &lt;b&gt;설정&lt;/b&gt; 메뉴에 있습니다."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"지금 다운로드(<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Wi-Fi를 통해 다운로드"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g> 사전을 사용할 수 있습니다."</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"검토하고 다운로드하려면 누르세요."</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"다운로드 중: <xliff:g id="LANGUAGE">%1$s</xliff:g>에 대한 추천항목이 곧 준비됩니다."</string>
 </resources>
