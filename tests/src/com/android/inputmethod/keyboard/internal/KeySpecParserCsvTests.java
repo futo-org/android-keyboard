@@ -56,7 +56,8 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
         return names.toArray(new String[names.size()]);
     }
 
-    private static void assertArrayEquals(String message, Object[] expected, Object[] actual) {
+    private static void assertArrayEquals(final String message, final Object[] expected,
+            final Object[] actual) {
         if (expected == actual) {
             return;
         }
@@ -74,14 +75,15 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
         }
     }
 
-    private void assertTextArray(String message, String value, String ... expectedArray) {
+    private void assertTextArray(final String message, final String value,
+            final String ... expectedArray) {
         final String resolvedActual = KeySpecParser.resolveTextReference(value, mTextsSet);
         final String[] actual = StringUtils.parseCsvString(resolvedActual);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
     }
 
-    private void assertError(String message, String value, String ... expected) {
+    private void assertError(final String message, final String value, final String ... expected) {
         try {
             assertTextArray(message, value, expected);
             fail(message);
