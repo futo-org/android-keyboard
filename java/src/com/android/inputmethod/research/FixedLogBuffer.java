@@ -51,10 +51,6 @@ public class FixedLogBuffer extends LogBuffer {
         mNumActualWords = 0;
     }
 
-    protected int getNumActualWords() {
-        return mNumActualWords;
-    }
-
     /**
      * Adds a new LogUnit to the front of the LIFO queue, evicting existing LogUnit's
      * (oldest first) if word capacity is reached.
@@ -119,12 +115,24 @@ public class FixedLogBuffer extends LogBuffer {
         return logUnit;
     }
 
-    protected void shiftOutWords(final int numWords) {
-        final int targetNumWords = mNumActualWords - numWords;
-        final LinkedList<LogUnit> logUnits = getLogUnits();
-        while (mNumActualWords > targetNumWords && !logUnits.isEmpty()) {
-            shiftOut();
+    /**
+     * Remove LogUnits from the front of the LogBuffer until {@code numWords} have been removed.
+     *
+     * If there are less than {@code numWords} word-containing {@link LogUnit}s, shifts out
+     * all {@code LogUnit}s in the buffer.
+     *
+     * @param numWords the number of word-containing {@link LogUnit}s to shift out
+     * @return the number of actual {@code LogUnit}s shifted out
+     */
+    protected int shiftOutWords(final int numWords) {
+        int numWordContainingLogUnitsShiftedOut = 0;
+        for (LogUnit logUnit = shiftOut(); logUnit != null
+                && numWordContainingLogUnitsShiftedOut < numWords; logUnit = shiftOut()) {
+            if (logUnit.hasWord()) {
+                numWordContainingLogUnitsShiftedOut++;
+            }
         }
+        return numWordContainingLogUnitsShiftedOut;
     }
 
     public void shiftOutAll() {

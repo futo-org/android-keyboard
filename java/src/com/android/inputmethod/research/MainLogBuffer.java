@@ -25,7 +25,6 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 /**
  * MainLogBuffer is a FixedLogBuffer that tracks the state of LogUnits to make privacy guarantees.
@@ -98,10 +97,6 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         }
         if (mSuggest == null || !mSuggest.hasMainDictionary()) return null;
         return mSuggest.getMainDictionary();
-    }
-
-    public void resetWordCounter() {
-        mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
     }
 
     public void setIsStopping() {
@@ -201,7 +196,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             // Good n-gram at the front of the buffer.  Publish it, disclosing details.
             publish(logUnits, true /* canIncludePrivateData */);
             shiftOutWords(N_GRAM_SIZE);
-            resetWordCounter();
+            mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
         } else {
             // No good n-gram at front, and buffer is full.  Shift out the first word (or if there
             // is none, the existing logUnits).
@@ -224,13 +219,13 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             final boolean canIncludePrivateData);
 
     @Override
-    protected void shiftOutWords(final int numWords) {
-        final int oldNumActualWords = getNumActualWords();
-        super.shiftOutWords(numWords);
-        final int numWordsShifted = oldNumActualWords - getNumActualWords();
-        mNumWordsUntilSafeToSample -= numWordsShifted;
+    protected int shiftOutWords(final int numWords) {
+        final int numWordContainingLogUnitsShiftedOut = super.shiftOutWords(numWords);
+        mNumWordsUntilSafeToSample = Math.max(0, mNumWordsUntilSafeToSample
+                - numWordContainingLogUnitsShiftedOut);
         if (DEBUG) {
             Log.d(TAG, "wordsUntilSafeToSample now at " + mNumWordsUntilSafeToSample);
         }
+        return numWordContainingLogUnitsShiftedOut;
     }
 }
