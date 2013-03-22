@@ -308,6 +308,8 @@
       - operation[CHAR LIMIT=100] -->
     <!-- TODO: remove translatable=false attribute once text is stable -->
     <string name="research_feedback_demonstration_instructions" translatable="false">Please demonstrate the issue you are writing about.\n\nWhen finished, select the \"Bug?\" button again."</string>
+    <!-- Title of a preference to send feedback. [CHAR LIMIT=30]-->
+    <string name="send_feedback">Send feedback</string>
     <!-- Temporary notification of recording failure [CHAR LIMIT=100] -->
     <!-- TODO: remove translatable=false attribute once text is stable -->
     <string name="research_feedback_recording_failure" translatable="false">Recording cancelled due to timeout</string>

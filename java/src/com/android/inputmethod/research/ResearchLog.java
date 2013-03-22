@@ -20,11 +20,11 @@ import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,18 +38,24 @@ import java.util.concurrent.TimeUnit;
 /**
  * Logs the use of the LatinIME keyboard.
  *
- * This class logs operations on the IME keyboard, including what the user has typed.
- * Data is stored locally in a file in app-specific storage.
+ * This class logs operations on the IME keyboard, including what the user has typed.  Data is
+ * written to a {@link JsonWriter}, which will write to a local file.
+ *
+ * The JsonWriter is created on-demand by calling {@link #getInitializedJsonWriterLocked}.
+ *
+ * This class uses an executor to perform file-writing operations on a separate thread.  It also
+ * tries to avoid creating unnecessary files if there is nothing to write.  It also handles
+ * flushing, making sure it happens, but not too frequently.
  *
  * This functionality is off by default. See
  * {@link ProductionFlag#USES_DEVELOPMENT_ONLY_DIAGNOSTICS}.
  */
 public class ResearchLog {
+    // TODO: Automatically initialize the JsonWriter rather than requiring the caller to manage it.
     private static final String TAG = ResearchLog.class.getSimpleName();
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
-    private static final int ABORT_TIMEOUT_IN_MS = 1000 * 4;
 
     /* package */ final ScheduledExecutorService mExecutor;
     /* package */ final File mFile;
@@ -89,28 +95,33 @@ public class ResearchLog {
         mContext = context;
     }
 
-    public synchronized void close(final Runnable onClosed) {
+    /**
+     * Waits for any publication requests to finish and closes the {@link JsonWriter} used for
+     * output.
+     *
+     * See class comment for details about {@code JsonWriter} construction.
+     *
+     * @param onClosed run after the close() operation has completed asynchronously
+     */
+    private synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
                 try {
                     if (mHasWrittenData) {
                         mJsonWriter.endArray();
-                        mJsonWriter.flush();
-                        mJsonWriter.close();
-                        if (DEBUG) {
-                            Log.d(TAG, "wrote log to " + mFile);
-                        }
                         mHasWrittenData = false;
-                    } else {
-                        if (DEBUG) {
-                            Log.d(TAG, "close() called, but no data, not outputting");
-                        }
+                    }
+                    mJsonWriter.flush();
+                    mJsonWriter.close();
+                    if (DEBUG) {
+                        Log.d(TAG, "wrote log to " + mFile);
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "error when closing ResearchLog:");
-                    e.printStackTrace();
+                    Log.d(TAG, "error when closing ResearchLog:", e);
                 } finally {
+                    // Marking the file as read-only signals that this log file is ready to be
+                    // uploaded.
                     if (mFile != null && mFile.exists()) {
                         mFile.setWritable(false, false);
                     }
@@ -125,9 +136,24 @@ public class ResearchLog {
         mExecutor.shutdown();
     }
 
-    private boolean mIsAbortSuccessful;
+    /**
+     * Block until the research log has shut down and spooled out all output or {@code timeout}
+     * occurs.
+     *
+     * @param timeout time to wait for close in milliseconds
+     */
+    public void blockingClose(final long timeout) {
+        close(null);
+        awaitTermination(timeout, TimeUnit.MILLISECONDS);
+    }
 
-    public synchronized void abort() {
+    /**
+     * Waits for publication requests to finish, closes the JsonWriter, but then deletes the backing
+     * output file.
+     *
+     * @param onAbort run after the abort() operation has completed asynchronously
+     */
+    private synchronized void abort(final Runnable onAbort) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -139,7 +165,10 @@ public class ResearchLog {
                     }
                 } finally {
                     if (mFile != null) {
-                        mIsAbortSuccessful = mFile.delete();
+                        mFile.delete();
+                    }
+                    if (onAbort != null) {
+                        onAbort.run();
                     }
                 }
                 return null;
@@ -149,14 +178,25 @@ public class ResearchLog {
         mExecutor.shutdown();
     }
 
-    public boolean blockingAbort() throws InterruptedException {
-        abort();
-        mExecutor.awaitTermination(ABORT_TIMEOUT_IN_MS, TimeUnit.MILLISECONDS);
-        return mIsAbortSuccessful;
+    /**
+     * Block until the research log has aborted or {@code timeout} occurs.
+     *
+     * @param timeout time to wait for close in milliseconds
+     */
+    public void blockingAbort(final long timeout) {
+        abort(null);
+        awaitTermination(timeout, TimeUnit.MILLISECONDS);
     }
 
-    public void awaitTermination(int delay, TimeUnit timeUnit) throws InterruptedException {
-        mExecutor.awaitTermination(delay, timeUnit);
+    @UsedForTesting
+    public void awaitTermination(final long delay, final TimeUnit timeUnit) {
+        try {
+            if (!mExecutor.awaitTermination(delay, timeUnit)) {
+                Log.e(TAG, "ResearchLog executor timed out while awaiting terminaion");
+            }
+        } catch (final InterruptedException e) {
+            Log.e(TAG, "ResearchLog executor interrupted while awaiting terminaion", e);
+        }
     }
 
     /* package */ synchronized void flush() {
@@ -186,6 +226,12 @@ public class ResearchLog {
         mFlushFuture = mExecutor.schedule(mFlushCallable, FLUSH_DELAY_IN_MS, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Queues up {@code logUnit} to be published in the background.
+     *
+     * @param logUnit the {@link LogUnit} to be published
+     * @param canIncludePrivateData whether private data in the LogUnit should be included
+     */
     public synchronized void publish(final LogUnit logUnit, final boolean canIncludePrivateData) {
         try {
             mExecutor.submit(new Callable<Object>() {
@@ -196,10 +242,10 @@ public class ResearchLog {
                     return null;
                 }
             });
-        } catch (RejectedExecutionException e) {
+        } catch (final RejectedExecutionException e) {
             // TODO: Add code to record loss of data, and report.
             if (DEBUG) {
-                Log.d(TAG, "ResearchLog.publish() rejecting scheduled execution");
+                Log.d(TAG, "ResearchLog.publish() rejecting scheduled execution", e);
             }
         }
     }

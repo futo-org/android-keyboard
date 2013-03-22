@@ -430,7 +430,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         initSuggest();
 
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().init(this, mKeyboardSwitcher);
+            ResearchLogger.getInstance().init(this, mKeyboardSwitcher, mSuggest);
         }
         mDisplayOrientation = getResources().getConfiguration().orientation;
 
@@ -565,6 +565,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mSettings.onDestroy();
         unregisterReceiver(mReceiver);
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            ResearchLogger.getInstance().onDestroy();
+        }
         // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
         // Service yet.
         if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
