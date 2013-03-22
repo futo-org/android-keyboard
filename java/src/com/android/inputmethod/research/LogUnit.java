@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.research;
 
-import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.JsonWriter;
@@ -45,7 +44,7 @@ import java.util.List;
  * will not violate the user's privacy.  Checks for this may include whether other LogUnits have
  * been published recently, or whether the LogUnit contains numbers, etc.
  */
-/* package */ class LogUnit {
+public class LogUnit {
     private static final String TAG = LogUnit.class.getSimpleName();
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
@@ -121,22 +120,6 @@ import java.util.List;
      */
     public synchronized void publishTo(final ResearchLog researchLog,
             final boolean canIncludePrivateData) {
-        // Prepare debugging output if necessary
-        final StringWriter debugStringWriter;
-        final JsonWriter debugJsonWriter;
-        if (DEBUG) {
-            debugStringWriter = new StringWriter();
-            debugJsonWriter = new JsonWriter(debugStringWriter);
-            debugJsonWriter.setIndent("  ");
-            try {
-                debugJsonWriter.beginArray();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not open array in JsonWriter", e);
-            }
-        } else {
-            debugStringWriter = null;
-            debugJsonWriter = null;
-        }
         // Write out any logStatement that passes the privacy filter.
         final int size = mLogStatementList.size();
         if (size != 0) {
@@ -159,27 +142,10 @@ import java.util.List;
                     outputLogUnitStart(jsonWriter, canIncludePrivateData);
                 }
                 logStatement.outputToLocked(jsonWriter, mTimeList.get(i), mValuesList.get(i));
-                if (DEBUG) {
-                    logStatement.outputToLocked(debugJsonWriter, mTimeList.get(i),
-                            mValuesList.get(i));
-                }
             }
             if (jsonWriter != null) {
                 // We must have called logUnitStart earlier, so emit a logUnitStop.
                 outputLogUnitStop(jsonWriter);
-            }
-        }
-        if (DEBUG) {
-            try {
-                debugJsonWriter.endArray();
-                debugJsonWriter.flush();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close array in JsonWriter", e);
-            }
-            final String bigString = debugStringWriter.getBuffer().toString();
-            final String[] lines = bigString.split("\n");
-            for (String line : lines) {
-                Log.d(TAG, line);
             }
         }
     }

@@ -77,6 +77,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
 
+    public static final String PREF_SEND_FEEDBACK = "send_feedback";
+
     private Resources mRes;
     private SharedPreferences mPrefs;
     private Locale mCurrentLocale;

@@ -18,6 +18,7 @@ package com.android.inputmethod.research;
 
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -65,7 +66,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
 
-    private Suggest mSuggest;
+    // TODO: Remove dependence on Suggest, and pass in Dictionary as a parameter to an appropriate
+    // method.
+    private final Suggest mSuggest;
+    @UsedForTesting
+    private Dictionary mDictionaryForTesting;
     private boolean mIsStopping = false;
 
     /* package for test */ int mNumWordsBetweenNGrams;
@@ -74,17 +79,23 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     // after a sample is taken.
     /* package for test */ int mNumWordsUntilSafeToSample;
 
-    public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore) {
+    public MainLogBuffer(final int wordsBetweenSamples, final int numInitialWordsToIgnore,
+            final Suggest suggest) {
         super(N_GRAM_SIZE + wordsBetweenSamples);
         mNumWordsBetweenNGrams = wordsBetweenSamples;
         mNumWordsUntilSafeToSample = DEBUG ? 0 : numInitialWordsToIgnore;
-    }
-
-    public void setSuggest(final Suggest suggest) {
         mSuggest = suggest;
     }
 
+    @UsedForTesting
+    /* package for test */ void setDictionaryForTesting(final Dictionary dictionary) {
+        mDictionaryForTesting = dictionary;
+    }
+
     private Dictionary getDictionary() {
+        if (mDictionaryForTesting != null) {
+            return mDictionaryForTesting;
+        }
         if (mSuggest == null || !mSuggest.hasMainDictionary()) return null;
         return mSuggest.getMainDictionary();
     }

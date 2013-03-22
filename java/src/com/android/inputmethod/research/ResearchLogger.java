@@ -124,17 +124,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // field holds a channel name, the developer does not have to re-enter it when using the
     // feedback mechanism to generate multiple tests.
     private static final boolean FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD = false;
-    public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 5;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    private static final String PREF_RESEARCH_HAS_SEEN_SPLASH = "pref_research_has_seen_splash";
-    /* package */ static final String LOG_FILENAME_PREFIX = "researchLog";
-    private static final String LOG_FILENAME_SUFFIX = ".txt";
-    /* package */ static final String USER_RECORDING_FILENAME_PREFIX = "recording";
-    private static final String USER_RECORDING_FILENAME_SUFFIX = ".txt";
-    private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
-            new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
     // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
     // testing.
     /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
@@ -156,15 +148,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
-    private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
     private static final String PREF_RESEARCH_SAVED_CHANNEL = "pref_research_saved_channel";
+
+    private static final long RESEARCHLOG_CLOSE_TIMEOUT_IN_MS = 5 * 1000;
+    private static final long RESEARCHLOG_ABORT_TIMEOUT_IN_MS = 5 * 1000;
+    private static final long DURATION_BETWEEN_DIR_CLEANUP_IN_MS = DateUtils.DAY_IN_MILLIS;
+    private static final long MAX_LOGFILE_AGE_IN_MS = 4 * DateUtils.DAY_IN_MILLIS;
 
     private static final ResearchLogger sInstance = new ResearchLogger();
     private static String sAccountType = null;
     private static String sAllowedAccountDomain = null;
-    // to write to a different filename, e.g., for testing, set mFile before calling start()
-    /* package */ File mFilesDir;
-    /* package */ String mUUIDString;
     /* package */ ResearchLog mMainResearchLog;
     // mFeedbackLog records all events for the session, private or not (excepting
     // passwords).  It is written to permanent storage only if the user explicitly commands
@@ -190,9 +183,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Character.codePointAt("\uE000", 0);  // U+E000 is in the "private-use area"
     // U+E001 is in the "private-use area"
     /* package for test */ static final String WORD_REPLACEMENT_STRING = "\uE001";
-    private static final String PREF_LAST_CLEANUP_TIME = "pref_last_cleanup_time";
-    private static final long DURATION_BETWEEN_DIR_CLEANUP_IN_MS = DateUtils.DAY_IN_MILLIS;
-    private static final long MAX_LOGFILE_AGE_IN_MS = 4 * DateUtils.DAY_IN_MILLIS;
     protected static final int SUSPEND_DURATION_IN_MINUTES = 1;
     // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
@@ -206,11 +196,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private final Statistics mStatistics;
     private final MotionEventReader mMotionEventReader = new MotionEventReader();
     private final Replayer mReplayer = Replayer.getInstance();
+    private ResearchLogDirectory mResearchLogDirectory;
 
     private Intent mUploadIntent;
     private Intent mUploadNowIntent;
 
-    private LogUnit mCurrentLogUnit = new LogUnit();
+    /* package for test */ LogUnit mCurrentLogUnit = new LogUnit();
 
     // Gestured or tapped words may be committed after the gesture of the next word has started.
     // To ensure that the gesture data of the next word is not associated with the previous word,
@@ -239,50 +230,42 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher) {
+    public void init(final LatinIME latinIME, final KeyboardSwitcher keyboardSwitcher,
+            final Suggest suggest) {
         assert latinIME != null;
-        if (latinIME == null) {
-            Log.w(TAG, "IMS is null; logging is off");
-        } else {
-            mFilesDir = latinIME.getFilesDir();
-            if (mFilesDir == null || !mFilesDir.exists()) {
-                Log.w(TAG, "IME storage directory does not exist.");
-            }
-        }
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
-        if (prefs != null) {
-            mUUIDString = getUUID(prefs);
-            if (!prefs.contains(PREF_USABILITY_STUDY_MODE)) {
-                Editor e = prefs.edit();
-                e.putBoolean(PREF_USABILITY_STUDY_MODE, DEFAULT_USABILITY_STUDY_MODE);
-                e.apply();
-            }
-            sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
-            prefs.registerOnSharedPreferenceChangeListener(this);
+        mLatinIME = latinIME;
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(latinIME);
+        mPrefs.registerOnSharedPreferenceChangeListener(this);
 
-            final long lastCleanupTime = prefs.getLong(PREF_LAST_CLEANUP_TIME, 0L);
-            final long now = System.currentTimeMillis();
-            if (lastCleanupTime + DURATION_BETWEEN_DIR_CLEANUP_IN_MS < now) {
-                final long timeHorizon = now - MAX_LOGFILE_AGE_IN_MS;
-                cleanupLoggingDir(mFilesDir, timeHorizon);
-                Editor e = prefs.edit();
-                e.putLong(PREF_LAST_CLEANUP_TIME, now);
-                e.apply();
-            }
-        }
+        // Initialize fields from preferences
+        sIsLogging = ResearchSettings.readResearchLoggerEnabledFlag(mPrefs);
+
+        // Initialize fields from resources
         final Resources res = latinIME.getResources();
         sAccountType = res.getString(R.string.research_account_type);
         sAllowedAccountDomain = res.getString(R.string.research_allowed_account_domain);
-        mLatinIME = latinIME;
-        mPrefs = prefs;
+
+        // Initialize directory manager
+        mResearchLogDirectory = new ResearchLogDirectory(mLatinIME);
+        cleanLogDirectoryIfNeeded(mResearchLogDirectory, System.currentTimeMillis());
+
+        // Initialize external services
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
-        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
-
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             scheduleUploadingService(mLatinIME);
         }
+        mReplayer.setKeyboardSwitcher(keyboardSwitcher);
+    }
+
+    private void cleanLogDirectoryIfNeeded(final ResearchLogDirectory researchLogDirectory,
+            final long now) {
+        final long lastCleanupTime = ResearchSettings.readResearchLastDirCleanupTime(mPrefs);
+        if (now - lastCleanupTime < DURATION_BETWEEN_DIR_CLEANUP_IN_MS) return;
+        final long oldestAllowedFileTime = now - MAX_LOGFILE_AGE_IN_MS;
+        mResearchLogDirectory.cleanupLogFilesOlderThan(oldestAllowedFileTime);
+        ResearchSettings.writeResearchLastDirCleanupTime(mPrefs, now);
     }
 
     /**
@@ -304,17 +287,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 UploaderService.RUN_INTERVAL, UploaderService.RUN_INTERVAL, pendingIntent);
     }
 
-    private void cleanupLoggingDir(final File dir, final long time) {
-        for (File file : dir.listFiles()) {
-            final String filename = file.getName();
-            if ((filename.startsWith(ResearchLogger.LOG_FILENAME_PREFIX)
-                    || filename.startsWith(ResearchLogger.USER_RECORDING_FILENAME_PREFIX))
-                    && file.lastModified() < time) {
-                file.delete();
-            }
-        }
-    }
-
     public void mainKeyboardView_onAttachedToWindow(final MainKeyboardView mainKeyboardView) {
         mMainKeyboardView = mainKeyboardView;
         maybeShowSplashScreen();
@@ -324,14 +296,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mMainKeyboardView = null;
     }
 
-    private boolean hasSeenSplash() {
-        return mPrefs.getBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, false);
+    public void onDestroy() {
+        if (mPrefs != null) {
+            mPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     private Dialog mSplashDialog = null;
 
     private void maybeShowSplashScreen() {
-        if (hasSeenSplash()) {
+        if (ResearchSettings.readHasSeenSplash(mPrefs)) {
             return;
         }
         if (mSplashDialog != null && mSplashDialog.isShowing()) {
@@ -384,53 +358,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void onUserLoggingConsent() {
-        setLoggingAllowed(true);
         if (mPrefs == null) {
-            return;
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
+            if (mPrefs == null) return;
         }
-        final Editor e = mPrefs.edit();
-        e.putBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, true);
-        e.apply();
+        sIsLogging = true;
+        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, true);
+        ResearchSettings.writeHasSeenSplash(mPrefs, true);
         restart();
     }
 
-    private void setLoggingAllowed(boolean enableLogging) {
-        if (mPrefs == null) {
-            return;
-        }
-        Editor e = mPrefs.edit();
-        e.putBoolean(PREF_USABILITY_STUDY_MODE, enableLogging);
-        e.apply();
+    private void setLoggingAllowed(final boolean enableLogging) {
+        if (mPrefs == null) return;
         sIsLogging = enableLogging;
-    }
-
-    private static int sLogFileCounter = 0;
-
-    private File createLogFile(final File filesDir) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(LOG_FILENAME_PREFIX).append('-');
-        sb.append(mUUIDString).append('-');
-        sb.append(TIMESTAMP_DATEFORMAT.format(new Date())).append('-');
-        // Sometimes logFiles are created within milliseconds of each other.  Append a counter to
-        // separate these.
-        if (sLogFileCounter < Integer.MAX_VALUE) {
-            sLogFileCounter++;
-        } else {
-            // Wrap the counter, in the unlikely event of overflow.
-            sLogFileCounter = 0;
-        }
-        sb.append(sLogFileCounter);
-        sb.append(LOG_FILENAME_SUFFIX);
-        return new File(filesDir, sb.toString());
-    }
-
-    private File createUserRecordingFile(final File filesDir) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(USER_RECORDING_FILENAME_PREFIX).append('-');
-        sb.append(mUUIDString).append('-');
-        sb.append(TIMESTAMP_DATEFORMAT.format(new Date()));
-        sb.append(USER_RECORDING_FILENAME_SUFFIX);
-        return new File(filesDir, sb.toString());
+        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, enableLogging);
     }
 
     private void checkForEmptyEditor() {
@@ -469,14 +410,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             // Log.w(TAG, "not in usability mode; not logging");
             return;
         }
-        if (mFilesDir == null || !mFilesDir.exists()) {
-            Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
-            return;
-        }
         if (mMainLogBuffer == null) {
-            mMainResearchLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
+            mMainResearchLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+                    System.currentTimeMillis()), mLatinIME);
             final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
-            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore) {
+            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
+                    mSuggest) {
                 @Override
                 protected void publish(final ArrayList<LogUnit> logUnits,
                         boolean canIncludePrivateData) {
@@ -499,7 +438,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
             };
-            mMainLogBuffer.setSuggest(mSuggest);
         }
         if (mFeedbackLogBuffer == null) {
             resetFeedbackLogging();
@@ -507,7 +445,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void resetFeedbackLogging() {
-        mFeedbackLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
+        mFeedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+                System.currentTimeMillis()), mLatinIME);
         mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
     }
 
@@ -524,42 +463,29 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             commitCurrentLogUnit();
             mMainLogBuffer.setIsStopping();
             mMainLogBuffer.shiftAndPublishAll();
-            mMainResearchLog.close(null /* callback */);
+            mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
             mMainLogBuffer = null;
         }
         if (mFeedbackLogBuffer != null) {
-            mFeedbackLog.close(null /* callback */);
+            mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
             mFeedbackLogBuffer = null;
         }
     }
 
-    public boolean abort() {
+    public void abort() {
         if (DEBUG) {
             Log.d(TAG, "abort called");
         }
-        boolean didAbortMainLog = false;
         if (mMainLogBuffer != null) {
             mMainLogBuffer.clear();
-            try {
-                didAbortMainLog = mMainResearchLog.blockingAbort();
-            } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
-            }
+            mMainResearchLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
             mMainLogBuffer = null;
         }
-        boolean didAbortFeedbackLog = false;
         if (mFeedbackLogBuffer != null) {
             mFeedbackLogBuffer.clear();
-            try {
-                didAbortFeedbackLog = mFeedbackLog.blockingAbort();
-            } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
-            }
+            mFeedbackLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
             mFeedbackLogBuffer = null;
         }
-        return didAbortMainLog && didAbortFeedbackLog;
     }
 
     private void restart() {
@@ -576,7 +502,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (key == null || prefs == null) {
             return;
         }
@@ -598,7 +524,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         presentFeedbackDialog(latinIME);
     }
 
-    public void presentFeedbackDialog(LatinIME latinIME) {
+    public void presentFeedbackDialog(final LatinIME latinIME) {
         if (isMakingUserRecording()) {
             saveRecording();
         }
@@ -642,9 +568,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void startRecordingInternal() {
         if (mUserRecordingLog != null) {
-            mUserRecordingLog.abort();
+            mUserRecordingLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
         }
-        mUserRecordingFile = createUserRecordingFile(mFilesDir);
+        mUserRecordingFile = mResearchLogDirectory.getUserRecordingFilePath(
+                System.currentTimeMillis());
         mUserRecordingLog = new ResearchLog(mUserRecordingFile, mLatinIME);
         mUserRecordingLogBuffer = new LogBuffer();
         resetRecordingTimer();
@@ -680,7 +607,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void cancelRecording() {
         if (mUserRecordingLog != null) {
-            mUserRecordingLog.abort();
+            mUserRecordingLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
         }
         mUserRecordingLog = null;
         mUserRecordingLogBuffer = null;
@@ -692,7 +619,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private void saveRecording() {
         commitCurrentLogUnit();
         publishLogBuffer(mUserRecordingLogBuffer, mUserRecordingLog, true);
-        mUserRecordingLog.close(null);
+        mUserRecordingLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
         mUserRecordingLog = null;
         mUserRecordingLogBuffer = null;
 
@@ -804,12 +731,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 feedbackContents, accountName, recording);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
-        mSavedFeedbackLog.close(new Runnable() {
-            @Override
-            public void run() {
-                uploadNow();
-            }
-        });
+        mSavedFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
+        uploadNow();
 
         if (isIncludingRecording && DEBUG_REPLAY_AFTER_FEEDBACK) {
             final Handler handler = new Handler();
@@ -830,9 +753,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mPrefs == null) {
                 return;
             }
-            final Editor e = mPrefs.edit();
-            e.putString(PREF_RESEARCH_SAVED_CHANNEL, channelName);
-            e.apply();
+            mPrefs.edit().putString(PREF_RESEARCH_SAVED_CHANNEL, channelName).apply();
         }
     }
 
@@ -847,10 +768,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInFeedbackDialog = false;
     }
 
-    public void initSuggest(Suggest suggest) {
+    public void initSuggest(final Suggest suggest) {
         mSuggest = suggest;
+        // MainLogBuffer has out-of-date Suggest object.  Need to close it down and create a new
+        // one.
         if (mMainLogBuffer != null) {
-            mMainLogBuffer.setSuggest(mSuggest);
+            stop();
+            start();
         }
     }
 
@@ -1139,18 +1063,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private static String getUUID(final SharedPreferences prefs) {
-        String uuidString = prefs.getString(PREF_RESEARCH_LOGGER_UUID_STRING, null);
-        if (null == uuidString) {
-            UUID uuid = UUID.randomUUID();
-            uuidString = uuid.toString();
-            Editor editor = prefs.edit();
-            editor.putString(PREF_RESEARCH_LOGGER_UUID_STRING, uuidString);
-            editor.apply();
-        }
-        return uuidString;
-    }
-
     private String scrubWord(String word) {
         final Dictionary dictionary = getDictionary();
         if (dictionary == null) {
@@ -1197,9 +1109,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         0);
                 final Integer versionCode = packageInfo.versionCode;
                 final String versionName = packageInfo.versionName;
+                final String uuid = ResearchSettings.readResearchLoggerUuid(researchLogger.mPrefs);
                 researchLogger.enqueueEvent(LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL,
-                        researchLogger.mUUIDString, editorInfo.packageName,
-                        Integer.toHexString(editorInfo.inputType),
+                        uuid, editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
                         OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
