@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Kõnesisend on keelatud"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Sisestusmeetodite seadistamine"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Sisestuskeeled"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Saatke tagasisidet"</string>
     <string name="select_language" msgid="3693815588777926848">"Sisestuskeeled"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Salvestamiseks puudutage uuesti"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sõnastik saadaval"</string>
@@ -170,36 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Vaikeväärtus"</string>
     <string name="language_settings" msgid="1671153053201809031">"Keeled ja sisestamine"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Valige sisestusmeetod"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Sõnastikupakkuja"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Sõnastikupakkuja"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Sõnaraamatuteenus"</string>
-    <string name="download_description" msgid="3274861514695032954">"Sõnastiku värskendamisteave"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Pistiksõnastikud"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Sõnastik on saadaval"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Sõnastike seaded"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Kasutajasõnastikud"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Kasutajasõnastik"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Sõnastik on saadaval"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Praegu allalaadimisel"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Installitud"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Installitud, keelatud"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Tõrge sõnast. ühend."</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Sõnastikke pole"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Värskenda"</string>
-    <string name="last_update" msgid="3101549719827600346">"Viimati värskendatud"</string>
-    <string name="message_updating" msgid="820186276704134720">"Värskenduste otsimine"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Laadimine ..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Põhisõnastik"</string>
-    <string name="cancel" msgid="5586531736609183304">"Tühista"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Installi"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Tühista allalaadimine"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Keela"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Luba"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Kustuta"</string>
-    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Mobiilseadmes valitud keelele on saadaval sõnastik.&lt;br/&gt; Teksti sisestamiseks  soovitame &lt;b&gt;alla laadida&lt;/b&gt; sõnastiku <xliff:g id="LANGUAGE">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; 3G kaudu allalaadimisele võib kuluda minut või paar. Kehtida võivad tasud, kui te ei kasuta &lt;b&gt;piiramatut andmepaketti&lt;/b&gt;.&lt;br/&gt; Kui te ei tea, millist andmepaketti kasutate, soovitame allalaadimise automaatseks käivitamiseks leida WiFi-ühenduse.&lt;br/&gt; &lt;br/&gt; Nõuanne: sõnastikke saate alla laadida ja eemaldada, tehes valiku &lt;b&gt;Keele &amp; sisend&lt;/b&gt; mobiilseadme menüüs &lt;b&gt;Seaded&lt;/b&gt;."</string>
-    <string name="download_over_metered" msgid="4024013764937850061">"Laadi kohe alla (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Laadi alla WiFi kaudu"</string>
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Sõnastik on <xliff:g id="LANGUAGE">%1$s</xliff:g> keele jaoks saadaval"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Vajutage ülevaatamiseks ja allalaadimiseks"</string>
+    <string name="app_name" msgid="6320102637491234792">"Sõnastikupakkuja"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Sõnastikupakkuja"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Sõnastikuteenus"</string>
+    <string name="download_description" msgid="6014835283119198591">"Sõnastiku värskendamisteave"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Pistiksõnastikud"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Sõnastik on saadaval"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Sõnastike seaded"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Kasutaja sõnastikud"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kasutaja sõnastik"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Sõnastik on saadaval"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Praegu allalaadimisel"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Installitud"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Installitud, keelatud"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Probleem sõnastikuga ühendumisel"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Sõnastikke pole"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Värskenda"</string>
+    <string name="last_update" msgid="730467549913588780">"Viimati värskendatud"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Värskenduste otsimine"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Laadimine ..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Peamine sõnastik"</string>
+    <string name="cancel" msgid="6830980399865683324">"Tühista"</string>
+    <string name="install_dict" msgid="180852772562189365">"Installi"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Tühista"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Kustuta"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Mobiilseadmes valitud keelele on saadaval sõnastik.&lt;br/&gt; Teksti mugavamaks sisestamiseks soovitame &lt;b&gt;alla laadida&lt;/b&gt; <xliff:g id="LANGUAGE">%1$s</xliff:g> keele sõnastiku.&lt;br/&gt; &lt;br/&gt; 3G kaudu allalaadimisele võib kuluda minut või paar. Kehtida võivad tasud, kui te ei kasuta &lt;b&gt;piiramatut andmepaketti&lt;/b&gt;.&lt;br/&gt; Kui te ei tea, millist andmepaketti kasutate, soovitame allalaadimise automaatseks käivitamiseks leida WiFi-ühenduse.&lt;br/&gt; &lt;br/&gt; Nõuanne: sõnastikke saate alla laadida ja eemaldada, tehes valiku &lt;b&gt;Keel ja sisestamine&lt;/b&gt; mobiilseadme menüüs &lt;b&gt;Seaded&lt;/b&gt;."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Laadi kohe alla (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Laadi alla WiFi kaudu"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Sõnastik on <xliff:g id="LANGUAGE">%1$s</xliff:g> keele jaoks saadaval"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Vajutage ülevaatamiseks ja allalaadimiseks"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Allalaadimine: <xliff:g id="LANGUAGE">%1$s</xliff:g> keele soovitused on varsti saadaval."</string>
 </resources>

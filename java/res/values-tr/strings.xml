@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle grş devre dışı"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Giriş yöntemlerini yapılandır"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Giriş dilleri"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Geri bildirim gönder"</string>
     <string name="select_language" msgid="3693815588777926848">"Giriş dilleri"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Kaydetmek için tekrar dokunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Varsayılan"</string>
     <string name="language_settings" msgid="1671153053201809031">"Dil ve giriş"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Giriş yöntemini seçin"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Sözlük Sağlayıcı"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Sözlük Sağlayıcı"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Sözlük Hizmeti"</string>
-    <string name="download_description" msgid="3274861514695032954">"Sözlük güncelleme bilgileri"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Ekli sözlükler"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Kullanılabilecek sözlük var"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Sözlükler için ayarlar"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Kullanıcı sözlükleri"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Kullanıcı sözlüğü"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Sözlük kullanılabilir"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Şu anda indiriliyor"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Yüklendi"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Yüklendi, devre dışı"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Sözlük hizmetine bağlantı yok"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Kullanılabilir sözlük yok"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Yenile"</string>
-    <string name="last_update" msgid="3101549719827600346">"Son güncelleme tarihi"</string>
-    <string name="message_updating" msgid="820186276704134720">"Güncellemeler denetleniyor..."</string>
-    <string name="message_loading" msgid="8611339149825047446">"Yükleniyor..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Ana sözlük"</string>
-    <string name="cancel" msgid="5586531736609183304">"İptal"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Yükle"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"İndirmeyi iptal et"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Devre dışı bırak"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Etkinleştir"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Sil"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"<xliff:g id="LANGUAGE">%1$s</xliff:g> için kullanılabilecek bir sözlük var"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"İncelemek ve indirmek için tıklayın"</string>
+    <string name="app_name" msgid="6320102637491234792">"Sözlük Sağlayıcı"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Sözlük Sağlayıcı"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Sözlük Hizmeti"</string>
+    <string name="download_description" msgid="6014835283119198591">"Sözlük güncelleme bilgileri"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Ek sözlükler"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Sözlük mevcut"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Sözlükler için ayarlar"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Kullanıcı sözlükleri"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kullanıcı sözlüğü"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Sözlük mevcut"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Şu anda indiriliyor"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Yüklendi"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Yüklendi, devre dışı bırakıldı"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Sözlük hizmetine bağlantı sorunu"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Kullanılabilir sözlük yok"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Yenile"</string>
+    <string name="last_update" msgid="730467549913588780">"Son güncelleme tarihi"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Güncellemeler denetleniyor"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Yükleniyor..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Ana sözlük"</string>
+    <string name="cancel" msgid="6830980399865683324">"İptal"</string>
+    <string name="install_dict" msgid="180852772562189365">"Yükle"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"İptal"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Sil"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Mobil cihazınızda seçili dile ait kullanılabilir bir sözlük mevcut.&lt;br/&gt; Daha iyi yazabilmek için bu <xliff:g id="LANGUAGE">%1$s</xliff:g> sözlüğü &lt;b&gt;indirmenizi&lt;/b&gt; öneririz.&lt;br/&gt; &lt;br/&gt; İndirme işlemi 3G üzerinden bir veya iki dakika sürebilir. &lt;b&gt;Sınırsız veri planınız&lt;/b&gt; yoksa ücret alınabilir.&lt;br/&gt; Ne tür bir veri planına sahip olduğunuzdan emin değilseniz, otomatik olarak indirmeye başlamak için bir Kablosuz bağlantı bulmanızı öneririz.&lt;br/&gt; &lt;br/&gt; İpucu: Sözlükleri, mobil cihazınızın &lt;b&gt;Ayarlar&lt;/b&gt; menüsünde &lt;b&gt;Dil ve giriş&lt;/b&gt; seçeneğine giderek indirebilir ve silebilirsiniz."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Hemen indir (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Kablosuz üzerinden indir"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g> için kullanılabilecek bir sözlük mevcut"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"İncelemek ve indirmek için basın"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"<xliff:g id="LANGUAGE">%1$s</xliff:g> için önerilerin indirilmesine kısa süre içinde başlanacak."</string>
 </resources>

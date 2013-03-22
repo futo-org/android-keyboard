@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Ääniohjaus on pois käytöstä"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Syöttökielet"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Lähetä palautetta"</string>
     <string name="select_language" msgid="3693815588777926848">"Syöttökielet"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tallenna koskettamalla uudelleen"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sanakirja saatavilla"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Oletusarvot"</string>
     <string name="language_settings" msgid="1671153053201809031">"Kieli ja syöttötapa"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Valitse syöttötapa"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Sanakirjan tarjoaja"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Sanakirjan tarjoaja"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Sanakirjapalvelu"</string>
-    <string name="download_description" msgid="3274861514695032954">"Sanakirjan päivitystiedot"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Sanakirjalisäosat"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Sanakirja saatavilla"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Sanakirjojen asetukset"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Käyttäjän sanakirjat"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Käyttäjän sanakirja"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Sanakirja saatavilla"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Ladataan parhaillaan"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Asennettu"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Asennettu, poistettu käytöstä"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Ongelma yhd. sanak.palveluun"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Ei sanakirj. saatav."</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Päivitä"</string>
-    <string name="last_update" msgid="3101549719827600346">"Viimeksi päivitetty"</string>
-    <string name="message_updating" msgid="820186276704134720">"Tarkistetaan päivityksiä"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Ladataan..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Pääsanakirja"</string>
-    <string name="cancel" msgid="5586531736609183304">"Peruuta"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Asenna"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Peruuta lataus"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Poista käytöstä"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Ota käyttöön"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Poista"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Kielen <xliff:g id="LANGUAGE">%1$s</xliff:g> sanakirja on saatavilla"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Paina tätä, jos haluat tarkastella kohdetta tai ladata sen"</string>
+    <string name="app_name" msgid="6320102637491234792">"Sanakirjan tarjoaja"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Sanakirjan tarjoaja"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Sanakirjapalvelu"</string>
+    <string name="download_description" msgid="6014835283119198591">"Sanakirjan päivitystiedot"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Sanakirjalisäosat"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Sanakirja saatavilla"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Sanakirjojen asetukset"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Käyttäjän sanakirjat"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Käyttäjän sanakirja"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Sanakirja saatavilla"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Ladataan parhaillaan"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Asennettu"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Asennettu, poistettu käytöstä"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Ongelma yhdistettässä sanakirjapalveluun"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Ei sanakirjoja saatavilla"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Päivitä"</string>
+    <string name="last_update" msgid="730467549913588780">"Päivitetty viimeksi"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Tarkistetaan päivityksiä"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Ladataan…"</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Pääsanakirja"</string>
+    <string name="cancel" msgid="6830980399865683324">"Peruuta"</string>
+    <string name="install_dict" msgid="180852772562189365">"Asenna"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Peruuta"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Poista"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Laitteesi käyttökielelle on saatavilla sanakirja.&lt;br/&gt; Suosittelemme <xliff:g id="LANGUAGE">%1$s</xliff:g>-sanakirjan &lt;b&gt;lataamista&lt;/b&gt;, sillä se helpottaa laitteella kirjoittamista.&lt;br/&gt; &lt;br/&gt; Lataus kestää useimmiten muutaman minuutin 3G-yhteydellä. Latauksesta saatetaan periä maksu, ellei käytössäsi ole &lt;b&gt;rajoittamatonta tiedonsiirtopakettia&lt;/b&gt;.&lt;br/&gt; Jos et ole varma tiedonsiirtosopimuksesi tyypistä, etsi käyttöösi wifi-yhteys, niin lataus alkaa automaattisesti.&lt;br/&gt; &lt;br/&gt; Vinkki: voit ladata ja poistaa sanakirjoja mobiililaitteesi &lt;b&gt;Asetukset&lt;/b&gt;-valikon &lt;b&gt;Kieli ja syöttötapa&lt;/b&gt; -osiossa."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Lataa nyt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mt)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa wifi-yhteydellä"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Kielen <xliff:g id="LANGUAGE">%1$s</xliff:g> sanakirja on saatavilla"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta tai ladata sen"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Ladataan: pian ehdotuksia näytetään kielellä <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
 </resources>
