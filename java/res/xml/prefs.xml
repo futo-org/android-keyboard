@@ -17,7 +17,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    android:title="@string/english_ime_settings"
     android:key="english_ime_settings">
     <PreferenceCategory
         android:title="@string/general_category"
