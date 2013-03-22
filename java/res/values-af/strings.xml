@@ -20,10 +20,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-sleutelbord (AOSP)"</string>
+    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
+    <skip />
+    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
+    <skip />
     <string name="english_ime_input_options" msgid="3909945612939668554">"Invoeropsies"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Navorsing-loglêerbevele"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-speltoetser (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Soek kontakname op"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Speltoetser gebruik inskrywings uit jou kontaklys"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibreer met sleuteldruk"</string>
@@ -128,6 +134,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Steminvoer is gedeaktiveer"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Stel invoermetodes op"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Invoertale"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Stuur terugvoer"</string>
     <string name="select_language" msgid="3693815588777926848">"Invoertale"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Raak weer om te stoor"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Woordeboek beskikbaar"</string>
@@ -170,36 +177,34 @@
     <string name="button_default" msgid="3988017840431881491">"Verstek"</string>
     <string name="language_settings" msgid="1671153053201809031">"Taal en invoer"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Kies invoermetode"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Woordeboekverskaffer"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Woordeboekverskaffer"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Woordeboek-diens"</string>
-    <string name="download_description" msgid="3274861514695032954">"Woordeboek se opdateerinligting"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Addisionele woordeboeke"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Woordeboek beskikbaar"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Instellings vir woordeboeke"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Gebruikerwoordeboeke"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Gebruikerwoordeboek"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Woordeboek beskikbaar"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Laai tans af"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Geïnstalleer"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Geïnstalleer, gedeaktiveer"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Kan nie aan woordeboekdiens koppel nie"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Geen woordeboeke beskikbaar nie"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Herlaai"</string>
-    <string name="last_update" msgid="3101549719827600346">"Laas opgedateer"</string>
-    <string name="message_updating" msgid="820186276704134720">"Kontroleer vir opdaterings"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Laai tans..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Hoofwoordeboek"</string>
-    <string name="cancel" msgid="5586531736609183304">"Kanselleer"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Installeer"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Kanselleer aflaaisel"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Deaktiveer"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Aktiveer"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Vee uit"</string>
-    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Die gekose taal op jou mobiele toestel het \'n beskikbare woordeboek.&lt;br/&gt; Ons beveel aan dat die <xliff:g id="LANGUAGE">%1$s</xliff:g>-woordeboek &lt;b&gt;afgelaai&lt;/b&gt; word om jou tikervaring \'n beter een te maak.&lt;br/&gt; &lt;br/&gt; Dit kan \'n minuut of twee neem om oor 3G af te laai. Heffings mag geld as jy nie \'n &lt;b&gt;onbeperkte dataplan&lt;/b&gt;.&lt;br/&gt; het nie As jy onseker oor jou dataplan is, beveel ons aan dat jy \'n WiFi-verbinding soek om outomaties te begin aflaai.&lt;br/&gt; &lt;br/&gt; Wenk: Jy kan woordeboeke aflaai en verwyder deur te gaan na &lt;b&gt;Taal en invoer&lt;/b&gt; in die &lt;b&gt;Instellings&lt;/b&gt;-kieslys van jou mobiele toestel."</string>
-    <string name="download_over_metered" msgid="4024013764937850061">"Laai nou af (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Laai oor Wi-Fi af"</string>
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"\'n Woordeboek is vir <xliff:g id="LANGUAGE">%1$s</xliff:g> beskikbaar"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Druk om te hersien en af ​​te laai"</string>
+    <string name="app_name" msgid="6320102637491234792">"Woordeboekverskaffer"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Woordeboekverskaffer"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Woordeboek-diens"</string>
+    <string name="download_description" msgid="6014835283119198591">"Woordeboek se opdateerinligting"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Voeg woordeboeke by"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Woordeboek beskikbaar"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Instellings vir woordeboeke"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Gebruikerwoordeboeke"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Gebruikerwoordeboek"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Woordeboek beskikbaar"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Laai tans af"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Geïnstalleer"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Geïnstalleer, gedeaktiveer"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Kan nie aan woordeboekdiens koppel nie"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Geen woordeboeke beskikbaar nie"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Verfris"</string>
+    <string name="last_update" msgid="730467549913588780">"Laas opgedateer"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Kontroleer vir opdaterings"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Laai tans…"</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Hoofwoordeboek"</string>
+    <string name="cancel" msgid="6830980399865683324">"Kanselleer"</string>
+    <string name="install_dict" msgid="180852772562189365">"Installeer"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Kanselleer"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Vee uit"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Die gekose taal op jou mobiele toestel het \'n beskikbare woordeboek.&lt;br/&gt; Ons beveel aan dat die <xliff:g id="LANGUAGE">%1$s</xliff:g>-woordeboek &lt;b&gt;afgelaai&lt;/b&gt; word om jou tikervaring te verbeter.&lt;br/&gt; &lt;br/&gt; Dit kan \'n minuut of twee neem om oor 3G af te laai. Heffings kan dalk geld as jy nie \'n &lt;b&gt;onbeperkte dataplan&lt;/b&gt; het nie.&lt;br/&gt; As jy onseker oor jou dataplan is, beveel ons aan dat jy \'n Wi-Fi-verbinding soek om outomaties te begin aflaai.&lt;br/&gt; &lt;br/&gt; Wenk: Jy kan woordeboeke aflaai en verwyder deur te gaan na &lt;b&gt;Taal en invoer&lt;/b&gt; in die &lt;b&gt;Instellings&lt;/b&gt;-kieslys van jou mobiele toestel."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Laai nou af (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Laai oor Wi-Fi af"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"\'n Woordeboek is vir <xliff:g id="LANGUAGE">%1$s</xliff:g> beskikbaar"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Druk om te hersien en af te laai"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Laai tans af: voorstelle vir <xliff:g id="LANGUAGE">%1$s</xliff:g> sal binnekort gereed wees."</string>
 </resources>
