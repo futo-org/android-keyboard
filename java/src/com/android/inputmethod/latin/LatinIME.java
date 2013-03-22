@@ -2526,7 +2526,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final CharSequence[] items = new CharSequence[] {
                 // TODO: Should use new string "Select active input modes".
                 getString(R.string.language_selection_title),
-                getString(R.string.english_ime_settings),
+                getString(Utils.getAcitivityTitleResId(this, SettingsActivity.class)),
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override

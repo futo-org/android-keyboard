@@ -69,6 +69,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
         setSubtypeEnablerTitle(R.string.select_language);
         addPreferencesFromResource(R.xml.prefs);
+        final PreferenceScreen preferenceScreen = getPreferenceScreen();
+        if (preferenceScreen != null) {
+            preferenceScreen.setTitle(
+                    Utils.getAcitivityTitleResId(getActivity(), SettingsActivity.class));
+        }
 
         final Resources res = getResources();
         final Context context = getActivity();

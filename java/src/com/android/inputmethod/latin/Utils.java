@@ -16,8 +16,13 @@
 
 package com.android.inputmethod.latin;
 
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,6 +50,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public final class Utils {
+    private static final String TAG = Utils.class.getSimpleName();
+
     private Utils() {
         // This utility class is not publicly instantiable.
     }
@@ -452,5 +459,18 @@ public final class Utils {
         final String info = wordInfo.getDebugString();
         if (TextUtils.isEmpty(info)) return null;
         return info;
+    }
+
+    public static int getAcitivityTitleResId(Context context, Class<? extends Activity> cls) {
+        final ComponentName cn = new ComponentName(context, cls);
+        try {
+            final ActivityInfo ai = context.getPackageManager().getActivityInfo(cn, 0);
+            if (ai != null) {
+                return ai.labelRes;
+            }
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Failed to get settings activity title res id.", e);
+        }
+        return 0;
     }
 }

@@ -18,8 +18,10 @@ package com.android.inputmethod.latin.spellcheck;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 
 /**
  * Preference screen.
@@ -35,5 +37,10 @@ public final class SpellCheckerSettingsFragment extends PreferenceFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         addPreferencesFromResource(R.xml.spell_checker_settings);
+        final PreferenceScreen preferenceScreen = getPreferenceScreen();
+        if (preferenceScreen != null) {
+            preferenceScreen.setTitle(Utils.getAcitivityTitleResId(
+                    getActivity(), SpellCheckerSettingsActivity.class));
+        }
     }
 }
