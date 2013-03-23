@@ -20,10 +20,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Tastatură Android (AOSP)"</string>
+    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
+    <skip />
+    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
+    <skip />
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opţiuni de introducere text"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Comenzi jurnal cercetare"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Verificator ortografic Android (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Verificare nume în agendă"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Verificatorul ortografic utilizează intrări din lista de contacte"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
@@ -128,6 +134,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Intr. vocală dezact."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Trimiteți feedback"</string>
     <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
@@ -170,39 +177,34 @@
     <string name="button_default" msgid="3988017840431881491">"Prestabilit"</string>
     <string name="language_settings" msgid="1671153053201809031">"Limbă și introducere de text"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Alegeți metoda de introducere de text"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Furnizorul dicţionarului"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Furnizorul dicţionarului"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Serviciul Dicţionar"</string>
-    <string name="download_description" msgid="3274861514695032954">"Informaţii privind actualizarea dicţionarului"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Dicţionare suplimentare"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Dicţionar disponibil"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Setări pentru dicţionare"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Dicţionarele utilizatorului"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Dicţionarul utilizatorului"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Dicţionar disponibil"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Se descarcă acum"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Instalat"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Instalat, dezactivat"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Nu se conect. dicţ."</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Niciun dicţionar"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Actualizaţi"</string>
-    <string name="last_update" msgid="3101549719827600346">"Data ultimei modificări"</string>
-    <string name="message_updating" msgid="820186276704134720">"Se verifică existenţa actualizărilor"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Se încarcă..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Dicţionar principal"</string>
-    <string name="cancel" msgid="5586531736609183304">"Anulaţi"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Instalaţi"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Anulaţi descărcarea"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Dezactivaţi"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Activaţi"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Ştergeţi"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Este disponibil un dicţionar pentru <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Apăsaţi pentru a examina şi pentru a descărca"</string>
+    <string name="app_name" msgid="6320102637491234792">"Furnizor dicționar"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Furnizor dicționar"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Serviciu dicționar"</string>
+    <string name="download_description" msgid="6014835283119198591">"Informații privind actualizarea dicționarului"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Dicționare suplimentare"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Dicționar disponibil"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Setări pentru dicționare"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Dicționarele utilizatorului"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Dicționarul utilizatorului"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Dicționar disponibil"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Se descarcă acum"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Instalat"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Instalat, dezactivat"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Eroare conectare la serviciu dicționar"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Niciun dicționar"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Actualizați"</string>
+    <string name="last_update" msgid="730467549913588780">"Data ultimei modificări"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Se verifică existența actualizărilor"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Se încarcă..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Dicționar principal"</string>
+    <string name="cancel" msgid="6830980399865683324">"Anulaţi"</string>
+    <string name="install_dict" msgid="180852772562189365">"Instalați"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Anulați"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Ștergeți"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Limba selectată pe dispozitivul mobil are un dicționar disponibil.&lt;br/&gt; Vă recomandăm să &lt;b&gt;descărcați&lt;/b&gt; dicționarul de <xliff:g id="LANGUAGE">%1$s</xliff:g> pentru a vă îmbunătăți experiența la introducerea textului.&lt;br/&gt; &lt;br/&gt; Descărcarea prin 3G poate dura un minut sau două. Se pot aplica taxe dacă nu aveți un &lt;b&gt;plan de date nelimitat&lt;/b&gt;.&lt;br/&gt; Dacă nu știți sigur ce plan de date aveți, găsiți o conexiune Wi-Fi și descărcați automat.&lt;br/&gt; &lt;br/&gt; Sfat: puteți să descărcați și să eliminați dicționare accesând &lt;b&gt;Limbă și introducere de text&lt;/b&gt; din meniul &lt;b&gt;Setări&lt;/b&gt;, pe dispozitivul mobil."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Descărcați acum (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descărcați prin Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Este disponibil un dicționar pentru <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Apăsați pentru examinare și descărcare"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Se descarcă: sugestiile pentru <xliff:g id="LANGUAGE">%1$s</xliff:g> vor fi gata în curând."</string>
 </resources>
