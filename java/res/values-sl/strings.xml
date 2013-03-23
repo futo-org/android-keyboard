@@ -20,10 +20,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Tipkovnica Android (AOSP)"</string>
+    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
+    <skip />
+    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
+    <skip />
     <string name="english_ime_input_options" msgid="3909945612939668554">"Možnosti vnosa"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Ukazi za dnevnik raziskav"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Črkovalnik za Android (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Iskanje imen stikov"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Črkovalnik uporablja vnose s seznama stikov"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibriranje ob pritisku tipke"</string>
@@ -128,6 +134,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Glas. vnos je onem."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Nastavitev načinov vnosa"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Jeziki vnosa"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Pošljite povratne informacije"</string>
     <string name="select_language" msgid="3693815588777926848">"Jeziki vnosa"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Dotaknite se še enkrat, da shranite"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Slovar je na voljo"</string>
@@ -170,36 +177,34 @@
     <string name="button_default" msgid="3988017840431881491">"Privzeto"</string>
     <string name="language_settings" msgid="1671153053201809031">"Jezik in vnos"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Izbira načina vnosa"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Slovar"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Storitev slovarja"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Slovar"</string>
-    <string name="download_description" msgid="3274861514695032954">"Podatki o posodobitvi slovarja"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Dodatni slovarji"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Slovar je na voljo"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Nastavitve za slovarje"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Uporabniški slovar"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Uporabniški slovar"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Slovar je na voljo"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Trenutno se prenaša"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Nameščeno"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Nameščen, onemogočen"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Težava s povezavo"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Ni slovarjev"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Osveži"</string>
-    <string name="last_update" msgid="3101549719827600346">"Nazadnje posodobljeno"</string>
-    <string name="message_updating" msgid="820186276704134720">"Preverjanje, ali so na voljo posodobitve"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Nalaganje ..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Glavni slovar"</string>
-    <string name="cancel" msgid="5586531736609183304">"Prekliči"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Namesti"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Prekliči prenos"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Onemogoči"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Omogoči"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Izbriši"</string>
-    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Za izbran jezik v mob. napravi je na voljo slovar.&lt;br/&gt; Za izboljšano izkušnjo tipkanja priporočamo, da &lt;b&gt;prenesete&lt;/b&gt; slovar za ta jezik: <xliff:g id="LANGUAGE">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; Prenos prek povezave UMTS lahko traja minuto ali dve. Če nimate &lt;b&gt;neomejen. prenosa podatkov&lt;/b&gt;.&lt;br/&gt;, ga boste morda morali plačati. Če ne veste, kateri pod. paket imate, poiščite omrežje Wi-Fi, da prenos začnete samodejno.&lt;br/&gt; &lt;br/&gt; Nasvet: Slovarje lahko prenesete in odstranite tako, da v meniju &lt;b&gt;Nastavitve&lt;/b&gt; v napravi odprete &lt;b&gt;Jezik in vnos&lt;/b&gt;."</string>
-    <string name="download_over_metered" msgid="4024013764937850061">"Prenesi zdaj (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Prenos prek povezave Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Slovar je na voljo za jezik <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Pritisnite za pregled in prenos"</string>
+    <string name="app_name" msgid="6320102637491234792">"Ponudnik slovarja"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Ponudnik slovarja"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Storitev slovarja"</string>
+    <string name="download_description" msgid="6014835283119198591">"Podatki o posodobitvi slovarja"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Dodatni slovarji"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Slovar je na voljo"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Nastavitve za slovarje"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Uporabniški slovarji"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Uporabniški slovar"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Slovar je na voljo"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Trenutno se prenaša"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Nameščen"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Nameščen, onemogočen"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Težava s povezavo"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Ni slovarjev"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Osveži"</string>
+    <string name="last_update" msgid="730467549913588780">"Nazadnje posodobljeno"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Iskanje posodobitev"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Nalaganje ..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Glavni slovar"</string>
+    <string name="cancel" msgid="6830980399865683324">"Prekliči"</string>
+    <string name="install_dict" msgid="180852772562189365">"Namesti"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Prekliči"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Izbriši"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Za izbrani jezik v mobilni napravi je na voljo slovar.&lt;br/&gt; Za izboljšano izkušnjo tipkanja priporočamo, da &lt;b&gt;prenesete&lt;/b&gt; slovar za ta jezik: <xliff:g id="LANGUAGE">%1$s</xliff:g>.&lt;br/&gt; &lt;br/&gt; Prenos prek povezave 3G lahko traja minuto ali dve. Če nimate &lt;b&gt;neomejenega podatkovnega paketa&lt;/b&gt;.&lt;br/&gt;, boste morda morali plačati prenos podatkov. Če ne veste, kateri podatkovni paket imate, priporočamo, da poiščete omrežje Wi-Fi in prenos začnete samodejno.&lt;br/&gt; &lt;br/&gt; Nasvet: Slovarje lahko prenesete in odstranite tako, da v meniju &lt;b&gt;Nastavitve&lt;/b&gt; v mobilni napravi odprete &lt;b&gt;Jezik in vnos&lt;/b&gt;."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Prenesi zdaj (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Prenos prek povezave Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Slovar je na voljo za jezik <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Pritisnite za pregled in prenos"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Predlogi za prenos za jezik <xliff:g id="LANGUAGE">%1$s</xliff:g> bodo kmalu pripravljeni."</string>
 </resources>

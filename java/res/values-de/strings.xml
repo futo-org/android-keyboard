@@ -20,10 +20,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-Tastatur (AOSP)"</string>
+    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
+    <skip />
+    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
+    <skip />
     <string name="english_ime_input_options" msgid="3909945612939668554">"Eingabeoptionen"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Forschungsprotokollbefehle"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-Rechtschreibprüfung (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktnamen prüfen"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Rechtschreibprüfung kann Einträge aus meiner Kontaktliste verwenden"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Bei Tastendruck vibrieren"</string>
@@ -128,6 +134,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Spracheingabe deaktiviert"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Eingabemethoden konfigurieren"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Eingabesprachen"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Feedback geben"</string>
     <string name="select_language" msgid="3693815588777926848">"Eingabesprachen"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Zum Speichern erneut berühren"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Wörterbuch verfügbar"</string>
@@ -170,36 +177,34 @@
     <string name="button_default" msgid="3988017840431881491">"Standard"</string>
     <string name="language_settings" msgid="1671153053201809031">"Sprache &amp; Eingabe"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Eingabemethode wählen"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Wörterbuchbereitstellung"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Wörterbuchbereitstellung"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Wörterbuch"</string>
-    <string name="download_description" msgid="3274861514695032954">"Update-Informationen für Wörterbuch"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Erweiterte Wörterbücher"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Wörterbuch verfügbar"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Einstellungen für Wörterbücher"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Meine Wörterbücher"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Mein Wörterbuch"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Wörterbuch verfügbar"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Aktuelle Downloads"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Installiert"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Installiert, deaktiviert"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Kein Wörterbuchdienst"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Keine Wörterbücher"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Aktualisieren"</string>
-    <string name="last_update" msgid="3101549719827600346">"Zuletzt aktualisiert"</string>
-    <string name="message_updating" msgid="820186276704134720">"Suche nach Updates..."</string>
-    <string name="message_loading" msgid="8611339149825047446">"Wird geladen..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Allgemeines Wörterbuch"</string>
-    <string name="cancel" msgid="5586531736609183304">"Abbrechen"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Installieren"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Download abbrechen"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Deaktivieren"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Aktivieren"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Löschen"</string>
-    <string name="should_download_over_metered_prompt" msgid="4965264849057656521">"Für die auf dem Mobilgerät ausgewählte Sprache ist ein Wörterbuch verfügbar.&lt;br/&gt; &lt;b&gt;Laden Sie das <xliff:g id="LANGUAGE">%1$s</xliff:g>-Wörterbuch herunter&lt;/b&gt; und verbessern Sie Ihre Eingabeerfahrung.&lt;br/&gt; &lt;br/&gt;Der Download über 3G kann ein bis zwei Minuten dauern. Falls Sie keine &lt;b&gt;Datenflatrate&lt;/b&gt; haben, fallen eventuell Gebühren an.&lt;br/&gt; Sollten Sie sich nicht sicher sein, welchen Datentarif Sie haben, suchen Sie eine WLAN-Verbindung, um den Download automatisch zu starten.&lt;br/&gt; &lt;br/&gt;Tipp: Im Menü &lt;b&gt;Einstellungen&lt;/b&gt; Ihres Mobilgeräts können Sie unter &lt;b&gt;Sprache &amp; Eingabe&lt;/b&gt; Wörterbücher herunterladen und entfernen."</string>
-    <string name="download_over_metered" msgid="4024013764937850061">"Jetzt herunterladen (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
-    <string name="do_not_download_over_metered" msgid="6963770885033765378">"Über WLAN herunterladen"</string>
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Es ist ein Wörterbuch für <xliff:g id="LANGUAGE">%1$s</xliff:g> verfügbar."</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Zum Lesen und Herunterladen drücken"</string>
+    <string name="app_name" msgid="6320102637491234792">"Wörterbuchbereitstellung"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Wörterbuchbereitstellung"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Wörterbuch"</string>
+    <string name="download_description" msgid="6014835283119198591">"Update-Informationen für Wörterbuch"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Erweiterte Wörterbücher"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Wörterbuch verfügbar"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Einstellungen für Wörterbücher"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Meine Wörterbücher"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Mein Wörterbuch"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Wörterbuch verfügbar"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Wird heruntergeladen..."</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Installiert"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Installiert, deaktiviert"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Kein Wörterbuchdienst"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Keine Wörterbücher"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Aktualisieren"</string>
+    <string name="last_update" msgid="730467549913588780">"Zuletzt aktualisiert"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Suche nach Updates..."</string>
+    <string name="message_loading" msgid="8689096636874758814">"Wird geladen..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Allgemeines Wörterbuch"</string>
+    <string name="cancel" msgid="6830980399865683324">"Abbrechen"</string>
+    <string name="install_dict" msgid="180852772562189365">"Installieren"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Abbrechen"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Löschen"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Für die auf dem Mobilgerät ausgewählte Sprache ist ein Wörterbuch verfügbar.&lt;br/&gt; &lt;b&gt;Laden Sie das <xliff:g id="LANGUAGE">%1$s</xliff:g>-Wörterbuch herunter&lt;/b&gt; und verbessern Sie Ihre Eingabeerfahrung.&lt;br/&gt; &lt;br/&gt;Der Download über 3G kann ein bis zwei Minuten dauern. Falls Sie keine &lt;b&gt;Datenflatrate&lt;/b&gt; haben, fallen eventuell Gebühren an.&lt;br/&gt; Sollten Sie sich nicht sicher sein, welchen Datentarif Sie haben, suchen Sie eine WLAN-Verbindung, um den Download automatisch zu starten.&lt;br/&gt; &lt;br/&gt;Tipp: Im Menü &lt;b&gt;Einstellungen&lt;/b&gt; Ihres Mobilgeräts können Sie unter &lt;b&gt;Sprache &amp; Eingabe&lt;/b&gt; Wörterbücher herunterladen und entfernen."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Jetzt herunterladen (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Über WLAN herunterladen"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Es ist ein Wörterbuch für <xliff:g id="LANGUAGE">%1$s</xliff:g> verfügbar."</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Zum Lesen und Herunterladen drücken"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Download wurde gestartet: Vorschläge für <xliff:g id="LANGUAGE">%1$s</xliff:g> sind in Kürze bereit."</string>
 </resources>
