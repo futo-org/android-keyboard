@@ -89,7 +89,7 @@
     <string name="spoken_description_delete" msgid="8740376944276199801">"Futa"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Alama"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Herufi"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Namba"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Nambari"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"Mipangilio"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Kichupo"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Nafasi"</string>
@@ -113,7 +113,7 @@
     <string name="keyboard_mode_date" msgid="3137520166817128102">"tarehe"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"tarehe na wakati"</string>
     <string name="keyboard_mode_email" msgid="6216248078128294262">"barua pepe"</string>
-    <string name="keyboard_mode_im" msgid="1137405089766557048">"inatuma ujumbe"</string>
+    <string name="keyboard_mode_im" msgid="1137405089766557048">"Utumaji ujumbe"</string>
     <string name="keyboard_mode_number" msgid="7991623440699957069">"nambari"</string>
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"simu"</string>
     <string name="keyboard_mode_text" msgid="6479436687899701619">"maandishi"</string>
@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Uingizaji sauti umelemazwa"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Sanidi mbinu za uingizaji"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lugha za uingizaji"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Tuma maoni"</string>
     <string name="select_language" msgid="3693815588777926848">"Lugha zinazoruhusiwa"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Gusa tena ili kuhifadhi"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamusi inapatikana"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Chaguo-msingi"</string>
     <string name="language_settings" msgid="1671153053201809031">"Lugha na uingizaji"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Chagua mbinu ya kuingiza data"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Mtoaji Kamusi"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Mtoaji Kamusi"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Huduma ya Kamusi"</string>
-    <string name="download_description" msgid="3274861514695032954">"Maelezo ya kusasisha kamusi"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Nyongeza za kamusi"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Kamusi inapatikana"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Mipangilio ya kamusi"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Kamusi ya mtumiaji"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Kamusi ya mtumiaji"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Kamusi inapatikana"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Inapakua sasa"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Imesakinishwa"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"kusakinisha, imelemazwa"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Tatizo kuunganisha kwa huduma ya kamusi"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Hakuna kamusi inapatikana"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Zimua"</string>
-    <string name="last_update" msgid="3101549719827600346">"Mara ya mwisho kusasishwa"</string>
-    <string name="message_updating" msgid="820186276704134720">"Inatafuta visasishi..."</string>
-    <string name="message_loading" msgid="8611339149825047446">"Inapakia..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Kamusi kuu"</string>
-    <string name="cancel" msgid="5586531736609183304">"Katisha"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Sakinisha"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Ghairi kupakua"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Lemaza"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Wezesha"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Futa"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Kamusi inapatikana ya <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Bonyeza ili kukagua na kupakua"</string>
+    <string name="app_name" msgid="6320102637491234792">"Mtoaji Kamusi"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Mtoaji Kamusi"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Huduma ya Kamusi"</string>
+    <string name="download_description" msgid="6014835283119198591">"Maelezo ya kusasisha kamusi"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Nyongeza za kamusi"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Kamusi inapatikana"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Mipangilio ya kamusi"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Kamusi ya mtumiaji"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Kamusi ya mtumiaji"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Kamusi inapatikana"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Inapakua sasa"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Imesakinishwa"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Imesakinishwa, haitumiki"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Tatizo wakati wa kuunganisha kwenye huduma ya kamusi"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Hakuna kamusi inayopatikana"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Onyesha upya"</string>
+    <string name="last_update" msgid="730467549913588780">"Mara ya mwisho kusasishwa"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Inatafuta sasisho..."</string>
+    <string name="message_loading" msgid="8689096636874758814">"Inapakia..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Kamusi kuu"</string>
+    <string name="cancel" msgid="6830980399865683324">"Ghairi"</string>
+    <string name="install_dict" msgid="180852772562189365">"Sakinisha"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Ghairi"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Futa"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi&lt;/b&gt; <xliff:g id="LANGUAGE">%1$s</xliff:g> ili kuboresha hali yako ya kucharaza.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye 3G. Unaweza kutozwa pesa ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika na mpango wa data ulio nao, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji kiotomatiki.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Ingizo la &amp; Lugha&lt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Pakua sasa (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pakua kupitia kwenye Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Kamusi inapatikana ya <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Bonyeza ili kukagua na kupakua"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Inapakua: mapendekezo ya <xliff:g id="LANGUAGE">%1$s</xliff:g> yatakuwa tayari hivi karibuni."</string>
 </resources>

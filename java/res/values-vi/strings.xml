@@ -128,6 +128,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị tắt"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Gửi phản hồi"</string>
     <string name="select_language" msgid="3693815588777926848">"Ngôn ngữ nhập"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Chạm lại để lưu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
@@ -170,39 +171,34 @@
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
     <string name="language_settings" msgid="1671153053201809031">"Ngôn ngữ và phương thức nhập"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Chọn phương thức nhập"</string>
-
-    <string name="app_name" msgid="1017058186322714405">"Nhà cung cấp từ điển"</string>
-    <string name="dictionary_provider_name" msgid="7710415599371161092">"Nhà cung cấp từ điển"</string>
-    <string name="dictionary_service_name" msgid="551650697348202056">"Dịch vụ từ điển"</string>
-    <string name="download_description" msgid="3274861514695032954">"Thông tin cập nhật từ điển"</string>
-    <string name="dictionary_settings_title" msgid="7243930967845020407">"Từ điển phụ trợ"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3642634623465349716">"Có sẵn từ điển"</string>
-    <string name="dictionary_settings_summary" msgid="8599679434799749053">"Cài đặt dành cho từ điển"</string>
-    <string name="user_dictionaries" msgid="7519736232423929124">"Từ điển người dùng"</string>
-    <string name="default_user_dict_pref_name" msgid="522125152757607790">"Từ điển người dùng"</string>
-    <string name="dictionary_available" msgid="3192920608520618083">"Có sẵn từ điển"</string>
-    <string name="dictionary_downloading" msgid="859497476266309596">"Hiện đang tải xuống"</string>
-    <string name="dictionary_installed" msgid="6425586899671378160">"Đã cài đặt"</string>
-    <string name="dictionary_disabled" msgid="3448571280490746032">"Đã cài đặt, bị tắt"</string>
-    <string name="cannot_connect_to_dict_service" msgid="6875665494726300427">"Lỗi knối d.vụ t.điển"</string>
-    <string name="no_dictionaries_available" msgid="5206225077945637810">"Không có từ điển nào"</string>
-    <string name="check_for_updates_now" msgid="642057986127624986">"Làm mới"</string>
-    <string name="last_update" msgid="3101549719827600346">"Cập nhật lần cuối"</string>
-    <string name="message_updating" msgid="820186276704134720">"Đang kiểm tra cập nhật"</string>
-    <string name="message_loading" msgid="8611339149825047446">"Đang tải..."</string>
-    <string name="main_dict_description" msgid="1679964306980098570">"Từ điển chính"</string>
-    <string name="cancel" msgid="5586531736609183304">"Hủy"</string>
-    <string name="install_dict" msgid="5525005524697607865">"Cài đặt"</string>
-    <string name="cancel_download_dict" msgid="7163173650298838367">"Hủy tải xuống"</string>
-    <string name="disable_dict" msgid="7685810040236497700">"Tắt"</string>
-    <string name="enable_dict" msgid="3848179784702473680">"Bật"</string>
-    <string name="delete_dict" msgid="5817159290503843766">"Xóa"</string>
-    <!-- no translation found for should_download_over_metered_prompt (4965264849057656521) -->
-    <skip />
-    <!-- no translation found for download_over_metered (4024013764937850061) -->
-    <skip />
-    <!-- no translation found for do_not_download_over_metered (6963770885033765378) -->
-    <skip />
-    <string name="dict_available_notification_title" msgid="4560576379680660047">"Có sẵn từ điển cho <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
-    <string name="dict_available_notification_description" msgid="355515381285317832">"Nhấn để xem lại và tải xuống"</string>
+    <string name="app_name" msgid="6320102637491234792">"Nhà cung cấp từ điển"</string>
+    <string name="dictionary_provider_name" msgid="3027315045397363079">"Nhà cung cấp từ điển"</string>
+    <string name="dictionary_service_name" msgid="6237472350693511448">"Dịch vụ từ điển"</string>
+    <string name="download_description" msgid="6014835283119198591">"Thông tin cập nhật từ điển"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Từ điển bổ sung"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Từ điển có sẵn"</string>
+    <string name="dictionary_settings_summary" msgid="5305694987799824349">"Cài đặt cho từ điển"</string>
+    <string name="user_dictionaries" msgid="3582332055892252845">"Từ điển người dùng"</string>
+    <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Từ điển người dùng"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"Từ điển có sẵn"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Hiện đang tải xuống"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"Đã cài đặt"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"Đã cài đặt, bị tắt"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Lỗi knối d.vụ t.điển"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Không có từ điển nào"</string>
+    <string name="check_for_updates_now" msgid="8087688440916388581">"Làm mới"</string>
+    <string name="last_update" msgid="730467549913588780">"Cập nhật lần cuối"</string>
+    <string name="message_updating" msgid="4457761393932375219">"Đang kiểm tra cập nhật"</string>
+    <string name="message_loading" msgid="8689096636874758814">"Đang tải..."</string>
+    <string name="main_dict_description" msgid="3072821352793492143">"Từ điển chính"</string>
+    <string name="cancel" msgid="6830980399865683324">"Hủy"</string>
+    <string name="install_dict" msgid="180852772562189365">"Cài đặt"</string>
+    <string name="cancel_download_dict" msgid="7843340278507019303">"Hủy"</string>
+    <string name="delete_dict" msgid="756853268088330054">"Xóa"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Ngôn ngữ đã chọn trên thiết bị di động của bạn hiện có từ điển.&lt;br/&gt; Bạn nên &lt;b&gt;tải xuống&lt;/b&gt; từ điển <xliff:g id="LANGUAGE">%1$s</xliff:g> để cải thiện trải nghiệm nhập của mình.&lt;br/&gt; &lt;br/&gt; Quá trình tải xuống có thể mất vài phút qua 3G. Có thể mất phí nếu bạn không có &lt;b&gt;gói dữ liệu không giới hạn&lt;/b&gt;.&lt;br/&gt; Nếu bạn không chắc mình có gói dữ liệu nào, bạn nên tìm kết nối Wi-Fi để bắt đầu tải xuống tự động.&lt;br/&gt; &lt;br/&gt; Mẹo: Bạn có thể tải xuống và xóa từ điển bằng cách đi tới &lt;b&gt;Ngôn ngữ và nhập&lt;/b&gt; trong trình đơn &lt;b&gt;Cài đặt&lt;/b&gt; trên thiết bị di động của mình."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Tải xuống bây giờ (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Tải xuống qua Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Có sẵn từ điển cho <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Nhấn để xem lại và tải xuống"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Tải xuống: đề xuất đối với <xliff:g id="LANGUAGE">%1$s</xliff:g> sẽ sớm sẵn sàng."</string>
 </resources>

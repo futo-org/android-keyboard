@@ -226,6 +226,8 @@
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
+    <!-- no translation found for send_feedback (1780431884109392046) -->
+    <skip />
     <!-- no translation found for select_language (3693815588777926848) -->
     <skip />
     <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
@@ -306,5 +308,64 @@
     <!-- no translation found for language_settings (1671153053201809031) -->
     <skip />
     <!-- no translation found for select_input_method (4301602374609275003) -->
+    <skip />
+    <!-- no translation found for app_name (6320102637491234792) -->
+    <skip />
+    <!-- no translation found for dictionary_provider_name (3027315045397363079) -->
+    <skip />
+    <!-- no translation found for dictionary_service_name (6237472350693511448) -->
+    <skip />
+    <!-- no translation found for download_description (6014835283119198591) -->
+    <skip />
+    <!-- no translation found for dictionary_settings_title (8091417676045693313) -->
+    <skip />
+    <!-- no translation found for dictionary_install_over_metered_network_prompt (3587517870006332980) -->
+    <skip />
+    <!-- no translation found for dictionary_settings_summary (5305694987799824349) -->
+    <skip />
+    <!-- no translation found for user_dictionaries (3582332055892252845) -->
+    <skip />
+    <!-- no translation found for default_user_dict_pref_name (1625055720489280530) -->
+    <skip />
+    <!-- no translation found for dictionary_available (4728975345815214218) -->
+    <skip />
+    <!-- no translation found for dictionary_downloading (2982650524622620983) -->
+    <skip />
+    <!-- no translation found for dictionary_installed (8081558343559342962) -->
+    <skip />
+    <!-- no translation found for dictionary_disabled (8950383219564621762) -->
+    <skip />
+    <!-- no translation found for cannot_connect_to_dict_service (9216933695765732398) -->
+    <skip />
+    <!-- no translation found for no_dictionaries_available (8039920716566132611) -->
+    <skip />
+    <!-- no translation found for check_for_updates_now (8087688440916388581) -->
+    <skip />
+    <!-- no translation found for last_update (730467549913588780) -->
+    <skip />
+    <!-- no translation found for message_updating (4457761393932375219) -->
+    <skip />
+    <!-- no translation found for message_loading (8689096636874758814) -->
+    <skip />
+    <!-- no translation found for main_dict_description (3072821352793492143) -->
+    <skip />
+    <string name="cancel" msgid="6830980399865683324">"Interrumper"</string>
+    <!-- no translation found for install_dict (180852772562189365) -->
+    <skip />
+    <!-- no translation found for cancel_download_dict (7843340278507019303) -->
+    <skip />
+    <!-- no translation found for delete_dict (756853268088330054) -->
+    <skip />
+    <!-- no translation found for should_download_over_metered_prompt (2878629598667658845) -->
+    <skip />
+    <!-- no translation found for download_over_metered (1643065851159409546) -->
+    <skip />
+    <!-- no translation found for do_not_download_over_metered (2176209579313941583) -->
+    <skip />
+    <!-- no translation found for dict_available_notification_title (6514288591959117288) -->
+    <skip />
+    <!-- no translation found for dict_available_notification_description (1075194169443163487) -->
+    <skip />
+    <!-- no translation found for toast_downloading_suggestions (1313027353588566660) -->
     <skip />
 </resources>
