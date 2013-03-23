@@ -64,6 +64,9 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
      */
     private int mEdgeSlop;
 
+    /** The most recently set keyboard mode. */
+    private int mLastKeyboardMode;
+
     public static void init(final InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
     }
@@ -113,16 +116,19 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         if (mView == null) {
             return;
         }
-
         if (mAccessibilityNodeProvider != null) {
             mAccessibilityNodeProvider.setKeyboard();
         }
+        final int keyboardMode = mView.getKeyboard().mId.mMode;
 
         // Since this method is called even when accessibility is off, make sure
-        // to check the state before announcing anything.
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            announceKeyboardMode();
+        // to check the state before announcing anything. Also, don't announce
+        // changes within the same mode.
+        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()
+                && (mLastKeyboardMode != keyboardMode)) {
+            announceKeyboardMode(keyboardMode);
         }
+        mLastKeyboardMode = keyboardMode;
     }
 
     /**
@@ -132,25 +138,24 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         if (mView == null) {
             return;
         }
-
         announceKeyboardHidden();
+        mLastKeyboardMode = -1;
     }
 
     /**
      * Announces which type of keyboard is being displayed. If the keyboard type
      * is unknown, no announcement is made.
+     *
+     * @param mode The new keyboard mode.
      */
-    private void announceKeyboardMode() {
-        final Keyboard keyboard = mView.getKeyboard();
-        final int resId = KEYBOARD_MODE_RES_IDS.get(keyboard.mId.mMode);
+    private void announceKeyboardMode(int mode) {
+        final int resId = KEYBOARD_MODE_RES_IDS.get(mode);
         if (resId == 0) {
             return;
         }
-
         final Context context = mView.getContext();
         final String keyboardMode = context.getString(resId);
         final String text = context.getString(R.string.announce_keyboard_mode, keyboardMode);
-
         sendWindowStateChanged(text);
     }
 
@@ -167,7 +172,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     /**
      * Sends a window state change event with the specified text.
      *
-     * @param text
+     * @param text The text to send with the event.
      */
     private void sendWindowStateChanged(final String text) {
         final AccessibilityEvent stateChange = AccessibilityEvent.obtain(
@@ -195,7 +200,6 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         if (mView == null) {
             return null;
         }
-
         return getAccessibilityNodeProvider();
     }
 
@@ -248,11 +252,9 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
         case MotionEvent.ACTION_HOVER_MOVE:
             if (key != previousKey) {
                 return onTransitionKey(key, previousKey, event);
-            } else {
-                return onHoverKey(key, event);
             }
+            return onHoverKey(key, event);
         }
-
         return false;
     }
 
@@ -294,18 +296,13 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
     private boolean onTransitionKey(final Key currentKey, final Key previousKey,
             final MotionEvent event) {
         final int savedAction = event.getAction();
-
         event.setAction(MotionEvent.ACTION_HOVER_EXIT);
         onHoverKey(previousKey, event);
-
         event.setAction(MotionEvent.ACTION_HOVER_ENTER);
         onHoverKey(currentKey, event);
-
         event.setAction(MotionEvent.ACTION_HOVER_MOVE);
         final boolean handled = onHoverKey(currentKey, event);
-
         event.setAction(savedAction);
-
         return handled;
     }
 
