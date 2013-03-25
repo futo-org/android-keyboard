@@ -114,7 +114,7 @@ public final class SubtypeLocale {
 
         final String[] keyboardLayoutSetMap = res.getStringArray(
                 R.array.locale_and_extra_value_to_keyboard_layout_set_map);
-        for (int i = 0; i < keyboardLayoutSetMap.length; i += 2) {
+        for (int i = 0; i + 1 < keyboardLayoutSetMap.length; i += 2) {
             final String key = keyboardLayoutSetMap[i];
             final String keyboardLayoutSet = keyboardLayoutSetMap[i + 1];
             sLocaleAndExtraValueToKeyboardLayoutSetMap.put(key, keyboardLayoutSet);
