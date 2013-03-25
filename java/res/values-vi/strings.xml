@@ -190,7 +190,7 @@
     <string name="dictionary_downloading" msgid="2982650524622620983">"Hiện đang tải xuống"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Đã cài đặt"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Đã cài đặt, bị tắt"</string>
-    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Lỗi knối d.vụ t.điển"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Lỗi kết nối DV từ điển"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Không có từ điển nào"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Làm mới"</string>
     <string name="last_update" msgid="730467549913588780">"Cập nhật lần cuối"</string>
