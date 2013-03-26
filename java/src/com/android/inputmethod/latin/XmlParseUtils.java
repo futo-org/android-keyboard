@@ -30,50 +30,53 @@ public final class XmlParseUtils {
 
     @SuppressWarnings("serial")
     public static class ParseException extends XmlPullParserException {
-        public ParseException(String msg, XmlPullParser parser) {
+        public ParseException(final String msg, final XmlPullParser parser) {
             super(msg + " at " + parser.getPositionDescription());
         }
     }
 
     @SuppressWarnings("serial")
     public static final class IllegalStartTag extends ParseException {
-        public IllegalStartTag(XmlPullParser parser, String parent) {
-            super("Illegal start tag " + parser.getName() + " in " + parent, parser);
+        public IllegalStartTag(final XmlPullParser parser, final String tag, final String parent) {
+            super("Illegal start tag " + tag + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
     public static final class IllegalEndTag extends ParseException {
-        public IllegalEndTag(XmlPullParser parser, String parent) {
-            super("Illegal end tag " + parser.getName() + " in " + parent, parser);
+        public IllegalEndTag(final XmlPullParser parser, final String tag, final String parent) {
+            super("Illegal end tag " + tag + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
     public static final class IllegalAttribute extends ParseException {
-        public IllegalAttribute(XmlPullParser parser, String attribute) {
-            super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
+        public IllegalAttribute(final XmlPullParser parser, final String tag,
+                final String attribute) {
+            super("Tag " + tag + " has illegal attribute " + attribute, parser);
         }
     }
 
     @SuppressWarnings("serial")
     public static final class NonEmptyTag extends ParseException{
-        public NonEmptyTag(String tag, XmlPullParser parser) {
+        public NonEmptyTag(final XmlPullParser parser, final String tag) {
             super(tag + " must be empty tag", parser);
         }
     }
 
-    public static void checkEndTag(String tag, XmlPullParser parser)
+    public static void checkEndTag(final String tag, final XmlPullParser parser)
             throws XmlPullParserException, IOException {
         if (parser.next() == XmlPullParser.END_TAG && tag.equals(parser.getName()))
             return;
-        throw new NonEmptyTag(tag, parser);
+        throw new NonEmptyTag(parser, tag);
     }
 
-    public static void checkAttributeExists(TypedArray attr, int attrId, String attrName,
-            String tag, XmlPullParser parser) throws XmlPullParserException {
-        if (attr.hasValue(attrId))
+    public static void checkAttributeExists(final TypedArray attr, final int attrId,
+            final String attrName, final String tag, final XmlPullParser parser)
+                    throws XmlPullParserException {
+        if (attr.hasValue(attrId)) {
             return;
+        }
         throw new ParseException(
                 "No " + attrName + " attribute found in <" + tag + "/>", parser);
     }
