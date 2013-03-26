@@ -164,10 +164,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             parseKeyboard(parser);
         } catch (XmlPullParserException e) {
             Log.w(BUILDER_TAG, "keyboard XML parse error", e);
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         } catch (IOException e) {
             Log.w(BUILDER_TAG, "keyboard XML parse error", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
             parser.close();
         }
@@ -210,8 +210,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void parseKeyboard(final XmlPullParser parser)
             throws XmlPullParserException, IOException {
         if (DEBUG) startTag("<%s> %s", TAG_KEYBOARD, mParams.mId);
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+        while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            final int event = parser.next();
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_KEYBOARD.equals(tag)) {
@@ -303,8 +303,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void parseKeyboardContent(final XmlPullParser parser, final boolean skip)
             throws XmlPullParserException, IOException {
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+        while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            final int event = parser.next();
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_ROW.equals(tag)) {
@@ -358,8 +358,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void parseRowContent(final XmlPullParser parser, final KeyboardRow row,
             final boolean skip) throws XmlPullParserException, IOException {
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+        while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            final int event = parser.next();
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_KEY.equals(tag)) {
@@ -506,8 +506,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void parseMerge(final XmlPullParser parser, final KeyboardRow row, final boolean skip)
             throws XmlPullParserException, IOException {
         if (DEBUG) startTag("<%s>", TAG_MERGE);
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+        while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            final int event = parser.next();
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_MERGE.equals(tag)) {
@@ -539,8 +539,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean skip) throws XmlPullParserException, IOException {
         if (DEBUG) startTag("<%s> %s", TAG_SWITCH, mParams.mId);
         boolean selected = false;
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+        while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            final int event = parser.next();
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_CASE.equals(tag)) {
