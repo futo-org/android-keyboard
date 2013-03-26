@@ -156,7 +156,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private PositionalInfoForUserDictPendingAddition
             mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
-    private RichInputConnection mConnection = new RichInputConnection(this);
+    private final RichInputConnection mConnection = new RichInputConnection(this);
 
     // Keep track of the last selection range to decide if we need to show word alternatives
     private static final int NOT_A_CURSOR_POSITION = -1;
@@ -2297,25 +2297,27 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // expect to receive non-words.
         if (!mSettings.getCurrent().mCorrectionEnabled) return null;
 
+        final Suggest suggest = mSuggest;
         final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
-        if (userHistoryDictionary != null) {
-            final String prevWord
-                    = mConnection.getNthPreviousWord(mSettings.getCurrent().mWordSeparators, 2);
-            final String secondWord;
-            if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
-                secondWord = suggestion.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
-            } else {
-                secondWord = suggestion;
-            }
-            // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
-            // We don't add words with 0-frequency (assuming they would be profanity etc.).
-            final int maxFreq = AutoCorrection.getMaxFrequency(
-                    mSuggest.getUnigramDictionaries(), suggestion);
-            if (maxFreq == 0) return null;
-            userHistoryDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
-            return prevWord;
+        if (suggest == null || userHistoryDictionary == null) {
+            // Avoid concurrent issue
+            return null;
         }
-        return null;
+        final String prevWord
+                = mConnection.getNthPreviousWord(mSettings.getCurrent().mWordSeparators, 2);
+        final String secondWord;
+        if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
+            secondWord = suggestion.toLowerCase(mSubtypeSwitcher.getCurrentSubtypeLocale());
+        } else {
+            secondWord = suggestion;
+        }
+        // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
+        // We don't add words with 0-frequency (assuming they would be profanity etc.).
+        final int maxFreq = AutoCorrection.getMaxFrequency(
+                suggest.getUnigramDictionaries(), suggestion);
+        if (maxFreq == 0) return null;
+        userHistoryDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
+        return prevWord;
     }
 
     /**
