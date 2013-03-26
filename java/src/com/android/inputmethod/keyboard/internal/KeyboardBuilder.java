@@ -220,7 +220,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     parseKeyboardContent(parser, false);
                     break;
                 } else {
-                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD);
+                    throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD);
                 }
             }
         }
@@ -321,7 +321,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     parseKeyStyle(parser, skip);
                 } else {
-                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_ROW);
+                    throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_ROW);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -333,7 +333,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                         || TAG_MERGE.equals(tag)) {
                     break;
                 } else {
-                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_ROW);
+                    throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_ROW);
                 }
             }
         }
@@ -345,10 +345,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 R.styleable.Keyboard);
         try {
             if (a.hasValue(R.styleable.Keyboard_horizontalGap)) {
-                throw new XmlParseUtils.IllegalAttribute(parser, "horizontalGap");
+                throw new XmlParseUtils.IllegalAttribute(parser, TAG_ROW, "horizontalGap");
             }
             if (a.hasValue(R.styleable.Keyboard_verticalGap)) {
-                throw new XmlParseUtils.IllegalAttribute(parser, "verticalGap");
+                throw new XmlParseUtils.IllegalAttribute(parser, TAG_ROW, "verticalGap");
             }
             return new KeyboardRow(mResources, mParams, parser, mCurrentY);
         } finally {
@@ -373,7 +373,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     parseKeyStyle(parser, skip);
                 } else {
-                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_ROW);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -387,7 +387,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                         || TAG_MERGE.equals(tag)) {
                     break;
                 } else {
-                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_ROW);
                 }
             }
         }
@@ -548,7 +548,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_DEFAULT.equals(tag)) {
                     selected |= parseDefault(parser, row, selected ? true : skip);
                 } else {
-                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_SWITCH);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -556,7 +556,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     if (DEBUG) endTag("</%s>", TAG_SWITCH);
                     break;
                 } else {
-                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_SWITCH);
                 }
             }
         }
