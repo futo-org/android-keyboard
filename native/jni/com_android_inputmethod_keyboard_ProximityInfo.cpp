@@ -43,9 +43,12 @@ static void latinime_Keyboard_release(JNIEnv *env, jclass clazz, jlong proximity
 }
 
 static JNINativeMethod sMethods[] = {
-    {"setProximityInfoNative", "(Ljava/lang/String;IIIII[II[I[I[I[I[I[F[F[F)J",
-            reinterpret_cast<void *>(latinime_Keyboard_setProximityInfo)},
-    {"releaseProximityInfoNative", "(J)V", reinterpret_cast<void *>(latinime_Keyboard_release)}
+    {const_cast<char *>("setProximityInfoNative"),
+     const_cast<char *>("(Ljava/lang/String;IIIII[II[I[I[I[I[I[F[F[F)J"),
+     reinterpret_cast<void *>(latinime_Keyboard_setProximityInfo)},
+    {const_cast<char *>("releaseProximityInfoNative"),
+     const_cast<char *>("(J)V"),
+     reinterpret_cast<void *>(latinime_Keyboard_release)}
 };
 
 int register_ProximityInfo(JNIEnv *env) {
