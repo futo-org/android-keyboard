@@ -207,7 +207,12 @@ public final class UserHistoryDictIOUtils {
             final ArrayList<PendingAttribute> attrList = bigrams.get(entry.getKey());
             if (attrList != null) {
                 for (final PendingAttribute attr : attrList) {
-                    to.setBigram(word1, unigrams.get(attr.mAddress),
+                    final String word2 = unigrams.get(attr.mAddress);
+                    if (word1 == null || word2 == null) {
+                        Log.e(TAG, "Invalid bigram pair detected: " + word1 + ", " + word2);
+                        continue;
+                    }
+                    to.setBigram(word1, word2,
                             BinaryDictInputOutput.reconstructBigramFrequency(unigramFrequency,
                                     attr.mFrequency));
                 }
