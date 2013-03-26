@@ -406,6 +406,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         requestIndicatorRedraw();
         mStatistics.reset();
         checkForEmptyEditor();
+        if (mFeedbackLogBuffer == null) {
+            resetFeedbackLogging();
+        }
         if (!isAllowedToLog()) {
             // Log.w(TAG, "not in usability mode; not logging");
             return;
@@ -438,9 +441,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
             };
-        }
-        if (mFeedbackLogBuffer == null) {
-            resetFeedbackLogging();
         }
     }
 
