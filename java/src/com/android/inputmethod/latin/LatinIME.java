@@ -1145,11 +1145,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (!mWordComposer.isComposingWord()) return;
         final String typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
-            commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
-                    separatorString);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.getInstance().onWordFinished(typedWord, mWordComposer.isBatchMode());
             }
+            commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
+                    separatorString);
         }
     }
 
