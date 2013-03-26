@@ -1122,10 +1122,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public void latinIME_onFinishInputViewInternal() {
-        stop();
-    }
-
     /**
      * Log a change in preferences.
      *
@@ -1208,16 +1204,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
-     * Log a call to LatinIME.onWindowHidden().
+     * The IME is finishing; it is either being destroyed, or is about to be hidden.
      *
      * UserAction: The user has performed an action that has caused the IME to be closed.  They may
      * have focused on something other than a text field, or explicitly closed it.
      */
-    private static final LogStatement LOGSTATEMENT_LATINIME_ONWINDOWHIDDEN =
-            new LogStatement("LatinIMEOnWindowHidden", false, false, "isTextTruncated", "text");
-    public static void latinIME_onWindowHidden(final int savedSelectionStart,
-            final int savedSelectionEnd, final InputConnection ic) {
-        if (ic != null) {
+    private static final LogStatement LOGSTATEMENT_LATINIME_ONFINISHINPUTVIEWINTERNAL =
+            new LogStatement("LatinIMEOnFinishInputViewInternal", false, false, "isTextTruncated",
+                    "text");
+    public static void latinIME_onFinishInputViewInternal(final boolean finishingInput,
+            final int savedSelectionStart, final int savedSelectionEnd, final InputConnection ic) {
+        // The finishingInput flag is set in InputMethodService.  It is true if called from
+        // doFinishInput(), which can be called as part of doStartInput().  This can happen at times
+        // when the IME is not closing, such as when powering up.  The finishinInput flag is false
+        // if called from finishViews(), which is called from hideWindow() and onDestroy().  These
+        // are the situations in which we want to finish up the researchLog.
+        if (ic != null && !finishingInput) {
             final boolean isTextTruncated;
             final String text;
             if (LOG_FULL_TEXTVIEW_CONTENTS) {
@@ -1261,8 +1263,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             // Assume that OUTPUT_ENTIRE_BUFFER is only true when we don't care about privacy (e.g.
             // during a live user test), so the normal isPotentiallyPrivate and
             // isPotentiallyRevealing flags do not apply
-            researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONWINDOWHIDDEN, isTextTruncated,
-                    text);
+            researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONFINISHINPUTVIEWINTERNAL,
+                    isTextTruncated, text);
             researchLogger.commitCurrentLogUnit();
             getInstance().stop();
         }
