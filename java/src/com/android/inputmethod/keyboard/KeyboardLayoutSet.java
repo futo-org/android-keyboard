@@ -301,7 +301,9 @@ public final class KeyboardLayoutSet {
             final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
             try {
                 parseKeyboardLayoutSet(mResources, xmlId);
-            } catch (final Exception e) {
+            } catch (final IOException e) {
+                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
+            } catch (final XmlPullParserException e) {
                 throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
             }
             return new KeyboardLayoutSet(mContext, mParams);
@@ -311,8 +313,8 @@ public final class KeyboardLayoutSet {
                 throws XmlPullParserException, IOException {
             final XmlResourceParser parser = res.getXml(resId);
             try {
-                int event;
-                while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    final int event = parser.next();
                     if (event == XmlPullParser.START_TAG) {
                         final String tag = parser.getName();
                         if (TAG_KEYBOARD_SET.equals(tag)) {
@@ -329,8 +331,8 @@ public final class KeyboardLayoutSet {
 
         private void parseKeyboardLayoutSetContent(final XmlPullParser parser)
                 throws XmlPullParserException, IOException {
-            int event;
-            while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                final int event = parser.next();
                 if (event == XmlPullParser.START_TAG) {
                     final String tag = parser.getName();
                     if (TAG_ELEMENT.equals(tag)) {
