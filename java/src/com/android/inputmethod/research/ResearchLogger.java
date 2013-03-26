@@ -1089,6 +1089,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
                         OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
                         researchLogger.isDevTeamBuild());
+                // Commit the logUnit so the LatinImeOnStartInputViewInternal event is in its own
+                // logUnit at the beginning of the log.
+                researchLogger.commitCurrentLogUnit();
             } catch (final NameNotFoundException e) {
                 Log.e(TAG, "NameNotFound", e);
             }
