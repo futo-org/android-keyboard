@@ -1905,7 +1905,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.recordTimeForLogUnitSplit();
             ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
         boolean didAutoCorrect = false;
