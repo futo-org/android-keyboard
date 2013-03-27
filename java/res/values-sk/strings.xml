@@ -191,7 +191,7 @@
     <string name="dictionary_installed" msgid="8081558343559342962">"Nainštalované"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Nainštalovaný, zakázaný"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Probl. s prip. k sl."</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"Slovníky nedostupné"</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Slovníky sú nedostupné"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Obnoviť"</string>
     <string name="last_update" msgid="730467549913588780">"Posledná aktualizácia"</string>
     <string name="message_updating" msgid="4457761393932375219">"Prebieha kontrola aktualizácií"</string>

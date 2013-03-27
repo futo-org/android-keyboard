@@ -181,7 +181,7 @@
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Mtoaji Kamusi"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Huduma ya Kamusi"</string>
     <string name="download_description" msgid="6014835283119198591">"Maelezo ya kusasisha kamusi"</string>
-    <string name="dictionary_settings_title" msgid="8091417676045693313">"Nyongeza za kamusi"</string>
+    <string name="dictionary_settings_title" msgid="8091417676045693313">"Kamusi za nyongeza"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"Kamusi inapatikana"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"Mipangilio ya kamusi"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"Kamusi ya mtumiaji"</string>
@@ -193,7 +193,7 @@
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Tatizo wakati wa kuunganisha kwenye huduma ya kamusi"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"Hakuna kamusi inayopatikana"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Onyesha upya"</string>
-    <string name="last_update" msgid="730467549913588780">"Mara ya mwisho kusasishwa"</string>
+    <string name="last_update" msgid="730467549913588780">"Ilibadilishwa mwisho"</string>
     <string name="message_updating" msgid="4457761393932375219">"Inatafuta sasisho..."</string>
     <string name="message_loading" msgid="8689096636874758814">"Inapakia..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"Kamusi kuu"</string>
@@ -201,10 +201,10 @@
     <string name="install_dict" msgid="180852772562189365">"Sakinisha"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Ghairi"</string>
     <string name="delete_dict" msgid="756853268088330054">"Futa"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi&lt;/b&gt; <xliff:g id="LANGUAGE">%1$s</xliff:g> ili kuboresha hali yako ya kucharaza.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye 3G. Unaweza kutozwa pesa ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika na mpango wa data ulio nao, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji kiotomatiki.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Ingizo la &amp; Lugha&lt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
-    <string name="download_over_metered" msgid="1643065851159409546">"Pakua sasa (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pakua kupitia kwenye Wi-Fi"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"Kamusi inapatikana ya <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Lugha iliyochaguliwa kwenye kifaa chako cha mkononi ina kamusi inayopatikana.&lt;br/&gt; Tunapendekeza&lt;b&gt;upakuaji wa kamusi&lt;/b&gt; <xliff:g id="LANGUAGE">%1$s</xliff:g> ili kuboresha hali yako ya kucharaza.&lt;br/&gt; &lt;br/&gt; Upakuaji unaweza kuchukua dakika moja au mbili kukamilika kwenye 3G. Unaweza kutozwa pesa ikiwa huna mpango wa data &lt;b&gt;usio na kipimo &lt;/b&gt;.&lt;br/&gt;Ikiwa huna uhakika una mpango gani wa data, tunapendekeza utafute muunganisho wa Wi-Fi ili uanze upakuaji moja kwa moja.&lt;br/&gt; &lt;br/&gt; Kidokezo: Unaweza kupakua na kuondoa kamusi kwa kuenda kwenye&lt;b&gt;Ingizo la &amp; Lugha&lt;/b&gt; katika &lt;b&gt;menyu ya Mipangilio&lt;/b&gt; ya kifaa chako cha mkononi."</string>
+    <string name="download_over_metered" msgid="1643065851159409546">"Pakua sasa (MB<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>)"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"Pakua kwenye Wi-Fi"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"Kamusi ya <xliff:g id="LANGUAGE">%1$s</xliff:g> inapatikana"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Bonyeza ili kukagua na kupakua"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Inapakua: mapendekezo ya <xliff:g id="LANGUAGE">%1$s</xliff:g> yatakuwa tayari hivi karibuni."</string>
 </resources>
