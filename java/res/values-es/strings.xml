@@ -134,7 +134,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhabilitada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"Enviar comentarios"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"Danos tu opinión"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
