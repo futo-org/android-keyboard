@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -31,6 +32,7 @@ import java.util.LinkedList;
  * be searched for suggestions and valid words.
  */
 public class ExpandableDictionary extends Dictionary {
+    private static final String TAG = ExpandableDictionary.class.getSimpleName();
     /**
      * The weight to give to a word if it's length is the same as the number of typed characters.
      */
@@ -551,8 +553,13 @@ public class ExpandableDictionary extends Dictionary {
         // word. We do want however to return the correct case for the right hand side.
         // So we want to squash the case of the left hand side, and preserve that of the right
         // hand side word.
-        Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
-        Node secondWord = searchWord(mRoots, word2, 0, null);
+        final String word1Lower = word1.toLowerCase();
+        if (TextUtils.isEmpty(word1Lower) || TextUtils.isEmpty(word2)) {
+            Log.e(TAG, "Invalid bigram pair: " + word1 + ", " + word1Lower + ", " + word2);
+            return frequency;
+        }
+        final Node firstWord = searchWord(mRoots, word1Lower, 0, null);
+        final Node secondWord = searchWord(mRoots, word2, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         if (bigrams == null || bigrams.size() == 0) {
             firstWord.mNGrams = CollectionUtils.newLinkedList();
