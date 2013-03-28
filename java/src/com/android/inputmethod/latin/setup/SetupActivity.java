@@ -112,12 +112,13 @@ public final class SetupActivity extends Activity {
         // TODO: Use sans-serif-thin font family depending on the system locale white list and
         // the SDK version.
         final TextView titleView = (TextView)findViewById(R.id.setup_title);
-        titleView.setText(getString(R.string.setup_title, getString(R.string.english_ime_name)));
+        final int appName = getApplicationInfo().labelRes;
+        titleView.setText(getString(R.string.setup_title, getString(appName)));
 
         mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
 
         final SetupStep step1 = new SetupStep(findViewById(R.id.setup_step1),
-                R.string.setup_step1_title, R.string.setup_step1_instruction,
+                appName, R.string.setup_step1_title, R.string.setup_step1_instruction,
                 R.drawable.ic_settings_language, R.string.language_settings);
         step1.setAction(new Runnable() {
             @Override
@@ -129,7 +130,7 @@ public final class SetupActivity extends Activity {
         mSetupSteps.addStep(STEP_1, step1);
 
         final SetupStep step2 = new SetupStep(findViewById(R.id.setup_step2),
-                R.string.setup_step2_title, R.string.setup_step2_instruction,
+                appName, R.string.setup_step2_title, R.string.setup_step2_instruction,
                 0 /* actionIcon */, R.string.select_input_method);
         step2.setAction(new Runnable() {
             @Override
@@ -142,7 +143,7 @@ public final class SetupActivity extends Activity {
         mSetupSteps.addStep(STEP_2, step2);
 
         final SetupStep step3 = new SetupStep(findViewById(R.id.setup_step3),
-                R.string.setup_step3_title, 0 /* instruction */,
+                appName, R.string.setup_step3_title, 0 /* instruction */,
                 R.drawable.sym_keyboard_language_switch, R.string.setup_step3_instruction);
         step3.setAction(new Runnable() {
             @Override
@@ -290,11 +291,11 @@ public final class SetupActivity extends Activity {
         private final TextView mActionLabel;
         private Runnable mAction;
 
-        public SetupStep(final View rootView, final int title, final int instruction,
-                final int actionIcon, final int actionLabel) {
+        public SetupStep(final View rootView, final int appName, final int title,
+                final int instruction, final int actionIcon, final int actionLabel) {
             mRootView = rootView;
             final Resources res = rootView.getResources();
-            final String applicationName = res.getString(R.string.english_ime_name);
+            final String applicationName = res.getString(appName);
 
             final TextView titleView = (TextView)rootView.findViewById(R.id.setup_step_title);
             titleView.setText(res.getString(title, applicationName));
