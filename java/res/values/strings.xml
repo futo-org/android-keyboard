@@ -498,9 +498,9 @@
     <!-- Message about some dictionary indicating the file is installed, but the dictionary is disabled -->
     <string name="dictionary_disabled">Installed, disabled</string>
 
-    <!-- Message to display in the dictionaries setting screen when some error prevented us to list installed dictionaries [CHAR LIMIT=20] -->
+    <!-- Message to display in the dictionaries setting screen when some error prevented us to list installed dictionaries [CHAR LIMIT=50] -->
     <string name="cannot_connect_to_dict_service">Problem connecting to dictionary service</string>
-    <!-- Message to display in the dictionaries setting screen when we found that no dictionaries are available [CHAR LIMIT=20]-->
+    <!-- Message to display in the dictionaries setting screen when we found that no dictionaries are available [CHAR LIMIT=50]-->
     <string name="no_dictionaries_available">No dictionaries available</string>
 
     <!-- Title of the options to press to refresh the list (as in, check for updates now) [CHAR_LIMIT=50] -->
