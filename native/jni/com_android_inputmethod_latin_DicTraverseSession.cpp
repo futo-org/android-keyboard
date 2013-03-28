@@ -48,12 +48,15 @@ static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong 
 }
 
 static JNINativeMethod sMethods[] = {
-    {"setDicTraverseSessionNative", "(Ljava/lang/String;)J",
-            reinterpret_cast<void *>(latinime_setDicTraverseSession)},
-    {"initDicTraverseSessionNative", "(JJ[II)V",
-            reinterpret_cast<void *>(latinime_initDicTraverseSession)},
-    {"releaseDicTraverseSessionNative", "(J)V",
-            reinterpret_cast<void *>(latinime_releaseDicTraverseSession)}
+    {const_cast<char *>("setDicTraverseSessionNative"),
+     const_cast<char *>("(Ljava/lang/String;)J"),
+     reinterpret_cast<void *>(latinime_setDicTraverseSession)},
+    {const_cast<char *>("initDicTraverseSessionNative"),
+     const_cast<char *>("(JJ[II)V"),
+     reinterpret_cast<void *>(latinime_initDicTraverseSession)},
+    {const_cast<char *>("releaseDicTraverseSessionNative"),
+     const_cast<char *>("(J)V"),
+     reinterpret_cast<void *>(latinime_releaseDicTraverseSession)}
 };
 
 int register_DicTraverseSession(JNIEnv *env) {

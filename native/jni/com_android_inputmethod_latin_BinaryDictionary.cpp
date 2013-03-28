@@ -280,19 +280,27 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJ)J",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
-    {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
-    {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
-    {"getProbabilityNative", "(J[I)I",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)},
-    {"isValidBigramNative", "(J[I[I)Z",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)},
-    {"calcNormalizedScoreNative", "([I[II)F",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)},
-    {"editDistanceNative", "([I[I)I",
-            reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)}
+    {const_cast<char *>("openNative"),
+     const_cast<char *>("(Ljava/lang/String;JJ)J"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
+    {const_cast<char *>("closeNative"),
+     const_cast<char *>("(J)V"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
+    {const_cast<char *>("getSuggestionsNative"),
+     const_cast<char *>("(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
+    {const_cast<char *>("getProbabilityNative"),
+     const_cast<char *>("(J[I)I"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)},
+    {const_cast<char *>("isValidBigramNative"),
+     const_cast<char *>("(J[I[I)Z"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)},
+    {const_cast<char *>("calcNormalizedScoreNative"),
+     const_cast<char *>("([I[II)F"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)},
+    {const_cast<char *>("editDistanceNative"),
+     const_cast<char *>("([I[I)I"),
+     reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)}
 };
 
 int register_BinaryDictionary(JNIEnv *env) {
