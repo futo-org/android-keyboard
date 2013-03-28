@@ -21,7 +21,6 @@ import android.content.res.Resources;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
 
