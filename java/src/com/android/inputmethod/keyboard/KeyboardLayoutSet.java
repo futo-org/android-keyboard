@@ -301,8 +301,8 @@ public final class KeyboardLayoutSet {
             final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
             try {
                 parseKeyboardLayoutSet(mResources, xmlId);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName);
+            } catch (final Exception e) {
+                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
             }
             return new KeyboardLayoutSet(mContext, mParams);
         }
@@ -318,7 +318,7 @@ public final class KeyboardLayoutSet {
                         if (TAG_KEYBOARD_SET.equals(tag)) {
                             parseKeyboardLayoutSetContent(parser);
                         } else {
-                            throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                            throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                         }
                     }
                 }
@@ -336,14 +336,14 @@ public final class KeyboardLayoutSet {
                     if (TAG_ELEMENT.equals(tag)) {
                         parseKeyboardLayoutSetElement(parser);
                     } else {
-                        throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                     }
                 } else if (event == XmlPullParser.END_TAG) {
                     final String tag = parser.getName();
                     if (TAG_KEYBOARD_SET.equals(tag)) {
                         break;
                     } else {
-                        throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_KEYBOARD_SET);
                     }
                 }
             }
