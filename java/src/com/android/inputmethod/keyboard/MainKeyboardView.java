@@ -229,6 +229,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         @Override
         public void handleMessage(final Message msg) {
             final MainKeyboardView keyboardView = getOuterInstance();
+            if (keyboardView == null) {
+                return;
+            }
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_TYPING_STATE_EXPIRED:
