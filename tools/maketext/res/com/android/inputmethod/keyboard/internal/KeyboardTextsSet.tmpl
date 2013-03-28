@@ -61,13 +61,14 @@ public final class KeyboardTextsSet {
         }
     }
 
-    public void loadStringResources(Context context) {
-        loadStringResourcesInternal(context, RESOURCE_NAMES, R.string.english_ime_name);
+    public void loadStringResources(final Context context) {
+        final int referenceId = context.getApplicationInfo().labelRes;
+        loadStringResourcesInternal(context, RESOURCE_NAMES, referenceId);
     }
 
     @UsedForTesting
-    void loadStringResourcesInternal(Context context, final String[] resourceNames,
-            int referenceId) {
+    void loadStringResourcesInternal(final Context context, final String[] resourceNames,
+            final int referenceId) {
         final Resources res = context.getResources();
         final String packageName = res.getResourcePackageName(referenceId);
         for (final String resName : resourceNames) {
