@@ -130,6 +130,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         }
     }
 
+    @Override
     public void downloadedMetadata(final boolean succeeded) {
         stopLoadingAnimation();
         if (!succeeded) return; // If the download failed nothing changed, so no need to refresh
@@ -141,6 +142,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         }.start();
     }
 
+    @Override
     public void wordListDownloadFinished(final String wordListId, final boolean succeeded) {
         final WordListPreference pref = findWordListPreference(wordListId);
         if (null == pref) return;
@@ -177,6 +179,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         return null;
     }
 
+    @Override
     public void updateCycleCompleted() {}
 
     private void refreshNetworkState() {
@@ -260,6 +263,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         } else if (!cursor.moveToFirst()) {
             final ArrayList<Preference> result = new ArrayList<Preference>();
             result.add(createErrorMessage(activity, R.string.no_dictionaries_available));
+            cursor.close();
             return result;
         } else {
             final String systemLocaleString = Locale.getDefault().toString();
@@ -289,6 +293,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                     prefList.put(key, pref);
                 }
             } while (cursor.moveToNext());
+            cursor.close();
             return prefList.values();
         }
     }
