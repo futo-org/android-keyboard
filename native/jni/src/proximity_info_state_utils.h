@@ -101,7 +101,7 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledTimes,
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledBeelineSpeedPercentiles);
-    static bool checkAndReturnIsContinuationPossible(const int inputSize,
+    static bool checkAndReturnIsContinuousSuggestionPossible(const int inputSize,
             const int *const xCoordinates, const int *const yCoordinates, const int *const times,
             const int sampledInputSize, const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
