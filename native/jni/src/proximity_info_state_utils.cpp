@@ -968,10 +968,10 @@ namespace latinime {
     return true;
 }
 
-/* static */ bool ProximityInfoStateUtils::checkAndReturnIsContinuationPossible(const int inputSize,
-        const int *const xCoordinates, const int *const yCoordinates, const int *const times,
-        const int sampledInputSize, const std::vector<int> *const sampledInputXs,
-        const std::vector<int> *const sampledInputYs,
+/* static */ bool ProximityInfoStateUtils::checkAndReturnIsContinuousSuggestionPossible(
+        const int inputSize, const int *const xCoordinates, const int *const yCoordinates,
+        const int *const times, const int sampledInputSize,
+        const std::vector<int> *const sampledInputXs, const std::vector<int> *const sampledInputYs,
         const std::vector<int> *const sampledTimes,
         const std::vector<int> *const sampledInputIndices) {
     if (inputSize < sampledInputSize) {

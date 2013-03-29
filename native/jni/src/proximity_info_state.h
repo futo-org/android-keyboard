@@ -47,12 +47,12 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mIsContinuationPossible(false), mSampledInputXs(), mSampledInputYs(), mSampledTimes(),
-              mSampledInputIndice(), mSampledLengthCache(), mBeelineSpeedPercentiles(),
-              mSampledDistanceCache_G(), mSpeedRates(), mDirections(), mCharProbabilities(),
-              mSampledNearKeySets(), mSampledSearchKeySets(), mSampledSearchKeyVectors(),
-              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0),
-              mMostProbableStringProbability(0.0f) {
+              mIsContinuousSuggestionPossible(false), mSampledInputXs(), mSampledInputYs(),
+              mSampledTimes(), mSampledInputIndice(), mSampledLengthCache(),
+              mBeelineSpeedPercentiles(), mSampledDistanceCache_G(), mSpeedRates(), mDirections(),
+              mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
+              mSampledSearchKeyVectors(), mTouchPositionCorrectionEnabled(false),
+              mSampledInputSize(0), mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -143,8 +143,8 @@ class ProximityInfoState {
         return mSampledLengthCache[index];
     }
 
-    bool isContinuationPossible() const {
-        return mIsContinuationPossible;
+    bool isContinuousSuggestionPossible() const {
+        return mIsContinuousSuggestionPossible;
     }
 
     float getPointToKeyByIdLength(const int inputIndex, const int keyId) const;
@@ -223,7 +223,7 @@ class ProximityInfoState {
     int mCellWidth;
     int mGridHeight;
     int mGridWidth;
-    bool mIsContinuationPossible;
+    bool mIsContinuousSuggestionPossible;
 
     std::vector<int> mSampledInputXs;
     std::vector<int> mSampledInputYs;
