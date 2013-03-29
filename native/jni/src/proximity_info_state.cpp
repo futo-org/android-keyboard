@@ -33,11 +33,13 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
     ASSERT(isGeometric || (inputSize < MAX_WORD_LENGTH));
-    mIsContinuationPossible = ProximityInfoStateUtils::checkAndReturnIsContinuationPossible(
-            inputSize, xCoordinates, yCoordinates, times, mSampledInputSize, &mSampledInputXs,
-            &mSampledInputYs, &mSampledTimes, &mSampledInputIndice);
+    mIsContinuousSuggestionPossible =
+            ProximityInfoStateUtils::checkAndReturnIsContinuousSuggestionPossible(
+                    inputSize, xCoordinates, yCoordinates, times, mSampledInputSize,
+                    &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSampledInputIndice);
     if (DEBUG_DICT) {
-        AKLOGI("isContinuationPossible = %s", (mIsContinuationPossible ? "true" : "false"));
+        AKLOGI("isContinuousSuggestionPossible = %s",
+                (mIsContinuousSuggestionPossible ? "true" : "false"));
     }
 
     mProximityInfo = proximityInfo;
@@ -64,7 +66,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mSampledInputSize = 0;
     mMostProbableStringProbability = 0.0f;
 
-    if (mIsContinuationPossible && mSampledInputIndice.size() > 1) {
+    if (mIsContinuousSuggestionPossible && mSampledInputIndice.size() > 1) {
         // Just update difference.
         // Previous two points are never skipped. Thus, we pop 2 input point data here.
         pushTouchPointStartIndex = ProximityInfoStateUtils::trimLastTwoTouchPoints(
