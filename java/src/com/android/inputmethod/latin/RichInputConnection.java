@@ -60,11 +60,11 @@ public final class RichInputConnection {
      * This contains the committed text immediately preceding the cursor and the composing
      * text if any. It is refreshed when the cursor moves by calling upon the TextView.
      */
-    private StringBuilder mCommittedTextBeforeComposingText = new StringBuilder();
+    private final StringBuilder mCommittedTextBeforeComposingText = new StringBuilder();
     /**
      * This contains the currently composing text, as LatinIME thinks the TextView is seeing it.
      */
-    private StringBuilder mComposingText = new StringBuilder();
+    private final StringBuilder mComposingText = new StringBuilder();
     // A hint on how many characters to cache from the TextView. A good value of this is given by
     // how many characters we need to be able to almost always find the caps mode.
     private static final int DEFAULT_TEXT_CACHE_SIZE = 100;
@@ -334,13 +334,15 @@ public final class RichInputConnection {
         mCurrentCursorPosition = end;
         final CharSequence textBeforeCursor =
                 getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE + (end - start), 0);
-        final int indexOfStartOfComposingText =
-                Math.max(textBeforeCursor.length() - (end - start), 0);
-        mComposingText.append(textBeforeCursor.subSequence(indexOfStartOfComposingText,
-                textBeforeCursor.length()));
         mCommittedTextBeforeComposingText.setLength(0);
-        mCommittedTextBeforeComposingText.append(
-                textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
+        if (!TextUtils.isEmpty(textBeforeCursor)) {
+            final int indexOfStartOfComposingText =
+                    Math.max(textBeforeCursor.length() - (end - start), 0);
+            mComposingText.append(textBeforeCursor.subSequence(indexOfStartOfComposingText,
+                    textBeforeCursor.length()));
+            mCommittedTextBeforeComposingText.append(
+                    textBeforeCursor.subSequence(0, indexOfStartOfComposingText));
+        }
         if (null != mIC) {
             mIC.setComposingRegion(start, end);
         }
@@ -500,16 +502,6 @@ public final class RichInputConnection {
         // getWordRangeAtCursor returns null if the connection is null
         Range r = getWordRangeAtCursor(separators, 0);
         return (r == null) ? null : r.mWord;
-    }
-
-    private int getCursorPosition() {
-        mIC = mParent.getCurrentInputConnection();
-        if (null == mIC) return INVALID_CURSOR_POSITION;
-        final ExtractedText extracted = mIC.getExtractedText(new ExtractedTextRequest(), 0);
-        if (extracted == null) {
-            return INVALID_CURSOR_POSITION;
-        }
-        return extracted.startOffset + extracted.selectionStart;
     }
 
     /**
