@@ -25,13 +25,34 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.net.Uri;
+import android.util.Log;
 
 /**
- * Takes action to reload the necessary data when a dictionary pack was added/removed.
+ * Receives broadcasts pertaining to dictionary management and takes the appropriate action.
+ *
+ * This object receives three types of broadcasts.
+ * - Package installed/added. When a dictionary provider application is added or removed, we
+ * need to query the dictionaries.
+ * - New dictionary broadcast. The dictionary provider broadcasts new dictionary availability. When
+ * this happens, we need to re-query the dictionaries.
+ * - Unknown client. If the dictionary provider is in urgent need of data about some client that
+ * it does not know, it sends this broadcast. When we receive this, we need to tell the dictionary
+ * provider about ourselves. This happens when the settings for the dictionary pack are accessed,
+ * but Latin IME never got a chance to register itself.
  */
 public final class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = DictionaryPackInstallBroadcastReceiver.class.getSimpleName();
 
     final LatinIME mService;
+
+    public DictionaryPackInstallBroadcastReceiver() {
+        // This empty constructor is necessary for the system to instantiate this receiver.
+        // This happens when the dictionary pack says it can't find a record for our client,
+        // which happens when the dictionary pack settings are called before the keyboard
+        // was ever started once.
+        Log.i(TAG, "Latin IME dictionary broadcast receiver instantiated from the framework.");
+        mService = null;
+    }
 
     public DictionaryPackInstallBroadcastReceiver(final LatinIME service) {
         mService = service;
@@ -44,6 +65,11 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
 
         // We need to reread the dictionary if a new dictionary package is installed.
         if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
+            if (null == mService) {
+                Log.e(TAG, "Called with intent " + action + " but we don't know the service: this "
+                        + "should never happen");
+                return;
+            }
             final Uri packageUri = intent.getData();
             if (null == packageUri) return; // No package name : we can't do anything
             final String packageName = packageUri.getSchemeSpecificPart();
@@ -71,6 +97,11 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
             return;
         } else if (action.equals(Intent.ACTION_PACKAGE_REMOVED)
                 && !intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
+            if (null == mService) {
+                Log.e(TAG, "Called with intent " + action + " but we don't know the service: this "
+                        + "should never happen");
+                return;
+            }
             // When the dictionary package is removed, we need to reread dictionary (to use the
             // next-priority one, or stop using a dictionary at all if this was the only one,
             // since this is the user request).
@@ -82,7 +113,28 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
             // read dictionary from?
             mService.resetSuggestMainDict();
         } else if (action.equals(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION)) {
+            if (null == mService) {
+                Log.e(TAG, "Called with intent " + action + " but we don't know the service: this "
+                        + "should never happen");
+                return;
+            }
             mService.resetSuggestMainDict();
+        } else if (action.equals(DictionaryPackConstants.UNKNOWN_DICTIONARY_PROVIDER_CLIENT)) {
+            if (null != mService) {
+                // Careful! This is returning if the service is NOT null. This is because we
+                // should come here instantiated by the framework in reaction to a broadcast of
+                // the above action, so we should gave gone through the no-args constructor.
+                Log.e(TAG, "Called with intent " + action + " but we have a reference to the "
+                        + "service: this should never happen");
+                return;
+            }
+            // The dictionary provider does not know about some client. We check that it's really
+            // us that it needs to know about, and if it's the case, we register with the provider.
+            final String wantedClientId =
+                    intent.getStringExtra(DictionaryPackConstants.DICTIONARY_PROVIDER_CLIENT_EXTRA);
+            final String myClientId = context.getString(R.string.dictionary_pack_client_id);
+            if (!wantedClientId.equals(myClientId)) return; // Not for us
+            BinaryDictionaryFileDumper.initializeClientRecordHelper(context, myClientId);
         }
     }
 }

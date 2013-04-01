@@ -110,6 +110,15 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         super.onResume();
         mChangedSettings = false;
         UpdateHandler.registerUpdateEventListener(this);
+        final Activity activity = getActivity();
+        if (!MetadataDbHelper.isClientKnown(activity, mClientId)) {
+            Log.i(TAG, "Unknown dictionary pack client: " + mClientId + ". Requesting info.");
+            final Intent unknownClientBroadcast =
+                    new Intent(DictionaryPackConstants.UNKNOWN_DICTIONARY_PROVIDER_CLIENT);
+            unknownClientBroadcast.putExtra(
+                    DictionaryPackConstants.DICTIONARY_PROVIDER_CLIENT_EXTRA, mClientId);
+            activity.sendBroadcast(unknownClientBroadcast);
+        }
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(mConnectivityChangedReceiver, filter);
@@ -363,7 +372,12 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                             getActivity(), android.R.anim.fade_out));
                     preferenceView.startAnimation(AnimationUtils.loadAnimation(
                             getActivity(), android.R.anim.fade_in));
-                    mUpdateNowMenu.setTitle(R.string.check_for_updates_now);
+                    // The menu is created by the framework asynchronously after the activity,
+                    // which means it's possible to have the activity running but the menu not
+                    // created yet - hence the necessity for a null check here.
+                    if (null != mUpdateNowMenu) {
+                        mUpdateNowMenu.setTitle(R.string.check_for_updates_now);
+                    }
                 }
             });
     }
