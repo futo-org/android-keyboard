@@ -29,7 +29,9 @@ LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_C_INCLUDES += \
     $(LATIN_IME_SRC_FULLPATH_DIR) \
     $(LATIN_IME_SRC_FULLPATH_DIR)/suggest \
-    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core/dicnode
+    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core/dicnode \
+    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core/policy \
+    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core/session
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
@@ -63,7 +65,10 @@ LATIN_IME_CORE_SRC_FILES := \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     suggest/core/dicnode/dic_node.cpp \
+    suggest/core/dicnode/dic_nodes_cache.cpp \
     suggest/core/dicnode/dic_node_utils.cpp \
+    suggest/core/policy/weighting.cpp \
+    suggest/core/session/dic_traverse_session.cpp \
     suggest/gesture_suggest.cpp \
     suggest/typing_suggest.cpp
 
