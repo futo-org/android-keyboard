@@ -1636,8 +1636,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final String scrubbedAutoCorrection = scrubDigitsFromString(autoCorrection);
         final ResearchLogger researchLogger = getInstance();
         researchLogger.mCurrentLogUnit.initializeSuggestions(suggestedWords);
-        researchLogger.commitCurrentLogUnitAsWord(scrubbedAutoCorrection, Long.MAX_VALUE,
-                isBatchMode);
+        researchLogger.onWordFinished(scrubbedAutoCorrection, isBatchMode);
 
         // Add the autocorrection logStatement at the end of the logUnit for the committed word.
         // We have to do this after calling commitCurrentLogUnitAsWord, because it may split the
