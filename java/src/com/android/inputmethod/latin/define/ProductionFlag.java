@@ -28,5 +28,5 @@ public final class ProductionFlag {
     // USES_DEVELOPMENT_ONLY_DIAGNOSTICS must be false for any production build.
     public static final boolean USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG = false;
 
-    public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = true;
+    public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 }
