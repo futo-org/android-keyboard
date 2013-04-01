@@ -21,19 +21,32 @@ import com.android.inputmethod.latin.ResizableIntArray;
 public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public static final int PREVIEW_CAPACITY = 256;
 
+    private static final boolean ENABLE_INTERPOLATION = true;
+
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewXCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewYCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
 
     private int mStrokeId;
     private int mLastPreviewSize;
+    private final HermiteInterpolator mInterpolator = new HermiteInterpolator();
+    private int mLastInterpolatedPreviewIndex;
 
-    private int mMinPreviewSampleLengthSquare;
+    private int mMinPreviewSamplingDistanceSquared;
     private int mLastX;
     private int mLastY;
+    private double mMinPreviewSamplingDistance;
+    private double mDistanceFromLastSample;
 
-    // TODO: Move this to resource.
-    private static final float MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH = 0.1f;
+    // TODO: Move these constants to resource.
+    // The minimum linear distance between sample points for preview in keyWidth unit.
+    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH = 0.1f;
+    // The minimum trail distance between sample points for preview in keyWidth unit when using
+    // interpolation.
+    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH_WITH_INTERPOLATION = 0.2f;
+    // The angular threshold to use interpolation in radian. PI/12 is 15 degree.
+    private static final double INTERPOLATION_ANGULAR_THRESHOLD = Math.PI / 12.0d;
+    private static final int MAX_INTERPOLATION_PARTITION = 4;
 
     public GestureStrokeWithPreviewPoints(final int pointerId, final GestureStrokeParams params) {
         super(pointerId, params);
@@ -44,6 +57,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         super.reset();
         mStrokeId++;
         mLastPreviewSize = 0;
+        mLastInterpolatedPreviewIndex = 0;
         mPreviewEventTimes.setLength(0);
         mPreviewXCoordinates.setLength(0);
         mPreviewYCoordinates.setLength(0);
@@ -53,35 +67,49 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         return mStrokeId;
     }
 
-    public int getGestureStrokePreviewSize() {
-        return mPreviewEventTimes.getLength();
-    }
-
     @Override
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         super.setKeyboardGeometry(keyWidth, keyboardHeight);
-        final float sampleLength = keyWidth * MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH;
-        mMinPreviewSampleLengthSquare = (int)(sampleLength * sampleLength);
+        final float samplingRatioToKeyWidth = ENABLE_INTERPOLATION
+                ? MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH_WITH_INTERPOLATION
+                : MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH;
+        mMinPreviewSamplingDistance = keyWidth * samplingRatioToKeyWidth;
+        mMinPreviewSamplingDistanceSquared = (int)(
+                mMinPreviewSamplingDistance * mMinPreviewSamplingDistance);
     }
 
-    private boolean needsSampling(final int x, final int y) {
+    private boolean needsSampling(final int x, final int y, final boolean isMajorEvent) {
+        if (ENABLE_INTERPOLATION) {
+            mDistanceFromLastSample += Math.hypot(x - mLastX, y - mLastY);
+            mLastX = x;
+            mLastY = y;
+            if (mDistanceFromLastSample >= mMinPreviewSamplingDistance) {
+                mDistanceFromLastSample = 0.0d;
+                return true;
+            }
+            return false;
+        }
+
         final int dx = x - mLastX;
         final int dy = y - mLastY;
-        return dx * dx + dy * dy >= mMinPreviewSampleLengthSquare;
+        if (isMajorEvent || dx * dx + dy * dy >= mMinPreviewSamplingDistanceSquared) {
+            mLastX = x;
+            mLastY = y;
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean addPointOnKeyboard(final int x, final int y, final int time,
             final boolean isMajorEvent) {
-        final boolean onValidArea = super.addPointOnKeyboard(x, y, time, isMajorEvent);
-        if (isMajorEvent || needsSampling(x, y)) {
+        if (needsSampling(x, y, isMajorEvent)) {
             mPreviewEventTimes.add(time);
             mPreviewXCoordinates.add(x);
             mPreviewYCoordinates.add(y);
-            mLastX = x;
-            mLastY = y;
         }
-        return onValidArea;
+        return super.addPointOnKeyboard(x, y, time, isMajorEvent);
+
     }
 
     public void appendPreviewStroke(final ResizableIntArray eventTimes,
@@ -94,5 +122,83 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         xCoords.append(mPreviewXCoordinates, mLastPreviewSize, length);
         yCoords.append(mPreviewYCoordinates, mLastPreviewSize, length);
         mLastPreviewSize = mPreviewEventTimes.getLength();
+    }
+
+    /**
+     * Calculate interpolated points between the last interpolated point and the end of the trail.
+     * And return the start index of the last interpolated segment of input arrays because it
+     * may need to recalculate the interpolated points in the segment if further segments are
+     * added to this stroke.
+     *
+     * @param lastInterpolatedIndex the start index of the last interpolated segment of
+     *        <code>eventTimes</code>, <code>xCoords</code>, and <code>yCoords</code>.
+     * @param eventTimes the event time array of gesture preview trail to be drawn.
+     * @param xCoords the x-coordinates array of gesture preview trail to be drawn.
+     * @param yCoords the y-coordinates array of gesture preview trail to be drawn.
+     * @return the start index of the last interpolated segment of input arrays.
+     */
+    public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
+            final ResizableIntArray eventTimes, final ResizableIntArray xCoords,
+            final ResizableIntArray yCoords) {
+        if (!ENABLE_INTERPOLATION) {
+            return lastInterpolatedIndex;
+        }
+        final int size = mPreviewEventTimes.getLength();
+        final int[] pt = mPreviewEventTimes.getPrimitiveArray();
+        final int[] px = mPreviewXCoordinates.getPrimitiveArray();
+        final int[] py = mPreviewYCoordinates.getPrimitiveArray();
+        mInterpolator.reset(px, py, 0, size);
+        // The last segment of gesture stroke needs to be interpolated again because the slope of
+        // the tangent at the last point isn't determined.
+        int lastInterpolatedDrawIndex = lastInterpolatedIndex;
+        int d1 = lastInterpolatedIndex;
+        for (int p2 = mLastInterpolatedPreviewIndex + 1; p2 < size; p2++) {
+            final int p1 = p2 - 1;
+            final int p0 = p1 - 1;
+            final int p3 = p2 + 1;
+            mLastInterpolatedPreviewIndex = p1;
+            lastInterpolatedDrawIndex = d1;
+            mInterpolator.setInterval(p0, p1, p2, p3);
+            final double m1 = Math.atan2(mInterpolator.mSlope1Y, mInterpolator.mSlope1X);
+            final double m2 = Math.atan2(mInterpolator.mSlope2Y, mInterpolator.mSlope2X);
+            final double dm = Math.abs(angularDiff(m2, m1));
+            final int partition = Math.min((int)Math.ceil(dm / INTERPOLATION_ANGULAR_THRESHOLD),
+                    MAX_INTERPOLATION_PARTITION);
+            final int t1 = eventTimes.get(d1);
+            final int dt = pt[p2] - pt[p1];
+            d1++;
+            for (int i = 1; i < partition; i++) {
+                final float t = i / (float)partition;
+                mInterpolator.interpolate(t);
+                eventTimes.add(d1, (int)(dt * t) + t1);
+                xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
+                yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
+                d1++;
+            }
+            eventTimes.add(d1, pt[p2]);
+            xCoords.add(d1, px[p2]);
+            yCoords.add(d1, py[p2]);
+        }
+        return lastInterpolatedDrawIndex;
+    }
+
+    private static final double TWO_PI = Math.PI * 2.0d;
+
+    /**
+     * Calculate the angular of rotation from <code>a0</code> to <code>a1</code>.
+     *
+     * @param a1 the angular to which the rotation ends.
+     * @param a0 the angular from which the rotation starts.
+     * @return the angular rotation value from a0 to a1, normalized to [-PI, +PI].
+     */
+    private static double angularDiff(final double a1, final double a0) {
+        double deltaAngle = a1 - a0;
+        while (deltaAngle > Math.PI) {
+            deltaAngle -= TWO_PI;
+        }
+        while (deltaAngle < -Math.PI) {
+            deltaAngle += TWO_PI;
+        }
+        return deltaAngle;
     }
 }

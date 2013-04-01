@@ -44,6 +44,7 @@ final class GesturePreviewTrail {
     // The wall time of the zero value in {@link #mEventTimes}
     private long mCurrentTimeBase;
     private int mTrailStartIndex;
+    private int mLastInterpolatedDrawIndex;
 
     static final class Params {
         public final int mTrailColor;
@@ -96,6 +97,17 @@ final class GesturePreviewTrail {
         }
         final int[] eventTimes = mEventTimes.getPrimitiveArray();
         final int strokeId = stroke.getGestureStrokeId();
+        // Because interpolation algorithm in {@link GestureStrokeWithPreviewPoints} can't determine
+        // the interpolated points in the last segment of gesture stroke, it may need recalculation
+        // of interpolation when new segments are added to the stroke.
+        // {@link #mLastInterpolatedDrawIndex} holds the start index of the last segment. It may
+        // be updated by the interpolation
+        // {@link GestureStrokeWithPreviewPoints#interpolatePreviewStroke}
+        // or by animation {@link #drawGestureTrail(Canvas,Paint,Rect,Params)} below.
+        final int lastInterpolatedIndex = (strokeId == mCurrentStrokeId)
+                ? mLastInterpolatedDrawIndex : trailSize;
+        mLastInterpolatedDrawIndex = stroke.interpolateStrokeAndReturnStartIndexOfLastSegment(
+                lastInterpolatedIndex, mEventTimes, mXCoordinates, mYCoordinates);
         if (strokeId != mCurrentStrokeId) {
             final int elapsedTime = (int)(downTime - mCurrentTimeBase);
             for (int i = mTrailStartIndex; i < trailSize; i++) {
@@ -216,6 +228,10 @@ final class GesturePreviewTrail {
                 System.arraycopy(eventTimes, startIndex, eventTimes, 0, newSize);
                 System.arraycopy(xCoords, startIndex, xCoords, 0, newSize);
                 System.arraycopy(yCoords, startIndex, yCoords, 0, newSize);
+                // The start index of the last segment of the stroke
+                // {@link mLastInterpolatedDrawIndex} should also be updated because all array
+                // elements have just been shifted for compaction.
+                mLastInterpolatedDrawIndex = Math.max(mLastInterpolatedDrawIndex - startIndex, 0);
             }
             mEventTimes.setLength(newSize);
             mXCoordinates.setLength(newSize);
