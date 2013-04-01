@@ -509,6 +509,11 @@ public final class DictionaryProvider extends ContentProvider {
                 } catch (final BadFormatException e) {
                     Log.w(TAG, "Not enough information to insert this dictionary " + values, e);
                 }
+                // We just received new information about the list of dictionary for this client.
+                // For all intents and purposes, this is new metadata, so we should publish it
+                // so that any listeners (like the Settings interface for example) can update
+                // themselves.
+                UpdateHandler.publishUpdateMetadataCompleted(getContext(), true);
                 break;
             case DICTIONARY_V1_WHOLE_LIST:
             case DICTIONARY_V1_DICT_INFO:

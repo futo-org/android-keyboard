@@ -450,4 +450,25 @@ public final class BinaryDictionaryFileDumper {
                     info.toContentValues());
         }
     }
+
+    /**
+     * Initialize a client record with the dictionary content provider.
+     *
+     * This merely acquires the content provider and calls
+     * #reinitializeClientRecordInDictionaryContentProvider.
+     *
+     * @param context the context for resources and providers.
+     * @param clientId the client ID to use.
+     */
+    public static void initializeClientRecordHelper(final Context context,
+            final String clientId) {
+        try {
+            final ContentProviderClient client = context.getContentResolver().
+                    acquireContentProviderClient(getProviderUriBuilder("").build());
+            if (null == client) return;
+            reinitializeClientRecordInDictionaryContentProvider(context, client, clientId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Cannot contact the dictionary content provider", e);
+        }
+    }
 }
