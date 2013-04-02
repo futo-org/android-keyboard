@@ -181,17 +181,21 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // a message that calls it instead of calling it directly.
         Looper.loop();
 
-        // Once #quit() has been called, the message queue has an "mQuiting" field that prevents
-        // any subsequent post in this queue. However the queue itself is still fully functional!
-        // If we have a way of resetting "queue.mQuiting" then we can continue using it as normal,
-        // coming back to this method to run the messages.
+        // Once #quit() has been called, the looper is not functional any more (it used to be,
+        // but now it SIGSEGV's if it's used again).
+        // It won't accept creating a new looper for this thread and switching to it...
+        // ...unless we can trick it into throwing out the old looper and believing it hasn't
+        // been initialized before.
         MessageQueue queue = Looper.myQueue();
         try {
-            // However there is no way of doing it externally, and mQuiting is private.
+            // However there is no way of doing it externally, and the static ThreadLocal
+            // field into which it's stored is private.
             // So... get out the big guns.
-            java.lang.reflect.Field f = MessageQueue.class.getDeclaredField("mQuiting");
-            f.setAccessible(true); // What do you mean "private"?
-            f.setBoolean(queue, false);
+            java.lang.reflect.Field f = Looper.class.getDeclaredField("sThreadLocal");
+            f.setAccessible(true); // private lolwut
+            final ThreadLocal<Looper> a = (ThreadLocal<Looper>) f.get(looper);
+            a.set(null);
+            looper.prepare();
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
