@@ -130,7 +130,9 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     protected void setUp() throws Exception {
         super.setUp();
         mTextView = new MyTextView(getContext());
-        mTextView.setInputType(InputType.TYPE_CLASS_TEXT);
+        final int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
+        mTextView.setInputType(inputType);
         mTextView.setEnabled(true);
         setupService();
         mLatinIME = getService();
@@ -138,9 +140,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
         final EditorInfo ei = new EditorInfo();
-        ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final InputConnection ic = mTextView.onCreateInputConnection(ei);
-        ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final LayoutInflater inflater =
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
