@@ -20,10 +20,12 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android 키보드(AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"Android 키보드(AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"Android 키보드 설정(AOSP)"</string>
+    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"Android 맞춤법 검사기(AOSP)"</string>
+    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"Android 맞춤법 검사기 설정(AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"입력 옵션"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"로그 명령 탐색"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android 맞춤법 검사기(AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"연락처 이름 조회"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"맞춤법 검사기가 주소록의 항목을 사용합니다."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"키를 누를 때 진동 발생"</string>

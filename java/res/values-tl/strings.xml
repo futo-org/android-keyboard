@@ -20,10 +20,12 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android keyboard (AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"Android Keyboard (AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"Mga Setting ng Android Keyboard (AOSP)"</string>
+    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"Spell Checker ng Android (AOSP)"</string>
+    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"Mga Setting ng Spell Checker ng Android (AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mga pagpipilian sa input"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Cmmnd sa Log ng Pnnliksik"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Pang-check ng pagbabaybay ng Android (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Maghanap pangalan contact"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Gumagamit pang-check pagbabaybay entry sa iyong listahan contact"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Mag-vibrate sa keypress"</string>

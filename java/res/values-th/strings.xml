@@ -20,10 +20,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android keyboard (AOSP)"</string>
+    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
+    <skip />
+    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
+    <skip />
     <string name="english_ime_input_options" msgid="3909945612939668554">"ตัวเลือกการป้อนข้อมูล"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"คำสั่งบันทึกการวิจัย"</string>
-    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"แอนดรอยด์ตรวจสอบการสะกด (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ค้นหารายชื่อติดต่อ"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"เครื่องมือตรวจการสะกดใช้รายการจากรายชื่อติดต่อของคุณ"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"สั่นเมื่อกดปุ่ม"</string>
