@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for aosp_android_keyboard_ime_name (8250992613616792321) -->
-    <skip />
-    <!-- no translation found for aosp_android_keyboard_ime_settings (423615877174850267) -->
-    <skip />
-    <!-- no translation found for aosp_spell_checker_service_name (511950477199948048) -->
-    <skip />
-    <!-- no translation found for aosp_android_spell_checker_service_settings (2970535894327288421) -->
-    <skip />
+    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"የAndroid ቁልፍ ሰሌዳ (AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"የAndroid ቁልፍ ሰሌዳ ቅንብሮች (AOSP)"</string>
+    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"Android ፊደል አራሚ (AOSP)"</string>
+    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"የAndroid ፊደል አራሚ ቅንብሮች (AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"ግቤት አማራጮች"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"የጥናት የምዝግብ ማስታወሻ ትዕዛዞች"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"የእውቅያ ስሞችን ተመልከት"</string>
