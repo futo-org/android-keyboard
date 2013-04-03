@@ -20,6 +20,7 @@
 #include <map>
 #include <stdint.h>
 #include "defines.h"
+#include "digraph_utils.h"
 
 namespace latinime {
 
@@ -29,8 +30,6 @@ class TerminalAttributes;
 class WordsPriorityQueuePool;
 
 class UnigramDictionary {
-    typedef struct { int first; int second; int replacement; } digraph_t;
-
  public:
     // Error tolerances
     static const int DEFAULT_MAX_ERRORS = 2;
@@ -57,13 +56,13 @@ class UnigramDictionary {
             const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool *queuePool) const;
     int getDigraphReplacement(const int *codes, const int i, const int inputSize,
-            const digraph_t *const digraphs, const unsigned int digraphsSize) const;
+            const DigraphUtils::digraph_t *const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codesBuffer, int *xCoordinatesBuffer,
             int *yCoordinatesBuffer, const int codesBufferSize, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, const int *codesSrc,
             const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
-            WordsPriorityQueuePool *queuePool, const digraph_t *const digraphs,
+            WordsPriorityQueuePool *queuePool, const DigraphUtils::digraph_t *const digraphs,
             const unsigned int digraphsSize) const;
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputSize,
@@ -111,9 +110,6 @@ class UnigramDictionary {
     const int ROOT_POS;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;
-
-    static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
-    static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
 };
 } // namespace latinime
 #endif // LATINIME_UNIGRAM_DICTIONARY_H
