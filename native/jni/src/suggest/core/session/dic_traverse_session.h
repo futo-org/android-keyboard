@@ -53,7 +53,7 @@ class DicTraverseSession {
     void resetCache(const int nextActiveCacheSize, const int maxWords);
 
     const uint8_t *getOffsetDict() const;
-    bool canUseCache() const;
+    int getDictFlags() const;
 
     //--------------------
     // getters and setters
