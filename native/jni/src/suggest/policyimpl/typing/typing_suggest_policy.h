@@ -31,6 +31,8 @@ class Weighting;
 
 class TypingSuggestPolicy : public SuggestPolicy {
  public:
+    static const TypingSuggestPolicy *getInstance() { return &sInstance; }
+
     TypingSuggestPolicy() {}
     virtual ~TypingSuggestPolicy() {}
     AK_FORCE_INLINE const Traversal *getTraversal() const {
@@ -47,6 +49,7 @@ class TypingSuggestPolicy : public SuggestPolicy {
 
  private:
     DISALLOW_COPY_AND_ASSIGN(TypingSuggestPolicy);
+    static const TypingSuggestPolicy sInstance;
 };
 } // namespace latinime
 #endif // LATINIME_TYPING_SUGGEST_POLICY_H
