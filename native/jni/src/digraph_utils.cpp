@@ -27,39 +27,47 @@ const DigraphUtils::digraph_t DigraphUtils::GERMAN_UMLAUT_DIGRAPHS[] =
 const DigraphUtils::digraph_t DigraphUtils::FRENCH_LIGATURES_DIGRAPHS[] =
         { { 'a', 'e', 0x00E6 }, // U+00E6 : LATIN SMALL LETTER AE
         { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
+const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
+        { DIGRAPH_TYPE_GERMAN_UMLAUT, DIGRAPH_TYPE_FRENCH_LIGATURES };
 
 /* static */ bool DigraphUtils::hasDigraphForCodePoint(
         const int dictFlags, const int compositeGlyphCodePoint) {
-    if (DigraphUtils::getDigraphForCodePoint(dictFlags, compositeGlyphCodePoint)) {
+    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(dictFlags);
+    if (DigraphUtils::getDigraphForDigraphTypeAndCodePoint(digraphType, compositeGlyphCodePoint)) {
         return true;
     }
     return false;
 }
 
-// Retrieves the set of all digraphs associated with the given dictionary.
-// Returns the size of the digraph array, or 0 if none exist.
-/* static */ int DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(
-        const int dictFlags, const DigraphUtils::digraph_t **digraphs) {
+// Returns the digraph type associated with the given dictionary.
+/* static */ DigraphUtils::DigraphType DigraphUtils::getDigraphTypeForDictionary(
+        const int dictFlags) {
     if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & dictFlags) {
-        *digraphs = DigraphUtils::GERMAN_UMLAUT_DIGRAPHS;
-        return NELEMS(DigraphUtils::GERMAN_UMLAUT_DIGRAPHS);
+        return DIGRAPH_TYPE_GERMAN_UMLAUT;
     }
     if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & dictFlags) {
-        *digraphs = DigraphUtils::FRENCH_LIGATURES_DIGRAPHS;
-        return NELEMS(DigraphUtils::FRENCH_LIGATURES_DIGRAPHS);
+        return DIGRAPH_TYPE_FRENCH_LIGATURES;
     }
-    return 0;
+    return DIGRAPH_TYPE_NONE;
+}
+
+// Retrieves the set of all digraphs associated with the given dictionary flags.
+// Returns the size of the digraph array, or 0 if none exist.
+/* static */ int DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(
+        const int dictFlags, const DigraphUtils::digraph_t **const digraphs) {
+    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(dictFlags);
+    return getAllDigraphsForDigraphTypeAndReturnSize(digraphType, digraphs);
 }
 
 // Returns the digraph codepoint for the given composite glyph codepoint and digraph codepoint index
 // (which specifies the first or second codepoint in the digraph).
-/* static */ int DigraphUtils::getDigraphCodePointForIndex(const int dictFlags,
-        const int compositeGlyphCodePoint, const DigraphCodePointIndex digraphCodePointIndex) {
+/* static */ int DigraphUtils::getDigraphCodePointForIndex(const int compositeGlyphCodePoint,
+        const DigraphCodePointIndex digraphCodePointIndex) {
     if (digraphCodePointIndex == NOT_A_DIGRAPH_INDEX) {
         return NOT_A_CODE_POINT;
     }
-    const DigraphUtils::digraph_t *digraph =
-            DigraphUtils::getDigraphForCodePoint(dictFlags, compositeGlyphCodePoint);
+    const DigraphUtils::digraph_t *const digraph =
+            DigraphUtils::getDigraphForCodePoint(compositeGlyphCodePoint);
     if (!digraph) {
         return NOT_A_CODE_POINT;
     }
@@ -72,16 +80,48 @@ const DigraphUtils::digraph_t DigraphUtils::FRENCH_LIGATURES_DIGRAPHS[] =
     return NOT_A_CODE_POINT;
 }
 
+// Retrieves the set of all digraphs associated with the given digraph type.
+// Returns the size of the digraph array, or 0 if none exist.
+/* static */ int DigraphUtils::getAllDigraphsForDigraphTypeAndReturnSize(
+        const DigraphUtils::DigraphType digraphType,
+        const DigraphUtils::digraph_t **const digraphs) {
+    if (digraphType == DigraphUtils::DIGRAPH_TYPE_GERMAN_UMLAUT) {
+        *digraphs = GERMAN_UMLAUT_DIGRAPHS;
+        return NELEMS(GERMAN_UMLAUT_DIGRAPHS);
+    }
+    if (digraphType == DIGRAPH_TYPE_FRENCH_LIGATURES) {
+        *digraphs = FRENCH_LIGATURES_DIGRAPHS;
+        return NELEMS(FRENCH_LIGATURES_DIGRAPHS);
+    }
+    return 0;
+}
+
 /**
  * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
- * dictFlags: the dictionary flags needed to determine which digraphs are supported.
  * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
  */
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForCodePoint(
-        const int dictFlags, const int compositeGlyphCodePoint) {
+        const int compositeGlyphCodePoint) {
+    for (size_t i = 0; i < NELEMS(USED_DIGRAPH_TYPES); i++) {
+        const DigraphUtils::digraph_t *const digraph = getDigraphForDigraphTypeAndCodePoint(
+                USED_DIGRAPH_TYPES[i], compositeGlyphCodePoint);
+        if (digraph) {
+            return digraph;
+        }
+    }
+    return 0;
+}
+
+/**
+ * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
+ * digraphType: the type of digraphs supported.
+ * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
+ */
+/* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForDigraphTypeAndCodePoint(
+        const DigraphUtils::DigraphType digraphType, const int compositeGlyphCodePoint) {
     const DigraphUtils::digraph_t *digraphs = 0;
     const int digraphsSize =
-            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(dictFlags, &digraphs);
+            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(digraphType, &digraphs);
     for (int i = 0; i < digraphsSize; i++) {
         if (digraphs[i].compositeGlyph == compositeGlyphCodePoint) {
             return &digraphs[i];
