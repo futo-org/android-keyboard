@@ -307,7 +307,7 @@ inline void Correction::startToTraverseAllNodes() {
     mNeedsToTraverseAllNodes = true;
 }
 
-inline bool Correction::isSingleQuote(const int c) {
+AK_FORCE_INLINE bool Correction::isSingleQuote(const int c) {
     const int userTypedChar = mProximityInfoState.getPrimaryCodePointAt(mInputIndex);
     return (c == KEYCODE_SINGLE_QUOTE && userTypedChar != KEYCODE_SINGLE_QUOTE);
 }
