@@ -16,6 +16,7 @@
 
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
+#include <map> // TODO: remove
 #include <stdint.h>
 
 #include "bigram_dictionary.h"
@@ -24,6 +25,7 @@
 #include "dictionary.h"
 #include "dic_traverse_wrapper.h"
 #include "gesture_suggest.h"
+#include "typing_suggest.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -34,13 +36,15 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
           mUnigramDictionary(new UnigramDictionary(mOffsetDict, BinaryFormat::getFlags(mDict))),
           mBigramDictionary(new BigramDictionary(mOffsetDict)),
-          mGestureSuggest(new GestureSuggest()) {
+          mGestureSuggest(new GestureSuggest()),
+          mTypingSuggest(new TypingSuggest()) {
 }
 
 Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
     delete mGestureSuggest;
+    delete mTypingSuggest;
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
@@ -60,14 +64,26 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
         }
         return result;
     } else {
-        std::map<int, int> bigramMap;
-        uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-        mBigramDictionary->fillBigramAddressToProbabilityMapAndFilter(prevWordCodePoints,
-                prevWordLength, &bigramMap, bigramFilter);
-        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                inputCodePoints, inputSize, &bigramMap, bigramFilter, useFullEditDistance, outWords,
-                frequencies, outputTypes);
-        return result;
+        if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
+            DicTraverseWrapper::initDicTraverseSession(
+                    traverseSession, this, prevWordCodePoints, prevWordLength);
+            result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+                    ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
+                    outWords, frequencies, spaceIndices, outputTypes);
+            if (DEBUG_DICT) {
+                DUMP_RESULT(outWords, frequencies);
+            }
+            return result;
+        } else {
+            std::map<int, int> bigramMap;
+            uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
+            mBigramDictionary->fillBigramAddressToProbabilityMapAndFilter(prevWordCodePoints,
+                    prevWordLength, &bigramMap, bigramFilter);
+            result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
+                    inputCodePoints, inputSize, &bigramMap, bigramFilter, useFullEditDistance,
+                    outWords, frequencies, outputTypes);
+            return result;
+        }
     }
 }
 
