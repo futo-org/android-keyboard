@@ -58,10 +58,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     public static final String PREF_USE_CONTACTS_KEY = "pref_spellcheck_use_contacts";
 
-    public static final int CAPITALIZE_NONE = 0; // No caps, or mixed case
-    public static final int CAPITALIZE_FIRST = 1; // First only
-    public static final int CAPITALIZE_ALL = 2; // All caps
-
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private Map<String, DictionaryPool> mDictionaryPools = CollectionUtils.newSynchronizedTreeMap();
     private Map<String, UserBinaryDictionary> mUserDictionaries =
@@ -325,13 +321,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 }
                 Collections.reverse(mSuggestions);
                 StringUtils.removeDupes(mSuggestions);
-                if (CAPITALIZE_ALL == capitalizeType) {
+                if (StringUtils.CAPITALIZE_ALL == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // get(i) returns a CharSequence which is actually a String so .toString()
                         // should return the same object.
                         mSuggestions.set(i, mSuggestions.get(i).toString().toUpperCase(locale));
                     }
-                } else if (CAPITALIZE_FIRST == capitalizeType) {
+                } else if (StringUtils.CAPITALIZE_FIRST == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // Likewise
                         mSuggestions.set(i, StringUtils.toTitleCase(
@@ -437,32 +433,5 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                     new WeakReference<DictionaryCollection>(dictionaryCollection));
         }
         return new DictAndProximity(dictionaryCollection, proximityInfo);
-    }
-
-    // This method assumes the text is not empty or null.
-    public static int getCapitalizationType(String text) {
-        // If the first char is not uppercase, then the word is either all lower case,
-        // and in either case we return CAPITALIZE_NONE.
-        if (!Character.isUpperCase(text.codePointAt(0))) return CAPITALIZE_NONE;
-        final int len = text.length();
-        int capsCount = 1;
-        int letterCount = 1;
-        for (int i = 1; i < len; i = text.offsetByCodePoints(i, 1)) {
-            if (1 != capsCount && letterCount != capsCount) break;
-            final int codePoint = text.codePointAt(i);
-            if (Character.isUpperCase(codePoint)) {
-                ++capsCount;
-                ++letterCount;
-            } else if (Character.isLetter(codePoint)) {
-                // We need to discount non-letters since they may not be upper-case, but may
-                // still be part of a word (e.g. single quote or dash, as in "IT'S" or "FULL-TIME")
-                ++letterCount;
-            }
-        }
-        // We know the first char is upper case. So we want to test if either every letter other
-        // than the first is lower case, or if they are all upper case. If the string is exactly
-        // one char long, then we will arrive here with letterCount 1, and this is correct, too.
-        if (1 == capsCount) return CAPITALIZE_FIRST;
-        return (letterCount == capsCount ? CAPITALIZE_ALL : CAPITALIZE_NONE);
     }
 }

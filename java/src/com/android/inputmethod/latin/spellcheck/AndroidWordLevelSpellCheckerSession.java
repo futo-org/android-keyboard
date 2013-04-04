@@ -214,14 +214,14 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         // If the word is in there as is, then it's in the dictionary. If not, we'll test lower
         // case versions, but only if the word is not already all-lower case or mixed case.
         if (dict.isValidWord(text)) return true;
-        if (AndroidSpellCheckerService.CAPITALIZE_NONE == capitalizeType) return false;
+        if (StringUtils.CAPITALIZE_NONE == capitalizeType) return false;
 
         // If we come here, we have a capitalized word (either First- or All-).
         // Downcase the word and look it up again. If the word is only capitalized, we
         // tested all possibilities, so if it's still negative we can return false.
         final String lowerCaseText = text.toLowerCase(mLocale);
         if (dict.isValidWord(lowerCaseText)) return true;
-        if (AndroidSpellCheckerService.CAPITALIZE_FIRST == capitalizeType) return false;
+        if (StringUtils.CAPITALIZE_FIRST == capitalizeType) return false;
 
         // If the lower case version is not in the dictionary, it's still possible
         // that we have an all-caps version of a word that needs to be capitalized
@@ -296,7 +296,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 }
             }
 
-            final int capitalizeType = AndroidSpellCheckerService.getCapitalizationType(text);
+            final int capitalizeType = StringUtils.getCapitalizationType(text);
             boolean isInDict = true;
             DictAndProximity dictInfo = null;
             try {
