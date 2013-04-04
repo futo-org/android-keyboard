@@ -620,34 +620,34 @@ public final class FusionDictionary implements Iterable<Word> {
      * Helper method to find a word in a given branch.
      */
     @SuppressWarnings("unused")
-    public static CharGroup findWordInTree(Node node, final String s) {
+    public static CharGroup findWordInTree(Node node, final String string) {
         int index = 0;
         final StringBuilder checker = DBG ? new StringBuilder() : null;
+        final int[] codePoints = getCodePoints(string);
 
         CharGroup currentGroup;
-        final int codePointCountInS = s.codePointCount(0, s.length());
         do {
-            int indexOfGroup = findIndexOfChar(node, s.codePointAt(index));
+            int indexOfGroup = findIndexOfChar(node, codePoints[index]);
             if (CHARACTER_NOT_FOUND == indexOfGroup) return null;
             currentGroup = node.mData.get(indexOfGroup);
 
-            if (s.length() - index < currentGroup.mChars.length) return null;
+            if (codePoints.length - index < currentGroup.mChars.length) return null;
             int newIndex = index;
-            while (newIndex < s.length() && newIndex - index < currentGroup.mChars.length) {
-                if (currentGroup.mChars[newIndex - index] != s.codePointAt(newIndex)) return null;
+            while (newIndex < codePoints.length && newIndex - index < currentGroup.mChars.length) {
+                if (currentGroup.mChars[newIndex - index] != codePoints[newIndex]) return null;
                 newIndex++;
             }
             index = newIndex;
 
             if (DBG) checker.append(new String(currentGroup.mChars, 0, currentGroup.mChars.length));
-            if (index < codePointCountInS) {
+            if (index < codePoints.length) {
                 node = currentGroup.mChildren;
             }
-        } while (null != node && index < codePointCountInS);
+        } while (null != node && index < codePoints.length);
 
-        if (index < codePointCountInS) return null;
+        if (index < codePoints.length) return null;
         if (!currentGroup.isTerminal()) return null;
-        if (DBG && !s.equals(checker.toString())) return null;
+        if (DBG && !codePoints.equals(checker.toString())) return null;
         return currentGroup;
     }
 
@@ -847,12 +847,12 @@ public final class FusionDictionary implements Iterable<Word> {
         @Override
         public Word next() {
             Position currentPos = mPositions.getLast();
-            mCurrentString.setLength(mCurrentString.length() - currentPos.length);
+            mCurrentString.setLength(currentPos.length);
 
             do {
                 if (currentPos.pos.hasNext()) {
                     final CharGroup currentGroup = currentPos.pos.next();
-                    currentPos.length = currentGroup.mChars.length;
+                    currentPos.length = mCurrentString.length();
                     for (int i : currentGroup.mChars)
                         mCurrentString.append(Character.toChars(i));
                     if (null != currentGroup.mChildren) {
@@ -866,7 +866,7 @@ public final class FusionDictionary implements Iterable<Word> {
                 } else {
                     mPositions.removeLast();
                     currentPos = mPositions.getLast();
-                    mCurrentString.setLength(mCurrentString.length() - mPositions.getLast().length);
+                    mCurrentString.setLength(mPositions.getLast().length);
                 }
             } while (true);
         }

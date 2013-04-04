@@ -72,15 +72,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
             new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
 
-    private static final String[] CHARACTERS = {
-        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-    };
-
     public BinaryDictIOTests() {
         super();
 
-        final Random random = new Random(123456);
+        final long time = System.currentTimeMillis();
+        Log.e(TAG, "Testing dictionary: seed is " + time);
+        final Random random = new Random(time);
         sWords.clear();
         generateWords(MAX_UNIGRAMS, random);
 
@@ -132,13 +129,16 @@ public class BinaryDictIOTests extends AndroidTestCase {
     /**
      * Generates a random word.
      */
-    private String generateWord(final int value) {
-        final int lengthOfChars = CHARACTERS.length;
+    private String generateWord(final Random random) {
         StringBuilder builder = new StringBuilder("a");
-        long lvalue = Math.abs((long)value);
-        while (lvalue > 0) {
-            builder.append(CHARACTERS[(int)(lvalue % lengthOfChars)]);
-            lvalue /= lengthOfChars;
+        int count = random.nextInt() % 30; // Arbitrarily 30 chars max
+        while (count > 0) {
+            final long r = Math.abs(random.nextInt());
+            if (r < 0) continue;
+            // Don't insert 0~20, but insert any other code point.
+            // Code points are in the range 0~0x10FFFF.
+            builder.appendCodePoint((int)(20 + r % (0x10FFFF - 20)));
+            --count;
         }
         return builder.toString();
     }
@@ -146,7 +146,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private void generateWords(final int number, final Random random) {
         final Set<String> wordSet = CollectionUtils.newHashSet();
         while (wordSet.size() < number) {
-            wordSet.add(generateWord(random.nextInt()));
+            wordSet.add(generateWord(random));
         }
         sWords.addAll(wordSet);
     }
@@ -555,7 +555,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random((int)System.currentTimeMillis());
         for (int i = 0; i < 1000; ++i) {
-            final String word = generateWord(random.nextInt());
+            final String word = generateWord(random);
             if (sWords.indexOf(word) != -1) continue;
             runGetTerminalPosition(buffer, word, i, false);
         }
