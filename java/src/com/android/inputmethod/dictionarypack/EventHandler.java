@@ -16,13 +16,9 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.R;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public final class EventHandler extends BroadcastReceiver {
     private static final String TAG = EventHandler.class.getName();

@@ -444,7 +444,19 @@ public final class UpdateHandler {
         manager.remove(fileId);
     }
 
-    private static void publishUpdateMetadataCompleted(final Context context,
+    /**
+     * Sends a broadcast informing listeners that the dictionaries were updated.
+     *
+     * This will call all local listeners through the UpdateEventListener#downloadedMetadata
+     * callback (for example, the dictionary provider interface uses this to stop the Loading
+     * animation) and send a broadcast about the metadata having been updated. For a client of
+     * the dictionary pack like Latin IME, this means it should re-query the dictionary pack
+     * for any relevant new data.
+     *
+     * @param context the context, to send the broadcast.
+     * @param downloadSuccessful whether the download of the metadata was successful or not.
+     */
+    public static void publishUpdateMetadataCompleted(final Context context,
             final boolean downloadSuccessful) {
         // We need to warn all listeners of what happened. But some listeners may want to
         // remove themselves or re-register something in response. Hence we should take a

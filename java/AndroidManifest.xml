@@ -95,6 +95,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".DictionaryPackInstallBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.android.inputmethod.dictionarypack.UNKNOWN_CLIENT" />
+            </intent-filter>
+        </receiver>
+
         <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
                   android:grantUriPermissions="true"
                   android:exported="false"
