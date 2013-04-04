@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-#include "suggest.h"
-#include "typing_suggest.h"
 #include "typing_suggest_policy.h"
 
 namespace latinime {
-
 const TypingSuggestPolicy TypingSuggestPolicy::sInstance;
-
-// A factory method for a "typing" Suggest instance
-static SuggestInterface *getTypingSuggestInstance() {
-    return new Suggest(TypingSuggestPolicy::getInstance());
-}
-
-// An ad-hoc internal class to register the factory method getTypingSuggestInstance() defined above
-class TypingSuggestFactoryRegisterer {
- public:
-    TypingSuggestFactoryRegisterer() {
-        TypingSuggest::setTypingSuggestFactoryMethod(getTypingSuggestInstance);
-    }
- private:
-    DISALLOW_COPY_AND_ASSIGN(TypingSuggestFactoryRegisterer);
-};
-
-// To invoke the TypingSuggestFactoryRegisterer's constructor in the global constructor
-static TypingSuggestFactoryRegisterer typingSuggestFactoryregisterer;
 } // namespace latinime
