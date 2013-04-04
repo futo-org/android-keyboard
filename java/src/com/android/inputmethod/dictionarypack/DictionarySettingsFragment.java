@@ -340,8 +340,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private void cancelRefresh() {
         UpdateHandler.unregisterUpdateEventListener(this);
         final Context context = getActivity();
-        UpdateHandler.cancelUpdate(context,
-                MetadataDbHelper.getMetadataUriAsString(context, mClientId));
+        UpdateHandler.cancelUpdate(context, mClientId);
         stopLoadingAnimation();
     }
 
