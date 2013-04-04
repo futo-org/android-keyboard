@@ -79,6 +79,7 @@ class Dictionary {
     const UnigramDictionary *mUnigramDictionary;
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
+    SuggestInterface *mTypingSuggest;
 };
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_H
