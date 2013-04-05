@@ -64,6 +64,7 @@ class Suggest : public SuggestInterface {
     void generateFeatures(
             DicTraverseSession *traverseSession, DicNode *dicNode, float *features) const;
     void processDicNodeAsOmission(DicTraverseSession *traverseSession, DicNode *dicNode) const;
+    void processDicNodeAsDigraph(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsTransposition(DicTraverseSession *traverseSession,
             DicNode *dicNode) const;
     void processDicNodeAsInsertion(DicTraverseSession *traverseSession, DicNode *dicNode) const;

@@ -18,6 +18,7 @@
 
 #include "char_utils.h"
 #include "dictionary.h"
+#include "digraph_utils.h"
 #include "proximity_info.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
@@ -221,7 +222,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
 void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
     const int inputSize = traverseSession->getInputSize();
     DicNodeVector childDicNodes(TRAVERSAL->getDefaultExpandDicNodeSize());
-    DicNode omissionDicNode;
+    DicNode correctionDicNode;
 
     // TODO: Find more efficient caching
     const bool shouldDepthLevelCache = TRAVERSAL->shouldDepthLevelCache(traverseSession);
@@ -257,7 +258,10 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             dicNode.setCached();
         }
 
-        if (isLookAheadCorrection) {
+        if (dicNode.isInDigraph()) {
+            // Finish digraph handling if the node is in the middle of a digraph expansion.
+            processDicNodeAsDigraph(traverseSession, &dicNode);
+        } else if (isLookAheadCorrection) {
             // The algorithm maintains a small set of "deferred" nodes that have not consumed the
             // latest touch point yet. These are needed to apply look-ahead correction operations
             // that require special handling of the latest touch point. For example, with insertions
@@ -291,12 +295,18 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     processDicNodeAsMatch(traverseSession, childDicNode);
                     continue;
                 }
+                if (DigraphUtils::hasDigraphForCodePoint(traverseSession->getDictFlags(),
+                        childDicNode->getNodeCodePoint())) {
+                    correctionDicNode.initByCopy(childDicNode);
+                    correctionDicNode.advanceDigraphIndex();
+                    processDicNodeAsDigraph(traverseSession, &correctionDicNode);
+                }
                 if (allowsErrorCorrections
                         && TRAVERSAL->isOmission(traverseSession, &dicNode, childDicNode)) {
                     // TODO: (Gesture) Change weight between omission and substitution errors
                     // TODO: (Gesture) Terminal node should not be handled as omission
-                    omissionDicNode.initByCopy(childDicNode);
-                    processDicNodeAsOmission(traverseSession, &omissionDicNode);
+                    correctionDicNode.initByCopy(childDicNode);
+                    processDicNodeAsOmission(traverseSession, &correctionDicNode);
                 }
                 const ProximityType proximityType = TRAVERSAL->getProximityType(
                         traverseSession, &dicNode, childDicNode);
@@ -397,6 +407,16 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SUBSTITUTION, traverseSession,
             dicNode, childDicNode, 0 /* bigramCacheMap */);
     weightChildNode(traverseSession, childDicNode);
+    processExpandedDicNode(traverseSession, childDicNode);
+}
+
+// Process the node codepoint as a digraph. This means that composite glyphs like the German
+// u-umlaut is expanded to the transliteration "ue". Note that this happens in parallel with
+// the normal non-digraph traversal, so both "uber" and "ueber" can be corrected to "[u-umlaut]ber".
+void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
+        DicNode *childDicNode) const {
+    weightChildNode(traverseSession, childDicNode);
+    childDicNode->advanceDigraphIndex();
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
