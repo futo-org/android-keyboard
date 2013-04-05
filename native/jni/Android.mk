@@ -58,6 +58,7 @@ LATIN_IME_CORE_SRC_FILES := \
     correction.cpp \
     dictionary.cpp \
     dic_traverse_wrapper.cpp \
+    digraph_utils.cpp \
     proximity_info.cpp \
     proximity_info_params.cpp \
     proximity_info_state.cpp \
