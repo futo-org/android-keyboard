@@ -135,7 +135,8 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Sentuh lagi untuk menyimpan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus tersedia"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Dayakan maklum balas pengguna"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Bantu memperbaik editor input ini dengan menghantar statistik penggunaan dan laporan runtuhan kepada Google."</string>
+    <!-- no translation found for prefs_description_log (7525225584555429211) -->
+    <skip />
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema papan kekunci"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
@@ -162,9 +163,12 @@
     <string name="not_now" msgid="6172462888202790482">"Bukan sekarang"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Gaya input yang sama sudah wujud: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Tetapan kelengahan tekan lama kekunci"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tetapan tempoh getaran tekan kekunci"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tetapan kelantangan bunyi tekanan kekunci"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Baca fail kamus luaran"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Tiada fail kamus dalam folder Muat Turun"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Pilih fail kamus untuk dipasang"</string>
