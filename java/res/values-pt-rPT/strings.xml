@@ -135,7 +135,8 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar comentários do utilizador"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Envie automaticamente estatísticas de utilização e relatórios de falhas para a Google e ajude-nos a melhorar este editor de método de introdução."</string>
+    <!-- no translation found for prefs_description_log (7525225584555429211) -->
+    <skip />
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglês (RU)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglês (EUA)"</string>
@@ -162,9 +163,12 @@
     <string name="not_now" msgid="6172462888202790482">"Agora não"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Já existe o mesmo estilo de introdução: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudo da capacidade de utilização"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"Definições do atraso de pressão longa de tecla"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Definições de duração da vibração ao premir as teclas"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Definições de volume de som ao premir as teclas"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Ler ficheiro de dicionário externo"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Não há ficheiros de dicionário na pasta Transferências"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Selecione um ficheiro de dicionário para instalar"</string>
