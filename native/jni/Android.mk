@@ -26,12 +26,7 @@ include $(CLEAR_VARS)
 LATIN_IME_SRC_DIR := src
 LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_C_INCLUDES += \
-    $(LATIN_IME_SRC_FULLPATH_DIR) \
-    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest \
-    $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core \
-    $(addprefix $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/core/, dicnode dictionary policy session) \
-    $(addprefix $(LATIN_IME_SRC_FULLPATH_DIR)/suggest/policyimpl/, gesture typing)
+LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR)
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
@@ -65,18 +60,20 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info_state_utils.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
-    suggest/core/dicnode/dic_node.cpp \
-    suggest/core/dicnode/dic_nodes_cache.cpp \
-    suggest/core/dicnode/dic_node_utils.cpp \
+    $(addprefix suggest/core/dicnode/, \
+        dic_node.cpp \
+        dic_node_utils.cpp \
+        dic_nodes_cache.cpp) \
+    suggest/core/suggest.cpp \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
-    suggest/core/suggest.cpp \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
-    suggest/policyimpl/typing/scoring_params.cpp \
-    suggest/policyimpl/typing/typing_scoring.cpp \
-    suggest/policyimpl/typing/typing_suggest_policy.cpp \
-    suggest/policyimpl/typing/typing_traversal.cpp \
-    suggest/policyimpl/typing/typing_weighting.cpp
+    $(addprefix suggest/policyimpl/typing/, \
+        scoring_params.cpp \
+        typing_scoring.cpp \
+        typing_suggest_policy.cpp \
+        typing_traversal.cpp \
+        typing_weighting.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

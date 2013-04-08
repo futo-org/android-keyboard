@@ -20,6 +20,9 @@
 #include "defines.h"
 
 namespace latinime {
+
+class DicTraverseSession;
+
 class Traversal {
  public:
     virtual int getMaxPointerCount() const = 0;

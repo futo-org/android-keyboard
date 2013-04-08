@@ -16,12 +16,12 @@
 
 #define LOG_TAG "LatinIME: jni"
 
+#include "jni_common.h"
+
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
 #include "defines.h"
-#include "jni.h"
-#include "jni_common.h"
 
 /*
  * Returns the JNI version on success, -1 on failure.

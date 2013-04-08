@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "typing_traversal.h"
+#include "suggest/policyimpl/typing/typing_traversal.h"
 
 namespace latinime {
 const bool TypingTraversal::CORRECT_OMISSION = true;

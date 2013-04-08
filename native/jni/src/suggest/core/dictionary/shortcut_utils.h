@@ -18,7 +18,7 @@
 #define LATINIME_SHORTCUT_UTILS
 
 #include "defines.h"
-#include "dic_node_utils.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
 #include "terminal_attributes.h"
 
 namespace latinime {

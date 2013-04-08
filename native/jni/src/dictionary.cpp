@@ -16,17 +16,18 @@
 
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
+#include "dictionary.h"
+
 #include <map> // TODO: remove
 #include <stdint.h>
 
 #include "bigram_dictionary.h"
 #include "binary_format.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "dic_traverse_wrapper.h"
-#include "gesture_suggest_policy_factory.h"
-#include "suggest.h"
-#include "typing_suggest_policy_factory.h"
+#include "suggest/core/suggest.h"
+#include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
+#include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
