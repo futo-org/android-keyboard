@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include "dic_node.h"
-#include "scoring_params.h"
-#include "typing_weighting.h"
+#include "suggest/policyimpl/typing/typing_weighting.h"
+
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
 const TypingWeighting TypingWeighting::sInstance;

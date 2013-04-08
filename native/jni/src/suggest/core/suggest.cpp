@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
+#include "suggest/core/suggest.h"
+
 #include "char_utils.h"
 #include "dictionary.h"
-#include "dic_node_priority_queue.h"
-#include "dic_node_vector.h"
-#include "dic_traverse_session.h"
 #include "proximity_info.h"
-#include "scoring.h"
-#include "shortcut_utils.h"
-#include "suggest.h"
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/dicnode/dic_node_priority_queue.h"
+#include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/shortcut_utils.h"
+#include "suggest/core/policy/scoring.h"
+#include "suggest/core/policy/traversal.h"
+#include "suggest/core/policy/weighting.h"
+#include "suggest/core/session/dic_traverse_session.h"
 #include "terminal_attributes.h"
-#include "traversal.h"
-#include "weighting.h"
 
 namespace latinime {
 

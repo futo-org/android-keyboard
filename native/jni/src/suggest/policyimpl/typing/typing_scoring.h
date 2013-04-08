@@ -18,8 +18,8 @@
 #define LATINIME_TYPING_SCORING_H
 
 #include "defines.h"
-#include "scoring.h"
-#include "scoring_params.h"
+#include "suggest/core/policy/scoring.h"
+#include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
 

@@ -18,9 +18,10 @@
 #define LATINIME_TYPING_WEIGHTING_H
 
 #include "defines.h"
-#include "dic_node_utils.h"
-#include "dic_traverse_session.h"
-#include "weighting.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/policy/weighting.h"
+#include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
 

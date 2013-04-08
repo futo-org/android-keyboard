@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+#include "suggest/core/policy/weighting.h"
+
 #include "char_utils.h"
 #include "defines.h"
-#include "dic_node.h"
-#include "dic_node_profiler.h"
-#include "dic_node_utils.h"
-#include "dic_traverse_session.h"
 #include "hash_map_compat.h"
-#include "weighting.h"
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/dicnode/dic_node_profiler.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
 

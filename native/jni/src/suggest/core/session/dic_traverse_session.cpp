@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+#include "suggest/core/session/dic_traverse_session.h"
+
 #include "defines.h"
 #include "dictionary.h"
-#include "dic_node_utils.h"
-#include "dic_traverse_session.h"
 #include "dic_traverse_wrapper.h"
 #include "jni.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
 
 namespace latinime {
 
