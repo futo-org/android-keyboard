@@ -350,10 +350,10 @@
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
 
-    <!-- Preferences item for enabling to send user statistics to Google -->
+    <!-- Preferences item for enabling to send user statistics for development only diagnostics -->
     <string name="prefs_enable_log">Enable user feedback</string>
-    <!-- Description for enabling to send user statistics to Google -->
-    <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
+    <!-- Description for enabling to send user statistics for development only diagnostics -->
+    <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports</string>
 
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
