@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright (C) 2013 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-#include "gesture_suggest.h"
+#ifndef LATINIME_TYPING_SUGGEST_POLICY_FACTORY_H
+#define LATINIME_TYPING_SUGGEST_POLICY_FACTORY_H
+
+#include "defines.h"
+#include "typing_suggest_policy.h"
 
 namespace latinime {
-    SuggestInterface *(*GestureSuggest::sGestureSuggestFactoryMethod)() = 0;
 
-    GestureSuggest::~GestureSuggest() {
-        delete mSuggestInterface;
+class SuggestPolicy;
+
+class TypingSuggestPolicyFactory {
+ public:
+    static const SuggestPolicy *getTypingSuggestPolicy() {
+        return TypingSuggestPolicy::getInstance();
     }
+
+ private:
+    DISALLOW_COPY_AND_ASSIGN(TypingSuggestPolicyFactory);
+};
 } // namespace latinime
+#endif // LATINIME_TYPING_SUGGEST_POLICY_FACTORY_H
