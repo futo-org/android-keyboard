@@ -24,8 +24,9 @@
 #include "defines.h"
 #include "dictionary.h"
 #include "dic_traverse_wrapper.h"
-#include "gesture_suggest.h"
-#include "typing_suggest.h"
+#include "gesture_suggest_policy_factory.h"
+#include "suggest.h"
+#include "typing_suggest_policy_factory.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -36,8 +37,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
           mUnigramDictionary(new UnigramDictionary(mOffsetDict, BinaryFormat::getFlags(mDict))),
           mBigramDictionary(new BigramDictionary(mOffsetDict)),
-          mGestureSuggest(new GestureSuggest()),
-          mTypingSuggest(new TypingSuggest()) {
+          mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
+          mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
 }
 
 Dictionary::~Dictionary() {

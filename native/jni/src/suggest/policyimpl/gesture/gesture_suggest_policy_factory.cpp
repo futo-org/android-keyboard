@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-#include "typing_suggest.h"
+#include "gesture_suggest_policy_factory.h"
 
 namespace latinime {
-    SuggestInterface *(*TypingSuggest::sTypingSuggestFactoryMethod)() = 0;
-
-    TypingSuggest::~TypingSuggest() {
-        delete mSuggestInterface;
-    }
+    const SuggestPolicy *(*GestureSuggestPolicyFactory::sGestureSuggestFactoryMethod)() = 0;
 } // namespace latinime
