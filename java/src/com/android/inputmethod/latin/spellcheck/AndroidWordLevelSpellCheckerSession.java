@@ -150,7 +150,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             // Greek letters are either in the 370~3FF range (Greek & Coptic), or in the
             // 1F00~1FFF range (Greek extended). Our dictionary contains both sort of characters.
             // Our dictionary also contains a few words with 0xF2; it would be best to check
-            // if that's correct, but a Google search does return results for these words so
+            // if that's correct, but a web search does return results for these words so
             // they are probably okay.
             return (codePoint >= 0x370 && codePoint <= 0x3FF)
                     || (codePoint >= 0x1F00 && codePoint <= 0x1FFF)
