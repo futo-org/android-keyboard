@@ -20,7 +20,8 @@
 namespace latinime {
 const float ProximityInfoParams::NOT_A_DISTANCE_FLOAT = -1.0f;
 const int ProximityInfoParams::MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE = 5;
-const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G = 1.1f;
+const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE = 1.0f;
+const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G = 0.5f;
 
 /* Per method constants */
 // Used by ProximityInfoStateUtils::initGeometricDistanceInfos()

@@ -426,7 +426,6 @@ void Suggest::processDicNodeAsOmission(
         weightChildNode(traverseSession, childDicNode);
 
         if (!TRAVERSAL->isPossibleOmissionChildNode(traverseSession, dicNode, childDicNode)) {
-            DicNode::managedDelete(childDicNode);
             continue;
         }
         processExpandedDicNode(traverseSession, childDicNode);

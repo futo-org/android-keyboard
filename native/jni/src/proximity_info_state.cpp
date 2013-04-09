@@ -28,6 +28,7 @@
 
 namespace latinime {
 
+// TODO: Remove the dependency of "isGeometric"
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
@@ -94,12 +95,17 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 pushTouchPointStartIndex, lastSavedInputSize);
     }
 
+    // TODO: Remove the dependency of "isGeometric"
+    const float verticalSweetSpotScale = isGeometric
+            ? ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G
+            : ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE;
+
     if (xCoordinates && yCoordinates) {
         mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(mProximityInfo,
                 mMaxPointToKeyLength, mInputProximities, xCoordinates, yCoordinates, times,
-                pointerIds, inputSize, isGeometric, pointerId, pushTouchPointStartIndex,
-                &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSampledLengthCache,
-                &mSampledInputIndice);
+                pointerIds, verticalSweetSpotScale, inputSize, isGeometric, pointerId,
+                pushTouchPointStartIndex, &mSampledInputXs, &mSampledInputYs, &mSampledTimes,
+                &mSampledLengthCache, &mSampledInputIndice);
     }
 
     if (mSampledInputSize > 0 && isGeometric) {
@@ -115,8 +121,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     if (mSampledInputSize > 0) {
         ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
-                lastSavedInputSize, &mSampledInputXs, &mSampledInputYs, &mSampledNearKeySets,
-                &mSampledDistanceCache_G);
+                lastSavedInputSize, verticalSweetSpotScale, &mSampledInputXs, &mSampledInputYs,
+                &mSampledNearKeySets, &mSampledDistanceCache_G);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
             ProximityInfoStateUtils::updateAlignPointProbabilities(

@@ -23,6 +23,15 @@
 
 namespace latinime {
 
+// Naming convention
+// - Distance: "Weighted" edit distance -- used both for spatial and language.
+// - Compound Distance: Spatial Distance + Language Distance -- used for pruning and scoring
+// - Cost: delta/diff for Distance -- used both for spatial and language
+// - Length: "Non-weighted" -- used only for spatial
+// - Probability: "Non-weighted" -- used only for language
+// - Score: Final calibrated score based on the compound distance, which is sent to java as the
+//       priority of a suggested word
+
 class DicNode;
 class DicTraverseSession;
 class ProximityInfo;

@@ -39,7 +39,8 @@ class ProximityInfo {
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
     float getNormalizedSquaredDistanceFromCenterFloatG(
-            const int keyId, const int x, const int y) const;
+            const int keyId, const int x, const int y,
+            const float verticalScale) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
     int getCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {

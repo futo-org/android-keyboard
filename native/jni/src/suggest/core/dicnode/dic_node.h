@@ -48,13 +48,6 @@
 
 namespace latinime {
 
-// Naming convention
-// - Distance: "Weighted" edit distance -- used both for spatial and language.
-// - Compound Distance: Spatial Distance + Language Distance -- used for pruning and scoring
-// - Cost: delta/diff for Distance -- used both for spatial and language
-// - Length: "Non-weighted" -- used only for spatial
-// - Probability: "Non-weighted" -- used only for language
-
 // This struct is purely a bucket to return values. No instances of this struct should be kept.
 struct DicNode_InputStateG {
     bool mNeedsToUpdateInputStateG;
