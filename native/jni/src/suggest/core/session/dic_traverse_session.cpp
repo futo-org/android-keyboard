@@ -84,6 +84,10 @@ const uint8_t *DicTraverseSession::getOffsetDict() const {
     return mDictionary->getOffsetDict();
 }
 
+int DicTraverseSession::getDictFlags() const {
+    return mDictionary->getDictFlags();
+}
+
 void DicTraverseSession::resetCache(const int nextActiveCacheSize, const int maxWords) {
     mDicNodesCache.reset(nextActiveCacheSize, maxWords);
     mBigramCacheMap.clear();

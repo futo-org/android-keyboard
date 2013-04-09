@@ -103,4 +103,9 @@ int Dictionary::getProbability(const int *word, int length) const {
 bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
     return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
 }
+
+int Dictionary::getDictFlags() const {
+    return mUnigramDictionary->getDictFlags();
+}
+
 } // namespace latinime

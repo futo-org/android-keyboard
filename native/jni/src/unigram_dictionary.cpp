@@ -32,9 +32,9 @@
 namespace latinime {
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags)
+UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, const unsigned int dictFlags)
         : DICT_ROOT(streamStart), ROOT_POS(0),
-          MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), FLAGS(flags) {
+          MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), DICT_FLAGS(dictFlags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
     }
@@ -163,7 +163,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
     masterCorrection.resetCorrection();
     const DigraphUtils::digraph_t *digraphs = 0;
     const int digraphsSize =
-            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(FLAGS, &digraphs);
+            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(DICT_FLAGS, &digraphs);
     if (digraphsSize > 0)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[sizeof(*inputCodePoints) * inputSize];
