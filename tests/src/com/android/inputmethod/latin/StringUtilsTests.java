@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import java.util.Locale;
+
 @SmallTest
 public class StringUtilsTests extends AndroidTestCase {
     public void testContainsInArray() {
@@ -89,5 +91,49 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.removeFromCsvIfExists("key", "key,key,key"));
         assertEquals("in 5 elements at position 2,4", "key1,key3,key5",
                 StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
+    }
+
+    public void testToTitleCase() {
+        assertEquals("SSaa",
+                StringUtils.toTitleCase("ßaa", Locale.GERMAN));
+        assertEquals("Aßa",
+                StringUtils.toTitleCase("aßa", Locale.GERMAN));
+        assertEquals("Iab",
+                StringUtils.toTitleCase("iab", Locale.ENGLISH));
+        assertEquals("Camelcase",
+                StringUtils.toTitleCase("cAmElCaSe", Locale.ENGLISH));
+        assertEquals("İab",
+                StringUtils.toTitleCase("iab", new Locale("tr")));
+        assertEquals("Aib",
+                StringUtils.toTitleCase("AİB", new Locale("tr")));
+        // For one character, toTitleCase returns the string as is. Not sure what the motivation
+        // is, but that's how it works now.
+        assertEquals("a",
+                StringUtils.toTitleCase("a", Locale.ENGLISH));
+        assertEquals("A",
+                StringUtils.toTitleCase("A", Locale.ENGLISH));
+    }
+
+    public void testGetCapitalizationType() {
+        assertEquals(StringUtils.CAPITALIZE_NONE,
+                StringUtils.getCapitalizationType("capitalize"));
+        assertEquals(StringUtils.CAPITALIZE_NONE,
+                StringUtils.getCapitalizationType("cApITalize"));
+        assertEquals(StringUtils.CAPITALIZE_NONE,
+                StringUtils.getCapitalizationType("capitalizE"));
+        assertEquals(StringUtils.CAPITALIZE_NONE,
+                StringUtils.getCapitalizationType("__c a piu$@tali56ze"));
+        assertEquals(StringUtils.CAPITALIZE_FIRST,
+                StringUtils.getCapitalizationType("A__c a piu$@tali56ze"));
+        assertEquals(StringUtils.CAPITALIZE_FIRST,
+                StringUtils.getCapitalizationType("Capitalize"));
+        assertEquals(StringUtils.CAPITALIZE_FIRST,
+                StringUtils.getCapitalizationType("     Capitalize"));
+        assertEquals(StringUtils.CAPITALIZE_ALL,
+                StringUtils.getCapitalizationType("CAPITALIZE"));
+        assertEquals(StringUtils.CAPITALIZE_ALL,
+                StringUtils.getCapitalizationType("  PI26LIE"));
+        assertEquals(StringUtils.CAPITALIZE_NONE,
+                StringUtils.getCapitalizationType(""));
     }
 }
