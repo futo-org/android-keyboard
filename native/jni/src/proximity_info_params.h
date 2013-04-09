@@ -25,6 +25,7 @@ class ProximityInfoParams {
  public:
     static const float NOT_A_DISTANCE_FLOAT;
     static const int MIN_DOUBLE_LETTER_BEELINE_SPEED_PERCENTILE;
+    static const float VERTICAL_SWEET_SPOT_SCALE;
     static const float VERTICAL_SWEET_SPOT_SCALE_G;
 
     // Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
