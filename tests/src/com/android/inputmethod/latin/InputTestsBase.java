@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.Locale;
 
@@ -255,7 +256,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void pickSuggestionManually(final int index, final String suggestion) {
-        mLatinIME.pickSuggestionManually(index, suggestion);
+        mLatinIME.pickSuggestionManually(index, new SuggestedWordInfo(suggestion, 1,
+                SuggestedWordInfo.KIND_CORRECTION, "main"));
     }
 
     // Helper to avoid writing the try{}catch block each time
