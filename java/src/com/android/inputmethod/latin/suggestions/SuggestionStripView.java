@@ -62,6 +62,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
@@ -72,7 +73,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         OnLongClickListener {
     public interface Listener {
         public void addWordToUserDictionary(String word);
-        public void pickSuggestionManually(int index, String word);
+        public void pickSuggestionManually(int index, SuggestedWordInfo word);
     }
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
@@ -656,8 +657,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         @Override
         public boolean onCustomRequest(final int requestCode) {
             final int index = requestCode;
-            final String word = mSuggestedWords.getWord(index);
-            mListener.pickSuggestionManually(index, word);
+            final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
+            mListener.pickSuggestionManually(index, wordInfo);
             dismissMoreSuggestions();
             return true;
         }
@@ -807,8 +808,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (index >= mSuggestedWords.size())
             return;
 
-        final String word = mSuggestedWords.getWord(index);
-        mListener.pickSuggestionManually(index, word);
+        final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
+        mListener.pickSuggestionManually(index, wordInfo);
     }
 
     @Override
