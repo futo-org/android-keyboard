@@ -135,7 +135,8 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"แตะอีกครั้งเพื่อบัน​​ทึก"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"มีพจนานุกรมให้ใช้งาน"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"เปิดใช้งานการแสดงความคิดเห็นจากผู้ใช้"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"ช่วยปรับปรุงตัวแก้ไขวิธีการป้อนข้อมูลนี้โดยการส่งสถิติการใช้งานและรายงานการขัดข้องถึง Google โดยอัตโนมัติ"</string>
+    <!-- no translation found for prefs_description_log (7525225584555429211) -->
+    <skip />
     <string name="keyboard_layout" msgid="8451164783510487501">"ชุดรูปแบบแป้นพิมพ์"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"อังกฤษ (สหราชอาณาจักร)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"อังกฤษ (อเมริกัน)"</string>
@@ -162,9 +163,12 @@
     <string name="not_now" msgid="6172462888202790482">"ข้ามไปก่อน"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"รูปแบบการป้อนข้อมูลเดียวกันนี้มีอยู่แล้ว: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"โหมดศึกษาประโยชน์ในการใช้งาน"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="1881822418815012326">"การตั้งค่าความหน่วงของการกดแป้นค้าง"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"การตั้งค่าระยะเวลาการสั่นเมื่อกดแป้นพิมพ์"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"การตั้งค่าระดับเสียงเมื่อกดแป้นพิมพ์"</string>
+    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
+    <skip />
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"อ่านไฟล์พจนานุกรมภายนอก"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"ไม่มีไฟล์พจนานุกรมในโฟลเดอร์ดาวน์โหลด"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"เลือกไฟล์พจนานุกรมที่จะติดตั้ง"</string>
