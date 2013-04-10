@@ -25,7 +25,10 @@ public final class SettingsActivity extends PreferenceActivity {
     @Override
     public Intent getIntent() {
         final Intent intent = super.getIntent();
-        intent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
+        final String fragment = intent.getStringExtra(EXTRA_SHOW_FRAGMENT);
+        if (fragment == null) {
+            intent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
+        }
         intent.putExtra(EXTRA_NO_HEADERS, true);
         return intent;
     }
