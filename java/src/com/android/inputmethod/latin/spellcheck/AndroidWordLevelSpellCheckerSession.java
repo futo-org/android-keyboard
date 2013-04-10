@@ -226,7 +226,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         // If the lower case version is not in the dictionary, it's still possible
         // that we have an all-caps version of a word that needs to be capitalized
         // according to the dictionary. E.g. "GERMANS" only exists in the dictionary as "Germans".
-        return dict.isValidWord(StringUtils.toTitleCase(lowerCaseText, mLocale));
+        return dict.isValidWord(StringUtils.capitalizeFirstAndDowncaseRest(lowerCaseText, mLocale));
     }
 
     // Note : this must be reentrant
