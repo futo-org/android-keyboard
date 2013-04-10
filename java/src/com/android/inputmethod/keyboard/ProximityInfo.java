@@ -88,8 +88,9 @@ public class ProximityInfo {
         this("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
         mNativeProximityInfo = setProximityInfoNative("" /* locale */,
                 gridWidth /* displayWidth */, gridHeight /* displayHeight */,
-                gridWidth, gridHeight, 1 /* mostCommonKeyWidth */, proximityCharsArray,
-                0 /* keyCount */, null /*keyXCoordinates */, null /* keyYCoordinates */,
+                gridWidth, gridHeight, 1 /* mostCommonKeyWidth */,
+                1 /* mostCommonKeyHeight */, proximityCharsArray, 0 /* keyCount */,
+                null /*keyXCoordinates */, null /* keyYCoordinates */,
                 null /* keyWidths */, null /* keyHeights */, null /* keyCharCodes */,
                 null /* sweetSpotCenterXs */, null /* sweetSpotCenterYs */,
                 null /* sweetSpotRadii */);
@@ -103,9 +104,10 @@ public class ProximityInfo {
     // TODO: Stop passing proximityCharsArray
     private static native long setProximityInfoNative(String locale,
             int displayWidth, int displayHeight, int gridWidth, int gridHeight,
-            int mostCommonKeyWidth, int[] proximityCharsArray, int keyCount, int[] keyXCoordinates,
-            int[] keyYCoordinates, int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
-            float[] sweetSpotCenterXs, float[] sweetSpotCenterYs, float[] sweetSpotRadii);
+            int mostCommonKeyWidth, int mostCommonKeyHeight, int[] proximityCharsArray,
+            int keyCount, int[] keyXCoordinates, int[] keyYCoordinates, int[] keyWidths,
+            int[] keyHeights, int[] keyCharCodes, float[] sweetSpotCenterXs,
+            float[] sweetSpotCenterYs, float[] sweetSpotRadii);
 
     private static native void releaseProximityInfoNative(long nativeProximityInfo);
 
@@ -232,9 +234,9 @@ public class ProximityInfo {
 
         // TODO: Stop passing proximityCharsArray
         return setProximityInfoNative(mLocaleStr, mKeyboardMinWidth, mKeyboardHeight,
-                mGridWidth, mGridHeight, mMostCommonKeyWidth, proximityCharsArray, keyCount,
-                keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
-                sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
+                mGridWidth, mGridHeight, mMostCommonKeyWidth, mMostCommonKeyHeight,
+                proximityCharsArray, keyCount, keyXCoordinates, keyYCoordinates, keyWidths,
+                keyHeights, keyCharCodes, sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
     }
 
     public long getNativeProximityInfo() {

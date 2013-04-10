@@ -49,13 +49,17 @@ static AK_FORCE_INLINE void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloa
 
 ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-        const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
-        const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
-        const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
-        const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
-        const jfloatArray sweetSpotRadii)
+        const int gridHeight, const int mostCommonKeyWidth, const int mostCommonKeyHeight,
+        const jintArray proximityChars, const int keyCount, const jintArray keyXCoordinates,
+        const jintArray keyYCoordinates, const jintArray keyWidths, const jintArray keyHeights,
+        const jintArray keyCharCodes, const jfloatArray sweetSpotCenterXs,
+        const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii)
         : GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
+          MOST_COMMON_KEY_HEIGHT(mostCommonKeyHeight),
+          NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE(1.0f +
+                  SQUARE_FLOAT(static_cast<float>(mostCommonKeyHeight) /
+                          static_cast<float>(mostCommonKeyWidth))),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
