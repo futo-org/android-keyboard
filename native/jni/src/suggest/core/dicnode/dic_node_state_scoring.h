@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "digraph_utils.h"
 
 namespace latinime {
 
@@ -27,6 +28,7 @@ class DicNodeStateScoring {
  public:
     AK_FORCE_INLINE DicNodeStateScoring()
             : mDoubleLetterLevel(NOT_A_DOUBLE_LETTER),
+              mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
               mTotalPrevWordsLanguageCost(0.0f), mRawLength(0.0f) {
@@ -43,6 +45,7 @@ class DicNodeStateScoring {
         mTotalPrevWordsLanguageCost = 0.0f;
         mRawLength = 0.0f;
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
+        mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
     }
 
     AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
@@ -54,6 +57,7 @@ class DicNodeStateScoring {
         mTotalPrevWordsLanguageCost = scoring->mTotalPrevWordsLanguageCost;
         mRawLength = scoring->mRawLength;
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
+        mDigraphIndex = scoring->mDigraphIndex;
     }
 
     void addCost(const float spatialCost, const float languageCost, const bool doNormalization,
@@ -126,6 +130,24 @@ class DicNodeStateScoring {
         }
     }
 
+    DigraphUtils::DigraphCodePointIndex getDigraphIndex() const {
+        return mDigraphIndex;
+    }
+
+    void advanceDigraphIndex() {
+        switch(mDigraphIndex) {
+            case DigraphUtils::NOT_A_DIGRAPH_INDEX:
+                mDigraphIndex = DigraphUtils::FIRST_DIGRAPH_CODEPOINT;
+                break;
+            case DigraphUtils::FIRST_DIGRAPH_CODEPOINT:
+                mDigraphIndex = DigraphUtils::SECOND_DIGRAPH_CODEPOINT;
+                break;
+            case DigraphUtils::SECOND_DIGRAPH_CODEPOINT:
+                mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
+                break;
+        }
+    }
+
     float getTotalPrevWordsLanguageCost() const {
         return mTotalPrevWordsLanguageCost;
     }
@@ -135,6 +157,7 @@ class DicNodeStateScoring {
     // Use a default copy constructor and an assign operator because shallow copies are ok
     // for this class
     DoubleLetterLevel mDoubleLetterLevel;
+    DigraphUtils::DigraphCodePointIndex mDigraphIndex;
 
     int16_t mEditCorrectionCount;
     int16_t mProximityCorrectionCount;
