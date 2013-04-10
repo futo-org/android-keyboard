@@ -1466,7 +1466,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                                 "", mWordComposer.getTypedWord(), " ", mWordComposer);
                     }
                 }
-                commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+                    // If we are in the middle of a recorrection, we need to commit the recorrection
+                    // first so that we can insert the character at the current cursor position.
+                    resetEntireInputState(mLastSelectionStart);
+                } else {
+                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                }
             }
             final int keyX, keyY;
             final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
@@ -1522,8 +1528,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             final int wordComposerSize = mWordComposer.size();
             // Since isComposingWord() is true, the size is at least 1.
-            final int lastChar = mWordComposer.getCodeAt(wordComposerSize - 1);
-            if (wordComposerSize <= 1) {
+            final int lastChar = mWordComposer.getCodeBeforeCursor();
+            if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+                // If we are in the middle of a recorrection, we need to commit the recorrection
+                // first so that we can insert the batch input at the current cursor position.
+                resetEntireInputState(mLastSelectionStart);
+            } else if (wordComposerSize <= 1) {
                 // We auto-correct the previous (typed, not gestured) string iff it's one character
                 // long. The reason for this is, even in the middle of gesture typing, you'll still
                 // tap one-letter words and you want them auto-corrected (typically, "i" in English
@@ -1734,8 +1744,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // during key repeat.
         mHandler.postUpdateShiftState();
 
-        if (mWordComposer.isComposingWord() && !mWordComposer.isCursorAtEndOfComposingWord()) {
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // If we are in the middle of a recorrection, we need to commit the recorrection
+            // first so that we can remove the character at the current cursor position.
             resetEntireInputState(mLastSelectionStart);
+            // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
@@ -1870,7 +1883,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             promotePhantomSpace();
         }
 
-        if (mWordComposer.isComposingWord() && !mWordComposer.isCursorAtEndOfComposingWord()) {
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // If we are in the middle of a recorrection, we need to commit the recorrection
+            // first so that we can insert the character at the current cursor position.
             resetEntireInputState(mLastSelectionStart);
             isComposingWord = false;
         }
@@ -1935,7 +1950,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
         boolean didAutoCorrect = false;
-        // Handle separator
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // If we are in the middle of a recorrection, we need to commit the recorrection
+            // first so that we can insert the separator at the current cursor position.
+            resetEntireInputState(mLastSelectionStart);
+        }
         if (mWordComposer.isComposingWord()) {
             if (mSettings.getCurrent().mCorrectionEnabled) {
                 // TODO: maybe cache Strings in an <String> sparse array or something
@@ -2357,9 +2376,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final Range range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
                 0 /* additionalPrecedingWordsCount */);
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        final String typedWord = range.mWord.toString();
         if (range.mWord instanceof SpannableString) {
             final SpannableString spannableString = (SpannableString)range.mWord;
-            final String typedWord = spannableString.toString();
             int i = 0;
             for (Object object : spannableString.getSpans(0, spannableString.length(),
                     SuggestionSpan.class)) {
@@ -2374,18 +2393,42 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 }
             }
         }
-        mWordComposer.setComposingWord(range.mWord, mKeyboardSwitcher.getKeyboard());
+        mWordComposer.setComposingWord(typedWord, mKeyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(range.mCharsBefore);
         mConnection.setComposingRegion(mLastSelectionStart - range.mCharsBefore,
                 mLastSelectionEnd + range.mCharsAfter);
+        final SuggestedWords suggestedWords;
         if (suggestions.isEmpty()) {
-            suggestions.add(new SuggestedWordInfo(range.mWord.toString(), 1,
-                    SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_RESUMED));
+            // We come here if there weren't any suggestion spans on this word. We will try to
+            // compute suggestions for it instead.
+            final SuggestedWords suggestedWordsIncludingTypedWord =
+                    getSuggestedWords(Suggest.SESSION_TYPING);
+            if (suggestedWordsIncludingTypedWord.size() > 1) {
+                // We were able to compute new suggestions for this word.
+                // Remove the typed word, since we don't want to display it in this case.
+                // The #getSuggestedWordsExcludingTypedWord() method sets willAutoCorrect to false.
+                suggestedWords =
+                        suggestedWordsIncludingTypedWord.getSuggestedWordsExcludingTypedWord();
+            } else {
+                // No saved suggestions, and we were unable to compute any good one either.
+                // Rather than displaying an empty suggestion strip, we'll display the original
+                // word alone in the middle.
+                // Since there is only one word, willAutoCorrect is false.
+                suggestedWords = suggestedWordsIncludingTypedWord;
+            }
+        } else {
+            // We found suggestion spans in the word. We'll create the SuggestedWords out of
+            // them, and make willAutoCorrect false.
+            suggestedWords = new SuggestedWords(suggestions,
+                    true /* typedWordValid */, false /* willAutoCorrect */,
+                    false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
+                    false /* isPrediction */);
         }
-        showSuggestionStrip(new SuggestedWords(suggestions,
-                true /* typedWordValid */, false /* willAutoCorrect */,
-                false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
-                false /* isPrediction */), range.mWord.toString());
+
+        // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
+        // We never want to auto-correct on a resumed suggestion. Please refer to the three
+        // places above where suggestedWords is affected.
+        showSuggestionStrip(suggestedWords, typedWord);
     }
 
     /**

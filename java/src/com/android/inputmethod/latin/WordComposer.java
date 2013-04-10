@@ -27,6 +27,7 @@ import java.util.Arrays;
  */
 public final class WordComposer {
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    private static final boolean DBG = LatinImeLogger.sDBG;
 
     public static final int CAPS_MODE_OFF = 0;
     // 1 is shift bit, 2 is caps bit, 4 is auto bit but this is just a convention as these bits
@@ -132,6 +133,13 @@ public final class WordComposer {
         return mPrimaryKeyCodes[index];
     }
 
+    public int getCodeBeforeCursor() {
+        if (mCursorPositionWithinWord < 1 || mCursorPositionWithinWord > mPrimaryKeyCodes.length) {
+            return Constants.NOT_A_CODE;
+        }
+        return mPrimaryKeyCodes[mCursorPositionWithinWord - 1];
+    }
+
     public InputPointers getInputPointers() {
         return mInputPointers;
     }
@@ -177,8 +185,12 @@ public final class WordComposer {
         mCursorPositionWithinWord = posWithinWord;
     }
 
-    public boolean isCursorAtEndOfComposingWord() {
-        return mCursorPositionWithinWord == mCodePointSize;
+    public boolean isCursorFrontOrMiddleOfComposingWord() {
+        if (DBG && mCursorPositionWithinWord > mCodePointSize) {
+            throw new RuntimeException("Wrong cursor position : " + mCursorPositionWithinWord
+                    + "in a word of size " + mCodePointSize);
+        }
+        return mCursorPositionWithinWord != mCodePointSize;
     }
 
     public void setBatchInputPointers(final InputPointers batchPointers) {
