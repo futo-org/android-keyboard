@@ -238,7 +238,8 @@
     <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Gidai a meglierar quest editur da la metoda d\'endataziun cun trametter automaticamain datas statisticas davart l\'utilisaziun e rapports da collaps a Google."</string>
+    <!-- no translation found for prefs_description_log (7525225584555429211) -->
+    <skip />
     <!-- no translation found for keyboard_layout (8451164783510487501) -->
     <skip />
     <!-- no translation found for subtype_en_GB (88170601942311355) -->
@@ -291,11 +292,11 @@
     <skip />
     <!-- no translation found for prefs_usability_study_mode (1261130555134595254) -->
     <skip />
-    <!-- no translation found for prefs_key_longpress_timeout_settings (1881822418815012326) -->
+    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
     <skip />
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
     <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
+    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
     <skip />
     <!-- no translation found for prefs_read_external_dictionary (2588931418575013067) -->
     <skip />
