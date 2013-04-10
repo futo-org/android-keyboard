@@ -106,9 +106,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.toTitleCase("iab", new Locale("tr")));
         assertEquals("Aib",
                 StringUtils.toTitleCase("AİB", new Locale("tr")));
-        // For one character, toTitleCase returns the string as is. Not sure what the motivation
-        // is, but that's how it works now.
-        assertEquals("a",
+        assertEquals("A",
                 StringUtils.toTitleCase("a", Locale.ENGLISH));
         assertEquals("A",
                 StringUtils.toTitleCase("A", Locale.ENGLISH));
