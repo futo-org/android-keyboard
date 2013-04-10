@@ -81,6 +81,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * Logs the use of the LatinIME keyboard.
@@ -1065,7 +1066,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("LatinImeOnStartInputViewInternal", false, false, "uuid",
                     "packageName", "inputType", "imeOptions", "fieldId", "display", "model",
                     "prefs", "versionCode", "versionName", "outputFormatVersion", "logEverything",
-                    "isUsingDevelopmentOnlyDiagnosticsDebug");
+                    "isDevTeamBuild");
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
@@ -1087,10 +1088,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
                         Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
                         OUTPUT_FORMAT_VERSION, IS_LOGGING_EVERYTHING,
-                        ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG);
-            } catch (NameNotFoundException e) {
-                e.printStackTrace();
+                        researchLogger.isDevTeamBuild());
+            } catch (final NameNotFoundException e) {
+                Log.e(TAG, "NameNotFound", e);
             }
+        }
+    }
+
+    // TODO: Update this heuristic pattern to something more reliable.  Developer builds tend to
+    // have the developer name and year embedded.
+    private static final Pattern developerBuildRegex = Pattern.compile("[A-Za-z]\\.20[1-9]");
+    private boolean isDevTeamBuild() {
+        try {
+            final PackageInfo packageInfo;
+            packageInfo = mLatinIME.getPackageManager().getPackageInfo(mLatinIME.getPackageName(),
+                    0);
+            final String versionName = packageInfo.versionName;
+            return !(developerBuildRegex.matcher(versionName).find());
+        } catch (final NameNotFoundException e) {
+            Log.e(TAG, "Could not determine package name", e);
+            return false;
         }
     }
 
