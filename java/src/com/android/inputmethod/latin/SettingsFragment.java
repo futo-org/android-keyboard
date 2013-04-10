@@ -165,6 +165,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                     Settings.readKeyPreviewPopupEnabled(prefs, res));
         }
 
+        if (!res.getBoolean(R.bool.config_setup_wizard_available)) {
+            removePreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON, advancedSettings);
+        }
+
         setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
                 Settings.readShowsLanguageSwitchKey(prefs));
 
@@ -203,7 +207,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         final CheckBoxPreference showSetupWizardIcon =
                 (CheckBoxPreference)findPreference(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
-        showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
+        if (showSetupWizardIcon != null) {
+            showSetupWizardIcon.setChecked(Settings.readShowSetupWizardIcon(prefs, getActivity()));
+        }
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
         updateCustomInputStylesSummary();
