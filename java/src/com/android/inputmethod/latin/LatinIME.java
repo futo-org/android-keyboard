@@ -44,7 +44,9 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -72,6 +74,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils.Stats;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -197,6 +200,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
         private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
+        private static final int MSG_RESUME_SUGGESTIONS = 4;
 
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
@@ -234,11 +238,18 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords)msg.obj,
                         msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
                 break;
+            case MSG_RESUME_SUGGESTIONS:
+                latinIme.restartSuggestionsOnWordTouchedByCursor();
+                break;
             }
         }
 
         public void postUpdateSuggestionStrip() {
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP), mDelayUpdateSuggestions);
+        }
+
+        public void postResumeSuggestions() {
+            sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS), mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestionStrip() {
@@ -910,13 +921,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 resetEntireInputState(newSelStart);
             }
 
+            // We moved the cursor. If we are touching a word, we need to resume suggestion.
+            mHandler.postResumeSuggestions();
+
             mKeyboardSwitcher.updateShiftState();
         }
         mExpectingUpdateSelection = false;
-        // TODO: Decide to call restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() or not
-        // here. It would probably be too expensive to call directly here but we may want to post a
-        // message to delay it. The point would be to unify behavior between backspace to the
-        // end of a word and manually put the pointer at the end of the word.
 
         // Make a note of the cursor position
         mLastSelectionStart = newSelStart;
@@ -1727,6 +1737,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // during key repeat.
         mHandler.postUpdateShiftState();
 
+        if (mWordComposer.isComposingWord() && !mWordComposer.isCursorAtEndOfComposingWord()) {
+            resetEntireInputState(mLastSelectionStart);
+        }
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
@@ -1858,6 +1871,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             promotePhantomSpace();
         }
 
+        if (mWordComposer.isComposingWord() && !mWordComposer.isCursorAtEndOfComposingWord()) {
+            resetEntireInputState(mLastSelectionStart);
+            isComposingWord = false;
+        }
         // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
         // dozen milliseconds. Avoid calling it as much as possible, since we are on the UI
         // thread here.
@@ -2331,6 +2348,48 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     /**
+     * Check if the cursor is touching a word. If so, restart suggestions on this word, else
+     * do nothing.
+     */
+    private void restartSuggestionsOnWordTouchedByCursor() {
+        // If the cursor is not touching a word, or if there is a selection, return right away.
+        if (mLastSelectionStart != mLastSelectionEnd) return;
+        if (!mConnection.isCursorTouchingWord(mSettings.getCurrent())) return;
+        final Range range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
+                0 /* additionalPrecedingWordsCount */);
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        if (range.mWord instanceof SpannableString) {
+            final SpannableString spannableString = (SpannableString)range.mWord;
+            final String typedWord = spannableString.toString();
+            int i = 0;
+            for (Object object : spannableString.getSpans(0, spannableString.length(),
+                    SuggestionSpan.class)) {
+                SuggestionSpan span = (SuggestionSpan)object;
+                for (String s : span.getSuggestions()) {
+                    ++i;
+                    if (!TextUtils.equals(s, typedWord)) {
+                        suggestions.add(new SuggestedWordInfo(s,
+                                SuggestionStripView.MAX_SUGGESTIONS - i,
+                                SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED));
+                    }
+                }
+            }
+        }
+        mWordComposer.setComposingWord(range.mWord, mKeyboardSwitcher.getKeyboard());
+        mWordComposer.setCursorPositionWithinWord(range.mCharsBefore);
+        mConnection.setComposingRegion(mLastSelectionStart - range.mCharsBefore,
+                mLastSelectionEnd + range.mCharsAfter);
+        if (suggestions.isEmpty()) {
+            suggestions.add(new SuggestedWordInfo(range.mWord.toString(), 1,
+                    SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_RESUMED));
+        }
+        showSuggestionStrip(new SuggestedWords(suggestions,
+                true /* typedWordValid */, false /* willAutoCorrect */,
+                false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
+                false /* isPrediction */), range.mWord.toString());
+    }
+
+    /**
      * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
      * word, else do nothing.
      */
@@ -2338,17 +2397,18 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final CharSequence word =
                 mConnection.getWordBeforeCursorIfAtEndOfWord(mSettings.getCurrent());
         if (null != word) {
-            restartSuggestionsOnWordBeforeCursor(word);
+            final String wordString = word.toString();
+            restartSuggestionsOnWordBeforeCursor(wordString);
             // TODO: Handle the case where the user manually moves the cursor and then backs up over
             // a separator.  In that case, the current log unit should not be uncommitted.
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().uncommitCurrentLogUnit(word.toString(),
+                ResearchLogger.getInstance().uncommitCurrentLogUnit(wordString,
                         true /* dumpCurrentLogUnit */);
             }
         }
     }
 
-    private void restartSuggestionsOnWordBeforeCursor(final CharSequence word) {
+    private void restartSuggestionsOnWordBeforeCursor(final String word) {
         mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
         final int length = word.length();
         mConnection.deleteSurroundingText(length, 0);

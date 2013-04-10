@@ -131,6 +131,7 @@ public final class SuggestedWords {
         public static final int KIND_APP_DEFINED = 6; // Suggested by the application
         public static final int KIND_SHORTCUT = 7; // A shortcut
         public static final int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
+        public static final int KIND_RESUMED = 9; // A resumed suggestion (comes from a span)
         public final String mWord;
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above

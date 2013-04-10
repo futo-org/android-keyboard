@@ -37,6 +37,8 @@ public abstract class Dictionary {
     public static final String TYPE_USER = "user";
     // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
+    // Spawned by resuming suggestions. Comes from a span that was in the TextView.
+    public static final String TYPE_RESUMED = "resumed";
     protected final String mDictType;
 
     public Dictionary(final String dictType) {
