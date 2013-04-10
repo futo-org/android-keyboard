@@ -106,10 +106,18 @@ public final class StringUtils {
         }
     }
 
+    public static String capitalizeFirstCharacter(final String s, final Locale locale) {
+        if (s.length() <= 1) {
+            return s.toUpperCase(locale);
+        }
+        // Please refer to the comment below in {@link #toTitleCase(String,Locale)}.
+        final int cutoff = s.offsetByCodePoints(0, 1);
+        return s.substring(0, cutoff).toUpperCase(locale) + s.substring(cutoff);
+    }
+
     public static String toTitleCase(final String s, final Locale locale) {
         if (s.length() <= 1) {
-            // TODO: is this really correct? Shouldn't this be s.toUpperCase()?
-            return s;
+            return s.toUpperCase(locale);
         }
         // TODO: fix the bugs below
         // - This does not work for Greek, because it returns upper case instead of title case.
