@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.ResizableIntArray;
 final class GesturePreviewTrail {
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
 
+    // These three {@link ResizableIntArray}s should be synchronized by {@link #mEventTimes}.
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
@@ -90,7 +91,13 @@ final class GesturePreviewTrail {
     }
 
     public void addStroke(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
-        final int trailSize = mEventTimes.getLength();
+        synchronized (mEventTimes) {
+            addStrokeLocked(stroke, downTime);
+        }
+    }
+
+    private void addStrokeLocked(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
+            final int trailSize = mEventTimes.getLength();
         stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates);
         if (mEventTimes.getLength() == trailSize) {
             return;
@@ -168,6 +175,13 @@ final class GesturePreviewTrail {
      * @return true if some gesture preview trails remain to be drawn
      */
     public boolean drawGestureTrail(final Canvas canvas, final Paint paint,
+            final Rect outBoundsRect, final Params params) {
+        synchronized (mEventTimes) {
+            return drawGestureTrailLocked(canvas, paint, outBoundsRect, params);
+        }
+    }
+
+    private boolean drawGestureTrailLocked(final Canvas canvas, final Paint paint,
             final Rect outBoundsRect, final Params params) {
         // Initialize bounds rectangle.
         outBoundsRect.setEmpty();
