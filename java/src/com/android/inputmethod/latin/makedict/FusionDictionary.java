@@ -647,7 +647,7 @@ public final class FusionDictionary implements Iterable<Word> {
 
         if (index < codePoints.length) return null;
         if (!currentGroup.isTerminal()) return null;
-        if (DBG && !codePoints.equals(checker.toString())) return null;
+        if (DBG && !string.equals(checker.toString())) return null;
         return currentGroup;
     }
 
@@ -853,16 +853,19 @@ public final class FusionDictionary implements Iterable<Word> {
                 if (currentPos.pos.hasNext()) {
                     final CharGroup currentGroup = currentPos.pos.next();
                     currentPos.length = mCurrentString.length();
-                    for (int i : currentGroup.mChars)
+                    for (int i : currentGroup.mChars) {
                         mCurrentString.append(Character.toChars(i));
+                    }
                     if (null != currentGroup.mChildren) {
                         currentPos = new Position(currentGroup.mChildren.mData);
+                        currentPos.length = mCurrentString.length();
                         mPositions.addLast(currentPos);
                     }
-                    if (currentGroup.mFrequency >= 0)
+                    if (currentGroup.mFrequency >= 0) {
                         return new Word(mCurrentString.toString(), currentGroup.mFrequency,
                                 currentGroup.mShortcutTargets, currentGroup.mBigrams,
                                 currentGroup.mIsNotAWord, currentGroup.mIsBlacklistEntry);
+                    }
                 } else {
                     mPositions.removeLast();
                     currentPos = mPositions.getLast();
