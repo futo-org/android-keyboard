@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedReader;
@@ -64,6 +65,7 @@ public class MotionEventReader {
         return replayData;
     }
 
+    @UsedForTesting
     static class ReplayData {
         final ArrayList<Integer> mActions = new ArrayList<Integer>();
         final ArrayList<PointerProperties[]> mPointerPropertiesArrays
@@ -134,6 +136,7 @@ public class MotionEventReader {
      * },
      * </pre>
      */
+    @UsedForTesting
     /* package for test */ void readLogStatement(final JsonReader jsonReader,
             final ReplayData replayData) throws IOException {
         String logStatementType = null;
