@@ -106,16 +106,17 @@ public final class StringUtils {
         }
     }
 
-    public static String capitalizeFirstCharacter(final String s, final Locale locale) {
+    public static String capitalizeFirstCodePoint(final String s, final Locale locale) {
         if (s.length() <= 1) {
             return s.toUpperCase(locale);
         }
-        // Please refer to the comment below in {@link #toTitleCase(String,Locale)}.
+        // Please refer to the comment below in
+        // {@link #capitalizeFirstAndDowncaseRest(String,Locale)} as this has the same shortcomings
         final int cutoff = s.offsetByCodePoints(0, 1);
         return s.substring(0, cutoff).toUpperCase(locale) + s.substring(cutoff);
     }
 
-    public static String toTitleCase(final String s, final Locale locale) {
+    public static String capitalizeFirstAndDowncaseRest(final String s, final Locale locale) {
         if (s.length() <= 1) {
             return s.toUpperCase(locale);
         }

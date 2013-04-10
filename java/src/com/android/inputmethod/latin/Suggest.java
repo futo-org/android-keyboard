@@ -394,7 +394,7 @@ public final class Suggest {
         if (isAllUpperCase) {
             sb.append(wordInfo.mWord.toUpperCase(locale));
         } else if (isFirstCharCapitalized) {
-            sb.append(StringUtils.toTitleCase(wordInfo.mWord, locale));
+            sb.append(StringUtils.capitalizeFirstCodePoint(wordInfo.mWord, locale));
         } else {
             sb.append(wordInfo.mWord);
         }

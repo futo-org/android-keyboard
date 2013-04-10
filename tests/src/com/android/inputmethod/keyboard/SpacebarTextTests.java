@@ -113,7 +113,7 @@ public class SpacebarTextTests extends AndroidTestCase {
             final String subtypeName = SubtypeLocale.getSubtypeDisplayName(subtype);
             final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
             final String spacebarText = MainKeyboardView.getShortDisplayName(subtype);
-            final String languageCode = StringUtils.capitalizeFirstCharacter(
+            final String languageCode = StringUtils.capitalizeFirstCodePoint(
                     locale.getLanguage(), locale);
             if (SubtypeLocale.isNoLanguage(subtype)) {
                 assertEquals(subtypeName, "", spacebarText);

@@ -183,7 +183,7 @@ public final class SubtypeLocale {
             final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
             displayName = locale.getDisplayName(displayLocale);
         }
-        return StringUtils.capitalizeFirstCharacter(displayName, displayLocale);
+        return StringUtils.capitalizeFirstCodePoint(displayName, displayLocale);
     }
 
     // InputMethodSubtype's display name in its locale.
@@ -243,7 +243,7 @@ public final class SubtypeLocale {
                 }
             }
         };
-        return StringUtils.capitalizeFirstCharacter(
+        return StringUtils.capitalizeFirstCodePoint(
                 getSubtypeName.runInLocale(sResources, displayLocale), displayLocale);
     }
 

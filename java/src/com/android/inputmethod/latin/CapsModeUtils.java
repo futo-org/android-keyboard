@@ -41,7 +41,7 @@ public final class CapsModeUtils {
         if (WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED == capitalizeMode) {
             return s.toUpperCase(locale);
         } else if (WordComposer.CAPS_MODE_AUTO_SHIFTED == capitalizeMode) {
-            return StringUtils.toTitleCase(s, locale);
+            return StringUtils.capitalizeFirstCodePoint(s, locale);
         } else {
             return s;
         }
