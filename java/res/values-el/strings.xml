@@ -135,8 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Αγγίξτε ξανά για αποθήκευση"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ενεργοποίηση σχολίων χρηστών"</string>
-    <!-- no translation found for prefs_description_log (7525225584555429211) -->
-    <skip />
+    <string name="prefs_description_log" msgid="7525225584555429211">"Βοηθήστε μας να βελτιώσουμε αυτό το πρόγραμμα επεξεργασίας μεθόδου εισόδου, στέλνοντας αυτόματα στατιστικά στοιχεία και αναφορές σφαλμάτων."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Θέμα πληκτρολογίου"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Αγγλικά (Η.Β.)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Αγγλικά (Η.Π.Α)"</string>
@@ -163,12 +162,9 @@
     <string name="not_now" msgid="6172462888202790482">"Όχι τώρα"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Το ίδιο στυλ εισόδου υπάρχει ήδη: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Λειτουργία μελέτης χρηστικότητας"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Καθυστέρηση παρατεταμένου πατήματος πλήκτρου"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Διάρκεια δόνησης πατήμ. πλήκτ."</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Ένταση ήχου πατήματος πλήκτρου"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Ανάγνωση εξωτερικού αρχείου λεξικού"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Δεν υπάρχουν αρχεία λεξικού στο φάκελο \"Λήψεις\""</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Επιλογή αρχείου λεξικού για εγκατάσταση"</string>

@@ -135,8 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tocca di nuovo per salvare"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dizionario disponibile"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Attiva commenti degli utenti"</string>
-    <!-- no translation found for prefs_description_log (7525225584555429211) -->
-    <skip />
+    <string name="prefs_description_log" msgid="7525225584555429211">"Contribuisci a migliorare l\'editor del metodo di immissione inviando automaticamente statistiche sull\'utilizzo e rapporti sugli arresti anomali"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema della tastiera"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglese (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglese (USA)"</string>
@@ -163,12 +162,9 @@
     <string name="not_now" msgid="6172462888202790482">"Non ora"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Esiste già uno stile di inuput uguale: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modalità Studio sull\'usabilità"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ritardo pressione lunga tasti"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durata vibraz. pressione tasto"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume audio a pressione tasto"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Leggi file dizionario esterno"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Nessun file di dizionario nella cartella Download"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Seleziona un file di dizionario da installare"</string>
