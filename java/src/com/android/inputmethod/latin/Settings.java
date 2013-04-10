@@ -272,6 +272,11 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readShowSetupWizardIcon(final SharedPreferences prefs,
             final Context context) {
+        final boolean enableSetupWizardByConfig = context.getResources().getBoolean(
+                R.bool.config_setup_wizard_available);
+        if (!enableSetupWizardByConfig) {
+            return false;
+        }
         if (!prefs.contains(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
             final ApplicationInfo appInfo = context.getApplicationInfo();
             final boolean isApplicationInSystemImage =
