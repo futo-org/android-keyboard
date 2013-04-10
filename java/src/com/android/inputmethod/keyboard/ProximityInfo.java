@@ -26,7 +26,7 @@ import com.android.inputmethod.latin.JniUtils;
 
 import java.util.Arrays;
 
-public final class ProximityInfo {
+public class ProximityInfo {
     private static final String TAG = ProximityInfo.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -79,22 +79,20 @@ public final class ProximityInfo {
         mNativeProximityInfo = createNativeProximityInfo(touchPositionCorrection);
     }
 
-    private static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
-    }
-
-    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximityCharsArray,
-            final int rowSize, final int gridWidth, final int gridHeight) {
-        final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
-        spellCheckerProximityInfo.mNativeProximityInfo =
-                spellCheckerProximityInfo.setProximityInfoNative("" /* locale */,
-                        gridWidth /* displayWidth */, gridHeight /* displayHeight */,
-                        gridWidth, gridHeight, 1 /* mostCommonKeyWidth */, proximityCharsArray,
-                        0 /* keyCount */, null /*keyXCoordinates */, null /* keyYCoordinates */,
-                        null /* keyWidths */, null /* keyHeights */, null /* keyCharCodes */,
-                        null /* sweetSpotCenterXs */, null /* sweetSpotCenterYs */,
-                        null /* sweetSpotRadii */);
-        return spellCheckerProximityInfo;
+    /**
+     * Constructor for subclasses such as
+     * {@link com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo}.
+     */
+    protected ProximityInfo(final int[] proximityCharsArray, final int gridWidth,
+            final int gridHeight) {
+        this("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
+        mNativeProximityInfo = setProximityInfoNative("" /* locale */,
+                gridWidth /* displayWidth */, gridHeight /* displayHeight */,
+                gridWidth, gridHeight, 1 /* mostCommonKeyWidth */, proximityCharsArray,
+                0 /* keyCount */, null /*keyXCoordinates */, null /* keyYCoordinates */,
+                null /* keyWidths */, null /* keyHeights */, null /* keyCharCodes */,
+                null /* sweetSpotCenterXs */, null /* sweetSpotCenterYs */,
+                null /* sweetSpotRadii */);
     }
 
     private long mNativeProximityInfo;
