@@ -22,6 +22,7 @@
 #include "char_utils.h"
 #include "defines.h"
 #include "dictionary.h"
+#include "digraph_utils.h"
 #include "proximity_info.h"
 #include "terminal_attributes.h"
 #include "unigram_dictionary.h"
@@ -29,15 +30,6 @@
 #include "words_priority_queue_pool.h"
 
 namespace latinime {
-
-const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
-        { { 'a', 'e', 0x00E4 }, // U+00E4 : LATIN SMALL LETTER A WITH DIAERESIS
-        { 'o', 'e', 0x00F6 }, // U+00F6 : LATIN SMALL LETTER O WITH DIAERESIS
-        { 'u', 'e', 0x00FC } }; // U+00FC : LATIN SMALL LETTER U WITH DIAERESIS
-
-const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[] =
-        { { 'a', 'e', 0x00E6 }, // U+00E6 : LATIN SMALL LETTER AE
-        { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 
 // TODO: check the header
 UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags)
@@ -58,7 +50,7 @@ static void addWord(int *word, int length, int probability, WordsPriorityQueue *
 
 // Return the replacement code point for a digraph, or 0 if none.
 int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, const int inputSize,
-        const digraph_t *const digraphs, const unsigned int digraphsSize) const {
+        const DigraphUtils::digraph_t *const digraphs, const unsigned int digraphsSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
     if (i + 2 > inputSize) return false;
@@ -74,7 +66,7 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
 
     // It's an interesting digraph if the second char matches too.
     if (digraphs[lastDigraphIndex].second == codes[i + 1]) {
-        return digraphs[lastDigraphIndex].replacement;
+        return digraphs[lastDigraphIndex].compositeGlyph;
     } else {
         return 0;
     }
@@ -93,7 +85,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         const bool useFullEditDistance, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
-        const digraph_t *const digraphs, const unsigned int digraphsSize) const {
+        const DigraphUtils::digraph_t *const digraphs, const unsigned int digraphsSize) const {
     ASSERT(sizeof(codesDest[0]) == sizeof(codesSrc[0]));
     ASSERT(sizeof(xCoordinatesBuffer[0]) == sizeof(xcoordinates[0]));
     ASSERT(sizeof(yCoordinatesBuffer[0]) == sizeof(ycoordinates[0]));
@@ -169,7 +161,10 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
     queuePool.clearAll();
     Correction masterCorrection;
     masterCorrection.resetCorrection();
-    if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & FLAGS)
+    const DigraphUtils::digraph_t *digraphs = 0;
+    const int digraphsSize =
+            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(FLAGS, &digraphs);
+    if (digraphsSize > 0)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[sizeof(*inputCodePoints) * inputSize];
         int xCoordinatesBuffer[inputSize];
@@ -177,15 +172,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, inputSize, bigramMap, bigramFilter,
                 useFullEditDistance, inputCodePoints, inputSize, 0, codesBuffer, &masterCorrection,
-                &queuePool, GERMAN_UMLAUT_DIGRAPHS, NELEMS(GERMAN_UMLAUT_DIGRAPHS));
-    } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
-        int codesBuffer[sizeof(*inputCodePoints) * inputSize];
-        int xCoordinatesBuffer[inputSize];
-        int yCoordinatesBuffer[inputSize];
-        getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                xCoordinatesBuffer, yCoordinatesBuffer, inputSize, bigramMap, bigramFilter,
-                useFullEditDistance, inputCodePoints, inputSize, 0, codesBuffer, &masterCorrection,
-                &queuePool, FRENCH_LIGATURES_DIGRAPHS, NELEMS(FRENCH_LIGATURES_DIGRAPHS));
+                &queuePool, digraphs, digraphsSize);
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, inputCodePoints, inputSize,
                 bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, &queuePool);
