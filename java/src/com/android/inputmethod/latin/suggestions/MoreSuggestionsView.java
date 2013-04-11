@@ -43,7 +43,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     }
 
     public void updateKeyboardGeometry(final int keyHeight) {
-        mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
+        updateKeyDrawParams(keyHeight);
     }
 
     @Override

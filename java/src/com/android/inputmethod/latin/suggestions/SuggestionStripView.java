@@ -596,7 +596,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
                 .findViewById(R.id.more_suggestions_view);
-        mMoreSuggestionsBuilder = new MoreSuggestions.Builder(mMoreSuggestionsView);
+        mMoreSuggestionsBuilder = new MoreSuggestions.Builder(context, mMoreSuggestionsView);
 
         final Resources res = context.getResources();
         mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
