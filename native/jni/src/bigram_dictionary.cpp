@@ -39,7 +39,7 @@ BigramDictionary::~BigramDictionary() {
 void BigramDictionary::addWordBigram(int *word, int length, int probability, int *bigramProbability,
         int *bigramCodePoints, int *outputTypes) const {
     word[length] = 0;
-    if (DEBUG_DICT) {
+    if (DEBUG_DICT_FULL) {
 #ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = static_cast<char>(word[i]);
@@ -57,7 +57,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
         }
         insertAt++;
     }
-    if (DEBUG_DICT) {
+    if (DEBUG_DICT_FULL) {
         AKLOGI("Bigram: InsertAt -> %d MAX_RESULTS: %d", insertAt, MAX_RESULTS);
     }
     if (insertAt >= MAX_RESULTS) {
@@ -76,7 +76,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
         *dest++ = *word++;
     }
     *dest = 0; // NULL terminate
-    if (DEBUG_DICT) {
+    if (DEBUG_DICT_FULL) {
         AKLOGI("Bigram: Added word at %d", insertAt);
     }
 }
