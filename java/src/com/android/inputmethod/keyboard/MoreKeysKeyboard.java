@@ -291,10 +291,22 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // adjusted with their bottom paddings deducted.
                 width = keyPreviewDrawParams.mPreviewVisibleWidth;
                 height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
+                // TODO: Remove this check.
+                if (width == 0) {
+                    throw new IllegalArgumentException(
+                            "Zero width key detected: " + parentKey + " in " + parentKeyboard.mId);
+                }
             } else {
                 width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth,
                         context.getResources());
                 height = parentKeyboard.mMostCommonKeyHeight;
+                // TODO: Remove this check.
+                if (width == 0) {
+                    throw new IllegalArgumentException(
+                            "Zero width calculated: " + parentKey
+                            + " moreKeys=" + java.util.Arrays.toString(parentKey.mMoreKeys)
+                            + " in " + parentKeyboard.mId);
+                }
             }
             final int dividerWidth;
             if (parentKey.needsDividersInMoreKeys()) {
