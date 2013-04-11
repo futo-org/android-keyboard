@@ -422,7 +422,7 @@ public final class BinaryDictionaryFileDumper {
 
     private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
             final ContentProviderClient client, final String clientId) throws RemoteException {
-        final String metadataFileUri = context.getString(R.string.dictionary_pack_metadata_uri);
+        final String metadataFileUri = MetadataFileUriGetter.getMetadataUri(context);
         if (TextUtils.isEmpty(metadataFileUri)) return;
         // Tell the content provider to reset all information about this client id
         final Uri metadataContentUri = getProviderUriBuilder(clientId)
