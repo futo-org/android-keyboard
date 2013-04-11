@@ -790,8 +790,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog
-                && !isReplaying();
+        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
     }
 
     public void requestIndicatorRedraw() {
