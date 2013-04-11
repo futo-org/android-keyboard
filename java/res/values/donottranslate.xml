@@ -211,11 +211,4 @@
     </string-array>
 
     <string name="settings_warning_researcher_mode">Attention!  You are using the special keyboard for research purposes.</string>
-
-    <!-- dictionary pack settings -->
-    <string name="dictionary_pack_settings_activity">com.android.inputmethod.dictionarypack.DictionarySettingsActivity</string>
-    <string name="authority">com.android.inputmethod.dictionarypack.aosp</string>
-    <string name="default_metadata_uri"></string>
-    <string name="local_metadata_filename">metadata.json</string>
-
 </resources>
