@@ -49,8 +49,8 @@ class ProximityInfoState {
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuousSuggestionPossible(false), mSampledInputXs(), mSampledInputYs(),
               mSampledTimes(), mSampledInputIndice(), mSampledLengthCache(),
-              mBeelineSpeedPercentiles(), mSampledDistanceCache_G(), mSpeedRates(), mDirections(),
-              mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
+              mBeelineSpeedPercentiles(), mSampledNormalizedSquaredLengthCache(), mSpeedRates(),
+              mDirections(), mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
               mSampledSearchKeyVectors(), mTouchPositionCorrectionEnabled(false),
               mSampledInputSize(0), mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
@@ -147,7 +147,9 @@ class ProximityInfoState {
         return mIsContinuousSuggestionPossible;
     }
 
+    // TODO: Rename s/Length/NormalizedSquaredLength/
     float getPointToKeyByIdLength(const int inputIndex, const int keyId) const;
+    // TODO: Rename s/Length/NormalizedSquaredLength/
     float getPointToKeyLength(const int inputIndex, const int codePoint) const;
 
     ProximityType getProximityType(const int index, const int codePoint,
@@ -231,7 +233,7 @@ class ProximityInfoState {
     std::vector<int> mSampledInputIndice;
     std::vector<int> mSampledLengthCache;
     std::vector<int> mBeelineSpeedPercentiles;
-    std::vector<float> mSampledDistanceCache_G;
+    std::vector<float> mSampledNormalizedSquaredLengthCache;
     std::vector<float> mSpeedRates;
     std::vector<float> mDirections;
     // probabilities of skipping or mapping to a key for each point.
