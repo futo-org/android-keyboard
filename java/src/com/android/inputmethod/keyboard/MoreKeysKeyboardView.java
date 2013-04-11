@@ -71,7 +71,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
-                -getPaddingTop() + mVerticalCorrection);
+                -getPaddingTop() + getVerticalCorrection());
     }
 
     @Override

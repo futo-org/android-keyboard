@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
@@ -257,7 +258,6 @@ public final class MoreKeysKeyboard extends Keyboard {
         private static final float LABEL_PADDING_RATIO = 0.2f;
         private static final float DIVIDER_RATIO = 0.2f;
 
-
         /**
          * The builder of MoreKeysKeyboard.
          * @param context the context of {@link MoreKeysKeyboardView}.
@@ -289,10 +289,10 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // be considered because the vertical positions of both backgrounds were already
                 // adjusted with their bottom paddings deducted.
                 width = keyPreviewDrawParams.mPreviewVisibleWidth;
-                height = keyPreviewDrawParams.mPreviewVisibleHeight
-                        + mParams.mVerticalGap;
+                height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
             } else {
-                width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth);
+                width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth,
+                        context.getResources());
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
             final int dividerWidth;
@@ -310,22 +310,18 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         private static int getMaxKeyWidth(final KeyboardView view, final Key parentKey,
-                final int minKeyWidth) {
-            final int padding = (int)(view.getResources()
-                    .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
-                    + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0));
-            final Paint paint = view.newDefaultLabelPaint();
-            paint.setTypeface(parentKey.selectTypeface(view.mKeyDrawParams));
-            paint.setTextSize(parentKey.selectMoreKeyTextSize(view.mKeyDrawParams));
+                final int minKeyWidth, final Resources res) {
+            final float padding =
+                    res.getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
+                    + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0.0f);
+            final Paint paint = view.newLabelPaint(parentKey);
             int maxWidth = minKeyWidth;
             for (final MoreKeySpec spec : parentKey.mMoreKeys) {
                 final String label = spec.mLabel;
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
-                    final int width = (int)view.getLabelWidth(label, paint) + padding;
-                    if (maxWidth < width) {
-                        maxWidth = width;
-                    }
+                    maxWidth = Math.max(maxWidth,
+                            (int)(TypefaceUtils.getLabelWidth(label, paint) + padding));
                 }
             }
             return maxWidth;

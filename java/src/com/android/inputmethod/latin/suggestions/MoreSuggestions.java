@@ -16,12 +16,14 @@
 
 package com.android.inputmethod.latin.suggestions;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.TypefaceUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -50,16 +52,12 @@ public final class MoreSuggestions extends Keyboard {
             super();
         }
 
-        // TODO: Remove {@link MoreSuggestionsView} argument.
         public int layout(final SuggestedWords suggestions, final int fromPos, final int maxWidth,
-                final int minWidth, final int maxRow, final MoreSuggestionsView view) {
+                final int minWidth, final int maxRow, final Paint paint, final Resources res) {
             clearKeys();
-            final Resources res = view.getResources();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
-            final int padding = (int) res.getDimension(
-                    R.dimen.more_suggestions_key_horizontal_padding);
-            final Paint paint = view.newDefaultLabelPaint();
+            final float padding = res.getDimension(R.dimen.more_suggestions_key_horizontal_padding);
 
             int row = 0;
             int pos = fromPos, rowStartPos = fromPos;
@@ -67,7 +65,7 @@ public final class MoreSuggestions extends Keyboard {
             while (pos < size) {
                 final String word = suggestions.getWord(pos);
                 // TODO: Should take care of text x-scaling.
-                mWidths[pos] = (int)view.getLabelWidth(word, paint) + padding;
+                mWidths[pos] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
                 final int numColumn = pos - rowStartPos + 1;
                 final int columnWidth =
                         (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
@@ -169,8 +167,8 @@ public final class MoreSuggestions extends Keyboard {
         private int mFromPos;
         private int mToPos;
 
-        public Builder(final MoreSuggestionsView paneView) {
-            super(paneView.getContext(), new MoreSuggestionsParam());
+        public Builder(final Context context, final MoreSuggestionsView paneView) {
+            super(context, new MoreSuggestionsParam());
             mPaneView = paneView;
         }
 
@@ -183,7 +181,7 @@ public final class MoreSuggestions extends Keyboard {
 
             mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
             final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
-                    mPaneView);
+                    mPaneView.newLabelPaint(null /* key */), mResources);
             mFromPos = fromPos;
             mToPos = fromPos + count;
             mSuggestions = suggestions;
