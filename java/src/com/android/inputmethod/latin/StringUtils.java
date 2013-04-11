@@ -115,11 +115,12 @@ public final class StringUtils {
         // - This does not work for Greek, because it returns upper case instead of title case.
         // - It does not work for Serbian, because it fails to account for the "lj" character,
         // which should be "Lj" in title case and "LJ" in upper case.
-        // - It does not work for Dutch, because it fails to account for the "ij" digraph, which
-        // are two different characters but both should be capitalized as "IJ" as if they were
-        // a single letter.
-        // - It also does not work with unicode surrogate code points.
-        return s.toUpperCase(locale).charAt(0) + s.substring(1);
+        // - It does not work for Dutch, because it fails to account for the "ij" digraph when it's
+        // written as two separate code points. They are two different characters but both should
+        // be capitalized as "IJ" as if they were a single letter in most words (not all). If the
+        // unicode char for the ligature is used however, it works.
+        final int cutoff = s.offsetByCodePoints(0, 1);
+        return s.substring(0, cutoff).toUpperCase(locale) + s.substring(cutoff).toLowerCase(locale);
     }
 
     private static final int[] EMPTY_CODEPOINTS = {};
@@ -176,17 +177,27 @@ public final class StringUtils {
         return list.toArray(new String[list.size()]);
     }
 
-    // This method assumes the text is not empty or null.
+    // This method assumes the text is not null. For the empty string, it returns CAPITALIZE_NONE.
     public static int getCapitalizationType(final String text) {
         // If the first char is not uppercase, then the word is either all lower case or
         // camel case, and in either case we return CAPITALIZE_NONE.
-        if (!Character.isUpperCase(text.codePointAt(0))) return CAPITALIZE_NONE;
         final int len = text.length();
+        int index = 0;
+        for (; index < len; index = text.offsetByCodePoints(index, 1)) {
+            if (Character.isLetter(text.codePointAt(index))) {
+                break;
+            }
+        }
+        if (index == len) return CAPITALIZE_NONE;
+        if (!Character.isUpperCase(text.codePointAt(index))) {
+            return CAPITALIZE_NONE;
+        }
         int capsCount = 1;
         int letterCount = 1;
-        for (int i = 1; i < len; i = text.offsetByCodePoints(i, 1)) {
+        for (index = text.offsetByCodePoints(index, 1); index < len;
+                index = text.offsetByCodePoints(index, 1)) {
             if (1 != capsCount && letterCount != capsCount) break;
-            final int codePoint = text.codePointAt(i);
+            final int codePoint = text.codePointAt(index);
             if (Character.isUpperCase(codePoint)) {
                 ++capsCount;
                 ++letterCount;
