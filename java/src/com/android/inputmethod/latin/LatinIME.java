@@ -72,6 +72,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils.Stats;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
@@ -2173,8 +2174,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     @Override
-    public void pickSuggestionManually(final int index, final String suggestion) {
+    public void pickSuggestionManually(final int index, final SuggestedWordInfo suggestionInfo) {
         final SuggestedWords suggestedWords = mSuggestedWords;
+        final String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
             // Word separators are suggested before the user inputs something.
@@ -2240,7 +2242,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // AND it's in none of our current dictionaries (main, user or otherwise).
         // Please note that if mSuggest is null, it means that everything is off: suggestion
         // and correction, so we shouldn't try to show the hint
-        final boolean showingAddToDictionaryHint = index == 0 && mSuggest != null
+        final boolean showingAddToDictionaryHint =
+                SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind && mSuggest != null
                 // If the suggestion is not in the dictionary, the hint should be shown.
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
