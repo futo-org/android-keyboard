@@ -154,4 +154,83 @@ public class StringUtilsTests extends AndroidTestCase {
         assertEquals(StringUtils.CAPITALIZE_NONE,
                 StringUtils.getCapitalizationType(""));
     }
+
+    public void testIsIdenticalAfterUpcaseIsIdenticalAfterDowncase() {
+        assertFalse(StringUtils.isIdenticalAfterUpcase("capitalize"));
+        assertTrue(StringUtils.isIdenticalAfterDowncase("capitalize"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("cApITalize"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("cApITalize"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("capitalizE"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("capitalizE"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("__c a piu$@tali56ze"));
+        assertTrue(StringUtils.isIdenticalAfterDowncase("__c a piu$@tali56ze"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("A__c a piu$@tali56ze"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("A__c a piu$@tali56ze"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("Capitalize"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("Capitalize"));
+        assertFalse(StringUtils.isIdenticalAfterUpcase("     Capitalize"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("     Capitalize"));
+        assertTrue(StringUtils.isIdenticalAfterUpcase("CAPITALIZE"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("CAPITALIZE"));
+        assertTrue(StringUtils.isIdenticalAfterUpcase("  PI26LIE"));
+        assertFalse(StringUtils.isIdenticalAfterDowncase("  PI26LIE"));
+        assertTrue(StringUtils.isIdenticalAfterUpcase(""));
+        assertTrue(StringUtils.isIdenticalAfterDowncase(""));
+    }
+
+    private void checkCapitalize(final String src, final String dst, final String separators,
+            final Locale locale) {
+        assertEquals(dst, StringUtils.capitalizeEachWord(src, separators, locale));
+        assert(src.equals(dst)
+                == StringUtils.isIdenticalAfterCapitalizeEachWord(src, separators));
+    }
+
+    public void testCapitalizeEachWord() {
+        checkCapitalize("", "", " ", Locale.ENGLISH);
+        checkCapitalize("test", "Test", " ", Locale.ENGLISH);
+        checkCapitalize("    test", "    Test", " ", Locale.ENGLISH);
+        checkCapitalize("Test", "Test", " ", Locale.ENGLISH);
+        checkCapitalize("    Test", "    Test", " ", Locale.ENGLISH);
+        checkCapitalize(".Test", ".test", " ", Locale.ENGLISH);
+        checkCapitalize(".Test", ".Test", " .", Locale.ENGLISH);
+        checkCapitalize(".Test", ".Test", ". ", Locale.ENGLISH);
+        checkCapitalize("test and retest", "Test And Retest", " .", Locale.ENGLISH);
+        checkCapitalize("Test and retest", "Test And Retest", " .", Locale.ENGLISH);
+        checkCapitalize("Test And Retest", "Test And Retest", " .", Locale.ENGLISH);
+        checkCapitalize("Test And.Retest  ", "Test And.Retest  ", " .", Locale.ENGLISH);
+        checkCapitalize("Test And.retest  ", "Test And.Retest  ", " .", Locale.ENGLISH);
+        checkCapitalize("Test And.retest  ", "Test And.retest  ", " ", Locale.ENGLISH);
+        checkCapitalize("Test And.Retest  ", "Test And.retest  ", " ", Locale.ENGLISH);
+        checkCapitalize("test and ietest", "Test And İetest", " .", new Locale("tr"));
+        checkCapitalize("test and ietest", "Test And Ietest", " .", Locale.ENGLISH);
+        checkCapitalize("Test&Retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
+        checkCapitalize("Test&retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
+        checkCapitalize("test&Retest", "Test&Retest", " \n.!?*()&", Locale.ENGLISH);
+        checkCapitalize("rest\nrecreation! And in the end...",
+                "Rest\nRecreation! And In The End...", " \n.!?*,();&", Locale.ENGLISH);
+        checkCapitalize("lorem ipsum dolor sit amet", "Lorem Ipsum Dolor Sit Amet",
+                " \n.,!?*()&;", Locale.ENGLISH);
+        checkCapitalize("Lorem!Ipsum (Dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
+                " \n,.;!?*()&", Locale.ENGLISH);
+        checkCapitalize("Lorem!Ipsum (dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
+                " \n,.;!?*()&", Locale.ENGLISH);
+    }
+
+    public void testContainsAny() {
+        assertFalse(StringUtils.containsAny("", " "));
+        assertFalse(StringUtils.containsAny("test and retest", ""));
+        assertTrue(StringUtils.containsAny("test and retest", "x3iq o"));
+        assertTrue(StringUtils.containsAny("test and retest", "x3iqo "));
+        assertTrue(StringUtils.containsAny("test and retest", " x3iqo"));
+        assertFalse(StringUtils.containsAny("test and retest", "x3iqo"));
+        assertTrue(StringUtils.containsAny("test and retest", "tse "));
+        assertTrue(StringUtils.containsAny("test and retest.", ".?()"));
+        assertFalse(StringUtils.containsAny("test and retest", ".?()"));
+        // Surrogate pair
+        assertTrue(StringUtils.containsAny("test and \uD861\uDED7 retest.", "\uD861\uDED7"));
+        // Ill-formed string
+        assertFalse(StringUtils.containsAny("test and \uD861 retest.", "\uD861\uDED7"));
+        // Ill-formed string
+        assertFalse(StringUtils.containsAny("test and \uDED7 retest.", "\uD861\uDED7"));
+    }
 }
