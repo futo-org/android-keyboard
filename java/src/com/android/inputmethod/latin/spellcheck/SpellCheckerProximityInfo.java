@@ -16,11 +16,10 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.Constants;
+import android.util.SparseIntArray;
 
-import java.util.TreeMap;
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.Constants;
 
 public final class SpellCheckerProximityInfo extends ProximityInfo {
     public SpellCheckerProximityInfo(final int script) {
@@ -43,29 +42,14 @@ public final class SpellCheckerProximityInfo extends ProximityInfo {
     public static final int NOT_A_COORDINATE_PAIR = -1;
 
     // Helper methods
-    static void buildProximityIndices(final int[] proximity,
-            final TreeMap<Integer, Integer> indices) {
-        for (int i = 0; i < proximity.length; i += ROW_SIZE) {
-            if (NUL != proximity[i]) indices.put(proximity[i], i / ROW_SIZE);
+    static void buildProximityIndices(final int[] proximity, final int rowSize,
+            final SparseIntArray indices) {
+        for (int i = 0; i < proximity.length; i += rowSize) {
+            if (NUL != proximity[i]) indices.put(proximity[i], i / rowSize);
         }
     }
 
-    static int computeIndex(final int characterCode,
-            final TreeMap<Integer, Integer> indices) {
-        final Integer result = indices.get(characterCode);
-        if (null == result) return NOT_AN_INDEX;
-        return result;
-    }
-
     private static final class Latin {
-        // This is a map from the code point to the index in the PROXIMITY array.
-        // At the time the native code to read the binary dictionary needs the proximity info be
-        // passed as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input
-        // character.
-        // Since we need to build such an array, we want to be able to search in our big proximity
-        // data quickly by character, and a map is probably the best way to do this.
-        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
-
         // The proximity here is the union of
         // - the proximity for a QWERTY keyboard.
         // - the proximity for an AZERTY keyboard.
@@ -125,17 +109,20 @@ public final class SpellCheckerProximityInfo extends ProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
 
-        static {
-            buildProximityIndices(PROXIMITY, INDICES);
-        }
+        // This is a mapping array from the code point to the index in the PROXIMITY array.
+        // When we check the spelling of a word, we need to pass (x,y) coordinates to the native
+        // code for each letter of the word. These are most easily computed from the index in the
+        // PROXIMITY array. Since we'll need to do that very often, the index lookup from the code
+        // point needs to be as fast as possible, and a map is probably the best way to do this.
+        // To avoid unnecessary boxing conversion to Integer, here we use SparseIntArray.
+        static final SparseIntArray INDICES = new SparseIntArray(PROXIMITY.length / ROW_SIZE);
 
-        static int getIndexOf(int characterCode) {
-            return computeIndex(characterCode, INDICES);
+        static {
+            buildProximityIndices(PROXIMITY, ROW_SIZE, INDICES);
         }
     }
 
     private static final class Cyrillic {
-        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.
         /*
@@ -286,17 +273,14 @@ public final class SpellCheckerProximityInfo extends ProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
 
-        static {
-            buildProximityIndices(PROXIMITY, INDICES);
-        }
+        static final SparseIntArray INDICES = new SparseIntArray(PROXIMITY.length / ROW_SIZE);
 
-        static int getIndexOf(int characterCode) {
-            return computeIndex(characterCode, INDICES);
+        static {
+            buildProximityIndices(PROXIMITY, ROW_SIZE, INDICES);
         }
     }
 
     private static final class Greek {
-        private static final TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Greek
         // speakers on commonly misspelled words/letters.
         /*
@@ -427,12 +411,10 @@ public final class SpellCheckerProximityInfo extends ProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
         };
 
-        static {
-            buildProximityIndices(PROXIMITY, INDICES);
-        }
+        static final SparseIntArray INDICES = new SparseIntArray(PROXIMITY.length / ROW_SIZE);
 
-        static int getIndexOf(int characterCode) {
-            return computeIndex(characterCode, INDICES);
+        static {
+            buildProximityIndices(PROXIMITY, ROW_SIZE, INDICES);
         }
     }
 
@@ -452,11 +434,11 @@ public final class SpellCheckerProximityInfo extends ProximityInfo {
     private static int getIndexOfCodeForScript(final int codePoint, final int script) {
         switch (script) {
         case AndroidSpellCheckerService.SCRIPT_LATIN:
-            return Latin.getIndexOf(codePoint);
+            return Latin.INDICES.get(codePoint, NOT_AN_INDEX);
         case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-            return Cyrillic.getIndexOf(codePoint);
+            return Cyrillic.INDICES.get(codePoint, NOT_AN_INDEX);
         case AndroidSpellCheckerService.SCRIPT_GREEK:
-            return Greek.getIndexOf(codePoint);
+            return Greek.INDICES.get(codePoint, NOT_AN_INDEX);
         default:
             throw new RuntimeException("Wrong script supplied: " + script);
         }
