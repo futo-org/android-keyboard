@@ -24,9 +24,8 @@ FLAG_DO_PROFILE ?= false
 include $(CLEAR_VARS)
 
 LATIN_IME_SRC_DIR := src
-LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
 LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
@@ -60,11 +59,11 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info_state_utils.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
+    suggest/core/suggest.cpp \
     $(addprefix suggest/core/dicnode/, \
         dic_node.cpp \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
-    suggest/core/suggest.cpp \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
@@ -128,6 +127,4 @@ include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars
 LATIN_IME_CORE_SRC_FILES :=
 LATIN_IME_JNI_SRC_FILES :=
-LATIN_IME_GESTURE_IMPL_SRC_FILES :=
 LATIN_IME_SRC_DIR :=
-LATIN_IME_SRC_FULLPATH_DIR :=
