@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "typing_scoring.h"
+#include "suggest/policyimpl/typing/typing_scoring.h"
 
 namespace latinime {
 const TypingScoring TypingScoring::sInstance;

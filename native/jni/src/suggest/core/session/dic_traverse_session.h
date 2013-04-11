@@ -21,10 +21,10 @@
 #include <vector>
 
 #include "defines.h"
-#include "dic_nodes_cache.h"
 #include "hash_map_compat.h"
 #include "jni.h"
 #include "proximity_info_state.h"
+#include "suggest/core/dicnode/dic_nodes_cache.h"
 
 namespace latinime {
 

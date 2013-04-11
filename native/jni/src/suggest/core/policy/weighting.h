@@ -18,6 +18,7 @@
 #define LATINIME_WEIGHTING_H
 
 #include "defines.h"
+#include "hash_map_compat.h"
 
 namespace latinime {
 

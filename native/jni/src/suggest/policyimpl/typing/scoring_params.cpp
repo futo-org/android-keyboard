@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "scoring_params.h"
+#include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
 // TODO: RENAME all

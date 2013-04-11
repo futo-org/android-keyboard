@@ -18,10 +18,10 @@
 #define LATINIME_TYPING_SUGGEST_POLICY_H
 
 #include "defines.h"
-#include "suggest_policy.h"
-#include "typing_scoring.h"
-#include "typing_traversal.h"
-#include "typing_weighting.h"
+#include "suggest/core/policy/suggest_policy.h"
+#include "suggest/policyimpl/typing/typing_scoring.h"
+#include "suggest/policyimpl/typing/typing_traversal.h"
+#include "suggest/policyimpl/typing/typing_weighting.h"
 
 namespace latinime {
 
