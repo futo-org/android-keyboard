@@ -124,8 +124,12 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
  */
 int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
         int *outputCodePoints, int *spaceIndices, int *outputTypes) const {
+#if DEBUG_EVALUATE_MOST_PROBABLE_STRING
+    const int terminalSize = 0;
+#else
     const int terminalSize = min(MAX_RESULTS,
             static_cast<int>(traverseSession->getDicTraverseCache()->terminalSize()));
+#endif
     DicNode terminals[MAX_RESULTS]; // Avoiding non-POD variable length array
 
     for (int index = terminalSize - 1; index >= 0; --index) {

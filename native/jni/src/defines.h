@@ -216,6 +216,7 @@ static inline void prof_out(void) {
 #define DEBUG_DOUBLE_LETTER false
 #define DEBUG_CACHE false
 #define DEBUG_DUMP_ERROR false
+#define DEBUG_EVALUATE_MOST_PROBABLE_STRING false
 
 #ifdef FLAG_FULL_DBG
 #define DEBUG_GEO_FULL true
@@ -241,6 +242,7 @@ static inline void prof_out(void) {
 #define DEBUG_DOUBLE_LETTER false
 #define DEBUG_CACHE false
 #define DEBUG_DUMP_ERROR false
+#define DEBUG_EVALUATE_MOST_PROBABLE_STRING false
 
 #define DEBUG_GEO_FULL false
 
