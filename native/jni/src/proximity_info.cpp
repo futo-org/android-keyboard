@@ -129,7 +129,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 }
 
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
-        const int keyId, const int x, const int y) const {
+        const int keyId, const int x, const int y, const float verticalScale) const {
     const bool correctTouchPosition = hasTouchPositionCorrectionData();
     const float centerX = static_cast<float>(correctTouchPosition ? getSweetSpotCenterXAt(keyId)
             : getKeyCenterXOfKeyIdG(keyId));
@@ -138,7 +138,7 @@ float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
     if (correctTouchPosition) {
         const float sweetSpotCenterY = static_cast<float>(getSweetSpotCenterYAt(keyId));
         const float gapY = sweetSpotCenterY - visualKeyCenterY;
-        centerY = visualKeyCenterY + gapY * ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G;
+        centerY = visualKeyCenterY + gapY * verticalScale;
     } else {
         centerY = visualKeyCenterY;
     }
