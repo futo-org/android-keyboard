@@ -1747,7 +1747,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                         ResearchLogger.getInstance().uncommitCurrentLogUnit(
                                 word, false /* dumpCurrentLogUnit */);
                     }
+                    final String rejectedSuggestion = mWordComposer.getTypedWord();
                     mWordComposer.reset();
+                    mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
                 } else {
                     mWordComposer.deleteLast();
                 }
