@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -444,9 +446,9 @@ public final class RichInputConnection {
         public final int mCharsAfter;
 
         /** The actual characters that make up a word */
-        public final String mWord;
+        public final CharSequence mWord;
 
-        public Range(int charsBefore, int charsAfter, String word) {
+        public Range(int charsBefore, int charsAfter, CharSequence word) {
             if (charsBefore < 0 || charsAfter < 0) {
                 throw new IndexOutOfBoundsException();
             }
@@ -500,7 +502,7 @@ public final class RichInputConnection {
      *   separator. For example, if the field contains "he|llo world", where |
      *   represents the cursor, then "hello " will be returned.
      */
-    public String getWordAtCursor(String separators) {
+    public CharSequence getWordAtCursor(String separators) {
         // getWordRangeAtCursor returns null if the connection is null
         Range r = getWordRangeAtCursor(separators, 0);
         return (r == null) ? null : r.mWord;
@@ -519,8 +521,10 @@ public final class RichInputConnection {
         if (mIC == null || sep == null) {
             return null;
         }
-        final CharSequence before = mIC.getTextBeforeCursor(1000, 0);
-        final CharSequence after = mIC.getTextAfterCursor(1000, 0);
+        final CharSequence before = mIC.getTextBeforeCursor(1000,
+                InputConnection.GET_TEXT_WITH_STYLES);
+        final CharSequence after = mIC.getTextAfterCursor(1000,
+                InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
             return null;
         }
@@ -562,8 +566,9 @@ public final class RichInputConnection {
             }
         }
 
-        final String word = before.toString().substring(startIndexInBefore, before.length())
-                + after.toString().substring(0, endIndexInAfter);
+        final SpannableString word = new SpannableString(TextUtils.concat(
+                before.subSequence(startIndexInBefore, before.length()),
+                after.subSequence(0, endIndexInAfter)));
         return new Range(before.length() - startIndexInBefore, endIndexInAfter, word);
     }
 

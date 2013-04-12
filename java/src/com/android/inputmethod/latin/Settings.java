@@ -134,6 +134,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mSettingsValues.mIsInternal;
     }
 
+    public String getWordSeparators() {
+        return mSettingsValues.mWordSeparators;
+    }
+
     // Accessed from the settings interface, hence public
     public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
             final Resources res) {
