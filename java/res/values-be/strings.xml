@@ -135,8 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Дакраніцеся зноў, каб захаваць"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Слоўнік даступны"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Уключыць зваротную сувязь з карыстальнікамі"</string>
-    <!-- no translation found for prefs_description_log (7525225584555429211) -->
-    <skip />
+    <string name="prefs_description_log" msgid="7525225584555429211">"Дапамажыце палепшыць гэты рэдактар ​​метаду ўводу, аўтаматычна адпраўляючы статыстыку выкарыстання і справаздачы аб збоях Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тэма клавіятуры"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійская (ЗК)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійская (ЗША)"</string>
@@ -163,12 +162,9 @@
     <string name="not_now" msgid="6172462888202790482">"Не цяпер"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Такі метад уводу ўжо існуе: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Рэжым даследвання выкарыстальнасці"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Затрымка доўгага націску клавішы"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Працягласць вібрацыі пры націску клавіш"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Гучнасць гуку пры націску клавіш"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Чытанне знешняга файла слоўніка"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"У папцы загрузак няма файлаў слоўніка"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Вылучыце файл слоўніка для ўсталёўкі"</string>
