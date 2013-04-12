@@ -20,4 +20,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="dictionary_pack_client_id" translatable="false">com.android.inputmethod.latin</string>
     <string name="dictionary_pack_metadata_uri" translatable="false"></string>
+    <string name="dictionary_pack_settings_activity">com.android.inputmethod.dictionarypack.DictionarySettingsActivity</string>
+    <string name="authority">com.android.inputmethod.dictionarypack.aosp</string>
+    <string name="default_metadata_uri"></string>
+    <string name="local_metadata_filename">metadata.json</string>
 </resources>
