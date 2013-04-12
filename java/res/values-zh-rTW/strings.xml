@@ -135,8 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
-    <!-- no translation found for prefs_description_log (7525225584555429211) -->
-    <skip />
+    <string name="prefs_description_log" msgid="7525225584555429211">"自動傳送使用統計資料和當機報告，協助改善這個輸入法編輯器"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英式)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美式)"</string>
@@ -163,12 +162,9 @@
     <string name="not_now" msgid="6172462888202790482">"暫時不要"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"已存在相同的輸入樣式：<xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使用習慣學習模式"</string>
-    <!-- no translation found for prefs_key_longpress_timeout_settings (6102240298932897873) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (7918341459947439226) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (6027007337036891623) -->
-    <skip />
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"按鍵長按延遲"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"按鍵震動持續時間"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"按鍵音量"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"讀取外部字典檔案"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"「下載」資料夾中沒有任何字典檔案"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"選取要安裝的字典檔案"</string>
