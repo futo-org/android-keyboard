@@ -983,7 +983,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         }
         if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) return;
-        mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
+        mApplicationSpecifiedCompletions =
+                CompletionInfoUtils.removeNulls(applicationSpecifiedCompletions);
         if (applicationSpecifiedCompletions == null) {
             clearSuggestionStrip();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {

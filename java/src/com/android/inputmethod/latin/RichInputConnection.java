@@ -392,7 +392,9 @@ public final class RichInputConnection {
     public void commitCompletion(final CompletionInfo completionInfo) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-        final CharSequence text = completionInfo.getText();
+        CharSequence text = completionInfo.getText();
+        // text should never be null, but just in case, it's better to insert nothing than to crash
+        if (null == text) text = "";
         mCommittedTextBeforeComposingText.append(text);
         mCurrentCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
