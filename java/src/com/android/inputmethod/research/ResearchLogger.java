@@ -1283,7 +1283,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (connection != null) {
             Range range = connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1);
             if (range != null) {
-                word = range.mWord;
+                word = range.mWord.toString();
             }
         }
         final ResearchLogger researchLogger = getInstance();

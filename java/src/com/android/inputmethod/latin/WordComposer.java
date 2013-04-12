@@ -49,6 +49,7 @@ public final class WordComposer {
     private int mCapitalizedMode;
     private int mTrailingSingleQuotesCount;
     private int mCodePointSize;
+    private int mCursorPositionWithinWord;
 
     /**
      * Whether the user chose to capitalize the first char of the word.
@@ -62,6 +63,7 @@ public final class WordComposer {
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
         mIsBatchMode = false;
+        mCursorPositionWithinWord = 0;
         refreshSize();
     }
 
@@ -76,6 +78,7 @@ public final class WordComposer {
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
         mIsResumed = source.mIsResumed;
         mIsBatchMode = source.mIsBatchMode;
+        mCursorPositionWithinWord = source.mCursorPositionWithinWord;
         refreshSize();
     }
 
@@ -91,6 +94,7 @@ public final class WordComposer {
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
         mIsBatchMode = false;
+        mCursorPositionWithinWord = 0;
         refreshSize();
     }
 
@@ -135,6 +139,7 @@ public final class WordComposer {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
+        mCursorPositionWithinWord = mCodePointSize;
         if (newIndex < MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Constants.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
@@ -156,6 +161,14 @@ public final class WordComposer {
             mTrailingSingleQuotesCount = 0;
         }
         mAutoCorrection = null;
+    }
+
+    public void setCursorPositionWithinWord(final int posWithinWord) {
+        mCursorPositionWithinWord = posWithinWord;
+    }
+
+    public boolean isCursorAtEndOfComposingWord() {
+        return mCursorPositionWithinWord == mCodePointSize;
     }
 
     public void setBatchInputPointers(final InputPointers batchPointers) {
@@ -242,6 +255,7 @@ public final class WordComposer {
                 ++mTrailingSingleQuotesCount;
             }
         }
+        mCursorPositionWithinWord = mCodePointSize;
         mAutoCorrection = null;
     }
 
@@ -368,6 +382,7 @@ public final class WordComposer {
         mCapitalizedMode = CAPS_MODE_OFF;
         refreshSize();
         mAutoCorrection = null;
+        mCursorPositionWithinWord = 0;
         mIsResumed = false;
         return lastComposedWord;
     }
@@ -380,6 +395,7 @@ public final class WordComposer {
         refreshSize();
         mCapitalizedMode = lastComposedWord.mCapitalizedMode;
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
+        mCursorPositionWithinWord = mCodePointSize;
         mIsResumed = true;
     }
 
