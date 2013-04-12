@@ -20,7 +20,6 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,7 +27,10 @@ import android.os.Build;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 
+import com.android.inputmethod.compat.UserDictionaryCompatUtils;
+
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * An expandable dictionary that stores the words in the user dictionary provider into a binary
@@ -60,10 +62,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private static final String NAME = "userunigram";
-
-    // This is not exported by the framework so we pretty much have to write it here verbatim
-    private static final String ACTION_USER_DICTIONARY_INSERT =
-            "com.android.settings.USER_DICTIONARY_INSERT";
 
     private ContentObserver mObserver;
     final private String mLocale;
@@ -211,23 +209,19 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Adds a word to the user dictionary and makes it persistent.
      *
-     * This will call upon the system interface to do the actual work through the intent readied by
-     * the system to this effect.
-     *
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
      */
     public synchronized void addWordToUserDictionary(final String word) {
-        // TODO: do something for the UI. With the following, any sufficiently long word will
-        // look like it will go to the user dictionary but it won't.
-        // Safeguard against adding long words. Can cause stack overflow.
-        if (word.length() >= MAX_WORD_LENGTH) return;
-
-        Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
-        intent.putExtra(Words.WORD, word);
-        intent.putExtra(Words.LOCALE, mLocale);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
+        // Update the user dictionary provider
+        final Locale locale;
+        if (USER_DICTIONARY_ALL_LANGUAGES == mLocale) {
+            locale = null;
+        } else {
+            locale = LocaleUtils.constructLocaleFromString(mLocale);
+        }
+        UserDictionaryCompatUtils.addWord(mContext, word,
+                HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
     private int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {
