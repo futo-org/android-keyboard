@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.inputmethodservice.InputMethodService;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.text.TextUtils;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -141,11 +142,11 @@ public class RichInputConnectionTests extends AndroidTestCase {
         ic.beginBatchEdit();
         // basic case
         r = ic.getWordRangeAtCursor(" ", 0);
-        assertEquals("word", r.mWord);
+        assertTrue(TextUtils.equals("word", r.mWord));
 
         // more than one word
         r = ic.getWordRangeAtCursor(" ", 1);
-        assertEquals("word word", r.mWord);
+        assertTrue(TextUtils.equals("word word", r.mWord));
         ic.endBatchEdit();
 
         // tab character instead of space
@@ -153,28 +154,28 @@ public class RichInputConnectionTests extends AndroidTestCase {
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor("\t", 1);
         ic.endBatchEdit();
-        assertEquals("word\tword", r.mWord);
+        assertTrue(TextUtils.equals("word\tword", r.mWord));
 
         // only one word doesn't go too far
         mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor("\t", 1);
         ic.endBatchEdit();
-        assertEquals("word\tword", r.mWord);
+        assertTrue(TextUtils.equals("word\tword", r.mWord));
 
         // tab or space
         mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(" \t", 1);
         ic.endBatchEdit();
-        assertEquals("word\tword", r.mWord);
+        assertTrue(TextUtils.equals("word\tword", r.mWord));
 
         // tab or space multiword
         mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(" \t", 2);
         ic.endBatchEdit();
-        assertEquals("one word\tword", r.mWord);
+        assertTrue(TextUtils.equals("one word\tword", r.mWord));
 
         // splitting on supplementary character
         final String supplementaryChar = "\uD840\uDC8A";
@@ -183,6 +184,6 @@ public class RichInputConnectionTests extends AndroidTestCase {
         ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(supplementaryChar, 0);
         ic.endBatchEdit();
-        assertEquals("word", r.mWord);
+        assertTrue(TextUtils.equals("word", r.mWord));
     }
 }
