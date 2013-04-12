@@ -176,14 +176,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
     // considering performance regression.
-    protected void addWord(final String word, final String shortcutTarget, final int frequency) {
+    protected void addWord(final String word, final String shortcutTarget, final int frequency,
+            final boolean isNotAWord) {
         if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null, false /* isNotAWord */);
+            mFusionDictionary.add(word, frequency, null, isNotAWord);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
             final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
             shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
-            mFusionDictionary.add(word, frequency, shortcutTargets, false /* isNotAWord */);
+            mFusionDictionary.add(word, frequency, shortcutTargets, isNotAWord);
         }
     }
 

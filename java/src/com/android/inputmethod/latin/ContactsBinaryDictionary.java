@@ -173,7 +173,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 // capitalization of i.
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
-                    super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS);
+                    super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
+                            false /* isNotAWord */);
                     if (!TextUtils.isEmpty(prevWord)) {
                         if (mUseFirstLastBigrams) {
                             super.setBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM);
