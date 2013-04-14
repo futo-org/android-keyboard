@@ -81,10 +81,7 @@ public class FeedbackFragment extends Fragment implements OnClickListener {
     public void onClick(final View view) {
         final ResearchLogger researchLogger = ResearchLogger.getInstance();
         if (view == mIncludingUserRecordingCheckBox) {
-            if (hasUserRecording()) {
-                // Remove the recording
-                setHasUserRecording(false);
-            } else {
+            if (mIncludingUserRecordingCheckBox.isChecked()) {
                 final Bundle bundle = new Bundle();
                 onSaveInstanceState(bundle);
 
@@ -103,9 +100,9 @@ public class FeedbackFragment extends Fragment implements OnClickListener {
                         R.string.research_feedback_empty_feedback_error_message,
                         Toast.LENGTH_LONG).show();
             } else {
-                final boolean isIncludingAccountName = isIncludingAccountName();
-                researchLogger.sendFeedback(feedbackContents,
-                        false /* isIncludingHistory */, isIncludingAccountName, hasUserRecording());
+                final boolean isIncludingAccountName = mIncludingAccountNameCheckBox.isChecked();
+                researchLogger.sendFeedback(feedbackContents, false /* isIncludingHistory */,
+                        isIncludingAccountName, mIncludingUserRecordingCheckBox.isChecked());
                 getActivity().finish();
                 researchLogger.setFeedbackDialogBundle(null);
                 researchLogger.onLeavingSendFeedbackDialog();
@@ -125,29 +122,13 @@ public class FeedbackFragment extends Fragment implements OnClickListener {
         final String savedFeedbackString = mEditText.getText().toString();
 
         bundle.putString(KEY_FEEDBACK_STRING, savedFeedbackString);
-        bundle.putBoolean(KEY_INCLUDE_ACCOUNT_NAME, isIncludingAccountName());
-        bundle.putBoolean(KEY_HAS_USER_RECORDING, hasUserRecording());
+        bundle.putBoolean(KEY_INCLUDE_ACCOUNT_NAME, mIncludingAccountNameCheckBox.isChecked());
+        bundle.putBoolean(KEY_HAS_USER_RECORDING, mIncludingUserRecordingCheckBox.isChecked());
     }
 
-    public void restoreState(final Bundle bundle) {
+    private void restoreState(final Bundle bundle) {
         mEditText.setText(bundle.getString(KEY_FEEDBACK_STRING));
-        setIsIncludingAccountName(bundle.getBoolean(KEY_INCLUDE_ACCOUNT_NAME));
-        setHasUserRecording(bundle.getBoolean(KEY_HAS_USER_RECORDING));
-    }
-
-    private boolean hasUserRecording() {
-        return mIncludingUserRecordingCheckBox.isChecked();
-    }
-
-    private void setHasUserRecording(final boolean hasRecording) {
-        mIncludingUserRecordingCheckBox.setChecked(hasRecording);
-    }
-
-    private boolean isIncludingAccountName() {
-        return mIncludingAccountNameCheckBox.isChecked();
-    }
-
-    private void setIsIncludingAccountName(final boolean isIncludingAccountName) {
-        mIncludingAccountNameCheckBox.setChecked(isIncludingAccountName);
+        mIncludingAccountNameCheckBox.setChecked(bundle.getBoolean(KEY_INCLUDE_ACCOUNT_NAME));
+        mIncludingUserRecordingCheckBox.setChecked(bundle.getBoolean(KEY_HAS_USER_RECORDING));
     }
 }
