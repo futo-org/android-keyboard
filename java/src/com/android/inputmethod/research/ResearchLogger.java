@@ -1107,7 +1107,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             packageInfo = mLatinIME.getPackageManager().getPackageInfo(mLatinIME.getPackageName(),
                     0);
             final String versionName = packageInfo.versionName;
-            return !(developerBuildRegex.matcher(versionName).find());
+            return developerBuildRegex.matcher(versionName).find();
         } catch (final NameNotFoundException e) {
             Log.e(TAG, "Could not determine package name", e);
             return false;
