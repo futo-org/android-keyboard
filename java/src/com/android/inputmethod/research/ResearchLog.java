@@ -108,10 +108,14 @@ public class ResearchLog {
             @Override
             public Object call() throws Exception {
                 try {
-                    if (mHasWrittenData) {
-                        mJsonWriter.endArray();
-                        mHasWrittenData = false;
+                    // TODO: This is necessary to avoid an exception.  Better would be to not even
+                    // open the JsonWriter if the file is not even opened unless there is valid data
+                    // to write.
+                    if (!mHasWrittenData) {
+                        mJsonWriter.beginArray();
                     }
+                    mJsonWriter.endArray();
+                    mHasWrittenData = false;
                     mJsonWriter.flush();
                     mJsonWriter.close();
                     if (DEBUG) {
@@ -159,6 +163,12 @@ public class ResearchLog {
             public Object call() throws Exception {
                 try {
                     if (mHasWrittenData) {
+                        // TODO: This is necessary to avoid an exception.  Better would be to not
+                        // even open the JsonWriter if the file is not even opened unless there is
+                        // valid data to write.
+                        if (!mHasWrittenData) {
+                            mJsonWriter.beginArray();
+                        }
                         mJsonWriter.endArray();
                         mJsonWriter.close();
                         mHasWrittenData = false;
