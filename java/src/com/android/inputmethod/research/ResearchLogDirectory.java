@@ -97,15 +97,17 @@ public class ResearchLogDirectory {
         }
     }
 
-    public File getLogFilePath(final long time) {
-        return new File(mFilesDir, getUniqueFilename(LOG_FILENAME_PREFIX, time));
+    public File getLogFilePath(final long time, final long nanoTime) {
+        return new File(mFilesDir, getUniqueFilename(LOG_FILENAME_PREFIX, time, nanoTime));
     }
 
-    public File getUserRecordingFilePath(final long time) {
-        return new File(mFilesDir, getUniqueFilename(USER_RECORDING_FILENAME_PREFIX, time));
+    public File getUserRecordingFilePath(final long time, final long nanoTime) {
+        return new File(mFilesDir, getUniqueFilename(USER_RECORDING_FILENAME_PREFIX, time,
+                nanoTime));
     }
 
-    private static String getUniqueFilename(final String prefix, final long time) {
-        return prefix + "-" + time + FILENAME_SUFFIX;
+    private static String getUniqueFilename(final String prefix, final long time,
+            final long nanoTime) {
+        return prefix + "-" + time + "-" + nanoTime + FILENAME_SUFFIX;
     }
 }

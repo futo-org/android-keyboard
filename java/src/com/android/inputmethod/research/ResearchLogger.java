@@ -389,7 +389,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (mMainLogBuffer == null) {
             mMainResearchLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
-                    System.currentTimeMillis()), mLatinIME);
+                    System.currentTimeMillis(), System.nanoTime()), mLatinIME);
             final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
             mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
                     mSuggest) {
@@ -420,7 +420,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void resetFeedbackLogging() {
         mFeedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
-                System.currentTimeMillis()), mLatinIME);
+                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
         mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
     }
 
@@ -545,7 +545,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mUserRecordingLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
         }
         mUserRecordingFile = mResearchLogDirectory.getUserRecordingFilePath(
-                System.currentTimeMillis());
+                System.currentTimeMillis(), System.nanoTime());
         mUserRecordingLog = new ResearchLog(mUserRecordingFile, mLatinIME);
         mUserRecordingLogBuffer = new LogBuffer();
         resetRecordingTimer();
