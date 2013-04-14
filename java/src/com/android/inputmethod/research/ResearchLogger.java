@@ -813,7 +813,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 // enabled.  The dot is actually a zero-width, zero-height rectangle, placed at the
                 // lower-right corner of the canvas, painted with a non-zero border width.
                 paint.setStrokeWidth(3);
-                canvas.drawRect(width, height, width, height, paint);
+                canvas.drawRect(width - 1, height - 1, width, height, paint);
             }
             paint.setColor(savedColor);
             paint.setStyle(savedStyle);
