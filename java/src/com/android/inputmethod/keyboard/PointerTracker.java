@@ -444,7 +444,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (sInGesture) {
             return false;
         }
-        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInput && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onPress    : %s%s%s", mPointerId,
                     KeyDetector.printableCode(key),
@@ -468,7 +468,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(final Key key, final int primaryCode, final int x,
             final int y, final long eventTime) {
-        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInput && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
         final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
@@ -503,7 +503,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (sInGesture) {
             return;
         }
-        final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
+        final boolean ignoreModifierKey = mIsInSlidingKeyInput && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, String.format("[%d] onRelease  : %s%s%s%s", mPointerId,
                     Constants.printableCode(primaryCode),
