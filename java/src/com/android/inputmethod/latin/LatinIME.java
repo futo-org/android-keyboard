@@ -161,8 +161,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
     private final RichInputConnection mConnection = new RichInputConnection(this);
-    private RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus(-1, -1, "",
-            Locale.getDefault(), ""); // Dummy object that will match no real recapitalize
+    private RecapitalizeStatus mRecapitalizeStatus = null;
 
     // Keep track of the last selection range to decide if we need to show word alternatives
     private static final int NOT_A_CURSOR_POSITION = -1;
@@ -925,7 +924,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
             // We moved the cursor. If we are touching a word, we need to resume suggestion.
             mHandler.postResumeSuggestions();
-
+            // Reset the last recapitalization.
+            mRecapitalizeStatus = null;
             mKeyboardSwitcher.updateShiftState();
         }
         mExpectingUpdateSelection = false;
