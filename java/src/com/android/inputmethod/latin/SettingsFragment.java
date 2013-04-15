@@ -232,10 +232,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         } else if (key.equals(Settings.PREF_SHOW_LANGUAGE_SWITCH_KEY)) {
             setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
                     Settings.readShowsLanguageSwitchKey(prefs));
-        } else if (key.equals(Settings.PREF_GESTURE_INPUT)) {
-            final boolean gestureInputEnabled = Settings.readGestureInputEnabled(prefs, res);
-            setPreferenceEnabled(Settings.PREF_GESTURE_PREVIEW_TRAIL, gestureInputEnabled);
-            setPreferenceEnabled(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, gestureInputEnabled);
         } else if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
