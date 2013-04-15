@@ -195,4 +195,21 @@ public final class SuggestedWords {
             }
         }
     }
+
+    // SuggestedWords is an immutable object, as much as possible. We must not just remove
+    // words from the member ArrayList as some other parties may expect the object to never change.
+    public SuggestedWords getSuggestedWordsExcludingTypedWord() {
+        final ArrayList<SuggestedWordInfo> newSuggestions = CollectionUtils.newArrayList();
+        for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
+            final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
+            if (SuggestedWordInfo.KIND_TYPED != info.mKind) {
+                newSuggestions.add(info);
+            }
+        }
+        // We should never autocorrect, so we say the typed word is valid. Also, in this case,
+        // no auto-correction should take place hence willAutoCorrect = false.
+        return new SuggestedWords(newSuggestions, true /* typedWordValid */,
+                false /* willAutoCorrect */, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
+                mIsPrediction);
+    }
 }
