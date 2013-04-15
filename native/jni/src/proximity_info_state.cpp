@@ -81,7 +81,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mSampledTimes.clear();
         mSampledInputIndice.clear();
         mSampledLengthCache.clear();
-        mSampledDistanceCache_G.clear();
+        mSampledNormalizedSquaredLengthCache.clear();
         mSampledNearKeySets.clear();
         mSampledSearchKeySets.clear();
         mSpeedRates.clear();
@@ -122,14 +122,15 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (mSampledInputSize > 0) {
         ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
                 lastSavedInputSize, verticalSweetSpotScale, &mSampledInputXs, &mSampledInputYs,
-                &mSampledNearKeySets, &mSampledDistanceCache_G);
+                &mSampledNearKeySets, &mSampledNormalizedSquaredLengthCache);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
             ProximityInfoStateUtils::updateAlignPointProbabilities(
                     mMaxPointToKeyLength, mProximityInfo->getMostCommonKeyWidth(),
                     mProximityInfo->getKeyCount(), lastSavedInputSize, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSpeedRates, &mSampledLengthCache,
-                    &mSampledDistanceCache_G, &mSampledNearKeySets, &mCharProbabilities);
+                    &mSampledNormalizedSquaredLengthCache, &mSampledNearKeySets,
+                    &mCharProbabilities);
             ProximityInfoStateUtils::updateSampledSearchKeySets(mProximityInfo,
                     mSampledInputSize, lastSavedInputSize, &mSampledLengthCache,
                     &mSampledNearKeySets, &mSampledSearchKeySets,
@@ -171,7 +172,7 @@ float ProximityInfoState::getPointToKeyLength(
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
-        return min(mSampledDistanceCache_G[index], mMaxPointToKeyLength);
+        return min(mSampledNormalizedSquaredLengthCache[index], mMaxPointToKeyLength);
     }
     if (isIntentionalOmissionCodePoint(codePoint)) {
         return 0.0f;
@@ -183,7 +184,8 @@ float ProximityInfoState::getPointToKeyLength(
 float ProximityInfoState::getPointToKeyByIdLength(
         const int inputIndex, const int keyId) const {
     return ProximityInfoStateUtils::getPointToKeyByIdLength(mMaxPointToKeyLength,
-            &mSampledDistanceCache_G, mProximityInfo->getKeyCount(), inputIndex, keyId);
+            &mSampledNormalizedSquaredLengthCache, mProximityInfo->getKeyCount(), inputIndex,
+            keyId);
 }
 
 // In the following function, c is the current character of the dictionary word currently examined.

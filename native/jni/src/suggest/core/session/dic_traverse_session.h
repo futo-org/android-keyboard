@@ -146,6 +146,10 @@ class DicTraverseSession {
         return true;
     }
 
+    bool isTouchPositionCorrectionEnabled() const {
+        return mProximityInfoStates[0].touchPositionCorrectionEnabled();
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicTraverseSession);
     // threshold to start caching

@@ -675,7 +675,7 @@ inline static bool isUpperCase(unsigned short c) {
                 multiplyIntCapped(typedLetterMultiplier, &finalFreq);
             }
             const float factor =
-                    SuggestUtils::getDistanceScalingFactor(static_cast<float>(squaredDistance));
+                    SuggestUtils::getLengthScalingFactor(static_cast<float>(squaredDistance));
             if (factor > 0.0f) {
                 multiplyRate(static_cast<int>(factor * 100.0f), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
