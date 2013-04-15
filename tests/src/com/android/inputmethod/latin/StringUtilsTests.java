@@ -215,22 +215,4 @@ public class StringUtilsTests extends AndroidTestCase {
         checkCapitalize("Lorem!Ipsum (dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
                 " \n,.;!?*()&", Locale.ENGLISH);
     }
-
-    public void testContainsAny() {
-        assertFalse(StringUtils.containsAny("", " "));
-        assertFalse(StringUtils.containsAny("test and retest", ""));
-        assertTrue(StringUtils.containsAny("test and retest", "x3iq o"));
-        assertTrue(StringUtils.containsAny("test and retest", "x3iqo "));
-        assertTrue(StringUtils.containsAny("test and retest", " x3iqo"));
-        assertFalse(StringUtils.containsAny("test and retest", "x3iqo"));
-        assertTrue(StringUtils.containsAny("test and retest", "tse "));
-        assertTrue(StringUtils.containsAny("test and retest.", ".?()"));
-        assertFalse(StringUtils.containsAny("test and retest", ".?()"));
-        // Surrogate pair
-        assertTrue(StringUtils.containsAny("test and \uD861\uDED7 retest.", "\uD861\uDED7"));
-        // Ill-formed string
-        assertFalse(StringUtils.containsAny("test and \uD861 retest.", "\uD861\uDED7"));
-        // Ill-formed string
-        assertFalse(StringUtils.containsAny("test and \uDED7 retest.", "\uD861\uDED7"));
-    }
 }

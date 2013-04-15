@@ -282,15 +282,4 @@ public final class StringUtils {
         }
         return builder.toString();
     }
-
-    public static boolean containsAny(final String string, final String separators) {
-        final int len = separators.length();
-        for (int i = 0; i < len; i = separators.offsetByCodePoints(i, 1)) {
-            final int separator = separators.codePointAt(i);
-            if (-1 != string.indexOf(separator)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
