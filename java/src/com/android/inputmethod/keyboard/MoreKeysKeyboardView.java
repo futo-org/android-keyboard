@@ -33,7 +33,7 @@ import com.android.inputmethod.latin.R;
 public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
-    private final KeyDetector mKeyDetector;
+    protected final KeyDetector mKeyDetector;
     private Controller mController;
     protected KeyboardActionListener mListener;
     private int mOriginX;

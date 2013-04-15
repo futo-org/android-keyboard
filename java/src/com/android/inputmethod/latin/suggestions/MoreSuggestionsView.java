@@ -46,6 +46,12 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         updateKeyDrawParams(keyHeight);
     }
 
+    public void adjustVerticalCorrectionForModalMode() {
+        // Set vertical correction to zero (Reset more keys keyboard sliding allowance
+        // {@link R#dimen.more_keys_keyboard_slide_allowance}).
+        mKeyDetector.setKeyboard(getKeyboard(), -getPaddingLeft(), -getPaddingTop());
+    }
+
     @Override
     public void onCodeInput(final int code, final int x, final int y) {
         final int index = code - MoreSuggestions.SUGGESTION_CODE_BASE;
