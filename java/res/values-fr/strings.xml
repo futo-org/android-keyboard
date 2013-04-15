@@ -135,7 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Appuyer de nouveau pour enregistrer"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'incident"</string>
+    <string name="prefs_description_log" msgid="7525225584555429211">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'erreur"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Thème du clavier"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglais (Royaume-Uni)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglais (États-Unis)"</string>
