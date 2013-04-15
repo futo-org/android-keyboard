@@ -422,11 +422,11 @@
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
-    <!-- Title of the settings for key long press delay [CHAR LIMIT=30] -->
+    <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
     <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
-    <!-- Title of the settings for keypress vibration duration [CHAR LIMIT=30] -->
+    <!-- Title of the settings for keypress vibration duration [CHAR LIMIT=35] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
-    <!-- Title of the settings for keypress sound volume [CHAR LIMIT=30] -->
+    <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume</string>
     <!-- Title of the settings for reading an external dictionary file -->
     <string name="prefs_read_external_dictionary">Read external dictionary file</string>
