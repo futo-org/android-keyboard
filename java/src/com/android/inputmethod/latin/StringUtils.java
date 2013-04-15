@@ -282,4 +282,69 @@ public final class StringUtils {
         }
         return builder.toString();
     }
+
+    /**
+     * Approximates whether the text before the cursor looks like a URL.
+     *
+     * This is not foolproof, but it should work well in the practice.
+     * Essentially it walks backward from the cursor until it finds something that's not a letter,
+     * digit, or common URL symbol like underscore. If it hasn't found a period yet, then it
+     * does not look like a URL.
+     * If the text:
+     * - starts with www and contains a period
+     * - starts with a slash preceded by either a slash, whitespace, or start-of-string
+     * Then it looks like a URL and we return true. Otherwise, we return false.
+     *
+     * Note: this method is called quite often, and should be fast.
+     *
+     * TODO: This will return that "abc./def" and ".abc/def" look like URLs to keep down the
+     * code complexity, but ideally it should not. It's acceptable for now.
+     */
+    public static boolean lastPartLooksLikeURL(final CharSequence text) {
+        int i = text.length();
+        if (0 == i) return false;
+        int wCount = 0;
+        int slashCount = 0;
+        boolean hasSlash = false;
+        boolean hasPeriod = false;
+        int codePoint = 0;
+        while (i > 0) {
+            codePoint =  Character.codePointBefore(text, i);
+            if (codePoint < Constants.CODE_PERIOD || codePoint > 'z') {
+                // Handwavy heuristic to see if that's a URL character. Anything between period
+                // and z. This includes all lower- and upper-case ascii letters, period,
+                // underscore, arrobase, question mark, equal sign. It excludes spaces, exclamation
+                // marks, double quotes...
+                // Anything that's not a URL-like character causes us to break from here and
+                // evaluate normally.
+                break;
+            }
+            if (Constants.CODE_PERIOD == codePoint) {
+                hasPeriod = true;
+            }
+            if (Constants.CODE_SLASH == codePoint) {
+                hasSlash = true;
+                if (2 == ++slashCount) {
+                    return true;
+                }
+            } else {
+                slashCount = 0;
+            }
+            if ('w' == codePoint) {
+                ++wCount;
+            } else {
+                wCount = 0;
+            }
+            i = Character.offsetByCodePoints(text, i, -1);
+        }
+        // End of the text run.
+        // If it starts with www and includes a period, then it looks like a URL.
+        if (wCount >= 3 && hasPeriod) return true;
+        // If it starts with a slash, and the code point before is whitespace, it looks like an URL.
+        if (1 == slashCount && (0 == i || Character.isWhitespace(codePoint))) return true;
+        // If it has both a period and a slash, it looks like an URL.
+        if (hasPeriod && hasSlash) return true;
+        // Otherwise, it doesn't look like an URL.
+        return false;
+    }
 }

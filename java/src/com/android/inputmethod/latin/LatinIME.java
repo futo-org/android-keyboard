@@ -2559,7 +2559,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // This essentially inserts a space, and that's it.
     public void promotePhantomSpace() {
-        if (mSettings.getCurrent().shouldInsertSpacesAutomatically()) {
+        if (mSettings.getCurrent().shouldInsertSpacesAutomatically()
+                && !mConnection.textBeforeCursorLooksLikeURL()) {
             sendKeyCodePoint(Constants.CODE_SPACE);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();

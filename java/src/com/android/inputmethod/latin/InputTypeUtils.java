@@ -33,7 +33,6 @@ public final class InputTypeUtils implements InputType {
     private static final int[] SUPPRESSING_AUTO_SPACES_FIELD_VARIATION = {
         InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
         InputType.TYPE_TEXT_VARIATION_PASSWORD,
-        InputType.TYPE_TEXT_VARIATION_URI,
         InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
         InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD };
     public static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
