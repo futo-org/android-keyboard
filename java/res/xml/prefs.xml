@@ -93,12 +93,14 @@
         <!-- TODO: Move these two options to the advanced settings. -->
         <CheckBoxPreference
             android:key="pref_gesture_floating_preview_text"
+            android:dependency="gesture_input"
             android:title="@string/gesture_floating_preview_text"
             android:summary="@string/gesture_floating_preview_text_summary"
             android:persistent="true"
             android:defaultValue="true" />
         <CheckBoxPreference
             android:key="pref_gesture_preview_trail"
+            android:dependency="gesture_input"
             android:title="@string/gesture_preview_trail"
             android:persistent="true"
             android:defaultValue="true" />
