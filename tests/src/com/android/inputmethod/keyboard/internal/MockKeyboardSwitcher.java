@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.RecapitalizeStatus;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     public interface MockConstants {
@@ -120,7 +121,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     @Override
     public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mAutoCapsState);
+        mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void updateShiftState() {
-        mState.onUpdateShiftState(mAutoCapsState);
+        mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }
 
     public void loadKeyboard() {

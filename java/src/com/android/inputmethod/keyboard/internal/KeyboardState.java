@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.RecapitalizeStatus;
 
 /**
  * Keyboard state machine.
@@ -80,6 +81,7 @@ public final class KeyboardState {
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
+    private int mRecapitalizeMode;
 
     // For handling long press.
     private boolean mLongPressShiftLockFired;
@@ -110,6 +112,7 @@ public final class KeyboardState {
 
     public KeyboardState(final SwitchActions switchActions) {
         mSwitchActions = switchActions;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
     }
 
     public void onLoadKeyboard() {
@@ -283,6 +286,7 @@ public final class KeyboardState {
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsSymbolShifted = false;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
         mSwitchActions.requestUpdatingShiftState();
     }
@@ -386,11 +390,13 @@ public final class KeyboardState {
         }
     }
 
-    public void onUpdateShiftState(final int autoCaps) {
+    public void onUpdateShiftState(final int autoCaps, final int recapitalizeMode) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
+            Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + ", recapitalizeMode="
+                    + recapitalizeMode + this);
         }
-        updateAlphabetShiftState(autoCaps);
+        mRecapitalizeMode = recapitalizeMode;
+        updateAlphabetShiftState(autoCaps, recapitalizeMode);
     }
 
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
@@ -402,8 +408,28 @@ public final class KeyboardState {
         resetKeyboardStateToAlphabet();
     }
 
-    private void updateAlphabetShiftState(final int autoCaps) {
+    private void updateShiftStateForRecapitalize(final int recapitalizeMode) {
+        switch (recapitalizeMode) {
+        case RecapitalizeStatus.CAPS_MODE_ALL_UPPER:
+            setShifted(SHIFT_LOCK_SHIFTED);
+            break;
+        case RecapitalizeStatus.CAPS_MODE_FIRST_WORD_UPPER:
+            setShifted(AUTOMATIC_SHIFT);
+            break;
+        case RecapitalizeStatus.CAPS_MODE_ALL_LOWER:
+        case RecapitalizeStatus.CAPS_MODE_ORIGINAL_MIXED_CASE:
+        default:
+            setShifted(UNSHIFT);
+        }
+    }
+
+    private void updateAlphabetShiftState(final int autoCaps, final int recapitalizeMode) {
         if (!mIsAlphabetMode) return;
+        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != recapitalizeMode) {
+            // We are recapitalizing. Match the keyboard to the current recapitalize state.
+            updateShiftStateForRecapitalize(recapitalizeMode);
+            return;
+        }
         if (!mShiftKeyState.isReleasing()) {
             // Ignore update shift state event while the shift key is being pressed (including
             // chording).
@@ -421,6 +447,9 @@ public final class KeyboardState {
 
     private void onPressShift() {
         mLongPressShiftLockFired = false;
+        // If we are recapitalizing, we don't do any of the normal processing, including
+        // importantly the double tap timer.
+        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) return;
         if (mIsAlphabetMode) {
             mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapTimeout();
             if (!mIsInDoubleTapShiftKey) {
@@ -467,7 +496,11 @@ public final class KeyboardState {
     }
 
     private void onReleaseShift(final boolean withSliding) {
-        if (mIsAlphabetMode) {
+        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
+            // We are recapitalizing. We should match the keyboard state to the recapitalize
+            // state in priority.
+            updateShiftStateForRecapitalize(mRecapitalizeMode);
+        } else if (mIsAlphabetMode) {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
             mIsInAlphabetUnshiftedFromShifted = false;
             if (mIsInDoubleTapShiftKey) {
@@ -597,7 +630,7 @@ public final class KeyboardState {
 
         // If the code is a letter, update keyboard shift state.
         if (Constants.isLetterCode(code)) {
-            updateAlphabetShiftState(autoCaps);
+            updateAlphabetShiftState(autoCaps, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
         }
     }
 

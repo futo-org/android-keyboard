@@ -207,7 +207,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * Update keyboard shift state triggered by connected EditText status change.
      */
     public void updateShiftState() {
-        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState());
+        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
+                mLatinIME.getCurrentRecapitalizeState());
     }
 
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
@@ -276,7 +277,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState());
+        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
+                mLatinIME.getCurrentRecapitalizeState());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
