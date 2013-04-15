@@ -107,6 +107,9 @@
     <!-- Description for option to enable auto capitalization of sentences -->
     <string name="auto_cap_summary">Capitalize the first word of each sentence</string>
 
+    <!-- Option to edit personal dictionary. [CHAR_LIMIT=30]-->
+    <string name="edit_personal_dictionary">Personal dictionary</string>
+
     <!-- Option to configure dictionaries -->
     <string name="configure_dictionaries_title">Add-on dictionaries</string>
     <!-- Name of the main dictionary, as opposed to auxiliary dictionaries (medical/entertainment/sports...) -->
