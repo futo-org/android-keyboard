@@ -42,6 +42,13 @@ public final class WordComposer {
     private String mAutoCorrection;
     private boolean mIsResumed;
     private boolean mIsBatchMode;
+    // A memory of the last rejected batch mode suggestion, if any. This goes like this: the user
+    // gestures a word, is displeased with the results and hits backspace, then gestures again.
+    // At the very least we should avoid re-suggesting the same thing, and to do that we memorize
+    // the rejected suggestion in this variable.
+    // TODO: this should be done in a comprehensive way by the User History feature instead of
+    // as an ad-hockery here.
+    private String mRejectedBatchModeSuggestion;
 
     // Cache these values for performance
     private int mCapsCount;
@@ -64,6 +71,7 @@ public final class WordComposer {
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
+        mRejectedBatchModeSuggestion = null;
         refreshSize();
     }
 
@@ -79,6 +87,7 @@ public final class WordComposer {
         mIsResumed = source.mIsResumed;
         mIsBatchMode = source.mIsBatchMode;
         mCursorPositionWithinWord = source.mCursorPositionWithinWord;
+        mRejectedBatchModeSuggestion = source.mRejectedBatchModeSuggestion;
         refreshSize();
     }
 
@@ -95,6 +104,7 @@ public final class WordComposer {
         mIsResumed = false;
         mIsBatchMode = false;
         mCursorPositionWithinWord = 0;
+        mRejectedBatchModeSuggestion = null;
         refreshSize();
     }
 
@@ -384,6 +394,7 @@ public final class WordComposer {
         mAutoCorrection = null;
         mCursorPositionWithinWord = 0;
         mIsResumed = false;
+        mRejectedBatchModeSuggestion = null;
         return lastComposedWord;
     }
 
@@ -396,10 +407,19 @@ public final class WordComposer {
         mCapitalizedMode = lastComposedWord.mCapitalizedMode;
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
         mCursorPositionWithinWord = mCodePointSize;
+        mRejectedBatchModeSuggestion = null;
         mIsResumed = true;
     }
 
     public boolean isBatchMode() {
         return mIsBatchMode;
+    }
+
+    public void setRejectedBatchModeSuggestion(final String rejectedSuggestion) {
+        mRejectedBatchModeSuggestion = rejectedSuggestion;
+    }
+
+    public String getRejectedBatchModeSuggestion() {
+        return mRejectedBatchModeSuggestion;
     }
 }
