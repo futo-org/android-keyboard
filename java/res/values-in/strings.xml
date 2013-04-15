@@ -163,8 +163,8 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Sudah ada gaya masukan yang sama: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode studi daya guna"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Penundaan tekan lama tombol"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durasi getar saat tmbl ditekan"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Vol suara saat tombol ditekan"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Durasi getar saat tekan tombol"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Volume suara saat tekan tombol"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Membaca file kamus eksternal"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"Tidak ada file kamus di folder Unduhan"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"Pilih file kamus untuk dipasang"</string>
