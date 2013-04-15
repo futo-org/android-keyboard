@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.app.Activity;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
@@ -115,12 +114,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             if (FeedbackUtils.isFeedbackFormSupported()) {
                 feedbackSettings.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                     @Override
-                    public boolean onPreferenceClick(Preference arg0) {
-                        final Activity activity = getActivity();
-                        FeedbackUtils.showFeedbackForm(activity);
-                        if (!activity.isFinishing()) {
-                            activity.finish();
-                        }
+                    public boolean onPreferenceClick(final Preference pref) {
+                        FeedbackUtils.showFeedbackForm(getActivity());
                         return true;
                     }
                 });
