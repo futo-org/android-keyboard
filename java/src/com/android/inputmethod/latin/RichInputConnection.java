@@ -183,6 +183,11 @@ public final class RichInputConnection {
         }
     }
 
+    public CharSequence getSelectedText(final int flags) {
+        if (null == mIC) return null;
+        return mIC.getSelectedText(flags);
+    }
+
     /**
      * Gets the caps modes we should be in after this specific string.
      *
