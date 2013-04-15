@@ -140,7 +140,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final int candidateCodePoint = (int)(20 + r % (0x10FFFF - 20));
             // Code points between 0xD800 and 0xDFFF are not valid.
             if (candidateCodePoint >= 0xD800 && candidateCodePoint <= 0xDFFF) continue;
-            builder.appendCodePoint(candidadeCodePoint);
+            builder.appendCodePoint(candidateCodePoint);
             --count;
         }
         return builder.toString();
