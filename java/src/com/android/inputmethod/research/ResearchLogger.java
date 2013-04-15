@@ -894,7 +894,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // Check that expected word matches.
         if (oldLogUnit != null) {
             final String oldLogUnitWord = oldLogUnit.getWord();
-            if (!oldLogUnitWord.equals(expectedWord)) {
+            if (oldLogUnitWord != null && !oldLogUnitWord.equals(expectedWord)) {
                 return;
             }
         }
