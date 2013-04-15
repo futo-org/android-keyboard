@@ -163,7 +163,7 @@
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Такий стиль введення вже існує: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Затримка довгого натискання"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Час вібрації при натис. клавіш"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Вібрація при натисканні клавіш"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Гучність натискання клавіш"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Читати файл зовнішнього словника"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"У папці \"Завантаження\" немає файлів словника"</string>
