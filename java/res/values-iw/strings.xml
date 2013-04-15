@@ -162,7 +162,7 @@
     <string name="not_now" msgid="6172462888202790482">"לא עכשיו"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"סגנון קלט זהה כבר קיים: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"מצב מחקר שימושיות"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"השהיית לחיצה ארוכה של מקש"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"השהיית לחיצה ארוכה על מקש"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"משך רטט של לחיצת מקש"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"עוצמת קול של לחיצת מקש"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"קריאה של קובץ מילון חיצוני"</string>

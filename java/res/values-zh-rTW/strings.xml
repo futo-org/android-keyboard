@@ -135,7 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"自動傳送使用統計資料和當機報告，協助改善這個輸入法編輯器"</string>
+    <string name="prefs_description_log" msgid="7525225584555429211">"自動傳送使用統計資料和當機報告，協助改善此輸入法編輯器"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英式)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美式)"</string>
