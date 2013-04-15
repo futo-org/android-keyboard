@@ -51,7 +51,7 @@ import java.util.Set;
 @LargeTest
 public class BinaryDictIOTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOTests.class.getSimpleName();
-    private static final int MAX_UNIGRAMS = 1000;
+    private static final int MAX_UNIGRAMS = 100;
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
@@ -135,11 +135,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
         while (count > 0) {
             final long r = Math.abs(random.nextInt());
             if (r < 0) continue;
-            // Don't insert 0~20, but insert any other code point.
+            // Don't insert 0~0x20, but insert any other code point.
             // Code points are in the range 0~0x10FFFF.
-            final int candidateCodePoint = (int)(20 + r % (0x10FFFF - 20));
-            // Code points between 0xD800 and 0xDFFF are not valid.
-            if (candidateCodePoint >= 0xD800 && candidateCodePoint <= 0xDFFF) continue;
+            final int candidateCodePoint = (int)(0x20 + r % (Character.MAX_CODE_POINT - 0x20));
+            // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
+            if (candidateCodePoint >= Character.MIN_SURROGATE
+                    && candidateCodePoint <= Character.MAX_SURROGATE) continue;
             builder.appendCodePoint(candidateCodePoint);
             --count;
         }
