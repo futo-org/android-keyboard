@@ -43,10 +43,10 @@ public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
         super.setUp();
     }
 
-    private static MoreKeysKeyboardParams createParams(int numKeys, int maxColumns,
-            int coordXInParnet) {
+    private static MoreKeysKeyboardParams createParams(final int numKeys, final int maxColumns,
+            final int coordXInParent) {
         final MoreKeysKeyboardParams params = new MoreKeysKeyboardParams();
-        params.setParameters(numKeys, maxColumns, WIDTH, HEIGHT, coordXInParnet, KEYBOARD_WIDTH,
+        params.setParameters(numKeys, maxColumns, WIDTH, HEIGHT, coordXInParent, KEYBOARD_WIDTH,
                 /* isFixedOrderColumn */false, /* dividerWidth */0);
         return params;
     }
@@ -55,7 +55,7 @@ public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
         MoreKeysKeyboardParams params = null;
         try {
             final int maxColumns = KEYBOARD_WIDTH / WIDTH;
-            params = createParams(10, maxColumns + 1, HEIGHT);
+            params = createParams(maxColumns + 1, maxColumns + 1, HEIGHT);
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // Too small keyboard to hold more keys keyboard.
