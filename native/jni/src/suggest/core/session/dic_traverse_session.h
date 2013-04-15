@@ -134,7 +134,7 @@ class DicTraverseSession {
         if (!mDicNodesCache.hasCachedDicNodesForContinuousSuggestion()) {
             return false;
         }
-        ASSERT(mMaxPointerCount < MAX_POINTER_COUNT_G);
+        ASSERT(mMaxPointerCount <= MAX_POINTER_COUNT_G);
         for (int i = 0; i < mMaxPointerCount; ++i) {
             const ProximityInfoState *const pInfoState = getProximityInfoState(i);
             // If a proximity info state is not continuous suggestion possible,
