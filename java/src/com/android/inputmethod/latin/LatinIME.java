@@ -995,8 +995,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         }
         if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) return;
-        mApplicationSpecifiedCompletions =
-                CompletionInfoUtils.removeNulls(applicationSpecifiedCompletions);
         if (applicationSpecifiedCompletions == null) {
             clearSuggestionStrip();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -1004,6 +1002,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             return;
         }
+        mApplicationSpecifiedCompletions =
+                CompletionInfoUtils.removeNulls(applicationSpecifiedCompletions);
 
         final ArrayList<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
                 SuggestedWords.getFromApplicationSpecifiedCompletions(
