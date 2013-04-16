@@ -51,6 +51,9 @@ final class GesturePreviewTrail {
         public final int mTrailColor;
         public final float mTrailStartWidth;
         public final float mTrailEndWidth;
+        public final float mTrailBodyRatio;
+        public boolean mTrailShadowEnabled;
+        public final float mTrailShadowRatio;
         public final int mFadeoutStartDelay;
         public final int mFadeoutDuration;
         public final int mUpdateInterval;
@@ -64,6 +67,14 @@ final class GesturePreviewTrail {
                     R.styleable.MainKeyboardView_gesturePreviewTrailStartWidth, 0.0f);
             mTrailEndWidth = mainKeyboardViewAttr.getDimension(
                     R.styleable.MainKeyboardView_gesturePreviewTrailEndWidth, 0.0f);
+            final int PERCENTAGE_INT = 100;
+            mTrailBodyRatio = (float)mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailBodyRatio, PERCENTAGE_INT)
+                    / (float)PERCENTAGE_INT;
+            final int trailShadowRatioInt = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailShadowRatio, 0);
+            mTrailShadowEnabled = (trailShadowRatioInt > 0);
+            mTrailShadowRatio = (float)trailShadowRatioInt / (float)PERCENTAGE_INT;
             mFadeoutStartDelay = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
             mFadeoutDuration = mainKeyboardViewAttr.getInt(
@@ -219,14 +230,22 @@ final class GesturePreviewTrail {
                 final float r2 = getWidth(elapsedTime, params) / 2.0f;
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(xCoords[i])) {
-                    final Path path = roundedLine.makePath(p1x, p1y, r1, p2x, p2y, r2);
+                    final float body1 = r1 * params.mTrailBodyRatio;
+                    final float body2 = r2 * params.mTrailBodyRatio;
+                    final Path path = roundedLine.makePath(p1x, p1y, body1, p2x, p2y, body2);
                     if (path != null) {
+                        roundedLine.getBounds(mRoundedLineBounds);
+                        if (params.mTrailShadowEnabled) {
+                            final float shadow2 = r2 * params.mTrailShadowRatio;
+                            paint.setShadowLayer(shadow2, 0.0f, 0.0f, params.mTrailColor);
+                            final int shadowInset = -(int)Math.ceil(shadow2);
+                            mRoundedLineBounds.inset(shadowInset, shadowInset);
+                        }
+                        // Take union for the bounds.
+                        outBoundsRect.union(mRoundedLineBounds);
                         final int alpha = getAlpha(elapsedTime, params);
                         paint.setAlpha(alpha);
                         canvas.drawPath(path, paint);
-                        // Take union for the bounds.
-                        roundedLine.getBounds(mRoundedLineBounds);
-                        outBoundsRect.union(mRoundedLineBounds);
                     }
                 }
                 p1x = p2x;
