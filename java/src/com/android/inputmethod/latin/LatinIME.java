@@ -161,7 +161,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
     private final RichInputConnection mConnection = new RichInputConnection(this);
-    private RecapitalizeStatus mRecapitalizeStatus = null;
+    private final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
 
     // Keep track of the last selection range to decide if we need to show word alternatives
     private static final int NOT_A_CURSOR_POSITION = -1;
@@ -742,6 +742,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SPACE_STATE_NONE;
+        mRecapitalizeStatus.deactivate();
         mCurrentlyPressedHardwareKeys.clear();
 
         if (mSuggestionStripView != null) {
@@ -925,7 +926,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             // We moved the cursor. If we are touching a word, we need to resume suggestion.
             mHandler.postResumeSuggestions();
             // Reset the last recapitalization.
-            mRecapitalizeStatus = null;
+            mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
         }
         mExpectingUpdateSelection = false;
@@ -1953,10 +1954,9 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private void handleRecapitalize() {
         if (mLastSelectionStart == mLastSelectionEnd) return; // No selection
         // If we have a recapitalize in progress, use it; otherwise, create a new one.
-        if (null == mRecapitalizeStatus
+        if (!mRecapitalizeStatus.isActive()
                 || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
-            mRecapitalizeStatus =
-                    new RecapitalizeStatus(mLastSelectionStart, mLastSelectionEnd,
+            mRecapitalizeStatus.initialize(mLastSelectionStart, mLastSelectionEnd,
                     mConnection.getSelectedText(0 /* flags, 0 for no styles */).toString(),
                     mSettings.getCurrentLocale(), mSettings.getWordSeparators());
             // We trim leading and trailing whitespace.
