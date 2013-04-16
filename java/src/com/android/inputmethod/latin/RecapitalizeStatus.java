@@ -37,6 +37,7 @@ public class RecapitalizeStatus {
         CAPS_MODE_FIRST_WORD_UPPER,
         CAPS_MODE_ALL_UPPER
     };
+
     private static final int getStringMode(final String string, final String separators) {
         if (StringUtils.isIdenticalAfterUpcase(string)) {
             return CAPS_MODE_ALL_UPPER;
@@ -50,24 +51,29 @@ public class RecapitalizeStatus {
     }
 
     /**
-     * We store the location of the cursor and the string that was there before the undoable
+     * We store the location of the cursor and the string that was there before the recapitalize
      * action was done, and the location of the cursor and the string that was there after.
      */
     private int mCursorStartBefore;
-    private int mCursorEndBefore;
     private String mStringBefore;
     private int mCursorStartAfter;
     private int mCursorEndAfter;
     private int mRotationStyleCurrentIndex;
-    private final boolean mSkipOriginalMixedCaseMode;
-    private final Locale mLocale;
-    private final String mSeparators;
+    private boolean mSkipOriginalMixedCaseMode;
+    private Locale mLocale;
+    private String mSeparators;
     private String mStringAfter;
+    private boolean mIsActive;
 
-    public RecapitalizeStatus(final int cursorStart, final int cursorEnd, final String string,
+    public RecapitalizeStatus() {
+        // By default, initialize with dummy values that won't match any real recapitalize.
+        initialize(-1, -1, "", Locale.getDefault(), "");
+        deactivate();
+    }
+
+    public void initialize(final int cursorStart, final int cursorEnd, final String string,
             final Locale locale, final String separators) {
         mCursorStartBefore = cursorStart;
-        mCursorEndBefore = cursorEnd;
         mStringBefore = string;
         mCursorStartAfter = cursorStart;
         mCursorEndAfter = cursorEnd;
@@ -89,6 +95,15 @@ public class RecapitalizeStatus {
             mRotationStyleCurrentIndex = currentMode;
             mSkipOriginalMixedCaseMode = true;
         }
+        mIsActive = true;
+    }
+
+    public void deactivate() {
+        mIsActive = false;
+    }
+
+    public boolean isActive() {
+        return mIsActive;
     }
 
     public boolean isSetAt(final int cursorStart, final int cursorEnd) {
@@ -110,23 +125,23 @@ public class RecapitalizeStatus {
             }
             ++count;
             switch (ROTATION_STYLE[mRotationStyleCurrentIndex]) {
-                case CAPS_MODE_ORIGINAL_MIXED_CASE:
-                    mStringAfter = mStringBefore;
-                    break;
-                case CAPS_MODE_ALL_LOWER:
-                    mStringAfter = mStringBefore.toLowerCase(mLocale);
-                    break;
-                case CAPS_MODE_FIRST_WORD_UPPER:
-                    mStringAfter = StringUtils.capitalizeEachWord(mStringBefore, mSeparators,
-                            mLocale);
-                    break;
-                case CAPS_MODE_ALL_UPPER:
-                    mStringAfter = mStringBefore.toUpperCase(mLocale);
-                    break;
-                default:
-                    mStringAfter = mStringBefore;
+            case CAPS_MODE_ORIGINAL_MIXED_CASE:
+                mStringAfter = mStringBefore;
+                break;
+            case CAPS_MODE_ALL_LOWER:
+                mStringAfter = mStringBefore.toLowerCase(mLocale);
+                break;
+            case CAPS_MODE_FIRST_WORD_UPPER:
+                mStringAfter = StringUtils.capitalizeEachWord(mStringBefore, mSeparators,
+                        mLocale);
+                break;
+            case CAPS_MODE_ALL_UPPER:
+                mStringAfter = mStringBefore.toUpperCase(mLocale);
+                break;
+            default:
+                mStringAfter = mStringBefore;
             }
-        } while (mStringAfter.equals(oldResult) && count < 5);
+        } while (mStringAfter.equals(oldResult) && count < ROTATION_STYLE.length + 1);
         mCursorEndAfter = mCursorStartAfter + mStringAfter.length();
     }
 
@@ -148,7 +163,7 @@ public class RecapitalizeStatus {
             if (!Character.isWhitespace(codePoint)) break;
         }
         if (0 != nonWhitespaceStart || len != nonWhitespaceEnd) {
-            mCursorEndBefore = mCursorEndAfter = mCursorStartBefore + nonWhitespaceEnd;
+            mCursorEndAfter = mCursorStartBefore + nonWhitespaceEnd;
             mCursorStartBefore = mCursorStartAfter = mCursorStartBefore + nonWhitespaceStart;
             mStringAfter = mStringBefore =
                     mStringBefore.substring(nonWhitespaceStart, nonWhitespaceEnd);
