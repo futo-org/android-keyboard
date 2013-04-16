@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "char_utils.h"
 #include "binary_format.h"
 #include "defines.h"
 #include "digraph_utils.h"
@@ -120,10 +121,11 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForDigraphTypeAndCodePoint(
         const DigraphUtils::DigraphType digraphType, const int compositeGlyphCodePoint) {
     const DigraphUtils::digraph_t *digraphs = 0;
+    const int compositeGlyphLowerCodePoint = toLowerCase(compositeGlyphCodePoint);
     const int digraphsSize =
             DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(digraphType, &digraphs);
     for (int i = 0; i < digraphsSize; i++) {
-        if (digraphs[i].compositeGlyph == compositeGlyphCodePoint) {
+        if (digraphs[i].compositeGlyph == compositeGlyphLowerCodePoint) {
             return &digraphs[i];
         }
     }
