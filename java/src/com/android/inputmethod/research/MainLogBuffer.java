@@ -126,10 +126,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             final int length = logUnits.size();
             for (int i = 0; i < length; i++) {
                 final LogUnit logUnit = logUnits.get(i);
-                final String word = logUnit.getWord();
-                if (word != null) {
-                    numWordsInLogUnitList++;
-                }
+                numWordsInLogUnitList += logUnit.getNumWords();
             }
             return numWordsInLogUnitList >= minNGramSize;
         }
@@ -153,29 +150,31 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         // the complete buffer contents in detail.
         int numWordsInLogUnitList = 0;
         final int length = logUnits.size();
-        for (int i = 0; i < length; i++) {
-            final LogUnit logUnit = logUnits.get(i);
-            if (!logUnit.hasWord()) {
+        for (final LogUnit logUnit : logUnits) {
+            if (!logUnit.hasOneOrMoreWords()) {
                 // Digits outside words are a privacy threat.
                 if (logUnit.mayContainDigit()) {
                     return false;
                 }
             } else {
-                numWordsInLogUnitList++;
-                final String word = logUnit.getWord();
-                // Words not in the dictionary are a privacy threat.
-                if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
-                    if (DEBUG) {
-                        Log.d(TAG, "NOT SAFE!: hasLetters: " + ResearchLogger.hasLetters(word)
-                                + ", isValid: " + (dictionary.isValidWord(word)));
+                numWordsInLogUnitList += logUnit.getNumWords();
+                final String[] words = logUnit.getWordsAsStringArray();
+                for (final String word : words) {
+                    // Words not in the dictionary are a privacy threat.
+                    if (ResearchLogger.hasLetters(word) && !(dictionary.isValidWord(word))) {
+                        if (DEBUG) {
+                            Log.d(TAG, "\"" + word + "\" NOT SAFE!: hasLetters: "
+                                    + ResearchLogger.hasLetters(word)
+                                    + ", isValid: " + (dictionary.isValidWord(word)));
+                        }
+                        return false;
                     }
-                    return false;
                 }
             }
         }
 
-        // Finally, only return true if the minNGramSize is met.
-        return numWordsInLogUnitList >= minNGramSize;
+        // Finally, only return true if the ngram is the right size.
+        return numWordsInLogUnitList == minNGramSize;
     }
 
     public void shiftAndPublishAll() {
@@ -198,11 +197,14 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             shiftOutWords(N_GRAM_SIZE);
             mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
         } else {
-            // No good n-gram at front, and buffer is full.  Shift out the first word (or if there
-            // is none, the existing logUnits).
-            logUnits = peekAtFirstNWords(1);
+            // No good n-gram at front, and buffer is full.  Shift out up through the first logUnit
+            // with associated words (or if there is none, all the existing logUnits).
+            logUnits.clear();
+            for (LogUnit logUnit = shiftOut(); logUnit != null && !logUnit.hasOneOrMoreWords();
+                    logUnit = shiftOut()) {
+                logUnits.add(logUnit);
+            }
             publish(logUnits, false /* canIncludePrivateData */);
-            shiftOutWords(1);
         }
     }
 
