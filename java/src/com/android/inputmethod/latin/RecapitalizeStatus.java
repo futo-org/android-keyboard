@@ -24,6 +24,7 @@ import java.util.Locale;
  * The status of the current recapitalize process.
  */
 public class RecapitalizeStatus {
+    public static final int NOT_A_RECAPITALIZE_MODE = -1;
     public static final int CAPS_MODE_ORIGINAL_MIXED_CASE = 0;
     public static final int CAPS_MODE_ALL_LOWER = 1;
     public static final int CAPS_MODE_FIRST_WORD_UPPER = 2;
@@ -180,5 +181,9 @@ public class RecapitalizeStatus {
 
     public int getNewCursorEnd() {
         return mCursorEndAfter;
+    }
+
+    public int getCurrentMode() {
+        return ROTATION_STYLE[mRotationStyleCurrentIndex];
     }
 }

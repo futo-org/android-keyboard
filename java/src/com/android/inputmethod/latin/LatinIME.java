@@ -1180,6 +1180,15 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 SPACE_STATE_PHANTOM == mSpaceState);
     }
 
+    public int getCurrentRecapitalizeState() {
+        if (!mRecapitalizeStatus.isActive()
+                || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+            // Not recapitalizing at the moment
+            return RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
+        }
+        return mRecapitalizeStatus.getCurrentMode();
+    }
+
     // Factor in auto-caps and manual caps and compute the current caps mode.
     private int getActualCapsMode() {
         final int keyboardShiftMode = mKeyboardSwitcher.getKeyboardShiftMode();
@@ -1979,6 +1988,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mLastSelectionStart = mRecapitalizeStatus.getNewCursorStart();
         mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
         mConnection.setSelection(mLastSelectionStart, mLastSelectionEnd);
+        // Match the keyboard to the new state.
+        mKeyboardSwitcher.updateShiftState();
     }
 
     // Returns true if we did an autocorrection, false otherwise.
