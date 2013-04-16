@@ -1401,7 +1401,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         case Constants.CODE_SHIFT:
             // Note: calling back to the keyboard on Shift key is handled in onPressKey()
             // and onReleaseKey().
-            handleRecapitalize();
+            final Keyboard currentKeyboard = switcher.getKeyboard();
+            if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
+                // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
+                // alphabetic shift and shift while in symbol layout.
+                handleRecapitalize();
+            }
             break;
         case Constants.CODE_SWITCH_ALPHA_SYMBOL:
             // Note: calling back to the keyboard on symbol key is handled in onPressKey()
