@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.RecapitalizeStatus;
  * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int, boolean, int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, int)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(int)}, {@link #onLongPressTimeout(int)}.
+ * {@link #onUpdateShiftState(int, int)}, {@link #onLongPressTimeout(int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -49,7 +49,7 @@ public final class KeyboardState {
         public void setSymbolsShiftedKeyboard();
 
         /**
-         * Request to call back {@link KeyboardState#onUpdateShiftState(int)}.
+         * Request to call back {@link KeyboardState#onUpdateShiftState(int, int)}.
          */
         public void requestUpdatingShiftState();
 
@@ -393,7 +393,7 @@ public final class KeyboardState {
     public void onUpdateShiftState(final int autoCaps, final int recapitalizeMode) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + ", recapitalizeMode="
-                    + recapitalizeMode + this);
+                    + recapitalizeMode + " " + this);
         }
         mRecapitalizeMode = recapitalizeMode;
         updateAlphabetShiftState(autoCaps, recapitalizeMode);
