@@ -1826,6 +1826,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onEndBatchInput(final CharSequence enteredText,
             final int enteredWordPos, final SuggestedWords suggestedWords) {
         final ResearchLogger researchLogger = getInstance();
+        if (!TextUtils.isEmpty(enteredText) && hasLetters(enteredText.toString())) {
+            researchLogger.mCurrentLogUnit.setWord(enteredText.toString());
+        }
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
                 enteredWordPos);
         researchLogger.mCurrentLogUnit.initializeSuggestions(suggestedWords);
