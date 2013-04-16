@@ -2413,6 +2413,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (!mConnection.isCursorTouchingWord(mSettings.getCurrent())) return;
         final Range range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
                 0 /* additionalPrecedingWordsCount */);
+        if (null == range) return; // Happens if we don't have an input connection at all
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final String typedWord = range.mWord.toString();
         if (range.mWord instanceof SpannableString) {
