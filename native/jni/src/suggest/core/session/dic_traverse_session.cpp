@@ -16,6 +16,7 @@
 
 #include "suggest/core/session/dic_traverse_session.h"
 
+#include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
 #include "dic_traverse_wrapper.h"
@@ -63,6 +64,7 @@ static TraverseSessionFactoryRegisterer traverseSessionFactoryRegisterer;
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength) {
     mDictionary = dictionary;
+    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(mDictionary->getDict());
     if (!prevWord) {
         mPrevWordPos = NOT_VALID_WORD;
         return;

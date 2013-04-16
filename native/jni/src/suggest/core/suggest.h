@@ -76,31 +76,16 @@ class Suggest : public SuggestInterface {
     void processDicNodeAsMatch(DicTraverseSession *traverseSession,
             DicNode *childDicNode) const;
 
-    // Dic nodes cache size for lookahead (autocompletion)
-    static const int LOOKAHEAD_DIC_NODES_CACHE_SIZE;
-    // Max characters to lookahead
-    static const int MAX_LOOKAHEAD;
     // Inputs longer than this will autocorrect if the suggestion is multi-word
     static const int MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT;
     static const int MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE;
-    // Base value for converting costs into scores (low so will not autocorrect without classifier)
-    static const float BASE_OUTPUT_SCORE;
 
     // Threshold for autocorrection classifier
     static const float AUTOCORRECT_CLASSIFICATION_THRESHOLD;
-    // Threshold for computing the language model feature for autocorrect classification
-    static const float AUTOCORRECT_LANGUAGE_FEATURE_THRESHOLD;
-
-    // Typing error correction settings
-    static const bool CORRECT_SPACE_OMISSION;
-    static const bool CORRECT_TRANSPOSITION;
-    static const bool CORRECT_INSERTION;
 
     const Traversal *const TRAVERSAL;
     const Scoring *const SCORING;
     const Weighting *const WEIGHTING;
-
-    static const bool CORRECT_OMISSION_G;
 };
 } // namespace latinime
 #endif // LATINIME_SUGGEST_IMPL_H

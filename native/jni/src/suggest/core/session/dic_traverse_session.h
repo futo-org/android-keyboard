@@ -36,7 +36,8 @@ class DicTraverseSession {
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr)
             : mPrevWordPos(NOT_VALID_WORD), mProximityInfo(0),
               mDictionary(0), mDicNodesCache(), mBigramCacheMap(),
-              mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1) {
+              mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
+              mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
     }
@@ -52,6 +53,7 @@ class DicTraverseSession {
             const int maxPointerCount);
     void resetCache(const int nextActiveCacheSize, const int maxWords);
 
+    // TODO: Remove
     const uint8_t *getOffsetDict() const;
     int getDictFlags() const;
 
@@ -150,6 +152,10 @@ class DicTraverseSession {
         return mProximityInfoStates[0].touchPositionCorrectionEnabled();
     }
 
+    float getMultiWordCostMultiplier() const {
+        return mMultiWordCostMultiplier;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicTraverseSession);
     // threshold to start caching
@@ -170,6 +176,11 @@ class DicTraverseSession {
     int mInputSize;
     bool mPartiallyCommited;
     int mMaxPointerCount;
+
+    /////////////////////////////////
+    // Configuration per dictionary
+    float mMultiWordCostMultiplier;
+
 };
 } // namespace latinime
 #endif // LATINIME_DIC_TRAVERSE_SESSION_H

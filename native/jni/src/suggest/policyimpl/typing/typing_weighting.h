@@ -128,10 +128,12 @@ class TypingWeighting : public Weighting {
         return cost + weightedDistance;
     }
 
-    float getNewWordCost(const DicNode *const dicNode) const {
+    float getNewWordCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
         const bool isCapitalized = dicNode->isCapitalized();
-        return isCapitalized ?
+        const float cost = isCapitalized ?
                 ScoringParams::COST_NEW_WORD_CAPITALIZED : ScoringParams::COST_NEW_WORD;
+        return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
     float getNewWordBigramCost(
@@ -183,8 +185,13 @@ class TypingWeighting : public Weighting {
         return ScoringParams::SUBSTITUTION_COST;
     }
 
-    AK_FORCE_INLINE float getSpaceSubstitutionCost() const {
-        return ScoringParams::SPACE_SUBSTITUTION_COST;
+    AK_FORCE_INLINE float getSpaceSubstitutionCost(
+            const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
+        const bool isCapitalized = dicNode->isCapitalized();
+        const float cost = ScoringParams::SPACE_SUBSTITUTION_COST + (isCapitalized ?
+                ScoringParams::COST_NEW_WORD_CAPITALIZED : ScoringParams::COST_NEW_WORD);
+        return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
  private:
