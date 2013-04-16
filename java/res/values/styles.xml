@@ -70,6 +70,8 @@
         <item name="gesturePreviewTrailColor">@color/highlight_color_default</item>
         <item name="gesturePreviewTrailStartWidth">@dimen/gesture_preview_trail_start_width</item>
         <item name="gesturePreviewTrailEndWidth">@dimen/gesture_preview_trail_end_width</item>
+        <item name="gesturePreviewTrailBodyRatio">@integer/gesture_preview_trail_body_ratio</item>
+        <item name="gesturePreviewTrailShadowRatio">@integer/gesture_preview_trail_shadow_ratio</item>
         <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
@@ -78,6 +80,8 @@
         <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_default</item>
         <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
+        <item name="slidingKeyInputPreviewBodyRatio">@integer/config_sliding_key_input_preview_body_ratio</item>
+        <item name="slidingKeyInputPreviewShadowRatio">@integer/config_sliding_key_input_preview_shadow_ratio</item>
         <item name="keyRepeatStartTimeout">@integer/config_key_repeat_start_timeout</item>
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
         <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>

@@ -58,6 +58,9 @@
     <bool name="config_sliding_key_input_enabled">true</bool>
     <!-- Sliding key input preview parameters -->
     <dimen name="config_sliding_key_input_preview_width">8.0dp</dimen>
+    <!-- Percentages of sliding key input preview body and shadow, in proportion to the width. -->
+    <integer name="config_sliding_key_input_preview_body_ratio">80</integer>
+    <integer name="config_sliding_key_input_preview_shadow_ratio">50</integer>
     <integer name="config_key_repeat_start_timeout">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_default_longpress_key_timeout">300</integer>  <!-- milliseconds -->
