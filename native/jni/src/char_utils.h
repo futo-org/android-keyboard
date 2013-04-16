@@ -58,7 +58,8 @@ inline static int toBaseCodePoint(int c) {
 AK_FORCE_INLINE static int toLowerCase(const int c) {
     if (isAsciiUpper(c)) {
         return toAsciiLower(c);
-    } else if (isAscii(c)) {
+    }
+    if (isAscii(c)) {
         return c;
     }
     return static_cast<int>(latin_tolower(static_cast<unsigned short>(c)));
