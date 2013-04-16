@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.R;
  * Draw rubber band preview graphics during sliding key input.
  */
 public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
-    private final int mPreviewWidth;
+    private final float mPreviewBodyRadius;
 
     private boolean mShowSlidingKeyInputPreview;
     private final int[] mPreviewFrom = CoordinateUtils.newInstance();
@@ -44,8 +44,20 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
         super(drawingView);
         final int previewColor = mainKeyboardViewAttr.getColor(
                 R.styleable.MainKeyboardView_slidingKeyInputPreviewColor, 0);
-        mPreviewWidth = mainKeyboardViewAttr.getDimensionPixelSize(
-                R.styleable.MainKeyboardView_slidingKeyInputPreviewWidth, 0);
+        final float previewRadius = mainKeyboardViewAttr.getDimension(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewWidth, 0) / 2.0f;
+        final int PERCENTAGE_INT = 100;
+        final float previewBodyRatio = (float)mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewBodyRatio, PERCENTAGE_INT)
+                / (float)PERCENTAGE_INT;
+        mPreviewBodyRadius = previewRadius * previewBodyRatio;
+        final int previewShadowRatioInt = mainKeyboardViewAttr.getInt(
+                R.styleable.MainKeyboardView_slidingKeyInputPreviewShadowRatio, 0);
+        if (previewShadowRatioInt > 0) {
+            final float previewShadowRatio = (float)previewShadowRatioInt / (float)PERCENTAGE_INT;
+            final float shadowRadius = previewRadius * previewShadowRatio;
+            mPaint.setShadowLayer(shadowRadius, 0.0f, 0.0f, previewColor);
+        }
         mPaint.setColor(previewColor);
     }
 
@@ -65,7 +77,7 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
         }
 
         // TODO: Finalize the rubber band preview implementation.
-        final int radius = mPreviewWidth / 2;
+        final float radius = mPreviewBodyRadius;
         final Path path = mRoundedLine.makePath(
                 CoordinateUtils.x(mPreviewFrom), CoordinateUtils.y(mPreviewFrom), radius,
                 CoordinateUtils.x(mPreviewTo), CoordinateUtils.y(mPreviewTo), radius);
