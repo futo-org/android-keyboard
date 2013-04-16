@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.inputmethodservice.InputMethodService;
 import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -720,5 +719,16 @@ public final class RichInputConnection {
         // mCurrentCursorPosition. We assume that if the updated position is between the old
         // position and the expected position, then it must be a belated update.
         return (newSelStart - oldSelStart) * (mCurrentCursorPosition - newSelStart) >= 0;
+    }
+
+    /**
+     * Looks at the text just before the cursor to find out if it looks like a URL.
+     *
+     * The weakest point here is, if we don't have enough text bufferized, we may fail to realize
+     * we are in URL situation, but other places in this class have the same limitation and it
+     * does not matter too much in the practice.
+     */
+    public boolean textBeforeCursorLooksLikeURL() {
+        return StringUtils.lastPartLooksLikeURL(mCommittedTextBeforeComposingText);
     }
 }

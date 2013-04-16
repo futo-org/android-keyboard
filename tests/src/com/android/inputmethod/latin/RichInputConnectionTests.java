@@ -85,6 +85,11 @@ public class RichInputConnectionTests extends AndroidTestCase {
         public boolean endBatchEdit() {
             return true;
         }
+
+        @Override
+        public boolean finishComposingText() {
+            return true;
+        }
     }
 
     private class MockInputMethodService extends InputMethodService {

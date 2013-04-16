@@ -215,4 +215,26 @@ public class StringUtilsTests extends AndroidTestCase {
         checkCapitalize("Lorem!Ipsum (dolor) Sit * Amet", "Lorem!Ipsum (Dolor) Sit * Amet",
                 " \n,.;!?*()&", Locale.ENGLISH);
     }
+
+    public void testLooksLikeURL() {
+        assertTrue(StringUtils.lastPartLooksLikeURL("http://www.google."));
+        assertFalse(StringUtils.lastPartLooksLikeURL("word wo"));
+        assertTrue(StringUtils.lastPartLooksLikeURL("/etc/foo"));
+        assertFalse(StringUtils.lastPartLooksLikeURL("left/right"));
+        assertTrue(StringUtils.lastPartLooksLikeURL("www.goo"));
+        assertTrue(StringUtils.lastPartLooksLikeURL("www."));
+        assertFalse(StringUtils.lastPartLooksLikeURL("U.S.A"));
+        assertFalse(StringUtils.lastPartLooksLikeURL("U.S.A."));
+        assertTrue(StringUtils.lastPartLooksLikeURL("rtsp://foo."));
+        assertTrue(StringUtils.lastPartLooksLikeURL("://"));
+        assertFalse(StringUtils.lastPartLooksLikeURL("abc/"));
+        assertTrue(StringUtils.lastPartLooksLikeURL("abc.def/ghi"));
+        assertFalse(StringUtils.lastPartLooksLikeURL("abc.def"));
+        // TODO: ideally this would not look like a URL, but to keep down the complexity of the
+        // code for now True is acceptable.
+        assertTrue(StringUtils.lastPartLooksLikeURL("abc./def"));
+        // TODO: ideally this would not look like a URL, but to keep down the complexity of the
+        // code for now True is acceptable.
+        assertTrue(StringUtils.lastPartLooksLikeURL(".abc/def"));
+    }
 }
