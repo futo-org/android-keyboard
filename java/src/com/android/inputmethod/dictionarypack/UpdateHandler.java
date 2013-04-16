@@ -183,7 +183,7 @@ public final class UpdateHandler {
                 final String clientId = cursor.getString(0);
                 final String metadataUri =
                         MetadataDbHelper.getMetadataUriAsString(context, clientId);
-                PrivateLog.log("Update for clientId " + Utils.s(clientId), context);
+                PrivateLog.log("Update for clientId " + Utils.s(clientId));
                 Utils.l("Update for clientId", clientId, " which uses URI ", metadataUri);
                 uris.add(metadataUri);
             } while (cursor.moveToNext());
@@ -211,7 +211,7 @@ public final class UpdateHandler {
      */
     private static void updateClientsWithMetadataUri(final Context context,
             final boolean updateNow, final String metadataUri) {
-        PrivateLog.log("Update for metadata URI " + Utils.s(metadataUri), context);
+        PrivateLog.log("Update for metadata URI " + Utils.s(metadataUri));
         final Request metadataRequest = new Request(Uri.parse(metadataUri));
         Utils.l("Request =", metadataRequest);
 
@@ -257,7 +257,7 @@ public final class UpdateHandler {
             // method will ignore it.
             writeMetadataDownloadId(context, metadataUri, downloadId);
         }
-        PrivateLog.log("Requested download with id " + downloadId, context);
+        PrivateLog.log("Requested download with id " + downloadId);
     }
 
     /**
@@ -404,7 +404,7 @@ public final class UpdateHandler {
     /* package */ static void downloadFinished(final Context context, final Intent intent) {
         // Get and check the ID of the file that was downloaded
         final long fileId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, NOT_AN_ID);
-        PrivateLog.log("Download finished with id " + fileId, context);
+        PrivateLog.log("Download finished with id " + fileId);
         Utils.l("DownloadFinished with id", fileId);
         if (NOT_AN_ID == fileId) return; // Spurious wake-up: ignore
 
@@ -491,7 +491,7 @@ public final class UpdateHandler {
 
     private static void publishUpdateCycleCompletedEvent(final Context context) {
         // Even if this is not successful, we have to publish the new state.
-        PrivateLog.log("Publishing update cycle completed event", context);
+        PrivateLog.log("Publishing update cycle completed event");
         Utils.l("Publishing update cycle completed event");
         for (UpdateEventListener listener : linkedCopyOfList(sUpdateEventListeners)) {
             listener.updateCycleCompleted();
@@ -582,7 +582,7 @@ public final class UpdateHandler {
         }
 
         Utils.l("Downloaded metadata :", newMetadata);
-        PrivateLog.log("Downloaded metadata\n" + newMetadata, context);
+        PrivateLog.log("Downloaded metadata\n" + newMetadata);
 
         final ActionBatch actions = computeUpgradeTo(context, clientId, newMetadata);
         // TODO: Check with UX how we should report to the user
@@ -610,7 +610,7 @@ public final class UpdateHandler {
                 MetadataDbHelper.DESCRIPTION_COLUMN), "for", downloadRecord.mClientId);
         PrivateLog.log("Downloaded a new word list with description : "
                 + downloadRecord.mAttributes.getAsString(MetadataDbHelper.DESCRIPTION_COLUMN)
-                + " for " + downloadRecord.mClientId, context);
+                + " for " + downloadRecord.mClientId);
 
         final String locale =
                 downloadRecord.mAttributes.getAsString(MetadataDbHelper.LOCALE_COLUMN);

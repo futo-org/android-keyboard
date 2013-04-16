@@ -174,7 +174,7 @@ public final class ActionBatch {
             final long downloadId = UpdateHandler.registerDownloadRequest(manager, request, db,
                     mWordList.mId, mWordList.mVersion);
             Utils.l("Starting download of", uri, "with id", downloadId);
-            PrivateLog.log("Starting download of " + uri + ", id : " + downloadId, context);
+            PrivateLog.log("Starting download of " + uri + ", id : " + downloadId);
         }
     }
 
@@ -333,7 +333,7 @@ public final class ActionBatch {
                     mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
                     mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Insert 'available' record for " + mWordList.mDescription
-                    + " and locale " + mWordList.mLocale, context);
+                    + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
         }
     }
@@ -383,7 +383,7 @@ public final class ActionBatch {
                     mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
                     mWordList.mFormatVersion);
             PrivateLog.log("Insert 'preinstalled' record for " + mWordList.mDescription
-                    + " and locale " + mWordList.mLocale, context);
+                    + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
         }
     }
@@ -424,7 +424,7 @@ public final class ActionBatch {
                     mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
                     mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
             PrivateLog.log("Updating record for " + mWordList.mDescription
-                    + " and locale " + mWordList.mLocale, context);
+                    + " and locale " + mWordList.mLocale);
             db.update(MetadataDbHelper.METADATA_TABLE_NAME, values,
                     MetadataDbHelper.WORDLISTID_COLUMN + " = ? AND "
                             + MetadataDbHelper.VERSION_COLUMN + " = ?",

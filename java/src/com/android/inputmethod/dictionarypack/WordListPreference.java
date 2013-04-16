@@ -23,7 +23,9 @@ import android.preference.DialogPreference;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.android.inputmethod.latin.R;
 
@@ -42,6 +44,7 @@ public final class WordListPreference extends DialogPreference {
     // What to display in the "status" field when we receive unknown data as a status from
     // the content provider. Empty string sounds sensible.
     static final private String NO_STATUS_MESSAGE = "";
+    static final private int NOT_AN_INDEX = -1;
 
     /// Actions
     static final private int ACTION_UNKNOWN = 0;
@@ -64,7 +67,7 @@ public final class WordListPreference extends DialogPreference {
     static final private int ANIMATION_IN = 1;
     static final private int ANIMATION_OUT = 2;
 
-    private static Button sLastClickedActionButton = null;
+    private static int sLastClickedIndex = NOT_AN_INDEX;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
             new OnWordListPreferenceClick();
     private final OnActionButtonClick mActionButtonClickHandler =
@@ -205,15 +208,30 @@ public final class WordListPreference extends DialogPreference {
         @Override
         public void onClick(final View v) {
             final Button button = (Button)v.findViewById(R.id.wordlist_button);
-            if (null != sLastClickedActionButton) {
-                animateButton(sLastClickedActionButton, ANIMATION_OUT);
-            }
             animateButton(button, ANIMATION_IN);
-            sLastClickedActionButton = button;
+            final ViewParent parent = v.getParent();
+            // Just in case something changed in the framework, test for the concrete class
+            if (!(parent instanceof ListView)) return;
+            final ListView listView = (ListView)parent;
+            final int myIndex = listView.indexOfChild(v) + listView.getFirstVisiblePosition();
+            if (NOT_AN_INDEX != sLastClickedIndex) {
+                animateButton(getButtonForIndex(listView, sLastClickedIndex), ANIMATION_OUT);
+            }
+            sLastClickedIndex = myIndex;
         }
     }
 
+    private Button getButtonForIndex(final ListView listView, final int index) {
+        final int indexInChildren = index - listView.getFirstVisiblePosition();
+        if (indexInChildren < 0 || index > listView.getLastVisiblePosition()) {
+            // The view is offscreen.
+            return null;
+        }
+        return (Button)listView.getChildAt(indexInChildren).findViewById(R.id.wordlist_button);
+    }
+
     private void animateButton(final Button button, final int direction) {
+        if (null == button) return;
         final float outerX = ((View)button.getParent()).getWidth();
         final float innerX = button.getX() - button.getTranslationX();
         if (View.INVISIBLE == button.getVisibility()) {
