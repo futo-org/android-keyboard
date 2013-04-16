@@ -140,7 +140,7 @@ class TypingWeighting : public Weighting {
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
             hash_map_compat<int, int16_t> *const bigramCacheMap) const {
         return DicNodeUtils::getBigramNodeImprobability(traverseSession->getOffsetDict(),
-                dicNode, bigramCacheMap);
+                dicNode, bigramCacheMap) * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
     float getCompletionCost(const DicTraverseSession *const traverseSession,
@@ -164,13 +164,8 @@ class TypingWeighting : public Weighting {
         // because the input word shouldn't be treated as perfect
         const bool isExactMatch = !hasEditCount && !hasMultipleWords
                 && !hasProximityErrors && isSameLength;
-
-        const float totalPrevWordsLanguageCost = dicNode->getTotalPrevWordsLanguageCost();
         const float languageImprobability = isExactMatch ? 0.0f : dicNodeLanguageImprobability;
-        const float languageWeight = ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
-        // TODO: Caveat: The following equation should be:
-        // totalPrevWordsLanguageCost + (languageImprobability * languageWeight);
-        return (totalPrevWordsLanguageCost + languageImprobability) * languageWeight;
+        return languageImprobability * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
     AK_FORCE_INLINE bool needsToNormalizeCompoundDistance() const {
