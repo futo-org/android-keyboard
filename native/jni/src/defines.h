@@ -379,6 +379,15 @@ static inline void prof_out(void) {
 #error "BIGRAM_FILTER_MODULO is larger than BIGRAM_FILTER_BYTE_SIZE"
 #endif
 
+// Max number of bigram maps (previous word contexts) to be cached. Increasing this number could
+// improve bigram lookup speed for multi-word suggestions, but at the cost of more memory usage.
+// Also, there are diminishing returns since the most frequently used bigrams are typically near
+// the beginning of the input and are thus the first ones to be cached. Note that these bigrams
+// are reset for each new composing word.
+#define MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP 25
+// Most common previous word contexts currently have 100 bigrams
+#define DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP 100
+
 template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
 template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
 

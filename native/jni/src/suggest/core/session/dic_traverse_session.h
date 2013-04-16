@@ -21,8 +21,8 @@
 #include <vector>
 
 #include "defines.h"
-#include "hash_map_compat.h"
 #include "jni.h"
+#include "multi_bigram_map.h"
 #include "proximity_info_state.h"
 #include "suggest/core/dicnode/dic_nodes_cache.h"
 
@@ -35,7 +35,7 @@ class DicTraverseSession {
  public:
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr)
             : mPrevWordPos(NOT_VALID_WORD), mProximityInfo(0),
-              mDictionary(0), mDicNodesCache(), mBigramCacheMap(),
+              mDictionary(0), mDicNodesCache(), mMultiBigramMap(),
               mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
@@ -67,7 +67,7 @@ class DicTraverseSession {
     // TODO: Use proper parameter when changed
     int getDicRootPos() const { return 0; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
-    hash_map_compat<int, int16_t> *getBigramCacheMap() { return &mBigramCacheMap; }
+    MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
         return &mProximityInfoStates[id];
     }
@@ -170,7 +170,7 @@ class DicTraverseSession {
 
     DicNodesCache mDicNodesCache;
     // Temporary cache for bigram frequencies
-    hash_map_compat<int, int16_t> mBigramCacheMap;
+    MultiBigramMap mMultiBigramMap;
     ProximityInfoState mProximityInfoStates[MAX_POINTER_COUNT_G];
 
     int mInputSize;

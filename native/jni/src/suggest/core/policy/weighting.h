@@ -18,13 +18,13 @@
 #define LATINIME_WEIGHTING_H
 
 #include "defines.h"
-#include "hash_map_compat.h"
 
 namespace latinime {
 
 class DicNode;
 class DicTraverseSession;
 struct DicNode_InputStateG;
+class MultiBigramMap;
 
 class Weighting {
  public:
@@ -32,7 +32,7 @@ class Weighting {
             const CorrectionType correctionType,
             const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, DicNode *const dicNode,
-            hash_map_compat<int, int16_t> *const bigramCacheMap);
+            MultiBigramMap *const multiBigramMap);
 
  protected:
     virtual float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
@@ -61,7 +61,7 @@ class Weighting {
 
     virtual float getNewWordBigramCost(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
-            hash_map_compat<int, int16_t> *const bigramCacheMap) const = 0;
+            MultiBigramMap *const multiBigramMap) const = 0;
 
     virtual float getCompletionCost(
             const DicTraverseSession *const traverseSession,
@@ -97,7 +97,7 @@ class Weighting {
     static float getLanguageCost(const Weighting *const weighting,
             const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode,
-            hash_map_compat<int, int16_t> *const bigramCacheMap);
+            MultiBigramMap *const multiBigramMap);
     // TODO: Move to TypingWeighting and GestureWeighting?
     static int getForwardInputCount(const CorrectionType correctionType);
 };
