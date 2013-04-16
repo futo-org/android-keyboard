@@ -38,7 +38,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_SUBSTITUTION:
         PROF_SUBSTITUTION(node->mProfiler);
         return;
-    case CT_NEW_WORD:
+    case CT_NEW_WORD_SPACE_OMITTION:
         PROF_NEW_WORD(node->mProfiler);
         return;
     case CT_MATCH:
@@ -50,7 +50,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_TERMINAL:
         PROF_TERMINAL(node->mProfiler);
         return;
-    case CT_SPACE_SUBSTITUTION:
+    case CT_NEW_WORD_SPACE_SUBSTITUTION:
         PROF_SPACE_SUBSTITUTION(node->mProfiler);
         return;
     case CT_INSERTION:
@@ -107,16 +107,16 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_SUBSTITUTION:
         // only used for typing
         return weighting->getSubstitutionCost();
-    case CT_NEW_WORD:
-        return weighting->getNewWordCost(dicNode);
+    case CT_NEW_WORD_SPACE_OMITTION:
+        return weighting->getNewWordCost(traverseSession, dicNode);
     case CT_MATCH:
         return weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_COMPLETION:
         return weighting->getCompletionCost(traverseSession, dicNode);
     case CT_TERMINAL:
         return weighting->getTerminalSpatialCost(traverseSession, dicNode);
-    case CT_SPACE_SUBSTITUTION:
-        return weighting->getSpaceSubstitutionCost();
+    case CT_NEW_WORD_SPACE_SUBSTITUTION:
+        return weighting->getSpaceSubstitutionCost(traverseSession, dicNode);
     case CT_INSERTION:
         return weighting->getInsertionCost(traverseSession, parentDicNode, dicNode);
     case CT_TRANSPOSITION:
@@ -135,7 +135,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return 0.0f;
     case CT_SUBSTITUTION:
         return 0.0f;
-    case CT_NEW_WORD:
+    case CT_NEW_WORD_SPACE_OMITTION:
         return weighting->getNewWordBigramCost(traverseSession, parentDicNode, bigramCacheMap);
     case CT_MATCH:
         return 0.0f;
@@ -147,8 +147,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
                         traverseSession->getOffsetDict(), dicNode, bigramCacheMap);
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
-    case CT_SPACE_SUBSTITUTION:
-        return 0.0f;
+    case CT_NEW_WORD_SPACE_SUBSTITUTION:
+        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, bigramCacheMap);
     case CT_INSERTION:
         return 0.0f;
     case CT_TRANSPOSITION:
@@ -168,7 +168,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_SUBSTITUTION:
             // Should return true?
             return false;
-        case CT_NEW_WORD:
+        case CT_NEW_WORD_SPACE_OMITTION:
             return false;
         case CT_MATCH:
             return false;
@@ -176,7 +176,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return false;
         case CT_TERMINAL:
             return false;
-        case CT_SPACE_SUBSTITUTION:
+        case CT_NEW_WORD_SPACE_SUBSTITUTION:
             return false;
         case CT_INSERTION:
             return true;
@@ -197,7 +197,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return false;
         case CT_SUBSTITUTION:
             return false;
-        case CT_NEW_WORD:
+        case CT_NEW_WORD_SPACE_OMITTION:
             return false;
         case CT_MATCH:
             return weighting->isProximityDicNode(traverseSession, dicNode);
@@ -205,7 +205,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return false;
         case CT_TERMINAL:
             return false;
-        case CT_SPACE_SUBSTITUTION:
+        case CT_NEW_WORD_SPACE_SUBSTITUTION:
             return false;
         case CT_INSERTION:
             return false;
@@ -224,7 +224,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return 0;
         case CT_SUBSTITUTION:
             return 0;
-        case CT_NEW_WORD:
+        case CT_NEW_WORD_SPACE_OMITTION:
             return 0;
         case CT_MATCH:
             return 1;
@@ -232,7 +232,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return 0;
         case CT_TERMINAL:
             return 0;
-        case CT_SPACE_SUBSTITUTION:
+        case CT_NEW_WORD_SPACE_SUBSTITUTION:
             return 1;
         case CT_INSERTION:
             return 2;

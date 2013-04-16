@@ -33,16 +33,9 @@
 namespace latinime {
 
 // Initialization of class constants.
-const int Suggest::LOOKAHEAD_DIC_NODES_CACHE_SIZE = 25;
 const int Suggest::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
 const float Suggest::AUTOCORRECT_CLASSIFICATION_THRESHOLD = 0.33f;
-const float Suggest::AUTOCORRECT_LANGUAGE_FEATURE_THRESHOLD = 0.6f;
-
-const bool Suggest::CORRECT_SPACE_OMISSION = true;
-const bool Suggest::CORRECT_TRANSPOSITION = true;
-const bool Suggest::CORRECT_INSERTION = true;
-const bool Suggest::CORRECT_OMISSION_G = true;
 
 /**
  * Returns a set of suggestions for the given input touch points. The commitPoint argument indicates
@@ -270,12 +263,8 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             // latest touch point yet. These are needed to apply look-ahead correction operations
             // that require special handling of the latest touch point. For example, with insertions
             // (e.g., "thiis" -> "this") the latest touch point should not be consumed at all.
-            if (CORRECT_TRANSPOSITION) {
-                processDicNodeAsTransposition(traverseSession, &dicNode);
-            }
-            if (CORRECT_INSERTION) {
-                processDicNodeAsInsertion(traverseSession, &dicNode);
-            }
+            processDicNodeAsTransposition(traverseSession, &dicNode);
+            processDicNodeAsInsertion(traverseSession, &dicNode);
         } else { // !isLookAheadCorrection
             // Only consider typing error corrections if the normalized compound distance is
             // below a spatial distance threshold.
@@ -531,13 +520,10 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
     DicNode newDicNode;
     DicNodeUtils::initAsRootWithPreviousWord(traverseSession->getDicRootPos(),
             traverseSession->getOffsetDict(), dicNode, &newDicNode);
-    Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_NEW_WORD, traverseSession, dicNode,
+    const CorrectionType correctionType = spaceSubstitution ?
+            CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
+    Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,
             &newDicNode, traverseSession->getBigramCacheMap());
-    if (spaceSubstitution) {
-        // Merge this with CT_NEW_WORD
-        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SPACE_SUBSTITUTION,
-                traverseSession, 0, &newDicNode, 0 /* bigramCacheMap */);
-    }
     traverseSession->getDicTraverseCache()->copyPushNextActive(&newDicNode);
 }
 } // namespace latinime
