@@ -81,6 +81,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // {@link SubtypeLocale} class may not have been initialized. It is safe to call
         // {@link SubtypeLocale#init(Context)} multiple times.
         SubtypeLocale.init(context);
+        // Ditto for {@link AudioAndHapticFeedbackManager} class.
+        AudioAndHapticFeedbackManager.init(context);
         mVoicePreference = (ListPreference) findPreference(Settings.PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
