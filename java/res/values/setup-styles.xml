@@ -38,8 +38,8 @@
         <item name="android:textSize">14sp</item>
     </style>
     <style name="setupStepActionLabelStyle">
-        <item name="android:background">@color/setup_step_background</item>
-        <item name="android:textColor">@color/setup_text_action</item>
+        <item name="android:background">@drawable/setup_step_action_background</item>
+        <item name="android:textColor">@drawable/setup_step_action_color</item>
         <item name="android:textSize">18sp</item>
     </style>
 </resources>
