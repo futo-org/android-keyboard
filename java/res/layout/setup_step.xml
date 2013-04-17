@@ -42,7 +42,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp" />
-    <TextView
+    <Button
         android:id="@+id/setup_step_action_label"
         style="@style/setupStepActionLabelStyle"
         android:gravity="center_vertical"

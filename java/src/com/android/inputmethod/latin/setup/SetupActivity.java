@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
@@ -119,7 +118,7 @@ public final class SetupActivity extends Activity {
 
         final SetupStep step1 = new SetupStep(findViewById(R.id.setup_step1),
                 appName, R.string.setup_step1_title, R.string.setup_step1_instruction,
-                R.drawable.ic_settings_language, R.string.setup_step1_action);
+                R.drawable.ic_setup_step1, R.string.setup_step1_action);
         step1.setAction(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +130,7 @@ public final class SetupActivity extends Activity {
 
         final SetupStep step2 = new SetupStep(findViewById(R.id.setup_step2),
                 appName, R.string.setup_step2_title, R.string.setup_step2_instruction,
-                0 /* actionIcon */, R.string.setup_step2_action);
+                R.drawable.ic_setup_step2, R.string.setup_step2_action);
         step2.setAction(new Runnable() {
             @Override
             public void run() {
@@ -144,7 +143,7 @@ public final class SetupActivity extends Activity {
 
         final SetupStep step3 = new SetupStep(findViewById(R.id.setup_step3),
                 appName, R.string.setup_step3_title, R.string.setup_step3_instruction,
-                R.drawable.sym_keyboard_language_switch, R.string.setup_step3_action);
+                R.drawable.ic_setup_step3, R.string.setup_step3_action);
         step3.setAction(new Runnable() {
             @Override
             public void run() {
@@ -314,9 +313,7 @@ public final class SetupActivity extends Activity {
                 final int paddingEnd = ViewCompatUtils.getPaddingEnd(mActionLabel);
                 ViewCompatUtils.setPaddingRelative(mActionLabel, paddingEnd, 0, paddingEnd, 0);
             } else {
-                final int overrideColor = res.getColor(R.color.setup_text_action);
                 final Drawable icon = res.getDrawable(actionIcon);
-                icon.setColorFilter(overrideColor, PorterDuff.Mode.MULTIPLY);
                 icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
                 TextViewCompatUtils.setCompoundDrawablesRelative(
                         mActionLabel, icon, null, null, null);
