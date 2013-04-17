@@ -442,31 +442,40 @@
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
 
-    <!-- TODO: Remove translatable="false" once wordings are finalized. -->
+    <!-- Title of the setup wizard welcome screen. [CHAR LIMT=40] -->
+    <string name="setup_welcome_title">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
+    <!-- Additional title of the setup wizard welcome screen, just below the setup_welcome_title. [CHAR_LIMIT=64] -->
+    <string name="setup_welcome_additional_description">with Gesture Typing</string>
+    <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
+    <string name="setup_start_action">Get started</string>
     <!-- Title of the setup wizard. [CHAR LIMT=40] -->
-    <string name="setup_title" translatable="false">"Installing <xliff:g id="application_name">%s</xliff:g>"</string>
+    <string name="setup_steps_title">"Setting up <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Ordinal number of the 1st step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step1_bullet" translatable="false">1</string>
     <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step1_title" translatable="false">"Enable <xliff:g id="application_name">%s</xliff:g> in settings."</string>
+    <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=80] -->
-    <string name="setup_step1_instruction" translatable="false">"For security, please check \"<xliff:g id="application_name">%s</xliff:g>\""</string>
+    <string name="setup_step1_instruction">"Please check \"<xliff:g id="application_name">%s</xliff:g>\" in your Language &amp; input settings. This will authorize it to run on your device."</string>
+    <!-- Title of the Language & input settings. This should be aligned with msgid="5292716747264442359" -->
+    <string name="setup_step1_action">Language &amp; input</string>
     <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step2_bullet" translatable="false">2</string>
     <!-- Title of the 2nd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step2_title" translatable="false">"Switch to <xliff:g id="application_name">%s</xliff:g>."</string>
+    <string name="setup_step2_title">"Switch to <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=80] -->
-    <string name="setup_step2_instruction" translatable="false">"Now that you've enabled <xliff:g id="application_name">%s</xliff:g>, you can switch to it."</string>
+    <string name="setup_step2_instruction">"Now that it's enabled, select \"<xliff:g id="application_name">%s</xliff:g>\", one more time to activate it."</string>
+    <!-- Title of the Input method picker. This should be aligned with msgid="4653387336791222978" -->
+    <string name="setup_step2_action">Choose input method</string>
     <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step3_title" translatable="false">"Congratulations, you're all set!"</string>
+    <string name="setup_step3_title">"Congratulations, you're all set!"</string>
     <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=80] -->
-    <string name="setup_step3_instruction" translatable="false">Configure additional languages</string>
-    <!-- Title of the Language & input settings. This should be aligned with msgid="5292716747264442359" -->
-    <string name="language_settings">Language &amp; input</string>
-    <!-- Title of the Input method picker. This should be aligned with msgid="4653387336791222978" -->
-    <string name="select_input_method">Choose input method</string>
+    <string name="setup_step3_instruction">Now you can type in all your favorite apps with <xliff:g id="application_name">%s</xliff:g>.</string>
+    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step3_action">Configure additional languages</string>
+    <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
+    <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
     <string name="show_setup_wizard_icon" translatable="false">Show setup wizard icon</string>
 
