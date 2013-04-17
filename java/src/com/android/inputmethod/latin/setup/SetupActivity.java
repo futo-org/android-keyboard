@@ -108,16 +108,15 @@ public final class SetupActivity extends Activity {
             return;
         }
 
-        // TODO: Use sans-serif-thin font family depending on the system locale white list and
-        // the SDK version.
         final TextView titleView = (TextView)findViewById(R.id.setup_title);
-        final int appName = getApplicationInfo().labelRes;
-        titleView.setText(getString(R.string.setup_steps_title, getString(appName)));
+        final String applicationName = getResources().getString(getApplicationInfo().labelRes);
+        titleView.setText(getString(R.string.setup_steps_title, applicationName));
 
         mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
 
-        final SetupStep step1 = new SetupStep(findViewById(R.id.setup_step1),
-                appName, R.string.setup_step1_title, R.string.setup_step1_instruction,
+        final SetupStep step1 = new SetupStep(applicationName,
+                (TextView)findViewById(R.id.setup_step1_bullet), findViewById(R.id.setup_step1),
+                R.string.setup_step1_title, R.string.setup_step1_instruction,
                 R.drawable.ic_setup_step1, R.string.setup_step1_action);
         step1.setAction(new Runnable() {
             @Override
@@ -128,8 +127,9 @@ public final class SetupActivity extends Activity {
         });
         mSetupSteps.addStep(STEP_1, step1);
 
-        final SetupStep step2 = new SetupStep(findViewById(R.id.setup_step2),
-                appName, R.string.setup_step2_title, R.string.setup_step2_instruction,
+        final SetupStep step2 = new SetupStep(applicationName,
+                (TextView)findViewById(R.id.setup_step2_bullet), findViewById(R.id.setup_step2),
+                R.string.setup_step2_title, R.string.setup_step2_instruction,
                 R.drawable.ic_setup_step2, R.string.setup_step2_action);
         step2.setAction(new Runnable() {
             @Override
@@ -141,8 +141,9 @@ public final class SetupActivity extends Activity {
         });
         mSetupSteps.addStep(STEP_2, step2);
 
-        final SetupStep step3 = new SetupStep(findViewById(R.id.setup_step3),
-                appName, R.string.setup_step3_title, R.string.setup_step3_instruction,
+        final SetupStep step3 = new SetupStep(applicationName,
+                (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
+                R.string.setup_step3_title, R.string.setup_step3_instruction,
                 R.drawable.ic_setup_step3, R.string.setup_step3_action);
         step3.setAction(new Runnable() {
             @Override
@@ -286,20 +287,26 @@ public final class SetupActivity extends Activity {
     }
 
     static final class SetupStep implements View.OnClickListener {
-        private final View mRootView;
+        private final View mStepView;
+        private final TextView mBulletView;
+        private final int mActivatedColor;
+        private final int mDeactivatedColor;
         private final TextView mActionLabel;
         private Runnable mAction;
 
-        public SetupStep(final View rootView, final int appName, final int title,
-                final int instruction, final int actionIcon, final int actionLabel) {
-            mRootView = rootView;
-            final Resources res = rootView.getResources();
-            final String applicationName = res.getString(appName);
+        public SetupStep(final String applicationName, final TextView bulletView,
+                final View stepView, final int title, final int instruction, final int actionIcon,
+                final int actionLabel) {
+            mStepView = stepView;
+            mBulletView = bulletView;
+            final Resources res = stepView.getResources();
+            mActivatedColor = res.getColor(R.color.setup_text_action);
+            mDeactivatedColor = res.getColor(R.color.setup_text_dark);
 
-            final TextView titleView = (TextView)rootView.findViewById(R.id.setup_step_title);
+            final TextView titleView = (TextView)mStepView.findViewById(R.id.setup_step_title);
             titleView.setText(res.getString(title, applicationName));
 
-            final TextView instructionView = (TextView)rootView.findViewById(
+            final TextView instructionView = (TextView)mStepView.findViewById(
                     R.id.setup_step_instruction);
             if (instruction == 0) {
                 instructionView.setVisibility(View.GONE);
@@ -307,7 +314,7 @@ public final class SetupActivity extends Activity {
                 instructionView.setText(res.getString(instruction, applicationName));
             }
 
-            mActionLabel = (TextView)rootView.findViewById(R.id.setup_step_action_label);
+            mActionLabel = (TextView)mStepView.findViewById(R.id.setup_step_action_label);
             mActionLabel.setText(res.getString(actionLabel));
             if (actionIcon == 0) {
                 final int paddingEnd = ViewCompatUtils.getPaddingEnd(mActionLabel);
@@ -321,7 +328,8 @@ public final class SetupActivity extends Activity {
         }
 
         public void setEnabled(final boolean enabled) {
-            mRootView.setVisibility(enabled ? View.VISIBLE : View.GONE);
+            mStepView.setVisibility(enabled ? View.VISIBLE : View.GONE);
+            mBulletView.setTextColor(enabled ? mActivatedColor : mDeactivatedColor);
         }
 
         public void setAction(final Runnable action) {
