@@ -80,6 +80,7 @@ public final class SubtypeSwitcher {
 
     public static void init(final Context context) {
         SubtypeLocale.init(context);
+        RichInputMethodManager.init(context);
         sInstance.initialize(context);
     }
 
@@ -87,10 +88,13 @@ public final class SubtypeSwitcher {
         // Intentional empty constructor for singleton.
     }
 
-    private void initialize(final Context service) {
-        mResources = service.getResources();
+    private void initialize(final Context context) {
+        if (mResources != null) {
+            return;
+        }
+        mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
-        mConnectivityManager = (ConnectivityManager) service.getSystemService(
+        mConnectivityManager = (ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
