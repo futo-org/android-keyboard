@@ -108,7 +108,7 @@ final class GesturePreviewTrail {
     }
 
     private void addStrokeLocked(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
-            final int trailSize = mEventTimes.getLength();
+        final int trailSize = mEventTimes.getLength();
         stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates);
         if (mEventTimes.getLength() == trailSize) {
             return;
@@ -261,14 +261,14 @@ final class GesturePreviewTrail {
                 System.arraycopy(eventTimes, startIndex, eventTimes, 0, newSize);
                 System.arraycopy(xCoords, startIndex, xCoords, 0, newSize);
                 System.arraycopy(yCoords, startIndex, yCoords, 0, newSize);
-                // The start index of the last segment of the stroke
-                // {@link mLastInterpolatedDrawIndex} should also be updated because all array
-                // elements have just been shifted for compaction.
-                mLastInterpolatedDrawIndex = Math.max(mLastInterpolatedDrawIndex - startIndex, 0);
             }
             mEventTimes.setLength(newSize);
             mXCoordinates.setLength(newSize);
             mYCoordinates.setLength(newSize);
+            // The start index of the last segment of the stroke
+            // {@link mLastInterpolatedDrawIndex} should also be updated because all array
+            // elements have just been shifted for compaction or been zeroed.
+            mLastInterpolatedDrawIndex = Math.max(mLastInterpolatedDrawIndex - startIndex, 0);
         }
         return newSize > 0;
     }
