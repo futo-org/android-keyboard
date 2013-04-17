@@ -65,12 +65,10 @@ public class FeedbackFragment extends Fragment implements OnClickListener {
         mCancelButton.setOnClickListener(this);
 
         if (savedInstanceState != null) {
-            Log.d(TAG, "restoring from savedInstanceState");
             restoreState(savedInstanceState);
         } else {
             final Bundle bundle = getActivity().getIntent().getExtras();
             if (bundle != null) {
-                Log.d(TAG, "restoring from getArguments()");
                 restoreState(bundle);
             }
         }
