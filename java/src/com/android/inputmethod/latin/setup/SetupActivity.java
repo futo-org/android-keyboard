@@ -113,13 +113,13 @@ public final class SetupActivity extends Activity {
         // the SDK version.
         final TextView titleView = (TextView)findViewById(R.id.setup_title);
         final int appName = getApplicationInfo().labelRes;
-        titleView.setText(getString(R.string.setup_title, getString(appName)));
+        titleView.setText(getString(R.string.setup_steps_title, getString(appName)));
 
         mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
 
         final SetupStep step1 = new SetupStep(findViewById(R.id.setup_step1),
                 appName, R.string.setup_step1_title, R.string.setup_step1_instruction,
-                R.drawable.ic_settings_language, R.string.language_settings);
+                R.drawable.ic_settings_language, R.string.setup_step1_action);
         step1.setAction(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +131,7 @@ public final class SetupActivity extends Activity {
 
         final SetupStep step2 = new SetupStep(findViewById(R.id.setup_step2),
                 appName, R.string.setup_step2_title, R.string.setup_step2_instruction,
-                0 /* actionIcon */, R.string.select_input_method);
+                0 /* actionIcon */, R.string.setup_step2_action);
         step2.setAction(new Runnable() {
             @Override
             public void run() {
@@ -143,8 +143,8 @@ public final class SetupActivity extends Activity {
         mSetupSteps.addStep(STEP_2, step2);
 
         final SetupStep step3 = new SetupStep(findViewById(R.id.setup_step3),
-                appName, R.string.setup_step3_title, 0 /* instruction */,
-                R.drawable.sym_keyboard_language_switch, R.string.setup_step3_instruction);
+                appName, R.string.setup_step3_title, R.string.setup_step3_instruction,
+                R.drawable.sym_keyboard_language_switch, R.string.setup_step3_action);
         step3.setAction(new Runnable() {
             @Override
             public void run() {
