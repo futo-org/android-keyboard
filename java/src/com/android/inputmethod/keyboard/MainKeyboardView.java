@@ -1189,10 +1189,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     writeUsabilityStudyLog(me, action, eventTime, i, pointerId, px, py);
                 }
-                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.mainKeyboardView_processMotionEvent(
-                            me, action, eventTime, i, pointerId, px, py);
-                }
+                // TODO: This seems to be no longer necessary, and confusing because it leads to
+                // duplicate MotionEvents being recorded.
+                // if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                //     ResearchLogger.mainKeyboardView_processMotionEvent(
+                //             me, action, eventTime, i, pointerId, px, py);
+                // }
             }
         } else {
             final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
