@@ -51,7 +51,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Öneri ve düzeltmeler için Kişiler\'deki adları kullan"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Çift boşlukla nokta ekleme"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Boşluk çubuğuna iki kez vurmak nokta ve ardından bir boşluk ekler"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük fark yap"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Her cümlenin ilk kelimesini büyük harf yap"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ek sözlükler"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Ana sözlük"</string>

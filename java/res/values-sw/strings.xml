@@ -162,7 +162,7 @@
     <string name="not_now" msgid="6172462888202790482">"Sio sasa"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Mfumo sawa wa maingizo tayari upo: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Uchelewaji wa kubonyeza kitufe kwa muda mrefu"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Ubofyaji kitufe kunakochelewa"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Bonyeza kitufe cha muda wa kutetema"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Bonyeza kitufe cha kiwango cha sauti"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Soma faili ya kamusi ya nje"</string>

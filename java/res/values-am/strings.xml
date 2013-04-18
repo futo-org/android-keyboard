@@ -162,7 +162,7 @@
     <string name="not_now" msgid="6172462888202790482">"አሁን አልፈልግም"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"ተመሳሳዩ የግብዓት ቅጥ አስቀድሞ አለ፦ <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"የቁልፍ ረጅም ጭነት መዘግየት"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"የሰሌዳ ቁልፍ ጠቅታ በመጫን መዘግየት"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"የቁልፍ ጭነት ንዝረት ርዝመት"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"የቁልፍ ጭነት ድምጽ መጠን"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"ውጫዊ የመዝገበቃላት ፋይል አንብብ"</string>
