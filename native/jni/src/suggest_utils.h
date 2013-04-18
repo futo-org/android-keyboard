@@ -23,10 +23,8 @@
 namespace latinime {
 class SuggestUtils {
  public:
-    static float getDistanceScalingFactor(const float normalizedSquaredDistance) {
-        if (normalizedSquaredDistance < 0.0f) {
-            return -1.0f;
-        }
+    // TODO: (OLD) Remove
+    static float getLengthScalingFactor(const float normalizedSquaredDistance) {
         // Promote or demote the score according to the distance from the sweet spot
         static const float A = ZERO_DISTANCE_PROMOTION_RATE / 100.0f;
         static const float B = 1.0f;
@@ -50,6 +48,39 @@ class SuggestUtils {
         return factor;
     }
 
+    static float getSweetSpotFactor(const bool isTouchPositionCorrectionEnabled,
+            const float normalizedSquaredDistance) {
+        // Promote or demote the score according to the distance from the sweet spot
+        static const float A = 0.0f;
+        static const float B = 0.24f;
+        static const float C = 1.20f;
+        static const float R0 = 0.0f;
+        static const float R1 = 0.25f; // Sweet spot
+        static const float R2 = 1.0f;
+        const float x = normalizedSquaredDistance;
+        if (!isTouchPositionCorrectionEnabled) {
+            return min(C, x);
+        }
+
+        // factor is a piecewise linear function like:
+        // C        -------------.
+        //         /             .
+        // B      /              .
+        //      -/               .
+        // A _-^                 .
+        //                       .
+        //   R0 R1 R2            .
+
+        if (x < R0) {
+            return A;
+        } else if (x < R1) {
+            return (A * (R1 - x) + B * (x - R0)) / (R1 - R0);
+        } else if (x < R2) {
+            return (B * (R2 - x) + C * (x - R1)) / (R2 - R1);
+        } else {
+            return C;
+        }
+    }
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestUtils);
 };

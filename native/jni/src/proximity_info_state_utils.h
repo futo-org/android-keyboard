@@ -71,25 +71,25 @@ class ProximityInfoStateUtils {
             const std::vector<int> *const sampledInputYs,
             const std::vector<float> *const sampledSpeedRates,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<float> *const SampledDistanceCache_G,
-            std::vector<NearKeycodesSet> *SampledNearKeySets,
+            const std::vector<float> *const sampledNormalizedSquaredLengthCache,
+            std::vector<NearKeycodesSet> *sampledNearKeySets,
             std::vector<hash_map_compat<int, float> > *charProbabilities);
     static void updateSampledSearchKeySets(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const std::vector<int> *const sampledLengthCache,
-            const std::vector<NearKeycodesSet> *const SampledNearKeySets,
+            const std::vector<NearKeycodesSet> *const sampledNearKeySets,
             std::vector<NearKeycodesSet> *sampledSearchKeySets,
             std::vector<std::vector<int> > *sampledSearchKeyVectors);
     static float getPointToKeyByIdLength(const float maxPointToKeyLength,
-            const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
+            const std::vector<float> *const sampledNormalizedSquaredLengthCache, const int keyCount,
             const int inputIndex, const int keyId);
     static void initGeometricDistanceInfos(const ProximityInfo *const proximityInfo,
             const int sampledInputSize, const int lastSavedInputSize,
             const float verticalSweetSpotScale,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
-            std::vector<NearKeycodesSet> *SampledNearKeySets,
-            std::vector<float> *SampledDistanceCache_G);
+            std::vector<NearKeycodesSet> *sampledNearKeySets,
+            std::vector<float> *sampledNormalizedSquaredLengthCache);
     static void initPrimaryInputWord(const int inputSize, const int *const inputProximities,
             int *primaryInputWord);
     static void initNormalizedSquaredDistances(const ProximityInfo *const proximityInfo,

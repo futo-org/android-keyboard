@@ -18,6 +18,7 @@
 #define LATINIME_TYPING_WEIGHTING_H
 
 #include "defines.h"
+#include "suggest_utils.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -70,10 +71,12 @@ class TypingWeighting : public Weighting {
         const int pointIndex = dicNode->getInputIndex(0);
         // Note: min() required since length can be MAX_POINT_TO_KEY_LENGTH for characters not on
         // the keyboard (like accented letters)
-        const float length = min(ScoringParams::MAX_SPATIAL_DISTANCE,
-                traverseSession->getProximityInfoState(0)->getPointToKeyLength(
-                        pointIndex, dicNode->getNodeCodePoint()));
-        const float weightedDistance = length * ScoringParams::DISTANCE_WEIGHT_LENGTH;
+        const float normalizedSquaredLength = traverseSession->getProximityInfoState(0)
+                ->getPointToKeyLength(pointIndex, dicNode->getNodeCodePoint());
+        const float normalizedDistance = SuggestUtils::getSweetSpotFactor(
+                traverseSession->isTouchPositionCorrectionEnabled(), normalizedSquaredLength);
+        const float weightedDistance = ScoringParams::DISTANCE_WEIGHT_LENGTH * normalizedDistance;
+
         const bool isFirstChar = pointIndex == 0;
         const bool isProximity = isProximityDicNode(traverseSession, dicNode);
         const float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_PROXIMITY_COST

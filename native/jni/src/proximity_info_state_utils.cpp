@@ -225,13 +225,13 @@ namespace latinime {
         const int lastSavedInputSize, const float verticalSweetSpotScale,
         const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
-        std::vector<NearKeycodesSet> *SampledNearKeySets,
-        std::vector<float> *SampledDistanceCache_G) {
-    SampledNearKeySets->resize(sampledInputSize);
+        std::vector<NearKeycodesSet> *sampledNearKeySets,
+        std::vector<float> *sampledNormalizedSquaredLengthCache) {
+    sampledNearKeySets->resize(sampledInputSize);
     const int keyCount = proximityInfo->getKeyCount();
-    SampledDistanceCache_G->resize(sampledInputSize * keyCount);
+    sampledNormalizedSquaredLengthCache->resize(sampledInputSize * keyCount);
     for (int i = lastSavedInputSize; i < sampledInputSize; ++i) {
-        (*SampledNearKeySets)[i].reset();
+        (*sampledNearKeySets)[i].reset();
         for (int k = 0; k < keyCount; ++k) {
             const int index = i * keyCount + k;
             const int x = (*sampledInputXs)[i];
@@ -239,10 +239,10 @@ namespace latinime {
             const float normalizedSquaredDistance =
                     proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(
                             k, x, y, verticalSweetSpotScale);
-            (*SampledDistanceCache_G)[index] = normalizedSquaredDistance;
+            (*sampledNormalizedSquaredLengthCache)[index] = normalizedSquaredDistance;
             if (normalizedSquaredDistance
                     < ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
-                (*SampledNearKeySets)[i][k] = true;
+                (*sampledNearKeySets)[i][k] = true;
             }
         }
     }
@@ -642,11 +642,11 @@ namespace latinime {
 // This function basically converts from a length to an edit distance. Accordingly, it's obviously
 // wrong to compare with mMaxPointToKeyLength.
 /* static */ float ProximityInfoStateUtils::getPointToKeyByIdLength(const float maxPointToKeyLength,
-        const std::vector<float> *const SampledDistanceCache_G, const int keyCount,
+        const std::vector<float> *const sampledNormalizedSquaredLengthCache, const int keyCount,
         const int inputIndex, const int keyId) {
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * keyCount + keyId;
-        return min((*SampledDistanceCache_G)[index], maxPointToKeyLength);
+        return min((*sampledNormalizedSquaredLengthCache)[index], maxPointToKeyLength);
     }
     // If the char is not a key on the keyboard then return the max length.
     return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
@@ -660,8 +660,8 @@ namespace latinime {
         const std::vector<int> *const sampledInputYs,
         const std::vector<float> *const sampledSpeedRates,
         const std::vector<int> *const sampledLengthCache,
-        const std::vector<float> *const SampledDistanceCache_G,
-        std::vector<NearKeycodesSet> *SampledNearKeySets,
+        const std::vector<float> *const sampledNormalizedSquaredLengthCache,
+        std::vector<NearKeycodesSet> *sampledNearKeySets,
         std::vector<hash_map_compat<int, float> > *charProbabilities) {
     charProbabilities->resize(sampledInputSize);
     // Calculates probabilities of using a point as a correlated point with the character
@@ -677,9 +677,9 @@ namespace latinime {
 
         float nearestKeyDistance = static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeySets)[i].test(j)) {
+            if ((*sampledNearKeySets)[i].test(j)) {
                 const float distance = getPointToKeyByIdLength(
-                        maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j);
+                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j);
                 if (distance < nearestKeyDistance) {
                     nearestKeyDistance = distance;
                 }
@@ -758,14 +758,15 @@ namespace latinime {
         // Summing up probability densities of all near keys.
         float sumOfProbabilityDensities = 0.0f;
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeySets)[i].test(j)) {
+            if ((*sampledNearKeySets)[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(
-                        maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j));
+                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j));
                 if (i == 0 && i != sampledInputSize - 1) {
                     // For the first point, weighted average of distances from first point and the
                     // next point to the key is used as a point to key distance.
                     const float nextDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, SampledDistanceCache_G, keyCount, i + 1, j));
+                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
+                            i + 1, j));
                     if (nextDistance < distance) {
                         // The distance of the first point tends to bigger than continuing
                         // points because the first touch by the user can be sloppy.
@@ -779,7 +780,8 @@ namespace latinime {
                     // For the first point, weighted average of distances from last point and
                     // the previous point to the key is used as a point to key distance.
                     const float previousDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, SampledDistanceCache_G, keyCount, i - 1, j));
+                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
+                            i - 1, j));
                     if (previousDistance < distance) {
                         // The distance of the last point tends to bigger than continuing points
                         // because the last touch by the user can be sloppy. So we promote the
@@ -798,14 +800,15 @@ namespace latinime {
 
         // Split the probability of an input point to keys that are close to the input point.
         for (int j = 0; j < keyCount; ++j) {
-            if ((*SampledNearKeySets)[i].test(j)) {
+            if ((*sampledNearKeySets)[i].test(j)) {
                 float distance = sqrtf(getPointToKeyByIdLength(
-                        maxPointToKeyLength, SampledDistanceCache_G, keyCount, i, j));
+                        maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount, i, j));
                 if (i == 0 && i != sampledInputSize - 1) {
                     // For the first point, weighted average of distances from the first point and
                     // the next point to the key is used as a point to key distance.
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, SampledDistanceCache_G, keyCount, i + 1, j));
+                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
+                            i + 1, j));
                     if (prevDistance < distance) {
                         distance = (distance
                                 + prevDistance * ProximityInfoParams::NEXT_DISTANCE_WEIGHT)
@@ -815,7 +818,8 @@ namespace latinime {
                     // For the first point, weighted average of distances from last point and
                     // the previous point to the key is used as a point to key distance.
                     const float prevDistance = sqrtf(getPointToKeyByIdLength(
-                            maxPointToKeyLength, SampledDistanceCache_G, keyCount, i - 1, j));
+                            maxPointToKeyLength, sampledNormalizedSquaredLengthCache, keyCount,
+                            i - 1, j));
                     if (prevDistance < distance) {
                         distance = (distance
                                 + prevDistance * ProximityInfoParams::PREV_DISTANCE_WEIGHT)
@@ -882,10 +886,10 @@ namespace latinime {
         for (int j = 0; j < keyCount; ++j) {
             hash_map_compat<int, float>::iterator it = (*charProbabilities)[i].find(j);
             if (it == (*charProbabilities)[i].end()){
-                (*SampledNearKeySets)[i].reset(j);
+                (*sampledNearKeySets)[i].reset(j);
             } else if(it->second < ProximityInfoParams::MIN_PROBABILITY) {
                 // Erases from near keys vector because it has very low probability.
-                (*SampledNearKeySets)[i].reset(j);
+                (*sampledNearKeySets)[i].reset(j);
                 (*charProbabilities)[i].erase(j);
             } else {
                 it->second = -logf(it->second);
@@ -899,7 +903,7 @@ namespace latinime {
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize,
         const std::vector<int> *const sampledLengthCache,
-        const std::vector<NearKeycodesSet> *const SampledNearKeySets,
+        const std::vector<NearKeycodesSet> *const sampledNearKeySets,
         std::vector<NearKeycodesSet> *sampledSearchKeySets,
         std::vector<std::vector<int> > *sampledSearchKeyVectors) {
     sampledSearchKeySets->resize(sampledInputSize);
@@ -916,7 +920,7 @@ namespace latinime {
             if ((*sampledLengthCache)[j] - (*sampledLengthCache)[i] >= readForwordLength) {
                 break;
             }
-            (*sampledSearchKeySets)[i] |= (*SampledNearKeySets)[j];
+            (*sampledSearchKeySets)[i] |= (*sampledNearKeySets)[j];
         }
     }
     const int keyCount = proximityInfo->getKeyCount();
