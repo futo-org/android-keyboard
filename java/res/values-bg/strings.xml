@@ -162,8 +162,8 @@
     <string name="not_now" msgid="6172462888202790482">"Не сега"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Същият стил на въвеждане вече съществува: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим за изучаване на използваемостта"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Забавяне при продълж. натискане на клавишите"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Продълж. на вибрир. при натискане на клавиш"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Забавяне при продълж. натискане"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Продълж. на вибриране при натискане"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"Сила на звука при натиск. на клавиш"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"Четене на файл за външен речник"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"В папката „Изтегляния“ няма файлове за речник"</string>
