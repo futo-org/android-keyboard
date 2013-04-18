@@ -439,6 +439,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
 
+        // TODO: Resolve mutual dependencies of {@link #loadSettings()} and {@link #initSuggest()}.
         loadSettings();
         initSuggest();
 
@@ -476,6 +477,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final InputAttributes inputAttributes =
                 new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
         mSettings.loadSettings(locale, inputAttributes);
+        // May need to reset the contacts dictionary depending on the user settings.
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
@@ -745,6 +747,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         mRecapitalizeStatus.deactivate();
         mCurrentlyPressedHardwareKeys.clear();
 
+        // Note: the following does a round-trip IPC on the main thread: be careful
+        final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        if (null != mSuggest && null != currentLocale && !currentLocale.equals(mSuggest.mLocale)) {
+            initSuggest();
+        }
         if (mSuggestionStripView != null) {
             // This will set the punctuation suggestions if next word suggestion is off;
             // otherwise it will clear the suggestion strip.
@@ -797,8 +804,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // to the user dictionary.
         if (null != mPositionalInfoForUserDictPendingAddition
                 && mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
-                        mConnection, editorInfo, mLastSelectionEnd,
-                        mSubtypeSwitcher.getCurrentSubtypeLocale())) {
+                        mConnection, editorInfo, mLastSelectionEnd, currentLocale)) {
             mPositionalInfoForUserDictPendingAddition = null;
         }
         // If tryReplaceWithActualWord returns false, we don't know what word was
@@ -2577,8 +2583,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting
     void loadKeyboard() {
-        // When the device locale is changed in SetupWizard etc., this method may get called via
-        // onConfigurationChanged before SoftInputWindow is shown.
+        // TODO: Why are we calling {@link #loadSettings()} and {@link #initSuggest()} in a
+        // different order than in {@link #onStartInputView}?
         initSuggest();
         loadSettings();
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
