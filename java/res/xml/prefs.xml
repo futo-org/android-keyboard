@@ -90,6 +90,7 @@
             android:summary="@string/gesture_input_summary"
             android:persistent="true"
             android:defaultValue="true" />
+        <!-- TODO: Move these two options to the advanced settings. -->
         <CheckBoxPreference
             android:key="pref_gesture_floating_preview_text"
             android:title="@string/gesture_floating_preview_text"
@@ -139,10 +140,6 @@
                 android:summary="@string/include_other_imes_in_language_switch_list_summary"
                 android:persistent="true"
                 android:defaultValue="false" />
-            <PreferenceScreen
-                android:fragment="com.android.inputmethod.latin.AdditionalSubtypeSettings"
-                android:key="custom_input_styles"
-                android:title="@string/custom_input_styles_title" />
             <!-- Values for popup dismiss delay are added programmatically -->
             <CheckBoxPreference
                 android:key="pref_sliding_key_input_preview"
@@ -150,6 +147,10 @@
                 android:summary="@string/sliding_key_input_preview_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
+            <PreferenceScreen
+                android:fragment="com.android.inputmethod.latin.AdditionalSubtypeSettings"
+                android:key="custom_input_styles"
+                android:title="@string/custom_input_styles_title" />
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />
