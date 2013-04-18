@@ -22,6 +22,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
 
@@ -79,28 +80,14 @@ public final class UploaderService extends IntentService {
      */
     public static void cancelAndRescheduleUploadingService(final Context context,
             final boolean needsRescheduling) {
-        final PendingIntent pendingIntent = getPendingIntentForService(context);
+        final Intent intent = new Intent(context, UploaderService.class);
+        final PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(
                 Context.ALARM_SERVICE);
-        cancelAnyScheduledServiceAlarm(alarmManager, pendingIntent);
-        if (needsRescheduling) {
-            scheduleServiceAlarm(alarmManager, pendingIntent);
-        }
-    }
-
-    private static PendingIntent getPendingIntentForService(final Context context) {
-        final Intent intent = new Intent(context, UploaderService.class);
-        return PendingIntent.getService(context, 0, intent, 0);
-    }
-
-    private static void cancelAnyScheduledServiceAlarm(final AlarmManager alarmManager,
-            final PendingIntent pendingIntent) {
         alarmManager.cancel(pendingIntent);
-    }
-
-    private static void scheduleServiceAlarm(final AlarmManager alarmManager,
-            final PendingIntent pendingIntent) {
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, UploaderService.RUN_INTERVAL,
-                pendingIntent);
+        if (needsRescheduling) {
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+                    + UploaderService.RUN_INTERVAL, pendingIntent);
+        }
     }
 }
