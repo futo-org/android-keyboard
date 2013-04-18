@@ -57,6 +57,7 @@
         android:layout_height="24dp"
         android:layout_below="@id/setup_step_bullets" />
     <FrameLayout
+        android:id="@+id/setup_steps_pane"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/setup_step_indicator">
@@ -70,4 +71,10 @@
             android:id="@+id/setup_step3"
             layout="@layout/setup_step" />
     </FrameLayout>
+    <TextView
+        android:id="@+id/setup_finish"
+        android:text="@string/setup_finish_action"
+        style="@style/setupStepActionLabelStyle"
+        android:layout_below="@id/setup_steps_pane"
+        android:layout_marginTop="2dp" />
 </RelativeLayout>
