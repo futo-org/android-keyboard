@@ -25,34 +25,14 @@
     <TextView
         android:id="@+id/setup_step_title"
         style="@style/setupStepTitleStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp" />
+        android:paddingBottom="16dp" />
     <TextView
         android:id="@+id/setup_step_instruction"
         style="@style/setupStepInstructionStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp" />
-    <Button
+        android:paddingBottom="16dp" />
+    <TextView
         android:id="@+id/setup_step_action_label"
         style="@style/setupStepActionLabelStyle"
-        android:gravity="center_vertical"
-        android:drawablePadding="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingLeft="12dp"
-        android:paddingStart="12dp"
-        android:paddingRight="24dp"
-        android:paddingEnd="24dp" />
+        android:layout_marginTop="2dp" />
 </LinearLayout>
