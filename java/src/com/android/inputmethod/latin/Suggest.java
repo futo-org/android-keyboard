@@ -68,7 +68,7 @@ public final class Suggest {
     private float mAutoCorrectionThreshold;
 
     // Locale used for upper- and title-casing words
-    private final Locale mLocale;
+    public final Locale mLocale;
 
     public Suggest(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
