@@ -258,10 +258,10 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, adjustedFrequency);
+                    super.addWord(word, null, adjustedFrequency, false /* isNotAWord */);
                 }
                 if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, adjustedFrequency);
+                    super.addWord(shortcut, word, adjustedFrequency, true /* isNotAWord */);
                 }
                 cursor.moveToNext();
             }
