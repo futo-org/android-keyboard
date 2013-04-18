@@ -441,7 +441,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(final Key key) {
-        if (sInGesture) {
+        if (sInGesture || mIsDetectingGesture) {
             return false;
         }
         final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
@@ -500,7 +500,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding) {
-        if (sInGesture) {
+        if (sInGesture || mIsDetectingGesture) {
             return;
         }
         final boolean ignoreModifierKey = mIsInSlidingKeyInputFromModifier && key.isModifier();
