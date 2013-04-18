@@ -26,10 +26,8 @@ import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
@@ -73,15 +71,15 @@ import java.util.HashSet;
  */
 public class KeyboardView extends View {
     // XML attributes
-    protected final KeyVisualAttributes mKeyVisualAttributes;
+    private final KeyVisualAttributes mKeyVisualAttributes;
     private final int mKeyLabelHorizontalPadding;
     private final float mKeyHintLetterPadding;
     private final float mKeyPopupHintLetterPadding;
     private final float mKeyShiftedLetterHintPadding;
     private final float mKeyTextShadowRadius;
-    protected final float mVerticalCorrection;
-    protected final Drawable mKeyBackground;
-    protected final Rect mKeyBackgroundPadding = new Rect();
+    private final float mVerticalCorrection;
+    private final Drawable mKeyBackground;
+    private final Rect mKeyBackgroundPadding = new Rect();
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
@@ -113,10 +111,6 @@ public class KeyboardView extends View {
     private final Canvas mOffscreenCanvas = new Canvas();
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
-    // This sparse array caches key label text height in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextHeightCache = CollectionUtils.newSparseArray();
-    // This sparse array caches key label text width in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextWidthCache = CollectionUtils.newSparseArray();
     private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
     private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 
@@ -134,15 +128,15 @@ public class KeyboardView extends View {
         mKeyLabelHorizontalPadding = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
-                R.styleable.KeyboardView_keyHintLetterPadding, 0);
+                R.styleable.KeyboardView_keyHintLetterPadding, 0.0f);
         mKeyPopupHintLetterPadding = keyboardViewAttr.getDimension(
-                R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
+                R.styleable.KeyboardView_keyPopupHintLetterPadding, 0.0f);
         mKeyShiftedLetterHintPadding = keyboardViewAttr.getDimension(
-                R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
+                R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0.0f);
         mKeyTextShadowRadius = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_keyTextShadowRadius, 0.0f);
         mVerticalCorrection = keyboardViewAttr.getDimension(
-                R.styleable.KeyboardView_verticalCorrection, 0);
+                R.styleable.KeyboardView_verticalCorrection, 0.0f);
         keyboardViewAttr.recycle();
 
         final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
@@ -185,6 +179,14 @@ public class KeyboardView extends View {
         return mKeyboard;
     }
 
+    protected float getVerticalCorrection() {
+        return mVerticalCorrection;
+    }
+
+    protected void updateKeyDrawParams(final int keyHeight) {
+        mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
+    }
+
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         if (mKeyboard != null) {
@@ -213,7 +215,7 @@ public class KeyboardView extends View {
             }
             onDrawKeyboard(mOffscreenCanvas);
         }
-        canvas.drawBitmap(mOffscreenBuffer, 0, 0, null);
+        canvas.drawBitmap(mOffscreenBuffer, 0.0f, 0.0f, null);
     }
 
     private boolean maybeAllocateOffscreenBuffer() {
@@ -333,7 +335,7 @@ public class KeyboardView extends View {
         canvas.translate(bgX, bgY);
         background.draw(canvas);
         if (LatinImeLogger.sVISUALDEBUG) {
-            drawRectangle(canvas, 0, 0, bgWidth, bgHeight, 0x80c00000, new Paint());
+            drawRectangle(canvas, 0.0f, 0.0f, bgWidth, bgHeight, 0x80c00000, new Paint());
         }
         canvas.translate(-bgX, -bgY);
     }
@@ -347,7 +349,7 @@ public class KeyboardView extends View {
         final float centerY = keyHeight * 0.5f;
 
         if (LatinImeLogger.sVISUALDEBUG) {
-            drawRectangle(canvas, 0, 0, keyWidth, keyHeight, 0x800000c0, new Paint());
+            drawRectangle(canvas, 0.0f, 0.0f, keyWidth, keyHeight, 0x800000c0, new Paint());
         }
 
         // Draw key label.
@@ -357,14 +359,16 @@ public class KeyboardView extends View {
             final String label = key.mLabel;
             paint.setTypeface(key.selectTypeface(params));
             paint.setTextSize(key.selectTextSize(params));
-            final float labelCharHeight = getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint);
-            final float labelCharWidth = getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint);
+            final float labelCharHeight = TypefaceUtils.getCharHeight(
+                    KEY_LABEL_REFERENCE_CHAR, paint);
+            final float labelCharWidth = TypefaceUtils.getCharWidth(
+                    KEY_LABEL_REFERENCE_CHAR, paint);
 
             // Vertical label text alignment.
-            final float baseline = centerY + labelCharHeight / 2;
+            final float baseline = centerY + labelCharHeight / 2.0f;
 
             // Horizontal label text alignment
-            float labelWidth = 0;
+            float labelWidth = 0.0f;
             if (key.isAlignLeft()) {
                 positionX = mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.LEFT);
@@ -373,31 +377,31 @@ public class KeyboardView extends View {
                 paint.setTextAlign(Align.RIGHT);
             } else if (key.isAlignLeftOfCenter()) {
                 // TODO: Parameterise this?
-                positionX = centerX - labelCharWidth * 7 / 4;
+                positionX = centerX - labelCharWidth * 7.0f / 4.0f;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasLabelWithIconLeft() && icon != null) {
-                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
+                labelWidth = TypefaceUtils.getLabelWidth(label, paint) + icon.getIntrinsicWidth()
                         + LABEL_ICON_MARGIN * keyWidth;
-                positionX = centerX + labelWidth / 2;
+                positionX = centerX + labelWidth / 2.0f;
                 paint.setTextAlign(Align.RIGHT);
             } else if (key.hasLabelWithIconRight() && icon != null) {
-                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
+                labelWidth = TypefaceUtils.getLabelWidth(label, paint) + icon.getIntrinsicWidth()
                         + LABEL_ICON_MARGIN * keyWidth;
-                positionX = centerX - labelWidth / 2;
+                positionX = centerX - labelWidth / 2.0f;
                 paint.setTextAlign(Align.LEFT);
             } else {
                 positionX = centerX;
                 paint.setTextAlign(Align.CENTER);
             }
             if (key.needsXScale()) {
-                paint.setTextScaleX(
-                        Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) / getLabelWidth(label, paint)));
+                paint.setTextScaleX(Math.min(1.0f,
+                        (keyWidth * MAX_LABEL_RATIO) / TypefaceUtils.getLabelWidth(label, paint)));
             }
 
             paint.setColor(key.selectTextColor(params));
             if (key.isEnabled()) {
                 // Set a drop shadow for the text
-                paint.setShadowLayer(mKeyTextShadowRadius, 0, 0, params.mTextShadowColor);
+                paint.setShadowLayer(mKeyTextShadowRadius, 0.0f, 0.0f, params.mTextShadowColor);
             } else {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
@@ -405,7 +409,7 @@ public class KeyboardView extends View {
             blendAlpha(paint, params.mAnimAlpha);
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow and reset x-scale.
-            paint.setShadowLayer(0, 0, 0, 0);
+            paint.setShadowLayer(0.0f, 0.0f, 0.0f, Color.TRANSPARENT);
             paint.setTextScaleX(1.0f);
 
             if (icon != null) {
@@ -413,10 +417,10 @@ public class KeyboardView extends View {
                 final int iconHeight = icon.getIntrinsicHeight();
                 final int iconY = (keyHeight - iconHeight) / 2;
                 if (key.hasLabelWithIconLeft()) {
-                    final int iconX = (int)(centerX - labelWidth / 2);
+                    final int iconX = (int)(centerX - labelWidth / 2.0f);
                     drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
                 } else if (key.hasLabelWithIconRight()) {
-                    final int iconX = (int)(centerX + labelWidth / 2 - iconWidth);
+                    final int iconX = (int)(centerX + labelWidth / 2.0f - iconWidth);
                     drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
                 }
             }
@@ -439,20 +443,23 @@ public class KeyboardView extends View {
                 // The hint label is placed just right of the key label. Used mainly on
                 // "phone number" layout.
                 // TODO: Generalize the following calculations.
-                hintX = positionX + getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) * 2;
-                hintY = centerY + getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
+                hintX = positionX
+                        + TypefaceUtils.getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) * 2.0f;
+                hintY = centerY
+                        + TypefaceUtils.getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint) / 2.0f;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
                 hintX = keyWidth - mKeyShiftedLetterHintPadding
-                        - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
+                        - TypefaceUtils.getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2.0f;
                 paint.getFontMetrics(mFontMetrics);
                 hintY = -mFontMetrics.top;
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
                 hintX = keyWidth - mKeyHintLetterPadding
-                        - getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint) / 2;
+                        - TypefaceUtils.getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint)
+                        / 2.0f;
                 hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             }
@@ -506,7 +513,7 @@ public class KeyboardView extends View {
         paint.setColor(params.mHintLabelColor);
         paint.setTextAlign(Align.CENTER);
         final float hintX = keyWidth - mKeyHintLetterPadding
-                - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
+                - TypefaceUtils.getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2.0f;
         final float hintY = keyHeight - mKeyPopupHintLetterPadding;
         canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
 
@@ -515,54 +522,6 @@ public class KeyboardView extends View {
             drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
             drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
         }
-    }
-
-    private static int getCharGeometryCacheKey(final char referenceChar, final Paint paint) {
-        final int labelSize = (int)paint.getTextSize();
-        final Typeface face = paint.getTypeface();
-        final int codePointOffset = referenceChar << 15;
-        if (face == Typeface.DEFAULT) {
-            return codePointOffset + labelSize;
-        } else if (face == Typeface.DEFAULT_BOLD) {
-            return codePointOffset + labelSize + 0x1000;
-        } else if (face == Typeface.MONOSPACE) {
-            return codePointOffset + labelSize + 0x2000;
-        } else {
-            return codePointOffset + labelSize;
-        }
-    }
-
-    // Working variable for the following methods.
-    private final Rect mTextBounds = new Rect();
-
-    private float getCharHeight(final char[] referenceChar, final Paint paint) {
-        final int key = getCharGeometryCacheKey(referenceChar[0], paint);
-        final Float cachedValue = sTextHeightCache.get(key);
-        if (cachedValue != null)
-            return cachedValue;
-
-        paint.getTextBounds(referenceChar, 0, 1, mTextBounds);
-        final float height = mTextBounds.height();
-        sTextHeightCache.put(key, height);
-        return height;
-    }
-
-    private float getCharWidth(final char[] referenceChar, final Paint paint) {
-        final int key = getCharGeometryCacheKey(referenceChar[0], paint);
-        final Float cachedValue = sTextWidthCache.get(key);
-        if (cachedValue != null)
-            return cachedValue;
-
-        paint.getTextBounds(referenceChar, 0, 1, mTextBounds);
-        final float width = mTextBounds.width();
-        sTextWidthCache.put(key, width);
-        return width;
-    }
-
-    // TODO: Remove this method.
-    public float getLabelWidth(final String label, final Paint paint) {
-        paint.getTextBounds(label, 0, label.length(), mTextBounds);
-        return mTextBounds.width();
     }
 
     protected static void drawIcon(final Canvas canvas, final Drawable icon, final int x,
@@ -578,7 +537,7 @@ public class KeyboardView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1.0f);
         paint.setColor(color);
-        canvas.drawLine(0, y, w, y, paint);
+        canvas.drawLine(0.0f, y, w, y, paint);
     }
 
     private static void drawVerticalLine(final Canvas canvas, final float x, final float h,
@@ -586,7 +545,7 @@ public class KeyboardView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1.0f);
         paint.setColor(color);
-        canvas.drawLine(x, 0, x, h, paint);
+        canvas.drawLine(x, 0.0f, x, h, paint);
     }
 
     private static void drawRectangle(final Canvas canvas, final float x, final float y,
@@ -595,15 +554,20 @@ public class KeyboardView extends View {
         paint.setStrokeWidth(1.0f);
         paint.setColor(color);
         canvas.translate(x, y);
-        canvas.drawRect(0, 0, w, h, paint);
+        canvas.drawRect(0.0f, 0.0f, w, h, paint);
         canvas.translate(-x, -y);
     }
 
-    public Paint newDefaultLabelPaint() {
+    public Paint newLabelPaint(final Key key) {
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setTypeface(mKeyDrawParams.mTypeface);
-        paint.setTextSize(mKeyDrawParams.mLabelSize);
+        if (key == null) {
+            paint.setTypeface(mKeyDrawParams.mTypeface);
+            paint.setTextSize(mKeyDrawParams.mLabelSize);
+        } else {
+            paint.setTypeface(key.selectTypeface(mKeyDrawParams));
+            paint.setTextSize(key.selectTextSize(mKeyDrawParams));
+        }
         return paint;
     }
 

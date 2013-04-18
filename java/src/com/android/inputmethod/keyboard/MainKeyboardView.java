@@ -530,9 +530,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
         final float keyHysteresisDistance = mainKeyboardViewAttr.getDimension(
-                R.styleable.MainKeyboardView_keyHysteresisDistance, 0);
+                R.styleable.MainKeyboardView_keyHysteresisDistance, 0.0f);
         final float keyHysteresisDistanceForSlidingModifier = mainKeyboardViewAttr.getDimension(
-                R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0);
+                R.styleable.MainKeyboardView_keyHysteresisDistanceForSlidingModifier, 0.0f);
         mKeyDetector = new KeyDetector(
                 keyHysteresisDistance, keyHysteresisDistanceForSlidingModifier);
         mKeyTimerHandler = new KeyTimerHandler(this, mainKeyboardViewAttr);
@@ -655,7 +655,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyTimerHandler.cancelLongPressTimer();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
-                keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
+                keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboardGeometry(keyboard.mOccupiedWidth);
         mMoreKeysKeyboardCache.clear();
@@ -1329,7 +1329,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         // Overlay a dark rectangle to dim.
         if (mNeedsToDimEntireKeyboard) {
-            canvas.drawRect(0, 0, getWidth(), getHeight(), mBackgroundDimAlphaPaint);
+            canvas.drawRect(0.0f, 0.0f, getWidth(), getHeight(), mBackgroundDimAlphaPaint);
         }
     }
 
@@ -1353,9 +1353,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
-    private boolean fitsTextIntoWidth(final int width, final String text, final Paint paint) {
+    private static boolean fitsTextIntoWidth(final int width, final String text,
+            final Paint paint) {
         paint.setTextScaleX(1.0f);
-        final float textWidth = getLabelWidth(text, paint);
+        final float textWidth = TypefaceUtils.getLabelWidth(text, paint);
         if (textWidth < width) {
             return true;
         }
@@ -1366,12 +1367,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         paint.setTextScaleX(scaleX);
-        return getLabelWidth(text, paint) < width;
+        return TypefaceUtils.getLabelWidth(text, paint) < width;
     }
 
     // Layout language name on spacebar.
-    private String layoutLanguageOnSpacebar(final Paint paint, final InputMethodSubtype subtype,
-            final int width) {
+    private static String layoutLanguageOnSpacebar(final Paint paint,
+            final InputMethodSubtype subtype, final int width) {
         // Choose appropriate language name to fit into the width.
         final String fullText = getFullDisplayName(subtype);
         if (fitsTextIntoWidth(width, fullText, paint)) {
