@@ -1467,8 +1467,8 @@ public final class BinaryDictInputOutput {
                     if (null == last) continue;
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                     buffer.position(last.mChildrenAddress + headerSize);
-                    groupOffset = last.mChildrenAddress + 1;
-                    i = buffer.readUnsignedByte();
+                    i = readCharGroupCount(buffer);
+                    groupOffset = last.mChildrenAddress + getGroupCountSize(i);
                     last = null;
                     continue;
                 }
@@ -1477,8 +1477,8 @@ public final class BinaryDictInputOutput {
             if (0 == i && hasChildrenAddress(last.mChildrenAddress)) {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                 buffer.position(last.mChildrenAddress + headerSize);
-                groupOffset = last.mChildrenAddress + 1;
-                i = buffer.readUnsignedByte();
+                i = readCharGroupCount(buffer);
+                groupOffset = last.mChildrenAddress + getGroupCountSize(i);
                 last = null;
                 continue;
             }
