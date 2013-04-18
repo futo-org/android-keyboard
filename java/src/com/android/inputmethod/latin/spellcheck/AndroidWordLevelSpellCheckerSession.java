@@ -189,10 +189,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         int letterCount = 0;
         for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
             final int codePoint = text.codePointAt(i);
-            // Any word containing a '@' is probably an e-mail address
-            // Any word containing a '/' is probably either an ad-hoc combination of two
+            // Any word containing a COMMERCIAL_AT is probably an e-mail address
+            // Any word containing a SLASH is probably either an ad-hoc combination of two
             // words or a URI - in either case we don't want to spell check that
-            if ('@' == codePoint || '/' == codePoint) return true;
+            if (Constants.CODE_COMMERCIAL_AT == codePoint || Constants.CODE_SLASH == codePoint) {
+                return true;
+            }
             if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
         }
         // Guestimate heuristic: perform spell checking if at least 3/4 of the characters

@@ -252,7 +252,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private static boolean isValidName(final String name) {
-        if (name != null && -1 == name.indexOf('@')) {
+        if (name != null && -1 == name.indexOf(Constants.CODE_COMMERCIAL_AT)) {
             return true;
         }
         return false;
