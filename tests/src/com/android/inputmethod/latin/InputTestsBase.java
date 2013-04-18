@@ -162,45 +162,22 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     // on the same thread that the tests are running on to mimic the actual environment as
     // closely as possible.
     // Now, Looper#loop() never exits in normal operation unless the Looper#quit() method
-    // is called, so we need to do that at the right time so that #loop() returns at some
-    // point and we don't end up in an infinite loop.
-    // After we quit, the looper is still technically ready to process more messages but
-    // the handler will refuse to enqueue any because #quit() has been called and it
-    // explicitly tests for it on message enqueuing, so we'll have to reset it so that
-    // it lets us continue normal operation.
+    // is called, which has a lot of bad side effects. We can however just throw an exception
+    // in the runnable which will unwind the stack and allow us to exit.
+    private final class InterruptRunMessagesException extends RuntimeException {
+        // Empty class
+    }
     protected void runMessages() {
-        // Here begins deep magic.
-        final Looper looper = mLatinIME.mHandler.getLooper();
         mLatinIME.mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    looper.quit();
+                    throw new InterruptRunMessagesException();
                 }
             });
-        // The only way to get out of Looper#loop() is to call #quit() on it (or on its queue).
-        // Once #quit() is called remaining messages are not processed, which is why we post
-        // a message that calls it instead of calling it directly.
-        Looper.loop();
-
-        // Once #quit() has been called, the looper is not functional any more (it used to be,
-        // but now it SIGSEGV's if it's used again).
-        // It won't accept creating a new looper for this thread and switching to it...
-        // ...unless we can trick it into throwing out the old looper and believing it hasn't
-        // been initialized before.
-        MessageQueue queue = Looper.myQueue();
         try {
-            // However there is no way of doing it externally, and the static ThreadLocal
-            // field into which it's stored is private.
-            // So... get out the big guns.
-            java.lang.reflect.Field f = Looper.class.getDeclaredField("sThreadLocal");
-            f.setAccessible(true); // private lolwut
-            final ThreadLocal<Looper> a = (ThreadLocal<Looper>) f.get(looper);
-            a.set(null);
-            looper.prepare();
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Looper.loop();
+        } catch (InterruptRunMessagesException e) {
+            // Resume normal operation
         }
     }
 
