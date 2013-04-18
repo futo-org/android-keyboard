@@ -1460,7 +1460,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             return "";
         }
         final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
-        return StringUtils.capitalizeFirstCharacter(locale.getLanguage(), locale);
+        return StringUtils.capitalizeFirstCodePoint(locale.getLanguage(), locale);
     }
 
     // Get InputMethodSubtype's middle display name in its locale.

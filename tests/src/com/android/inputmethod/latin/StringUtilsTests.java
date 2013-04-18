@@ -93,23 +93,43 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
     }
 
-    public void testToTitleCase() {
+
+    public void testCapitalizeFirstCodePoint() {
         assertEquals("SSaa",
-                StringUtils.toTitleCase("ßaa", Locale.GERMAN));
+                StringUtils.capitalizeFirstCodePoint("ßaa", Locale.GERMAN));
         assertEquals("Aßa",
-                StringUtils.toTitleCase("aßa", Locale.GERMAN));
+                StringUtils.capitalizeFirstCodePoint("aßa", Locale.GERMAN));
         assertEquals("Iab",
-                StringUtils.toTitleCase("iab", Locale.ENGLISH));
-        assertEquals("Camelcase",
-                StringUtils.toTitleCase("cAmElCaSe", Locale.ENGLISH));
+                StringUtils.capitalizeFirstCodePoint("iab", Locale.ENGLISH));
+        assertEquals("cAmElCaSe",
+                StringUtils.capitalizeFirstCodePoint("cAmElCaSe", Locale.ENGLISH));
         assertEquals("İab",
-                StringUtils.toTitleCase("iab", new Locale("tr")));
+                StringUtils.capitalizeFirstCodePoint("iab", new Locale("tr")));
+        assertEquals("AİB",
+                StringUtils.capitalizeFirstCodePoint("AİB", new Locale("tr")));
+        assertEquals("A",
+                StringUtils.capitalizeFirstCodePoint("a", Locale.ENGLISH));
+        assertEquals("A",
+                StringUtils.capitalizeFirstCodePoint("A", Locale.ENGLISH));
+    }
+
+    public void testCapitalizeFirstAndDowncaseRest() {
+        assertEquals("SSaa",
+                StringUtils.capitalizeFirstAndDowncaseRest("ßaa", Locale.GERMAN));
+        assertEquals("Aßa",
+                StringUtils.capitalizeFirstAndDowncaseRest("aßa", Locale.GERMAN));
+        assertEquals("Iab",
+                StringUtils.capitalizeFirstAndDowncaseRest("iab", Locale.ENGLISH));
+        assertEquals("Camelcase",
+                StringUtils.capitalizeFirstAndDowncaseRest("cAmElCaSe", Locale.ENGLISH));
+        assertEquals("İab",
+                StringUtils.capitalizeFirstAndDowncaseRest("iab", new Locale("tr")));
         assertEquals("Aib",
-                StringUtils.toTitleCase("AİB", new Locale("tr")));
+                StringUtils.capitalizeFirstAndDowncaseRest("AİB", new Locale("tr")));
         assertEquals("A",
-                StringUtils.toTitleCase("a", Locale.ENGLISH));
+                StringUtils.capitalizeFirstAndDowncaseRest("a", Locale.ENGLISH));
         assertEquals("A",
-                StringUtils.toTitleCase("A", Locale.ENGLISH));
+                StringUtils.capitalizeFirstAndDowncaseRest("A", Locale.ENGLISH));
     }
 
     public void testGetCapitalizationType() {

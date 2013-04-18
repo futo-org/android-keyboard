@@ -330,7 +330,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 } else if (StringUtils.CAPITALIZE_FIRST == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // Likewise
-                        mSuggestions.set(i, StringUtils.toTitleCase(
+                        mSuggestions.set(i, StringUtils.capitalizeFirstCodePoint(
                                 mSuggestions.get(i).toString(), locale));
                     }
                 }
