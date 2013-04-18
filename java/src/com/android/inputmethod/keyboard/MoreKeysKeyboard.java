@@ -73,10 +73,11 @@ public final class MoreKeysKeyboard extends Keyboard {
                 final int rowHeight, final int coordXInParent, final int parentKeyboardWidth,
                 final boolean isFixedColumnOrder, final int dividerWidth) {
             mIsFixedOrder = isFixedColumnOrder;
-            if (parentKeyboardWidth / keyWidth < maxColumns) {
+            if (parentKeyboardWidth / keyWidth < Math.min(numKeys, maxColumns)) {
                 throw new IllegalArgumentException(
                         "Keyboard is too small to hold more keys keyboard: "
-                                + parentKeyboardWidth + " " + keyWidth + " " + maxColumns);
+                                + parentKeyboardWidth + " " + keyWidth + " "
+                                + numKeys + " " + maxColumns);
             }
             mDefaultKeyWidth = keyWidth;
             mDefaultRowHeight = rowHeight;
