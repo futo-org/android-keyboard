@@ -1551,7 +1551,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private static final class BatchInputUpdater implements Handler.Callback {
         private final Handler mHandler;
         private LatinIME mLatinIme;
-        private boolean mInBatchInput; // synchronized using "this".
+        private final Object mLock = new Object();
+        private boolean mInBatchInput; // synchronized using {@link #mLock}.
 
         private BatchInputUpdater() {
             final HandlerThread handlerThread = new HandlerThread(
@@ -1582,21 +1583,25 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
 
         // Run in the UI thread.
-        public synchronized void onStartBatchInput(final LatinIME latinIme) {
-            mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
-            mLatinIme = latinIme;
-            mInBatchInput = true;
+        public void onStartBatchInput(final LatinIME latinIme) {
+            synchronized (mLock) {
+                mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+                mLatinIme = latinIme;
+                mInBatchInput = true;
+            }
         }
 
         // Run in the Handler thread.
-        private synchronized void updateBatchInput(final InputPointers batchPointers) {
-            if (!mInBatchInput) {
-                // Batch input has ended or canceled while the message was being delivered.
-                return;
+        private void updateBatchInput(final InputPointers batchPointers) {
+            synchronized (mLock) {
+                if (!mInBatchInput) {
+                    // Batch input has ended or canceled while the message was being delivered.
+                    return;
+                }
+                final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
+                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                        suggestedWords, false /* dismissGestureFloatingPreviewText */);
             }
-            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
-            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                    suggestedWords, false /* dismissGestureFloatingPreviewText */);
         }
 
         // Run in the UI thread.
@@ -1609,19 +1614,23 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                     .sendToTarget();
         }
 
-        public synchronized void onCancelBatchInput() {
-            mInBatchInput = false;
-            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                    SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
+        public void onCancelBatchInput() {
+            synchronized (mLock) {
+                mInBatchInput = false;
+                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                        SuggestedWords.EMPTY, true /* dismissGestureFloatingPreviewText */);
+            }
         }
 
         // Run in the UI thread.
-        public synchronized SuggestedWords onEndBatchInput(final InputPointers batchPointers) {
-            mInBatchInput = false;
-            final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
-            mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
-                    suggestedWords, true /* dismissGestureFloatingPreviewText */);
-            return suggestedWords;
+        public SuggestedWords onEndBatchInput(final InputPointers batchPointers) {
+            synchronized (mLock) {
+                mInBatchInput = false;
+                final SuggestedWords suggestedWords = getSuggestedWordsGestureLocked(batchPointers);
+                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                        suggestedWords, true /* dismissGestureFloatingPreviewText */);
+                return suggestedWords;
+            }
         }
 
         // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
