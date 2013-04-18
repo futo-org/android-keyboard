@@ -66,7 +66,7 @@ class TypingTraversal : public Traversal {
 
     AK_FORCE_INLINE bool isSpaceSubstitutionTerminal(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
-        if (!CORRECT_SPACE_SUBSTITUTION) {
+        if (!CORRECT_NEW_WORD_SPACE_SUBSTITUTION) {
             return false;
         }
         if (!canDoLookAheadCorrection(traverseSession, dicNode)) {
@@ -80,7 +80,7 @@ class TypingTraversal : public Traversal {
 
     AK_FORCE_INLINE bool isSpaceOmissionTerminal(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
-        if (!CORRECT_SPACE_OMISSION) {
+        if (!CORRECT_NEW_WORD_SPACE_OMISSION) {
             return false;
         }
         const int inputSize = traverseSession->getInputSize();
@@ -173,8 +173,8 @@ class TypingTraversal : public Traversal {
  private:
     DISALLOW_COPY_AND_ASSIGN(TypingTraversal);
     static const bool CORRECT_OMISSION;
-    static const bool CORRECT_SPACE_SUBSTITUTION;
-    static const bool CORRECT_SPACE_OMISSION;
+    static const bool CORRECT_NEW_WORD_SPACE_SUBSTITUTION;
+    static const bool CORRECT_NEW_WORD_SPACE_OMISSION;
     static const TypingTraversal sInstance;
 
     TypingTraversal() {}

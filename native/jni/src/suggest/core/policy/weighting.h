@@ -56,7 +56,8 @@ class Weighting {
             const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
 
-    virtual float getNewWordCost(const DicNode *const dicNode) const = 0;
+    virtual float getNewWordCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
 
     virtual float getNewWordBigramCost(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
@@ -76,7 +77,8 @@ class Weighting {
 
     virtual float getSubstitutionCost() const = 0;
 
-    virtual float getSpaceSubstitutionCost() const = 0;
+    virtual float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
 
     Weighting() {}
     virtual ~Weighting() {}

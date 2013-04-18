@@ -92,6 +92,7 @@ class BinaryFormat {
             const int unigramProbability, const int bigramProbability);
     static int getProbability(const int position, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const int unigramProbability);
+    static float getMultiWordCostMultiplier(const uint8_t *const dict);
 
     // Flags for special processing
     // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
@@ -239,6 +240,17 @@ AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *
     const int msb = dict[(*pos)++];
     if (msb < 0x80) return msb;
     return ((msb & 0x7F) << 8) | dict[(*pos)++];
+}
+
+inline float BinaryFormat::getMultiWordCostMultiplier(const uint8_t *const dict) {
+    const int headerValue = readHeaderValueInt(dict, "MULTIPLE_WORDS_DEMOTION_RATE");
+    if (headerValue == S_INT_MIN) {
+        return 1.0f;
+    }
+    if (headerValue <= 0) {
+        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
+    }
+    return 100.0f / static_cast<float>(headerValue);
 }
 
 inline uint8_t BinaryFormat::getFlagsAndForwardPointer(const uint8_t *const dict, int *pos) {
