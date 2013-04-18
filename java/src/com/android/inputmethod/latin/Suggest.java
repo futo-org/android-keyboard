@@ -334,6 +334,11 @@ public final class Suggest {
             }
         }
 
+        if (suggestionsContainer.size() > 1 && TextUtils.equals(suggestionsContainer.get(0).mWord,
+                wordComposer.getRejectedBatchModeSuggestion())) {
+            final SuggestedWordInfo rejected = suggestionsContainer.remove(0);
+            suggestionsContainer.add(1, rejected);
+        }
         SuggestedWordInfo.removeDups(suggestionsContainer);
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
