@@ -101,7 +101,7 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.capitalizeFirstCodePoint("aßa", Locale.GERMAN));
         assertEquals("Iab",
                 StringUtils.capitalizeFirstCodePoint("iab", Locale.ENGLISH));
-        assertEquals("cAmElCaSe",
+        assertEquals("CAmElCaSe",
                 StringUtils.capitalizeFirstCodePoint("cAmElCaSe", Locale.ENGLISH));
         assertEquals("İab",
                 StringUtils.capitalizeFirstCodePoint("iab", new Locale("tr")));
