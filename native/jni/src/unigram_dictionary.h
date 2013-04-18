@@ -38,7 +38,7 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
-    UnigramDictionary(const uint8_t *const streamStart, const unsigned int flags);
+    UnigramDictionary(const uint8_t *const streamStart, const unsigned int dictFlags);
     int getProbability(const int *const inWord, const int length) const;
     int getBigramPosition(int pos, int *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -46,6 +46,7 @@ class UnigramDictionary {
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             const bool useFullEditDistance, int *outWords, int *frequencies,
             int *outputTypes) const;
+    int getDictFlags() const { return DICT_FLAGS; }
     virtual ~UnigramDictionary();
 
  private:
@@ -109,7 +110,7 @@ class UnigramDictionary {
     const uint8_t *const DICT_ROOT;
     const int ROOT_POS;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
-    const int FLAGS;
+    const int DICT_FLAGS;
 };
 } // namespace latinime
 #endif // LATINIME_UNIGRAM_DICTIONARY_H

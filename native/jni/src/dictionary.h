@@ -63,6 +63,7 @@ class Dictionary {
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
+    int getDictFlags() const;
     virtual ~Dictionary();
 
  private:
