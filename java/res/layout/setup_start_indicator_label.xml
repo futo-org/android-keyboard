@@ -18,15 +18,15 @@
 */
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/setup_background"
-    android:paddingLeft="@dimen/setup_horizontal_padding"
-    android:paddingRight="@dimen/setup_horizontal_padding"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp">
-    <include
-        android:id="@+id/setup_steps_screen"
-        layout="@layout/setup_steps_screen" />
-</FrameLayout>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <view class="com.android.inputmethod.latin.setup.SetupStartIndicatorView$LabelView"
+        android:id="@+id/setup_start_label"
+        android:text="@string/setup_start_action"
+        android:gravity="end|center_vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        style="@style/setupStepActionLabelStyleCommon" />
+    <view class="com.android.inputmethod.latin.setup.SetupStartIndicatorView$IndicatorView"
+        android:id="@+id/setup_start_indicator"
+        style="@style/setupStepStartIndicatorStyle" />
+</merge>

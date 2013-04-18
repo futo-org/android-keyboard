@@ -38,10 +38,11 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 import java.util.HashMap;
 
+// TODO: Use Fragment to implement welcome screen and setup steps.
 public final class SetupActivity extends Activity implements View.OnClickListener {
     private SetupStepIndicatorView mStepIndicatorView;
     private TextView mActionFinish;
-    private final SetupStepGroup mSetupSteps = new SetupStepGroup();
+    private final SetupStepGroup mSetupStepGroup = new SetupStepGroup();
     private static final String STATE_STEP = "step";
     private int mStepNumber;
     private static final int STEP_1 = 1;
@@ -108,9 +109,9 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return;
         }
 
-        final TextView titleView = (TextView)findViewById(R.id.setup_title);
+        final TextView stepsTitle = (TextView)findViewById(R.id.setup_title);
         final String applicationName = getResources().getString(getApplicationInfo().labelRes);
-        titleView.setText(getString(R.string.setup_steps_title, applicationName));
+        stepsTitle.setText(getString(R.string.setup_steps_title, applicationName));
 
         mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
 
@@ -125,7 +126,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 mHandler.startPollingImeSettings();
             }
         });
-        mSetupSteps.addStep(STEP_1, step1);
+        mSetupStepGroup.addStep(STEP_1, step1);
 
         final SetupStep step2 = new SetupStep(applicationName,
                 (TextView)findViewById(R.id.setup_step2_bullet), findViewById(R.id.setup_step2),
@@ -139,7 +140,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                         .showInputMethodPicker();
             }
         });
-        mSetupSteps.addStep(STEP_2, step2);
+        mSetupStepGroup.addStep(STEP_2, step2);
 
         final SetupStep step3 = new SetupStep(applicationName,
                 (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
@@ -151,7 +152,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 invokeSubtypeEnablerOfThisIme();
             }
         });
-        mSetupSteps.addStep(STEP_3, step3);
+        mSetupStepGroup.addStep(STEP_3, step3);
 
         mActionFinish = (TextView)findViewById(R.id.setup_finish);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
@@ -290,8 +291,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private void updateSetupStepView() {
         final int layoutDirection = ViewCompatUtils.getLayoutDirection(mStepIndicatorView);
         mStepIndicatorView.setIndicatorPosition(
-                getIndicatorPosition(mStepNumber, mSetupSteps.getTotalStep(), layoutDirection));
-        mSetupSteps.enableStep(mStepNumber);
+                getIndicatorPosition(mStepNumber, mSetupStepGroup.getTotalStep(), layoutDirection));
+        mSetupStepGroup.enableStep(mStepNumber);
         mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
     }
 
