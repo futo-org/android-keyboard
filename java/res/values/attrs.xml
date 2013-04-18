@@ -85,6 +85,8 @@
         <attr name="slidingKeyInputEnable" format="boolean" />
         <attr name="slidingKeyInputPreviewColor" format="color" />
         <attr name="slidingKeyInputPreviewWidth" format="dimension" />
+        <attr name="slidingKeyInputPreviewBodyRatio" format="integer" />
+        <attr name="slidingKeyInputPreviewShadowRatio" format="integer" />
         <!-- Key repeat start timeout -->
         <attr name="keyRepeatStartTimeout" format="integer" />
         <!-- Key repeat interval in millisecond. -->
@@ -115,6 +117,8 @@
         <attr name="gesturePreviewTrailColor" format="color" />
         <attr name="gesturePreviewTrailStartWidth" format="dimension" />
         <attr name="gesturePreviewTrailEndWidth" format="dimension" />
+        <attr name="gesturePreviewTrailBodyRatio" format="integer" />
+        <attr name="gesturePreviewTrailShadowRatio" format="integer" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Attributes for GestureFloatingPreviewText -->
