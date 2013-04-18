@@ -30,11 +30,11 @@ class ProximityInfo {
  public:
     ProximityInfo(JNIEnv *env, const jstring localeJStr,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-            const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
-            const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
-            const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
-            const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
-            const jfloatArray sweetSpotRadii);
+            const int gridHeight, const int mostCommonKeyWidth, const int mostCommonKeyHeight,
+            const jintArray proximityChars, const int keyCount, const jintArray keyXCoordinates,
+            const jintArray keyYCoordinates, const jintArray keyWidths, const jintArray keyHeights,
+            const jintArray keyCharCodes, const jfloatArray sweetSpotCenterXs,
+            const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
@@ -56,6 +56,9 @@ class ProximityInfo {
     bool hasTouchPositionCorrectionData() const { return HAS_TOUCH_POSITION_CORRECTION_DATA; }
     int getMostCommonKeyWidth() const { return MOST_COMMON_KEY_WIDTH; }
     int getMostCommonKeyWidthSquare() const { return MOST_COMMON_KEY_WIDTH_SQUARE; }
+    float getNormalizedSquaredMostCommonKeyHypotenuse() const {
+        return NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE;
+    }
     int getKeyCount() const { return KEY_COUNT; }
     int getCellHeight() const { return CELL_HEIGHT; }
     int getCellWidth() const { return CELL_WIDTH; }
@@ -99,6 +102,8 @@ class ProximityInfo {
     const int GRID_HEIGHT;
     const int MOST_COMMON_KEY_WIDTH;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
+    const int MOST_COMMON_KEY_HEIGHT;
+    const float NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
     const int KEY_COUNT;
