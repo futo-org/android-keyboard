@@ -181,7 +181,6 @@ public final class UpdateHandler {
             if (!cursor.moveToFirst()) return;
             do {
                 final String clientId = cursor.getString(0);
-                if (TextUtils.isEmpty(clientId)) continue; // This probably can't happen
                 final String metadataUri =
                         MetadataDbHelper.getMetadataUriAsString(context, clientId);
                 PrivateLog.log("Update for clientId " + Utils.s(clientId), context);
