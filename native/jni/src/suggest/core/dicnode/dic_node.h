@@ -360,11 +360,6 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(languageWeight);
     }
 
-    // Note that "cost" means delta for "distance" that is weighted.
-    float getTotalPrevWordsLanguageCost() const {
-        return mDicNodeState.mDicNodeStateScoring.getTotalPrevWordsLanguageCost();
-    }
-
     // Used to commit input partially
     int getPrevWordNodePos() const {
         return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos();
