@@ -31,7 +31,7 @@ class DicNodeStateScoring {
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
-              mTotalPrevWordsLanguageCost(0.0f), mRawLength(0.0f) {
+              mRawLength(0.0f) {
     }
 
     virtual ~DicNodeStateScoring() {}
@@ -42,7 +42,6 @@ class DicNodeStateScoring {
         mNormalizedCompoundDistance = 0.0f;
         mSpatialDistance = 0.0f;
         mLanguageDistance = 0.0f;
-        mTotalPrevWordsLanguageCost = 0.0f;
         mRawLength = 0.0f;
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
         mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
@@ -54,7 +53,6 @@ class DicNodeStateScoring {
         mNormalizedCompoundDistance = scoring->mNormalizedCompoundDistance;
         mSpatialDistance = scoring->mSpatialDistance;
         mLanguageDistance = scoring->mLanguageDistance;
-        mTotalPrevWordsLanguageCost = scoring->mTotalPrevWordsLanguageCost;
         mRawLength = scoring->mRawLength;
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
         mDigraphIndex = scoring->mDigraphIndex;
@@ -69,9 +67,6 @@ class DicNodeStateScoring {
         }
         if (isProximityCorrection) {
             ++mProximityCorrectionCount;
-        }
-        if (languageCost > 0.0f) {
-            setTotalPrevWordsLanguageCost(mTotalPrevWordsLanguageCost + languageCost);
         }
     }
 
@@ -148,10 +143,6 @@ class DicNodeStateScoring {
         }
     }
 
-    float getTotalPrevWordsLanguageCost() const {
-        return mTotalPrevWordsLanguageCost;
-    }
-
  private:
     // Caution!!!
     // Use a default copy constructor and an assign operator because shallow copies are ok
@@ -165,7 +156,6 @@ class DicNodeStateScoring {
     float mNormalizedCompoundDistance;
     float mSpatialDistance;
     float mLanguageDistance;
-    float mTotalPrevWordsLanguageCost;
     float mRawLength;
 
     AK_FORCE_INLINE void addDistance(float spatialDistance, float languageDistance,
@@ -178,11 +168,6 @@ class DicNodeStateScoring {
             mNormalizedCompoundDistance = (mSpatialDistance + mLanguageDistance)
                     / static_cast<float>(max(1, totalInputIndex));
         }
-    }
-
-    //TODO: remove
-    AK_FORCE_INLINE void setTotalPrevWordsLanguageCost(float totalPrevWordsLanguageCost) {
-        mTotalPrevWordsLanguageCost = totalPrevWordsLanguageCost;
     }
 };
 } // namespace latinime
