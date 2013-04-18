@@ -139,7 +139,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"برای ذخیره دوباره لمس کنید"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"با ارسال خودکار آمار کاربرد و گزارش‌های خرابی، به بهبود این ویرایشگر روش ورودی کمک کنید"</string>
+    <string name="prefs_description_log" msgid="7525225584555429211">"با ارسال خودکار آمار استفاده و گزارش‌های خرابی، به بهبود این ویرایشگر روش ورودی کمک کنید"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه‌کلید"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
@@ -166,8 +166,8 @@
     <string name="not_now" msgid="6172462888202790482">"اکنون خیر"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"سبک ورودی مشابهی در حال حاضر وجود دارد: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"حالت بررسی قابلیت استفاده"</string>
-    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"تأخیر فشردن طولانی مدت کلید"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"طول مدت لرزش فشردن کلید"</string>
+    <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"تأخیر فشار طولانی کلید"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"طول مدت لرزش در اثر فشردن کلید"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"میزان صدای فشردن کلید"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"خواندن فایل فرهنگ لغت خارجی"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"فایل فرهنگ لغتی در پوشه دانلودها وجود ندارد"</string>
@@ -175,8 +175,33 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"این فایل واقعاً برای <xliff:g id="LOCALE_NAME">%s</xliff:g> نصب شود؟"</string>
     <string name="error" msgid="8940763624668513648">"خطایی روی داد"</string>
     <string name="button_default" msgid="3988017840431881491">"پیش‌فرض"</string>
-    <string name="language_settings" msgid="1671153053201809031">"زبان و ورودی"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"انتخاب روش ورودی"</string>
+    <!-- no translation found for setup_welcome_title (6112821709832031715) -->
+    <skip />
+    <!-- no translation found for setup_welcome_additional_description (8150252008545768953) -->
+    <skip />
+    <!-- no translation found for setup_start_action (8936036460897347708) -->
+    <skip />
+    <!-- no translation found for setup_steps_title (6400373034871816182) -->
+    <skip />
+    <!-- no translation found for setup_step1_title (3147967630253462315) -->
+    <skip />
+    <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
+    <skip />
+    <!-- no translation found for setup_step1_action (4341732946935754009) -->
+    <skip />
+    <!-- no translation found for setup_step2_title (6860725447906690594) -->
+    <skip />
+    <!-- no translation found for setup_step2_instruction (1696017456983062415) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (2945283990796496485) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"تبریک می‌گوییم، اکنون کاملاً آماده هستید!"</string>
+    <!-- no translation found for setup_step3_instruction (8025981829605426000) -->
+    <skip />
+    <!-- no translation found for setup_step3_action (600879797256942259) -->
+    <skip />
+    <!-- no translation found for setup_finish_action (276559243409465389) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"ارائه‌دهنده فرهنگ لغت"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ارائه‌دهنده فرهنگ لغت"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"سرویس فرهنگ لغت"</string>

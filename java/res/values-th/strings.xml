@@ -171,8 +171,33 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"ติดตั้งไฟล์นี้สำหรับ <xliff:g id="LOCALE_NAME">%s</xliff:g> จริงๆ หรือ"</string>
     <string name="error" msgid="8940763624668513648">"เกิดข้อผิดพลาด"</string>
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
-    <string name="language_settings" msgid="1671153053201809031">"ภาษาและการป้อนข้อมูล"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"เลือกวิธีการป้อนข้อมูล"</string>
+    <!-- no translation found for setup_welcome_title (6112821709832031715) -->
+    <skip />
+    <!-- no translation found for setup_welcome_additional_description (8150252008545768953) -->
+    <skip />
+    <!-- no translation found for setup_start_action (8936036460897347708) -->
+    <skip />
+    <!-- no translation found for setup_steps_title (6400373034871816182) -->
+    <skip />
+    <!-- no translation found for setup_step1_title (3147967630253462315) -->
+    <skip />
+    <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
+    <skip />
+    <!-- no translation found for setup_step1_action (4341732946935754009) -->
+    <skip />
+    <!-- no translation found for setup_step2_title (6860725447906690594) -->
+    <skip />
+    <!-- no translation found for setup_step2_instruction (1696017456983062415) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (2945283990796496485) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"ยินดีด้วย คุณพร้อมใช้งานแล้ว!"</string>
+    <!-- no translation found for setup_step3_instruction (8025981829605426000) -->
+    <skip />
+    <!-- no translation found for setup_step3_action (600879797256942259) -->
+    <skip />
+    <!-- no translation found for setup_finish_action (276559243409465389) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"ผู้ให้บริการพจนานุกรม"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ผู้ให้บริการพจนานุกรม"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"บริการพจนานุกรม"</string>
