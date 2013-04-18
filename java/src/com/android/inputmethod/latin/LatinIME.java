@@ -1540,7 +1540,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
         } else {
             final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-            if (mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+            if (Character.isLetter(codePointBeforeCursor)
+                    || mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
                 mSpaceState = SPACE_STATE_PHANTOM;
             }
         }
