@@ -222,4 +222,75 @@ public final class StringUtils {
         if (1 == capsCount) return CAPITALIZE_FIRST;
         return (letterCount == capsCount ? CAPITALIZE_ALL : CAPITALIZE_NONE);
     }
+
+    public static boolean isIdenticalAfterUpcase(final String text) {
+        final int len = text.length();
+        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+            final int codePoint = text.codePointAt(i);
+            if (Character.isLetter(codePoint) && !Character.isUpperCase(codePoint)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isIdenticalAfterDowncase(final String text) {
+        final int len = text.length();
+        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+            final int codePoint = text.codePointAt(i);
+            if (Character.isLetter(codePoint) && !Character.isLowerCase(codePoint)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isIdenticalAfterCapitalizeEachWord(final String text,
+            final String separators) {
+        boolean needCapsNext = true;
+        final int len = text.length();
+        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+            final int codePoint = text.codePointAt(i);
+            if (Character.isLetter(codePoint)) {
+                if ((needCapsNext && !Character.isUpperCase(codePoint))
+                        || (!needCapsNext && !Character.isLowerCase(codePoint))) {
+                    return false;
+                }
+            }
+            // We need a capital letter next if this is a separator.
+            needCapsNext = (-1 != separators.indexOf(codePoint));
+        }
+        return true;
+    }
+
+    // TODO: like capitalizeFirst*, this does not work perfectly for Dutch because of the IJ digraph
+    // which should be capitalized together in *some* cases.
+    public static String capitalizeEachWord(final String text, final String separators,
+            final Locale locale) {
+        final StringBuilder builder = new StringBuilder();
+        boolean needCapsNext = true;
+        final int len = text.length();
+        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+            final String nextChar = text.substring(i, text.offsetByCodePoints(i, 1));
+            if (needCapsNext) {
+                builder.append(nextChar.toUpperCase(locale));
+            } else {
+                builder.append(nextChar.toLowerCase(locale));
+            }
+            // We need a capital letter next if this is a separator.
+            needCapsNext = (-1 != separators.indexOf(nextChar.codePointAt(0)));
+        }
+        return builder.toString();
+    }
+
+    public static boolean containsAny(final String string, final String separators) {
+        final int len = separators.length();
+        for (int i = 0; i < len; i = separators.offsetByCodePoints(i, 1)) {
+            final int separator = separators.codePointAt(i);
+            if (-1 != string.indexOf(separator)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
