@@ -23,6 +23,7 @@
 #include "dic_node_profiler.h"
 #include "dic_node_properties.h"
 #include "dic_node_release_listener.h"
+#include "digraph_utils.h"
 
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
@@ -399,8 +400,15 @@ class DicNode {
     // TODO: Remove     //
     //////////////////////
     // TODO: Remove once touch path is merged into ProximityInfoState
+    // Note: Returned codepoint may be a digraph codepoint if the node is in a composite glyph.
     int getNodeCodePoint() const {
-        return mDicNodeProperties.getNodeCodePoint();
+        const int codePoint = mDicNodeProperties.getNodeCodePoint();
+        const DigraphUtils::DigraphCodePointIndex digraphIndex =
+                mDicNodeState.mDicNodeStateScoring.getDigraphIndex();
+        if (digraphIndex == DigraphUtils::NOT_A_DIGRAPH_INDEX) {
+            return codePoint;
+        }
+        return DigraphUtils::getDigraphCodePointForIndex(codePoint, digraphIndex);
     }
 
     ////////////////////////////////
@@ -450,6 +458,15 @@ class DicNode {
 
     void setDoubleLetterLevel(DoubleLetterLevel doubleLetterLevel) {
         mDicNodeState.mDicNodeStateScoring.setDoubleLetterLevel(doubleLetterLevel);
+    }
+
+    bool isInDigraph() const {
+        return mDicNodeState.mDicNodeStateScoring.getDigraphIndex()
+                != DigraphUtils::NOT_A_DIGRAPH_INDEX;
+    }
+
+    void advanceDigraphIndex() {
+        mDicNodeState.mDicNodeStateScoring.advanceDigraphIndex();
     }
 
     uint8_t getFlags() const {

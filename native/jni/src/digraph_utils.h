@@ -27,21 +27,34 @@ class DigraphUtils {
         SECOND_DIGRAPH_CODEPOINT
     } DigraphCodePointIndex;
 
+    typedef enum {
+        DIGRAPH_TYPE_NONE,
+        DIGRAPH_TYPE_GERMAN_UMLAUT,
+        DIGRAPH_TYPE_FRENCH_LIGATURES
+    } DigraphType;
+
     typedef struct { int first; int second; int compositeGlyph; } digraph_t;
 
     static bool hasDigraphForCodePoint(const int dictFlags, const int compositeGlyphCodePoint);
     static int getAllDigraphsForDictionaryAndReturnSize(
-            const int dictFlags, const digraph_t **digraphs);
+            const int dictFlags, const digraph_t **const digraphs);
     static int getDigraphCodePointForIndex(const int dictFlags, const int compositeGlyphCodePoint,
+            const DigraphCodePointIndex digraphCodePointIndex);
+    static int getDigraphCodePointForIndex(const int compositeGlyphCodePoint,
             const DigraphCodePointIndex digraphCodePointIndex);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DigraphUtils);
-    static const digraph_t *getDigraphForCodePoint(
-            const int dictFlags, const int compositeGlyphCodePoint);
+    static DigraphType getDigraphTypeForDictionary(const int dictFlags);
+    static int getAllDigraphsForDigraphTypeAndReturnSize(
+            const DigraphType digraphType, const digraph_t **const digraphs);
+    static const digraph_t *getDigraphForCodePoint(const int compositeGlyphCodePoint);
+    static const digraph_t *getDigraphForDigraphTypeAndCodePoint(
+            const DigraphType digraphType, const int compositeGlyphCodePoint);
 
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
     static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
+    static const DigraphType USED_DIGRAPH_TYPES[];
 };
 } // namespace latinime
 #endif // DIGRAPH_UTILS_H
