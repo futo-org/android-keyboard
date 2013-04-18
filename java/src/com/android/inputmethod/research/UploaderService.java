@@ -18,6 +18,8 @@ package com.android.inputmethod.research;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -43,11 +45,17 @@ public final class UploaderService extends IntentService {
 
     @Override
     protected void onHandleIntent(final Intent intent) {
+        // We may reach this point either because the alarm fired, or because the system explicitly
+        // requested that an Upload occur.  In the latter case, we want to cancel the alarm in case
+        // it's about to fire.
+        cancelAndRescheduleUploadingService(this, false /* needsRescheduling */);
+
         final Uploader uploader = new Uploader(this);
         if (!uploader.isPossibleToUpload()) return;
         if (isUploadingUnconditionally(intent.getExtras()) || uploader.isConvenientToUpload()) {
             uploader.doUpload();
         }
+        cancelAndRescheduleUploadingService(this, true /* needsRescheduling */);
     }
 
     private boolean isUploadingUnconditionally(final Bundle bundle) {
@@ -56,5 +64,43 @@ public final class UploaderService extends IntentService {
             return bundle.getBoolean(EXTRA_UPLOAD_UNCONDITIONALLY);
         }
         return false;
+    }
+
+    /**
+     * Arrange for the UploaderService to be run on a regular basis.
+     *
+     * Any existing scheduled invocation of UploaderService is removed and optionally rescheduled.
+     * This may cause problems if this method is called so often that no scheduled invocation is
+     * ever run.  But if the delay is short enough that it will go off when the user is sleeping,
+     * then there should be no starvation.
+     *
+     * @param context {@link Context} object
+     * @param needsRescheduling whether to schedule a future intent to be delivered to this service
+     */
+    public static void cancelAndRescheduleUploadingService(final Context context,
+            final boolean needsRescheduling) {
+        final PendingIntent pendingIntent = getPendingIntentForService(context);
+        final AlarmManager alarmManager = (AlarmManager) context.getSystemService(
+                Context.ALARM_SERVICE);
+        cancelAnyScheduledServiceAlarm(alarmManager, pendingIntent);
+        if (needsRescheduling) {
+            scheduleServiceAlarm(alarmManager, pendingIntent);
+        }
+    }
+
+    private static PendingIntent getPendingIntentForService(final Context context) {
+        final Intent intent = new Intent(context, UploaderService.class);
+        return PendingIntent.getService(context, 0, intent, 0);
+    }
+
+    private static void cancelAnyScheduledServiceAlarm(final AlarmManager alarmManager,
+            final PendingIntent pendingIntent) {
+        alarmManager.cancel(pendingIntent);
+    }
+
+    private static void scheduleServiceAlarm(final AlarmManager alarmManager,
+            final PendingIntent pendingIntent) {
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, UploaderService.RUN_INTERVAL,
+                pendingIntent);
     }
 }
