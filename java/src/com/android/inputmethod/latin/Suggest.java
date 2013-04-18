@@ -47,6 +47,9 @@ public final class Suggest {
     // TODO: rename this to CORRECTION_ON
     public static final int CORRECTION_FULL = 1;
 
+    // Close to -2**31
+    private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
+
     public interface SuggestInitializationListener {
         public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
@@ -340,6 +343,15 @@ public final class Suggest {
             suggestionsContainer.add(1, rejected);
         }
         SuggestedWordInfo.removeDups(suggestionsContainer);
+
+        // For some reason some suggestions with MIN_VALUE are making their way here.
+        // TODO: Find a more robust way to detect distractors.
+        for (int i = suggestionsContainer.size() - 1; i >= 0; --i) {
+            if (suggestionsContainer.get(i).mScore < SUPPRESS_SUGGEST_THRESHOLD) {
+                suggestionsContainer.remove(i);
+            }
+        }
+
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
         return new SuggestedWords(suggestionsContainer,
