@@ -1976,9 +1976,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // If we have a recapitalize in progress, use it; otherwise, create a new one.
         if (!mRecapitalizeStatus.isActive()
                 || !mRecapitalizeStatus.isSetAt(mLastSelectionStart, mLastSelectionEnd)) {
+            final CharSequence selectedText =
+                    mConnection.getSelectedText(0 /* flags, 0 for no styles */);
+            if (TextUtils.isEmpty(selectedText)) return; // Race condition with the input connection
             mRecapitalizeStatus.initialize(mLastSelectionStart, mLastSelectionEnd,
-                    mConnection.getSelectedText(0 /* flags, 0 for no styles */).toString(),
-                    mSettings.getCurrentLocale(), mSettings.getWordSeparators());
+                    selectedText.toString(), mSettings.getCurrentLocale(),
+                    mSettings.getWordSeparators());
             // We trim leading and trailing whitespace.
             mRecapitalizeStatus.trim();
             // Trimming the object may have changed the length of the string, and we need to
