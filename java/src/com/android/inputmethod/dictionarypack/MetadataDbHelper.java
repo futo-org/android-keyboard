@@ -45,16 +45,16 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     private static final int METADATA_DATABASE_INITIAL_VERSION = 3;
     // This is the first released version of the database that implements CLIENTID. It is
     // used to identify the versions for upgrades. This should never change going forward.
-    private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 5;
+    private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
     // This is the current database version. It should be updated when the database schema
     // gets updated. It is passed to the framework constructor of SQLiteOpenHelper, so
     // that's what the framework uses to track our database version.
-    private static final int METADATA_DATABASE_VERSION = 5;
+    private static final int METADATA_DATABASE_VERSION = 6;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
     public static final String METADATA_TABLE_NAME = "pendingUpdates";
-    private static final String CLIENT_TABLE_NAME = "clients";
+    static final String CLIENT_TABLE_NAME = "clients";
     public static final String PENDINGID_COLUMN = "pendingid"; // Download Manager ID
     public static final String TYPE_COLUMN = "type";
     public static final String STATUS_COLUMN = "status";
@@ -73,6 +73,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
 
     private static final String CLIENT_CLIENT_ID_COLUMN = "clientid";
     private static final String CLIENT_METADATA_URI_COLUMN = "uri";
+    private static final String CLIENT_METADATA_ADDITIONAL_ID_COLUMN = "additionalid";
     private static final String CLIENT_LAST_UPDATE_DATE_COLUMN = "lastupdate";
     private static final String CLIENT_PENDINGID_COLUMN = "pendingid"; // Download Manager ID
 
@@ -128,6 +129,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             "CREATE TABLE IF NOT EXISTS " + CLIENT_TABLE_NAME + " ("
             + CLIENT_CLIENT_ID_COLUMN + " TEXT, "
             + CLIENT_METADATA_URI_COLUMN + " TEXT, "
+            + CLIENT_METADATA_ADDITIONAL_ID_COLUMN + " TEXT, "
             + CLIENT_LAST_UPDATE_DATE_COLUMN + " INTEGER NOT NULL DEFAULT 0, "
             + CLIENT_PENDINGID_COLUMN + " INTEGER, "
             + FLAGS_COLUMN + " INTEGER, "
@@ -282,14 +284,15 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      * @return the string representation of the URI
      */
     public static String getMetadataUriAsString(final Context context, final String clientId) {
-        SQLiteDatabase defaultDb = getDb(context, null);
-        final Cursor cursor = defaultDb.query(CLIENT_TABLE_NAME,
-                new String[] { CLIENT_METADATA_URI_COLUMN },
-                CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId },
+        SQLiteDatabase defaultDb = MetadataDbHelper.getDb(context, null);
+        final Cursor cursor = defaultDb.query(MetadataDbHelper.CLIENT_TABLE_NAME,
+                new String[] { MetadataDbHelper.CLIENT_METADATA_URI_COLUMN,
+                        MetadataDbHelper.CLIENT_METADATA_ADDITIONAL_ID_COLUMN },
+                MetadataDbHelper.CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId },
                 null, null, null, null);
         try {
             if (!cursor.moveToFirst()) return null;
-            return cursor.getString(0); // Only one column, return it
+            return MetadataUriGetter.getUri(context, cursor.getString(0), cursor.getString(1));
         } finally {
             cursor.close();
         }
@@ -298,7 +301,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     /**
      * Update the last metadata update time for all clients using a particular URI.
      *
-     * All clients using this metadata URI will be indicated as having been updated now.
+     * This method searches for all clients using a particular URI and updates the last
+     * update time for this client.
      * The current time is used as the latest update time. This saved date will be what
      * is returned henceforth by {@link #getLastUpdateDateForClient(Context, String)},
      * until this method is called again.
@@ -311,8 +315,22 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         final ContentValues values = new ContentValues();
         values.put(CLIENT_LAST_UPDATE_DATE_COLUMN, System.currentTimeMillis());
         final SQLiteDatabase defaultDb = getDb(context, null);
-        defaultDb.update(CLIENT_TABLE_NAME, values,
-                CLIENT_METADATA_URI_COLUMN + " = ?", new String[] { uri });
+        final Cursor cursor = MetadataDbHelper.queryClientIds(context);
+        if (null == cursor) return;
+        try {
+            if (!cursor.moveToFirst()) return;
+            do {
+                final String clientId = cursor.getString(0);
+                final String metadataUri =
+                        MetadataDbHelper.getMetadataUriAsString(context, clientId);
+                if (metadataUri.equals(uri)) {
+                    defaultDb.update(CLIENT_TABLE_NAME, values,
+                            CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId });
+                }
+            } while (cursor.moveToNext());
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -727,11 +745,13 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     /**
      * Updates information relative to a specific client.
      *
-     * Updatable information includes only the metadata URI, but may be expanded in the future.
+     * Updatable information includes the metadata URI and the additional ID column. It may be
+     * expanded in the future.
      * The passed values must include a client ID in the key CLIENT_CLIENT_ID_COLUMN, and it must
-     * be equal to the string passed as an argument for clientId.
-     * The passed values must also include a non-empty metadata URI in the
-     * CLIENT_METADATA_URI_COLUMN column.
+     * be equal to the string passed as an argument for clientId. It may not be empty.
+     * The passed values must also include a non-null metadata URI in the
+     * CLIENT_METADATA_URI_COLUMN column, as well as a non-null additional ID in the
+     * CLIENT_METADATA_ADDITIONAL_ID_COLUMN. Both these strings may be empty.
      * If any of the above is not complied with, this function returns without updating data.
      *
      * @param context the context, to open the database
@@ -743,10 +763,16 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         // Sanity check the content values
         final String valuesClientId = values.getAsString(CLIENT_CLIENT_ID_COLUMN);
         final String valuesMetadataUri = values.getAsString(CLIENT_METADATA_URI_COLUMN);
-        // Empty string is a valid client ID, but external apps may not configure it.
-        // Empty string is a valid metadata URI if the client does not want updates.
-        if (TextUtils.isEmpty(valuesClientId) || null == valuesMetadataUri) {
-            // We need both these columns to be filled in
+        final String valuesMetadataAdditionalId =
+                values.getAsString(CLIENT_METADATA_ADDITIONAL_ID_COLUMN);
+        // Empty string is a valid client ID, but external apps may not configure it, so disallow
+        // both null and empty string.
+        // Empty string is a valid metadata URI if the client does not want updates, so allow
+        // empty string but disallow null.
+        // Empty string is a valid additional ID so allow empty string but disallow null.
+        if (TextUtils.isEmpty(valuesClientId) || null == valuesMetadataUri
+                || null == valuesMetadataAdditionalId) {
+            // We need all these columns to be filled in
             Utils.l("Missing parameter for updateClientInfo");
             return;
         }
@@ -777,8 +803,9 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      * Register a download ID for a specific metadata URI.
      *
      * This method should be called when a download for a metadata URI is starting. It will
-     * register the download ID for all clients using this metadata URI into the database
-     * for later retrieval by {@link #getDownloadRecordsForDownloadId(Context, long)}.
+     * search for all clients using this metadata URI and will register for each of them
+     * the download ID into the database for later retrieval by
+     * {@link #getDownloadRecordsForDownloadId(Context, long)}.
      *
      * @param context a context for opening databases
      * @param uri the metadata URI
@@ -789,8 +816,22 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         final ContentValues values = new ContentValues();
         values.put(CLIENT_PENDINGID_COLUMN, downloadId);
         final SQLiteDatabase defaultDb = getDb(context, "");
-        defaultDb.update(CLIENT_TABLE_NAME, values,
-                CLIENT_METADATA_URI_COLUMN + " = ?", new String[] { uri });
+        final Cursor cursor = MetadataDbHelper.queryClientIds(context);
+        if (null == cursor) return;
+        try {
+            if (!cursor.moveToFirst()) return;
+            do {
+                final String clientId = cursor.getString(0);
+                final String metadataUri =
+                        MetadataDbHelper.getMetadataUriAsString(context, clientId);
+                if (metadataUri.equals(uri)) {
+                    defaultDb.update(CLIENT_TABLE_NAME, values,
+                            CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId });
+                }
+            } while (cursor.moveToNext());
+        } finally {
+            cursor.close();
+        }
     }
 
     /**

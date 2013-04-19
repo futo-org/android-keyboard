@@ -81,6 +81,7 @@ public final class BinaryDictionaryFileDumper {
     private static final String QUERY_PATH_METADATA = "metadata";
     private static final String INSERT_METADATA_CLIENT_ID_COLUMN = "clientid";
     private static final String INSERT_METADATA_METADATA_URI_COLUMN = "uri";
+    private static final String INSERT_METADATA_METADATA_ADDITIONAL_ID_COLUMN = "additionalid";
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
@@ -423,6 +424,7 @@ public final class BinaryDictionaryFileDumper {
     private static void reinitializeClientRecordInDictionaryContentProvider(final Context context,
             final ContentProviderClient client, final String clientId) throws RemoteException {
         final String metadataFileUri = MetadataFileUriGetter.getMetadataUri(context);
+        final String metadataAdditionalId = MetadataFileUriGetter.getMetadataAdditionalId(context);
         if (TextUtils.isEmpty(metadataFileUri)) return;
         // Tell the content provider to reset all information about this client id
         final Uri metadataContentUri = getProviderUriBuilder(clientId)
@@ -434,6 +436,7 @@ public final class BinaryDictionaryFileDumper {
         final ContentValues metadataValues = new ContentValues();
         metadataValues.put(INSERT_METADATA_CLIENT_ID_COLUMN, clientId);
         metadataValues.put(INSERT_METADATA_METADATA_URI_COLUMN, metadataFileUri);
+        metadataValues.put(INSERT_METADATA_METADATA_ADDITIONAL_ID_COLUMN, metadataAdditionalId);
         client.insert(metadataContentUri, metadataValues);
 
         // Update the dictionary list.
