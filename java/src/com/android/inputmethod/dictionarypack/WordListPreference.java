@@ -68,6 +68,7 @@ public final class WordListPreference extends DialogPreference {
     static final private int ANIMATION_OUT = 2;
 
     private static int sLastClickedIndex = NOT_AN_INDEX;
+    private static String sLastClickedWordlistId = null;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
             new OnWordListPreferenceClick();
     private final OnActionButtonClick mActionButtonClickHandler =
@@ -199,7 +200,8 @@ public final class WordListPreference extends DialogPreference {
         ((ViewGroup)view).setLayoutTransition(null);
         final Button button = (Button)view.findViewById(R.id.wordlist_button);
         button.setText(getButtonLabel(mStatus));
-        button.setVisibility(View.INVISIBLE);
+        // String identity match. This is an ==, not an .equals, on purpose.
+        button.setVisibility(mWordlistId == sLastClickedWordlistId ? View.VISIBLE : View.INVISIBLE);
         button.setOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
@@ -218,6 +220,7 @@ public final class WordListPreference extends DialogPreference {
                 animateButton(getButtonForIndex(listView, sLastClickedIndex), ANIMATION_OUT);
             }
             sLastClickedIndex = myIndex;
+            sLastClickedWordlistId = mWordlistId;
         }
     }
 
