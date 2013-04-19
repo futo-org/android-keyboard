@@ -1678,7 +1678,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         private SuggestedWords getSuggestedWordsGestureLocked(final InputPointers batchPointers) {
             mLatinIme.mWordComposer.setBatchInputPointers(batchPointers);
             final SuggestedWords suggestedWords =
-                    mLatinIme.getSuggestedWords(Suggest.SESSION_GESTURE);
+                    mLatinIme.getSuggestedWordsOrOlderSuggestions(Suggest.SESSION_GESTURE);
             final int suggestionCount = suggestedWords.size();
             if (suggestionCount <= 1) {
                 final String mostProbableSuggestion = (suggestionCount == 0) ? null
@@ -2152,7 +2152,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             return;
         }
 
-        final SuggestedWords suggestedWords = getSuggestedWords(Suggest.SESSION_TYPING);
+        final SuggestedWords suggestedWords =
+                getSuggestedWordsOrOlderSuggestions(Suggest.SESSION_TYPING);
         final String typedWord = mWordComposer.getTypedWord();
         showSuggestionStrip(suggestedWords, typedWord);
     }
@@ -2162,7 +2163,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (keyboard == null || mSuggest == null) {
             return SuggestedWords.EMPTY;
         }
-        final String typedWord = mWordComposer.getTypedWord();
         // Get the word on which we should search the bigrams. If we are composing a word, it's
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
         // should just skip whitespace if any, so 1.
@@ -2170,10 +2170,13 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         final String prevWord =
                 mConnection.getNthPreviousWord(mSettings.getCurrent().mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
-        final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, keyboard.getProximityInfo(), mSettings.getCurrent().mCorrectionEnabled,
-                sessionId);
-        return maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
+        return mSuggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
+                mSettings.getCurrent().mCorrectionEnabled, sessionId);
+    }
+
+    private SuggestedWords getSuggestedWordsOrOlderSuggestions(final int sessionId) {
+        return maybeRetrieveOlderSuggestions(mWordComposer.getTypedWord(),
+                getSuggestedWords(sessionId));
     }
 
     private SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
@@ -2186,7 +2189,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // old suggestions. Also, if we are showing the "add to dictionary" hint, we need to
         // revert to suggestions - although it is unclear how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
-                || suggestedWords.mTypedWordValid
+                || suggestedWords.mTypedWordValid || null == mSuggestionStripView
                 || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
