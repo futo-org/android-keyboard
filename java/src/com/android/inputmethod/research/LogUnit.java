@@ -25,10 +25,10 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A group of log statements related to each other.
@@ -49,27 +49,45 @@ public class LogUnit {
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
+    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private final ArrayList<LogStatement> mLogStatementList;
     private final ArrayList<Object[]> mValuesList;
     // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
     // mTimeList.
     private final ArrayList<Long> mTimeList;
-    // Word that this LogUnit generates.  Should be null if the LogUnit does not generate a genuine
-    // word (i.e. separators alone do not count as a word).  Should never be empty.
-    private String mWord;
+    // Words that this LogUnit generates.  Should be null if the data in the LogUnit does not
+    // generate a genuine word (i.e. separators alone do not count as a word).  Should never be
+    // empty.  Note that if the user types spaces explicitly, then normally mWords should contain
+    // only a single word; it will only contain space-separate multiple words if the user does not
+    // enter a space, and the system enters one automatically.
+    private String mWords;
+    private String[] mWordArray = EMPTY_STRING_ARRAY;
     private boolean mMayContainDigit;
     private boolean mIsPartOfMegaword;
     private boolean mContainsCorrection;
 
-    // mCorrectionType indicates whether the word was corrected at all, and if so, whether it was
-    // to a different word or just a "typo" correction.  It is considered a "typo" if the final
-    // word was listed in the suggestions available the first time the word was gestured or
-    // tapped.
+    // mCorrectionType indicates whether the word was corrected at all, and if so, the nature of the
+    // correction.
     private int mCorrectionType;
+    // LogUnits start in this state.  If a word is entered without being corrected, it will have
+    // this CorrectiontType.
     public static final int CORRECTIONTYPE_NO_CORRECTION = 0;
+    // The LogUnit was corrected manually by the user in an unspecified way.
     public static final int CORRECTIONTYPE_CORRECTION = 1;
+    // The LogUnit was corrected manually by the user to a word not in the list of suggestions of
+    // the first word typed here.  (Note: this is a heuristic value, it may be incorrect, for
+    // example, if the user repositions the cursor).
     public static final int CORRECTIONTYPE_DIFFERENT_WORD = 2;
+    // The LogUnit was corrected manually by the user to a word that was in the list of suggestions
+    // of the first word typed here.  (Again, a heuristic).  It is probably a typo correction.
     public static final int CORRECTIONTYPE_TYPO = 3;
+    // TODO: Rather than just tracking the current state, keep a historical record of the LogUnit's
+    // state and statistics.  This should include how many times it has been corrected, whether
+    // other LogUnit edits were done between edits to this LogUnit, etc.  Also track when a LogUnit
+    // previously contained a word, but was corrected to empty (because it was deleted, and there is
+    // no known replacement).
 
     private SuggestedWords mSuggestedWords;
 
@@ -166,7 +184,7 @@ public class LogUnit {
         final LogStatement logStatement;
         if (canIncludePrivateData) {
             LOGSTATEMENT_LOG_UNIT_BEGIN_WITH_PRIVATE_DATA.outputToLocked(jsonWriter,
-                    SystemClock.uptimeMillis(), getWord(), getCorrectionType());
+                    SystemClock.uptimeMillis(), getWordsAsString(), getCorrectionType());
         } else {
             LOGSTATEMENT_LOG_UNIT_BEGIN_WITHOUT_PRIVATE_DATA.outputToLocked(jsonWriter,
                     SystemClock.uptimeMillis());
@@ -181,22 +199,22 @@ public class LogUnit {
     }
 
     /**
-     * Mark the current logUnit as containing data to generate {@code word}.
+     * Mark the current logUnit as containing data to generate {@code newWords}.
      *
      * If {@code setWord()} was previously called for this LogUnit, then the method will try to
      * determine what kind of correction it is, and update its internal state of the correctionType
      * accordingly.
      *
-     * @param word The word this LogUnit generates.  Caller should not pass null or the empty
+     * @param newWords The words this LogUnit generates.  Caller should not pass null or the empty
      * string.
      */
-    public void setWord(final String word) {
-        if (hasWord()) {
+    public void setWords(final String newWords) {
+        if (hasOneOrMoreWords()) {
             // The word was already set once, and it is now being changed.  See if the new word
             // is close to the old word.  If so, then the change is probably a typo correction.
             // If not, the user may have decided to enter a different word, so flag it.
             if (mSuggestedWords != null) {
-                if (isInSuggestedWords(word, mSuggestedWords)) {
+                if (isInSuggestedWords(newWords, mSuggestedWords)) {
                     mCorrectionType = CORRECTIONTYPE_TYPO;
                 } else {
                     mCorrectionType = CORRECTIONTYPE_DIFFERENT_WORD;
@@ -206,38 +224,71 @@ public class LogUnit {
                 // Mark it as a generic correction.
                 mCorrectionType = CORRECTIONTYPE_CORRECTION;
             }
+        } else {
+            mCorrectionType = CORRECTIONTYPE_NO_CORRECTION;
         }
-        mWord = word;
+        mWords = newWords;
+
+        // Update mWordArray
+        mWordArray = (TextUtils.isEmpty(mWords)) ? EMPTY_STRING_ARRAY
+                : WHITESPACE_PATTERN.split(mWords);
+        if (mWordArray.length > 0 && TextUtils.isEmpty(mWordArray[0])) {
+            // Empty string at beginning of array.  Must have been whitespace at the start of the
+            // word.  Remove the empty string.
+            mWordArray = Arrays.copyOfRange(mWordArray, 1, mWordArray.length);
+        }
     }
 
-    public String getWord() {
-        return mWord;
+    public String getWordsAsString() {
+        return mWords;
     }
 
-    public boolean hasWord() {
-        return mWord != null && !TextUtils.isEmpty(mWord.trim());
+    /**
+     * Retuns the words generated by the data in this LogUnit.
+     *
+     * The first word may be an empty string, if the data in the LogUnit started by generating
+     * whitespace.
+     *
+     * @return the array of words. an empty list of there are no words associated with this LogUnit.
+     */
+    public String[] getWordsAsStringArray() {
+        return mWordArray;
     }
 
+    public boolean hasOneOrMoreWords() {
+        return mWordArray.length >= 1;
+    }
+
+    public int getNumWords() {
+        return mWordArray.length;
+    }
+
+    // TODO: Refactor to eliminate getter/setters
     public void setMayContainDigit() {
         mMayContainDigit = true;
     }
 
+    // TODO: Refactor to eliminate getter/setters
     public boolean mayContainDigit() {
         return mMayContainDigit;
     }
 
+    // TODO: Refactor to eliminate getter/setters
     public void setContainsCorrection() {
         mContainsCorrection = true;
     }
 
+    // TODO: Refactor to eliminate getter/setters
     public boolean containsCorrection() {
         return mContainsCorrection;
     }
 
+    // TODO: Refactor to eliminate getter/setters
     public void setCorrectionType(final int correctionType) {
         mCorrectionType = correctionType;
     }
 
+    // TODO: Refactor to eliminate getter/setters
     public int getCorrectionType() {
         return mCorrectionType;
     }
@@ -267,7 +318,7 @@ public class LogUnit {
                         new ArrayList<Object[]>(laterValues),
                         new ArrayList<Long>(laterTimes),
                         true /* isPartOfMegaword */);
-                newLogUnit.mWord = null;
+                newLogUnit.mWords = null;
                 newLogUnit.mMayContainDigit = mMayContainDigit;
                 newLogUnit.mContainsCorrection = mContainsCorrection;
 
@@ -287,9 +338,9 @@ public class LogUnit {
         mLogStatementList.addAll(logUnit.mLogStatementList);
         mValuesList.addAll(logUnit.mValuesList);
         mTimeList.addAll(logUnit.mTimeList);
-        mWord = null;
-        if (logUnit.mWord != null) {
-            setWord(logUnit.mWord);
+        mWords = null;
+        if (logUnit.mWords != null) {
+            setWords(logUnit.mWords);
         }
         mMayContainDigit = mMayContainDigit || logUnit.mMayContainDigit;
         mContainsCorrection = mContainsCorrection || logUnit.mContainsCorrection;

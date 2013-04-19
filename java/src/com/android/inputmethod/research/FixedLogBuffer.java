@@ -57,28 +57,29 @@ public class FixedLogBuffer extends LogBuffer {
      */
     @Override
     public void shiftIn(final LogUnit newLogUnit) {
-        if (!newLogUnit.hasWord()) {
-            // This LogUnit isn't a word, so it doesn't count toward the word-limit.
+        if (!newLogUnit.hasOneOrMoreWords()) {
+            // This LogUnit doesn't contain any word, so it doesn't count toward the word-limit.
             super.shiftIn(newLogUnit);
             return;
         }
+        final int numWordsIncoming = newLogUnit.getNumWords();
         if (mNumActualWords >= mWordCapacity) {
             // Give subclass a chance to handle the buffer full condition by shifting out logUnits.
             onBufferFull();
             // If still full, evict.
             if (mNumActualWords >= mWordCapacity) {
-                shiftOutWords(1);
+                shiftOutWords(numWordsIncoming);
             }
         }
         super.shiftIn(newLogUnit);
-        mNumActualWords++; // Must be a word, or we wouldn't be here.
+        mNumActualWords += numWordsIncoming;
     }
 
     @Override
     public LogUnit unshiftIn() {
         final LogUnit logUnit = super.unshiftIn();
-        if (logUnit != null && logUnit.hasWord()) {
-            mNumActualWords--;
+        if (logUnit != null && logUnit.hasOneOrMoreWords()) {
+            mNumActualWords -= logUnit.getNumWords();
         }
         return logUnit;
     }
@@ -109,8 +110,8 @@ public class FixedLogBuffer extends LogBuffer {
     @Override
     public LogUnit shiftOut() {
         final LogUnit logUnit = super.shiftOut();
-        if (logUnit != null && logUnit.hasWord()) {
-            mNumActualWords--;
+        if (logUnit != null && logUnit.hasOneOrMoreWords()) {
+            mNumActualWords -= logUnit.getNumWords();
         }
         return logUnit;
     }
@@ -121,15 +122,15 @@ public class FixedLogBuffer extends LogBuffer {
      * If there are less than {@code numWords} word-containing {@link LogUnit}s, shifts out
      * all {@code LogUnit}s in the buffer.
      *
-     * @param numWords the number of word-containing {@link LogUnit}s to shift out
+     * @param numWords the minimum number of word-containing {@link LogUnit}s to shift out
      * @return the number of actual {@code LogUnit}s shifted out
      */
     protected int shiftOutWords(final int numWords) {
         int numWordContainingLogUnitsShiftedOut = 0;
         for (LogUnit logUnit = shiftOut(); logUnit != null
                 && numWordContainingLogUnitsShiftedOut < numWords; logUnit = shiftOut()) {
-            if (logUnit.hasWord()) {
-                numWordContainingLogUnitsShiftedOut++;
+            if (logUnit.hasOneOrMoreWords()) {
+                numWordContainingLogUnitsShiftedOut += logUnit.getNumWords();
             }
         }
         return numWordContainingLogUnitsShiftedOut;
@@ -144,27 +145,31 @@ public class FixedLogBuffer extends LogBuffer {
     }
 
     /**
-     * Returns a list of {@link LogUnit}s at the front of the buffer that have associated words.  No
-     * more than {@code n} LogUnits will have words associated with them.  If there are not enough
-     * LogUnits in the buffer to meet the word requirement, returns the all LogUnits.
+     * Returns a list of {@link LogUnit}s at the front of the buffer that have words associated with
+     * them.
+     *
+     * There will be no more than {@code n} words in the returned list.  So if 2 words are
+     * requested, and the first LogUnit has 3 words, it is not returned.  If 2 words are requested,
+     * and the first LogUnit has only 1 word, and the next LogUnit 2 words, only the first LogUnit
+     * is returned.  If the first LogUnit has no words associated with it, and the second LogUnit
+     * has three words, then only the first LogUnit (which has no associated words) is returned.  If
+     * there are not enough LogUnits in the buffer to meet the word requirement, then all LogUnits
+     * will be returned.
      *
      * @param n The maximum number of {@link LogUnit}s with words to return.
      * @return The list of the {@link LogUnit}s containing the first n words
      */
     public ArrayList<LogUnit> peekAtFirstNWords(int n) {
         final LinkedList<LogUnit> logUnits = getLogUnits();
-        final int length = logUnits.size();
         // Allocate space for n*2 logUnits.  There will be at least n, one for each word, and
         // there may be additional for punctuation, between-word commands, etc.  This should be
         // enough that reallocation won't be necessary.
-        final ArrayList<LogUnit> list = new ArrayList<LogUnit>(n * 2);
-        for (int i = 0; i < length && n > 0; i++) {
-            final LogUnit logUnit = logUnits.get(i);
-            list.add(logUnit);
-            if (logUnit.hasWord()) {
-                n--;
-            }
+        final ArrayList<LogUnit> resultList = new ArrayList<LogUnit>(n * 2);
+        for (final LogUnit logUnit : logUnits) {
+            n -= logUnit.getNumWords();
+            if (n < 0) break;
+            resultList.add(logUnit);
         }
-        return list;
+        return resultList;
     }
 }
