@@ -46,12 +46,15 @@
             android:paddingTop="16dp"
             android:orientation="horizontal">
             <TextView
+                android:id="@+id/setup_step1_bullet"
                 style="@style/setupStepBulletStyle"
                 android:text="@string/setup_step1_bullet" />
             <TextView
+                android:id="@+id/setup_step2_bullet"
                 style="@style/setupStepBulletStyle"
                 android:text="@string/setup_step2_bullet" />
             <TextView
+                android:id="@+id/setup_step3_bullet"
                 style="@style/setupStepBulletStyle"
                 android:text="@string/setup_step3_bullet" />
         </LinearLayout>
