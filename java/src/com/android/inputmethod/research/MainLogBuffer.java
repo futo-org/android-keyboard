@@ -190,22 +190,30 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     }
 
     protected final void publishLogUnitsAtFrontOfBuffer() {
+        // TODO: Refactor this method to require fewer passes through the LogUnits.  Should really
+        // require only one pass.
         ArrayList<LogUnit> logUnits = peekAtFirstNWords(N_GRAM_SIZE);
         if (isSafeNGram(logUnits, N_GRAM_SIZE)) {
             // Good n-gram at the front of the buffer.  Publish it, disclosing details.
             publish(logUnits, true /* canIncludePrivateData */);
             shiftOutWords(N_GRAM_SIZE);
             mNumWordsUntilSafeToSample = mNumWordsBetweenNGrams;
-        } else {
-            // No good n-gram at front, and buffer is full.  Shift out up through the first logUnit
-            // with associated words (or if there is none, all the existing logUnits).
-            logUnits.clear();
-            for (LogUnit logUnit = shiftOut(); logUnit != null && !logUnit.hasOneOrMoreWords();
-                    logUnit = shiftOut()) {
-                logUnits.add(logUnit);
-            }
-            publish(logUnits, false /* canIncludePrivateData */);
+            return;
         }
+        // No good n-gram at front, and buffer is full.  Shift out up through the first logUnit
+        // with associated words (or if there is none, all the existing logUnits).
+        logUnits.clear();
+        LogUnit logUnit = shiftOut();
+        while (logUnit != null) {
+            logUnits.add(logUnit);
+            final int numWords = logUnit.getNumWords();
+            if (numWords > 0) {
+                mNumWordsUntilSafeToSample = Math.max(0, mNumWordsUntilSafeToSample - numWords);
+                break;
+            }
+            logUnit = shiftOut();
+        }
+        publish(logUnits, false /* canIncludePrivateData */);
     }
 
     /**
@@ -222,12 +230,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
 
     @Override
     protected int shiftOutWords(final int numWords) {
-        final int numWordContainingLogUnitsShiftedOut = super.shiftOutWords(numWords);
-        mNumWordsUntilSafeToSample = Math.max(0, mNumWordsUntilSafeToSample
-                - numWordContainingLogUnitsShiftedOut);
+        final int numWordsShiftedOut = super.shiftOutWords(numWords);
+        mNumWordsUntilSafeToSample = Math.max(0, mNumWordsUntilSafeToSample - numWordsShiftedOut);
         if (DEBUG) {
             Log.d(TAG, "wordsUntilSafeToSample now at " + mNumWordsUntilSafeToSample);
         }
-        return numWordContainingLogUnitsShiftedOut;
+        return numWordsShiftedOut;
     }
 }
