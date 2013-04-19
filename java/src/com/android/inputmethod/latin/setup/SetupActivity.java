@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
@@ -39,8 +38,9 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 import java.util.HashMap;
 
-public final class SetupActivity extends Activity {
+public final class SetupActivity extends Activity implements View.OnClickListener {
     private SetupStepIndicatorView mStepIndicatorView;
+    private TextView mActionFinish;
     private final SetupStepGroup mSetupSteps = new SetupStepGroup();
     private static final String STATE_STEP = "step";
     private int mStepNumber;
@@ -152,6 +152,19 @@ public final class SetupActivity extends Activity {
             }
         });
         mSetupSteps.addStep(STEP_3, step3);
+
+        mActionFinish = (TextView)findViewById(R.id.setup_finish);
+        TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
+                getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
+        mActionFinish.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(final View v) {
+        if (v == mActionFinish) {
+            finish();
+            return;
+        }
     }
 
     private void invokeSetupWizardOfThisIme() {
@@ -166,7 +179,8 @@ public final class SetupActivity extends Activity {
         final Intent intent = new Intent();
         intent.setClass(this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 
@@ -278,6 +292,7 @@ public final class SetupActivity extends Activity {
         mStepIndicatorView.setIndicatorPosition(
                 getIndicatorPosition(mStepNumber, mSetupSteps.getTotalStep(), layoutDirection));
         mSetupSteps.enableStep(mStepNumber);
+        mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
     }
 
     private static float getIndicatorPosition(final int step, final int totalStep,
@@ -337,8 +352,9 @@ public final class SetupActivity extends Activity {
 
         @Override
         public void onClick(final View v) {
-            if (mAction != null) {
+            if (v == mActionLabel && mAction != null) {
                 mAction.run();
+                return;
             }
         }
     }
