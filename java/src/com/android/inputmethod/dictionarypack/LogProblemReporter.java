@@ -28,7 +28,8 @@ final class LogProblemReporter implements ProblemReporter {
         TAG = tag;
     }
 
+    @Override
     public void report(final Exception e) {
-        Log.e(TAG, "Reporting problem : " + e);
+        Log.e(TAG, "Reporting problem", e);
     }
 }
