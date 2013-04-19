@@ -448,6 +448,8 @@
     <string name="setup_welcome_additional_description">with Gesture Typing</string>
     <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_start_action">Get started</string>
+    <!-- The label of the button that navigates the user to the next step of the setup wizard. [CHAR_LIMIT=64] -->
+    <string name="setup_next_action">Next step</string>
     <!-- Title of the setup wizard. [CHAR LIMT=40] -->
     <string name="setup_steps_title">"Setting up <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Ordinal number of the 1st step in the setup wizard. [CHAR LIMIT=5] -->
@@ -456,16 +458,16 @@
     <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=80] -->
     <string name="setup_step1_instruction">"Please check \"<xliff:g id="application_name">%s</xliff:g>\" in your Language &amp; input settings. This will authorize it to run on your device."</string>
-    <!-- Title of the Language & input settings. This should be aligned with msgid="5292716747264442359" -->
-    <string name="setup_step1_action">Language &amp; input</string>
+    <!-- The label of the button that triggers the Language & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step1_action">Enable in Settings</string>
     <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step2_bullet" translatable="false">2</string>
     <!-- Title of the 2nd step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step2_title">"Switch to <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=80] -->
-    <string name="setup_step2_instruction">"Now that it's enabled, select \"<xliff:g id="application_name">%s</xliff:g>\", one more time to activate it."</string>
-    <!-- Title of the Input method picker. This should be aligned with msgid="4653387336791222978" -->
-    <string name="setup_step2_action">Choose input method</string>
+    <string name="setup_step2_instruction">"Next, select \"<xliff:g id="application_name">%s</xliff:g>\" as your active text-input method."</string>
+    <!-- The label of the button that triggers the choose input method dialog in order to select the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step2_action">Switch input methods</string>
     <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
