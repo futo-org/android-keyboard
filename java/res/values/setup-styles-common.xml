@@ -44,7 +44,7 @@
         <item name="android:textSize">14sp</item>
     </style>
     <style name="setupStepActionLabelStyleCommon" parent="setupStepBaseStyle">
-        <item name="android:textColor">@drawable/setup_step_action_color</item>
+        <item name="android:textColor">@color/setup_step_action_color</item>
         <item name="android:background">@drawable/setup_step_action_background</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:paddingLeft">12dp</item>
