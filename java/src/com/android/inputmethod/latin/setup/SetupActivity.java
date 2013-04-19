@@ -17,9 +17,12 @@
 package com.android.inputmethod.latin.setup;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
@@ -27,6 +30,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.compat.ViewCompatUtils;
@@ -40,14 +44,21 @@ import java.util.HashMap;
 
 // TODO: Use Fragment to implement welcome screen and setup steps.
 public final class SetupActivity extends Activity implements View.OnClickListener {
+    private View mWelcomeScreen;
+    private View mSetupScreen;
     private SetupStepIndicatorView mStepIndicatorView;
+    private Uri mWelcomeVideoUri;
+    private VideoView mWelcomeVideoView;
+    private View mActionStart;
     private TextView mActionFinish;
     private final SetupStepGroup mSetupStepGroup = new SetupStepGroup();
     private static final String STATE_STEP = "step";
     private int mStepNumber;
+    private static final int STEP_0 = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
     private static final int STEP_3 = 3;
+    private boolean mWasLanguageAndInputSettingsInvoked;
 
     private final SettingsPoolingHandler mHandler = new SettingsPoolingHandler(this);
 
@@ -109,8 +120,13 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return;
         }
 
-        final TextView stepsTitle = (TextView)findViewById(R.id.setup_title);
         final String applicationName = getResources().getString(getApplicationInfo().labelRes);
+        mWelcomeScreen = findViewById(R.id.setup_welcome_screen);
+        final TextView welcomeTitle = (TextView)findViewById(R.id.setup_welcome_title);
+        welcomeTitle.setText(getString(R.string.setup_welcome_title, applicationName));
+
+        mSetupScreen = findViewById(R.id.setup_steps_screen);
+        final TextView stepsTitle = (TextView)findViewById(R.id.setup_title);
         stepsTitle.setText(getString(R.string.setup_steps_title, applicationName));
 
         mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
@@ -154,6 +170,21 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         });
         mSetupStepGroup.addStep(STEP_3, step3);
 
+        mWelcomeVideoUri = new Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(getPackageName())
+                .path(Integer.toString(R.raw.setup_welcome_video))
+                .build();
+        mWelcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
+        mWelcomeVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(final MediaPlayer mp) {
+                mp.start();
+            }
+        });
+
+        mActionStart = findViewById(R.id.setup_start_label);
+        mActionStart.setOnClickListener(this);
         mActionFinish = (TextView)findViewById(R.id.setup_finish);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
                 getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
@@ -162,6 +193,11 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onClick(final View v) {
+        if (v == mActionStart) {
+            mStepNumber = STEP_1;
+            updateSetupStepView();
+            return;
+        }
         if (v == mActionFinish) {
             finish();
             return;
@@ -190,6 +226,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(intent);
+        mWasLanguageAndInputSettingsInvoked = true;
     }
 
     private void invokeSubtypeEnablerOfThisIme() {
@@ -240,7 +277,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
         if (!isThisImeEnabled(this)) {
-            return STEP_1;
+            return mWasLanguageAndInputSettingsInvoked ? STEP_1 : STEP_0;
         }
         if (!isThisImeCurrent(this)) {
             return STEP_2;
@@ -279,6 +316,22 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     }
 
     @Override
+    public void onBackPressed() {
+        if (mStepNumber == STEP_1) {
+            mStepNumber = STEP_0;
+            updateSetupStepView();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        mWelcomeVideoView.stopPlayback();
+        super.onPause();
+    }
+
+    @Override
     public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (!hasFocus) {
@@ -289,6 +342,15 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     }
 
     private void updateSetupStepView() {
+        final boolean welcomeScreen = (mStepNumber == STEP_0);
+        mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
+        mSetupScreen.setVisibility(welcomeScreen ? View.GONE: View.VISIBLE);
+        if (welcomeScreen) {
+            mWelcomeVideoView.setVideoURI(mWelcomeVideoUri);
+            mWelcomeVideoView.start();
+            return;
+        }
+        mWelcomeVideoView.stopPlayback();
         final int layoutDirection = ViewCompatUtils.getLayoutDirection(mStepIndicatorView);
         mStepIndicatorView.setIndicatorPosition(
                 getIndicatorPosition(mStepNumber, mSetupStepGroup.getTotalStep(), layoutDirection));

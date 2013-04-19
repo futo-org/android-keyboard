@@ -18,18 +18,14 @@
 */
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/setup_background"
-    android:paddingLeft="@dimen/setup_horizontal_padding"
-    android:paddingRight="@dimen/setup_horizontal_padding"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp">
-    <include
-        android:id="@+id/setup_welcome_screen"
-        layout="@layout/setup_welcome_screen" />
-    <include
-        android:id="@+id/setup_steps_screen"
-        layout="@layout/setup_steps_screen" />
-</FrameLayout>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <VideoView
+        android:id="@+id/setup_welcome_video"
+        android:layout_margin="36dp"
+        android:layout_width="240dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true" />
+    <com.android.inputmethod.latin.setup.SetupStartIndicatorView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</merge>
