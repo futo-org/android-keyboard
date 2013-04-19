@@ -479,7 +479,7 @@
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
-    <string name="show_setup_wizard_icon" translatable="false">Show setup wizard icon</string>
+    <string name="show_setup_wizard_icon">Show setup wizard icon</string>
 
     <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
     <string name="app_name">Dictionary Provider</string>
