@@ -150,18 +150,18 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final ResearchLogger sInstance = new ResearchLogger();
     private static String sAccountType = null;
     private static String sAllowedAccountDomain = null;
-    /* package */ ResearchLog mMainResearchLog;
+    private ResearchLog mMainResearchLog; // always non-null after init() is called
     // mFeedbackLog records all events for the session, private or not (excepting
     // passwords).  It is written to permanent storage only if the user explicitly commands
     // the system to do so.
     // LogUnits are queued in the LogBuffers and published to the ResearchLogs when words are
     // complete.
-    /* package */ MainLogBuffer mMainLogBuffer;
+    /* package for test */ MainLogBuffer mMainLogBuffer; // always non-null after init() is called
     // TODO: Remove the feedback log.  The feedback log continuously captured user data in case the
     // user wanted to submit it.  We now use the mUserRecordingLogBuffer to allow the user to
     // explicitly reproduce a problem.
-    /* package */ ResearchLog mFeedbackLog;
-    /* package */ LogBuffer mFeedbackLogBuffer;
+    private ResearchLog mFeedbackLog;
+    private LogBuffer mFeedbackLogBuffer;
     /* package */ ResearchLog mUserRecordingLog;
     /* package */ LogBuffer mUserRecordingLogBuffer;
     private File mUserRecordingFile = null;
@@ -241,6 +241,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mResearchLogDirectory = new ResearchLogDirectory(mLatinIME);
         cleanLogDirectoryIfNeeded(mResearchLogDirectory, System.currentTimeMillis());
 
+        // Initialize log buffers
+        resetLogBuffers();
+
         // Initialize external services
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
@@ -250,6 +253,39 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     true /* needsRescheduling */);
         }
         mReplayer.setKeyboardSwitcher(keyboardSwitcher);
+    }
+
+    private void resetLogBuffers() {
+        mMainResearchLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
+        final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
+        mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
+                mSuggest) {
+            @Override
+            protected void publish(final ArrayList<LogUnit> logUnits,
+                    boolean canIncludePrivateData) {
+                canIncludePrivateData |= IS_LOGGING_EVERYTHING;
+                for (final LogUnit logUnit : logUnits) {
+                    if (DEBUG) {
+                        final String wordsString = logUnit.getWordsAsString();
+                        Log.d(TAG, "onPublish: '" + wordsString
+                                + "', hc: " + logUnit.containsCorrection()
+                                + ", cipd: " + canIncludePrivateData);
+                    }
+                    for (final String word : logUnit.getWordsAsStringArray()) {
+                        final Dictionary dictionary = getDictionary();
+                        mStatistics.recordWordEntered(
+                                dictionary != null && dictionary.isValidWord(word),
+                                logUnit.containsCorrection());
+                    }
+                }
+                publishLogUnits(logUnits, mMainResearchLog, canIncludePrivateData);
+            }
+        };
+
+        mFeedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
+        mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
     }
 
     private void cleanLogDirectoryIfNeeded(final ResearchLogDirectory researchLogDirectory,
@@ -380,49 +416,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         requestIndicatorRedraw();
         mStatistics.reset();
         checkForEmptyEditor();
-        if (mFeedbackLogBuffer == null) {
-            resetFeedbackLogging();
-        }
-        if (!isAllowedToLog()) {
-            // Log.w(TAG, "not in usability mode; not logging");
-            return;
-        }
-        if (mMainLogBuffer == null) {
-            mMainResearchLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
-                    System.currentTimeMillis(), System.nanoTime()), mLatinIME);
-            final int numWordsToIgnore = new Random().nextInt(NUMBER_OF_WORDS_BETWEEN_SAMPLES + 1);
-            mMainLogBuffer = new MainLogBuffer(NUMBER_OF_WORDS_BETWEEN_SAMPLES, numWordsToIgnore,
-                    mSuggest) {
-                @Override
-                protected void publish(final ArrayList<LogUnit> logUnits,
-                        boolean canIncludePrivateData) {
-                    canIncludePrivateData |= IS_LOGGING_EVERYTHING;
-                    for (final LogUnit logUnit : logUnits) {
-                        if (DEBUG) {
-                            final String wordsString = logUnit.getWordsAsString();
-                            Log.d(TAG, "onPublish: '" + wordsString
-                                    + "', hc: " + logUnit.containsCorrection()
-                                    + ", cipd: " + canIncludePrivateData);
-                        }
-                        for (final String word : logUnit.getWordsAsStringArray()) {
-                            final Dictionary dictionary = getDictionary();
-                            mStatistics.recordWordEntered(
-                                    dictionary != null && dictionary.isValidWord(word),
-                                    logUnit.containsCorrection());
-                        }
-                    }
-                    if (mMainResearchLog != null) {
-                        publishLogUnits(logUnits, mMainResearchLog, canIncludePrivateData);
-                    }
-                }
-            };
-        }
-    }
-
-    private void resetFeedbackLogging() {
-        mFeedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
-                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
-        mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
     }
 
     /* package */ void stop() {
@@ -432,35 +425,27 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // Commit mCurrentLogUnit before closing.
         commitCurrentLogUnit();
 
-        if (mMainLogBuffer != null) {
-            mMainLogBuffer.shiftAndPublishAll();
-            logStatistics();
-            commitCurrentLogUnit();
-            mMainLogBuffer.setIsStopping();
-            mMainLogBuffer.shiftAndPublishAll();
-            mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
-            mMainLogBuffer = null;
-        }
-        if (mFeedbackLogBuffer != null) {
-            mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
-            mFeedbackLogBuffer = null;
-        }
+        mMainLogBuffer.shiftAndPublishAll();
+        logStatistics();
+        commitCurrentLogUnit();
+        mMainLogBuffer.setIsStopping();
+        mMainLogBuffer.shiftAndPublishAll();
+        mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
+        mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
+
+        resetLogBuffers();
     }
 
     public void abort() {
         if (DEBUG) {
             Log.d(TAG, "abort called");
         }
-        if (mMainLogBuffer != null) {
-            mMainLogBuffer.clear();
-            mMainResearchLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
-            mMainLogBuffer = null;
-        }
-        if (mFeedbackLogBuffer != null) {
-            mFeedbackLogBuffer.clear();
-            mFeedbackLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
-            mFeedbackLogBuffer = null;
-        }
+        mMainLogBuffer.clear();
+        mMainResearchLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
+        mFeedbackLogBuffer.clear();
+        mFeedbackLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
+
+        resetLogBuffers();
     }
 
     private void restart() {
@@ -745,8 +730,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public void initSuggest(final Suggest suggest) {
         mSuggest = suggest;
-        // MainLogBuffer has out-of-date Suggest object.  Need to close it down and create a new
-        // one.
+        // MainLogBuffer now has an out-of-date Suggest object.  Close down MainLogBuffer and create
+        // a new one.
         if (mMainLogBuffer != null) {
             stop();
             start();
@@ -857,9 +842,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     ": " + mCurrentLogUnit.getWordsAsString() : ""));
         }
         if (!mCurrentLogUnit.isEmpty()) {
-            if (mMainLogBuffer != null) {
-                mMainLogBuffer.shiftIn(mCurrentLogUnit);
-            }
+            mMainLogBuffer.shiftIn(mCurrentLogUnit);
             if (mFeedbackLogBuffer != null) {
                 mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
             }
@@ -887,9 +870,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         //
         // Note that we don't use mLastLogUnit here, because it only goes one word back and is only
         // needed for reverts, which only happen one back.
-        if (mMainLogBuffer == null) {
-            return;
-        }
         final LogUnit oldLogUnit = mMainLogBuffer.peekLastLogUnit();
 
         // Check that expected word matches.
@@ -943,6 +923,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final ResearchLog researchLog, final boolean canIncludePrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
         if (logUnits.isEmpty()) return;
+        if (!isAllowedToLog()) return;
         // LogUnits not containing private data, such as contextual data for the log, do not require
         // logSegment boundary statements.
         if (canIncludePrivateData) {
@@ -1376,11 +1357,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_promotePhantomSpace() {
         final ResearchLogger researchLogger = getInstance();
         final LogUnit logUnit;
-        if (researchLogger.mMainLogBuffer == null) {
-            logUnit = researchLogger.mCurrentLogUnit;
-        } else {
-            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
-        }
+        logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
         researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_PROMOTEPHANTOMSPACE);
     }
 
@@ -1397,11 +1374,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final String charactersAfterSwap) {
         final ResearchLogger researchLogger = getInstance();
         final LogUnit logUnit;
-        if (researchLogger.mMainLogBuffer == null) {
-            logUnit = null;
-        } else {
-            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
-        }
+        logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
         if (logUnit != null) {
             researchLogger.enqueueEvent(logUnit, LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE,
                     originalCharacters, charactersAfterSwap);
@@ -1474,11 +1447,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         // TODO: Verify that mCurrentLogUnit has been restored and contains the reverted word.
         final LogUnit logUnit;
-        if (researchLogger.mMainLogBuffer == null) {
-            logUnit = null;
-        } else {
-            logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
-        }
+        logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
         if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
             if (logUnit != null) {
                 logUnit.setWords(originallyTypedWord);
