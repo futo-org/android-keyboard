@@ -210,8 +210,7 @@ class DicNode {
     }
 
     bool isImpossibleBigramWord() const {
-        const int probability = mDicNodeProperties.getProbability();
-        if (probability == 0) {
+        if (mDicNodeProperties.hasBlacklistedOrNotAWordFlag()) {
             return true;
         }
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
