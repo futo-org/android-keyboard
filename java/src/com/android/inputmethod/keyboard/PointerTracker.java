@@ -318,8 +318,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
 
-    // true if this pointer is no longer tracking touch event.
-    private boolean mIsTrackingCanceled;
+    // true if this pointer is no longer triggering any action because it has been canceled.
+    private boolean mIsTrackingForActionDisabled;
 
     // the more keys panel currently being shown. equals null if no panel is active.
     private MoreKeysPanel mMoreKeysPanel;
@@ -441,7 +441,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(final Key key) {
-        if (sInGesture || mIsDetectingGesture) {
+        // While gesture input is going on, this method should be a no-operation. But when gesture
+        // input has been canceled, <code>sInGesture</code> and <code>mIsDetectingGesture</code>
+        // are set to false. To keep this method is a no-operation,
+        // <code>mIsTrackingForActionDisabled</code> should also be taken account of.
+        if (sInGesture || mIsDetectingGesture || mIsTrackingForActionDisabled) {
             return false;
         }
         final boolean ignoreModifierKey = mIsInSlidingKeyInput && key.isModifier();
@@ -500,7 +504,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding) {
-        if (sInGesture || mIsDetectingGesture) {
+        // See the comment at {@link #callListenerOnPressAndCheckKeyboardLayoutChange(Key}}.
+        if (sInGesture || mIsDetectingGesture || mIsTrackingForActionDisabled) {
             return;
         }
         final boolean ignoreModifierKey = mIsInSlidingKeyInput && key.isModifier();
@@ -745,7 +750,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key != null) {
             updateBatchInput(eventTime);
         }
-        if (mIsTrackingCanceled) {
+        if (mIsTrackingForActionDisabled) {
             return;
         }
         mDrawingProxy.showGesturePreviewTrail(this);
@@ -777,7 +782,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 sInGesture = false;
                 sTimeRecorder.onEndBatchInput(eventTime);
                 mTimerProxy.cancelAllUpdateBatchInputTimers();
-                if (!mIsTrackingCanceled) {
+                if (!mIsTrackingForActionDisabled) {
                     if (DEBUG_LISTENER) {
                         Log.d(TAG, String.format("[%d] onEndBatchInput   : batchPoints=%d",
                                 mPointerId, sAggregratedPointers.getPointerSize()));
@@ -786,7 +791,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 }
             }
         }
-        if (mIsTrackingCanceled) {
+        if (mIsTrackingForActionDisabled) {
             return;
         }
         mDrawingProxy.showGesturePreviewTrail(this);
@@ -846,7 +851,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.pointerTracker_onDownEvent(deltaT, distance * distance);
                 }
-                cancelTracking();
+                cancelTrackingForAction();
                 return;
             }
         }
@@ -887,7 +892,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                 || (key != null && key.isModifier())
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
-        mIsTrackingCanceled = false;
+        mIsTrackingForActionDisabled = false;
         resetSlidingKeyInput();
         if (key != null) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
@@ -947,7 +952,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_MOVE_EVENT) {
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         }
-        if (mIsTrackingCanceled) {
+        if (mIsTrackingForActionDisabled) {
             return;
         }
 
@@ -985,6 +990,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             key = onMoveKey(x, y);
         }
         onMoveToNewKey(key, x, y);
+        if (mIsTrackingForActionDisabled) {
+            return;
+        }
         startLongPressTimer(key);
         setPressedKeyGraphics(key, eventTime);
     }
@@ -1069,11 +1077,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                         + " detected sliding finger while multi touching", mPointerId));
             }
             onUpEvent(x, y, eventTime);
-            cancelTracking();
+            cancelTrackingForAction();
             setReleasedKeyGraphics(oldKey);
         } else {
             if (!mIsDetectingGesture) {
-                cancelTracking();
+                cancelTrackingForAction();
             }
             setReleasedKeyGraphics(oldKey);
         }
@@ -1087,7 +1095,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             onMoveToNewKey(null, x, y);
         } else {
             if (!mIsDetectingGesture) {
-                cancelTracking();
+                cancelTrackingForAction();
             }
         }
     }
@@ -1155,7 +1163,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
         onUpEventInternal(mLastX, mLastY, eventTime);
-        cancelTracking();
+        cancelTrackingForAction();
     }
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
@@ -1168,7 +1176,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         setReleasedKeyGraphics(currentKey);
 
         if (isShowingMoreKeysPanel()) {
-            if (!mIsTrackingCanceled) {
+            if (!mIsTrackingForActionDisabled) {
                 final int translatedX = mMoreKeysPanel.translateX(x);
                 final int translatedY = mMoreKeysPanel.translateY(y);
                 mMoreKeysPanel.onUpEvent(translatedX, translatedY, mPointerId, eventTime);
@@ -1186,7 +1194,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
 
-        if (mIsTrackingCanceled) {
+        if (mIsTrackingForActionDisabled) {
             return;
         }
         if (currentKey != null && !currentKey.isRepeatable()) {
@@ -1203,16 +1211,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     @Override
-    public void cancelTracking() {
+    public void cancelTrackingForAction() {
         if (isShowingMoreKeysPanel()) {
             return;
         }
-        mIsTrackingCanceled = true;
+        mIsTrackingForActionDisabled = true;
     }
 
     public void onLongPressed() {
         resetSlidingKeyInput();
-        cancelTracking();
+        cancelTrackingForAction();
         setReleasedKeyGraphics(mCurrentKey);
         sPointerTrackerQueue.remove(this);
     }
@@ -1316,6 +1324,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         final Key key = mKeyDetector.detectHitKey(x, y);
         final String code = KeyDetector.printableCode(key);
         Log.d(TAG, String.format("[%d]%s%s %4d %4d %5d %s", mPointerId,
-                (mIsTrackingCanceled ? "-" : " "), title, x, y, eventTime, code));
+                (mIsTrackingForActionDisabled ? "-" : " "), title, x, y, eventTime, code));
     }
 }
