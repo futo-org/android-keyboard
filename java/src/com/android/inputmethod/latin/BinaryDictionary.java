@@ -141,7 +141,6 @@ public final class BinaryDictionary extends Dictionary {
                 mOutputTypes);
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
-            if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len < MAX_WORD_LENGTH && mOutputCodePoints[start + len] != 0) {
