@@ -55,11 +55,11 @@
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основной словарь"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Варианты исправлений"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Предлагать варианты слов во время ввода"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда показывать"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Показать вертикально"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Всегда скрывать"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда предлагать"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Только в вертикальном режиме"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Никогда не предлагать"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Автоисправление"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
@@ -171,8 +171,27 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Установить этот файл для следующего языка: <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Ошибка"</string>
     <string name="button_default" msgid="3988017840431881491">"По умолчанию"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Язык и ввод"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Выберите способ ввода"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Представляем <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"с непрерывным вводом"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Начало работы"</string>
+    <!-- no translation found for setup_next_action (371821437915144603) -->
+    <skip />
+    <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>: настройка"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Включите <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Установите флажок <xliff:g id="APPLICATION_NAME">%s</xliff:g> в меню \"Язык и ввод\", чтобы использовать этот способ ввода на устройстве."</string>
+    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <skip />
+    <string name="setup_step2_title" msgid="6860725447906690594">"Переключитесь на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (1660330307159824337) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"Настройте дополнительные языки."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Теперь вы можете использовать <xliff:g id="APPLICATION_NAME">%s</xliff:g> для набора текста."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Настроить дополнительные языки"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Готово"</string>
+    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Поставщик словарей"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Поставщик словарей"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Служба словарей"</string>
@@ -203,4 +222,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Доступен словарь: <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Нажмите, чтобы просмотреть и загрузить"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Загрузка словаря: <xliff:g id="LANGUAGE">%1$s</xliff:g>…"</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

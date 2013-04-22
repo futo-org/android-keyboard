@@ -102,7 +102,7 @@
     <string name="spoken_description_dot" msgid="40711082435231673">"Icashazi"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Shintsha ulimi"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"Okulandelayo"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Okwangaphambilini"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Okwandulele"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"U-Shift uvunyelwe"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Ofeleba bavunyelwe"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"U-Shift uvimbelwe"</string>
@@ -171,8 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Ufuna ukufakela i-<xliff:g id="LOCALE_NAME">%s</xliff:g> leli fayela ngokweqiniso?"</string>
     <string name="error" msgid="8940763624668513648">"Kube nephutha"</string>
     <string name="button_default" msgid="3988017840431881491">"Okuzenzakalelayo"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Ulimi nokokufakwayo"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Khetha indlela yokufaka"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Siyakwamukela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"nokuthayipha ngokuthinta"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Qalisa"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Isinyathelo esilandelayo"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Kusethwa i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Nika amandla i-<xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Sicela uhlole i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ngolimi lwakho nezilungiselelo zokokufaka. Lokhu kuzoyigunyaza ukuthi isebenze kudivayisi yakho."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Nika amandla kuzilungiselelo"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"Shintshela ku-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Okulandelayo, khetha i-\"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" njengendlela yakho yokufaka umbhalo osebenzayo."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Shintsha izindlela zokufaka"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"Siyakuhalalisela, usumi ngomumo!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Manje usungathayipha ngokufaka zonke izinhlelo zokusebenza eziyizintandokazi zakho nge-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Lungiselela izilimi ezingeziwe"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Iqedile"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Bonisa isithonjana sokusetha isilekeleli"</string>
     <string name="app_name" msgid="6320102637491234792">"Umhlinzeki wesichazamazwi"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Umhlinzeki wesichazamazwi"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Isevisi yesichazamazwi"</string>
@@ -203,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Isichazamazwi se-<xliff:g id="LANGUAGE">%1$s</xliff:g> siyatholakala"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Cindezela ukuze ubuyekeze uphinde ulande"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Ukulanda: iziphakamiso ze-<xliff:g id="LANGUAGE">%1$s</xliff:g> zizolunga maduze."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

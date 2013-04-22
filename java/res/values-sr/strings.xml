@@ -171,8 +171,27 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Желите ли стварно да инсталирате ову датотеку за <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Дошло је до грешке"</string>
     <string name="button_default" msgid="3988017840431881491">"Подразумевано"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Језик и унос"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Избор метода уноса"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Добро дошли у апликацију <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"помоћу Куцања покретима"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Започнимо"</string>
+    <!-- no translation found for setup_next_action (371821437915144603) -->
+    <skip />
+    <string name="setup_steps_title" msgid="6400373034871816182">"Подешавање апликације <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Омогућите апликацију <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Потврдите апликацију „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ у Подешавањима језика и уноса. Тако јој одобравате покретање на уређају."</string>
+    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <skip />
+    <string name="setup_step2_title" msgid="6860725447906690594">"Пребаците на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (1660330307159824337) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"Честитамо, све је спремно!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Сада можете да куцате у свим омиљеним апликацијама помоћу апликације <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Конфигуриши додатне језике"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Завршено"</string>
+    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Добављач речника"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Добављач речника"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Услуга речника"</string>
@@ -203,4 +222,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Речник је доступан за <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Притисните за преглед и преузимање"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Преузимање: Предлози за <xliff:g id="LANGUAGE">%1$s</xliff:g> ће ускоро бити спремни."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

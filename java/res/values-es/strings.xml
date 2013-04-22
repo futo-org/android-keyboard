@@ -171,8 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"¿Seguro que quieres instalar este archivo para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Se ha producido un error"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Idioma y entrada de texto"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Selecciona un método de entrada"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Te damos la bienvenida a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con escritura con gestos"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Empezar"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Paso siguiente"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>..."</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Habilitar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Selecciona <xliff:g id="APPLICATION_NAME">%s</xliff:g> en Idioma y entrada de texto para que se ejecute en el dispositivo."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Habilitar en Ajustes"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona <xliff:g id="APPLICATION_NAME">%s</xliff:g> como método de entrada de texto activo."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Alternar métodos de entrada"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"¡Enhorabuena, has terminado!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> te permite escribir en todas tus aplicaciones favoritas."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Configura otros idiomas"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Finalizado"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Mostrar icono asistente config"</string>
     <string name="app_name" msgid="6320102637491234792">"Proveedor del diccionario"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Proveedor del diccionario"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Servicio de diccionario"</string>
@@ -203,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Hay un diccionario disponible de <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pulsa para comprobar y descargar"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Descargando: las sugerencias de <xliff:g id="LANGUAGE">%1$s</xliff:g> estarán disponibles en breve."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

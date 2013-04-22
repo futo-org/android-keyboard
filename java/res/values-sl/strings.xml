@@ -171,8 +171,27 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Zares želite namestiti to datoteko za jezik <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Prišlo je do napake"</string>
     <string name="button_default" msgid="3988017840431881491">"Privzeto"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Jezik in vnos"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Izbira načina vnosa"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Pozdravljeni v aplikaciji <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"s pisanjem s kretnjami"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Začnite"</string>
+    <!-- no translation found for setup_next_action (371821437915144603) -->
+    <skip />
+    <string name="setup_steps_title" msgid="6400373034871816182">"Nastavitev aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Omogočanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"V nastavitvah za jezik in vnos izberite aplikacijo »<xliff:g id="APPLICATION_NAME">%s</xliff:g>«. S tem ji omogočite izvajanje v napravi."</string>
+    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <skip />
+    <string name="setup_step2_title" msgid="6860725447906690594">"Preklop na aplikacijo <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (1660330307159824337) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"Čestitamo, pripravljeni ste."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Zdaj lahko z aplikacijo <xliff:g id="APPLICATION_NAME">%s</xliff:g> tipkate v vseh svojih priljubljenih aplikacijah."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Konfiguracija dodatnih jezikov"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Končano"</string>
+    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Ponudnik slovarja"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Ponudnik slovarja"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Storitev slovarja"</string>
@@ -203,4 +222,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Slovar je na voljo za jezik <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pritisnite za pregled in prenos"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Predlogi za prenos za jezik <xliff:g id="LANGUAGE">%1$s</xliff:g> bodo kmalu pripravljeni."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

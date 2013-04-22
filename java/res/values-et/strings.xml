@@ -171,8 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Kas soovite tõesti installida faili lokaadile <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Ilmnes viga"</string>
     <string name="button_default" msgid="3988017840431881491">"Vaikeväärtus"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Keeled ja sisestamine"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Valige sisestusmeetod"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Tere tulemast rakendusse <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"joonistusega sisestamisega"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Alustamine"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Järgmine toiming"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Rakenduse <xliff:g id="APPLICATION_NAME">%s</xliff:g> seadistamine"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Lubage <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Märkige oma keele ja sisestamise seadetes rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”. See lubab rakenduse käitamise teie seadmes."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Luba seadetes"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"Minge üle rakendusele <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Järgmisena valige aktiivseks tekstisisestusmeetodiks rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Vaheta sisestusmeetodeid"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"Õnnitleme. Kõik on valmis!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Nüüd saate rakendusega <xliff:g id="APPLICATION_NAME">%s</xliff:g> sisestada kõikides oma lemmikrakendustes."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Seadista lisakeeled"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Lõpetatud"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Kuva seadistusviisardi ikoon"</string>
     <string name="app_name" msgid="6320102637491234792">"Sõnastikupakkuja"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Sõnastikupakkuja"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Sõnastikuteenus"</string>
@@ -203,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Sõnastik on <xliff:g id="LANGUAGE">%1$s</xliff:g> keele jaoks saadaval"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Vajutage ülevaatamiseks ja allalaadimiseks"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Allalaadimine: <xliff:g id="LANGUAGE">%1$s</xliff:g> keele soovitused on varsti saadaval."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

@@ -171,8 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"ติดตั้งไฟล์นี้สำหรับ <xliff:g id="LOCALE_NAME">%s</xliff:g> จริงๆ หรือ"</string>
     <string name="error" msgid="8940763624668513648">"เกิดข้อผิดพลาด"</string>
     <string name="button_default" msgid="3988017840431881491">"ค่าเริ่มต้น"</string>
-    <string name="language_settings" msgid="1671153053201809031">"ภาษาและการป้อนข้อมูล"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"เลือกวิธีการป้อนข้อมูล"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"ยินดีต้อนรับสู่ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"พร้อมการป้อนข้อมูลด้วยท่าทาง"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"เริ่มต้นใช้งาน"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"ขั้นตอนถัดไป"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"การตั้งค่า <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"เปิดใช้งาน <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"โปรดตรวจสอบ \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" ในการตั้งค่าภาษาและการป้อนข้อมูลของคุณ ซึ่งจะอนุญาตให้แอปทำงานบนอุปกรณ์ของคุณ"</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"เปิดใช้งานในการตั้งค่า"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"สลับไปใช้ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"ถัดไป เลือก \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" เป็นวิธีการป้อนข้อความที่ใช้งานของคุณ"</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"สลับวิธีการป้อนข้อมูล"</string>
+    <string name="setup_step3_title" msgid="3154757183631490281">"ยินดีด้วย คุณพร้อมใช้งานแล้ว!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"ตอนนี้คุณสามารถพิมพ์ข้อมูลลงในแอปที่ชื่นชอบทั้งหมดด้วย <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"กำหนดค่าภาษาเพิ่มเติม"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"เสร็จสิ้น"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"แสดงไอคอนวิซาร์ดการตั้งค่า"</string>
     <string name="app_name" msgid="6320102637491234792">"ผู้ให้บริการพจนานุกรม"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ผู้ให้บริการพจนานุกรม"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"บริการพจนานุกรม"</string>
@@ -203,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"มีพจนานุกรมให้ใช้งานในภาษา <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"กดเพื่อตรวจสอบและดาวน์โหลด"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"กำลังดาวน์โหลด: คำแนะนำสำหรับ <xliff:g id="LANGUAGE">%1$s</xliff:g> จะพร้อมใช้งานเร็วๆ นี้"</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

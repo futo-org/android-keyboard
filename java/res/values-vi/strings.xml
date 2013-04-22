@@ -171,8 +171,27 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Thực sự cài đặt tệp này cho <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Đã xảy ra lỗi"</string>
     <string name="button_default" msgid="3988017840431881491">"Mặc định"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Ngôn ngữ và phương thức nhập"</string>
-    <string name="select_input_method" msgid="4301602374609275003">"Chọn phương thức nhập"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Bắt đầu"</string>
+    <!-- no translation found for setup_next_action (371821437915144603) -->
+    <skip />
+    <string name="setup_steps_title" msgid="6400373034871816182">"Thiết lập <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Bật <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Vui lòng kiểm tra \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" trong cài đặt ngôn ngữ và phương thức nhập của bạn. Điều này sẽ ủy quyền cho ứng dụng chạy trên thiết bị của bạn."</string>
+    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <skip />
+    <string name="setup_step2_title" msgid="6860725447906690594">"Chuyển sang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
+    <skip />
+    <!-- no translation found for setup_step2_action (1660330307159824337) -->
+    <skip />
+    <string name="setup_step3_title" msgid="3154757183631490281">"Xin chúc mừng, bạn đã cài đặt xong!"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Bây giờ bạn có thể nhập vào tất cả ứng dụng yêu thích của mình với <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Định cấu hình các ngôn ngữ khác"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Đã xong"</string>
+    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Nhà cung cấp từ điển"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Nhà cung cấp từ điển"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Dịch vụ từ điển"</string>
@@ -203,4 +222,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Có sẵn từ điển cho <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Nhấn để xem lại và tải xuống"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Tải xuống: đề xuất đối với <xliff:g id="LANGUAGE">%1$s</xliff:g> sẽ sớm sẵn sàng."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>
