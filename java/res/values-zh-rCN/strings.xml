@@ -30,7 +30,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼写检查工具会使用您的联系人列表中的条目"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按键振动"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键音效"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"按键时显示所输字符"</string>
     <string name="general_category" msgid="1859088467017573195">"常规"</string>
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"滑行输入"</string>
@@ -48,7 +48,7 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"默认"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>毫秒"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"联系人姓名建议"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用联系人中的姓名提供建议和更正"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"根据通讯录中的姓名提供建议和更正"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"双击空格插入句号"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"双击空格键可插入句号并后跟空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
@@ -66,13 +66,13 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"小改"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"大改"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"改动极大"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"下一个字词建议"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"后续字词建议"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根据上一个字词提供建议"</string>
     <string name="gesture_input" msgid="826951152254563827">"启用滑行输入"</string>
-    <string name="gesture_input_summary" msgid="9180350639305731231">"以滑动方式写出字词中字母来输入字词"</string>
+    <string name="gesture_input_summary" msgid="9180350639305731231">"以滑行方式写出字词中字母来输入字词"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"显示滑行输入轨迹"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"动态漂浮预览"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用手势输入时显示建议字词"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"在滑行输入过程中显示建议字词"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
     <string name="label_go_key" msgid="1635148082137219148">"开始"</string>
     <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
@@ -150,7 +150,7 @@
     <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"无语言(Dvorak 键盘)"</string>
     <string name="subtype_no_language_colemak" msgid="4205992994906097244">"无语言(Colemak 键盘)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"无语言(PC 键盘)"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"自定义输入样式"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"自定义输入风格"</string>
     <string name="add_style" msgid="6163126614514489951">"添加样式"</string>
     <string name="add" msgid="8299699805688017798">"添加"</string>
     <string name="remove" msgid="4486081658752944606">"删除"</string>
@@ -178,11 +178,11 @@
     <string name="dictionary_service_name" msgid="6237472350693511448">"词典服务"</string>
     <string name="download_description" msgid="6014835283119198591">"词典更新信息"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"附加词典"</string>
-    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"词典现已可下载"</string>
+    <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"词典可供下载"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"词典设置"</string>
     <string name="user_dictionaries" msgid="3582332055892252845">"用户词典"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"用户词典"</string>
-    <string name="dictionary_available" msgid="4728975345815214218">"词典现已可下载"</string>
+    <string name="dictionary_available" msgid="4728975345815214218">"词典可供下载"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"目前正在下载"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"已安装"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"已安装，但目前已停用"</string>
@@ -200,7 +200,7 @@
     <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"支持您移动设备上所选语言的词典现已可供下载啦！&lt;br/&gt;建议您&lt;b&gt;下载&lt;/b&gt;这部<xliff:g id="LANGUAGE">%1$s</xliff:g>词典，以享受更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过 3G 进行下载可能需要 1 到 2 分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要支付一定的费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，建议您使用 Wi-Fi 连接自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以访问移动设备的&lt;b&gt;设置&lt;/b&gt;菜单中的&lt;b&gt;语言和输入法&lt;/b&gt;，来下载和删除词典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 Wi-Fi 下载"</string>
-    <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g>词典现已可下载"</string>
+    <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g>词典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"下载中：很快就能启用<xliff:g id="LANGUAGE">%1$s</xliff:g>的词典建议服务了！"</string>
 </resources>
