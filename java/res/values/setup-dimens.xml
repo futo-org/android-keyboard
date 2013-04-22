@@ -20,4 +20,7 @@
     <dimen name="setup_horizontal_padding">16dp</dimen>
     <integer name="setup_title_weight_in_screen">40</integer>
     <integer name="setup_body_weight_in_screen">60</integer>
+    <integer name="setup_welcome_video_weight_in_screen">80</integer>
+    <integer name="setup_welcome_video_left_padding_weight_in_screen">10</integer>
+    <integer name="setup_welcome_video_right_padding_weight_in_screen">10</integer>
 </resources>

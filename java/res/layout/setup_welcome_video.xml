@@ -19,12 +19,26 @@
 -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <VideoView
-        android:id="@+id/setup_welcome_video"
-        android:layout_margin="36dp"
-        android:layout_width="240dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <View
+            android:layout_weight="@integer/setup_welcome_video_left_padding_weight_in_screen"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+        <VideoView
+            android:id="@+id/setup_welcome_video"
+            android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_weight="@integer/setup_welcome_video_right_padding_weight_in_screen"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+    </LinearLayout>
     <com.android.inputmethod.latin.setup.SetupStartIndicatorView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
