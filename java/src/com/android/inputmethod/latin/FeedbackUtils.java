@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.Intent;
 
 public class FeedbackUtils {
     public static boolean isFeedbackFormSupported() {
@@ -24,5 +25,13 @@ public class FeedbackUtils {
     }
 
     public static void showFeedbackForm(Context context) {
+    }
+
+    public static int getAboutKeyboardTitleResId() {
+        return 0;
+    }
+
+    public static Intent getAboutKeyboardIntent(Context context) {
+        return null;
     }
 }
