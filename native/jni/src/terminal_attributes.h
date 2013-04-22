@@ -72,7 +72,7 @@ class TerminalAttributes {
     }
 
     bool isBlacklistedOrNotAWord() const {
-        return mFlags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD);
+        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mFlags);
     }
 
  private:

@@ -66,6 +66,7 @@ class BinaryFormat {
     static int detectFormat(const uint8_t *const dict);
     static int getHeaderSize(const uint8_t *const dict);
     static int getFlags(const uint8_t *const dict);
+    static bool hasBlacklistedOrNotAWordFlag(const int flags);
     static void readHeaderValue(const uint8_t *const dict, const char *const key, int *outValue,
             const int outValueSize);
     static int readHeaderValueInt(const uint8_t *const dict, const char *const key);
@@ -160,6 +161,10 @@ inline int BinaryFormat::getFlags(const uint8_t *const dict) {
     default:
         return (dict[6] << 8) + dict[7];
     }
+}
+
+inline bool BinaryFormat::hasBlacklistedOrNotAWordFlag(const int flags) {
+    return flags & (FLAG_IS_BLACKLISTED | FLAG_IS_NOT_A_WORD);
 }
 
 inline int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
