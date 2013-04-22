@@ -121,18 +121,8 @@ public final class DebugSettings extends PreferenceFragment
             return;
         }
         boolean isDebugMode = mDebugMode.isChecked();
-        String version = "";
-        try {
-            final Context context = getActivity();
-            if (context == null) {
-                return;
-            }
-            final String packageName = context.getPackageName();
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            version = "Version " + info.versionName;
-        } catch (NameNotFoundException e) {
-            Log.e(TAG, "Could not find version info.");
-        }
+        final String version = getResources().getString(
+                R.string.version_text, Utils.getSdkVersion(getActivity()));
         if (!isDebugMode) {
             mDebugMode.setTitle(version);
             mDebugMode.setSummary("");

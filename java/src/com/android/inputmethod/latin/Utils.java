@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
@@ -472,5 +473,19 @@ public final class Utils {
             Log.e(TAG, "Failed to get settings activity title res id.", e);
         }
         return 0;
+    }
+
+    public static String getSdkVersion(Context context) {
+        try {
+            if (context == null) {
+                return "";
+            }
+            final String packageName = context.getPackageName();
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
+            return info.versionName;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Could not find version info.", e);
+        }
+        return "";
     }
 }
