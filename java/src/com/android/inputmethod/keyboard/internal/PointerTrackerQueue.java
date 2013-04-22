@@ -30,7 +30,7 @@ public final class PointerTrackerQueue {
         public boolean isModifier();
         public boolean isInSlidingKeyInput();
         public void onPhantomUpEvent(long eventTime);
-        public void cancelTracking();
+        public void cancelTrackingForAction();
     }
 
     private static final int INITIAL_CAPACITY = 10;
@@ -206,7 +206,7 @@ public final class PointerTrackerQueue {
             final int arraySize = mArraySize;
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
-                element.cancelTracking();
+                element.cancelTrackingForAction();
             }
         }
     }

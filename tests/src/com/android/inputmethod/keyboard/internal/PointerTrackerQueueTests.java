@@ -51,7 +51,7 @@ public class PointerTrackerQueueTests extends AndroidTestCase {
         }
 
         @Override
-        public void cancelTracking() {}
+        public void cancelTrackingForAction() {}
 
         @Override
         public String toString() {
