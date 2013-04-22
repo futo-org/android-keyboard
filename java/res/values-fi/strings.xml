@@ -171,33 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Haluatko asentaa tämä tiedoston kielelle <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Tapahtui virhe"</string>
     <string name="button_default" msgid="3988017840431881491">"Oletusarvot"</string>
-    <!-- no translation found for setup_welcome_title (6112821709832031715) -->
-    <skip />
-    <!-- no translation found for setup_welcome_additional_description (8150252008545768953) -->
-    <skip />
-    <!-- no translation found for setup_start_action (8936036460897347708) -->
-    <skip />
-    <!-- no translation found for setup_steps_title (6400373034871816182) -->
-    <skip />
-    <!-- no translation found for setup_step1_title (3147967630253462315) -->
-    <skip />
-    <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
-    <skip />
-    <!-- no translation found for setup_step1_action (4341732946935754009) -->
-    <skip />
-    <!-- no translation found for setup_step2_title (6860725447906690594) -->
-    <skip />
-    <!-- no translation found for setup_step2_instruction (1696017456983062415) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (2945283990796496485) -->
-    <skip />
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Tervetuloa käyttämään sovellusta <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"sekä piirtokirjoitus"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Aloita"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Seuraava vaihe"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> asetukset"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Ota <xliff:g id="APPLICATION_NAME">%s</xliff:g> käyttöön"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> kieli- ja syöttötapa-asetuksissa. Näin valtuutat sovelluksen toimimaan laitteellasi."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Ota käyttöön asetuksissa"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"Siirry sovellukseen <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> käytössä olevaksi tekstinsyöttötavaksi."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Vaihda syöttötapaa"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Onneksi olkoon, valmista tuli!"</string>
-    <!-- no translation found for setup_step3_instruction (8025981829605426000) -->
-    <skip />
-    <!-- no translation found for setup_step3_action (600879797256942259) -->
-    <skip />
-    <!-- no translation found for setup_finish_action (276559243409465389) -->
-    <skip />
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Nyt voit kirjoittaa kaikkiin lempisovelluksiisi sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> avulla."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Määritä lisää kieliä"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Valmis"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Näytä ohjattu asennus -kuvake"</string>
     <string name="app_name" msgid="6320102637491234792">"Sanakirjan tarjoaja"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Sanakirjan tarjoaja"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Sanakirjapalvelu"</string>
@@ -228,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Kielen <xliff:g id="LANGUAGE">%1$s</xliff:g> sanakirja on saatavilla"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta tai ladata sen"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Ladataan: pian ehdotuksia näytetään kielellä <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

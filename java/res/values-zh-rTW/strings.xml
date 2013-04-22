@@ -171,33 +171,22 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"準備為<xliff:g id="LOCALE_NAME">%s</xliff:g>版本安裝這個檔案嗎？"</string>
     <string name="error" msgid="8940763624668513648">"發生錯誤"</string>
     <string name="button_default" msgid="3988017840431881491">"預設"</string>
-    <!-- no translation found for setup_welcome_title (6112821709832031715) -->
-    <skip />
-    <!-- no translation found for setup_welcome_additional_description (8150252008545768953) -->
-    <skip />
-    <!-- no translation found for setup_start_action (8936036460897347708) -->
-    <skip />
-    <!-- no translation found for setup_steps_title (6400373034871816182) -->
-    <skip />
-    <!-- no translation found for setup_step1_title (3147967630253462315) -->
-    <skip />
-    <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
-    <skip />
-    <!-- no translation found for setup_step1_action (4341732946935754009) -->
-    <skip />
-    <!-- no translation found for setup_step2_title (6860725447906690594) -->
-    <skip />
-    <!-- no translation found for setup_step2_instruction (1696017456983062415) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (2945283990796496485) -->
-    <skip />
+    <string name="setup_welcome_title" msgid="6112821709832031715">"歡迎使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"含手勢輸入功能"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"開始設定"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"正在設定 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"啟用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"請在語言與輸入設定中勾選「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」，授權這項應用程式在您的裝置上執行。"</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"在設定中啟用"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"切換至 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"接著，請選取「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」做為目前使用的文字輸入法。"</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"切換輸入法"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"恭喜，您已完成設定！"</string>
-    <!-- no translation found for setup_step3_instruction (8025981829605426000) -->
-    <skip />
-    <!-- no translation found for setup_step3_action (600879797256942259) -->
-    <skip />
-    <!-- no translation found for setup_finish_action (276559243409465389) -->
-    <skip />
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"現在，您可以在自己喜愛的所有應用程式中使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g> 輸入文字。"</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"設定其他語言"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
+    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"顯示設定精靈圖示"</string>
     <string name="app_name" msgid="6320102637491234792">"字典提供者"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"字典提供者"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"字典服務"</string>
@@ -228,4 +217,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"支援<xliff:g id="LANGUAGE">%1$s</xliff:g>字典"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按下即可查看並下載"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"下載中：即將啟用<xliff:g id="LANGUAGE">%1$s</xliff:g>字詞建議服務。"</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>

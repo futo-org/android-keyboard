@@ -171,32 +171,26 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Наистина ли да се инсталира този файл за <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Възникна грешка"</string>
     <string name="button_default" msgid="3988017840431881491">"Стандартни"</string>
-    <!-- no translation found for setup_welcome_title (6112821709832031715) -->
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Добре дошли в/ъв <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"с въвеждане чрез жест"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Първи стъпки"</string>
+    <!-- no translation found for setup_next_action (371821437915144603) -->
     <skip />
-    <!-- no translation found for setup_welcome_additional_description (8150252008545768953) -->
+    <string name="setup_steps_title" msgid="6400373034871816182">"Настройване на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Активирайте <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Поставете отметка за <xliff:g id="APPLICATION_NAME">%s</xliff:g> в „Език и въвеждане“. Така ще упълномощите прилож. да се изпълнява на у-вото."</string>
+    <!-- no translation found for setup_step1_action (4366513534999901728) -->
     <skip />
-    <!-- no translation found for setup_start_action (8936036460897347708) -->
+    <string name="setup_step2_title" msgid="6860725447906690594">"Превключете към <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
     <skip />
-    <!-- no translation found for setup_steps_title (6400373034871816182) -->
-    <skip />
-    <!-- no translation found for setup_step1_title (3147967630253462315) -->
-    <skip />
-    <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
-    <skip />
-    <!-- no translation found for setup_step1_action (4341732946935754009) -->
-    <skip />
-    <!-- no translation found for setup_step2_title (6860725447906690594) -->
-    <skip />
-    <!-- no translation found for setup_step2_instruction (1696017456983062415) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (2945283990796496485) -->
+    <!-- no translation found for setup_step2_action (1660330307159824337) -->
     <skip />
     <string name="setup_step3_title" msgid="3154757183631490281">"Поздравления! Вече сте готови!"</string>
-    <!-- no translation found for setup_step3_instruction (8025981829605426000) -->
-    <skip />
-    <!-- no translation found for setup_step3_action (600879797256942259) -->
-    <skip />
-    <!-- no translation found for setup_finish_action (276559243409465389) -->
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Вече можете да пишете във всичките си любими приложения посредством <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_action" msgid="600879797256942259">"Конфигуриране на допълнителни езици"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"Край"</string>
+    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Доставчик на речника"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Доставчик на речника"</string>
@@ -228,4 +222,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"За <xliff:g id="LANGUAGE">%1$s</xliff:g> е налице речник"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Натиснете, за да прегледате и изтеглите"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Изтегля се: Предложенията за <xliff:g id="LANGUAGE">%1$s</xliff:g> ще бъдат готови скоро."</string>
+    <!-- no translation found for version_text (2715354215568469385) -->
+    <skip />
 </resources>
