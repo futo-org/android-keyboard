@@ -20,11 +20,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for dictionary_pack_settings_activity (664691545147898274) -->
-    <skip />
-    <!-- no translation found for authority (8773166495153016489) -->
-    <skip />
+    <string name="dictionary_pack_settings_activity" msgid="664691545147898274">"com.android.inputmethod.dictionarypack.DictionarySettingsActivity"</string>
+    <string name="authority" msgid="8773166495153016489">"com.android.inputmethod.dictionarypack.aosp"</string>
     <string name="default_metadata_uri" msgid="6889596349847015153"></string>
-    <!-- no translation found for local_metadata_filename (4634356913689271331) -->
-    <skip />
+    <string name="local_metadata_filename" msgid="4634356913689271331">"metadata.json"</string>
 </resources>
