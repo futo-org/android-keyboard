@@ -54,6 +54,11 @@
         android:title="@string/correction_category"
         android:key="correction_settings">
         <PreferenceScreen
+            android:key="edit_personal_dictionary"
+            android:title="@string/edit_personal_dictionary">
+            <intent android:action="android.settings.USER_DICTIONARY_SETTINGS" />
+        </PreferenceScreen>
+        <PreferenceScreen
             android:key="configure_dictionaries_key"
             android:title="@string/configure_dictionaries_title">
            <intent
