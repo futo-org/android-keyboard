@@ -55,11 +55,11 @@
     <string name="auto_cap_summary" msgid="7934452761022946874">"Писать первое слово предложения с прописной буквы"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основной словарь"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Варианты исправлений"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Предлагать варианты слов во время ввода"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда показывать"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Показать вертикально"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Всегда скрывать"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда предлагать"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Только в вертикальном режиме"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Никогда не предлагать"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Автоисправление"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
