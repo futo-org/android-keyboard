@@ -456,7 +456,7 @@
     <string name="setup_step1_bullet" translatable="false">1</string>
     <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g>"</string>
-    <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=80] -->
+    <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=120] -->
     <string name="setup_step1_instruction">"Please check \"<xliff:g id="application_name">%s</xliff:g>\" in your Language &amp; input settings. This will authorize it to run on your device."</string>
     <!-- The label of the button that triggers the Language & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step1_action">Enable in Settings</string>
@@ -464,7 +464,7 @@
     <string name="setup_step2_bullet" translatable="false">2</string>
     <!-- Title of the 2nd step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step2_title">"Switch to <xliff:g id="application_name">%s</xliff:g>"</string>
-    <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=80] -->
+    <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=120] -->
     <string name="setup_step2_instruction">"Next, select \"<xliff:g id="application_name">%s</xliff:g>\" as your active text-input method."</string>
     <!-- The label of the button that triggers the choose input method dialog in order to select the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step2_action">Switch input methods</string>
@@ -472,14 +472,16 @@
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step3_title">"Congratulations, you're all set!"</string>
-    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=80] -->
+    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
     <string name="setup_step3_instruction">Now you can type in all your favorite apps with <xliff:g id="application_name">%s</xliff:g>.</string>
     <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step3_action">Configure additional languages</string>
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
-    <string name="show_setup_wizard_icon">Show setup wizard icon</string>
+    <string name="show_setup_wizard_icon">Show app icon</string>
+    <!-- Description for the option to show setup wizard application icon of this IME in the laucher. [CHAR_LIMIT=65] -->
+    <string name="show_setup_wizard_icon_summary">Display application icon in the launcher</string>
 
     <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
     <string name="app_name">Dictionary Provider</string>
