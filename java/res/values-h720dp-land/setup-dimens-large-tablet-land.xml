@@ -15,15 +15,17 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <dimen name="setup_title_text_size">46sp</dimen>
-    <dimen name="setup_welcome_description_text_size">26sp</dimen>
-    <dimen name="setup_step_bullet_text_size">22sp</dimen>
+    <!-- Setup wizard dimensions for large-tablet/landscape. -->
+    <dimen name="setup_title_text_size">58sp</dimen>
+    <dimen name="setup_welcome_description_text_size">28sp</dimen>
+    <dimen name="setup_step_bullet_text_size">24sp</dimen>
     <dimen name="setup_step_triangle_indicator_height">24dp</dimen>
-    <dimen name="setup_step_title_text_size">22sp</dimen>
-    <dimen name="setup_step_instruction_text_size">14sp</dimen>
-    <dimen name="setup_step_action_text_size">18sp</dimen>
-    <dimen name="setup_vertical_padding">16dp</dimen>
-    <dimen name="setup_horizontal_padding">16dp</dimen>
+    <dimen name="setup_step_indicator_height">24dp</dimen>
+    <dimen name="setup_step_title_text_size">24sp</dimen>
+    <dimen name="setup_step_instruction_text_size">18sp</dimen>
+    <dimen name="setup_step_action_text_size">20sp</dimen>
+    <dimen name="setup_vertical_padding">96dp</dimen>
+    <dimen name="setup_horizontal_padding">192dp</dimen>
     <dimen name="setup_step_action_height">48dp</dimen>
     <dimen name="setup_step_horizontal_padding">24dp</dimen>
     <dimen name="setup_step_horizontal_padding_half">12dp</dimen>
@@ -32,7 +34,7 @@
     <integer name="setup_title_weight_in_screen">40</integer>
     <integer name="setup_body_weight_in_screen">60</integer>
     <dimen name="setup_welcome_video_vertical_margin">24dp</dimen>
-    <integer name="setup_welcome_video_weight_in_screen">80</integer>
-    <integer name="setup_welcome_video_left_padding_weight_in_screen">10</integer>
-    <integer name="setup_welcome_video_right_padding_weight_in_screen">10</integer>
+    <integer name="setup_welcome_video_weight_in_screen">50</integer>
+    <integer name="setup_welcome_video_left_padding_weight_in_screen">25</integer>
+    <integer name="setup_welcome_video_right_padding_weight_in_screen">25</integer>
 </resources>
