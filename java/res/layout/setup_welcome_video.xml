@@ -30,8 +30,8 @@
         <VideoView
             android:id="@+id/setup_welcome_video"
             android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="@dimen/setup_welcome_video_vertical_margin"
+            android:layout_marginBottom="@dimen/setup_welcome_video_vertical_margin"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <View
