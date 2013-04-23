@@ -229,7 +229,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_MATCH:
             return 1;
         case CT_COMPLETION:
-            return 0;
+            return 1;
         case CT_TERMINAL:
             return 0;
         case CT_NEW_WORD_SPACE_SUBSTITUTION:
