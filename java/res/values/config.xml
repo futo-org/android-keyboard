@@ -58,9 +58,11 @@
     <bool name="config_sliding_key_input_enabled">true</bool>
     <!-- Sliding key input preview parameters -->
     <dimen name="config_sliding_key_input_preview_width">8.0dp</dimen>
-    <!-- Percentages of sliding key input preview body and shadow, in proportion to the width. -->
-    <integer name="config_sliding_key_input_preview_body_ratio">80</integer>
-    <integer name="config_sliding_key_input_preview_shadow_ratio">50</integer>
+    <!-- Percentages of sliding key input preview body and shadow, in proportion to the width.
+         A negative value of the shadow ratio disables drawing shadow. -->
+    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
+    <integer name="config_sliding_key_input_preview_body_ratio">100</integer>
+    <integer name="config_sliding_key_input_preview_shadow_ratio">-1</integer>
     <integer name="config_key_repeat_start_timeout">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_default_longpress_key_timeout">300</integer>  <!-- milliseconds -->

@@ -103,9 +103,11 @@
     <!-- Gesture preview trail parameters -->
     <dimen name="gesture_preview_trail_start_width">10.0dp</dimen>
     <dimen name="gesture_preview_trail_end_width">2.5dp</dimen>
-    <!-- Percentages of gesture preview taril body and shadow, in proportion to the trail width. -->
-    <integer name="gesture_preview_trail_body_ratio">80</integer>
-    <integer name="gesture_preview_trail_shadow_ratio">50</integer>
+    <!-- Percentages of gesture preview taril body and shadow, in proportion to the trail width.
+         A negative value of the shadow ratio disables drawing shadow. -->
+    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
+    <integer name="gesture_preview_trail_body_ratio">100</integer>
+    <integer name="gesture_preview_trail_shadow_ratio">-1</integer>
     <!-- Gesture floating preview text parameters -->
     <dimen name="gesture_floating_preview_text_size">24dp</dimen>
     <dimen name="gesture_floating_preview_text_offset">73dp</dimen>
