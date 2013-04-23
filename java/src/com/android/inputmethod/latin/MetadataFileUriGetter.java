@@ -19,10 +19,18 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 
 /**
- * Helper class to get the metadata URI.
+ * Helper class to get the metadata URI and the additional ID.
  */
 public class MetadataFileUriGetter {
-    public static String getMetadataUri(Context context) {
+    private MetadataFileUriGetter() {
+        // This helper class is not instantiable.
+    }
+
+    public static String getMetadataUri(final Context context) {
         return context.getString(R.string.dictionary_pack_metadata_uri);
+    }
+
+    public static String getMetadataAdditionalId(final Context context) {
+        return "";
     }
 }
