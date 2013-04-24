@@ -65,7 +65,7 @@
           android:textColor="?android:attr/textColorSecondary"
           android:maxLines="1" />
 
-      <ProgressBar
+      <com.android.inputmethod.dictionarypack.DictionaryDownloadProgressBar
           android:id="@+id/dictionary_line_progress_bar"
           style="@android:style/Widget.Holo.ProgressBar.Horizontal"
           android:layout_width="match_parent"
