@@ -69,7 +69,15 @@ void DicTraverseSession::init(const Dictionary *const dictionary, const int *pre
         mPrevWordPos = NOT_VALID_WORD;
         return;
     }
-    mPrevWordPos = DicNodeUtils::getWordPos(dictionary->getOffsetDict(), prevWord, prevWordLength);
+    // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
+    mPrevWordPos = BinaryFormat::getTerminalPosition(dictionary->getOffsetDict(), prevWord,
+            prevWordLength, false /* forceLowerCaseSearch */);
+    if (mPrevWordPos == NOT_VALID_WORD) {
+        // Check bigrams for lower-cased previous word if original was not found. Useful for
+        // auto-capitalized words like "The [current_word]".
+        mPrevWordPos = BinaryFormat::getTerminalPosition(dictionary->getOffsetDict(), prevWord,
+                prevWordLength, true /* forceLowerCaseSearch */);
+    }
 }
 
 void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,
