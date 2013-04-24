@@ -64,6 +64,8 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private ConnectivityManager mConnectivityManager;
     private MenuItem mUpdateNowMenu;
     private boolean mChangedSettings;
+    private DictionaryListInterfaceState mDictionaryListInterfaceState =
+            new DictionaryListInterfaceState();
 
     private final BroadcastReceiver mConnectivityChangedReceiver = new BroadcastReceiver() {
             @Override
@@ -297,8 +299,9 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 final String key = matchLevelString + "." + description + "." + wordlistId;
                 final WordListPreference existingPref = prefList.get(key);
                 if (null == existingPref || hasPriority(status, existingPref.mStatus)) {
-                    final WordListPreference pref = new WordListPreference(activity, mClientId,
-                            wordlistId, version, locale, description, status);
+                    final WordListPreference pref = new WordListPreference(activity,
+                            mDictionaryListInterfaceState, mClientId, wordlistId, version, locale,
+                            description, status);
                     prefList.put(key, pref);
                 }
             } while (cursor.moveToNext());
