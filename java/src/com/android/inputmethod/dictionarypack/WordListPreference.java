@@ -191,8 +191,20 @@ public final class WordListPreference extends Preference {
         ((ViewGroup)view).setLayoutTransition(null);
         final ButtonSwitcher buttonSwitcher =
                 (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
-        buttonSwitcher.setStatusAndUpdateVisuals(mInterfaceState.isOpen(mWordlistId) ?
-                getButtonSwitcherStatus(mStatus) : ButtonSwitcher.STATUS_NO_BUTTON);
+        if (mInterfaceState.isOpen(mWordlistId)) {
+            // The button is open.
+            final int previousStatus = mInterfaceState.getStatus(mWordlistId);
+            buttonSwitcher.setStatusAndUpdateVisuals(getButtonSwitcherStatus(previousStatus));
+            if (previousStatus != mStatus) {
+                // We come here if the status has changed since last time. We need to animate
+                // the transition.
+                buttonSwitcher.setStatusAndUpdateVisuals(getButtonSwitcherStatus(mStatus));
+                mInterfaceState.setOpen(mWordlistId, mStatus);
+            }
+        } else {
+            // The button is closed.
+            buttonSwitcher.setStatusAndUpdateVisuals(ButtonSwitcher.STATUS_NO_BUTTON);
+        }
         buttonSwitcher.setInternalOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
