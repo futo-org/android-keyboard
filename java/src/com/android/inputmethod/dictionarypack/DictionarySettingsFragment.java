@@ -285,6 +285,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
             final int localeIndex = cursor.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
             final int descriptionIndex = cursor.getColumnIndex(MetadataDbHelper.DESCRIPTION_COLUMN);
             final int statusIndex = cursor.getColumnIndex(MetadataDbHelper.STATUS_COLUMN);
+            final int filesizeIndex = cursor.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
             do {
                 final String wordlistId = cursor.getString(idIndex);
                 final int version = cursor.getInt(versionIndex);
@@ -294,6 +295,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 final int status = cursor.getInt(statusIndex);
                 final int matchLevel = LocaleUtils.getMatchLevel(systemLocaleString, localeString);
                 final String matchLevelString = LocaleUtils.getMatchLevelSortedString(matchLevel);
+                final int filesize = cursor.getInt(filesizeIndex);
                 // The key is sorted in lexicographic order, according to the match level, then
                 // the description.
                 final String key = matchLevelString + "." + description + "." + wordlistId;
@@ -301,7 +303,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 if (null == existingPref || hasPriority(status, existingPref.mStatus)) {
                     final WordListPreference pref = new WordListPreference(activity,
                             mDictionaryListInterfaceState, mClientId, wordlistId, version, locale,
-                            description, status);
+                            description, status, filesize);
                     prefList.put(key, pref);
                 }
             } while (cursor.moveToNext());

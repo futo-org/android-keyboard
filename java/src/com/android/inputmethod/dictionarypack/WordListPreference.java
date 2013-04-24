@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.inputmethod.latin.R;
 
@@ -59,6 +61,8 @@ public final class WordListPreference extends Preference {
     public final int mVersion;
     // The status
     public int mStatus;
+    // The size of the dictionary file
+    private final int mFilesize;
 
     private final DictionaryListInterfaceState mInterfaceState;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
@@ -69,13 +73,14 @@ public final class WordListPreference extends Preference {
     public WordListPreference(final Context context,
             final DictionaryListInterfaceState dictionaryListInterfaceState, final String clientId,
             final String wordlistId, final int version, final Locale locale,
-            final String description, final int status) {
+            final String description, final int status, final int filesize) {
         super(context, null);
         mContext = context;
         mInterfaceState = dictionaryListInterfaceState;
         mClientId = clientId;
         mVersion = version;
         mWordlistId = wordlistId;
+        mFilesize = filesize;
 
         setLayoutResource(R.layout.dictionary_line);
 
@@ -189,6 +194,15 @@ public final class WordListPreference extends Preference {
     protected void onBindView(final View view) {
         super.onBindView(view);
         ((ViewGroup)view).setLayoutTransition(null);
+
+        final ProgressBar progressBar =
+                (ProgressBar)view.findViewById(R.id.dictionary_line_progress_bar);
+        final TextView status = (TextView)view.findViewById(android.R.id.summary);
+        progressBar.setMax(mFilesize);
+        final boolean showProgressBar = (MetadataDbHelper.STATUS_DOWNLOADING == mStatus);
+        status.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
+        progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
+
         final ButtonSwitcher buttonSwitcher =
                 (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
         if (mInterfaceState.isOpen(mWordlistId)) {
