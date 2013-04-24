@@ -417,16 +417,25 @@ typedef enum {
 } DoubleLetterLevel;
 
 typedef enum {
+    // Correction for MATCH_CHAR
     CT_MATCH,
+    // Correction for PROXIMITY_CHAR
     CT_PROXIMITY,
+    // Correction for ADDITIONAL_PROXIMITY_CHAR
     CT_ADDITIONAL_PROXIMITY,
+    // Correction for SUBSTITUTION_CHAR
     CT_SUBSTITUTION,
+    // Skip one omitted letter
     CT_OMISSION,
+    // Delete an unnecessarily inserted letter
     CT_INSERTION,
+    // Swap the order of next two touch points
     CT_TRANSPOSITION,
     CT_COMPLETION,
     CT_TERMINAL,
+    // Create new word with space omission
     CT_NEW_WORD_SPACE_OMITTION,
+    // Create new word with space substitution
     CT_NEW_WORD_SPACE_SUBSTITUTION,
 } CorrectionType;
 #endif // LATINIME_DEFINES_H
