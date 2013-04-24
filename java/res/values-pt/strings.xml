@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Toque duplo na barra de espaço insere um ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Capitaliz. automática"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iniciar a primeira palavra de cada frase com letra maiúscula"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionários complementares"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionário principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Exibir sugestões de correção"</string>
@@ -176,8 +178,10 @@
     <string name="setup_start_action" msgid="8936036460897347708">"Começar"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Próxima etapa"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_title" msgid="3147967630253462315">"Habilite o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"Ative o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" em \"Configurações de idioma e entrada\" para autorizar a execução."</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Ativar em \"Configurações\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Abra o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto ativo."</string>
@@ -186,7 +190,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora você pode digitar em todos os seus aplicativos favoritos com o <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Configurar idiomas adicionais"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Concluído"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Mostrar ícone assist. config."</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Provedor de dicionário"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Provedor de dicionário"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Serviço de dicionário"</string>

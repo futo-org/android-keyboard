@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dubbeltik op spatiebalk voor een punt gevolgd door een spatie"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-hoofdlettergebruik"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Het eerste woord van elke zin met een hoofdletter schrijven"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Woordenboeken toevoegen"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Algemeen woordenboek"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Correctievoorstellen weergeven"</string>
@@ -174,23 +176,23 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"Welkom bij <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"met Invoer met bewegingen"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Aan de slag"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
+    <string name="setup_next_action" msgid="371821437915144603">"Volgende stap"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> instellen"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> inschakelen"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Vink \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' aan in \'Instellingen voor taal en invoer\'. De app kan dan worden uitgevoerd op uw apparaat."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
     <skip />
+    <string name="setup_step1_action" msgid="4366513534999901728">"Inschakelen in \'Instellingen\'"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Overschakelen naar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Selecteer vervolgens \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\' als actieve tekstinvoermethode."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Schakelen tussen invoermethoden"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Gefeliciteerd, u kunt nu aan de slag."</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"U kunt nu in al uw favoriete apps typen met <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Extra talen configureren"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Voltooid"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Woordenboekleverancier"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Woordenboekleverancier"</string>

@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"با دوبار ضربه روی دکمه فاصله نقطه با یک فاصله بعد آن درج می‌شود"</string>
     <string name="auto_cap" msgid="1719746674854628252">"بزرگ‌کردن خودکار حروف"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"بزرگ‌نویسی کلمه اول هر جمله"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"فرهنگ‌های لغت افزودنی"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"فرهنگ‌ لغت اصلی"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"نمایش پیشنهادات تصحیح"</string>
@@ -182,6 +184,8 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"راه‌اندازی <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"فعال‌سازی <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"لطفاً «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» را در تنظیمات زبان و ورودی خود علامت بزنید. این کار مجوز اجرای آن در دستگاه شما است."</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"فعال‌سازی در تنظیمات"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"جابجایی به <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"در مرحله بعدی، «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» را به عنوان روش ورودی نوشتار فعال خود انتخاب نمایید."</string>
@@ -190,7 +194,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"اکنون می‌توانید در همه برنامه‌های دلخواه خود با <xliff:g id="APPLICATION_NAME">%s</xliff:g> تایپ کنید."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"پیکربندی زبان‌های دیگر"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"تمام شد"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"نمایش نماد برنامه نصب"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"ارائه‌دهنده فرهنگ لغت"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ارائه‌دهنده فرهنگ لغت"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"سرویس فرهنگ لغت"</string>

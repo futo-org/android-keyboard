@@ -53,6 +53,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"የክፍተት አሞሌው ላይ ሁለቴ መታ ማድረግ አንድ ነጥብ እና ክፍተት አስከትሎ ያስገባል"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ራስ-ሰር አቢይ ማድረግ"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"የእያንዳንዱ ዓረፍተ ነገር የመጀመሪያ ቃል በአቢይ ሆሄ ያስቀምጡ"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"የግል መዝገበ-ቃላት"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"መዝገበ ቃላቶች ጨምር"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ዋና መዝገበ ቃላት"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"የማስተካከያ ጥቆማዎች አሳይ"</string>
@@ -178,6 +179,8 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን በማዋቀር ላይ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን ያንቁ"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"እባክዎ «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን በቋንቋ እና ግቤት ቅንብሮችዎ ውስጥ ያረጋግጡት። ይሄ እሱ በመሣሪያዎ ላይ እንዲሄድ ይፈቅድለታል።"</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"በቅንብሮች ውስጥ ያንቁ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ወደ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ይቀይሩ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"በመቀጠል «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን እንደ የጽሑፍ ግቤት ስልትዎ ይምረጡት።"</string>
@@ -186,7 +189,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"አሁን በሁሉም ተወዳጅ መተግበሪያዎችዎ ላይ በ<xliff:g id="APPLICATION_NAME">%s</xliff:g> መተየብ ይችላሉ።"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"ተጨማሪ ቋንቋዎችን ያዋቅሩ"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"ጨርሷል"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"የውቅር አዋቂ አዶ አሳይ"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"የመተግበሪያ አዶ አሳይ"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"የመተግበሪያ አዶውን በማስጀመሪያው ውስጥ አሳይ"</string>
     <string name="app_name" msgid="6320102637491234792">"የመዝገበ-ቃላት አቅራቢ"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"የመዝገበ-ቃላት አቅራቢ"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"የመዝገበ-ቃላት አገልግሎት"</string>

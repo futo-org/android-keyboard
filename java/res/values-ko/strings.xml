@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"스페이스바를 두 번 탭하면 마침표와 공백 한 개가 삽입됩니다."</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"문장의 첫 단어를 대문자로 표시"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 추가"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"기본 사전"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
@@ -174,23 +176,23 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>에 오신 것을 환영합니다."</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"제스처 타이핑 사용"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"시작하기"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
+    <string name="setup_next_action" msgid="371821437915144603">"다음 단계"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 설정"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> 사용 설정"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"언어 및 입력 설정에서 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 확인하세요. 애플리케이션을 기기에서 실행할 수 있도록 승인합니다."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
     <skip />
+    <string name="setup_step1_action" msgid="4366513534999901728">"\'설정\'에서 사용 설정"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>(으)로 전환"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"그런 다음, 텍스트 입력 방법으로 \'<xliff:g id="APPLICATION_NAME">%s</xliff:g>\'을(를) 선택합니다."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"입력 방법 전환"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"모든 설정이 완료되었습니다."</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"이제 즐겨찾는 앱을 <xliff:g id="APPLICATION_NAME">%s</xliff:g>에 입력할 수 있습니다."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"추가 언어 설정"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"완료됨"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"사전 제공업체"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"사전 제공업체"</string>

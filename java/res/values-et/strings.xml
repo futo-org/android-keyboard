@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tühikuklahvi kaks korda puudutades sisestatakse punkt ja tühik"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automaatne suurtähtede kasutamine"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iga lause esimese sõna kirjutamine suure algustähega"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Pistiksõnaraamatud"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Peamine sõnaraamat"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Kuva parandussoovitusi"</string>
@@ -178,6 +180,8 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Rakenduse <xliff:g id="APPLICATION_NAME">%s</xliff:g> seadistamine"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Lubage <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Märkige oma keele ja sisestamise seadetes rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”. See lubab rakenduse käitamise teie seadmes."</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Luba seadetes"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Minge üle rakendusele <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Järgmisena valige aktiivseks tekstisisestusmeetodiks rakendus „<xliff:g id="APPLICATION_NAME">%s</xliff:g>”."</string>
@@ -186,7 +190,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Nüüd saate rakendusega <xliff:g id="APPLICATION_NAME">%s</xliff:g> sisestada kõikides oma lemmikrakendustes."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Seadista lisakeeled"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Lõpetatud"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Kuva seadistusviisardi ikoon"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Sõnastikupakkuja"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Sõnastikupakkuja"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Sõnastikuteenus"</string>
