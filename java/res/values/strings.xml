@@ -461,6 +461,8 @@
     <string name="setup_step1_title">"Enable <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=120] -->
     <string name="setup_step1_instruction">"Please check \"<xliff:g id="application_name">%s</xliff:g>\" in your Language &amp; input settings. This will authorize it to run on your device."</string>
+    <!-- Detailed instruction of the already finished 1st step in the setup wizard. [CHAR LIMIT=120] -->
+    <string name="setup_step1_finished_instruction">"<xliff:g id="application_name">%s</xliff:g> is already enabled in your Language &amp; input settings, so this step is done. On to the next one!"</string>
     <!-- The label of the button that triggers the Language & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step1_action">Enable in Settings</string>
     <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
