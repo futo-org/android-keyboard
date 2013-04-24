@@ -49,6 +49,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private Uri mWelcomeVideoUri;
     private VideoView mWelcomeVideoView;
     private View mActionStart;
+    private View mActionNext;
+    private TextView mStep1Bullet;
     private TextView mActionFinish;
     private SetupStepGroup mSetupStepGroup;
     private static final String STATE_STEP = "step";
@@ -132,10 +134,13 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
         mSetupStepGroup = new SetupStepGroup(indicatorView);
 
+        mStep1Bullet = (TextView)findViewById(R.id.setup_step1_bullet);
+        mStep1Bullet.setOnClickListener(this);
         final SetupStep step1 = new SetupStep(STEP_1, applicationName,
-                (TextView)findViewById(R.id.setup_step1_bullet), findViewById(R.id.setup_step1),
+                mStep1Bullet, findViewById(R.id.setup_step1),
                 R.string.setup_step1_title, R.string.setup_step1_instruction,
-                R.drawable.ic_setup_step1, R.string.setup_step1_action);
+                R.string.setup_step1_finished_instruction, R.drawable.ic_setup_step1,
+                R.string.setup_step1_action);
         step1.setAction(new Runnable() {
             @Override
             public void run() {
@@ -148,7 +153,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         final SetupStep step2 = new SetupStep(STEP_2, applicationName,
                 (TextView)findViewById(R.id.setup_step2_bullet), findViewById(R.id.setup_step2),
                 R.string.setup_step2_title, R.string.setup_step2_instruction,
-                R.drawable.ic_setup_step2, R.string.setup_step2_action);
+                0 /* finishedInstruction */, R.drawable.ic_setup_step2,
+                R.string.setup_step2_action);
         step2.setAction(new Runnable() {
             @Override
             public void run() {
@@ -162,7 +168,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         final SetupStep step3 = new SetupStep(STEP_3, applicationName,
                 (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
                 R.string.setup_step3_title, R.string.setup_step3_instruction,
-                R.drawable.ic_setup_step3, R.string.setup_step3_action);
+                0 /* finishedInstruction */, R.drawable.ic_setup_step3,
+                R.string.setup_step3_action);
         step3.setAction(new Runnable() {
             @Override
             public void run() {
@@ -186,6 +193,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
+        mActionNext = findViewById(R.id.setup_next);
+        mActionNext.setOnClickListener(this);
         mActionFinish = (TextView)findViewById(R.id.setup_finish);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
                 getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
@@ -194,14 +203,24 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
     @Override
     public void onClick(final View v) {
-        if (v == mActionStart) {
-            mStepNumber = STEP_1;
-            updateSetupStepView();
-            return;
-        }
         if (v == mActionFinish) {
             finish();
             return;
+        }
+        final int stepState = determineSetupState();
+        final int nextStep;
+        if (v == mActionStart) {
+            nextStep = STEP_1;
+        } else if (v == mActionNext) {
+            nextStep = mStepNumber + 1;
+        } else if (v == mStep1Bullet && stepState == STEP_2) {
+            nextStep = STEP_1;
+        } else {
+            nextStep = mStepNumber;
+        }
+        if (mStepNumber != nextStep) {
+            mStepNumber = nextStep;
+            updateSetupStepView();
         }
     }
 
@@ -360,7 +379,9 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return;
         }
         mWelcomeVideoView.stopPlayback();
-        mSetupStepGroup.enableStep(mStepNumber);
+        final boolean isStepActionAlreadyDone = mStepNumber < determineSetupState();
+        mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
+        mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
         mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
     }
 
@@ -370,12 +391,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         private final TextView mBulletView;
         private final int mActivatedColor;
         private final int mDeactivatedColor;
+        private final String mInstruction;
+        private final String mFinishedInstruction;
         private final TextView mActionLabel;
         private Runnable mAction;
 
         public SetupStep(final int stepNo, final String applicationName, final TextView bulletView,
-                final View stepView, final int title, final int instruction, final int actionIcon,
-                final int actionLabel) {
+                final View stepView, final int title, final int instruction,
+                final int finishedInstruction,final int actionIcon, final int actionLabel) {
             mStepNo = stepNo;
             mStepView = stepView;
             mBulletView = bulletView;
@@ -385,14 +408,10 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
             final TextView titleView = (TextView)mStepView.findViewById(R.id.setup_step_title);
             titleView.setText(res.getString(title, applicationName));
-
-            final TextView instructionView = (TextView)mStepView.findViewById(
-                    R.id.setup_step_instruction);
-            if (instruction == 0) {
-                instructionView.setVisibility(View.GONE);
-            } else {
-                instructionView.setText(res.getString(instruction, applicationName));
-            }
+            mInstruction = (instruction == 0) ? null
+                    : res.getString(instruction, applicationName);
+            mFinishedInstruction = (finishedInstruction == 0) ? null
+                    : res.getString(finishedInstruction, applicationName);
 
             mActionLabel = (TextView)mStepView.findViewById(R.id.setup_step_action_label);
             mActionLabel.setText(res.getString(actionLabel));
@@ -405,9 +424,13 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             }
         }
 
-        public void setEnabled(final boolean enabled) {
+        public void setEnabled(final boolean enabled, final boolean isStepActionAlreadyDone) {
             mStepView.setVisibility(enabled ? View.VISIBLE : View.GONE);
             mBulletView.setTextColor(enabled ? mActivatedColor : mDeactivatedColor);
+            final TextView instructionView = (TextView)mStepView.findViewById(
+                    R.id.setup_step_instruction);
+            instructionView.setText(isStepActionAlreadyDone ? mFinishedInstruction : mInstruction);
+            mActionLabel.setVisibility(isStepActionAlreadyDone ? View.GONE : View.VISIBLE);
         }
 
         public void setAction(final Runnable action) {
@@ -436,9 +459,9 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             mGroup.add(step);
         }
 
-        public void enableStep(final int enableStepNo) {
+        public void enableStep(final int enableStepNo, final boolean isStepActionAlreadyDone) {
             for (final SetupStep step : mGroup) {
-                step.setEnabled(step.mStepNo == enableStepNo);
+                step.setEnabled(step.mStepNo == enableStepNo, isStepActionAlreadyDone);
             }
             mIndicatorView.setIndicatorPosition(enableStepNo - STEP_1, mGroup.size());
         }
