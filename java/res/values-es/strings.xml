@@ -135,7 +135,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Ayuda a mejorar este editor de método de entrada de texto enviando estadísticas de uso e informes de error."</string>
+    <string name="prefs_description_log" msgid="7525225584555429211">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema de teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"inglés (EE.UU.)"</string>
@@ -171,7 +171,7 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"¿Seguro que quieres instalar este archivo para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Se ha producido un error"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Idioma y entrada de texto"</string>
+    <string name="language_settings" msgid="1671153053201809031">"Idioma e introducción de texto"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Selecciona un método de entrada"</string>
     <string name="app_name" msgid="6320102637491234792">"Proveedor del diccionario"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Proveedor del diccionario"</string>
@@ -197,7 +197,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instalar"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancelar"</string>
     <string name="delete_dict" msgid="756853268088330054">"Eliminar"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE">%1$s</xliff:g> para mejorar tu experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;, se pueden aplicar cargos.&lt;br/&gt; Si no conoces las características de tu plan de datos, te recomendamos que uses una conexión Wi-Fi para iniciar la descarga automáticamente.&lt;br/&gt; &lt;br/&gt; Sugerencia: puedes descargar y eliminar diccionarios en la sección &lt;b&gt;Idioma y entrada de texto&lt;/b&gt; del menú &lt;b&gt;Ajustes&lt;/b&gt; del dispositivo móvil."</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Hay un diccionario disponible para el idioma seleccionado en tu dispositivo móvil.&lt;br/&gt; Te recomendamos que &lt;b&gt;descargues&lt;/b&gt; el diccionario de <xliff:g id="LANGUAGE">%1$s</xliff:g> para mejorar tu experiencia de escritura.&lt;br/&gt; &lt;br/&gt; La descarga puede tardar unos minutos en redes 3G. Si no tienes un &lt;b&gt;plan de datos ilimitado&lt;/b&gt;, se pueden aplicar cargos.&lt;br/&gt; Si no conoces las características de tu plan de datos, te recomendamos que uses una conexión Wi-Fi para iniciar la descarga automáticamente.&lt;br/&gt; &lt;br/&gt; Sugerencia: puedes descargar y eliminar diccionarios en la sección &lt;b&gt;Idioma e introducción de texto&lt;/b&gt; del menú &lt;b&gt;Ajustes&lt;/b&gt; del dispositivo móvil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Descargar ahora (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Descargar mediante Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Hay un diccionario disponible de <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
