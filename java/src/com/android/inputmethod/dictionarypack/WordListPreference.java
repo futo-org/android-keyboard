@@ -16,10 +16,9 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.DialogPreference;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ import java.util.Locale;
  * pack. Upon being pressed, it displays a menu to allow the user to install, disable,
  * enable or delete it as appropriate for the current state of the word list.
  */
-public final class WordListPreference extends DialogPreference {
+public final class WordListPreference extends Preference {
     static final private String TAG = WordListPreference.class.getSimpleName();
 
     // What to display in the "status" field when we receive unknown data as a status from
@@ -93,12 +92,6 @@ public final class WordListPreference extends DialogPreference {
         if (status == mStatus) return;
         mStatus = status;
         setSummary(getSummary(status));
-        // If we are currently displaying the dialog, we should update it, or at least
-        // dismiss it.
-        final Dialog dialog = getDialog();
-        if (null != dialog) {
-            dialog.dismiss();
-        }
     }
 
     private String getSummary(final int status) {
