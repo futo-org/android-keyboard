@@ -28,9 +28,23 @@ import com.android.inputmethod.latin.R;
  * A view that handles buttons inside it according to a status.
  */
 public class ButtonSwitcher extends FrameLayout {
+    public static final int NOT_INITIALIZED = -1;
+    public static final int STATUS_NO_BUTTON = 0;
+    public static final int STATUS_INSTALL = 1;
+    public static final int STATUS_CANCEL = 2;
+    public static final int STATUS_DELETE = 3;
+    // One of the above
+    private int mStatus = NOT_INITIALIZED;
+    private int mAnimateToStatus = NOT_INITIALIZED;
+
     // Animation directions
     public static final int ANIMATION_IN = 1;
     public static final int ANIMATION_OUT = 2;
+
+    private Button mInstallButton;
+    private Button mCancelButton;
+    private Button mDeleteButton;
+    private OnClickListener mOnClickListener;
 
     public ButtonSwitcher(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,26 +54,79 @@ public class ButtonSwitcher extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
-    public void setText(final CharSequence text) {
-        ((Button)findViewById(R.id.dict_install_button)).setText(text);
+    @Override
+    protected void onLayout(final boolean changed, final int left, final int top, final int right,
+            final int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        mInstallButton = (Button)findViewById(R.id.dict_install_button);
+        mCancelButton = (Button)findViewById(R.id.dict_cancel_button);
+        mDeleteButton = (Button)findViewById(R.id.dict_delete_button);
+        mInstallButton.setOnClickListener(mOnClickListener);
+        mCancelButton.setOnClickListener(mOnClickListener);
+        mDeleteButton.setOnClickListener(mOnClickListener);
+        setButtonPositionWithoutAnimation(mStatus);
+        if (mAnimateToStatus != NOT_INITIALIZED) {
+            // We have been asked to animate before we were ready, so we took a note of it.
+            // We are now ready: launch the animation.
+            animateButtonPosition(mStatus, mAnimateToStatus);
+            mStatus = mAnimateToStatus;
+            mAnimateToStatus = NOT_INITIALIZED;
+        }
     }
 
-    public void setInternalButtonVisiblility(final int visibility) {
-        findViewById(R.id.dict_install_button).setVisibility(visibility);
+    private Button getButton(final int status) {
+        switch(status) {
+        case STATUS_INSTALL:
+            return mInstallButton;
+        case STATUS_CANCEL:
+            return mCancelButton;
+        case STATUS_DELETE:
+            return mDeleteButton;
+        default:
+            return null;
+        }
+    }
+
+    public void setStatusAndUpdateVisuals(final int status) {
+        if (mStatus == NOT_INITIALIZED) {
+            setButtonPositionWithoutAnimation(status);
+            mStatus = status;
+        } else {
+            if (null == mInstallButton) {
+                // We may come here before we have been layout. In this case we don't know our
+                // size yet so we can't start animations so we need to remember what animation to
+                // start once layout has gone through.
+                mAnimateToStatus = status;
+            } else {
+                animateButtonPosition(mStatus, status);
+                mStatus = status;
+            }
+        }
+    }
+
+    private void setButtonPositionWithoutAnimation(final int status) {
+        // This may be called by setStatus() before the layout has come yet.
+        if (null == mInstallButton) return;
+        final int width = getWidth();
+        // Set to out of the screen if that's not the currently displayed status
+        mInstallButton.setTranslationX(STATUS_INSTALL == status ? 0 : width);
+        mCancelButton.setTranslationX(STATUS_CANCEL == status ? 0 : width);
+        mDeleteButton.setTranslationX(STATUS_DELETE == status ? 0 : width);
+    }
+
+    private void animateButtonPosition(final int oldStatus, final int newStatus) {
+        animateButton(getButton(oldStatus), ANIMATION_OUT);
+        animateButton(getButton(newStatus), ANIMATION_IN);
     }
 
     public void setInternalOnClickListener(final OnClickListener listener) {
-        findViewById(R.id.dict_install_button).setOnClickListener(listener);
+        mOnClickListener = listener;
     }
 
-    public void animateButton(final int direction) {
-        final View button = findViewById(R.id.dict_install_button);
+    private void animateButton(final View button, final int direction) {
+        if (null == button) return;
         final float outerX = getWidth();
         final float innerX = button.getX() - button.getTranslationX();
-        if (View.INVISIBLE == button.getVisibility()) {
-            button.setTranslationX(outerX - innerX);
-            button.setVisibility(View.VISIBLE);
-        }
         if (ANIMATION_IN == direction) {
             button.animate().translationX(0);
         } else {
