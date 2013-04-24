@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.android.inputmethod.latin.R;
@@ -60,10 +59,6 @@ public final class WordListPreference extends Preference {
     public final int mVersion;
     // The status
     public int mStatus;
-
-    // Animation directions
-    static final private int ANIMATION_IN = 1;
-    static final private int ANIMATION_OUT = 2;
 
     private final DictionaryListInterfaceState mInterfaceState;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
@@ -192,10 +187,12 @@ public final class WordListPreference extends Preference {
     protected void onBindView(final View view) {
         super.onBindView(view);
         ((ViewGroup)view).setLayoutTransition(null);
-        final Button button = (Button)view.findViewById(R.id.wordlist_button);
-        button.setText(getButtonLabel(mStatus));
-        button.setVisibility(mInterfaceState.isOpen(mWordlistId) ? View.VISIBLE : View.INVISIBLE);
-        button.setOnClickListener(mActionButtonClickHandler);
+        final ButtonSwitcher buttonSwitcher =
+                (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
+        buttonSwitcher.setText(getButtonLabel(mStatus));
+        buttonSwitcher.setInternalButtonVisiblility(mInterfaceState.isOpen(mWordlistId) ?
+                View.VISIBLE : View.INVISIBLE);
+        buttonSwitcher.setInternalOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
 
@@ -224,29 +221,14 @@ public final class WordListPreference extends Preference {
                     listView.getLastVisiblePosition() - listView.getFirstVisiblePosition();
             // The "lastDisplayedIndex" is actually displayed, hence the <=
             for (int i = 0; i <= lastDisplayedIndex; ++i) {
-                final Button button =
-                        (Button)listView.getChildAt(i).findViewById(R.id.wordlist_button);
+                final ButtonSwitcher buttonSwitcher = (ButtonSwitcher)listView.getChildAt(i)
+                        .findViewById(R.id.wordlist_button_switcher);
                 if (i == indexToOpen) {
-                    animateButton(button, ANIMATION_IN);
+                    buttonSwitcher.animateButton(ButtonSwitcher.ANIMATION_IN);
                 } else {
-                    animateButton(button, ANIMATION_OUT);
+                    buttonSwitcher.animateButton(ButtonSwitcher.ANIMATION_OUT);
                 }
             }
-        }
-    }
-
-    private void animateButton(final Button button, final int direction) {
-        if (null == button) return;
-        final float outerX = ((View)button.getParent()).getWidth();
-        final float innerX = button.getX() - button.getTranslationX();
-        if (View.INVISIBLE == button.getVisibility()) {
-            button.setTranslationX(outerX - innerX);
-            button.setVisibility(View.VISIBLE);
-        }
-        if (ANIMATION_IN == direction) {
-            button.animate().translationX(0);
-        } else {
-            button.animate().translationX(outerX - innerX);
         }
     }
 
