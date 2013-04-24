@@ -26,7 +26,7 @@
     </style>
     <style name="setupStepIndicatorStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/setup_step_indicator_height</item>
+        <item name="android:layout_height">@dimen/setup_step_triangle_indicator_height</item>
     </style>
     <style name="setupStepBulletStyle">
         <item name="android:textColor">@color/setup_text_dark</item>
@@ -51,7 +51,8 @@
         <item name="android:textSize">@dimen/setup_step_instruction_text_size</item>
     </style>
     <style name="setupStepStartIndicatorStyle">
-        <item name="android:layout_width">24dp</item>
+        <!-- The triangle indicator here is placed sideways. -->
+        <item name="android:layout_width">@dimen/setup_step_triangle_indicator_height</item>
         <item name="android:layout_height">@dimen/setup_step_action_height</item>
     </style>
     <style name="setupStepActionLabelStyleCommon" parent="setupStepBaseStyle">
