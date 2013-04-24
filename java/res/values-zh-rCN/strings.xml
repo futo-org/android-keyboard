@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"双击空格键可插入句号并后跟空格"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"句首字词大写"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加词典"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"主词典"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"显示更正建议"</string>
@@ -171,26 +173,24 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"确定要为<xliff:g id="LOCALE_NAME">%s</xliff:g>安装此文件吗？"</string>
     <string name="error" msgid="8940763624668513648">"出现错误"</string>
     <string name="button_default" msgid="3988017840431881491">"默认"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"欢迎使用“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"含滑行输入功能"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"欢迎使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"体验顺畅的滑行输入体验"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"开始"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
-    <string name="setup_steps_title" msgid="6400373034871816182">"正在设置“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”"</string>
-    <string name="setup_step1_title" msgid="3147967630253462315">"启用“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"设置 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step1_title" msgid="3147967630253462315">"启用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"请在“语言和输入法”设置中选中“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”，授权这项应用在您的设备上运行。"</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
-    <skip />
-    <string name="setup_step2_title" msgid="6860725447906690594">"切换到“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”。"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step1_action" msgid="4366513534999901728">"在设置中启用"</string>
+    <string name="setup_step2_title" msgid="6860725447906690594">"切换到 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"接下来，请选择“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”作为您要使用的文字输入法。"</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"切换输入法"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"恭喜，您已完成了设置！"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"现在，您可以在自己喜欢的所有应用中使用“<xliff:g id="APPLICATION_NAME">%s</xliff:g>”输入内容。"</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"现在，您可以在自己喜欢的所有应用中使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>来输入内容了。"</string>
     <string name="setup_step3_action" msgid="600879797256942259">"配置其他语言"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"完成"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"词典提供程序"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"词典提供程序"</string>

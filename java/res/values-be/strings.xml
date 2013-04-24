@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Падвойнае нацiсканне на прабел ўстаўляе iнтэрвал з наступным прабелам"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аўтаматычна рабіць вялікія літары"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Пісаць з загалоўнай літары першае слова ў кожным сказе"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дадатковыя слоўнікі"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Асноўны слоўнік"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Паказаць прапановы на выпраўленне"</string>
@@ -186,7 +188,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Цяпер вы можаце ўводзіць ўсе свае любімыя прыкладанні з iмем <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Наладка дадатковых моў"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Гатова"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Паказаць значок майстра ўсталёўкі"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Пастаўшчык слоўніка"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Пастаўшчык слоўніка"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Слоўнік"</string>

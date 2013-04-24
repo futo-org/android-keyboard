@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar duas vezes na barra espaço insere ponto seguido de espaço"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Letras maiúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Maiúscula no início da frase"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dicionários extras"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dicionário principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugestões de correcção"</string>
@@ -171,13 +173,13 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Instalar mesmo este ficheiro para <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"Ocorreu um erro"</string>
     <string name="button_default" msgid="3988017840431881491">"Predefinido"</string>
-    <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_welcome_title" msgid="6112821709832031715">"Bem-vindo(a) a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"com a Escrita com Gestos"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"Introdução"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"Começar"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Passo seguinte"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ativar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nas definições de Idioma e introdução para autorizar a execução no dispositivo."</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nas definições de Idioma e introdução p/ autorizar a execução no dispositivo."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ativar nas Definições"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Mudar para <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o seu método de introdução de texto ativo."</string>
@@ -186,7 +188,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Agora pode escrever em todas as suas aplicações favoritas com <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Configurar idiomas adicionais"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Concluído"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Mostrar ícone assist. config."</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Fornecedor de Dicionário"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Fornecedor de Dicionário"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Serviço de Dicionário"</string>

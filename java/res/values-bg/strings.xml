@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Двукр. докосване на клав. за интервал вмъква точка, следвана от интервал"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Правене на първата дума от всяко изречение главна"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Добавени речници"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Основен речник"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
@@ -174,23 +176,21 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"Добре дошли в/ъв <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"с въвеждане чрез жест"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Първи стъпки"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
+    <string name="setup_next_action" msgid="371821437915144603">"Следваща стъпка"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Настройване на <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Активирайте <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Поставете отметка за <xliff:g id="APPLICATION_NAME">%s</xliff:g> в „Език и въвеждане“. Така ще упълномощите прилож. да се изпълнява на у-вото."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Поставете отметка за <xliff:g id="APPLICATION_NAME">%s</xliff:g> в „Език и въвеждане“. Така ще упълномощите приложението да се изпълнява на устройството."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Активиране в настройките"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Превключете към <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"След това изберете <xliff:g id="APPLICATION_NAME">%s</xliff:g> като активен метод на въвеждане на текст."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Превключване на методите на въвеждане"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Поздравления! Вече сте готови!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Вече можете да пишете във всичките си любими приложения посредством <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Конфигуриране на допълнителни езици"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Край"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Доставчик на речника"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Доставчик на речника"</string>

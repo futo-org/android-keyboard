@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Nhấn đúp vào phím cách sẽ chèn thêm một dấu sau dấu cách"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Viết hoa chữ đầu tiên của mỗi câu"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Thêm từ điển"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Từ điển chính"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Hiển thị gợi ý sửa"</string>
@@ -174,23 +176,21 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"Chào mừng bạn đến với <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"với Nhập bằng cử chỉ"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Bắt đầu"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
+    <string name="setup_next_action" msgid="371821437915144603">"Bước tiếp theo"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Thiết lập <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Bật <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Vui lòng kiểm tra \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" trong cài đặt ngôn ngữ và phương thức nhập của bạn. Điều này sẽ ủy quyền cho ứng dụng chạy trên thiết bị của bạn."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
-    <skip />
+    <string name="setup_step1_action" msgid="4366513534999901728">"Bật trong Cài đặt"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Chuyển sang <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Tiếp theo, chọn \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" làm phương thức nhập văn bản hoạt động của bạn."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Chuyển phương thức nhập"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Xin chúc mừng, bạn đã cài đặt xong!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Bây giờ bạn có thể nhập vào tất cả ứng dụng yêu thích của mình với <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Định cấu hình các ngôn ngữ khác"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Đã xong"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Nhà cung cấp từ điển"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Nhà cung cấp từ điển"</string>

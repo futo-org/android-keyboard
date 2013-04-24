@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Ukuthepha kabili kubha yesikhala kufaka isikhathi esilandelwa yisikhala"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Ukwenza ofeleba okuzenzakalelayo"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Yenza ufeleba wegama lokuqala lomusho ngamunye"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Faka izichazamazwi"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Isichazamazwi sakho ngqangi"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Bonisa ukusikesela kokulungisa"</string>
@@ -186,7 +188,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Manje usungathayipha ngokufaka zonke izinhlelo zokusebenza eziyizintandokazi zakho nge-<xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Lungiselela izilimi ezingeziwe"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Iqedile"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Bonisa isithonjana sokusetha isilekeleli"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Umhlinzeki wesichazamazwi"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Umhlinzeki wesichazamazwi"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Isevisi yesichazamazwi"</string>

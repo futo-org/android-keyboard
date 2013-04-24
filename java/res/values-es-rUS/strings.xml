@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocar dos veces la barra espaciadora inserta un punto y espacio."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Escribe con mayúscula la primera palabra de cada frase"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugerencias de correcciones"</string>
@@ -172,25 +174,23 @@
     <string name="error" msgid="8940763624668513648">"Se produjo un error."</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminado"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Te damos la bienvenida a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con la escritura gestual"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"con escritura gestual"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Comenzar"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
-    <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
+    <string name="setup_next_action" msgid="371821437915144603">"Siguiente paso"</string>
+    <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>…"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Habilitar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marca \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" en Teclado e idioma para autorizar su ejecución en el dispositivo."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
-    <skip />
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Marca \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" en Teclado e idioma para permitir que se ejecute en el dispositivo."</string>
+    <string name="setup_step1_action" msgid="4366513534999901728">"Habilitar en Configuración"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como tu método de entrada de texto activo."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Cambiar métodos de entrada"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"¡Felicitaciones, ya terminaste!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"Ahora puedes escribir en todas tus aplicaciones favoritas con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Ahora puedes escribir en todas las aplicaciones que quieras con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Configurar otros idiomas"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"Finalizado"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <string name="setup_finish_action" msgid="276559243409465389">"Listo"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Proveedor de diccionarios"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Proveedor de diccionarios"</string>
