@@ -111,8 +111,9 @@
         <!-- Aggressive -->
         <item>0.067</item>
         <!-- Very Aggressive : Suggestion whose normalized score is greater than this value
-             will be subject to auto-correction. -->
-        <item>0</item>
+             will be subject to auto-correction. "floatNegativeInfinity" is a special marker
+             string for Float.NEGATIVE_INFINITY -->
+        <item>floatNegativeInfinity</item>
     </string-array>
     <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
          a word to be "recommended" -->
