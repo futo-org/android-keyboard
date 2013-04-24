@@ -53,6 +53,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Tocca due volte barra spaziatr. per inserire punto seguito da spazio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiuscole automatiche"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Iniziale maiuscola per la prima parola di ogni frase"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dizionario personale"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dizionari aggiuntivi"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dizionario principale"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra suggerimenti correzioni"</string>
@@ -178,6 +179,8 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurazione di <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Abilita <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Seleziona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" nelle impostazioni Lingua e immissione per autorizzarne l\'esecuzione sul dispositivo."</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <string name="setup_step1_action" msgid="4366513534999901728">"Abilita nelle impostazioni"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Passa a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Quindi seleziona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" come metodo di immissione testo attivo."</string>
@@ -186,7 +189,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Ora puoi digitare in tutte le tue app preferite con <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Configura altre lingue"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Terminato"</string>
-    <string name="show_setup_wizard_icon" msgid="2098097851427593496">"Mostra icona proc. guid. config."</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Mostra icona app"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Mostra l\'icona dell\'app in Avvio applicazioni"</string>
     <string name="app_name" msgid="6320102637491234792">"Dictionary Provider"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Dictionary Provider"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Servizio dizionario"</string>

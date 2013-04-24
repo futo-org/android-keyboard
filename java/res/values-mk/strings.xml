@@ -86,6 +86,8 @@
     <skip />
     <!-- no translation found for auto_cap_summary (7934452761022946874) -->
     <skip />
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
     <skip />
     <!-- no translation found for main_dictionary (4798763781818361168) -->
@@ -331,6 +333,8 @@
     <skip />
     <!-- no translation found for setup_step1_instruction (2578631936624637241) -->
     <skip />
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
+    <skip />
     <!-- no translation found for setup_step1_action (4366513534999901728) -->
     <skip />
     <!-- no translation found for setup_step2_title (6860725447906690594) -->
@@ -347,7 +351,9 @@
     <skip />
     <!-- no translation found for setup_finish_action (276559243409465389) -->
     <skip />
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <!-- no translation found for app_name (6320102637491234792) -->
     <skip />

@@ -53,6 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dukart palietus tarpo klavišą įterpiamas taškas ir tarpas."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatinis didžiųjų raidžių rašymas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Kiekvieno sakinio pirmą žodį rašyti iš didžiosios raidės"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Papildomi žodynai"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Pagrindinis žodynas"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Rodyti taisymo pasiūlymus"</string>
@@ -174,23 +176,23 @@
     <string name="setup_welcome_title" msgid="6112821709832031715">"Sveiki! Tai „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"naudojant įvestį gestais"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Pradėti"</string>
-    <!-- no translation found for setup_next_action (371821437915144603) -->
-    <skip />
+    <string name="setup_next_action" msgid="371821437915144603">"Kitas veiksmas"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"„<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ sąranka"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Įgalinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Skiltyje „Kalbos ir įvesties nustatymai“ paž. „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ (progr. bus įgal. veikti įr.)."</string>
-    <!-- no translation found for setup_step1_action (4366513534999901728) -->
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Skiltyje „Kalbos ir įvesties nustatymai“ žr. „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ (progr. bus įgal. veikti įr.)."</string>
+    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
     <skip />
+    <string name="setup_step1_action" msgid="4366513534999901728">"Įgalinti nustatymuose"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Perjungimas į „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“"</string>
-    <!-- no translation found for setup_step2_instruction (9141481964870023336) -->
-    <skip />
-    <!-- no translation found for setup_step2_action (1660330307159824337) -->
-    <skip />
+    <string name="setup_step2_instruction" msgid="9141481964870023336">"Toliau pasirinkite „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“ kaip aktyvų teksto įvesties metodą."</string>
+    <string name="setup_step2_action" msgid="1660330307159824337">"Perjungti įvesties metodus"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Sveikiname, viską nustatėte!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Dabar galite įvesti visas mėgstamas programas naudodami „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfigūruokite papildomas kalbas"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Baigta"</string>
-    <!-- no translation found for show_setup_wizard_icon (2098097851427593496) -->
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
     <skip />
     <string name="app_name" msgid="6320102637491234792">"Žodyno teikėjas"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Žodyno teikėjas"</string>
