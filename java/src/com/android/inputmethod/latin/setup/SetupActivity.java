@@ -40,18 +40,17 @@ import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SettingsActivity;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 // TODO: Use Fragment to implement welcome screen and setup steps.
 public final class SetupActivity extends Activity implements View.OnClickListener {
     private View mWelcomeScreen;
     private View mSetupScreen;
-    private SetupStepIndicatorView mStepIndicatorView;
     private Uri mWelcomeVideoUri;
     private VideoView mWelcomeVideoView;
     private View mActionStart;
     private TextView mActionFinish;
-    private final SetupStepGroup mSetupStepGroup = new SetupStepGroup();
+    private SetupStepGroup mSetupStepGroup;
     private static final String STATE_STEP = "step";
     private int mStepNumber;
     private static final int STEP_0 = 0;
@@ -129,9 +128,11 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         final TextView stepsTitle = (TextView)findViewById(R.id.setup_title);
         stepsTitle.setText(getString(R.string.setup_steps_title, applicationName));
 
-        mStepIndicatorView = (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
+        final SetupStepIndicatorView indicatorView =
+                (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
+        mSetupStepGroup = new SetupStepGroup(indicatorView);
 
-        final SetupStep step1 = new SetupStep(applicationName,
+        final SetupStep step1 = new SetupStep(STEP_1, applicationName,
                 (TextView)findViewById(R.id.setup_step1_bullet), findViewById(R.id.setup_step1),
                 R.string.setup_step1_title, R.string.setup_step1_instruction,
                 R.drawable.ic_setup_step1, R.string.setup_step1_action);
@@ -142,9 +143,9 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 mHandler.startPollingImeSettings();
             }
         });
-        mSetupStepGroup.addStep(STEP_1, step1);
+        mSetupStepGroup.addStep(step1);
 
-        final SetupStep step2 = new SetupStep(applicationName,
+        final SetupStep step2 = new SetupStep(STEP_2, applicationName,
                 (TextView)findViewById(R.id.setup_step2_bullet), findViewById(R.id.setup_step2),
                 R.string.setup_step2_title, R.string.setup_step2_instruction,
                 R.drawable.ic_setup_step2, R.string.setup_step2_action);
@@ -156,9 +157,9 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                         .showInputMethodPicker();
             }
         });
-        mSetupStepGroup.addStep(STEP_2, step2);
+        mSetupStepGroup.addStep(step2);
 
-        final SetupStep step3 = new SetupStep(applicationName,
+        final SetupStep step3 = new SetupStep(STEP_3, applicationName,
                 (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
                 R.string.setup_step3_title, R.string.setup_step3_instruction,
                 R.drawable.ic_setup_step3, R.string.setup_step3_action);
@@ -168,7 +169,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 invokeSubtypeEnablerOfThisIme();
             }
         });
-        mSetupStepGroup.addStep(STEP_3, step3);
+        mSetupStepGroup.addStep(step3);
 
         mWelcomeVideoUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
@@ -274,15 +275,23 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         return myImi.getId().equals(currentImeId);
     }
 
-    private int determineSetupStepNumber() {
+    private int determineSetupState() {
         mHandler.cancelPollingImeSettings();
         if (!isThisImeEnabled(this)) {
-            return mWasLanguageAndInputSettingsInvoked ? STEP_1 : STEP_0;
+            return STEP_1;
         }
         if (!isThisImeCurrent(this)) {
             return STEP_2;
         }
         return STEP_3;
+    }
+
+    private int determineSetupStepNumber() {
+        final int stepState = determineSetupState();
+        if (stepState == STEP_1) {
+            return mWasLanguageAndInputSettingsInvoked ? STEP_1 : STEP_0;
+        }
+        return stepState;
     }
 
     @Override
@@ -351,20 +360,12 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return;
         }
         mWelcomeVideoView.stopPlayback();
-        final int layoutDirection = ViewCompatUtils.getLayoutDirection(mStepIndicatorView);
-        mStepIndicatorView.setIndicatorPosition(
-                getIndicatorPosition(mStepNumber, mSetupStepGroup.getTotalStep(), layoutDirection));
         mSetupStepGroup.enableStep(mStepNumber);
         mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
     }
 
-    private static float getIndicatorPosition(final int step, final int totalStep,
-            final int layoutDirection) {
-        final float pos = ((step - STEP_1) * 2 + 1) / (float)(totalStep * 2);
-        return (layoutDirection == ViewCompatUtils.LAYOUT_DIRECTION_RTL) ? 1.0f - pos : pos;
-    }
-
     static final class SetupStep implements View.OnClickListener {
+        public final int mStepNo;
         private final View mStepView;
         private final TextView mBulletView;
         private final int mActivatedColor;
@@ -372,9 +373,10 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         private final TextView mActionLabel;
         private Runnable mAction;
 
-        public SetupStep(final String applicationName, final TextView bulletView,
+        public SetupStep(final int stepNo, final String applicationName, final TextView bulletView,
                 final View stepView, final int title, final int instruction, final int actionIcon,
                 final int actionLabel) {
+            mStepNo = stepNo;
             mStepView = stepView;
             mBulletView = bulletView;
             final Resources res = stepView.getResources();
@@ -423,21 +425,22 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     }
 
     static final class SetupStepGroup {
-        private final HashMap<Integer, SetupStep> mGroup = CollectionUtils.newHashMap();
+        private final SetupStepIndicatorView mIndicatorView;
+        private final ArrayList<SetupStep> mGroup = CollectionUtils.newArrayList();
 
-        public void addStep(final int stepNo, final SetupStep step) {
-            mGroup.put(stepNo, step);
+        public SetupStepGroup(final SetupStepIndicatorView indicatorView) {
+            mIndicatorView = indicatorView;
+        }
+
+        public void addStep(final SetupStep step) {
+            mGroup.add(step);
         }
 
         public void enableStep(final int enableStepNo) {
-            for (final Integer stepNo : mGroup.keySet()) {
-                final SetupStep step = mGroup.get(stepNo);
-                step.setEnabled(stepNo == enableStepNo);
+            for (final SetupStep step : mGroup) {
+                step.setEnabled(step.mStepNo == enableStepNo);
             }
-        }
-
-        public int getTotalStep() {
-            return mGroup.size();
+            mIndicatorView.setIndicatorPosition(enableStepNo - STEP_1, mGroup.size());
         }
     }
 }
