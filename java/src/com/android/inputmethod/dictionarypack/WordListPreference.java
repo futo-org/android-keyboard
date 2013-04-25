@@ -110,29 +110,31 @@ public final class WordListPreference extends Preference {
         }
     }
 
+    // The table below needs to be kept in sync with MetadataDbHelper.STATUS_* since it uses
+    // the values as indices.
     private static final int sStatusActionList[][] = {
         // MetadataDbHelper.STATUS_UNKNOWN
         {},
         // MetadataDbHelper.STATUS_AVAILABLE
-        { R.string.install_dict, ACTION_ENABLE_DICT },
+        { ButtonSwitcher.STATUS_INSTALL, ACTION_ENABLE_DICT },
         // MetadataDbHelper.STATUS_DOWNLOADING
-        { R.string.cancel_download_dict, ACTION_DISABLE_DICT },
+        { ButtonSwitcher.STATUS_CANCEL, ACTION_DISABLE_DICT },
         // MetadataDbHelper.STATUS_INSTALLED
-        { R.string.delete_dict, ACTION_DELETE_DICT },
+        { ButtonSwitcher.STATUS_DELETE, ACTION_DELETE_DICT },
         // MetadataDbHelper.STATUS_DISABLED
-        { R.string.delete_dict, ACTION_DELETE_DICT },
+        { ButtonSwitcher.STATUS_DELETE, ACTION_DELETE_DICT },
         // MetadataDbHelper.STATUS_DELETING
         // We show 'install' because the file is supposed to be deleted.
         // The user may reinstall it.
-        { R.string.install_dict, ACTION_ENABLE_DICT }
+        { ButtonSwitcher.STATUS_INSTALL, ACTION_ENABLE_DICT }
     };
 
-    private CharSequence getButtonLabel(final int status) {
+    private int getButtonSwitcherStatus(final int status) {
         if (status >= sStatusActionList.length) {
             Log.e(TAG, "Unknown status " + status);
-            return "";
+            return ButtonSwitcher.STATUS_NO_BUTTON;
         }
-        return mContext.getString(sStatusActionList[status][0]);
+        return sStatusActionList[status][0];
     }
 
     private static int getActionIdFromStatusAndMenuEntry(final int status) {
@@ -189,9 +191,8 @@ public final class WordListPreference extends Preference {
         ((ViewGroup)view).setLayoutTransition(null);
         final ButtonSwitcher buttonSwitcher =
                 (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
-        buttonSwitcher.setText(getButtonLabel(mStatus));
-        buttonSwitcher.setInternalButtonVisiblility(mInterfaceState.isOpen(mWordlistId) ?
-                View.VISIBLE : View.INVISIBLE);
+        buttonSwitcher.setStatusAndUpdateVisuals(mInterfaceState.isOpen(mWordlistId) ?
+                getButtonSwitcherStatus(mStatus) : ButtonSwitcher.STATUS_NO_BUTTON);
         buttonSwitcher.setInternalOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
@@ -224,9 +225,9 @@ public final class WordListPreference extends Preference {
                 final ButtonSwitcher buttonSwitcher = (ButtonSwitcher)listView.getChildAt(i)
                         .findViewById(R.id.wordlist_button_switcher);
                 if (i == indexToOpen) {
-                    buttonSwitcher.animateButton(ButtonSwitcher.ANIMATION_IN);
+                    buttonSwitcher.setStatusAndUpdateVisuals(getButtonSwitcherStatus(mStatus));
                 } else {
-                    buttonSwitcher.animateButton(ButtonSwitcher.ANIMATION_OUT);
+                    buttonSwitcher.setStatusAndUpdateVisuals(ButtonSwitcher.STATUS_NO_BUTTON);
                 }
             }
         }
