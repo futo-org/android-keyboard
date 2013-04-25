@@ -122,7 +122,7 @@ public final class DebugSettings extends PreferenceFragment
         }
         boolean isDebugMode = mDebugMode.isChecked();
         final String version = getResources().getString(
-                R.string.version_text, Utils.getSdkVersion(getActivity()));
+                R.string.version_text, Utils.getVersionName(getActivity()));
         if (!isDebugMode) {
             mDebugMode.setTitle(version);
             mDebugMode.setSummary("");
