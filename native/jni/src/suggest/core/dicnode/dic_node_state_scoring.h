@@ -31,7 +31,7 @@ class DicNodeStateScoring {
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
-              mRawLength(0.0f) {
+              mRawLength(0.0f), mExactMatch(true) {
     }
 
     virtual ~DicNodeStateScoring() {}
@@ -45,6 +45,7 @@ class DicNodeStateScoring {
         mRawLength = 0.0f;
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
         mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
+        mExactMatch = true;
     }
 
     AK_FORCE_INLINE void init(const DicNodeStateScoring *const scoring) {
@@ -56,17 +57,32 @@ class DicNodeStateScoring {
         mRawLength = scoring->mRawLength;
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
         mDigraphIndex = scoring->mDigraphIndex;
+        mExactMatch = scoring->mExactMatch;
     }
 
     void addCost(const float spatialCost, const float languageCost, const bool doNormalization,
-            const int inputSize, const int totalInputIndex, const bool isEditCorrection,
-            const bool isProximityCorrection) {
+            const int inputSize, const int totalInputIndex, const ErrorType errorType) {
         addDistance(spatialCost, languageCost, doNormalization, inputSize, totalInputIndex);
-        if (isEditCorrection) {
-            ++mEditCorrectionCount;
-        }
-        if (isProximityCorrection) {
-            ++mProximityCorrectionCount;
+        switch (errorType) {
+            case ET_EDIT_CORRECTION:
+                ++mEditCorrectionCount;
+                mExactMatch = false;
+                break;
+            case ET_PROXIMITY_CORRECTION:
+                ++mProximityCorrectionCount;
+                mExactMatch = false;
+                break;
+            case ET_COMPLETION:
+                mExactMatch = false;
+                break;
+            case ET_NEW_WORD:
+                mExactMatch = false;
+                break;
+            case ET_INTENTIONAL_OMISSION:
+                mExactMatch = false;
+                break;
+            case ET_NOT_AN_ERROR:
+                break;
         }
     }
 
@@ -143,6 +159,10 @@ class DicNodeStateScoring {
         }
     }
 
+    bool isExactMatch() const {
+        return mExactMatch;
+    }
+
  private:
     // Caution!!!
     // Use a default copy constructor and an assign operator because shallow copies are ok
@@ -157,6 +177,7 @@ class DicNodeStateScoring {
     float mSpatialDistance;
     float mLanguageDistance;
     float mRawLength;
+    bool mExactMatch;
 
     AK_FORCE_INLINE void addDistance(float spatialDistance, float languageDistance,
             bool doNormalization, int inputSize, int totalInputIndex) {
