@@ -483,13 +483,14 @@ public final class ActionBatch {
             if (MetadataDbHelper.STATUS_INSTALLED == status
                     || MetadataDbHelper.STATUS_DISABLED == status
                     || MetadataDbHelper.STATUS_DELETING == status) {
-                // If it is installed or disabled, then we cannot remove the entry lest the user
-                // lose the ability to delete the file or otherwise administrate it. We will thus
-                // leave it as is, but remove the URI from the database since it is not supposed to
-                // be accessible any more.
+                // If it is installed or disabled, we need to mark it as deleted so that LatinIME
+                // will remove it next time it enquires for dictionaries.
                 // If it is deleting and we don't have a new version, then we have to wait until
-                // Android Keyboard actually has deleted it before we can remove its metadata.
+                // LatinIME actually has deleted it before we can remove its metadata.
+                // In both cases, remove the URI from the database since it is not supposed to
+                // be accessible any more.
                 values.put(MetadataDbHelper.REMOTE_FILENAME_COLUMN, "");
+                values.put(MetadataDbHelper.STATUS_COLUMN, MetadataDbHelper.STATUS_DELETING);
                 db.update(MetadataDbHelper.METADATA_TABLE_NAME, values,
                         MetadataDbHelper.WORDLISTID_COLUMN + " = ? AND "
                                 + MetadataDbHelper.VERSION_COLUMN + " = ?",
