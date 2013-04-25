@@ -72,10 +72,16 @@ final class BinaryDictionaryGetter {
     public static String getTempFileName(final String id, final Context context)
             throws IOException {
         final String safeId = DictionaryInfoUtils.replaceFileNameDangerousCharacters(id);
+        final File directory = new File(DictionaryInfoUtils.getWordListTempDirectory(context));
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Log.e(TAG, "Could not create the temporary directory");
+            }
+        }
         // If the first argument is less than three chars, createTempFile throws a
         // RuntimeException. We don't really care about what name we get, so just
         // put a three-chars prefix makes us safe.
-        return File.createTempFile("xxx" + safeId, null).getAbsolutePath();
+        return File.createTempFile("xxx" + safeId, null, directory).getAbsolutePath();
     }
 
     /**

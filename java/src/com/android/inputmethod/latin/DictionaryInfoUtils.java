@@ -129,6 +129,13 @@ public class DictionaryInfoUtils {
     }
 
     /**
+     * Helper method to get the top level temp directory.
+     */
+    public static String getWordListTempDirectory(final Context context) {
+        return context.getFilesDir() + File.separator + "tmp";
+    }
+
+    /**
      * Reverse escaping done by replaceFileNameDangerousCharacters.
      */
     public static String getWordListIdFromFileName(final String fname) {
