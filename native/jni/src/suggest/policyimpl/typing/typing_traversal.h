@@ -43,8 +43,15 @@ class TypingTraversal : public Traversal {
     }
 
     AK_FORCE_INLINE bool isOmission(const DicTraverseSession *const traverseSession,
-            const DicNode *const dicNode, const DicNode *const childDicNode) const {
+            const DicNode *const dicNode, const DicNode *const childDicNode,
+            const bool allowsErrorCorrections) const {
         if (!CORRECT_OMISSION) {
+            return false;
+        }
+        // Note: Always consider intentional omissions (like apostrophes) since they are common.
+        const bool canConsiderOmission =
+                allowsErrorCorrections || childDicNode->canBeIntentionalOmission();
+        if (!canConsiderOmission) {
             return false;
         }
         const int inputSize = traverseSession->getInputSize();
