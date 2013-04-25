@@ -46,8 +46,8 @@ class DicNodeStateInput {
         for (int i = 0; i < MAX_POINTER_COUNT_G; i++) {
              mInputIndex[i] = src->mInputIndex[i];
              mPrevCodePoint[i] = src->mPrevCodePoint[i];
-        mTerminalDiffCost[i] = resetTerminalDiffCost ?
-                static_cast<float>(MAX_VALUE_FOR_WEIGHTING) : src->mTerminalDiffCost[i];
+             mTerminalDiffCost[i] = resetTerminalDiffCost ?
+                     static_cast<float>(MAX_VALUE_FOR_WEIGHTING) : src->mTerminalDiffCost[i];
          }
     }
 
