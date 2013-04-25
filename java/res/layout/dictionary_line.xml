@@ -71,14 +71,18 @@
 
   </LinearLayout>
 
-  <Button
-      android:id="@+android:id/wordlist_button"
+  <com.android.inputmethod.dictionarypack.ButtonSwitcher
+      android:id="@+android:id/wordlist_button_switcher"
       android:layout_weight="0"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="right|center_vertical"
-      android:singleLine="true"
-      android:textAppearance="?android:attr/textAppearanceMedium"
-      android:text="@string/install_dict" />
-
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+android:id/dict_install_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/install_dict" />
+  </com.android.inputmethod.dictionarypack.ButtonSwitcher>
 </LinearLayout>
