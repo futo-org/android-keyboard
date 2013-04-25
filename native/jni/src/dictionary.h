@@ -31,6 +31,7 @@ class UnigramDictionary;
 class Dictionary {
  public:
     // Taken from SuggestedWords.java
+    static const int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
     static const int KIND_TYPED = 0; // What user typed
     static const int KIND_CORRECTION = 1; // Simple correction/suggestion
     static const int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
@@ -40,6 +41,10 @@ class Dictionary {
     static const int KIND_APP_DEFINED = 6; // Suggested by the application
     static const int KIND_SHORTCUT = 7; // A shortcut
     static const int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
+
+    static const int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
+    static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
+    static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust);
 

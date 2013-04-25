@@ -147,10 +147,20 @@ public final class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                final int score = SuggestedWordInfo.KIND_WHITELIST == mOutputTypes[j]
+                final int flags = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_FLAGS;
+                if (0 != (flags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
+                        && 0 == (flags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
+                    // If the word is possibly offensive, we don't output it unless it's also
+                    // an exact match.
+                    continue;
+                }
+                final int kind = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_KIND;
+                final int score = SuggestedWordInfo.KIND_WHITELIST == kind
                         ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
+                // TODO: check that all users of the `kind' parameter are ready to accept
+                // flags too and pass mOutputTypes[j] instead of kind
                 suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                        score, mOutputTypes[j], mDictType));
+                        score, kind, mDictType));
             }
         }
         return suggestions;

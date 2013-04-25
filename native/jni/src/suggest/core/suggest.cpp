@@ -161,12 +161,15 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 + doubleLetterCost;
         const TerminalAttributes terminalAttributes(traverseSession->getOffsetDict(),
                 terminalDicNode->getFlags(), terminalDicNode->getAttributesPos());
-        const int originalTerminalProbability = terminalDicNode->getProbability();
+        const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
+        const bool isExactMatch = terminalDicNode->isExactMatch();
+        const int outputTypeFlags =
+                isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0
+                | isExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0;
 
-        // Do not suggest words with a 0 probability, or entries that are blacklisted or do not
-        // represent a word. However, we should still submit their shortcuts if any.
-        const bool isValidWord =
-                originalTerminalProbability > 0 && !terminalAttributes.isBlacklistedOrNotAWord();
+        // Entries that are blacklisted or do not represent a word should not be output.
+        const bool isValidWord = !terminalAttributes.isBlacklistedOrNotAWord();
+
         // Increase output score of top typing suggestion to ensure autocorrection.
         // TODO: Better integration with java side autocorrection logic.
         // Force autocorrection for obvious long multi-word suggestions.
@@ -188,10 +191,9 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             }
         }
 
-        // Do not suggest words with a 0 probability, or entries that are blacklisted or do not
-        // represent a word. However, we should still submit their shortcuts if any.
+        // Don't output invalid words. However, we still need to submit their shortcuts if any.
         if (isValidWord) {
-            outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION;
+            outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
             frequencies[outputWordIndex] = finalScore;
             // Populate the outputChars array with the suggested word.
             const int startIndex = outputWordIndex * MAX_WORD_LENGTH;
