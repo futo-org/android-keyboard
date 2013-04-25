@@ -1054,6 +1054,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
+        locatePreviewPlacerView();
         if (isShowingMoreKeysPanel()) {
             onDismissMoreKeysPanel();
         }
