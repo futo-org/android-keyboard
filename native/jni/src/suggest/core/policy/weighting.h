@@ -80,6 +80,10 @@ class Weighting {
     virtual float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
 
+    virtual ErrorType getErrorType(const CorrectionType correctionType,
+            const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
+
     Weighting() {}
     virtual ~Weighting() {}
 
@@ -94,12 +98,6 @@ class Weighting {
             const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode,
             hash_map_compat<int, int16_t> *const bigramCacheMap);
-    // TODO: Move to TypingWeighting and GestureWeighting?
-    static bool isEditCorrection(const CorrectionType correctionType);
-    // TODO: Move to TypingWeighting and GestureWeighting?
-    static bool isProximityCorrection(const Weighting *const weighting,
-            const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
-            const DicNode *const dicNode);
     // TODO: Move to TypingWeighting and GestureWeighting?
     static int getForwardInputCount(const CorrectionType correctionType);
 };

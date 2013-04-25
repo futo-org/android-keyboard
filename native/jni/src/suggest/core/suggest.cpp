@@ -422,20 +422,15 @@ void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
  */
 void Suggest::processDicNodeAsOmission(
         DicTraverseSession *traverseSession, DicNode *dicNode) const {
-    // If the omission is surely intentional that it should incur zero cost.
-    const bool isZeroCostOmission = dicNode->isZeroCostOmission();
     DicNodeVector childDicNodes;
-
     DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getOffsetDict(), &childDicNodes);
 
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
         DicNode *const childDicNode = childDicNodes[i];
-        if (!isZeroCostOmission) {
-            // Treat this word as omission
-            Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_OMISSION, traverseSession,
-                    dicNode, childDicNode, 0 /* bigramCacheMap */);
-        }
+        // Treat this word as omission
+        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_OMISSION, traverseSession,
+                dicNode, childDicNode, 0 /* bigramCacheMap */);
         weightChildNode(traverseSession, childDicNode);
 
         if (!TRAVERSAL->isPossibleOmissionChildNode(traverseSession, dicNode, childDicNode)) {

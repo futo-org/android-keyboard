@@ -463,6 +463,10 @@ class DicNode {
         mDicNodeState.mDicNodeStateScoring.advanceDigraphIndex();
     }
 
+    bool isExactMatch() const {
+        return mDicNodeState.mDicNodeStateScoring.isExactMatch();
+    }
+
     uint8_t getFlags() const {
         return mDicNodeProperties.getFlags();
     }
@@ -542,13 +546,12 @@ class DicNode {
     // Caveat: Must not be called outside Weighting
     // This restriction is guaranteed by "friend"
     AK_FORCE_INLINE void addCost(const float spatialCost, const float languageCost,
-            const bool doNormalization, const int inputSize, const bool isEditCorrection,
-            const bool isProximityCorrection) {
+            const bool doNormalization, const int inputSize, const ErrorType errorType) {
         if (DEBUG_GEO_FULL) {
             LOGI_SHOW_ADD_COST_PROP;
         }
         mDicNodeState.mDicNodeStateScoring.addCost(spatialCost, languageCost, doNormalization,
-                inputSize, getTotalInputIndex(), isEditCorrection, isProximityCorrection);
+                inputSize, getTotalInputIndex(), errorType);
     }
 
     // Caveat: Must not be called outside Weighting

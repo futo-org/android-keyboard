@@ -438,4 +438,24 @@ typedef enum {
     // Create new word with space substitution
     CT_NEW_WORD_SPACE_SUBSTITUTION,
 } CorrectionType;
+
+// ErrorType is mainly decided by CorrectionType but it is also depending on if
+// the correction has really been performed or not.
+typedef enum {
+    // Substitution, omission and transposition
+    ET_EDIT_CORRECTION,
+    // Proximity error
+    ET_PROXIMITY_CORRECTION,
+    // Completion
+    ET_COMPLETION,
+    // New word
+    // TODO: Remove.
+    // A new word error should be an edit correction error or a proximity correction error.
+    ET_NEW_WORD,
+    // Treat error as an intentional omission when the CorrectionType is omission and the node can
+    // be intentional omission.
+    ET_INTENTIONAL_OMISSION,
+    // Not treated as an error. Tracked for checking exact match
+    ET_NOT_AN_ERROR
+} ErrorType;
 #endif // LATINIME_DEFINES_H
