@@ -44,6 +44,12 @@ public class DictionaryListInterfaceState {
         return state.mOpen;
     }
 
+    public int getStatus(final String wordlistId) {
+        final State state = mWordlistToState.get(wordlistId);
+        if (null == state) return MetadataDbHelper.STATUS_UNKNOWN;
+        return state.mStatus;
+    }
+
     public void setOpen(final String wordlistId, final int status) {
         final State newState;
         final State state = mWordlistToState.get(wordlistId);
