@@ -28,6 +28,7 @@ public final class UserDictionaryCompatUtils {
     private static final Method METHOD_addWord = CompatUtils.getMethod(Words.class, "addWord",
             Context.class, String.class, Integer.TYPE, String.class, Locale.class);
 
+    @SuppressWarnings("deprecation")
     public static void addWord(final Context context, final String word, final int freq,
             final String shortcut, final Locale locale) {
         if (hasNewerAddWord()) {
@@ -39,13 +40,18 @@ public final class UserDictionaryCompatUtils {
             if (null == locale) {
                 localeType = Words.LOCALE_TYPE_ALL;
             } else {
-                localeType = Words.LOCALE_TYPE_CURRENT;
+                final Locale currentLocale = context.getResources().getConfiguration().locale;
+                if (locale.equals(currentLocale)) {
+                    localeType = Words.LOCALE_TYPE_CURRENT;
+                } else {
+                    localeType = Words.LOCALE_TYPE_ALL;
+                }
             }
             Words.addWord(context, word, freq, localeType);
         }
     }
 
-    private static final boolean hasNewerAddWord() {
+    public static final boolean hasNewerAddWord() {
         return null != METHOD_addWord;
     }
 }

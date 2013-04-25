@@ -49,7 +49,8 @@ import java.util.Locale;
 public class UserDictionaryAddWordFragment extends Fragment
         implements AdapterView.OnItemSelectedListener, LocationChangedListener {
 
-    private static final int OPTIONS_MENU_DELETE = Menu.FIRST;
+    private static final int OPTIONS_MENU_ADD = Menu.FIRST;
+    private static final int OPTIONS_MENU_DELETE = Menu.FIRST + 1;
 
     private UserDictionaryAddWordContents mContents;
     private View mRootView;
@@ -73,21 +74,29 @@ public class UserDictionaryAddWordFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem actionItem = menu.add(0, OPTIONS_MENU_DELETE, 0,
+        final MenuItem actionItemDelete = menu.add(0, OPTIONS_MENU_DELETE, 0,
                 R.string.user_dict_settings_delete).setIcon(android.R.drawable.ic_menu_delete);
-        actionItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM |
-                MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        actionItemDelete.setShowAsAction(
+                MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        final MenuItem actionItemAdd = menu.add(0, OPTIONS_MENU_ADD, 0,
+                R.string.user_dict_settings_delete).setIcon(R.drawable.ic_menu_add);
+        actionItemAdd.setShowAsAction(
+                MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
 
     /**
      * Callback for the framework when a menu option is pressed.
      *
-     * This class only supports the delete menu item.
      * @param MenuItem the item that was pressed
      * @return false to allow normal menu processing to proceed, true to consume it here
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == OPTIONS_MENU_ADD) {
+            // added the entry in "onPause"
+            getActivity().onBackPressed();
+            return true;
+        }
         if (item.getItemId() == OPTIONS_MENU_DELETE) {
             mContents.delete(getActivity());
             mIsDeleting = true;
