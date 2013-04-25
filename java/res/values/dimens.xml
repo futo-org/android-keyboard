@@ -117,4 +117,6 @@
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>
+
+    <integer name="user_dictionary_max_word_length" translatable="false">48</integer>
 </resources>
