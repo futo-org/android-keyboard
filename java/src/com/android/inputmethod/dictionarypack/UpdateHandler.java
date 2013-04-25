@@ -212,7 +212,12 @@ public final class UpdateHandler {
     private static void updateClientsWithMetadataUri(final Context context,
             final boolean updateNow, final String metadataUri) {
         PrivateLog.log("Update for metadata URI " + Utils.s(metadataUri));
-        final Request metadataRequest = new Request(Uri.parse(metadataUri));
+        // Adding a disambiguator to circumvent a bug in older versions of DownloadManager.
+        // DownloadManager also stupidly cuts the extension to replace with its own that it
+        // gets from the content-type. We need to circumvent this.
+        final String disambiguator = "#" + System.currentTimeMillis()
+                + com.android.inputmethod.latin.Utils.getVersionName(context) + ".json";
+        final Request metadataRequest = new Request(Uri.parse(metadataUri + disambiguator));
         Utils.l("Request =", metadataRequest);
 
         final Resources res = context.getResources();
@@ -351,7 +356,13 @@ public final class UpdateHandler {
                 final int columnUri = cursor.getColumnIndex(DownloadManager.COLUMN_URI);
                 final int error = cursor.getInt(columnError);
                 status = cursor.getInt(columnStatus);
-                uri = cursor.getString(columnUri);
+                final String uriWithAnchor = cursor.getString(columnUri);
+                int anchorIndex = uriWithAnchor.indexOf('#');
+                if (anchorIndex != -1) {
+                    uri = uriWithAnchor.substring(0, anchorIndex);
+                } else {
+                    uri = uriWithAnchor;
+                }
                 if (DownloadManager.STATUS_SUCCESSFUL != status) {
                     Log.e(TAG, "Permanent failure of download " + downloadId
                             + " with error code: " + error);

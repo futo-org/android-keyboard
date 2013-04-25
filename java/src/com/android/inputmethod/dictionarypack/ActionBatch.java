@@ -138,7 +138,12 @@ public final class ActionBatch {
             if (null == manager) return;
 
             // This is an upgraded word list: we should download it.
-            final Uri uri = Uri.parse(mWordList.mRemoteFilename);
+            // Adding a disambiguator to circumvent a bug in older versions of DownloadManager.
+            // DownloadManager also stupidly cuts the extension to replace with its own that it
+            // gets from the content-type. We need to circumvent this.
+            final String disambiguator = "#" + System.currentTimeMillis()
+                    + com.android.inputmethod.latin.Utils.getVersionName(context) + ".dict";
+            final Uri uri = Uri.parse(mWordList.mRemoteFilename + disambiguator);
             final Request request = new Request(uri);
 
             final Resources res = context.getResources();
