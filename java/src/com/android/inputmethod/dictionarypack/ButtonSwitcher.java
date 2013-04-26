@@ -126,6 +126,7 @@ public class ButtonSwitcher extends FrameLayout {
                     new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(final Animator animation) {
+                            if (newStatus != mStatus) return;
                             animateButton(newButton, ANIMATION_IN);
                         }
                     });
@@ -144,8 +145,10 @@ public class ButtonSwitcher extends FrameLayout {
         final float outerX = getWidth();
         final float innerX = button.getX() - button.getTranslationX();
         if (ANIMATION_IN == direction) {
+            button.setClickable(true);
             return button.animate().translationX(0);
         } else {
+            button.setClickable(false);
             return button.animate().translationX(outerX - innerX);
         }
     }
