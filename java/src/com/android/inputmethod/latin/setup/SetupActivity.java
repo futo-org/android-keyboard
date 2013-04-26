@@ -236,8 +236,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         final Intent intent = new Intent();
         intent.setClass(this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
