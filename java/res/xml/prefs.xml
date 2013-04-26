@@ -69,6 +69,12 @@
                  android:value="@string/dictionary_pack_client_id" />
            </intent>
         </PreferenceScreen>
+        <CheckBoxPreference
+            android:key="pref_key_block_potentially_offensive"
+            android:title="@string/prefs_block_potentially_offensive_title"
+            android:summary="@string/prefs_block_potentially_offensive_summary"
+            android:persistent="true"
+            android:defaultValue="@bool/config_block_potentially_offensive" />
         <ListPreference
             android:key="auto_correction_threshold"
             android:title="@string/auto_correction"
