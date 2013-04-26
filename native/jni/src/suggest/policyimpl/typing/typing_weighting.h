@@ -28,6 +28,7 @@ namespace latinime {
 
 class DicNode;
 struct DicNode_InputStateG;
+class MultiBigramMap;
 
 class TypingWeighting : public Weighting {
  public:
@@ -136,9 +137,9 @@ class TypingWeighting : public Weighting {
 
     float getNewWordBigramCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode,
-            hash_map_compat<int, int16_t> *const bigramCacheMap) const {
+            MultiBigramMap *const multiBigramMap) const {
         return DicNodeUtils::getBigramNodeImprobability(traverseSession->getOffsetDict(),
-                dicNode, bigramCacheMap) * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
+                dicNode, multiBigramMap) * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
     float getCompletionCost(const DicTraverseSession *const traverseSession,

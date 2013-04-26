@@ -359,7 +359,7 @@ void Suggest::processTerminalDicNode(
     DicNode terminalDicNode;
     DicNodeUtils::initByCopy(dicNode, &terminalDicNode);
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, 0,
-            &terminalDicNode, traverseSession->getBigramCacheMap());
+            &terminalDicNode, traverseSession->getMultiBigramMap());
     traverseSession->getDicTraverseCache()->copyPushTerminal(&terminalDicNode);
 }
 
@@ -391,8 +391,10 @@ void Suggest::processDicNodeAsMatch(DicTraverseSession *traverseSession,
 
 void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traverseSession,
         DicNode *dicNode, DicNode *childDicNode) const {
+    // Note: Most types of corrections don't need to look up the bigram information since they do
+    // not treat the node as a terminal. There is no need to pass the bigram map in these cases.
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_ADDITIONAL_PROXIMITY,
-            traverseSession, dicNode, childDicNode, 0 /* bigramCacheMap */);
+            traverseSession, dicNode, childDicNode, 0 /* multiBigramMap */);
     weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
@@ -400,7 +402,7 @@ void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traver
 void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
         DicNode *dicNode, DicNode *childDicNode) const {
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SUBSTITUTION, traverseSession,
-            dicNode, childDicNode, 0 /* bigramCacheMap */);
+            dicNode, childDicNode, 0 /* multiBigramMap */);
     weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
@@ -432,7 +434,7 @@ void Suggest::processDicNodeAsOmission(
         DicNode *const childDicNode = childDicNodes[i];
         // Treat this word as omission
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_OMISSION, traverseSession,
-                dicNode, childDicNode, 0 /* bigramCacheMap */);
+                dicNode, childDicNode, 0 /* multiBigramMap */);
         weightChildNode(traverseSession, childDicNode);
 
         if (!TRAVERSAL->isPossibleOmissionChildNode(traverseSession, dicNode, childDicNode)) {
@@ -456,7 +458,7 @@ void Suggest::processDicNodeAsInsertion(DicTraverseSession *traverseSession,
     for (int i = 0; i < size; i++) {
         DicNode *const childDicNode = childDicNodes[i];
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_INSERTION, traverseSession,
-                dicNode, childDicNode, 0 /* bigramCacheMap */);
+                dicNode, childDicNode, 0 /* multiBigramMap */);
         processExpandedDicNode(traverseSession, childDicNode);
     }
 }
@@ -481,7 +483,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
             for (int j = 0; j < childSize2; j++) {
                 DicNode *const childDicNode2 = childDicNodes2[j];
                 Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TRANSPOSITION,
-                        traverseSession, childDicNodes1[i], childDicNode2, 0 /* bigramCacheMap */);
+                        traverseSession, childDicNodes1[i], childDicNode2, 0 /* multiBigramMap */);
                 processExpandedDicNode(traverseSession, childDicNode2);
             }
         }
@@ -496,10 +498,10 @@ void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicN
     const int inputSize = traverseSession->getInputSize();
     if (dicNode->isCompletion(inputSize)) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_COMPLETION, traverseSession,
-                0 /* parentDicNode */, dicNode, 0 /* bigramCacheMap */);
+                0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
     } else { // completion
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_MATCH, traverseSession,
-                0 /* parentDicNode */, dicNode, 0 /* bigramCacheMap */);
+                0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
     }
 }
 
@@ -520,7 +522,7 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
     const CorrectionType correctionType = spaceSubstitution ?
             CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
     Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,
-            &newDicNode, traverseSession->getBigramCacheMap());
+            &newDicNode, traverseSession->getMultiBigramMap());
     traverseSession->getDicTraverseCache()->copyPushNextActive(&newDicNode);
 }
 } // namespace latinime

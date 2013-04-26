@@ -100,7 +100,7 @@ int DicTraverseSession::getDictFlags() const {
 
 void DicTraverseSession::resetCache(const int nextActiveCacheSize, const int maxWords) {
     mDicNodesCache.reset(nextActiveCacheSize, maxWords);
-    mBigramCacheMap.clear();
+    mMultiBigramMap.clear();
     mPartiallyCommited = false;
 }
 

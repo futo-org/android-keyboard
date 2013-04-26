@@ -23,6 +23,7 @@
 
 #include "bloom_filter.h"
 #include "char_utils.h"
+#include "hash_map_compat.h"
 
 namespace latinime {
 
@@ -93,7 +94,13 @@ class BinaryFormat {
             const int unigramProbability, const int bigramProbability);
     static int getProbability(const int position, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const int unigramProbability);
+    static int getBigramProbabilityFromHashMap(const int position,
+            const hash_map_compat<int, int> *bigramMap, const int unigramProbability);
     static float getMultiWordCostMultiplier(const uint8_t *const dict);
+    static void fillBigramProbabilityToHashMap(const uint8_t *const root, int position,
+            hash_map_compat<int, int> *bigramMap);
+    static int getBigramProbability(const uint8_t *const root, int position,
+            const int nextPosition, const int unigramProbability);
 
     // Flags for special processing
     // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
@@ -105,6 +112,8 @@ class BinaryFormat {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
+    static int getBigramListPositionForWordPosition(const uint8_t *const root, int position);
+
     static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
     static const int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
     static const int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
@@ -687,5 +696,68 @@ inline int BinaryFormat::getProbability(const int position, const std::map<int, 
     }
     return backoff(unigramProbability);
 }
+
+// This returns a probability in log space.
+inline int BinaryFormat::getBigramProbabilityFromHashMap(const int position,
+        const hash_map_compat<int, int> *bigramMap, const int unigramProbability) {
+    if (!bigramMap) return backoff(unigramProbability);
+    const hash_map_compat<int, int>::const_iterator bigramProbabilityIt = bigramMap->find(position);
+    if (bigramProbabilityIt != bigramMap->end()) {
+        const int bigramProbability = bigramProbabilityIt->second;
+        return computeProbabilityForBigram(unigramProbability, bigramProbability);
+    }
+    return backoff(unigramProbability);
+}
+
+AK_FORCE_INLINE void BinaryFormat::fillBigramProbabilityToHashMap(
+        const uint8_t *const root, int position, hash_map_compat<int, int> *bigramMap) {
+    position = getBigramListPositionForWordPosition(root, position);
+    if (0 == position) return;
+
+    uint8_t bigramFlags;
+    do {
+        bigramFlags = getFlagsAndForwardPointer(root, &position);
+        const int probability = MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
+        const int bigramPos = getAttributeAddressAndForwardPointer(root, bigramFlags,
+                &position);
+        (*bigramMap)[bigramPos] = probability;
+    } while (FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+}
+
+AK_FORCE_INLINE int BinaryFormat::getBigramProbability(const uint8_t *const root, int position,
+        const int nextPosition, const int unigramProbability) {
+    position = getBigramListPositionForWordPosition(root, position);
+    if (0 == position) return backoff(unigramProbability);
+
+    uint8_t bigramFlags;
+    do {
+        bigramFlags = getFlagsAndForwardPointer(root, &position);
+        const int bigramPos = getAttributeAddressAndForwardPointer(
+                root, bigramFlags, &position);
+        if (bigramPos == nextPosition) {
+            const int bigramProbability = MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
+            return computeProbabilityForBigram(unigramProbability, bigramProbability);
+        }
+    } while (FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    return backoff(unigramProbability);
+}
+
+// Returns a pointer to the start of the bigram list.
+AK_FORCE_INLINE int BinaryFormat::getBigramListPositionForWordPosition(
+        const uint8_t *const root, int position) {
+    if (NOT_VALID_WORD == position) return 0;
+    const uint8_t flags = getFlagsAndForwardPointer(root, &position);
+    if (!(flags & FLAG_HAS_BIGRAMS)) return 0;
+    if (flags & FLAG_HAS_MULTIPLE_CHARS) {
+        position = skipOtherCharacters(root, position);
+    } else {
+        getCodePointAndForwardPointer(root, &position);
+    }
+    position = skipProbability(flags, position);
+    position = skipChildrenPosition(flags, position);
+    position = skipShortcuts(root, flags, position);
+    return position;
+}
+
 } // namespace latinime
 #endif // LATINIME_BINARY_FORMAT_H
