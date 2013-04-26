@@ -20,11 +20,12 @@
 #include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
+
 const TypingWeighting TypingWeighting::sInstance;
 
 ErrorType TypingWeighting::getErrorType(const CorrectionType correctionType,
-        const DicTraverseSession *const traverseSession,
-        const DicNode *const parentDicNode, const DicNode *const dicNode) const {
+        const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
+        const DicNode *const dicNode) const {
     switch (correctionType) {
         case CT_MATCH:
             if (isProximityDicNode(traverseSession, dicNode)) {

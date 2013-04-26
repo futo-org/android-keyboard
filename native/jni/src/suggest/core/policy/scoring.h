@@ -29,16 +29,14 @@ class Scoring {
  public:
     virtual int calculateFinalScore(const float compoundDistance, const int inputSize,
             const bool forceCommit) const = 0;
-    virtual bool getMostProbableString(
-            const DicTraverseSession *const traverseSession, const int terminalSize,
-            const float languageWeight, int *const outputCodePoints, int *const type,
-            int *const freq) const = 0;
+    virtual bool getMostProbableString(const DicTraverseSession *const traverseSession,
+            const int terminalSize, const float languageWeight, int *const outputCodePoints,
+            int *const type, int *const freq) const = 0;
     virtual void safetyNetForMostProbableString(const int terminalSize,
             const int maxScore, int *const outputCodePoints, int *const frequencies) const = 0;
     // TODO: Make more generic
-    virtual void searchWordWithDoubleLetter(DicNode *terminals,
-            const int terminalSize, int *doubleLetterTerminalIndex,
-            DoubleLetterLevel *doubleLetterLevel) const = 0;
+    virtual void searchWordWithDoubleLetter(DicNode *terminals, const int terminalSize,
+            int *doubleLetterTerminalIndex, DoubleLetterLevel *doubleLetterLevel) const = 0;
     virtual float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
             DicNode *const terminals, const int size) const = 0;
     virtual float getDoubleLetterDemotionDistanceCost(const int terminalIndex,

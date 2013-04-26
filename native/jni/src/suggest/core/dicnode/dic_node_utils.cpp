@@ -271,7 +271,7 @@ namespace latinime {
             return probability;
         }
         count++;
-    } while ((0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags))
+    } while ((BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags)
             && count < MAX_BIGRAMS_CONSIDERED_PER_CONTEXT);
     if (static_cast<int>(bigramCacheMap->size()) < MAX_BIGRAM_MAP_SIZE) {
         // TODO: does this -1 mean NOT_VALID_WORD?
