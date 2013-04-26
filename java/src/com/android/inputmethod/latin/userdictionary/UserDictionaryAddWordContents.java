@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.userdictionary;
 
+import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 
@@ -68,18 +69,28 @@ public class UserDictionaryAddWordContents {
     /* package */ UserDictionaryAddWordContents(final View view, final Bundle args) {
         mWordEditText = (EditText)view.findViewById(R.id.user_dictionary_add_word_text);
         mShortcutEditText = (EditText)view.findViewById(R.id.user_dictionary_add_shortcut);
+        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
+            mShortcutEditText.setVisibility(View.GONE);
+            view.findViewById(R.id.user_dictionary_add_shortcut_label).setVisibility(View.GONE);
+        }
         final String word = args.getString(EXTRA_WORD);
         if (null != word) {
             mWordEditText.setText(word);
             mWordEditText.setSelection(word.length());
         }
-        final String shortcut = args.getString(EXTRA_SHORTCUT);
-        if (null != shortcut && null != mShortcutEditText) {
-            mShortcutEditText.setText(shortcut);
+        final String shortcut;
+        if (UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
+            shortcut = args.getString(EXTRA_SHORTCUT);
+            if (null != shortcut && null != mShortcutEditText) {
+                mShortcutEditText.setText(shortcut);
+            }
+            mOldShortcut = args.getString(EXTRA_SHORTCUT);
+        } else {
+            shortcut = null;
+            mOldShortcut = null;
         }
         mMode = args.getInt(EXTRA_MODE); // default return value for #getInt() is 0 = MODE_EDIT
         mOldWord = args.getString(EXTRA_WORD);
-        mOldShortcut = args.getString(EXTRA_SHORTCUT);
         updateLocale(args.getString(EXTRA_LOCALE));
     }
 
@@ -110,7 +121,8 @@ public class UserDictionaryAddWordContents {
         // If we are in add mode, nothing was added, so we don't need to do anything.
     }
 
-    /* package */ int apply(final Context context, final Bundle outParameters) {
+    /* package */
+    int apply(final Context context, final Bundle outParameters) {
         if (null != outParameters) saveStateIntoBundle(outParameters);
         final ContentResolver resolver = context.getContentResolver();
         if (MODE_EDIT == mMode && !TextUtils.isEmpty(mOldWord)) {
@@ -119,7 +131,9 @@ public class UserDictionaryAddWordContents {
         }
         final String newWord = mWordEditText.getText().toString();
         final String newShortcut;
-        if (null == mShortcutEditText) {
+        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
+            newShortcut = null;
+        } else if (null == mShortcutEditText) {
             newShortcut = null;
         } else {
             final String tmpShortcut = mShortcutEditText.getText().toString();
@@ -150,9 +164,9 @@ public class UserDictionaryAddWordContents {
 
         // In this class we use the empty string to represent 'all locales' and mLocale cannot
         // be null. However the addWord method takes null to mean 'all locales'.
-        UserDictionary.Words.addWord(context, newWord.toString(),
-                FREQUENCY_FOR_USER_DICTIONARY_ADDS, newShortcut,
-                TextUtils.isEmpty(mLocale) ? null : LocaleUtils.constructLocaleFromString(mLocale));
+        UserDictionaryCompatUtils.addWord(context, newWord.toString(),
+                FREQUENCY_FOR_USER_DICTIONARY_ADDS, newShortcut, TextUtils.isEmpty(mLocale) ?
+                        null : LocaleUtils.constructLocaleFromString(mLocale));
 
         return CODE_WORD_ADDED;
     }

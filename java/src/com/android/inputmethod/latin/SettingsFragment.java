@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -46,7 +45,7 @@ import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final boolean DBG_USE_INTERNAL_USER_SETTINGS = false;
+    private static final boolean DBG_USE_INTERNAL_USER_DICTIONARY_SETTINGS = false;
 
     private ListPreference mVoicePreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -202,13 +201,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
         final ResolveInfo ri = context.getPackageManager().resolveActivity(
                 editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (DBG_USE_INTERNAL_USER_SETTINGS || ri == null) {
-            // TODO: Support ICS
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                updateUserDictionaryPreference(editPersonalDictionary);
-            } else {
-                removePreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY, getPreferenceScreen());
-            }
+        if (DBG_USE_INTERNAL_USER_DICTIONARY_SETTINGS || ri == null) {
+            updateUserDictionaryPreference(editPersonalDictionary);
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
