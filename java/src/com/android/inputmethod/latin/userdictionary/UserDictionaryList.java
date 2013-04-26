@@ -27,6 +27,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.provider.UserDictionary;
+import android.text.TextUtils;
 
 import java.util.Locale;
 import java.util.TreeSet;
@@ -52,15 +53,25 @@ public class UserDictionaryList extends PreferenceFragment {
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
         final TreeSet<String> localeList = new TreeSet<String>();
+        boolean addedAllLocale = false;
         if (null == cursor) {
             // The user dictionary service is not present or disabled. Return null.
             return null;
         } else if (cursor.moveToFirst()) {
             final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
             do {
-                String locale = cursor.getString(columnIndex);
-                localeList.add(null != locale ? locale : "");
+                final String locale = cursor.getString(columnIndex);
+                final boolean allLocale = TextUtils.isEmpty(locale);
+                localeList.add(allLocale ? "" : locale);
+                if (allLocale) {
+                    addedAllLocale = true;
+                }
             } while (cursor.moveToNext());
+        }
+        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED && !addedAllLocale) {
+            // For ICS, we need to show "For all languages" in case that the keyboard locale
+            // is different from the system locale
+            localeList.add("");
         }
         localeList.add(Locale.getDefault().toString());
         return localeList;
