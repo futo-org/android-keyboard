@@ -29,6 +29,7 @@
             android:layout_height="0dp" />
         <VideoView
             android:id="@+id/setup_welcome_video"
+            android:background="@color/setup_background"
             android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
             android:layout_marginTop="@dimen/setup_welcome_video_vertical_margin"
             android:layout_marginBottom="@dimen/setup_welcome_video_vertical_margin"

@@ -190,6 +190,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 mp.start();
             }
         });
+        mWelcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(final MediaPlayer mp) {
+                // Now VideoView has been laid-out and ready to play, remove background of it to
+                // reveal the video.
+                mWelcomeVideoView.setBackgroundResource(0);
+            }
+        });
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
