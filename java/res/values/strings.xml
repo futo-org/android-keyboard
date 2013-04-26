@@ -18,18 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Application name for opensource Android keyboard. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_android_keyboard_ime_name">Android Keyboard (AOSP)</string>
-
-    <!-- Title for Android Keyboard settings screen. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_android_keyboard_ime_settings">Android Keyboard Settings (AOSP)</string>
-
-    <!-- Name of Android spell checker service. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_spell_checker_service_name">Android Spell Checker (AOSP)</string>
-
-    <!-- Title for the spell checking service settings screen. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_android_spell_checker_service_settings">Android Spell Checker Settings (AOSP)</string>
-
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
