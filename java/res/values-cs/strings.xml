@@ -53,8 +53,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dvojím klepnutím na mezerník vložíte tečku následovanou mezerou."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Velká písmena automaticky"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Kapitalizace prvního slova každé věty"</string>
-    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
-    <skip />
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Osobní slovník"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Doplňkové slovníky"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Hlavní slovník"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Zobrazit návrhy oprav"</string>
@@ -188,10 +187,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Nyní můžete ve všech svých oblíbených aplikacích psát pomocí aplikace <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Nakonfigurovat další jazyky"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Hotovo"</string>
-    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
-    <skip />
-    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
-    <skip />
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Zobrazit ikonu aplikace"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Zobrazí ikonu aplikace ve spouštěči"</string>
     <string name="app_name" msgid="6320102637491234792">"Poskytovatel slovníku"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Poskytovatel slovníku"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Služba slovníku"</string>
@@ -222,6 +219,5 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Je k dispozici slovník pro jazyk <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Stisknutím zkontrolujete a stáhnete"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Stahování: návrhy pro jazyk <xliff:g id="LANGUAGE">%1$s</xliff:g> budou brzy k dispozici."</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
-    <skip />
+    <string name="version_text" msgid="2715354215568469385">"Verze <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
 </resources>

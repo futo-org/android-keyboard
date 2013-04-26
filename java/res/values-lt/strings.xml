@@ -53,8 +53,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dukart palietus tarpo klavišą įterpiamas taškas ir tarpas."</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatinis didžiųjų raidžių rašymas"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Kiekvieno sakinio pirmą žodį rašyti iš didžiosios raidės"</string>
-    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
-    <skip />
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Asmeninis žodynas"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Papildomi žodynai"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Pagrindinis žodynas"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Rodyti taisymo pasiūlymus"</string>
@@ -188,10 +187,8 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Dabar galite įvesti visas mėgstamas programas naudodami „<xliff:g id="APPLICATION_NAME">%s</xliff:g>“."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Konfigūruokite papildomas kalbas"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Baigta"</string>
-    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
-    <skip />
-    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
-    <skip />
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Rodyti programos piktogramą"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Pateikti programos piktogramą paleidimo priemonėje"</string>
     <string name="app_name" msgid="6320102637491234792">"Žodyno teikėjas"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Žodyno teikėjas"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Žodyno paslauga"</string>
@@ -222,6 +219,5 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Galimas <xliff:g id="LANGUAGE">%1$s</xliff:g> žodynas"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Paspauskite, kad peržiūrėtumėte ir atsisiųstumėte"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Atsisiunčiama. Netrukus bus galimi <xliff:g id="LANGUAGE">%1$s</xliff:g> pasiūlymai."</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
-    <skip />
+    <string name="version_text" msgid="2715354215568469385">"<xliff:g id="VERSION_NUMBER">%1$s</xliff:g> versija"</string>
 </resources>

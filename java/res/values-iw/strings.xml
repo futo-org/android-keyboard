@@ -71,7 +71,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"השתמש במילה הקודמת ביצירת הצעות"</string>
     <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה ללא הרמת אצבע"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל מחווה"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל תנועות"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה מקדימה דינמית צפה"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : נשמרה"</string>
@@ -219,6 +219,5 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"יש מילון זמין עבור <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"לחץ כדי לעיין ולהוריד"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"מוריד: הצעות ב<xliff:g id="LANGUAGE">%1$s</xliff:g> יהיו מוכנות בקרוב."</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
-    <skip />
+    <string name="version_text" msgid="2715354215568469385">"גרסה <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
 </resources>
