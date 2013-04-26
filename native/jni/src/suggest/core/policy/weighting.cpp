@@ -69,8 +69,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
 }
 
 /* static */ void Weighting::addCostAndForwardInputIndex(const Weighting *const weighting,
-        const CorrectionType correctionType,
-        const DicTraverseSession *const traverseSession,
+        const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
         const DicNode *const parentDicNode, DicNode *const dicNode,
         hash_map_compat<int, int16_t> *const bigramCacheMap) {
     const int inputSize = traverseSession->getInputSize();
@@ -94,9 +93,9 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
 }
 
 /* static */ float Weighting::getSpatialCost(const Weighting *const weighting,
-        const CorrectionType correctionType,
-        const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
-        const DicNode *const dicNode, DicNode_InputStateG *const inputStateG) {
+        const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
+        const DicNode *const parentDicNode, const DicNode *const dicNode,
+        DicNode_InputStateG *const inputStateG) {
     switch(correctionType) {
     case CT_OMISSION:
         return weighting->getOmissionCost(parentDicNode, dicNode);
