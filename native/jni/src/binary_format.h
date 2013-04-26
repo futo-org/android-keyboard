@@ -164,7 +164,7 @@ inline int BinaryFormat::getFlags(const uint8_t *const dict) {
 }
 
 inline bool BinaryFormat::hasBlacklistedOrNotAWordFlag(const int flags) {
-    return flags & (FLAG_IS_BLACKLISTED | FLAG_IS_NOT_A_WORD);
+    return (flags & (FLAG_IS_BLACKLISTED | FLAG_IS_NOT_A_WORD)) != 0;
 }
 
 inline int BinaryFormat::getHeaderSize(const uint8_t *const dict) {
