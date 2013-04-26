@@ -47,6 +47,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
+    public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
+            "pref_key_block_potentially_offensive";
     public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
@@ -144,6 +146,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mCurrentLocale;
     }
 
+    public boolean getBlockPotentiallyOffensive() {
+        return mSettingsValues.mBlockPotentiallyOffensive;
+    }
+
     // Accessed from the settings interface, hence public
     public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
             final Resources res) {
@@ -163,6 +169,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         final String autoCorrectionOff = res.getString(
                 R.string.auto_correction_threshold_mode_index_off);
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
+    }
+
+    public static boolean readBlockPotentiallyOffensive(final SharedPreferences prefs,
+            final Resources res) {
+        return prefs.getBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
+                res.getBoolean(R.bool.config_block_potentially_offensive));
     }
 
     public static boolean readFromBuildConfigIfGestureInputEnabled(final Resources res) {
