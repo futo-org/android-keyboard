@@ -219,8 +219,9 @@ public final class WordListPreference extends Preference {
             final ListView listView = (ListView)parent;
             final int indexToOpen;
             // Close all first, we'll open back any item that needs to be open.
+            final boolean wasOpen = mInterfaceState.isOpen(mWordlistId);
             mInterfaceState.closeAll();
-            if (mInterfaceState.isOpen(mWordlistId)) {
+            if (wasOpen) {
                 // This button being shown. Take note that we don't want to open any button in the
                 // loop below.
                 indexToOpen = -1;
