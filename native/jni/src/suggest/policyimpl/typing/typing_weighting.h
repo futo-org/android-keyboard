@@ -34,8 +34,8 @@ class TypingWeighting : public Weighting {
     static const TypingWeighting *getInstance() { return &sInstance; }
 
  protected:
-    float getTerminalSpatialCost(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
+    float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
         float cost = 0.0f;
         if (dicNode->hasMultipleWords()) {
             cost += ScoringParams::HAS_MULTI_WORD_TERMINAL_COST;
@@ -66,9 +66,8 @@ class TypingWeighting : public Weighting {
         return cost;
     }
 
-    float getMatchedCost(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
-            DicNode_InputStateG *inputStateG) const {
+    float getMatchedCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const {
         const int pointIndex = dicNode->getInputIndex(0);
         // Note: min() required since length can be MAX_POINT_TO_KEY_LENGTH for characters not on
         // the keyboard (like accented letters)
@@ -85,8 +84,8 @@ class TypingWeighting : public Weighting {
         return weightedDistance + cost;
     }
 
-    bool isProximityDicNode(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
+    bool isProximityDicNode(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
         const int pointIndex = dicNode->getInputIndex(0);
         const int primaryCodePoint = toBaseLowerCase(
                 traverseSession->getProximityInfoState(0)->getPrimaryCodePointAt(pointIndex));
@@ -94,9 +93,8 @@ class TypingWeighting : public Weighting {
         return primaryCodePoint != dicNodeChar;
     }
 
-    float getTranspositionCost(
-            const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
-            const DicNode *const dicNode) const {
+    float getTranspositionCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode, const DicNode *const dicNode) const {
         const int16_t parentPointIndex = parentDicNode->getInputIndex(0);
         const int prevCodePoint = parentDicNode->getNodeCodePoint();
         const float distance1 = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
@@ -110,8 +108,7 @@ class TypingWeighting : public Weighting {
         return ScoringParams::TRANSPOSITION_COST + weightedLengthDistance;
     }
 
-    float getInsertionCost(
-            const DicTraverseSession *const traverseSession,
+    float getInsertionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const {
         const int16_t parentPointIndex = parentDicNode->getInputIndex(0);
         const int prevCodePoint =
@@ -137,8 +134,8 @@ class TypingWeighting : public Weighting {
         return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
-    float getNewWordBigramCost(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
+    float getNewWordBigramCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode,
             hash_map_compat<int, int16_t> *const bigramCacheMap) const {
         return DicNodeUtils::getBigramNodeImprobability(traverseSession->getOffsetDict(),
                 dicNode, bigramCacheMap) * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
@@ -174,8 +171,7 @@ class TypingWeighting : public Weighting {
         return ScoringParams::SUBSTITUTION_COST;
     }
 
-    AK_FORCE_INLINE float getSpaceSubstitutionCost(
-            const DicTraverseSession *const traverseSession,
+    AK_FORCE_INLINE float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const {
         const bool isCapitalized = dicNode->isCapitalized();
         const float cost = ScoringParams::SPACE_SUBSTITUTION_COST + (isCapitalized ?

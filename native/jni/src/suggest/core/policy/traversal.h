@@ -39,9 +39,8 @@ class Traversal {
             const DicNode *const dicNode) const = 0;
     virtual bool canDoLookAheadCorrection(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
-    virtual ProximityType getProximityType(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
-            const DicNode *const childDicNode) const = 0;
+    virtual ProximityType getProximityType(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode, const DicNode *const childDicNode) const = 0;
     virtual bool sameAsTyped(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
     virtual bool needsToTraverseAllUserInput() const = 0;
@@ -49,9 +48,8 @@ class Traversal {
     virtual bool allowPartialCommit() const = 0;
     virtual int getDefaultExpandDicNodeSize() const = 0;
     virtual int getMaxCacheSize() const = 0;
-    virtual bool isPossibleOmissionChildNode(
-            const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
-            const DicNode *const dicNode) const = 0;
+    virtual bool isPossibleOmissionChildNode(const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
     virtual bool isGoodToTraverseNextWord(const DicNode *const dicNode) const = 0;
 
  protected:

@@ -187,7 +187,7 @@ void BigramDictionary::fillBigramAddressToProbabilityMapAndFilter(const int *pre
                 &pos);
         (*map)[bigramPos] = probability;
         setInFilter(filter, bigramPos);
-    } while (0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
+    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
 }
 
 bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) const {
