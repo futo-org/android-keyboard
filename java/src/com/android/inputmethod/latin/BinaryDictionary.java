@@ -139,6 +139,8 @@ public final class BinaryDictionary extends Dictionary {
                 inputSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes);
+        final boolean blockPotentiallyOffensive =
+                Settings.getInstance().getBlockPotentiallyOffensive();
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;
@@ -148,10 +150,11 @@ public final class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 final int flags = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_FLAGS;
-                if (0 != (flags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
+                if (blockPotentiallyOffensive
+                        && 0 != (flags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
                         && 0 == (flags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
-                    // If the word is possibly offensive, we don't output it unless it's also
-                    // an exact match.
+                    // If we block potentially offensive words, and if the word is possibly
+                    // offensive, then we don't output it unless it's also an exact match.
                     continue;
                 }
                 final int kind = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_KIND;

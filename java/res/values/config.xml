@@ -75,6 +75,7 @@
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <bool name="config_block_potentially_offensive">true</bool>
     <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
     <integer name="config_gesture_preview_trail_fadeout_start_delay">100</integer>
     <integer name="config_gesture_preview_trail_fadeout_duration">800</integer>
