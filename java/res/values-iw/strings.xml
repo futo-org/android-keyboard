@@ -20,10 +20,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"מקלדת Android‏ (AOSP)"</string>
-    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"הגדרות מקלדת Android‏ (AOSP)"</string>
-    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"בודק האיות של Android‏ (AOSP)"</string>
-    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"הגדרות בודק האיות של Android‏ (AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"אפשרויות קלט"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"פקודות יומן מחקר"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"חפש שמות של אנשי קשר"</string>
@@ -61,6 +57,10 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"הצג תמיד"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"הצג בפריסה לאורך"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"הסתר תמיד"</string>
+    <!-- no translation found for prefs_block_potentially_offensive_title (5078480071057408934) -->
+    <skip />
+    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
+    <skip />
     <string name="auto_correction" msgid="7630720885194996950">"תיקון אוטומטי"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"מקש הרווח ופיסוק מתקנים אוטומטית שגיאות הקלדה"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"כבוי"</string>
@@ -71,7 +71,7 @@
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"השתמש במילה הקודמת ביצירת הצעות"</string>
     <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה ללא הרמת אצבע"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל מחווה"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל תנועות"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה מקדימה דינמית צפה"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : נשמרה"</string>
@@ -221,6 +221,49 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"יש מילון זמין עבור <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"לחץ כדי לעיין ולהוריד"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"מוריד: הצעות ב<xliff:g id="LANGUAGE">%1$s</xliff:g> יהיו מוכנות בקרוב."</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
+    <string name="version_text" msgid="2715354215568469385">"גרסה <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
+    <skip />
+    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
+    <skip />
+    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_screen_title (5818914331629278758) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_more_options (5671682004887093112) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_less_options (2716586567241724126) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_dialog_confirm (4703129507388332950) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_word_option_name (6665558053408962865) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_shortcut_option_name (3094731590655523777) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_locale_option_name (4738643440987277705) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_word_hint (4902434148985906707) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_add_shortcut_hint (2265453012555060178) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_edit_dialog_title (3765774633869590352) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_context_menu_edit_title (6812255903472456302) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_context_menu_delete_title (8142932447689461181) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_empty_text (558499587532668203) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_all_languages (8276126583216298886) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_more_languages (7131268499685180461) -->
+    <skip />
+    <!-- no translation found for user_dict_settings_delete (110413335187193859) -->
+    <skip />
+    <!-- no translation found for user_dict_fast_scroll_alphabet (5431919401558285473) -->
     <skip />
 </resources>
