@@ -36,9 +36,12 @@
     <skip />
     <!-- no translation found for use_contacts_for_spellchecking_option_summary (8754413382543307713) -->
     <skip />
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar cun smatgar in buttun"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Tun cun smatgar in buttun"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up cun smatgar ina tasta"</string>
+    <!-- no translation found for vibrate_on_keypress (5258079494276955460) -->
+    <skip />
+    <!-- no translation found for sound_on_keypress (6093592297198243644) -->
+    <skip />
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <!-- no translation found for general_category (1859088467017573195) -->
     <skip />
     <!-- no translation found for correction_category (2236750915056607613) -->
@@ -79,7 +82,8 @@
     <skip />
     <!-- no translation found for use_double_space_period_summary (6532892187247952799) -->
     <skip />
-    <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
+    <!-- no translation found for auto_cap (1719746674854628252) -->
+    <skip />
     <!-- no translation found for auto_cap_summary (7934452761022946874) -->
     <skip />
     <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
@@ -124,13 +128,13 @@
     <skip />
     <!-- no translation found for gesture_floating_preview_text_summary (4472696213996203533) -->
     <skip />
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
+    <!-- no translation found for added_word (8993883354622484372) -->
     <skip />
-    <string name="label_done_key" msgid="2441578748772529288">"Finì"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Trametter"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Оди"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Следно"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Претходно"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Испрати"</string>
     <!-- no translation found for label_pause_key (181098308428035340) -->
     <skip />
     <!-- no translation found for label_wait_key (6402152600878093134) -->
@@ -231,15 +235,18 @@
     <skip />
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
-    <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
+    <!-- no translation found for language_selection_title (1651299598555326750) -->
+    <skip />
     <!-- no translation found for send_feedback (1780431884109392046) -->
     <skip />
     <!-- no translation found for select_language (3693815588777926848) -->
     <skip />
     <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
     <skip />
-    <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
+    <!-- no translation found for has_dictionary (6071847973466625007) -->
+    <skip />
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
     <!-- no translation found for prefs_description_log (7525225584555429211) -->
     <skip />
     <!-- no translation found for keyboard_layout (8451164783510487501) -->
@@ -388,7 +395,8 @@
     <skip />
     <!-- no translation found for main_dict_description (3072821352793492143) -->
     <skip />
-    <string name="cancel" msgid="6830980399865683324">"Interrumper"</string>
+    <!-- no translation found for cancel (6830980399865683324) -->
+    <skip />
     <!-- no translation found for install_dict (180852772562189365) -->
     <skip />
     <!-- no translation found for cancel_download_dict (7843340278507019303) -->

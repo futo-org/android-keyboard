@@ -20,6 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"Klawiatura Android (AOSP)"</string>
+    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"Ustawienia klawiatury Android (AOSP)"</string>
+    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"Sprawdzanie pisowni na Androidzie (AOSP)"</string>
+    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"Ustawienia sprawdzania pisowni na Androidzie (AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Polecenia dziennika badań"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Przeszukaj kontakty"</string>
@@ -49,7 +53,8 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Dwukrotne kliknięcie spacji wstawia kropkę ze spacją"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Wstawiaj wielkie litery"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Zaczynaj każde zdanie wielką literą"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"Słownik osobisty"</string>
+    <!-- no translation found for edit_personal_dictionary (3996910038952940420) -->
+    <skip />
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dodatkowe słowniki"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Słownik główny"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Pokazuj propozycje poprawek"</string>
@@ -57,10 +62,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Zawsze pokazuj"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Pokaż w trybie pionowym"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Zawsze ukrywaj"</string>
-    <!-- no translation found for prefs_block_potentially_offensive_title (5078480071057408934) -->
-    <skip />
-    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
-    <skip />
     <string name="auto_correction" msgid="7630720885194996950">"Autokorekta"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spacja i znaki przestankowe poprawiają błędnie wpisane słowa"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Wyłącz"</string>
@@ -189,8 +190,10 @@
     <string name="setup_step3_instruction" msgid="8025981829605426000">"Teraz możesz pisać we wszystkich swoich ulubionych aplikacjach, używając aplikacji <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Skonfiguruj dodatkowe języki"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Zakończone"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Pokaż ikonę aplikacji"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"Wyświetl ikonę aplikacji w programie uruchamiającym"</string>
+    <!-- no translation found for show_setup_wizard_icon (5008028590593710830) -->
+    <skip />
+    <!-- no translation found for show_setup_wizard_icon_summary (4119998322536880213) -->
+    <skip />
     <string name="app_name" msgid="6320102637491234792">"Dostawca słownika"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Dostawca słownika"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"Usługa słownika"</string>
@@ -221,49 +224,6 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Dostępny jest słownik <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Naciśnij, by sprawdzić i pobrać"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Pobieranie – wkrótce będą dostępne sugestie w tym języku: <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
-    <string name="version_text" msgid="2715354215568469385">"Wersja <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
-    <skip />
-    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
-    <skip />
-    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_screen_title (5818914331629278758) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_more_options (5671682004887093112) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_less_options (2716586567241724126) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_confirm (4703129507388332950) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_option_name (6665558053408962865) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_option_name (3094731590655523777) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_locale_option_name (4738643440987277705) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_hint (4902434148985906707) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_hint (2265453012555060178) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_edit_dialog_title (3765774633869590352) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_edit_title (6812255903472456302) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_delete_title (8142932447689461181) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_empty_text (558499587532668203) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_all_languages (8276126583216298886) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_more_languages (7131268499685180461) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_delete (110413335187193859) -->
-    <skip />
-    <!-- no translation found for user_dict_fast_scroll_alphabet (5431919401558285473) -->
+    <!-- no translation found for version_text (2715354215568469385) -->
     <skip />
 </resources>
