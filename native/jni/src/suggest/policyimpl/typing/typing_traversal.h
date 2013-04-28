@@ -39,7 +39,7 @@ class TypingTraversal : public Traversal {
 
     AK_FORCE_INLINE bool allowsErrorCorrections(const DicNode *const dicNode) const {
         return dicNode->getNormalizedSpatialDistance()
-                < ScoringParams::MAX_NORM_DISTANCE_FOR_EDIT;
+                < ScoringParams::NORMALIZED_SPATIAL_DISTANCE_THRESHOLD_FOR_EDIT;
     }
 
     AK_FORCE_INLINE bool isOmission(const DicTraverseSession *const traverseSession,
