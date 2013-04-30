@@ -80,8 +80,18 @@ class TypingWeighting : public Weighting {
 
         const bool isFirstChar = pointIndex == 0;
         const bool isProximity = isProximityDicNode(traverseSession, dicNode);
-        const float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_PROXIMITY_COST
+        float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_PROXIMITY_COST
                 : ScoringParams::PROXIMITY_COST) : 0.0f;
+        if (dicNode->getDepth() == 2) {
+            // At the second character of the current word, we check if the first char is uppercase
+            // and the word is a second or later word of a multiple word suggestion. We demote it
+            // if so.
+            const bool isSecondOrLaterWordFirstCharUppercase =
+                    dicNode->hasMultipleWords() && dicNode->isFirstCharUppercase();
+            if (isSecondOrLaterWordFirstCharUppercase) {
+                cost += ScoringParams::COST_SECOND_OR_LATER_WORD_FIRST_CHAR_UPPERCASE;
+            }
+        }
         return weightedDistance + cost;
     }
 
@@ -129,10 +139,7 @@ class TypingWeighting : public Weighting {
 
     float getNewWordCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const {
-        const bool isCapitalized = dicNode->isCapitalized();
-        const float cost = isCapitalized ?
-                ScoringParams::COST_NEW_WORD_CAPITALIZED : ScoringParams::COST_NEW_WORD;
-        return cost * traverseSession->getMultiWordCostMultiplier();
+        return ScoringParams::COST_NEW_WORD * traverseSession->getMultiWordCostMultiplier();
     }
 
     float getNewWordBigramCost(const DicTraverseSession *const traverseSession,
@@ -174,9 +181,7 @@ class TypingWeighting : public Weighting {
 
     AK_FORCE_INLINE float getSpaceSubstitutionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const {
-        const bool isCapitalized = dicNode->isCapitalized();
-        const float cost = ScoringParams::SPACE_SUBSTITUTION_COST + (isCapitalized ?
-                ScoringParams::COST_NEW_WORD_CAPITALIZED : ScoringParams::COST_NEW_WORD);
+        const float cost = ScoringParams::SPACE_SUBSTITUTION_COST + ScoringParams::COST_NEW_WORD;
         return cost * traverseSession->getMultiWordCostMultiplier();
     }
 
