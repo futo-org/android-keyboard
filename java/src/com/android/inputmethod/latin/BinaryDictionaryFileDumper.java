@@ -210,7 +210,7 @@ public final class BinaryDictionaryFileDumper {
      * to the cache file name designated by its id and locale, overwriting it if already present
      * and creating it (and its containing directory) if necessary.
      */
-    private static AssetFileAddress cacheWordList(final String wordlistId, final String locale,
+    private static void cacheWordList(final String wordlistId, final String locale,
             final ContentProviderClient providerClient, final Context context) {
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
         final int CRYPTED_COMPRESSED = 1;
@@ -228,7 +228,7 @@ public final class BinaryDictionaryFileDumper {
                     providerClient, QUERY_PATH_DATAFILE, wordlistId /* extraPath */);
         } catch (RemoteException e) {
             Log.e(TAG, "Can't communicate with the dictionary pack", e);
-            return null;
+            return;
         }
         final String finalFileName =
                 DictionaryInfoUtils.getCacheFileName(wordlistId, locale, context);
@@ -237,11 +237,11 @@ public final class BinaryDictionaryFileDumper {
             tempFileName = BinaryDictionaryGetter.getTempFileName(wordlistId, context);
         } catch (IOException e) {
             Log.e(TAG, "Can't open the temporary file", e);
-            return null;
+            return;
         }
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
-            InputStream originalSourceStream = null;
+            final InputStream originalSourceStream;
             InputStream inputStream = null;
             InputStream uncompressedStream = null;
             InputStream decryptedStream = null;
@@ -254,7 +254,7 @@ public final class BinaryDictionaryFileDumper {
                 // Open input.
                 afd = openAssetFileDescriptor(providerClient, wordListUri);
                 // If we can't open it at all, don't even try a number of times.
-                if (null == afd) return null;
+                if (null == afd) return;
                 originalSourceStream = afd.createInputStream();
                 // Open output.
                 outputFile = new File(tempFileName);
@@ -305,7 +305,7 @@ public final class BinaryDictionaryFileDumper {
                 }
                 BinaryDictionaryGetter.removeFilesWithIdExcept(context, wordlistId, finalFile);
                 // Success! Close files (through the finally{} clause) and return.
-                return AssetFileAddress.makeFromFileName(finalFileName);
+                return;
             } catch (Exception e) {
                 if (DEBUG) {
                     Log.i(TAG, "Can't open word list in mode " + mode, e);
@@ -320,7 +320,7 @@ public final class BinaryDictionaryFileDumper {
             } finally {
                 // Ignore exceptions while closing files.
                 try {
-                    // inputStream.close() will close afd, we should not call afd.close().
+                    if (null != afd) afd.close();
                     if (null != inputStream) inputStream.close();
                     if (null != uncompressedStream) uncompressedStream.close();
                     if (null != decryptedStream) decryptedStream.close();
@@ -350,7 +350,6 @@ public final class BinaryDictionaryFileDumper {
         } catch (RemoteException e) {
             Log.e(TAG, "In addition, communication with the dictionary provider was cut", e);
         }
-        return null;
     }
 
     /**
@@ -359,30 +358,23 @@ public final class BinaryDictionaryFileDumper {
      * This will query a content provider for word list data for a given locale, and copy the
      * files locally so that they can be mmap'ed. This may overwrite previously cached word lists
      * with newer versions if a newer version is made available by the content provider.
-     * @returns the addresses of the word list files, or null if no data could be obtained.
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static List<AssetFileAddress> cacheWordListsFromContentProvider(final Locale locale,
+    public static void cacheWordListsFromContentProvider(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
         final ContentProviderClient providerClient = context.getContentResolver().
                 acquireContentProviderClient(getProviderUriBuilder("").build());
         if (null == providerClient) {
             Log.e(TAG, "Can't establish communication with the dictionary provider");
-            return CollectionUtils.newArrayList();
+            return;
         }
         try {
             final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
                     hasDefaultWordList);
-            final ArrayList<AssetFileAddress> fileAddressList = CollectionUtils.newArrayList();
             for (WordListInfo id : idList) {
-                final AssetFileAddress afd =
-                        cacheWordList(id.mId, id.mLocale, providerClient, context);
-                if (null != afd) {
-                    fileAddressList.add(afd);
-                }
+                cacheWordList(id.mId, id.mLocale, providerClient, context);
             }
-            return fileAddressList;
         } finally {
             providerClient.release();
         }

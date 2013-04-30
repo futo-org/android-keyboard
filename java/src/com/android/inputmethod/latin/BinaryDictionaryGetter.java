@@ -290,9 +290,6 @@ final class BinaryDictionaryGetter {
             final Context context) {
 
         final boolean hasDefaultWordList = DictionaryFactory.isDictionaryAvailable(context, locale);
-        // cacheWordListsFromContentProvider returns the list of files it copied to local
-        // storage, but we don't really care about what was copied NOW: what we want is the
-        // list of everything we ever cached, so we ignore the return value.
         // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
         // Service yet
         if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
