@@ -48,5 +48,5 @@ const float ScoringParams::HAS_EDIT_CORRECTION_TERMINAL_COST = 0.038f;
 const float ScoringParams::HAS_MULTI_WORD_TERMINAL_COST = 0.444f;
 const float ScoringParams::TYPING_BASE_OUTPUT_SCORE = 1.0f;
 const float ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT = 0.1f;
-const float ScoringParams::MAX_NORM_DISTANCE_FOR_EDIT = 0.1f;
+const float ScoringParams::NORMALIZED_SPATIAL_DISTANCE_THRESHOLD_FOR_EDIT = 0.06f;
 } // namespace latinime
