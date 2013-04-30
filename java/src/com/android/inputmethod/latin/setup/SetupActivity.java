@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 
 // TODO: Use Fragment to implement welcome screen and setup steps.
 public final class SetupActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = SetupActivity.class.getSimpleName();
+
     private View mWelcomeScreen;
     private View mSetupScreen;
     private Uri mWelcomeVideoUri;
@@ -196,6 +199,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 // Now VideoView has been laid-out and ready to play, remove background of it to
                 // reveal the video.
                 mWelcomeVideoView.setBackgroundResource(0);
+            }
+        });
+        mWelcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(final MediaPlayer mp, final int what, final int extra) {
+                Log.e(TAG, "Playing welcome video causes error: what=" + what + " extra=" + extra);
+                mWelcomeVideoView.setVisibility(View.GONE);
+                return true;
             }
         });
 
