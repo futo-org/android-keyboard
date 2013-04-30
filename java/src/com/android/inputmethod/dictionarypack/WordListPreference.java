@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.R;
@@ -195,9 +194,10 @@ public final class WordListPreference extends Preference {
         super.onBindView(view);
         ((ViewGroup)view).setLayoutTransition(null);
 
-        final ProgressBar progressBar =
-                (ProgressBar)view.findViewById(R.id.dictionary_line_progress_bar);
+        final DictionaryDownloadProgressBar progressBar =
+                (DictionaryDownloadProgressBar)view.findViewById(R.id.dictionary_line_progress_bar);
         final TextView status = (TextView)view.findViewById(android.R.id.summary);
+        progressBar.setIds(mClientId, mWordlistId);
         progressBar.setMax(mFilesize);
         final boolean showProgressBar = (MetadataDbHelper.STATUS_DOWNLOADING == mStatus);
         status.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
