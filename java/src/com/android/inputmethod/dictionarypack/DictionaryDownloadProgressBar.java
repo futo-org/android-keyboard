@@ -123,6 +123,7 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
                 final UpdateHelper updateHelper = new UpdateHelper();
                 final Query query = new Query().setFilterById(mId);
                 int lastProgress = 0;
+                setIndeterminate(true);
                 while (!isInterrupted()) {
                     final Cursor cursor = mDownloadManager.query(query);
                     if (null == cursor) {
@@ -156,6 +157,7 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
             private int mProgress;
             @Override
             public void run() {
+                setIndeterminate(false);
                 setProgress(mProgress);
             }
             public void setProgressFromAnotherThread(final int progress) {
