@@ -22,7 +22,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/setup_welcome_video_vertical_margin"
+        android:paddingBottom="@dimen/setup_welcome_video_vertical_margin">
         <View
             android:layout_weight="@integer/setup_welcome_video_left_padding_weight_in_screen"
             android:layout_width="0dp"
@@ -31,8 +33,6 @@
             android:id="@+id/setup_welcome_video"
             android:background="@color/setup_background"
             android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
-            android:layout_marginTop="@dimen/setup_welcome_video_vertical_margin"
-            android:layout_marginBottom="@dimen/setup_welcome_video_vertical_margin"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <View
