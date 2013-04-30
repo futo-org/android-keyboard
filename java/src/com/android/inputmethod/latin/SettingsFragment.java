@@ -420,10 +420,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             // not present or disabled. In this case we need to remove the preference.
             getPreferenceScreen().removePreference(userDictionaryPreference);
         } else if (localeList.size() <= 1) {
-            final Intent intent =
-                    new Intent(UserDictionaryList.USER_DICTIONARY_SETTINGS_INTENT_ACTION);
-            userDictionaryPreference.setTitle(R.string.user_dict_single_settings_title);
-            userDictionaryPreference.setIntent(intent);
             userDictionaryPreference.setFragment(UserDictionarySettings.class.getName());
             // If the size of localeList is 0, we don't set the locale parameter in the
             // extras. This will be interpreted by the UserDictionarySettings class as
@@ -436,7 +432,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 userDictionaryPreference.getExtras().putString("locale", locale);
             }
         } else {
-            userDictionaryPreference.setTitle(R.string.user_dict_multiple_settings_title);
             userDictionaryPreference.setFragment(UserDictionaryList.class.getName());
         }
     }
