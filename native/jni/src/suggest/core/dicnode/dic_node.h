@@ -219,7 +219,7 @@ class DicNode {
         return (prevWordLen == 1 && currentWordLen == 1);
     }
 
-    bool isCapitalized() const {
+    bool isFirstCharUppercase() const {
         const int c = getOutputWordBuf()[0];
         return isAsciiUpper(c);
     }
