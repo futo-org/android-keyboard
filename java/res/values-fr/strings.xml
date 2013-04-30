@@ -55,7 +55,7 @@
     <string name="auto_cap_summary" msgid="7934452761022946874">"Majuscule au premier mot de chaque phrase"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dictionnaires complémentaires"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dictionnaire principal"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afficher les suggestions de correction"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Suggestions de correction"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Toujours afficher"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Afficher en mode Portrait"</string>
