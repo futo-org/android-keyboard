@@ -51,7 +51,8 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> 
             new Dictionary(Dictionary.TYPE_MAIN) {
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                        final String prevWord, final ProximityInfo proximityInfo) {
+                        final String prevWord, final ProximityInfo proximityInfo,
+                        final boolean blockOffensiveWords) {
                     return noSuggestions;
                 }
                 @Override

@@ -51,18 +51,21 @@ public abstract class Dictionary {
      * @param composer the key sequence to match with coordinate info, as a WordComposer
      * @param prevWord the previous word, or null if none
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
+     * @param blockOffensiveWords whether to block potentially offensive words
      * @return the list of suggestions (possibly null if none)
      */
     // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
     // and more)
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo);
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords);
 
     // The default implementation of this method ignores sessionId.
     // Subclasses that want to use sessionId need to override this method.
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo, final int sessionId) {
-        return getSuggestions(composer, prevWord, proximityInfo);
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int sessionId) {
+        return getSuggestions(composer, prevWord, proximityInfo, blockOffensiveWords);
     }
 
     /**

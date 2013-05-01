@@ -306,9 +306,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 if (!DictionaryPool.isAValidDictionary(dictInfo)) {
                     return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                 }
+                // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
-                                dictInfo.mProximityInfo);
+                                dictInfo.mProximityInfo, true /* blockOffensiveWords */);
                 for (final SuggestedWordInfo suggestion : suggestions) {
                     final String suggestionStr = suggestion.mWord;
                     suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,

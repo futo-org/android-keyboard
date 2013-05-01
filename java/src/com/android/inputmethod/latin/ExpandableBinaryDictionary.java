@@ -200,12 +200,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo) {
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords) {
         asyncReloadDictionaryIfRequired();
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo);
+                    return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
+                            blockOffensiveWords);
                 }
             } finally {
                 mLocalDictionaryController.unlock();

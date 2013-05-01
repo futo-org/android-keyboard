@@ -2185,6 +2185,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 mConnection.getNthPreviousWord(mSettings.getCurrent().mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
         return mSuggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
+                mSettings.getBlockPotentiallyOffensive(),
                 mSettings.getCurrent().mCorrectionEnabled, sessionId);
     }
 
