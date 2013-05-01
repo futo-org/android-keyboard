@@ -225,14 +225,7 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"یک فرهنگ لغت برای <xliff:g id="LANGUAGE">%1$s</xliff:g> موجود است"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"برای مرور و دانلود فشار دهید"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"دانلود لغات پیشنهادی برای <xliff:g id="LANGUAGE">%1$s</xliff:g> به زودی شروع می‌شود."</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
-    <skip />
-    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
-    <skip />
-    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
-    <skip />
+    <string name="version_text" msgid="2715354215568469385">"نسخه <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
     <skip />
     <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
