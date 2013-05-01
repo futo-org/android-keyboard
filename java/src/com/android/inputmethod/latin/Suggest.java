@@ -174,21 +174,22 @@ public final class Suggest {
 
     public SuggestedWords getSuggestedWords(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
-            final boolean isCorrectionEnabled, final int sessionId) {
+            final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
+            final int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
             return getSuggestedWordsForBatchInput(
-                    wordComposer, prevWordForBigram, proximityInfo, sessionId);
+                    wordComposer, prevWordForBigram, proximityInfo, blockOffensiveWords, sessionId);
         } else {
             return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
-                    isCorrectionEnabled);
+                    blockOffensiveWords, isCorrectionEnabled);
         }
     }
 
     // Retrieves suggestions for the typing input.
     private SuggestedWords getSuggestedWordsForTypingInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
-            final boolean isCorrectionEnabled) {
+            final boolean blockOffensiveWords, final boolean isCorrectionEnabled) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -212,7 +213,7 @@ public final class Suggest {
         for (final String key : mDictionaries.keySet()) {
             final Dictionary dictionary = mDictionaries.get(key);
             suggestionsSet.addAll(dictionary.getSuggestions(
-                    wordComposerForLookup, prevWordForBigram, proximityInfo));
+                    wordComposerForLookup, prevWordForBigram, proximityInfo, blockOffensiveWords));
         }
 
         final String whitelistedWord;
@@ -301,7 +302,7 @@ public final class Suggest {
     // Retrieves suggestions for the batch input.
     private SuggestedWords getSuggestedWordsForBatchInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
-            final int sessionId) {
+            final boolean blockOffensiveWords, final int sessionId) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
@@ -314,8 +315,8 @@ public final class Suggest {
                 continue;
             }
             final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(
-                    wordComposer, prevWordForBigram, proximityInfo, sessionId));
+            suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(wordComposer,
+                    prevWordForBigram, proximityInfo, blockOffensiveWords, sessionId));
         }
 
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
