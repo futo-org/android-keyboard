@@ -27,20 +27,20 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcions d\'entrada"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Recerca d\'ordres de reg."</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cerca noms de contactes"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"El corrector ortogràfic utilitza entrades de la llista de cont."</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"El corrector ortogràfic utilitza entrades de la llista de contactes"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibra en prémer tecles"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"So en prémer tecles"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Amplia en prémer tecles"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Correcció de text"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"Escriptura per gestos"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"Escriptura gestual"</string>
     <string name="misc_category" msgid="6894192814868233453">"Altres opcions"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Configuració avançada"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opcions per a experts"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altres mètodes d\'entrada"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Altres mètodes d\'introducció"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de canvi d\'idioma serveix també per a altres mètodes d\'entrada"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla de canvi d\'idioma"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostra-la quan hi hagi diversos idiomes d\'entrada activats"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostra-la quan hi hagi diversos idiomes d\'introducció activats"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostra l\'indicador per lliscar"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostra la indicació visual en lliscar des de la tecla Maj o Símbol"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retard en ampliar tecla"</string>
@@ -68,10 +68,10 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Molt agressiu"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suggeriments de paraula següent"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Utilitza la paraula anterior a l\'hora de fer suggeriments"</string>
-    <string name="gesture_input" msgid="826951152254563827">"Activa l\'escriptura per gestos"</string>
+    <string name="gesture_input" msgid="826951152254563827">"Activa l\'escriptura gestual"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Escriu una paraula fent lliscar el dit per les lletres"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostra el recorregut del gest"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Previs. text flotant dinàmic"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Visualitz. prèvia dinàmica flotant"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Consulta la paraula suggerida mentre fas el gest"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: desada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Vés"</string>
@@ -127,15 +127,15 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivada"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micròfon al teclat principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en tecl. símb."</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entr. veu desactiv."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de veu desactivada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'entrada"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Idiomes d\'entrada"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Idiomes"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Envia comentaris"</string>
-    <string name="select_language" msgid="3693815588777926848">"Idiomes d\'entrada"</string>
+    <string name="select_language" msgid="3693815588777926848">"Idiomes d\'introducció"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Torna a tocar per desar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activa els comentaris de l\'usuari"</string>
-    <string name="prefs_description_log" msgid="7525225584555429211">"Permet que s\'enviïn automàticament estadístiques d\'ús i informes d\'error per ajudar-nos a millorar l\'editor de mètodes d\'introducció."</string>
+    <string name="prefs_description_log" msgid="7525225584555429211">"Ajuda a millorar aquest editor de mètode d\'introducció de text mitjançant l\'enviament d\'estadístiques d\'ús i d\'informes d\'error."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclat"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglès (Regne Unit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglès (EUA)"</string>
@@ -171,7 +171,7 @@
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"Realment vols instal·lar aquest fitxer per a <xliff:g id="LOCALE_NAME">%s</xliff:g>?"</string>
     <string name="error" msgid="8940763624668513648">"S\'ha produït un error"</string>
     <string name="button_default" msgid="3988017840431881491">"Predeterminat"</string>
-    <string name="language_settings" msgid="1671153053201809031">"Idioma i introducció"</string>
+    <string name="language_settings" msgid="1671153053201809031">"Idioma i introducció de text"</string>
     <string name="select_input_method" msgid="4301602374609275003">"Selecció de mètodes d\'introducció"</string>
     <string name="app_name" msgid="6320102637491234792">"Proveïdor de diccionaris"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"Proveïdor de diccionaris"</string>
@@ -197,7 +197,7 @@
     <string name="install_dict" msgid="180852772562189365">"Instal·la"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"Cancel·la"</string>
     <string name="delete_dict" msgid="756853268088330054">"Suprimeix"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Hi ha un diccionari disponible per a l\'idioma seleccionat al teu dispositiu mòbil.&lt;br/&gt; Et recomanem que &lt;b&gt;baixis&lt;/b&gt; el diccionari de <xliff:g id="LANGUAGE">%1$s</xliff:g> per millorar la teva experiència d\'escriptura.&lt;br/&gt; &lt;br/&gt; La baixada pot trigar un parell de minuts en xarxes 3G. Si no tens un &lt;b&gt;pla de dades il·limitat&lt;/b&gt;.&lt;br/&amp;gt, és possible que s\'apliquin càrrecs. Si no estàs segur de les característiques del teu pla de dades, et recomanem que cerquis una connexió Wi-Fi per iniciar la baixada automàticament.&lt;br/&gt; &lt;br/&gt; Consell: Pots baixar i suprimir diccionaris a la secció &lt;b&gt;Idioma i entrada de text&lt;/b&gt; del menú &lt;b&gt;Configuració&lt;/b&gt; del dispositiu mòbil."</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"Hi ha un diccionari disponible per a l\'idioma seleccionat al teu dispositiu mòbil.&lt;br/&gt; Et recomanem que &lt;b&gt;baixis&lt;/b&gt; el diccionari de <xliff:g id="LANGUAGE">%1$s</xliff:g> per millorar la teva experiència d\'escriptura.&lt;br/&gt; &lt;br/&gt; La baixada pot trigar un parell de minuts en xarxes 3G. Si no tens un &lt;b&gt;pla de dades il·limitat&lt;/b&gt;.&lt;br/&amp;gt, és possible que s\'apliquin càrrecs. Si no estàs segur de les característiques del teu pla de dades, et recomanem que cerquis una connexió Wi-Fi per iniciar la baixada automàticament.&lt;br/&gt; &lt;br/&gt; Consell: Pots baixar i suprimir diccionaris a la secció &lt;b&gt;Idioma i introducció de text&lt;/b&gt; del menú &lt;b&gt;Configuració&lt;/b&gt; del dispositiu mòbil."</string>
     <string name="download_over_metered" msgid="1643065851159409546">"Baixa ara (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> MB)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Baixa mitjançant Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Hi ha un diccionari disponible per a l\'idioma: <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
