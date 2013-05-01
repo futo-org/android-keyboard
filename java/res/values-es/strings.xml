@@ -25,7 +25,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Nombres de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Añadir nombres de tu lista de contactos al corrector"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar tecla"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ampliar al pulsar tecla"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Corrección ortográfica"</string>
@@ -33,10 +33,10 @@
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Ajustes avanzados"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opciones para expertos"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introducción"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma sirve también para otros métodos"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla para cambiar de idioma"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando haya varios idiomas de entrada habilitados"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando haya varios idiomas de introducción habilitados"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostrar indicador deslizante"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostrar pista visual al deslizar desde la tecla Mayús o la tecla de símbolos"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso para ampliar tecla"</string>
@@ -48,7 +48,7 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Poner la primera letra de cada palabra en mayúscula"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada palabra en mayúscula"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Diccionario personal"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
@@ -57,10 +57,8 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar siempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Mostrar en modo vertical"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
-    <!-- no translation found for prefs_block_potentially_offensive_title (5078480071057408934) -->
-    <skip />
-    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
-    <skip />
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Bloquear palabras ofensivas"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"No sugerir palabras potencialmente ofensivas"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autocorrección"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsar la tecla de espacio o punto para corregir errores"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivada"</string>
@@ -132,7 +130,7 @@
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Danos tu opinión"</string>
-    <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
+    <string name="select_language" msgid="3693815588777926848">"Idiomas de introducción"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
@@ -179,8 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando <xliff:g id="APPLICATION_NAME">%s</xliff:g>..."</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Habilitar <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Selecciona <xliff:g id="APPLICATION_NAME">%s</xliff:g> en Idioma e introducción de texto para que pueda usarse en tu dispositivo."</string>
-    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
-    <skip />
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"La aplicación <xliff:g id="APPLICATION_NAME">%s</xliff:g> ya está habilitada en los ajustes de idioma e introducción de texto. Ahora pasemos al siguiente paso."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Habilitar en Ajustes"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Cambiar a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuación, selecciona <xliff:g id="APPLICATION_NAME">%s</xliff:g> como método de introducción de texto activo."</string>
@@ -222,48 +219,23 @@
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Pulsa para comprobar y descargar"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Descargando: las sugerencias de <xliff:g id="LANGUAGE">%1$s</xliff:g> estarán disponibles en breve."</string>
     <string name="version_text" msgid="2715354215568469385">"Versión <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
-    <skip />
-    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
-    <skip />
-    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_screen_title (5818914331629278758) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_more_options (5671682004887093112) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_less_options (2716586567241724126) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_confirm (4703129507388332950) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_option_name (6665558053408962865) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_option_name (3094731590655523777) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_locale_option_name (4738643440987277705) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_hint (4902434148985906707) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_hint (2265453012555060178) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_edit_dialog_title (3765774633869590352) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_edit_title (6812255903472456302) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_delete_title (8142932447689461181) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_empty_text (558499587532668203) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_all_languages (8276126583216298886) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_more_languages (7131268499685180461) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_delete (110413335187193859) -->
-    <skip />
-    <!-- no translation found for user_dict_fast_scroll_alphabet (5431919401558285473) -->
-    <skip />
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Añadir"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Añadir al diccionario"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Frase"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Más opciones"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Menos opciones"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"Aceptar"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Palabra:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Acceso directo:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Idioma:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Escribe una palabra"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Acceso directo opcional"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editar palabra"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editar"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Eliminar"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"No tienes ninguna palabra en el diccionario del usuario. Toca el botón Añadir (+) para añadir una palabra."</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para todos los idiomas"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Más idiomas…"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"Eliminar"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"</string>
 </resources>
