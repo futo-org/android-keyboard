@@ -23,19 +23,28 @@ import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.TypefaceUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils;
 
 public final class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
 
-    MoreSuggestions(final MoreSuggestionsParam params) {
+    public final SuggestedWords mSuggestedWords;
+
+    public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
+        public abstract void onSuggestionSelected(final int index, final SuggestedWordInfo info);
+    }
+
+    MoreSuggestions(final MoreSuggestionsParam params, final SuggestedWords suggestedWords) {
         super(params);
+        mSuggestedWords = suggestedWords;
     }
 
     private static final class MoreSuggestionsParam extends KeyboardParams {
@@ -52,8 +61,9 @@ public final class MoreSuggestions extends Keyboard {
             super();
         }
 
-        public int layout(final SuggestedWords suggestions, final int fromPos, final int maxWidth,
-                final int minWidth, final int maxRow, final Paint paint, final Resources res) {
+        public int layout(final SuggestedWords suggestedWords, final int fromPos,
+                final int maxWidth, final int minWidth, final int maxRow, final Paint paint,
+                final Resources res) {
             clearKeys();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
@@ -61,9 +71,9 @@ public final class MoreSuggestions extends Keyboard {
 
             int row = 0;
             int pos = fromPos, rowStartPos = fromPos;
-            final int size = Math.min(suggestions.size(), SuggestionStripView.MAX_SUGGESTIONS);
+            final int size = Math.min(suggestedWords.size(), SuggestionStripView.MAX_SUGGESTIONS);
             while (pos < size) {
-                final String word = suggestions.getWord(pos);
+                final String word = suggestedWords.getWord(pos);
                 // TODO: Should take care of text x-scaling.
                 mWidths[pos] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
                 final int numColumn = pos - rowStartPos + 1;
@@ -163,7 +173,7 @@ public final class MoreSuggestions extends Keyboard {
 
     public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
-        private SuggestedWords mSuggestions;
+        private SuggestedWords mSuggestedWords;
         private int mFromPos;
         private int mToPos;
 
@@ -172,7 +182,7 @@ public final class MoreSuggestions extends Keyboard {
             mPaneView = paneView;
         }
 
-        public Builder layout(final SuggestedWords suggestions, final int fromPos,
+        public Builder layout(final SuggestedWords suggestedWords, final int fromPos,
                 final int maxWidth, final int minWidth, final int maxRow,
                 final Keyboard parentKeyboard) {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
@@ -180,11 +190,11 @@ public final class MoreSuggestions extends Keyboard {
             mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
 
             mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
-            final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
+            final int count = mParams.layout(suggestedWords, fromPos, maxWidth, minWidth, maxRow,
                     mPaneView.newLabelPaint(null /* key */), mResources);
             mFromPos = fromPos;
             mToPos = fromPos + count;
-            mSuggestions = suggestions;
+            mSuggestedWords = suggestedWords;
             return this;
         }
 
@@ -195,8 +205,8 @@ public final class MoreSuggestions extends Keyboard {
                 final int x = params.getX(pos);
                 final int y = params.getY(pos);
                 final int width = params.getWidth(pos);
-                final String word = mSuggestions.getWord(pos).toString();
-                final String info = Utils.getDebugInfo(mSuggestions, pos);
+                final String word = mSuggestedWords.getWord(pos);
+                final String info = Utils.getDebugInfo(mSuggestedWords, pos);
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, KeyboardIconsSet.ICON_UNDEFINED, index, null, x, y,
@@ -211,7 +221,7 @@ public final class MoreSuggestions extends Keyboard {
                     params.onAddKey(divider);
                 }
             }
-            return new MoreSuggestions(params);
+            return new MoreSuggestions(params, mSuggestedWords);
         }
     }
 
