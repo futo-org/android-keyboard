@@ -929,8 +929,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 resetEntireInputState(newSelStart);
             }
 
-            // We moved the cursor. If we are touching a word, we need to resume suggestion.
-            mHandler.postResumeSuggestions();
+            // We moved the cursor. If we are touching a word, we need to resume suggestion,
+            // unless suggestions are off.
+            if (isSuggestionsStripVisible()) {
+                mHandler.postResumeSuggestions();
+            }
             // Reset the last recapitalization.
             mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
@@ -2108,6 +2111,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             return false;
         if (mSuggestionStripView.isShowingAddToDictionaryHint())
             return true;
+        if (null == mSettings.getCurrent())
+            return false;
         if (!mSettings.getCurrent().isSuggestionStripVisibleInOrientation(mDisplayOrientation))
             return false;
         if (mSettings.getCurrent().isApplicationSpecifiedCompletionsOn())
