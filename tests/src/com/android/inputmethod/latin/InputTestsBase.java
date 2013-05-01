@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Looper;
-import android.os.MessageQueue;
 import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
 import android.text.InputType;
@@ -31,8 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -49,7 +48,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
-    protected MyTextView mTextView;
+    protected MyEditText mEditText;
     protected View mInputView;
     protected InputConnection mInputConnection;
 
@@ -88,22 +87,31 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         }
     }
 
-    // A helper class to increase control over the TextView
-    public static class MyTextView extends TextView {
+    // A helper class to increase control over the EditText
+    public static class MyEditText extends EditText {
         public Locale mCurrentLocale;
-        public MyTextView(final Context c) {
+        public MyEditText(final Context c) {
             super(c);
         }
-        public void onAttachedToWindow() {
-            super.onAttachedToWindow();
-        }
+
+        // overriding hidden API in EditText
         public Locale getTextServicesLocale() {
-            // This method is necessary because TextView is asking this method for the language
+            // This method is necessary because EditText is asking this method for the language
             // to check the spell in. If we don't override this, the spell checker will run in
             // whatever language the keyboard is currently set on the test device, ignoring any
             // settings we do inside the tests.
             return mCurrentLocale;
         }
+
+        // overriding hidden API in EditText
+        public Locale getSpellCheckerLocale() {
+            // This method is necessary because EditText is asking this method for the language
+            // to check the spell in. If we don't override this, the spell checker will run in
+            // whatever language the keyboard is currently set on the test device, ignoring any
+            // settings we do inside the tests.
+            return mCurrentLocale;
+        }
+
     }
 
     public InputTestsBase() {
@@ -130,18 +138,18 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mTextView = new MyTextView(getContext());
+        mEditText = new MyEditText(getContext());
         final int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
                 | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
-        mTextView.setInputType(inputType);
-        mTextView.setEnabled(true);
+        mEditText.setInputType(inputType);
+        mEditText.setEnabled(true);
         setupService();
         mLatinIME = getService();
         final boolean previousDebugSetting = setDebugMode(true);
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
         final EditorInfo ei = new EditorInfo();
-        final InputConnection ic = mTextView.onCreateInputConnection(ei);
+        final InputConnection ic = mEditText.onCreateInputConnection(ei);
         final LayoutInflater inflater =
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
@@ -225,8 +233,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void changeLanguage(final String locale) {
-        mTextView.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
-        SubtypeSwitcher.getInstance().forceLocale(mTextView.mCurrentLocale);
+        mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
+        SubtypeSwitcher.getInstance().forceLocale(mEditText.mCurrentLocale);
         mLatinIME.loadKeyboard();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();
