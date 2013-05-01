@@ -260,12 +260,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                 return true;
             }
 
-            // Compute the normalized score and skip this word if it's normalized score does not
-            // make the threshold.
             final String wordString = new String(word, wordOffset, wordLength);
-            final float normalizedScore =
-                    BinaryDictionary.calcNormalizedScore(mOriginalText, wordString, score);
-
             if (mLength < mMaxLength) {
                 final int copyLen = mLength - insertIndex;
                 ++mLength;
