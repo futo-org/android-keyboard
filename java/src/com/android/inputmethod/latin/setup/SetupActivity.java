@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -201,11 +202,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 mWelcomeVideoView.setBackgroundResource(0);
             }
         });
+        final ImageView welcomeImageView = (ImageView)findViewById(R.id.setup_welcome_image);
         mWelcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(final MediaPlayer mp, final int what, final int extra) {
                 Log.e(TAG, "Playing welcome video causes error: what=" + what + " extra=" + extra);
                 mWelcomeVideoView.setVisibility(View.GONE);
+                welcomeImageView.setImageResource(R.raw.setup_welcome_image);
+                welcomeImageView.setVisibility(View.VISIBLE);
                 return true;
             }
         });
