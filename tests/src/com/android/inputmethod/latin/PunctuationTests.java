@@ -44,7 +44,7 @@ public class PunctuationTests extends InputTestsBase {
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice",
-                    EXPECTED_RESULT, mTextView.getText().toString());
+                    EXPECTED_RESULT, mEditText.getText().toString());
         } finally {
             setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
                     defaultNextWordPredictionOption);
@@ -56,7 +56,7 @@ public class PunctuationTests extends InputTestsBase {
         final String EXPECTED_RESULT = "this !!";
         type(WORD_TO_TYPE);
         assertEquals("manual pick then space then punctuation from keyboard twice", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenPunctuationFromStripTwiceThenType() {
@@ -70,7 +70,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
         type(WORD2_TO_TYPE);
         assertEquals("pick word then pick punctuation twice then type", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenManualPickWithPunctAtStart() {
@@ -81,7 +81,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD1_TO_TYPE);
         pickSuggestionManually(1, WORD2_TO_PICK);
         assertEquals("manual pick then manual pick a word with punct at start", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManuallyPickedWordThenColon() {
@@ -92,7 +92,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then colon",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManuallyPickedWordThenOpenParen() {
@@ -103,7 +103,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then open paren",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManuallyPickedWordThenCloseParen() {
@@ -114,7 +114,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then close paren",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManuallyPickedWordThenSmiley() {
@@ -125,7 +125,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the smiley key",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManuallyPickedWordThenDotCom() {
@@ -136,7 +136,7 @@ public class PunctuationTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the .com key",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testTypeWordTypeDotThenPressDotCom() {
@@ -146,7 +146,7 @@ public class PunctuationTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("type word type dot then press the .com key",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrectionWithSingleQuoteInside() {
@@ -154,7 +154,7 @@ public class PunctuationTests extends InputTestsBase {
         final String EXPECTED_RESULT = "you'd ";
         type(WORD_TO_TYPE);
         assertEquals("auto-correction with single quote inside",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrectionWithSingleQuotesAround() {
@@ -162,6 +162,6 @@ public class PunctuationTests extends InputTestsBase {
         final String EXPECTED_RESULT = "'this' ";
         type(WORD_TO_TYPE);
         assertEquals("auto-correction with single quotes around",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 }

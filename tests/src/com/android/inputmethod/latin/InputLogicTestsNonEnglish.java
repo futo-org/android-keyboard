@@ -30,7 +30,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         changeLanguage("fr");
         type(STRING_TO_TYPE);
         assertEquals("simple auto-correct for French", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenSeparatorForFrench() {
@@ -42,7 +42,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then separator for French", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
@@ -64,7 +64,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice for French",
-                    EXPECTED_RESULT, mTextView.getText().toString());
+                    EXPECTED_RESULT, mEditText.getText().toString());
         } finally {
             setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
                     defaultNextWordPredictionOption);
@@ -98,7 +98,7 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         changeLanguage("de");
         type(STRING_TO_TYPE);
         assertEquals("simple auto-correct for German", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testAutoCorrectWithUmlautForGerman() {
@@ -107,6 +107,6 @@ public class InputLogicTestsNonEnglish extends InputTestsBase {
         changeLanguage("de");
         type(STRING_TO_TYPE);
         assertEquals("auto-correct with umlaut for German", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 }
