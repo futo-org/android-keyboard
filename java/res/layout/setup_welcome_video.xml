@@ -35,6 +35,12 @@
             android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/setup_welcome_image"
+            android:visibility="gone"
+            android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
         <View
             android:layout_weight="@integer/setup_welcome_video_right_padding_weight_in_screen"
             android:layout_width="0dp"
