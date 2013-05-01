@@ -51,11 +51,32 @@ public final class SetupStartIndicatorView extends LinearLayout {
             mIndicatorView = indicatorView;
         }
 
+        // TODO: Once we stop supporting ICS, uncomment {@link #setPressed(boolean)} method and
+        // remove this method.
         @Override
-        public void setPressed(final boolean pressed) {
-            super.setPressed(pressed);
+        protected void drawableStateChanged() {
+            super.drawableStateChanged();
+            for (final int state : getDrawableState()) {
+                if (state == android.R.attr.state_pressed) {
+                    updateIndicatorView(true /* pressed */);
+                    return;
+                }
+            }
+            updateIndicatorView(false /* pressed */);
+        }
+
+        // TODO: Once we stop supporting ICS, uncomment this method and remove
+        // {@link #drawableStateChanged()} method.
+//        @Override
+//        public void setPressed(final boolean pressed) {
+//            super.setPressed(pressed);
+//            updateIndicatorView(pressed);
+//        }
+
+        private void updateIndicatorView(final boolean pressed) {
             if (mIndicatorView != null) {
                 mIndicatorView.setPressed(pressed);
+                mIndicatorView.invalidate();
             }
         }
     }
@@ -70,12 +91,6 @@ public final class SetupStartIndicatorView extends LinearLayout {
             mIndicatorColor = getResources().getColorStateList(
                     R.color.setup_step_action_background);
             mIndicatorPaint.setStyle(Paint.Style.FILL);
-        }
-
-        @Override
-        public void setPressed(final boolean pressed) {
-            super.setPressed(pressed);
-            invalidate();
         }
 
         @Override
