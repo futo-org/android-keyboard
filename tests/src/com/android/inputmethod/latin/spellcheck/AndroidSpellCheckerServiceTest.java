@@ -24,14 +24,15 @@ import com.android.inputmethod.latin.InputTestsBase;
 @LargeTest
 public class AndroidSpellCheckerServiceTest extends InputTestsBase {
     public void testSpellchecker() {
-        mTextView.onAttachedToWindow();
-        mTextView.setText("tgis");
-        type(" ");
+        changeLanguage("en_US");
+        mEditText.setText("tgis ");
+        mEditText.setSelection(mEditText.getText().length());
+        mEditText.onAttachedToWindow();
         sleep(1000);
         runMessages();
         sleep(1000);
 
-        final SpanGetter span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
+        final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
         // If no span, the following will crash
         final String[] suggestions = span.getSuggestions();
         // For this test we consider "tgis" should yield at least 2 suggestions (at this moment
@@ -43,14 +44,15 @@ public class AndroidSpellCheckerServiceTest extends InputTestsBase {
 
     public void testRussianSpellchecker() {
         changeLanguage("ru");
-        mTextView.onAttachedToWindow();
-        mTextView.setText("годп");
-        type(" ");
+        mEditText.onAttachedToWindow();
+        mEditText.setText("годп ");
+        mEditText.setSelection(mEditText.getText().length());
+        mEditText.onAttachedToWindow();
         sleep(1000);
         runMessages();
         sleep(1000);
 
-        final SpanGetter span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
+        final SpanGetter span = new SpanGetter(mEditText.getText(), SuggestionSpan.class);
         // If no span, the following will crash
         final String[] suggestions = span.getSuggestions();
         // For this test we consider "годп" should yield at least 2 suggestions (at this moment
