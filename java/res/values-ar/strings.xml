@@ -57,10 +57,8 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"عرض دومًا"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"العرض في وضع رأسي"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"إخفاء دومًا"</string>
-    <!-- no translation found for prefs_block_potentially_offensive_title (5078480071057408934) -->
-    <skip />
-    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
-    <skip />
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"حظر الكلمات المسيئة"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"عدم اقتراح كلمات محتمل أن تكون مسيئة"</string>
     <string name="auto_correction" msgid="7630720885194996950">"التصحيح التلقائي"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"تؤدي المسافة والترقيم إلى تصحيح الكلمات المكتوبة بشكل غير صحيح"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"إيقاف"</string>
@@ -179,8 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"إعداد <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"تمكين <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"يُرجى تحديد \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" في إعدادات اللغة والإدخال حيث يسمح هذا الإعداد بتشغيله على جهازك."</string>
-    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
-    <skip />
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"تم تمكين <xliff:g id="APPLICATION_NAME">%s</xliff:g> من قبل في إعدادات اللغة والإدخال، وبالتالي هذه الخطوة مكتملة. انتقل إلى الخطوة التالية."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"تمكين في الإعدادات"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"التبديل إلى <xliff:g id="APPLICATION_NAME">%s</xliff:g>."</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"بعد ذلك، حدد \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" باعتباره أسلوب إدخال النص النشط."</string>
@@ -222,48 +219,23 @@
     <string name="dict_available_notification_description" msgid="1075194169443163487">"اضغط للمراجعة والتنزيل"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"جارٍ التنزيل: ستتوفر اقتراحات للغة <xliff:g id="LANGUAGE">%1$s</xliff:g> بعد قليل."</string>
     <string name="version_text" msgid="2715354215568469385">"الإصدار <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
-    <skip />
-    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
-    <skip />
-    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_screen_title (5818914331629278758) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_more_options (5671682004887093112) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_less_options (2716586567241724126) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_confirm (4703129507388332950) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_option_name (6665558053408962865) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_option_name (3094731590655523777) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_locale_option_name (4738643440987277705) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_hint (4902434148985906707) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_hint (2265453012555060178) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_edit_dialog_title (3765774633869590352) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_edit_title (6812255903472456302) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_delete_title (8142932447689461181) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_empty_text (558499587532668203) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_all_languages (8276126583216298886) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_more_languages (7131268499685180461) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_delete (110413335187193859) -->
-    <skip />
-    <!-- no translation found for user_dict_fast_scroll_alphabet (5431919401558285473) -->
-    <skip />
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"إضافة"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"إضافة إلى القاموس"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"عبارة"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"خيارات أكثر"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"خيارات أقل"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"موافق"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"الكلمة:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"الاختصار:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"اللغة:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"اكتب كلمة"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"اختصار اختياري"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"تعديل كلمة"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"تعديل"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"حذف"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ليست لديك أية كلمات في قاموس المستخدم. يمكنك إضافة كلمة من خلال لمس الزر \"إضافة\" (+)."</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"لجميع اللغات"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"مزيد من اللغات..."</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"حذف"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي"</string>
 </resources>

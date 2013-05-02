@@ -57,10 +57,8 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visa alltid"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Visa i stående format"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Dölj alltid"</string>
-    <!-- no translation found for prefs_block_potentially_offensive_title (5078480071057408934) -->
-    <skip />
-    <!-- no translation found for prefs_block_potentially_offensive_summary (2371835479734991364) -->
-    <skip />
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blockera stötande ord"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Visa inte förslag på potentiellt stötande ord"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autokorrigering"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Blanksteg/skiljetecken rättar felstavning"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
@@ -179,8 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Konfigurera <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktivera <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Markera <xliff:g id="APPLICATION_NAME">%s</xliff:g> i inställningarna för språk och inmatning så att appen kan köras."</string>
-    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
-    <skip />
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> har redan aktiverats i inställningarna Språk och inmatning, så det här steget är färdigt. Fortsätt till nästa."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktivera i inställningarna"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Byt till <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Välj sedan <xliff:g id="APPLICATION_NAME">%s</xliff:g> som din aktiva textinmatningsmetod."</string>
@@ -222,48 +219,23 @@
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Tryck om du vill granska och hämta"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Hämtar: förslag för <xliff:g id="LANGUAGE">%1$s</xliff:g> är snart klara."</string>
     <string name="version_text" msgid="2715354215568469385">"Version <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <!-- no translation found for user_dict_settings_titlebar (2376327578038036679) -->
-    <skip />
-    <!-- no translation found for user_dict_single_settings_title (751932921010596184) -->
-    <skip />
-    <!-- no translation found for user_dict_multiple_settings_title (7046977511772051284) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_menu_title (1254195365689387076) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_title (4096700390211748168) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_screen_title (5818914331629278758) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_more_options (5671682004887093112) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_less_options (2716586567241724126) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_dialog_confirm (4703129507388332950) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_option_name (6665558053408962865) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_option_name (3094731590655523777) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_locale_option_name (4738643440987277705) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_word_hint (4902434148985906707) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_add_shortcut_hint (2265453012555060178) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_edit_dialog_title (3765774633869590352) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_edit_title (6812255903472456302) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_context_menu_delete_title (8142932447689461181) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_empty_text (558499587532668203) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_all_languages (8276126583216298886) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_more_languages (7131268499685180461) -->
-    <skip />
-    <!-- no translation found for user_dict_settings_delete (110413335187193859) -->
-    <skip />
-    <!-- no translation found for user_dict_fast_scroll_alphabet (5431919401558285473) -->
-    <skip />
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Lägg till"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Lägg till i ordlista"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Fras"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Fler alternativ"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Färre alternativ"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Ord:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Genväg:"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Språk:"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Skriv ett ord"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Valfri genväg"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Redigera ord"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Redigera"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Ta bort"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Det finns inga ord i användarordlistan. Du kan lägga till ord med knappen Lägg till (+)."</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"För alla språk"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Fler språk ..."</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"Ta bort"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>
