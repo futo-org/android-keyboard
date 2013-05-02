@@ -59,7 +59,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private SetupStepGroup mSetupStepGroup;
     private static final String STATE_STEP = "step";
     private int mStepNumber;
-    private static final int STEP_0 = 0;
+    private static final int STEP_WELCOME = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
     private static final int STEP_3 = 3;
@@ -113,16 +113,18 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
         if (savedInstanceState == null) {
             mStepNumber = determineSetupStepNumber();
+            if (mStepNumber == STEP_1 && !mWasLanguageAndInputSettingsInvoked) {
+                mStepNumber = STEP_WELCOME;
+            }
+            if (mStepNumber == STEP_3) {
+                // This IME already has been enabled and set as current IME.
+                // TODO: Implement tutorial.
+                invokeSettingsOfThisIme();
+                finish();
+                return;
+            }
         } else {
             mStepNumber = savedInstanceState.getInt(STATE_STEP);
-        }
-
-        if (mStepNumber == STEP_3) {
-            // This IME already has been enabled and set as current IME.
-            // TODO: Implement tutorial.
-            invokeSettingsOfThisIme();
-            finish();
-            return;
         }
 
         final String applicationName = getResources().getString(getApplicationInfo().labelRes);
@@ -230,13 +232,13 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             finish();
             return;
         }
-        final int stepState = determineSetupState();
+        final int currentStep = determineSetupStepNumber();
         final int nextStep;
         if (v == mActionStart) {
             nextStep = STEP_1;
         } else if (v == mActionNext) {
             nextStep = mStepNumber + 1;
-        } else if (v == mStep1Bullet && stepState == STEP_2) {
+        } else if (v == mStep1Bullet && currentStep == STEP_2) {
             nextStep = STEP_1;
         } else {
             nextStep = mStepNumber;
@@ -316,7 +318,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         return myImi.getId().equals(currentImeId);
     }
 
-    private int determineSetupState() {
+    private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
         if (!isThisImeEnabled(this)) {
             return STEP_1;
@@ -325,14 +327,6 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return STEP_2;
         }
         return STEP_3;
-    }
-
-    private int determineSetupStepNumber() {
-        final int stepState = determineSetupState();
-        if (stepState == STEP_1) {
-            return mWasLanguageAndInputSettingsInvoked ? STEP_1 : STEP_0;
-        }
-        return stepState;
     }
 
     @Override
@@ -348,15 +342,11 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mStepNumber = determineSetupStepNumber();
-    }
-
-    @Override
     protected void onRestart() {
         super.onRestart();
-        mStepNumber = determineSetupStepNumber();
+        if (mStepNumber != STEP_WELCOME) {
+            mStepNumber = determineSetupStepNumber();
+        }
     }
 
     @Override
@@ -368,7 +358,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     @Override
     public void onBackPressed() {
         if (mStepNumber == STEP_1) {
-            mStepNumber = STEP_0;
+            mStepNumber = STEP_WELCOME;
             updateSetupStepView();
             return;
         }
@@ -384,15 +374,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     @Override
     public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus) {
-            return;
+        if (hasFocus && mStepNumber != STEP_WELCOME) {
+            mStepNumber = determineSetupStepNumber();
+            updateSetupStepView();
         }
-        mStepNumber = determineSetupStepNumber();
-        updateSetupStepView();
     }
 
     private void updateSetupStepView() {
-        final boolean welcomeScreen = (mStepNumber == STEP_0);
+        final boolean welcomeScreen = (mStepNumber == STEP_WELCOME);
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
         mSetupScreen.setVisibility(welcomeScreen ? View.GONE: View.VISIBLE);
         if (welcomeScreen) {
@@ -401,7 +390,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             return;
         }
         mWelcomeVideoView.stopPlayback();
-        final boolean isStepActionAlreadyDone = mStepNumber < determineSetupState();
+        final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
         mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
         mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
         mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
