@@ -29,7 +29,7 @@
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Nombres de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Añadir nombres de tu lista de contactos al corrector"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar tecla"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ampliar al pulsar tecla"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Corrección ortográfica"</string>
@@ -37,10 +37,10 @@
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Ajustes avanzados"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opciones para expertos"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introducción"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma sirve también para otros métodos"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Tecla para cambiar de idioma"</string>
-    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando haya varios idiomas de entrada habilitados"</string>
+    <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando haya varios idiomas de introducción habilitados"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostrar indicador deslizante"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostrar pista visual al deslizar desde la tecla Mayús o la tecla de símbolos"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso para ampliar tecla"</string>
@@ -52,7 +52,7 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Si tocas dos veces el espacio, se inserta un punto seguido de un espacio"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"Poner la primera letra de cada palabra en mayúscula"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"Escribir la primera letra de cada palabra en mayúscula"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Diccionario principal"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Sugerencias de correcciones"</string>
@@ -131,7 +131,7 @@
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Danos tu opinión"</string>
-    <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
+    <string name="select_language" msgid="3693815588777926848">"Idiomas de introducción"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
