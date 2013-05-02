@@ -20,10 +20,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="8250992613616792321">"የAndroid ቁልፍ ሰሌዳ (AOSP)"</string>
-    <string name="aosp_android_keyboard_ime_settings" msgid="423615877174850267">"የAndroid ቁልፍ ሰሌዳ ቅንብሮች (AOSP)"</string>
-    <string name="aosp_spell_checker_service_name" msgid="511950477199948048">"Android ፊደል አራሚ (AOSP)"</string>
-    <string name="aosp_android_spell_checker_service_settings" msgid="2970535894327288421">"የAndroid ፊደል አራሚ ቅንብሮች (AOSP)"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"ግቤት አማራጮች"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"የጥናት የምዝግብ ማስታወሻ ትዕዛዞች"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"የእውቅያ ስሞችን ተመልከት"</string>
@@ -61,6 +57,8 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ሁልጊዜ አሳይ"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"በቁም አቀማመጥ ሁነታ አሳይ"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ሁልጊዜ ደብቅ"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"አፀያፊ ቃላትን አግድ"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"አጸያፊ ሊሆኑ የሚችሉ ቃላትን አትጠቁም"</string>
     <string name="auto_correction" msgid="7630720885194996950">"በራስ-ማስተካከል"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"የቦታ ቁልፍ እና ሥርዓተ ነጥብ በስህተት የተተየቡ ቃላትን  በራስሰር ያስተካክላሉ ።"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ውጪ"</string>
@@ -179,8 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን በማዋቀር ላይ"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g>ን ያንቁ"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"እባክዎ «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን በቋንቋ እና ግቤት ቅንብሮችዎ ውስጥ ያረጋግጡት። ይሄ እሱ በመሣሪያዎ ላይ እንዲሄድ ይፈቅድለታል።"</string>
-    <!-- no translation found for setup_step1_finished_instruction (10761482004957994) -->
-    <skip />
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> አስቀድሞ በእርስዎ ቋንቋ እና ግቤት ቅንብሮች ውስጥ ነቅቷል፣ ስለዚህ ይህ ደረጃ ተከናውኗል። ቀጣዩ ላይ!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"በቅንብሮች ውስጥ ያንቁ"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"ወደ <xliff:g id="APPLICATION_NAME">%s</xliff:g> ይቀይሩ"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"በመቀጠል «<xliff:g id="APPLICATION_NAME">%s</xliff:g>»ን እንደ የጽሑፍ ግቤት ስልትዎ ይምረጡት።"</string>
@@ -221,6 +218,24 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"መዝገበ-ቃላት ለ<xliff:g id="LANGUAGE">%1$s</xliff:g> ይገኛል"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"ለመገምገምና ለማውረድ ይጫኑ"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"በማውረድ ላይ፦ የ<xliff:g id="LANGUAGE">%1$s</xliff:g> ጥቆማ አስተያየቶች በቅርቡ ዝግጁ ይሆናሉ።"</string>
-    <!-- no translation found for version_text (2715354215568469385) -->
-    <skip />
+    <string name="version_text" msgid="2715354215568469385">"ሥሪት <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"አክል"</string>
+    <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"ወደ መዝገበ-ቃላት አክል"</string>
+    <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"ሐረግ"</string>
+    <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"ተጨማሪ አማራጮች"</string>
+    <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"ያነሱ አማራጮች"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"እሺ"</string>
+    <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"ቃል፦"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"አቋራጭ፦"</string>
+    <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ቋንቋ፦"</string>
+    <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"አንድ ቃል ይተይቡ"</string>
+    <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"አማራጭ አቋራጭ"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ቃሉን አርትዕ"</string>
+    <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"አርትዕ"</string>
+    <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ሰርዝ"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"በተጠቃሚ መዝገበ-ቃላት ውስጥ ምንም ቃላቶች የሉዎትም። የአክል (+) አዝራሩን በመንካት ቃል ማከል ይችላሉ።"</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"ለሁሉም ቋንቋዎች"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"ተጨማሪ ቋንቋዎች…"</string>
+    <string name="user_dict_settings_delete" msgid="110413335187193859">"ሰርዝ"</string>
+    <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ሀለሐመሠረሰሸቀበቨተቸኀነኘአከኸወዐዘዠየደጀገጠጨጰጸፀፈፐ"</string>
 </resources>
