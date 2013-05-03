@@ -58,7 +58,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"세로 모드로 표시"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"불쾌감을 주는 단어 차단"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"불쾌감을 줄 수 있는 단어는 추천하지 않습니다."</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"불쾌감을 줄 수 있는 단어는 추천하지 않음"</string>
     <string name="auto_correction" msgid="7630720885194996950">"자동 수정"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"스페이스바와 문장부호 키를 사용하면 오타가 자동으로 교정됩니다."</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"사용 안함"</string>
@@ -226,7 +226,7 @@
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"옵션 숨기기"</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"확인"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"단어:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"바로가기:"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"단축키:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"언어:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"단어 입력"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"선택적 단축키"</string>
@@ -234,8 +234,8 @@
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"수정"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"삭제"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"사용자 사전에 단어가 없습니다. 추가(+) 버튼을 터치하여 단어를 추가할 수 있습니다."</string>
-    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"모든 언어로 설정"</string>
-    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"다른 언어"</string>
+    <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"모든 언어"</string>
+    <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"더보기…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"삭제"</string>
     <string name="user_dict_fast_scroll_alphabet" msgid="5431919401558285473">" ABCDEFGHIJKLMNOPQRSTUVWXYZ"</string>
 </resources>

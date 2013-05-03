@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Stel <xliff:g id="APPLICATION_NAME">%s</xliff:g> op"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Aktiveer <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Verifieer asseblief \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" in jou Taal- en invoerinstellings. Dit sal dit magtig om op jou toestel te loop."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is reeds geaktiveer in jou Taal- en invoer-instellings, hierdie stap is dus voltooi. Aan na die volgende een!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> is reeds geaktiveer in jou Taal- en invoer-instellings - hierdie stap is dus klaar. Aan na die volgende een!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Aktiveer in instellings"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Skakel oor na <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Volgende, kies \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" as jou aktiewe teks-invoermetode."</string>

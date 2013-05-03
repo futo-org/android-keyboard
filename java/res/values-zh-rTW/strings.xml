@@ -58,7 +58,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"在垂直模式中顯示"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"永遠隱藏"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"封鎖令人反感的字詞"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"不建議使用可能令人反感的字詞"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"不建議可能令人反感的字詞"</string>
     <string name="auto_correction" msgid="7630720885194996950">"自動修正"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"按空白鍵或標點符號時，自動修正前面的錯字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"關閉"</string>
@@ -233,7 +233,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"編輯字詞"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"編輯"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"刪除"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"您的使用者字典中沒有任何字詞，如要新增字詞，請輕觸「新增」(+) 按鈕。"</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"您的使用者字典中沒有任何字詞。如要新增字詞，請輕觸「新增」(+) 按鈕。"</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"所有語言"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"更多語言…"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"刪除"</string>

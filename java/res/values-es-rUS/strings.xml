@@ -39,7 +39,7 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Mostrar cuando se habiliten varios idiomas de entrada"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Mostrar indicador p. deslizar"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Mostrar indic. visual al deslizar de teclas símbolo o mayúscula"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso en rechazo de alerta de tecla"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Demora para ignorar tecla emergente"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin demora"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminada"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
@@ -65,8 +65,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresivo"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Sugerencias para la palabra siguiente"</string>
-    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usa la palabra anterior para hacer sugerencias"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Suger. de próxima palabra"</string>
+    <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activar escritura gestual"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Ingresa una palabra al deslizarte sobre las letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
