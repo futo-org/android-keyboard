@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Налаштування програми <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Увімкніть програму <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Виберіть \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" у налаштуваннях \"Мова та введення\", щоб дозволити запуск цієї програми на пристрої."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Програму <xliff:g id="APPLICATION_NAME">%s</xliff:g> уже ввімкнено в налаштуваннях Мова та введення. Перейдіть до наступного кроку."</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Програму <xliff:g id="APPLICATION_NAME">%s</xliff:g> уже ввімкнено в налаштуваннях мови та введення. Перейдіть до наступного кроку."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Увімкнути в налаштуваннях"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Перейдіть до програми <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Далі виберіть \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" як поточний метод введення тексту."</string>

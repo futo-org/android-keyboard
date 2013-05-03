@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"S\'està configurant <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Activa <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" a la configuració d\'Idioma i introducció de text perquè es pugui executar al teu dispositiu."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activat per a la teva Configuració d\'idioma i d\'introducció de text. Has finalitzat el pas i pots passar al següent."</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"L\'aplicació <xliff:g id="APPLICATION_NAME">%s</xliff:g> ja està activada per a la teva Configuració d\'idioma i d\'introducció de text. Pots passar al següent."</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Activa a la configuració"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Canvi a <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"A continuació, selecciona \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" com a mètode d\'introducció de text actiu."</string>

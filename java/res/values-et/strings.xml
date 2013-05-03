@@ -219,7 +219,7 @@
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Vajutage ülevaatamiseks ja allalaadimiseks"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Allalaadimine: <xliff:g id="LANGUAGE">%1$s</xliff:g> keele soovitused on varsti saadaval."</string>
     <string name="version_text" msgid="2715354215568469385">"Versioon <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Lisamine"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Lisa"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Sõnaraamatusse lisamine"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Fraas"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Rohkem valikuid"</string>
