@@ -136,8 +136,8 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
     <string name="prefs_description_log" msgid="7525225584555429211">"Pomóż ulepszyć edytor wprowadzania tekstu, automatycznie wysyłając statystyki użycia i raporty o awariach."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motyw klawiatury"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Angielska (Wielka Brytania)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Angielska (Stany Zjednoczone)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"angielski (Wielka Brytania)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"angielski (Stany Zjednoczone)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"hiszpański (USA)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"angielski (UK) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"angielski (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
