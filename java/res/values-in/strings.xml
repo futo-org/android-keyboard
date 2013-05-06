@@ -58,7 +58,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Tampilkan dalam mode potret"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Selalu sembunyikan"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Blokir kata tak pantas"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Jangan menyarankan kata-kata yang berpotensi menyinggung"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Jangan sarankan kata yang berpotensi menyinggung"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Koreksi otomatis"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Bilah spasi dan tanda baca secara otomatis dikoreksi pada kata yang salah ketik"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Mati"</string>
