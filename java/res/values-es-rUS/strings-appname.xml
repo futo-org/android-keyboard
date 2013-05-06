@@ -23,5 +23,5 @@
     <string name="english_ime_name" msgid="5940510615957428904">"Teclado de Android (AOSP)"</string>
     <string name="spell_checker_service_name" msgid="1254221805440242662">"Corrector ortográfico de Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="5760361067176802794">"Configuración del teclado de Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Configuración del corrector ortográfico de Android (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="6123949487832861885">"Config. del corrector ortográfico de Android (AOSP)"</string>
 </resources>

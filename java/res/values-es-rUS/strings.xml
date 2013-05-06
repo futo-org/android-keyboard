@@ -233,7 +233,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Editar palabra"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Editar"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Eliminar"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"El diccionario del usuario no contiene ninguna palabra. Puedes agregar una palabra tocando el botón Agregar (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"El diccionario del usuario no contiene ninguna palabra. Para agregar una palabra, toca el botón Agregar (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Para todos los idiomas"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Más idiomas"</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Eliminar"</string>
