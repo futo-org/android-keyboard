@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Postavljanje aplikacije <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Omogućite aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Potvrdite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" u postavkama Jezik i unos i ovlastite je za pokretanje."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> već je omogućena u postavkama jezika i unosa pa je taj korak gotov. Nastavite sa sljedećim korakom!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"Aplikacija <xliff:g id="APPLICATION_NAME">%s</xliff:g> već je omogućena u postavkama jezika i unosa, pa je taj korak gotov. Nastavite sa sljedećim korakom!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Omogući u postavkama"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Prijeđite na aplikaciju <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Zatim odaberite aplikaciju \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" kao aktivan način unosa teksta."</string>
