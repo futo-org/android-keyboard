@@ -27,10 +27,10 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mga pagpipilian sa input"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Cmmnd sa Log ng Pnnliksik"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Maghanap pangalan contact"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Gumagamit pang-check pagbabaybay entry sa iyong listahan contact"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Gumagamit ang Spell Checker ng entries mula sa iyong contact list."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Mag-vibrate sa keypress"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Tunog sa keypress"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Popup sa keypress"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Tumunog sa keypress"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Mag-popup sa keypress"</string>
     <string name="general_category" msgid="1859088467017573195">"Pangkalahatan"</string>
     <string name="correction_category" msgid="2236750915056607613">"Pagwawasto ng teksto"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Gesture na pag-type"</string>

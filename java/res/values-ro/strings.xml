@@ -30,7 +30,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Verificatorul ortografic utilizează intrări din lista de contacte"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Fereastră pop-up la apăsarea tastei"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up la apăsarea tastei"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Corectare text"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Tastare gestuală"</string>
