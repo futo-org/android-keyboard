@@ -1577,21 +1577,11 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
                 commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             }
             mExpectingUpdateSelection = true;
-            // The following is necessary for the case where the user typed something but didn't
-            // manual pick it and didn't input any separator: we want to put a space between what
-            // has been entered and the coming gesture input result, so we go into phantom space
-            // state, which will be promoted to a space when the gesture result is committed. But if
-            // the current input ends in a word connector on the other hand, then we want to have
-            // the next input stick to the current input so we don't switch to phantom space state.
-            if (!mSettings.getCurrent().isWordConnector(lastChar)) {
-                mSpaceState = SPACE_STATE_PHANTOM;
-            }
-        } else {
-            final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-            if (Character.isLetter(codePointBeforeCursor)
-                    || mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
-                mSpaceState = SPACE_STATE_PHANTOM;
-            }
+        }
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        if (Character.isLetterOrDigit(codePointBeforeCursor)
+                || mSettings.getCurrent().isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+            mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
@@ -1905,6 +1895,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final int y, final int spaceState) {
         boolean isComposingWord = mWordComposer.isComposingWord();
 
+        // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
+        // See onStartBatchInput() to see how to do it.
         if (SPACE_STATE_PHANTOM == spaceState &&
                 !mSettings.getCurrent().isWordConnector(primaryCode)) {
             if (isComposingWord) {
