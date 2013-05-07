@@ -29,17 +29,18 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeysCache;
+import com.android.inputmethod.latin.AdditionalSubtype;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.InputTypeUtils;
@@ -72,6 +73,8 @@ public final class KeyboardLayoutSet {
     private static final String TAG_ELEMENT = "Element";
 
     private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
+    private static final int SPELLCHECKER_DUMMY_KEYBOARD_WIDTH = 480;
+    private static final int SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT = 800;
 
     private final Context mContext;
     private final Params mParams;
@@ -282,8 +285,7 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
-        @UsedForTesting
-        public void disableTouchPositionCorrectionDataForTest() {
+        public void disableTouchPositionCorrectionData() {
             mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }
 
@@ -412,5 +414,48 @@ public final class KeyboardLayoutSet {
                 return KeyboardId.MODE_TEXT;
             }
         }
+    }
+
+    public static KeyboardLayoutSet createKeyboardSetForSpellChecker(final Context context,
+            final String locale, final String layout) {
+        final InputMethodSubtype subtype =
+                AdditionalSubtype.createAdditionalSubtype(locale, layout, null);
+        return createKeyboardSet(context, subtype, SPELLCHECKER_DUMMY_KEYBOARD_WIDTH,
+                SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false);
+    }
+
+    public static KeyboardLayoutSet createKeyboardSetForTest(final Context context,
+            final InputMethodSubtype subtype, final int orientation,
+            final boolean testCasesHaveTouchCoordinates) {
+        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        final int width;
+        final int height;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            width = Math.max(dm.widthPixels, dm.heightPixels);
+            height = Math.min(dm.widthPixels, dm.heightPixels);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            width = Math.min(dm.widthPixels, dm.heightPixels);
+            height = Math.max(dm.widthPixels, dm.heightPixels);
+        } else {
+            throw new RuntimeException("Orientation should be ORIENTATION_LANDSCAPE or "
+                    + "ORIENTATION_PORTRAIT: orientation=" + orientation);
+        }
+        return createKeyboardSet(context, subtype, width, height, testCasesHaveTouchCoordinates);
+    }
+
+    private static KeyboardLayoutSet createKeyboardSet(final Context context,
+            final InputMethodSubtype subtype, final int width, final int height,
+            final boolean testCasesHaveTouchCoordinates) {
+        final EditorInfo editorInfo = new EditorInfo();
+        editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
+                context, editorInfo);
+        builder.setScreenGeometry(width, height);
+        builder.setSubtype(subtype);
+        if (!testCasesHaveTouchCoordinates) {
+            // For spell checker and tests
+            builder.disableTouchPositionCorrectionData();
+        }
+        return builder.build();
     }
 }

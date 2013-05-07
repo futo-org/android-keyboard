@@ -257,7 +257,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             }
 
             if (shouldFilterOut(inText, mScript)) {
-                DictAndProximity dictInfo = null;
+                DictAndKeyboard dictInfo = null;
                 try {
                     dictInfo = mDictionaryPool.pollWithDefaultTimeout();
                     if (!DictionaryPool.isAValidDictionary(dictInfo)) {
@@ -286,7 +286,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
 
             final int capitalizeType = StringUtils.getCapitalizationType(text);
             boolean isInDict = true;
-            DictAndProximity dictInfo = null;
+            DictAndKeyboard dictInfo = null;
             try {
                 dictInfo = mDictionaryPool.pollWithDefaultTimeout();
                 if (!DictionaryPool.isAValidDictionary(dictInfo)) {
@@ -296,20 +296,13 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 final int length = text.length();
                 for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
                     final int codePoint = text.codePointAt(i);
-                    // The getXYForCodePointAndScript method returns (Y << 16) + X
-                    final int xy = SpellCheckerProximityInfo.getXYForCodePointAndScript(
-                            codePoint, mScript);
-                    if (SpellCheckerProximityInfo.NOT_A_COORDINATE_PAIR == xy) {
-                        composer.add(codePoint,
-                                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-                    } else {
-                        composer.add(codePoint, xy & 0xFFFF, xy >> 16);
-                    }
+                    composer.addKeyInfo(codePoint, dictInfo.getKeyboard(codePoint));
                 }
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
-                                dictInfo.mProximityInfo, true /* blockOffensiveWords */);
+                                dictInfo.getProximityInfo(),
+                                true /* blockOffensiveWords */);
                 for (final SuggestedWordInfo suggestion : suggestions) {
                     final String suggestionStr = suggestion.mWord;
                     suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,

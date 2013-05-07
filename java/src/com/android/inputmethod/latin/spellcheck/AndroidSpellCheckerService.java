@@ -23,7 +23,7 @@ import android.service.textservice.SpellCheckerService;
 import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
@@ -124,6 +124,19 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
                     + locale.getLanguage() + "\". Framework bug?");
         }
         return script;
+    }
+
+    private static String getKeyboardLayoutNameForScript(final int script) {
+        switch (script) {
+        case AndroidSpellCheckerService.SCRIPT_LATIN:
+            return "qwerty";
+        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+            return "east_slavic";
+        case AndroidSpellCheckerService.SCRIPT_GREEK:
+            return "greek";
+        default:
+            throw new RuntimeException("Wrong script supplied: " + script);
+        }
     }
 
     @Override
@@ -385,9 +398,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         return pool;
     }
 
-    public DictAndProximity createDictAndProximity(final Locale locale) {
+    public DictAndKeyboard createDictAndKeyboard(final Locale locale) {
         final int script = getScriptFromLocale(locale);
-        final ProximityInfo proximityInfo = new SpellCheckerProximityInfo(script);
+        final String keyboardLayoutName = getKeyboardLayoutNameForScript(script);
+        final KeyboardLayoutSet keyboardLayoutSet =
+                KeyboardLayoutSet.createKeyboardSetForSpellChecker(this, locale.toString(),
+                        keyboardLayoutName);
+
         final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createMainDictionaryFromManager(this, locale,
                         true /* useFullEditDistance */);
@@ -412,6 +429,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             mDictionaryCollectionsList.add(
                     new WeakReference<DictionaryCollection>(dictionaryCollection));
         }
-        return new DictAndProximity(dictionaryCollection, proximityInfo);
+        return new DictAndKeyboard(dictionaryCollection, keyboardLayoutSet);
     }
 }
