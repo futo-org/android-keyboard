@@ -21,8 +21,6 @@ import com.android.inputmethod.latin.ResizableIntArray;
 public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public static final int PREVIEW_CAPACITY = 256;
 
-    private static final boolean ENABLE_INTERPOLATION = true;
-
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewXCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewYCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
@@ -32,18 +30,15 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     private final HermiteInterpolator mInterpolator = new HermiteInterpolator();
     private int mLastInterpolatedPreviewIndex;
 
-    private int mMinPreviewSamplingDistanceSquared;
     private int mLastX;
     private int mLastY;
     private double mMinPreviewSamplingDistance;
     private double mDistanceFromLastSample;
 
     // TODO: Move these constants to resource.
-    // The minimum linear distance between sample points for preview in keyWidth unit.
-    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH = 0.1f;
     // The minimum trail distance between sample points for preview in keyWidth unit when using
     // interpolation.
-    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH_WITH_INTERPOLATION = 0.2f;
+    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH = 0.2f;
     // The angular threshold to use interpolation in radian. PI/12 is 15 degree.
     private static final double INTERPOLATION_ANGULAR_THRESHOLD = Math.PI / 12.0d;
     private static final int MAX_INTERPOLATION_PARTITION = 4;
@@ -70,31 +65,16 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     @Override
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         super.setKeyboardGeometry(keyWidth, keyboardHeight);
-        final float samplingRatioToKeyWidth = ENABLE_INTERPOLATION
-                ? MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH_WITH_INTERPOLATION
-                : MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH;
+        final float samplingRatioToKeyWidth = MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH;
         mMinPreviewSamplingDistance = keyWidth * samplingRatioToKeyWidth;
-        mMinPreviewSamplingDistanceSquared = (int)(
-                mMinPreviewSamplingDistance * mMinPreviewSamplingDistance);
     }
 
     private boolean needsSampling(final int x, final int y, final boolean isMajorEvent) {
-        if (ENABLE_INTERPOLATION) {
-            mDistanceFromLastSample += Math.hypot(x - mLastX, y - mLastY);
-            mLastX = x;
-            mLastY = y;
-            if (mDistanceFromLastSample >= mMinPreviewSamplingDistance) {
-                mDistanceFromLastSample = 0.0d;
-                return true;
-            }
-            return false;
-        }
-
-        final int dx = x - mLastX;
-        final int dy = y - mLastY;
-        if (isMajorEvent || dx * dx + dy * dy >= mMinPreviewSamplingDistanceSquared) {
-            mLastX = x;
-            mLastY = y;
+        mDistanceFromLastSample += Math.hypot(x - mLastX, y - mLastY);
+        mLastX = x;
+        mLastY = y;
+        if (mDistanceFromLastSample >= mMinPreviewSamplingDistance) {
+            mDistanceFromLastSample = 0.0d;
             return true;
         }
         return false;
@@ -140,9 +120,6 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
             final ResizableIntArray eventTimes, final ResizableIntArray xCoords,
             final ResizableIntArray yCoords) {
-        if (!ENABLE_INTERPOLATION) {
-            return lastInterpolatedIndex;
-        }
         final int size = mPreviewEventTimes.getLength();
         final int[] pt = mPreviewEventTimes.getPrimitiveArray();
         final int[] px = mPreviewXCoordinates.getPrimitiveArray();
