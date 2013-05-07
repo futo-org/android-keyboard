@@ -83,9 +83,8 @@ public class GestureStroke {
         public final int mRecognitionMinimumTime; // msec
         public final float mRecognitionSpeedThreshold; // keyWidth/sec
 
-        // Default GestureStroke parameters for test.
-        public static final GestureStrokeParams FOR_TEST = new GestureStrokeParams();
-        public static final GestureStrokeParams DEFAULT = FOR_TEST;
+        // Default GestureStroke parameters.
+        public static final GestureStrokeParams DEFAULT = new GestureStrokeParams();
 
         private GestureStrokeParams() {
             // These parameter values are default and intended for testing.
