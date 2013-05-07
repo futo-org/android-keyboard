@@ -65,6 +65,7 @@ public class FixedLogBuffer extends LogBuffer {
         final int numWordsIncoming = newLogUnit.getNumWords();
         if (mNumActualWords >= mWordCapacity) {
             // Give subclass a chance to handle the buffer full condition by shifting out logUnits.
+            // TODO: Tell onBufferFull() how much space it needs to make to avoid forced eviction.
             onBufferFull();
             // If still full, evict.
             if (mNumActualWords >= mWordCapacity) {
@@ -119,21 +120,19 @@ public class FixedLogBuffer extends LogBuffer {
     /**
      * Remove LogUnits from the front of the LogBuffer until {@code numWords} have been removed.
      *
-     * If there are less than {@code numWords} word-containing {@link LogUnit}s, shifts out
-     * all {@code LogUnit}s in the buffer.
+     * If there are less than {@code numWords} in the buffer, shifts out all {@code LogUnit}s.
      *
-     * @param numWords the minimum number of word-containing {@link LogUnit}s to shift out
-     * @return the number of actual {@code LogUnit}s shifted out
+     * @param numWords the minimum number of words in {@link LogUnit}s to shift out
+     * @return the number of actual words LogUnit}s shifted out
      */
     protected int shiftOutWords(final int numWords) {
-        int numWordContainingLogUnitsShiftedOut = 0;
-        for (LogUnit logUnit = shiftOut(); logUnit != null
-                && numWordContainingLogUnitsShiftedOut < numWords; logUnit = shiftOut()) {
-            if (logUnit.hasOneOrMoreWords()) {
-                numWordContainingLogUnitsShiftedOut += logUnit.getNumWords();
-            }
-        }
-        return numWordContainingLogUnitsShiftedOut;
+        int numWordsShiftedOut = 0;
+        do {
+            final LogUnit logUnit = shiftOut();
+            if (logUnit == null) break;
+            numWordsShiftedOut += logUnit.getNumWords();
+        } while (numWordsShiftedOut < numWords);
+        return numWordsShiftedOut;
     }
 
     public void shiftOutAll() {
