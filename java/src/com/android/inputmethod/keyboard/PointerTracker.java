@@ -176,7 +176,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private DrawingProxy mDrawingProxy;
     private TimerProxy mTimerProxy;
     private KeyDetector mKeyDetector;
-    private KeyboardActionListener mListener = EMPTY_LISTENER;
+    private KeyboardActionListener mListener = KeyboardActionListener.Adapter.EMPTY_LISTENER;
 
     private Keyboard mKeyboard;
     private int mPhantonSuddenMoveThreshold;
@@ -332,10 +332,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // true if a sliding key input is allowed.
     private boolean mIsAllowedSlidingKeyInput;
-
-    // Empty {@link KeyboardActionListener}
-    private static final KeyboardActionListener EMPTY_LISTENER =
-            new KeyboardActionListener.Adapter();
 
     private final GestureStrokeWithPreviewPoints mGestureStrokeWithPreviewPoints;
 
