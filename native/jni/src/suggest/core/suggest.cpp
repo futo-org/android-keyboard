@@ -163,9 +163,14 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 terminalDicNode->getFlags(), terminalDicNode->getAttributesPos());
         const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
         const bool isExactMatch = terminalDicNode->isExactMatch();
+        const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
+        // Heuristic: We exclude freq=0 first-char-uppercase words from exact match.
+        // (e.g. "AMD" and "and")
+        const bool isSafeExactMatch = isExactMatch
+                && !(isPossiblyOffensiveWord && isFirstCharUppercase);
         const int outputTypeFlags =
-                isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0
-                | isExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0;
+                (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
+                | (isSafeExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
 
         // Entries that are blacklisted or do not represent a word should not be output.
         const bool isValidWord = !terminalAttributes.isBlacklistedOrNotAWord();
