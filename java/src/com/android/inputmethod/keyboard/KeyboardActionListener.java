@@ -94,6 +94,8 @@ public interface KeyboardActionListener {
     public boolean onCustomRequest(int requestCode);
 
     public static class Adapter implements KeyboardActionListener {
+        public static final Adapter EMPTY_LISTENER = new Adapter();
+
         @Override
         public void onPressKey(int primaryCode) {}
         @Override
