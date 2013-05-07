@@ -19,8 +19,6 @@
 -->
 
 <resources>
-    <!-- Device form factor. This value must be aligned with {@link KeyboardId.FORM_FACTOR_TABLET10} -->
-    <integer name="config_device_form_factor">2</integer>
     <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_option_of_key_preview_popup">false</bool>
     <bool name="config_enable_bigram_suggestions_option">false</bool>
