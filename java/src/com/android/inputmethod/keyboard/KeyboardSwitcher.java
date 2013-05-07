@@ -142,8 +142,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
         final DisplayMetrics dm = res.getDisplayMetrics();
-        builder.setScreenGeometry(res.getInteger(R.integer.config_device_form_factor),
-                dm.widthPixels, dm.heightPixels);
+        builder.setScreenGeometry(dm.widthPixels, dm.heightPixels);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
