@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.personalization.AccountUtils;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -28,6 +30,7 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
@@ -105,9 +108,25 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     @Override
     public void loadDictionaryAsync() {
         clearFusionDictionary();
+        loadDeviceAccountsEmailAddresses();
         loadDictionaryAsyncForUri(ContactsContract.Profile.CONTENT_URI);
         // TODO: Switch this URL to the newer ContactsContract too
         loadDictionaryAsyncForUri(Contacts.CONTENT_URI);
+    }
+
+    private void loadDeviceAccountsEmailAddresses() {
+        final List<String> accountVocabulary =
+                AccountUtils.getDeviceAccountsEmailAddresses(mContext);
+        if (accountVocabulary == null || accountVocabulary.isEmpty()) {
+            return;
+        }
+        for (String word : accountVocabulary) {
+            if (DEBUG) {
+                Log.d(TAG, "loadAccountVocabulary: " + word);
+            }
+            super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
+                    false /* isNotAWord */);
+        }
     }
 
     private void loadDictionaryAsyncForUri(final Uri uri) {
