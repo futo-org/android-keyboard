@@ -64,6 +64,10 @@
         <item name="gestureFloatingPreviewHorizontalPadding">@dimen/gesture_floating_preview_horizontal_padding</item>
         <item name="gestureFloatingPreviewVerticalPadding">@dimen/gesture_floating_preview_vertical_padding</item>
         <item name="gestureFloatingPreviewRoundRadius">@dimen/gesture_floating_preview_round_radius</item>
+        <item name="gesturePreviewTrailMinSamplingDistance">@dimen/gesture_preview_trail_min_sampling_distance</item>
+        <item name="gesturePreviewTrailMaxInterpolationAngularThreshold">@integer/gesture_preview_trail_max_interpolation_angular_threshold</item>
+        <item name="gesturePreviewTrailMaxInterpolationDistanceThreshold">@dimen/gesture_preview_trail_max_interpolation_distance_threshold</item>
+        <item name="gesturePreviewTrailMaxInterpolationSegments">@integer/gesture_preview_trail_max_interpolation_segments</item>
         <item name="gesturePreviewTrailFadeoutStartDelay">@integer/config_gesture_preview_trail_fadeout_start_delay</item>
         <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
         <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>

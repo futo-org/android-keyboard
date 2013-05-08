@@ -108,6 +108,14 @@
         <attr name="backgroundDimAlpha" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
+        <!-- Minimum distance between gesture preview trail sampling points. -->
+        <attr name="gesturePreviewTrailMinSamplingDistance" format="dimension" />
+        <!-- Maximum angular threshold between gesture preview trail interpolation segments in degree. -->
+        <attr name="gesturePreviewTrailMaxInterpolationAngularThreshold" format="integer" />
+        <!-- Maximum distance threshold between gesture preview trail interpolation segments. -->
+        <attr name="gesturePreviewTrailMaxInterpolationDistanceThreshold" format="dimension" />
+        <!-- Maximum number of gesture preview trail interpolation segments. -->
+        <attr name="gesturePreviewTrailMaxInterpolationSegments" format="integer" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->
         <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
         <!-- Duration while gesture preview trail is fading out in millisecond. -->

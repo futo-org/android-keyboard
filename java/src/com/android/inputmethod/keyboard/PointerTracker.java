@@ -25,6 +25,7 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
+import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints.GestureStrokePreviewParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
@@ -161,6 +162,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // Parameters for pointer handling.
     private static PointerTrackerParams sParams;
     private static GestureStrokeParams sGestureStrokeParams;
+    private static GestureStrokePreviewParams sGesturePreviewParams;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
     // Move this threshold to resource.
     // TODO: Device specific parameter would be better for device specific hack?
@@ -339,12 +341,14 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
         sParams = PointerTrackerParams.DEFAULT;
         sGestureStrokeParams = GestureStrokeParams.DEFAULT;
+        sGesturePreviewParams = GestureStrokePreviewParams.DEFAULT;
         sTimeRecorder = new TimeRecorder(sParams, sGestureStrokeParams);
     }
 
     public static void setParameters(final TypedArray mainKeyboardViewAttr) {
         sParams = new PointerTrackerParams(mainKeyboardViewAttr);
         sGestureStrokeParams = new GestureStrokeParams(mainKeyboardViewAttr);
+        sGesturePreviewParams = new GestureStrokePreviewParams(mainKeyboardViewAttr);
         sTimeRecorder = new TimeRecorder(sParams, sGestureStrokeParams);
     }
 
@@ -428,7 +432,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
         mPointerId = id;
         mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(
-                id, sGestureStrokeParams);
+                id, sGestureStrokeParams, sGesturePreviewParams);
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();

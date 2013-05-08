@@ -101,6 +101,14 @@
     <fraction name="center_suggestion_percentile">36%</fraction>
 
     <!-- Gesture preview trail parameters -->
+    <!-- Minimum distance between gesture preview trail sampling points. -->
+    <dimen name="gesture_preview_trail_min_sampling_distance">6.4dp</dimen>
+    <!-- Maximum angular threshold between gesture preview trails interpolation segments in degree. -->
+    <integer name="gesture_preview_trail_max_interpolation_angular_threshold">15</integer>
+    <!-- Maximum distance threshold between gesture preview trails interpolation segments. -->
+    <dimen name="gesture_preview_trail_max_interpolation_distance_threshold">16.0dp</dimen>
+    <!-- Maximum number of gesture preview trail interpolation segments. -->
+    <integer name="gesture_preview_trail_max_interpolation_segments">6</integer>
     <dimen name="gesture_preview_trail_start_width">10.0dp</dimen>
     <dimen name="gesture_preview_trail_end_width">2.5dp</dimen>
     <!-- Percentages of gesture preview taril body and shadow, in proportion to the trail width.
