@@ -64,7 +64,8 @@ static TraverseSessionFactoryRegisterer traverseSessionFactoryRegisterer;
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength) {
     mDictionary = dictionary;
-    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(mDictionary->getDict());
+    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(mDictionary->getDict(),
+            mDictionary->getDictSize());
     if (!prevWord) {
         mPrevWordPos = NOT_VALID_WORD;
         return;
