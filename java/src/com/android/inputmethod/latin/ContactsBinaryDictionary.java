@@ -20,8 +20,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,7 +32,7 @@ import java.util.Locale;
 
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
-    private static final String[] PROJECTION = {BaseColumns._ID, Contacts.DISPLAY_NAME,};
+    private static final String[] PROJECTION = {BaseColumns._ID, Contacts.DISPLAY_NAME};
     private static final String[] PROJECTION_ID_ONLY = {BaseColumns._ID};
 
     private static final String TAG = ContactsBinaryDictionary.class.getSimpleName();
@@ -102,9 +104,16 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     @Override
     public void loadDictionaryAsync() {
+        clearFusionDictionary();
+        loadDictionaryAsyncForUri(ContactsContract.Profile.CONTENT_URI);
+        // TODO: Switch this URL to the newer ContactsContract too
+        loadDictionaryAsyncForUri(Contacts.CONTENT_URI);
+    }
+
+    private void loadDictionaryAsyncForUri(final Uri uri) {
         try {
             Cursor cursor = mContext.getContentResolver()
-                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
+                    .query(uri, PROJECTION, null, null, null);
             if (cursor != null) {
                 try {
                     if (cursor.moveToFirst()) {
@@ -129,7 +138,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private void addWords(final Cursor cursor) {
-        clearFusionDictionary();
         int count = 0;
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
@@ -173,6 +181,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 // capitalization of i.
                 final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
+                    if (DEBUG) {
+                        Log.d(TAG, "addName " + name + ", " + word + ", " + prevWord);
+                    }
                     super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
                             false /* isNotAWord */);
                     if (!TextUtils.isEmpty(prevWord)) {
