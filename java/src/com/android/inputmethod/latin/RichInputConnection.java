@@ -135,13 +135,14 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public void resetCachesUponCursorMove(final int newCursorPosition) {
+    public void resetCachesUponCursorMove(final int newCursorPosition,
+            final boolean shouldFinishComposition) {
         mCurrentCursorPosition = newCursorPosition;
         mComposingText.setLength(0);
         mCommittedTextBeforeComposingText.setLength(0);
         final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
         if (null != textBeforeCursor) mCommittedTextBeforeComposingText.append(textBeforeCursor);
-        if (null != mIC) {
+        if (null != mIC && shouldFinishComposition) {
             mIC.finishComposingText();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.richInputConnection_finishComposingText();
