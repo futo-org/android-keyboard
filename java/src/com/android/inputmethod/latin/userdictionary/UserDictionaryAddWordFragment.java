@@ -74,13 +74,13 @@ public class UserDictionaryAddWordFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        final MenuItem actionItemAdd = menu.add(0, OPTIONS_MENU_ADD, 0,
+                R.string.user_dict_settings_add_menu_title).setIcon(R.drawable.ic_menu_add);
+        actionItemAdd.setShowAsAction(
+                MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         final MenuItem actionItemDelete = menu.add(0, OPTIONS_MENU_DELETE, 0,
                 R.string.user_dict_settings_delete).setIcon(android.R.drawable.ic_menu_delete);
         actionItemDelete.setShowAsAction(
-                MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        final MenuItem actionItemAdd = menu.add(0, OPTIONS_MENU_ADD, 0,
-                R.string.user_dict_settings_delete).setIcon(R.drawable.ic_menu_add);
-        actionItemAdd.setShowAsAction(
                 MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
 
