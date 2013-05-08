@@ -79,23 +79,6 @@ public class ProximityInfo {
         mNativeProximityInfo = createNativeProximityInfo(touchPositionCorrection);
     }
 
-    /**
-     * Constructor for subclasses such as
-     * {@link com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo}.
-     */
-    protected ProximityInfo(final int[] proximityCharsArray, final int gridWidth,
-            final int gridHeight) {
-        this("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
-        mNativeProximityInfo = setProximityInfoNative("" /* locale */,
-                gridWidth /* displayWidth */, gridHeight /* displayHeight */,
-                gridWidth, gridHeight, 1 /* mostCommonKeyWidth */,
-                1 /* mostCommonKeyHeight */, proximityCharsArray, 0 /* keyCount */,
-                null /*keyXCoordinates */, null /* keyYCoordinates */,
-                null /* keyWidths */, null /* keyHeights */, null /* keyCharCodes */,
-                null /* sweetSpotCenterXs */, null /* sweetSpotCenterYs */,
-                null /* sweetSpotRadii */);
-    }
-
     private long mNativeProximityInfo;
     static {
         JniUtils.loadNativeLibrary();
