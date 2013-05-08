@@ -57,7 +57,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"همیشه نمایش داده شود"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"نمایش در حالت عمودی"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"همیشه پنهان شود"</string>
-    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"مسدودکردن کلمات توهین‌آمیز"</string>
+    <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"عدم نمایش کلمات توهین‌آمیز"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"کلمات توهین‌آمیز احتمالی پیشنهاد نشود"</string>
     <string name="auto_correction" msgid="7630720885194996950">"تصحیح خودکار"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"کلید فاصله و علائم نگارشی به صورت خودکار کلماتی را که غلط تایپ شده‌اند تصحیح می‌کنند"</string>
@@ -181,7 +181,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"راه‌اندازی <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"فعال‌سازی <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"لطفاً «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» را در تنظیمات زبان و ورودی خود علامت بزنید. این کار مجوز اجرای آن در دستگاه شما است."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> در حال حاضر در تنظیمات زبان و ورودی شما فعال است، بنابراین این مرحله انجام شده است. به مرحله بعدی بروید!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> در حال حاضر در تنظیمات زبان و ورودی شما فعال است، بنابراین این مرحله انجام شده است. به مرحله بعد بروید!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"فعال‌سازی در تنظیمات"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"جابجایی به <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"در مرحله بعد، با انتخاب «<xliff:g id="APPLICATION_NAME">%s</xliff:g>» به عنوان روش ورودی نوشتار خود آن را فعال نمایید."</string>
