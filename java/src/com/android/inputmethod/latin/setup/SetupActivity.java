@@ -190,18 +190,13 @@ public final class SetupActivity extends Activity implements View.OnClickListene
                 .path(Integer.toString(R.raw.setup_welcome_video))
                 .build();
         mWelcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
-        mWelcomeVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(final MediaPlayer mp) {
-                mp.start();
-            }
-        });
         mWelcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(final MediaPlayer mp) {
                 // Now VideoView has been laid-out and ready to play, remove background of it to
                 // reveal the video.
                 mWelcomeVideoView.setBackgroundResource(0);
+                mp.setLooping(true);
             }
         });
         final ImageView welcomeImageView = (ImageView)findViewById(R.id.setup_welcome_image);
@@ -365,9 +360,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         super.onBackPressed();
     }
 
+    private static void hideAndStopVideo(final VideoView videoView) {
+        videoView.stopPlayback();
+        videoView.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     protected void onPause() {
-        mWelcomeVideoView.stopPlayback();
+        hideAndStopVideo(mWelcomeVideoView);
         super.onPause();
     }
 
@@ -385,11 +385,12 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
         mSetupScreen.setVisibility(welcomeScreen ? View.GONE: View.VISIBLE);
         if (welcomeScreen) {
+            mWelcomeVideoView.setVisibility(View.VISIBLE);
             mWelcomeVideoView.setVideoURI(mWelcomeVideoUri);
             mWelcomeVideoView.start();
             return;
         }
-        mWelcomeVideoView.stopPlayback();
+        hideAndStopVideo(mWelcomeVideoView);
         final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
         mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
         mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
