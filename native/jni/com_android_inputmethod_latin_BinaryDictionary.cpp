@@ -109,7 +109,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     }
     Dictionary *dictionary = 0;
     if (BinaryFormat::UNKNOWN_FORMAT
-            == BinaryFormat::detectFormat(static_cast<uint8_t *>(dictBuf))) {
+            == BinaryFormat::detectFormat(static_cast<uint8_t *>(dictBuf),
+                    static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
         releaseDictBuf(static_cast<const char *>(dictBuf) - adjust, adjDictSize, fd);
