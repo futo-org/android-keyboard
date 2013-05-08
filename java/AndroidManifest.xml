@@ -56,7 +56,9 @@
 
         <activity android:name=".setup.SetupActivity"
                 android:label="@string/english_ime_name"
-                android:icon="@drawable/ic_setup_wizard">
+                android:icon="@drawable/ic_setup_wizard"
+                android:launchMode="singleTop"
+                android:clearTaskOnLaunch="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
