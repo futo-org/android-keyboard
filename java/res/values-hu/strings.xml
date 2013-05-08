@@ -24,9 +24,9 @@
     <string name="english_ime_research_log" msgid="8492602295696577851">"Naplózási parancsok"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Névjegyek keresése"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"A helyesírás-ellenőrző használja a névjegyek bejegyzéseit"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rezgés billentyű megnyomása esetén"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Hangjelzés billentyű megnyomása esetén"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Legyen nagyobb billentyű lenyomásakor"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rezgés gombnyomásra"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Hangjelzés gombnyomásra"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Nagyobb billentyű gombnyomásra"</string>
     <string name="general_category" msgid="1859088467017573195">"Általános"</string>
     <string name="correction_category" msgid="2236750915056607613">"Szövegjavítás"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Kézmozdulatokkal történő gépelés"</string>
@@ -124,7 +124,7 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"A fő billentyűzeten"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Szimbólumoknál"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Ki"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr. a billentyűzeten"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon a billentyűzeten"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. a szimbólumoknál"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hangbevivel KI"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Beviteli módok beállítása"</string>
