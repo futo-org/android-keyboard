@@ -125,7 +125,7 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На основ. клавіатурі"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Символьна клавіатура"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Вимк."</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Miкр. на осн. клав."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Мікрофон на основній клавіатурі"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Miкр. на симв. клавіат."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голос. ввід вимкнено"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налаштування методів введення"</string>
