@@ -83,9 +83,9 @@ final class GesturePreviewTrail {
                     R.styleable.MainKeyboardView_gesturePreviewTrailShadowRatio, 0);
             mTrailShadowEnabled = (trailShadowRatioInt > 0);
             mTrailShadowRatio = (float)trailShadowRatioInt / (float)PERCENTAGE_INT;
-            mFadeoutStartDelay = mainKeyboardViewAttr.getInt(
+            mFadeoutStartDelay = DBG_SHOW_POINTS ? 2000 : mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
-            mFadeoutDuration = mainKeyboardViewAttr.getInt(
+            mFadeoutDuration = DBG_SHOW_POINTS ? 200 : mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutDuration, 0);
             mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
             mUpdateInterval = mainKeyboardViewAttr.getInt(
@@ -259,7 +259,7 @@ final class GesturePreviewTrail {
                             if (pointTypes[i] == POINT_TYPE_INTERPOLATED) {
                                 paint.setColor(Color.RED);
                             } else if (pointTypes[i] == POINT_TYPE_SAMPLED) {
-                                paint.setColor(Color.BLUE);
+                                paint.setColor(0xFFA000FF);
                             } else {
                                 paint.setColor(Color.GREEN);
                             }
