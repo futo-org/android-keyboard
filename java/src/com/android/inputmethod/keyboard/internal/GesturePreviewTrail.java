@@ -285,7 +285,9 @@ final class GesturePreviewTrail {
             mEventTimes.setLength(newSize);
             mXCoordinates.setLength(newSize);
             mYCoordinates.setLength(newSize);
-            mPointTypes.setLength(newSize);
+            if (DBG_SHOW_POINTS) {
+                mPointTypes.setLength(newSize);
+            }
             // The start index of the last segment of the stroke
             // {@link mLastInterpolatedDrawIndex} should also be updated because all array
             // elements have just been shifted for compaction or been zeroed.
