@@ -46,6 +46,7 @@ import java.util.ArrayList;
 public final class SetupWizardActivity extends Activity implements View.OnClickListener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
+    private View mSetupWizard;
     private View mWelcomeScreen;
     private View mSetupScreen;
     private Uri mWelcomeVideoUri;
@@ -64,7 +65,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private static final int STEP_LAUNCHING_IME_SETTINGS = 4;
     private static final int STEP_BACK_FROM_IME_SETTINGS = 5;
 
-    private final SettingsPoolingHandler mHandler = new SettingsPoolingHandler(this);
+    final SettingsPoolingHandler mHandler = new SettingsPoolingHandler(this);
 
     static final class SettingsPoolingHandler
             extends StaticInnerHandlerWrapper<SetupWizardActivity> {
@@ -104,10 +105,11 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar);
+        setTheme(android.R.style.Theme_Translucent_NoTitleBar);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.setup_wizard);
+        mSetupWizard = findViewById(R.id.setup_wizard);
 
         RichInputMethodManager.init(this);
 
@@ -179,27 +181,28 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                 .authority(getPackageName())
                 .path(Integer.toString(R.raw.setup_welcome_video))
                 .build();
-        mWelcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
-        mWelcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        final VideoView welcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
+        welcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(final MediaPlayer mp) {
                 // Now VideoView has been laid-out and ready to play, remove background of it to
                 // reveal the video.
-                mWelcomeVideoView.setBackgroundResource(0);
+                welcomeVideoView.setBackgroundResource(0);
                 mp.setLooping(true);
             }
         });
         final ImageView welcomeImageView = (ImageView)findViewById(R.id.setup_welcome_image);
-        mWelcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+        welcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(final MediaPlayer mp, final int what, final int extra) {
                 Log.e(TAG, "Playing welcome video causes error: what=" + what + " extra=" + extra);
-                mWelcomeVideoView.setVisibility(View.GONE);
+                welcomeVideoView.setVisibility(View.GONE);
                 welcomeImageView.setImageResource(R.raw.setup_welcome_image);
                 welcomeImageView.setVisibility(View.VISIBLE);
                 return true;
             }
         });
+        mWelcomeVideoView = welcomeVideoView;
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
@@ -234,7 +237,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         }
     }
 
-    private void invokeSetupWizardOfThisIme() {
+    void invokeSetupWizardOfThisIme() {
         final Intent intent = new Intent();
         intent.setClass(this, SetupWizardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
@@ -251,14 +254,14 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         startActivity(intent);
     }
 
-    private void invokeLanguageAndInputSettings() {
+    void invokeLanguageAndInputSettings() {
         final Intent intent = new Intent();
         intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(intent);
     }
 
-    private void invokeSubtypeEnablerOfThisIme() {
+    void invokeSubtypeEnablerOfThisIme() {
         final InputMethodInfo imi =
                 RichInputMethodManager.getInstance().getInputMethodInfoOfThisIme();
         final Intent intent = new Intent();
@@ -318,6 +321,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     protected void onResume() {
         super.onResume();
         if (mStepNumber == STEP_LAUNCHING_IME_SETTINGS) {
+            // Prevent white screen flashing while launching settings activity.
+            mSetupWizard.setVisibility(View.INVISIBLE);
             invokeSettingsOfThisIme();
             mStepNumber = STEP_BACK_FROM_IME_SETTINGS;
             return;
@@ -360,6 +365,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     private void updateSetupStepView() {
+        mSetupWizard.setVisibility(View.VISIBLE);
         final boolean welcomeScreen = (mStepNumber == STEP_WELCOME);
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
         mSetupScreen.setVisibility(welcomeScreen ? View.GONE : View.VISIBLE);
