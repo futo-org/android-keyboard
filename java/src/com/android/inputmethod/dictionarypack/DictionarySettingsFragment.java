@@ -66,6 +66,8 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private boolean mChangedSettings;
     private DictionaryListInterfaceState mDictionaryListInterfaceState =
             new DictionaryListInterfaceState();
+    private TreeMap<String, WordListPreference> mCurrentPreferenceMap =
+            new TreeMap<String, WordListPreference>(); // never null
 
     private final BroadcastReceiver mConnectivityChangedReceiver = new BroadcastReceiver() {
             @Override
@@ -278,7 +280,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
             return result;
         } else {
             final String systemLocaleString = Locale.getDefault().toString();
-            final TreeMap<String, WordListPreference> prefList =
+            final TreeMap<String, WordListPreference> prefMap =
                     new TreeMap<String, WordListPreference>();
             final int idIndex = cursor.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
             final int versionIndex = cursor.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
@@ -299,16 +301,31 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 // The key is sorted in lexicographic order, according to the match level, then
                 // the description.
                 final String key = matchLevelString + "." + description + "." + wordlistId;
-                final WordListPreference existingPref = prefList.get(key);
+                final WordListPreference existingPref = prefMap.get(key);
                 if (null == existingPref || hasPriority(status, existingPref.mStatus)) {
-                    final WordListPreference pref = new WordListPreference(activity,
-                            mDictionaryListInterfaceState, mClientId, wordlistId, version, locale,
-                            description, status, filesize);
-                    prefList.put(key, pref);
+                    final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
+                    final WordListPreference pref;
+                    if (null != oldPreference
+                            && oldPreference.mVersion == version
+                            && oldPreference.mLocale.equals(locale)) {
+                        // If the old preference has all the new attributes, reuse it. We test
+                        // for version and locale because although attributes other than status
+                        // need to be the same, others have been tested through the key of the
+                        // map. Also, status may differ so we don't want to use #equals() here.
+                        pref = oldPreference;
+                        pref.mStatus = status;
+                    } else {
+                        // Otherwise, discard it and create a new one instead.
+                        pref = new WordListPreference(activity, mDictionaryListInterfaceState,
+                                mClientId, wordlistId, version, locale, description, status,
+                                filesize);
+                    }
+                    prefMap.put(key, pref);
                 }
             } while (cursor.moveToNext());
             cursor.close();
-            return prefList.values();
+            mCurrentPreferenceMap = prefMap;
+            return prefMap.values();
         }
     }
 

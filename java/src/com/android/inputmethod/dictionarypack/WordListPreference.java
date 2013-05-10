@@ -58,6 +58,8 @@ public final class WordListPreference extends Preference {
     // The metadata word list id and version of this word list.
     public final String mWordlistId;
     public final int mVersion;
+    public final Locale mLocale;
+    public final String mDescription;
     // The status
     public int mStatus;
     // The size of the dictionary file
@@ -80,6 +82,8 @@ public final class WordListPreference extends Preference {
         mVersion = version;
         mWordlistId = wordlistId;
         mFilesize = filesize;
+        mLocale = locale;
+        mDescription = description;
 
         setLayoutResource(R.layout.dictionary_line);
 
