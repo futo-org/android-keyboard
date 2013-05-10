@@ -118,7 +118,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final boolean FEEDBACK_DIALOG_SHOULD_PRESERVE_TEXT_FIELD = false;
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 5;
-    private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     // Whether all words should be recorded, leaving unsampled word between bigrams.  Useful for
     // testing.
     /* package for test */ static final boolean IS_LOGGING_EVERYTHING = false
@@ -465,10 +464,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         if (key == null || prefs == null) {
             return;
-        }
-        sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
-        if (sIsLogging == false) {
-            abort();
         }
         requestIndicatorRedraw();
         mPrefs = prefs;
