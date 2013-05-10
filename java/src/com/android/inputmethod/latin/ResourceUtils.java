@@ -35,8 +35,7 @@ public final class ResourceUtils {
         // This utility class is not publicly instantiable.
     }
 
-    private static final String DEFAULT_PREFIX = "DEFAULT,";
-    private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
+    private static final String DEFAULT_KEY = "DEFAULT";
     private static final HashMap<String, String> sDeviceOverrideValueMap =
             CollectionUtils.newHashMap();
 
@@ -48,28 +47,29 @@ public final class ResourceUtils {
         }
 
         final String[] overrideArray = res.getStringArray(overrideResId);
-        final String overrideValue = StringUtils.findPrefixedString(HARDWARE_PREFIX, overrideArray);
+        final String hardwareKey = "HARDWARE=" + Build.HARDWARE;
+        final String overrideValue = StringUtils.findValueOfKey(hardwareKey, overrideArray);
         // The overrideValue might be an empty string.
         if (overrideValue != null) {
             if (DEBUG) {
                 Log.d(TAG, "Find override value:"
                         + " resource="+ res.getResourceEntryName(overrideResId)
-                        + " Build.HARDWARE=" + Build.HARDWARE + " override=" + overrideValue);
+                        + " " + hardwareKey + " override=" + overrideValue);
             }
             sDeviceOverrideValueMap.put(key, overrideValue);
             return overrideValue;
         }
 
-        final String defaultValue = StringUtils.findPrefixedString(DEFAULT_PREFIX, overrideArray);
+        final String defaultValue = StringUtils.findValueOfKey(DEFAULT_KEY, overrideArray);
         // The defaultValue might be an empty string.
         if (defaultValue == null) {
             Log.w(TAG, "Couldn't find override value nor default value:"
                     + " resource="+ res.getResourceEntryName(overrideResId)
-                    + " Build.HARDWARE=" + Build.HARDWARE);
+                    + " " + hardwareKey);
         } else if (DEBUG) {
             Log.d(TAG, "Found default value:"
                 + " resource="+ res.getResourceEntryName(overrideResId)
-                + " Build.HARDWARE=" + Build.HARDWARE + " default=" + defaultValue);
+                + " " + hardwareKey + " " + DEFAULT_KEY + "=" + defaultValue);
         }
         sDeviceOverrideValueMap.put(key, defaultValue);
         return defaultValue;
