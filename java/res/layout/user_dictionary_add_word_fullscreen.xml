@@ -19,12 +19,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/user_dict_settings_add_screen_title" />
-
     <EditText
         android:id="@+id/user_dictionary_add_word_text"
         android:layout_width="match_parent"
