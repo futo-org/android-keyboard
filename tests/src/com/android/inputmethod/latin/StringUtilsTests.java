@@ -237,4 +237,63 @@ public class StringUtilsTests extends AndroidTestCase {
         // code for now True is acceptable.
         assertTrue(StringUtils.lastPartLooksLikeURL(".abc/def"));
     }
+
+    public void testFindValueOfKey() {
+        final String nullKey = null;
+        final String emptyKey = "";
+
+        final String[] nullArray = null;
+        assertNull(StringUtils.findValueOfKey("anyKey", nullArray));
+        assertNull(StringUtils.findValueOfKey(emptyKey, nullArray));
+        assertNull(StringUtils.findValueOfKey(nullKey, nullArray));
+
+        final String[] emptyArray = {};
+        assertNull(StringUtils.findValueOfKey("anyKey", emptyArray));
+        assertNull(StringUtils.findValueOfKey(emptyKey, emptyArray));
+        assertNull(StringUtils.findValueOfKey(nullKey, emptyArray));
+
+        final String[] array = {
+            "DEFAULT,defaultValue",
+            "HARDWARE=grouper,0.3",
+            "HARDWARE=mako,0.4",
+            "HARDWARE=manta,0.2"
+        };
+        assertEquals(StringUtils.findValueOfKey("HARDWARE=grouper", array), "0.3");
+        assertEquals(StringUtils.findValueOfKey("HARDWARE=mako", array), "0.4");
+        assertEquals(StringUtils.findValueOfKey("HARDWARE=manta", array), "0.2");
+        assertEquals(StringUtils.findValueOfKey("DEFAULT", array), "defaultValue");
+
+        assertNull(StringUtils.findValueOfKey("hardware=grouper", array));
+        assertNull(StringUtils.findValueOfKey("HARDWARE=MAKO", array));
+        assertNull(StringUtils.findValueOfKey("HARDWARE=mantaray", array));
+        assertNull(StringUtils.findValueOfKey(emptyKey, array));
+        assertNull(StringUtils.findValueOfKey(nullKey, array));
+
+        final String[] containsNullKey = {
+            "DEFAULT,defaultValue",
+            ",emptyValue"
+        };
+        assertEquals(StringUtils.findValueOfKey(emptyKey, containsNullKey), "emptyValue");
+
+        final String[] containsMultipleSameKeys = {
+            "key1,value1",
+            "key2,value2",
+            "key3,value3",
+            "key2,value4"
+        };
+        assertEquals(StringUtils.findValueOfKey("key2", containsMultipleSameKeys), "value2");
+
+        final String[] containNoCommaElement = {
+            "key1,value1",
+            "key2-and-value2",
+            "key3,value3"
+        };
+        assertEquals(StringUtils.findValueOfKey("key1", containNoCommaElement), "value1");
+        try {
+            final String valueOfKey3 = StringUtils.findValueOfKey("key3", containNoCommaElement);
+            fail("finding valueOfKey3=" + valueOfKey3 + " must fail");
+        } catch (final RuntimeException e) {
+            assertEquals(e.getMessage(), "Element has no comma: key2-and-value2");
+        }
+    }
 }

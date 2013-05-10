@@ -19,20 +19,20 @@
 -->
 
 <resources>
-    <!-- Build.HARDWARE,keyboard_height_in_dp -->
+    <!-- Build condition,keyboard_height_in_dp -->
     <string-array name="keyboard_heights" translatable="false">
     <!-- Preferable keyboard height in absolute scale: 1.285in -->
         <!-- Droid -->
-        <item>sholes,227.0167</item>
+        <item>HARDWARE=sholes,227.0167</item>
         <!-- Nexus One -->
-        <item>mahimahi,217.5932</item>
+        <item>HARDWARE=mahimahi,217.5932</item>
         <!-- Nexus S -->
-        <item>herring,200.8554</item>
+        <item>HARDWARE=herring,200.8554</item>
         <!-- Galaxy Nexus -->
-        <item>tuna,202.5869</item>
+        <item>HARDWARE=tuna,202.5869</item>
     <!-- Preferable keyboard height in absolute scale: 48.0mm -->
         <!-- Xoom -->
-        <item>stingray,283.1337</item>
+        <item>HARDWARE=stingray,283.1337</item>
     <!-- Default value for unknown device: empty string -->
         <item>DEFAULT,</item>
     </string-array>
