@@ -18,14 +18,14 @@
 */
 -->
 <resources>
+    <!-- Build condition,volume -->
     <string-array name="keypress_volumes" translatable="false">
-        <!-- Build.HARDWARE,volume -->
-        <item>herring,0.5f</item>
-        <item>tuna,0.5f</item>
-        <item>stingray,0.4f</item>
-        <item>grouper,0.3f</item>
-        <item>mako,0.3f</item>
-        <item>manta,0.2f</item>
+        <item>HARDWARE=herring,0.5f</item>
+        <item>HARDWARE=tuna,0.5f</item>
+        <item>HARDWARE=stingray,0.4f</item>
+        <item>HARDWARE=grouper,0.3f</item>
+        <item>HARDWARE=mako,0.3f</item>
+        <item>HARDWARE=manta,0.2f</item>
         <!-- Default value for unknown device -->
         <item>DEFAULT,0.2f</item>
     </string-array>

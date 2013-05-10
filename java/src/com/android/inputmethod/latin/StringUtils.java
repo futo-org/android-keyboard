@@ -65,17 +65,24 @@ public final class StringUtils {
     }
 
     /**
-     * Find a string that start with specified prefix from an array.
+     * Find a value that has a specified key from an array of key-comma-value.
      *
-     * @param prefix a prefix string to find.
-     * @param array an string array to be searched.
-     * @return the rest part of the string that starts with the prefix.
+     * @param key a key string to find.
+     * @param array an array of key-comma-value string to be searched.
+     * @return the value part of the first string that has a specified key.
      * Returns null if it couldn't be found.
      */
-    public static String findPrefixedString(final String prefix, final String[] array) {
+    public static String findValueOfKey(final String key, final String[] array) {
+        if (array == null) {
+            return null;
+        }
         for (final String element : array) {
-            if (element.startsWith(prefix)) {
-                return element.substring(prefix.length());
+            final int posComma = element.indexOf(',');
+            if (posComma < 0) {
+                throw new RuntimeException("Element has no comma: " + element);
+            }
+            if (element.substring(0, posComma).equals(key)) {
+                return element.substring(posComma + 1);
             }
         }
         return null;
