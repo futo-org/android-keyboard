@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -177,7 +178,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         return numWordsInLogUnitList == minNGramSize;
     }
 
-    public void shiftAndPublishAll() {
+    public void shiftAndPublishAll() throws IOException {
         final LinkedList<LogUnit> logUnits = getLogUnits();
         while (!logUnits.isEmpty()) {
             publishLogUnitsAtFrontOfBuffer();
@@ -186,10 +187,16 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
 
     @Override
     protected final void onBufferFull() {
-        publishLogUnitsAtFrontOfBuffer();
+        try {
+            publishLogUnitsAtFrontOfBuffer();
+        } catch (final IOException e) {
+            if (DEBUG) {
+                Log.w(TAG, "IOException when publishing front of LogBuffer", e);
+            }
+        }
     }
 
-    protected final void publishLogUnitsAtFrontOfBuffer() {
+    protected final void publishLogUnitsAtFrontOfBuffer() throws IOException {
         // TODO: Refactor this method to require fewer passes through the LogUnits.  Should really
         // require only one pass.
         ArrayList<LogUnit> logUnits = peekAtFirstNWords(N_GRAM_SIZE);
@@ -224,9 +231,11 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
      * @param logUnits The list of logUnits to be published.
      * @param canIncludePrivateData Whether the private data in the logUnits can be included in
      * publication.
+     *
+     * @throws IOException if publication to the log file is not possible
      */
     protected abstract void publish(final ArrayList<LogUnit> logUnits,
-            final boolean canIncludePrivateData);
+            final boolean canIncludePrivateData) throws IOException;
 
     @Override
     protected int shiftOutWords(final int numWords) {

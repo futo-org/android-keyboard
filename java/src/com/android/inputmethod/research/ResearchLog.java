@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -61,33 +62,17 @@ public class ResearchLog {
     /* package */ final File mFile;
     private final Context mContext;
 
-    private JsonWriter mJsonWriter = NULL_JSON_WRITER;
+    // Earlier implementations used a dummy JsonWriter that just swallowed what it was given, but
+    // this was tricky to do well, because JsonWriter throws an exception if it is passed more than
+    // one top-level object.
+    private JsonWriter mJsonWriter = null;
+
     // true if at least one byte of data has been written out to the log file.  This must be
     // remembered because JsonWriter requires that calls matching calls to beginObject and
     // endObject, as well as beginArray and endArray, and the file is opened lazily, only when
     // it is certain that data will be written.  Alternatively, the matching call exceptions
     // could be caught, but this might suppress other errors.
     private boolean mHasWrittenData = false;
-
-    private static final JsonWriter NULL_JSON_WRITER = new JsonWriter(
-            new OutputStreamWriter(new NullOutputStream()));
-    private static class NullOutputStream extends OutputStream {
-        /** {@inheritDoc} */
-        @Override
-        public void write(byte[] buffer, int offset, int count) {
-            // nop
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void write(byte[] buffer) {
-            // nop
-        }
-
-        @Override
-        public void write(int oneByte) {
-        }
-    }
 
     public ResearchLog(final File outputFile, final Context context) {
         mExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -108,6 +93,7 @@ public class ResearchLog {
             @Override
             public Object call() throws Exception {
                 try {
+                    if (mJsonWriter == null) return null;
                     // TODO: This is necessary to avoid an exception.  Better would be to not even
                     // open the JsonWriter if the file is not even opened unless there is valid data
                     // to write.
@@ -119,9 +105,9 @@ public class ResearchLog {
                     mJsonWriter.flush();
                     mJsonWriter.close();
                     if (DEBUG) {
-                        Log.d(TAG, "wrote log to " + mFile);
+                        Log.d(TAG, "closed " + mFile);
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     Log.d(TAG, "error when closing ResearchLog:", e);
                 } finally {
                     // Marking the file as read-only signals that this log file is ready to be
@@ -162,6 +148,7 @@ public class ResearchLog {
             @Override
             public Object call() throws Exception {
                 try {
+                    if (mJsonWriter == null) return null;
                     if (mHasWrittenData) {
                         // TODO: This is necessary to avoid an exception.  Better would be to not
                         // even open the JsonWriter if the file is not even opened unless there is
@@ -217,7 +204,7 @@ public class ResearchLog {
     private final Callable<Object> mFlushCallable = new Callable<Object>() {
         @Override
         public Object call() throws Exception {
-            mJsonWriter.flush();
+            if (mJsonWriter != null) mJsonWriter.flush();
             return null;
         }
     };
@@ -263,30 +250,29 @@ public class ResearchLog {
     /**
      * Return a JsonWriter for this ResearchLog.  It is initialized the first time this method is
      * called.  The cached value is returned in future calls.
+     *
+     * @throws IOException if opening the JsonWriter is not possible
      */
-    public JsonWriter getInitializedJsonWriterLocked() {
-        if (mJsonWriter != NULL_JSON_WRITER || mFile == null) return mJsonWriter;
+    public JsonWriter getInitializedJsonWriterLocked() throws IOException {
+        if (mJsonWriter != null) return mJsonWriter;
+        if (mFile == null) throw new FileNotFoundException();
         try {
             final JsonWriter jsonWriter = createJsonWriter(mContext, mFile);
-            if (jsonWriter != null) {
-                jsonWriter.beginArray();
-                mJsonWriter = jsonWriter;
-                mHasWrittenData = true;
-            }
+            if (jsonWriter == null) throw new IOException("Could not create JsonWriter");
+
+            jsonWriter.beginArray();
+            mJsonWriter = jsonWriter;
+            mHasWrittenData = true;
+            return mJsonWriter;
         } catch (final IOException e) {
-            Log.w(TAG, "Error in JsonWriter; disabling logging", e);
-            try {
-                mJsonWriter.close();
-            } catch (final IllegalStateException e1) {
-                // Assume that this is just the json not being terminated properly.
-                // Ignore
-            } catch (final IOException e1) {
-                Log.w(TAG, "Error in closing JsonWriter; disabling logging", e1);
-            } finally {
-                mJsonWriter = NULL_JSON_WRITER;
+            if (DEBUG) {
+                Log.w(TAG, "Exception when creating JsonWriter", e);
+                Log.w(TAG, "Closing JsonWriter");
             }
+            if (mJsonWriter != null) mJsonWriter.close();
+            mJsonWriter = null;
+            throw e;
         }
-        return mJsonWriter;
     }
 
     /**
