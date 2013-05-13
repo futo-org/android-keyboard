@@ -29,13 +29,13 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResizableIntArray;
 
 /*
- * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailFadeoutStartDelay
- * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailFadeoutDuration
- * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailUpdateInterval
- * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailColor
- * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailWidth
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutStartDelay
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutDuration
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailUpdateInterval
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailColor
+ * @attr ref R.styleable#MainKeyboardView_gestureTrailWidth
  */
-final class GesturePreviewTrail {
+final class GestureTrail {
     public static final boolean DBG_SHOW_POINTS = false;
     public static final int POINT_TYPE_SAMPLED = 0;
     public static final int POINT_TYPE_INTERPOLATED = 1;
@@ -70,26 +70,26 @@ final class GesturePreviewTrail {
 
         public Params(final TypedArray mainKeyboardViewAttr) {
             mTrailColor = mainKeyboardViewAttr.getColor(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailColor, 0);
+                    R.styleable.MainKeyboardView_gestureTrailColor, 0);
             mTrailStartWidth = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailStartWidth, 0.0f);
+                    R.styleable.MainKeyboardView_gestureTrailStartWidth, 0.0f);
             mTrailEndWidth = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailEndWidth, 0.0f);
+                    R.styleable.MainKeyboardView_gestureTrailEndWidth, 0.0f);
             final int PERCENTAGE_INT = 100;
             mTrailBodyRatio = (float)mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailBodyRatio, PERCENTAGE_INT)
+                    R.styleable.MainKeyboardView_gestureTrailBodyRatio, PERCENTAGE_INT)
                     / (float)PERCENTAGE_INT;
             final int trailShadowRatioInt = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailShadowRatio, 0);
+                    R.styleable.MainKeyboardView_gestureTrailShadowRatio, 0);
             mTrailShadowEnabled = (trailShadowRatioInt > 0);
             mTrailShadowRatio = (float)trailShadowRatioInt / (float)PERCENTAGE_INT;
             mFadeoutStartDelay = DBG_SHOW_POINTS ? 2000 : mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
+                    R.styleable.MainKeyboardView_gestureTrailFadeoutStartDelay, 0);
             mFadeoutDuration = DBG_SHOW_POINTS ? 200 : mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailFadeoutDuration, 0);
+                    R.styleable.MainKeyboardView_gestureTrailFadeoutDuration, 0);
             mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
             mUpdateInterval = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailUpdateInterval, 0);
+                    R.styleable.MainKeyboardView_gestureTrailUpdateInterval, 0);
         }
     }
 
@@ -186,12 +186,12 @@ final class GesturePreviewTrail {
     private final Rect mRoundedLineBounds = new Rect();
 
     /**
-     * Draw gesture preview trail
-     * @param canvas The canvas to draw the gesture preview trail
-     * @param paint The paint object to be used to draw the gesture preview trail
+     * Draw gesture trail
+     * @param canvas The canvas to draw the gesture trail
+     * @param paint The paint object to be used to draw the gesture trail
      * @param outBoundsRect the bounding box of this gesture trail drawing
-     * @param params The drawing parameters of gesture preview trail
-     * @return true if some gesture preview trails remain to be drawn
+     * @param params The drawing parameters of gesture trail
+     * @return true if some gesture trails remain to be drawn
      */
     public boolean drawGestureTrail(final Canvas canvas, final Paint paint,
             final Rect outBoundsRect, final Params params) {

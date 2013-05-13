@@ -910,10 +910,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mSlidingKeyInputPreview.dismissSlidingKeyInputPreview();
     }
 
-    public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
+    public void setGesturePreviewMode(final boolean drawsGestureTrail,
             final boolean drawsGestureFloatingPreviewText) {
         mGestureFloatingPreviewText.setPreviewEnabled(drawsGestureFloatingPreviewText);
-        mGestureTrailsPreview.setPreviewEnabled(drawsGesturePreviewTrail);
+        mGestureTrailsPreview.setPreviewEnabled(drawsGestureTrail);
     }
 
     public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
@@ -927,7 +927,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     @Override
-    public void showGesturePreviewTrail(final PointerTracker tracker) {
+    public void showGestureTrail(final PointerTracker tracker) {
         locatePreviewPlacerView();
         mGestureFloatingPreviewText.setPreviewPosition(tracker);
         mGestureTrailsPreview.setPreviewPosition(tracker);
