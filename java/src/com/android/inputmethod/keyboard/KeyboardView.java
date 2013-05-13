@@ -497,7 +497,7 @@ public class KeyboardView extends View {
             }
         }
 
-        if (key.hasPopupHint() && key.mMoreKeys != null && key.mMoreKeys.length > 0) {
+        if (key.hasPopupHint() && key.mMoreKeys != null) {
             drawKeyPopupHint(key, canvas, paint, params);
         }
     }

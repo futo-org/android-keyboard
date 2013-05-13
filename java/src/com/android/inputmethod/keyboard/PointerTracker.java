@@ -1306,9 +1306,15 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startLongPressTimer(final Key key) {
-        if (key != null && key.isLongPressEnabled() && !sInGesture) {
-            mTimerProxy.startLongPressTimer(this);
-        }
+        if (sInGesture) return;
+        if (key == null) return;
+        if (!key.isLongPressEnabled()) return;
+        // Caveat: Please note that isLongPressEnabled() can be true even if the current key
+        // doesn't have its more keys. (e.g. spacebar, globe key)
+        // We always need to start the long press timer if the key has its more keys regardless of
+        // whether or not we are in the sliding input mode.
+        if (mIsInSlidingKeyInputFromModifier && key.mMoreKeys == null) return;
+        mTimerProxy.startLongPressTimer(this);
     }
 
     private void detectAndSendKey(final Key key, final int x, final int y, final long eventTime) {
