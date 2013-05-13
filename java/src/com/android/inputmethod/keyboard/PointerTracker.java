@@ -84,7 +84,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void dismissKeyPreview(PointerTracker tracker);
         public void showSlidingKeyInputPreview(PointerTracker tracker);
         public void dismissSlidingKeyInputPreview();
-        public void showGesturePreviewTrail(PointerTracker tracker);
+        public void showGestureTrail(PointerTracker tracker);
     }
 
     public interface TimerProxy {
@@ -737,7 +737,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             dismissAllMoreKeysPanels();
         }
         mTimerProxy.cancelLongPressTimer();
-        mDrawingProxy.showGesturePreviewTrail(this);
+        mDrawingProxy.showGestureTrail(this);
     }
 
     public void updateBatchInputByTimer(final long eventTime) {
@@ -753,7 +753,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingForActionDisabled) {
             return;
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        mDrawingProxy.showGestureTrail(this);
     }
 
     private void updateBatchInput(final long eventTime) {
@@ -794,7 +794,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingForActionDisabled) {
             return;
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        mDrawingProxy.showGestureTrail(this);
     }
 
     private void cancelBatchInput() {

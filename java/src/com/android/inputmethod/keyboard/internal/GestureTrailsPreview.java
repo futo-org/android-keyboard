@@ -29,7 +29,7 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.keyboard.internal.GesturePreviewTrail.Params;
+import com.android.inputmethod.keyboard.internal.GestureTrail.Params;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -37,9 +37,8 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
  * Draw gesture trail preview graphics during gesture.
  */
 public final class GestureTrailsPreview extends AbstractDrawingPreview {
-    private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
-            CollectionUtils.newSparseArray();
-    private final Params mGesturePreviewTrailParams;
+    private final SparseArray<GestureTrail> mGestureTrails = CollectionUtils.newSparseArray();
+    private final Params mGestureTrailParams;
     private final Paint mGesturePaint;
     private int mOffscreenWidth;
     private int mOffscreenHeight;
@@ -48,20 +47,20 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
     private final Canvas mOffscreenCanvas = new Canvas();
     private final Rect mOffscreenSrcRect = new Rect();
     private final Rect mDirtyRect = new Rect();
-    private final Rect mGesturePreviewTrailBoundsRect = new Rect(); // per trail
+    private final Rect mGestureTrailBoundsRect = new Rect(); // per trail
 
     private final DrawingHandler mDrawingHandler;
 
     private static final class DrawingHandler
             extends StaticInnerHandlerWrapper<GestureTrailsPreview> {
-        private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 0;
+        private static final int MSG_UPDATE_GESTURE_TRAIL = 0;
 
-        private final Params mGesturePreviewTrailParams;
+        private final Params mGestureTrailParams;
 
         public DrawingHandler(final GestureTrailsPreview outerInstance,
-                final Params gesturePreviewTrailParams) {
+                final Params gestureTrailParams) {
             super(outerInstance);
-            mGesturePreviewTrailParams = gesturePreviewTrailParams;
+            mGestureTrailParams = gestureTrailParams;
         }
 
         @Override
@@ -69,23 +68,23 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
             final GestureTrailsPreview preview = getOuterInstance();
             if (preview == null) return;
             switch (msg.what) {
-            case MSG_UPDATE_GESTURE_PREVIEW_TRAIL:
+            case MSG_UPDATE_GESTURE_TRAIL:
                 preview.getDrawingView().invalidate();
                 break;
             }
         }
 
         public void postUpdateGestureTrailPreview() {
-            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_TRAIL),
-                    mGesturePreviewTrailParams.mUpdateInterval);
+            removeMessages(MSG_UPDATE_GESTURE_TRAIL);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_TRAIL),
+                    mGestureTrailParams.mUpdateInterval);
         }
     }
 
     public GestureTrailsPreview(final View drawingView, final TypedArray mainKeyboardViewAttr) {
         super(drawingView);
-        mGesturePreviewTrailParams = new Params(mainKeyboardViewAttr);
-        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
+        mGestureTrailParams = new Params(mainKeyboardViewAttr);
+        mDrawingHandler = new DrawingHandler(this, mGestureTrailParams);
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
         gesturePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
@@ -133,21 +132,20 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
             offscreenCanvas.drawRect(dirtyRect, paint);
         }
         dirtyRect.setEmpty();
-        boolean needsUpdatingGesturePreviewTrail = false;
+        boolean needsUpdatingGestureTrail = false;
         // Draw gesture trails to offscreen buffer.
-        synchronized (mGesturePreviewTrails) {
+        synchronized (mGestureTrails) {
             // Trails count == fingers count that have ever been active.
-            final int trailsCount = mGesturePreviewTrails.size();
+            final int trailsCount = mGestureTrails.size();
             for (int index = 0; index < trailsCount; index++) {
-                final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
-                needsUpdatingGesturePreviewTrail |=
-                        trail.drawGestureTrail(offscreenCanvas, paint,
-                                mGesturePreviewTrailBoundsRect, mGesturePreviewTrailParams);
-                // {@link #mGesturePreviewTrailBoundsRect} has bounding box of the trail.
-                dirtyRect.union(mGesturePreviewTrailBoundsRect);
+                final GestureTrail trail = mGestureTrails.valueAt(index);
+                needsUpdatingGestureTrail |= trail.drawGestureTrail(offscreenCanvas, paint,
+                        mGestureTrailBoundsRect, mGestureTrailParams);
+                // {@link #mGestureTrailBoundsRect} has bounding box of the trail.
+                dirtyRect.union(mGestureTrailBoundsRect);
             }
         }
-        return needsUpdatingGesturePreviewTrail;
+        return needsUpdatingGestureTrail;
     }
 
     /**
@@ -161,9 +159,9 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
         }
         mayAllocateOffscreenBuffer();
         // Draw gesture trails to offscreen buffer.
-        final boolean needsUpdatingGesturePreviewTrail = drawGestureTrails(
+        final boolean needsUpdatingGestureTrail = drawGestureTrails(
                 mOffscreenCanvas, mGesturePaint, mDirtyRect);
-        if (needsUpdatingGesturePreviewTrail) {
+        if (needsUpdatingGestureTrail) {
             mDrawingHandler.postUpdateGestureTrailPreview();
         }
         // Transfer offscreen buffer to screen.
@@ -185,12 +183,12 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
         if (!isPreviewEnabled()) {
             return;
         }
-        GesturePreviewTrail trail;
-        synchronized (mGesturePreviewTrails) {
-            trail = mGesturePreviewTrails.get(tracker.mPointerId);
+        GestureTrail trail;
+        synchronized (mGestureTrails) {
+            trail = mGestureTrails.get(tracker.mPointerId);
             if (trail == null) {
-                trail = new GesturePreviewTrail();
-                mGesturePreviewTrails.put(tracker.mPointerId, trail);
+                trail = new GestureTrail();
+                mGestureTrails.put(tracker.mPointerId, trail);
             }
         }
         trail.addStroke(tracker.getGestureStrokeWithPreviewPoints(), tracker.getDownTime());
