@@ -34,6 +34,6 @@
         <!-- Xoom -->
         <item>HARDWARE=stingray,283.1337</item>
     <!-- Default value for unknown device: empty string -->
-        <item>DEFAULT,</item>
+        <item>,</item>
     </string-array>
 </resources>

@@ -24,6 +24,6 @@
         <!-- Xoom -->
         <item>HARDWARE=stingray,true</item>
         <!-- Default value for unknown device -->
-        <item>DEFAULT,false</item>
+        <item>,false</item>
     </string-array>
 </resources>
