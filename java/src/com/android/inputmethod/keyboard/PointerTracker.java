@@ -1168,6 +1168,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
         mTimerProxy.cancelKeyTimers();
+        final boolean isInSlidingKeyInput = mIsInSlidingKeyInput;
         resetSlidingKeyInput();
         mIsDetectingGesture = false;
         final Key currentKey = mCurrentKey;
@@ -1197,9 +1198,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingForActionDisabled) {
             return;
         }
-        if (currentKey != null && !currentKey.isRepeatable()) {
-            detectAndSendKey(currentKey, mKeyX, mKeyY, eventTime);
+        if (currentKey != null && currentKey.isRepeatable() && !isInSlidingKeyInput) {
+            // Repeatable key has been registered in {@link #onDownEventInternal(int,int,long)}.
+            return;
         }
+        detectAndSendKey(currentKey, mKeyX, mKeyY, eventTime);
     }
 
     public void onShowMoreKeysPanel(final int translatedX, final int translatedY,
@@ -1251,7 +1254,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key == null) return;
         if (!key.isRepeatable()) return;
         // Don't start key repeat when we are in sliding input mode.
-        if (mIsInSlidingKeyInputFromModifier) return;
+        if (mIsInSlidingKeyInput) return;
         onRegisterKey(key);
         mTimerProxy.startKeyRepeatTimer(this);
     }
@@ -1313,7 +1316,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // doesn't have its more keys. (e.g. spacebar, globe key)
         // We always need to start the long press timer if the key has its more keys regardless of
         // whether or not we are in the sliding input mode.
-        if (mIsInSlidingKeyInputFromModifier && key.mMoreKeys == null) return;
+        if (mIsInSlidingKeyInput && key.mMoreKeys == null) return;
         mTimerProxy.startLongPressTimer(this);
     }
 
