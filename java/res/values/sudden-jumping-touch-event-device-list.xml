@@ -26,6 +26,6 @@
         <!-- Droid -->
         <item>HARDWARE=sholes,true</item>
         <!-- Default value for unknown device -->
-        <item>DEFAULT,false</item>
+        <item>,false</item>
     </string-array>
 </resources>

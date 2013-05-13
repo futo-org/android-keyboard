@@ -65,30 +65,6 @@ public final class StringUtils {
     }
 
     /**
-     * Find a value that has a specified key from an array of key-comma-value.
-     *
-     * @param key a key string to find.
-     * @param array an array of key-comma-value string to be searched.
-     * @return the value part of the first string that has a specified key.
-     * Returns null if it couldn't be found.
-     */
-    public static String findValueOfKey(final String key, final String[] array) {
-        if (array == null) {
-            return null;
-        }
-        for (final String element : array) {
-            final int posComma = element.indexOf(',');
-            if (posComma < 0) {
-                throw new RuntimeException("Element has no comma: " + element);
-            }
-            if (element.substring(0, posComma).equals(key)) {
-                return element.substring(posComma + 1);
-            }
-        }
-        return null;
-    }
-
-    /**
      * Remove duplicates from an array of strings.
      *
      * This method will always keep the first occurrence of all strings at their position

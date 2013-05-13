@@ -29,6 +29,6 @@
         <!-- Nexus 10 -->
         <item>HARDWARE=manta,16</item>
         <!-- Default value for unknown device -->
-        <item>DEFAULT,20</item>
+        <item>,20</item>
     </string-array>
 </resources>
