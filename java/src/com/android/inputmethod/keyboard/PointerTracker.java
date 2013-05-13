@@ -1247,10 +1247,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startRepeatKey(final Key key) {
-        if (key != null && key.isRepeatable() && !sInGesture) {
-            onRegisterKey(key);
-            mTimerProxy.startKeyRepeatTimer(this);
-        }
+        if (sInGesture) return;
+        if (key == null) return;
+        if (!key.isRepeatable()) return;
+        // Don't start key repeat when we are in sliding input mode.
+        if (mIsInSlidingKeyInputFromModifier) return;
+        onRegisterKey(key);
+        mTimerProxy.startKeyRepeatTimer(this);
     }
 
     public void onRegisterKey(final Key key) {
