@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Configurando o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ative o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Marque \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" em \"Configurações de idioma e entrada\" para autorizar a execução."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> já está ativado em suas configurações de idioma e entrada. Esta estapa está concluída. Vamos avançar para a próxima!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> já está ativado em suas configurações de idioma e entrada. Esta etapa está concluída. Vamos avançar para a próxima!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ativar em \"Configurações\""</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Abra o <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Em seguida, selecione \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" como o método de entrada de texto ativo."</string>

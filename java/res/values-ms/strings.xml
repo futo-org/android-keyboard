@@ -177,7 +177,7 @@
     <string name="setup_steps_title" msgid="6400373034871816182">"Menyediakan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Dayakan <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"Sila semak \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" dlm ttpn Bhs &amp; input. Ini mbnarkn apl djlnkn pd pranti anda."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> sudah didayakan dlm ttpn Bahasa &amp; input anda, jd langkah ini tlh selesai. Beralih ke langkah seterusnya!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> sudah didayakan dalam tetapan Bahasa &amp; input anda, jadi langkah ini telah selesai. Beralih ke langkah seterusnya!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Dayakan dalam Tetapan"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Beralih ke <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Seterusnya, pilih \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" sebagai kaedah input teks aktif anda."</string>
@@ -233,7 +233,7 @@
     <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"Edit perkataan"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"Edit"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"Padam"</string>
-    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Anda tidak mempunyai sebarang perkataan dalam kamus pengguna. Tambah perkataan dengan menyentuh butang Tambah (+)."</string>
+    <string name="user_dict_settings_empty_text" msgid="558499587532668203">"Anda tidak mempunyai sebarang perkataan dalam kamus pengguna. Tambahkan perkataan dengan menyentuh butang Tambah (+)."</string>
     <string name="user_dict_settings_all_languages" msgid="8276126583216298886">"Untuk semua bahasa"</string>
     <string name="user_dict_settings_more_languages" msgid="7131268499685180461">"Lebih banyak bahasa..."</string>
     <string name="user_dict_settings_delete" msgid="110413335187193859">"Padam"</string>
