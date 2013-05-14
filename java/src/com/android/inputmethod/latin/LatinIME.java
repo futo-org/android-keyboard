@@ -2102,16 +2102,25 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     }
 
     private boolean isSuggestionsStripVisible() {
-        if (mSuggestionStripView == null)
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (null == mainKeyboardView || !mainKeyboardView.isShown()) {
             return false;
-        if (mSuggestionStripView.isShowingAddToDictionaryHint())
+        }
+        if (mSuggestionStripView == null) {
+            return false;
+        }
+        if (mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return true;
-        if (null == mSettings.getCurrent())
+        }
+        if (null == mSettings.getCurrent()) {
             return false;
-        if (!mSettings.getCurrent().isSuggestionStripVisibleInOrientation(mDisplayOrientation))
+        }
+        if (!mSettings.getCurrent().isSuggestionStripVisibleInOrientation(mDisplayOrientation)) {
             return false;
-        if (mSettings.getCurrent().isApplicationSpecifiedCompletionsOn())
+        }
+        if (mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) {
             return true;
+        }
         return mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation);
     }
 
