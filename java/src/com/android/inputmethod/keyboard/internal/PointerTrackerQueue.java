@@ -48,6 +48,9 @@ public final class PointerTrackerQueue {
 
     public void add(final Element pointer) {
         synchronized (mExpandableArrayOfActivePointers) {
+            if (DEBUG) {
+                Log.d(TAG, "add: " + pointer + " " + this);
+            }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
             if (arraySize < expandableArray.size()) {
@@ -61,24 +64,27 @@ public final class PointerTrackerQueue {
 
     public void remove(final Element pointer) {
         synchronized (mExpandableArrayOfActivePointers) {
+            if (DEBUG) {
+                Log.d(TAG, "remove: " + pointer + " " + this);
+            }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
-            int newSize = 0;
+            int newIndex = 0;
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    if (newSize != index) {
+                    if (newIndex != index) {
                         Log.w(TAG, "Found duplicated element in remove: " + pointer);
                     }
                     continue; // Remove this element from the expandableArray.
                 }
-                if (newSize != index) {
+                if (newIndex != index) {
                     // Shift this element toward the beginning of the expandableArray.
-                    expandableArray.set(newSize, element);
+                    expandableArray.set(newIndex, element);
                 }
-                newSize++;
+                newIndex++;
             }
-            mArraySize = newSize;
+            mArraySize = newIndex;
         }
     }
 
@@ -95,8 +101,8 @@ public final class PointerTrackerQueue {
             }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
-            int newSize, index;
-            for (newSize = index = 0; index < arraySize; index++) {
+            int newIndex, index;
+            for (newIndex = index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
                     break; // Stop releasing elements.
@@ -105,29 +111,30 @@ public final class PointerTrackerQueue {
                     element.onPhantomUpEvent(eventTime);
                     continue; // Remove this element from the expandableArray.
                 }
-                if (newSize != index) {
+                if (newIndex != index) {
                     // Shift this element toward the beginning of the expandableArray.
-                    expandableArray.set(newSize, element);
+                    expandableArray.set(newIndex, element);
                 }
-                newSize++;
+                newIndex++;
             }
             // Shift rest of the expandableArray.
             int count = 0;
             for (; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    if (count > 0) {
+                    count++;
+                    if (count > 1) {
                         Log.w(TAG, "Found duplicated element in releaseAllPointersOlderThan: "
                                 + pointer);
                     }
-                    count++;
                 }
-                if (newSize != index) {
-                    expandableArray.set(newSize, expandableArray.get(index));
-                    newSize++;
+                if (newIndex != index) {
+                    // Shift this element toward the beginning of the expandableArray.
+                    expandableArray.set(newIndex, expandableArray.get(index));
                 }
+                newIndex++;
             }
-            mArraySize = newSize;
+            mArraySize = newIndex;
         }
     }
 
@@ -146,26 +153,26 @@ public final class PointerTrackerQueue {
             }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
-            int newSize = 0, count = 0;
+            int newIndex = 0, count = 0;
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    if (count > 0) {
+                    count++;
+                    if (count > 1) {
                         Log.w(TAG, "Found duplicated element in releaseAllPointersExcept: "
                                 + pointer);
                     }
-                    count++;
                 } else {
                     element.onPhantomUpEvent(eventTime);
                     continue; // Remove this element from the expandableArray.
                 }
-                if (newSize != index) {
+                if (newIndex != index) {
                     // Shift this element toward the beginning of the expandableArray.
-                    expandableArray.set(newSize, element);
+                    expandableArray.set(newIndex, element);
                 }
-                newSize++;
+                newIndex++;
             }
-            mArraySize = newSize;
+            mArraySize = newIndex;
         }
     }
 
@@ -202,6 +209,9 @@ public final class PointerTrackerQueue {
 
     public void cancelAllPointerTracker() {
         synchronized (mExpandableArrayOfActivePointers) {
+            if (DEBUG) {
+                Log.d(TAG, "cancelAllPointerTracker: " + this);
+            }
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
             final int arraySize = mArraySize;
             for (int index = 0; index < arraySize; index++) {
