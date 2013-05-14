@@ -58,4 +58,5 @@
     <color name="setup_text_dark">#FF707070</color>
     <color name="setup_text_action">@android:color/holo_blue_light</color>
     <color name="setup_step_background">@android:color/background_light</color>
+    <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
 </resources>

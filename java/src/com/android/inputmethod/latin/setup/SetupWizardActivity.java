@@ -27,6 +27,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -199,6 +200,11 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                 welcomeVideoView.setVisibility(View.GONE);
                 welcomeImageView.setImageResource(R.raw.setup_welcome_image);
                 welcomeImageView.setVisibility(View.VISIBLE);
+                // Remove unnecessary light gray background around still image.
+                final ViewGroup videoFrame = (ViewGroup)findViewById(
+                        R.id.setup_welcome_video_frame);
+                videoFrame.setBackgroundColor(getResources().getColor(R.color.setup_background));
+                videoFrame.requestLayout();
                 return true;
             }
         });
