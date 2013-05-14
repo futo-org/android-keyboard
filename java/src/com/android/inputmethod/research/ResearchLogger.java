@@ -156,11 +156,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // LogUnits are queued in the LogBuffers and published to the ResearchLogs when words are
     // complete.
     /* package for test */ MainLogBuffer mMainLogBuffer; // always non-null after init() is called
-    // TODO: Remove the feedback log.  The feedback log continuously captured user data in case the
-    // user wanted to submit it.  We now use the mUserRecordingLogBuffer to allow the user to
-    // explicitly reproduce a problem.
-    private ResearchLog mFeedbackLog;
-    private LogBuffer mFeedbackLogBuffer;
     /* package */ ResearchLog mUserRecordingLog;
     /* package */ LogBuffer mUserRecordingLogBuffer;
     private File mUserRecordingFile = null;
@@ -200,15 +195,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private long mSavedDownEventTime;
     private Bundle mFeedbackDialogBundle = null;
     private boolean mInFeedbackDialog = false;
-    // The feedback dialog causes stop() to be called for the keyboard connected to the original
-    // window.  This is because the feedback dialog must present its own EditText box that displays
-    // a keyboard.  stop() normally causes mFeedbackLogBuffer, which contains the user's data, to be
-    // cleared, and causes mFeedbackLog, which is ready to collect information in case the user
-    // wants to upload, to be closed.  This is good because we don't need to log information about
-    // what the user is typing in the feedback dialog, but bad because this data must be uploaded.
-    // Here we save the LogBuffer and Log so the feedback dialog can later access their data.
-    private LogBuffer mSavedFeedbackLogBuffer;
-    private ResearchLog mSavedFeedbackLog;
     private Handler mUserRecordingTimeoutHandler;
     private static final long USER_RECORDING_TIMEOUT_MS = 30L * DateUtils.SECOND_IN_MILLIS;
 
@@ -280,10 +266,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 publishLogUnits(logUnits, mMainResearchLog, canIncludePrivateData);
             }
         };
-
-        mFeedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
-                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
-        mFeedbackLogBuffer = new FixedLogBuffer(FEEDBACK_WORD_BUFFER_SIZE);
     }
 
     private void cleanLogDirectoryIfNeeded(final ResearchLogDirectory researchLogDirectory,
@@ -436,7 +418,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.w(TAG, "IOException when publishing LogBuffer", e);
         }
         mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
-        mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
 
         resetLogBuffers();
     }
@@ -447,8 +428,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         mMainLogBuffer.clear();
         mMainResearchLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
-        mFeedbackLogBuffer.clear();
-        mFeedbackLog.blockingAbort(RESEARCHLOG_ABORT_TIMEOUT_IN_MS);
 
         resetLogBuffers();
     }
@@ -482,12 +461,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             saveRecording();
         }
         mInFeedbackDialog = true;
-        mSavedFeedbackLogBuffer = mFeedbackLogBuffer;
-        mSavedFeedbackLog = mFeedbackLog;
-        // Set the non-saved versions to null so that the stop() caused by switching to the
-        // Feedback dialog will not close them.
-        mFeedbackLogBuffer = null;
-        mFeedbackLog = null;
 
         final Intent intent = new Intent();
         intent.setClass(mLatinIME, FeedbackActivity.class);
@@ -645,12 +618,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new LogStatement("UserFeedback", false, false, "contents", "accountName", "recording");
     public void sendFeedback(final String feedbackContents, final boolean includeHistory,
             final boolean isIncludingAccountName, final boolean isIncludingRecording) {
-        if (mSavedFeedbackLogBuffer == null) {
-            return;
-        }
-        if (!includeHistory) {
-            mSavedFeedbackLogBuffer.clear();
-        }
         String recording = "";
         if (isIncludingRecording) {
             // Try to read recording from recently written json file
@@ -682,9 +649,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final String accountName = isIncludingAccountName ? getAccountName() : "";
         feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
                 feedbackContents, accountName, recording);
-        mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
-        publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
-        mSavedFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
+
+        final ResearchLog feedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+                System.currentTimeMillis(), System.nanoTime()), mLatinIME);
+        final LogBuffer feedbackLogBuffer = new LogBuffer();
+        feedbackLogBuffer.shiftIn(feedbackLogUnit);
+        publishLogBuffer(feedbackLogBuffer, feedbackLog, true /* isIncludingPrivateData */);
+        feedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
         uploadNow();
 
         if (isIncludingRecording && DEBUG_REPLAY_AFTER_FEEDBACK) {
@@ -836,9 +807,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (!mCurrentLogUnit.isEmpty()) {
             mMainLogBuffer.shiftIn(mCurrentLogUnit);
-            if (mFeedbackLogBuffer != null) {
-                mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
-            }
             if (mUserRecordingLogBuffer != null) {
                 mUserRecordingLogBuffer.shiftIn(mCurrentLogUnit);
             }
@@ -883,9 +851,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mCurrentLogUnit = new LogUnit();
         } else {
             mCurrentLogUnit = oldLogUnit;
-        }
-        if (mFeedbackLogBuffer != null) {
-            mFeedbackLogBuffer.unshiftIn();
         }
         enqueueEvent(LOGSTATEMENT_UNCOMMIT_CURRENT_LOGUNIT);
         if (DEBUG) {
