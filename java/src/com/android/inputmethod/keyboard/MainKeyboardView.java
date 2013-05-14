@@ -1100,10 +1100,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         return false;
     }
 
-    public int getPointerCount() {
-        return mOldPointerCount;
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {

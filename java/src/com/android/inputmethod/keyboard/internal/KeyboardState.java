@@ -28,9 +28,9 @@ import com.android.inputmethod.latin.RecapitalizeStatus;
  * This class contains all keyboard state transition logic.
  *
  * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
- * {@link #onPressKey(int, boolean, int)}, {@link #onReleaseKey(int, boolean)},
- * {@link #onCodeInput(int, boolean, int)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(int, int)}, {@link #onLongPressTimeout(int)}.
+ * {@link #onPressKey(int,boolean,int)}, {@link #onReleaseKey(int,boolean)},
+ * {@link #onCodeInput(int,int)}, {@link #onFinishSlidingInput()}, {@link #onCancelInput()},
+ * {@link #onUpdateShiftState(int,int)}, {@link #onLongPressTimeout(int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -74,6 +74,7 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_SYMBOL = 2;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
+    private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
     private boolean mIsAlphabetMode;
@@ -525,6 +526,9 @@ public final class KeyboardState {
             } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
                 // In shift locked state, shift has been pressed and slid out to other key.
                 setShiftLocked(true);
+            } else if (mAlphabetShiftState.isManualShifted() && withSliding) {
+                // Shift has been pressed and slid out to other key.
+                mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_SHIFT;
             } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
                     && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
                     && !withSliding) {
@@ -554,17 +558,21 @@ public final class KeyboardState {
         mShiftKeyState.onRelease();
     }
 
-    public void onCancelInput(final boolean isSinglePointer) {
+    public void onFinishSlidingInput() {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onCancelInput: single=" + isSinglePointer + " " + this);
+            Log.d(TAG, "onFinishSlidingInput: " + this);
         }
         // Switch back to the previous keyboard mode if the user cancels sliding input.
-        if (isSinglePointer) {
-            if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
-                toggleAlphabetAndSymbols();
-            } else if (mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE) {
-                toggleShiftInSymbols();
-            }
+        switch (mSwitchState) {
+        case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
+            toggleAlphabetAndSymbols();
+            break;
+        case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE:
+            toggleShiftInSymbols();
+            break;
+        case SWITCH_STATE_MOMENTARY_ALPHA_SHIFT:
+            setAlphabetKeyboard();
+            break;
         }
     }
 
@@ -577,10 +585,9 @@ public final class KeyboardState {
         return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
     }
 
-    public void onCodeInput(final int code, final boolean isSinglePointer, final int autoCaps) {
+    public void onCodeInput(final int code, final int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCodeInput: code=" + Constants.printableCode(code)
-                    + " single=" + isSinglePointer
                     + " autoCaps=" + autoCaps + " " + this);
         }
 
@@ -593,23 +600,12 @@ public final class KeyboardState {
                 } else {
                     mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
                 }
-            } else if (isSinglePointer) {
-                // Switch back to the previous keyboard mode if the user pressed the mode change key
-                // and slid to other key, then released the finger.
-                // If the user cancels the sliding input, switching back to the previous keyboard
-                // mode is handled by {@link #onCancelInput}.
-                toggleAlphabetAndSymbols();
             }
             break;
         case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE:
             if (code == Constants.CODE_SHIFT) {
                 // Detected only the shift key has been pressed on symbol layout, and then released.
                 mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
-            } else if (isSinglePointer) {
-                // Switch back to the previous keyboard mode if the user pressed the shift key on
-                // symbol mode and slid to other key, then released the finger.
-                toggleShiftInSymbols();
-                mSwitchState = SWITCH_STATE_SYMBOL;
             }
             break;
         case SWITCH_STATE_SYMBOL_BEGIN:
@@ -650,6 +646,7 @@ public final class KeyboardState {
         case SWITCH_STATE_SYMBOL: return "SYMBOL";
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL: return "MOMENTARY-ALPHA-SYMBOL";
         case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE: return "MOMENTARY-SYMBOL-MORE";
+        case SWITCH_STATE_MOMENTARY_ALPHA_SHIFT: return "MOMENTARY-ALPHA_SHIFT";
         default: return null;
         }
     }

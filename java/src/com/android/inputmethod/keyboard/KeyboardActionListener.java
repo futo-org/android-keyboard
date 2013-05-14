@@ -27,8 +27,9 @@ public interface KeyboardActionListener {
      *
      * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid key,
      *            the value will be zero.
+     * @param isSinglePointer true if pressing has occurred while no other key is being pressed.
      */
-    public void onPressKey(int primaryCode);
+    public void onPressKey(int primaryCode, boolean isSinglePointer);
 
     /**
      * Called when the user releases a key. This is sent after the {@link #onCodeInput} is called.
@@ -88,6 +89,11 @@ public interface KeyboardActionListener {
     public void onCancelInput();
 
     /**
+     * Called when user finished sliding key input.
+     */
+    public void onFinishSlidingInput();
+
+    /**
      * Send a non-"code input" custom request to the listener.
      * @return true if the request has been consumed, false otherwise.
      */
@@ -97,7 +103,7 @@ public interface KeyboardActionListener {
         public static final Adapter EMPTY_LISTENER = new Adapter();
 
         @Override
-        public void onPressKey(int primaryCode) {}
+        public void onPressKey(int primaryCode, boolean isSinglePointer) {}
         @Override
         public void onReleaseKey(int primaryCode, boolean withSliding) {}
         @Override
@@ -114,6 +120,8 @@ public interface KeyboardActionListener {
         public void onCancelBatchInput() {}
         @Override
         public void onCancelInput() {}
+        @Override
+        public void onFinishSlidingInput() {}
         @Override
         public boolean onCustomRequest(int requestCode) {
             return false;
