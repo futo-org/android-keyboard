@@ -49,7 +49,7 @@ public final class Uploader {
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     // Set IS_INHIBITING_AUTO_UPLOAD to true for local testing
-    private static final boolean IS_INHIBITING_AUTO_UPLOAD = false
+    private static final boolean IS_INHIBITING_UPLOAD = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     private static final int BUF_SIZE = 1024 * 8;
 
@@ -76,7 +76,7 @@ public final class Uploader {
     }
 
     public boolean isPossibleToUpload() {
-        return hasUploadingPermission() && mUrl != null && !IS_INHIBITING_AUTO_UPLOAD;
+        return hasUploadingPermission() && mUrl != null && !IS_INHIBITING_UPLOAD;
     }
 
     private boolean hasUploadingPermission() {
