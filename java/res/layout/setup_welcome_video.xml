@@ -25,24 +25,27 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/setup_welcome_video_vertical_margin"
         android:paddingBottom="@dimen/setup_welcome_video_vertical_margin">
-        <View
-            android:layout_weight="@integer/setup_welcome_video_left_padding_weight_in_screen"
-            android:layout_width="0dp"
-            android:layout_height="0dp" />
-        <VideoView
-            android:id="@+id/setup_welcome_video"
-            android:background="@color/setup_background"
+        <LinearLayout
+            android:id="@+id/setup_welcome_video_frame"
             android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <ImageView
-            android:id="@+id/setup_welcome_image"
-            android:visibility="gone"
-            android:layout_weight="@integer/setup_welcome_video_weight_in_screen"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="1dp"
+            android:background="@color/setup_welcome_video_margin_color" >
+            <VideoView
+                android:id="@+id/setup_welcome_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/setup_background" />
+            <ImageView
+                android:id="@+id/setup_welcome_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
         <View
-            android:layout_weight="@integer/setup_welcome_video_right_padding_weight_in_screen"
+            android:layout_weight="@integer/setup_welcome_video_end_padding_weight_in_screen"
             android:layout_width="0dp"
             android:layout_height="0dp" />
     </LinearLayout>
