@@ -2572,8 +2572,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord,
                     mWordComposer.isBatchMode(), mLastComposedWord.mSeparatorString);
-            ResearchLogger.getInstance().uncommitCurrentLogUnit(committedWord,
-                    true /* dumpCurrentLogUnit */);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the
         // separator.
