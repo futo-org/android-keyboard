@@ -185,7 +185,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void onCodeInput(final int code, final boolean isSinglePointer) {
+    public void onCodeInput(final int code) {
         if (mAutoCapsMode == MockConstants.CAP_MODE_WORDS) {
             if (Constants.isLetterCode(code)) {
                 mAutoCapsState = (code == MockConstants.CODE_AUTO_CAPS_TRIGGER)
@@ -194,10 +194,10 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         } else {
             mAutoCapsState = mAutoCapsMode;
         }
-        mState.onCodeInput(code, isSinglePointer, mAutoCapsState);
+        mState.onCodeInput(code, mAutoCapsState);
     }
 
-    public void onCancelInput(final boolean isSinglePointer) {
-        mState.onCancelInput(isSinglePointer);
+    public void onFinishSlidingInput() {
+        mState.onFinishSlidingInput();
     }
 }

@@ -1752,9 +1752,16 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
+    public void onFinishSlidingInput() {
+        // User finished sliding input.
+        mKeyboardSwitcher.onFinishSlidingInput();
+    }
+
+    // Called from PointerTracker through the KeyboardActionListener interface
+    @Override
     public void onCancelInput() {
         // User released a finger outside any key
-        mKeyboardSwitcher.onCancelInput();
+        // Nothing to do so far.
     }
 
     @Override
@@ -2621,8 +2628,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
     // key is depressed; release matching call is onReleaseKey below.
     @Override
-    public void onPressKey(final int primaryCode) {
-        mKeyboardSwitcher.onPressKey(primaryCode);
+    public void onPressKey(final int primaryCode, final boolean isSinglePointer) {
+        mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer);
     }
 
     // Callback by PointerTracker through the KeyboardActionListener. This is called when a key

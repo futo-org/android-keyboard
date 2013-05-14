@@ -71,7 +71,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     }
 
     public void releaseKey(final int code, final int afterRelease) {
-        mSwitcher.onCodeInput(code, SINGLE);
+        mSwitcher.onCodeInput(code);
         mSwitcher.onReleaseKey(code, NOT_SLIDING);
         assertLayout("afterRelease", afterRelease, mSwitcher.getLayoutId());
     }
@@ -87,7 +87,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     }
 
     public void chordingReleaseKey(final int code, final int afterRelease) {
-        mSwitcher.onCodeInput(code, MULTI);
+        mSwitcher.onCodeInput(code);
         mSwitcher.onReleaseKey(code, NOT_SLIDING);
         assertLayout("afterRelease", afterRelease, mSwitcher.getLayoutId());
     }
@@ -102,6 +102,19 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         pressKey(code, afterPress);
         mSwitcher.onReleaseKey(code, SLIDING);
         assertLayout("afterSlide", afterSlide, mSwitcher.getLayoutId());
+    }
+
+    public void stopSlidingOnKey(final int code, final int afterPress, final int afterSlide) {
+        pressKey(code, afterPress);
+        mSwitcher.onCodeInput(code);
+        mSwitcher.onReleaseKey(code, NOT_SLIDING);
+        mSwitcher.onFinishSlidingInput();
+        assertLayout("afterSlide", afterSlide, mSwitcher.getLayoutId());
+    }
+
+    public void stopSlidingAndCancel(final int afterCancelSliding) {
+        mSwitcher.onFinishSlidingInput();
+        assertLayout("afterCancelSliding", afterCancelSliding, mSwitcher.getLayoutId());
     }
 
     public void longPressKey(final int code, final int afterPress, final int afterLongPress) {
