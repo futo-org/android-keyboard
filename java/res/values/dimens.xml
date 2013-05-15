@@ -102,7 +102,7 @@
 
     <!-- Gesture trail parameters -->
     <!-- Minimum distance between gesture trail sampling points. -->
-    <dimen name="gesture_trail_min_sampling_distance">6.4dp</dimen>
+    <dimen name="gesture_trail_min_sampling_distance">9.6dp</dimen>
     <!-- Maximum angular threshold between gesture trails interpolation segments in degree. -->
     <integer name="gesture_trail_max_interpolation_angular_threshold">15</integer>
     <!-- Maximum distance threshold between gesture trails interpolation segments. -->
