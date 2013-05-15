@@ -597,6 +597,17 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Rotate device, remain in alphabet.
         rotateDevice(ALPHABET_UNSHIFTED);
 
+        // Alphabet automatic shifted -> rotate -> automatic shifted.
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
+        // Press/release auto caps trigger letter to enter alphabet automatic shifted.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+        // Rotate device, remain in alphabet.
+        rotateDevice(ALPHABET_AUTOMATIC_SHIFTED);
+        setAutoCapsMode(CAP_MODE_OFF);
+        // Press/release auto caps trigger letter to reset shift state.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_AUTOMATIC_SHIFTED, ALPHABET_UNSHIFTED);
+
         // Alphabet shifted -> rotate -> alphabet shifted.
         // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
