@@ -21,6 +21,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    <style name="setupWelcomeDescritpionStyle" parent="setupTitleStyle">
+        <item name="android:textSize">@dimen/setup_welcome_description_text_size</item>
+    </style>
     <style name="setupStepBulletStyle">
         <item name="android:textColor">@color/setup_text_dark</item>
         <item name="android:textSize">22sp</item>
@@ -43,6 +46,10 @@
     <style name="setupStepInstructionStyle" parent="setupStepBaseStyle">
         <item name="android:textSize">14sp</item>
     </style>
+    <style name="setupStepStartIndicatorStyle">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
     <style name="setupStepActionLabelStyleCommon" parent="setupStepBaseStyle">
         <item name="android:textColor">@color/setup_step_action_color</item>
         <item name="android:background">@drawable/setup_step_action_background</item>
@@ -53,5 +60,9 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+    </style>
+    <style name="setupStepStartActionLabelStyleCommon" parent="setupStepActionLabelStyleCommon">
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
     </style>
 </resources>
