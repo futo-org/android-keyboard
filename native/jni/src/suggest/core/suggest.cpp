@@ -296,8 +296,8 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     correctionDicNode.advanceDigraphIndex();
                     processDicNodeAsDigraph(traverseSession, &correctionDicNode);
                 }
-                if (allowsErrorCorrections
-                        && TRAVERSAL->isOmission(traverseSession, &dicNode, childDicNode)) {
+                if (TRAVERSAL->isOmission(traverseSession, &dicNode, childDicNode,
+                        allowsErrorCorrections)) {
                     // TODO: (Gesture) Change weight between omission and substitution errors
                     // TODO: (Gesture) Terminal node should not be handled as omission
                     correctionDicNode.initByCopy(childDicNode);
