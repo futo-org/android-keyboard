@@ -105,7 +105,7 @@ public class Key implements Comparable<Key> {
     /** Hit bounding box of the key */
     public final Rect mHitBox = new Rect();
 
-    /** More keys */
+    /** More keys. It is guaranteed that this is null or an array of one or more elements */
     public final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
     private final int mMoreKeysColumnAndFlags;
