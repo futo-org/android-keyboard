@@ -20,6 +20,8 @@ import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
@@ -38,6 +41,8 @@ import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = SettingsFragment.class.getSimpleName();
+
     private ListPreference mVoicePreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThresholdPreference;
@@ -185,6 +190,16 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // Service yet
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS || 0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
+        }
+
+        final Preference editPersonalDictionary =
+                findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
+        final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
+        final ResolveInfo ri = context.getPackageManager().resolveActivity(
+                editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (ri == null) {
+            // TODO: Set a intent that invokes our own edit personal dictionary activity.
+            Log.w(TAG, "No activity that responds to " + editPersonalDictionaryIntent.getAction());
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
