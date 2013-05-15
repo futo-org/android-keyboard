@@ -21,13 +21,32 @@
     <!-- Build condition,duration_in_milliseconds -->
     <string-array name="keypress_vibration_durations" translatable="false">
         <!-- Nexus S -->
-        <item>HARDWARE=herring,5</item>
+        <item>MODEL=Nexus S:BRAND=google,5</item>
         <!-- Galaxy Nexus -->
-        <item>HARDWARE=tuna,5</item>
+        <item>MODEL=Galaxy Nexus:BRAND=google,5</item>
         <!-- Nexus 4 -->
-        <item>HARDWARE=mako,5</item>
+        <item>MODEL=Nexus 4:BRAND=google,8</item>
         <!-- Nexus 10 -->
-        <item>HARDWARE=manta,16</item>
+        <item>MODEL=Nexus 10:BRAND=google,16</item>
+        <!-- Samsung Galaxy SII -->
+        <item>MODEL=GT-I(9100[GMPT]?|9108|9210T?):MANUFACTURER=samsung,8</item>
+        <item>MODEL=SGH-(I9[27]7R?|I927|T989D?):MANUFACTURER=samsung,8</item>
+        <item>MODEL=SHW-M250[KLS]?|SPH-D710|SCH-R760:MANUFACTURER=samsung,8</item>
+        <item>MODEL=ISW11SC|SC-02C:MANUFACTURER=samsung,8</item>
+        <!-- Samsung Galaxy SIII -->
+        <item>MODEL=(SAMSUNG-)?GT-I(930[05][NT]?|9308):MANUFACTURER=samsung,8</item>
+        <item>MODEL=(SAMSUNG-)?SGH-(T999[V]?|I747[M]?|N064|N035):MANUFACTURER=samsung,8</item>
+        <item>MODEL=(SAMSUNG-)?SCH-(J021|R530|I535|I939):MANUFACTURER=samsung,8</item>
+        <item>MODEL=(SAMSUNG-)?(SCL21|SC-06D|SC-03E]):MANUFACTURER=samsung,8</item>
+        <item>MODEL=(SAMSUNG-)?(SHV-210[KLS]?|SPH-L710):MANUFACTURER=samsung,8</item>
+        <!-- LG Optimus G -->
+        <item>MODEL=LG-E97[013]|LS970|L-01E:MANUFACTURER=LGE,15</item>
+        <!-- HTC One X -->
+        <item>MODEL=HTC One X:MANUFACTURER=HTC,15</item>
+        <!-- Motorola Razor M -->
+        <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
+        <!-- Sony Xperia Z -->
+        <item>MODEL=C6603:MANUFACTURER=Sony,35</item>
         <!-- Default value for unknown device -->
         <item>,20</item>
     </string-array>

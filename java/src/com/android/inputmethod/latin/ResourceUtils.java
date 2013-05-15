@@ -30,7 +30,6 @@ import java.util.HashMap;
 
 public final class ResourceUtils {
     private static final String TAG = ResourceUtils.class.getSimpleName();
-    private static final boolean DEBUG = false;
 
     public static final float UNDEFINED_RATIO = -1.0f;
     public static final int UNDEFINED_DIMENSION = -1;
@@ -45,6 +44,7 @@ public final class ResourceUtils {
     private static final String[] BUILD_KEYS_AND_VALUES = {
         "HARDWARE", Build.HARDWARE,
         "MODEL", Build.MODEL,
+        "BRAND", Build.BRAND,
         "MANUFACTURER", Build.MANUFACTURER
     };
     private static final HashMap<String, String> sBuildKeyValues;
@@ -75,12 +75,10 @@ public final class ResourceUtils {
         final String overrideValue = findConstantForKeyValuePairs(sBuildKeyValues, overrideArray);
         // The overrideValue might be an empty string.
         if (overrideValue != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Find override value:"
-                        + " resource="+ res.getResourceEntryName(overrideResId)
-                        + " build=" + sBuildKeyValuesDebugString
-                        + " override=" + overrideValue);
-            }
+            Log.i(TAG, "Find override value:"
+                    + " resource="+ res.getResourceEntryName(overrideResId)
+                    + " build=" + sBuildKeyValuesDebugString
+                    + " override=" + overrideValue);
             sDeviceOverrideValueMap.put(key, overrideValue);
             return overrideValue;
         }
@@ -91,10 +89,11 @@ public final class ResourceUtils {
             Log.w(TAG, "Couldn't find override value nor default value:"
                     + " resource="+ res.getResourceEntryName(overrideResId)
                     + " build=" + sBuildKeyValuesDebugString);
-        } else if (DEBUG) {
-            Log.d(TAG, "Found default value:"
-                + " resource="+ res.getResourceEntryName(overrideResId)
-                + " build=" + sBuildKeyValuesDebugString + " default=" + defaultValue);
+        } else {
+            Log.i(TAG, "Found default value:"
+                    + " resource="+ res.getResourceEntryName(overrideResId)
+                    + " build=" + sBuildKeyValuesDebugString
+                    + " default=" + defaultValue);
         }
         sDeviceOverrideValueMap.put(key, defaultValue);
         return defaultValue;
