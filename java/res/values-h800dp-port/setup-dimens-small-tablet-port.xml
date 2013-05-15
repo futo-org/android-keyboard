@@ -34,7 +34,9 @@
     <integer name="setup_title_weight_in_screen">40</integer>
     <integer name="setup_body_weight_in_screen">60</integer>
     <dimen name="setup_title_end_margin">24dp</dimen>
-    <dimen name="setup_welcome_video_vertical_margin">24dp</dimen>
-    <integer name="setup_welcome_video_weight_in_screen">60</integer>
-    <integer name="setup_welcome_video_end_padding_weight_in_screen">40</integer>
+    <dimen name="setup_welcome_description_top_margin">12dp</dimen>
+    <dimen name="setup_welcome_video_top_padding">24dp</dimen>
+    <dimen name="setup_welcome_video_bottom_padding">24dp</dimen>
+    <integer name="setup_welcome_video_weight_in_screen">70</integer>
+    <integer name="setup_welcome_video_end_padding_weight_in_screen">30</integer>
 </resources>
