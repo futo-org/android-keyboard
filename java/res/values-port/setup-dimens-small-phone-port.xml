@@ -33,8 +33,8 @@
     <dimen name="setup_step_horizontal_line_height">2dp</dimen>
     <integer name="setup_title_weight_in_screen">40</integer>
     <integer name="setup_body_weight_in_screen">60</integer>
+    <dimen name="setup_title_end_margin">16dp</dimen>
     <dimen name="setup_welcome_video_vertical_margin">16dp</dimen>
-    <integer name="setup_welcome_video_weight_in_screen">80</integer>
-    <integer name="setup_welcome_video_left_padding_weight_in_screen">10</integer>
-    <integer name="setup_welcome_video_right_padding_weight_in_screen">10</integer>
+    <integer name="setup_welcome_video_weight_in_screen">70</integer>
+    <integer name="setup_welcome_video_end_padding_weight_in_screen">30</integer>
 </resources>
