@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -35,12 +36,19 @@ import com.android.inputmethod.latin.ResizableIntArray;
  * @attr ref R.styleable#MainKeyboardView_gesturePreviewTrailWidth
  */
 final class GesturePreviewTrail {
+    public static final boolean DBG_SHOW_POINTS = false;
+    public static final int POINT_TYPE_SAMPLED = 0;
+    public static final int POINT_TYPE_INTERPOLATED = 1;
+    public static final int POINT_TYPE_COMPROMISED = 2;
+
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
 
     // These three {@link ResizableIntArray}s should be synchronized by {@link #mEventTimes}.
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
+    private final ResizableIntArray mPointTypes = new ResizableIntArray(
+            DBG_SHOW_POINTS ? DEFAULT_CAPACITY : 0);
     private int mCurrentStrokeId = -1;
     // The wall time of the zero value in {@link #mEventTimes}
     private long mCurrentTimeBase;
@@ -125,7 +133,7 @@ final class GesturePreviewTrail {
         final int lastInterpolatedIndex = (strokeId == mCurrentStrokeId)
                 ? mLastInterpolatedDrawIndex : trailSize;
         mLastInterpolatedDrawIndex = stroke.interpolateStrokeAndReturnStartIndexOfLastSegment(
-                lastInterpolatedIndex, mEventTimes, mXCoordinates, mYCoordinates);
+                lastInterpolatedIndex, mEventTimes, mXCoordinates, mYCoordinates, mPointTypes);
         if (strokeId != mCurrentStrokeId) {
             final int elapsedTime = (int)(downTime - mCurrentTimeBase);
             for (int i = mTrailStartIndex; i < trailSize; i++) {
@@ -204,6 +212,7 @@ final class GesturePreviewTrail {
         final int[] eventTimes = mEventTimes.getPrimitiveArray();
         final int[] xCoords = mXCoordinates.getPrimitiveArray();
         final int[] yCoords = mYCoordinates.getPrimitiveArray();
+        final int[] pointTypes = mPointTypes.getPrimitiveArray();
         final int sinceDown = (int)(SystemClock.uptimeMillis() - mCurrentTimeBase);
         int startIndex;
         for (startIndex = mTrailStartIndex; startIndex < trailSize; startIndex++) {
@@ -246,6 +255,17 @@ final class GesturePreviewTrail {
                         final int alpha = getAlpha(elapsedTime, params);
                         paint.setAlpha(alpha);
                         canvas.drawPath(path, paint);
+                        if (DBG_SHOW_POINTS) {
+                            if (pointTypes[i] == POINT_TYPE_INTERPOLATED) {
+                                paint.setColor(Color.RED);
+                            } else if (pointTypes[i] == POINT_TYPE_SAMPLED) {
+                                paint.setColor(Color.BLUE);
+                            } else {
+                                paint.setColor(Color.GREEN);
+                            }
+                            canvas.drawCircle(p1x - 1, p1y - 1, 2, paint);
+                            paint.setColor(params.mTrailColor);
+                        }
                     }
                 }
                 p1x = p2x;
@@ -265,6 +285,7 @@ final class GesturePreviewTrail {
             mEventTimes.setLength(newSize);
             mXCoordinates.setLength(newSize);
             mYCoordinates.setLength(newSize);
+            mPointTypes.setLength(newSize);
             // The start index of the last segment of the stroke
             // {@link mLastInterpolatedDrawIndex} should also be updated because all array
             // elements have just been shifted for compaction or been zeroed.

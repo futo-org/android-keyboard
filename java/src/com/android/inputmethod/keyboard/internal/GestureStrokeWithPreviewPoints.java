@@ -152,7 +152,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
      */
     public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
             final ResizableIntArray eventTimes, final ResizableIntArray xCoords,
-            final ResizableIntArray yCoords) {
+            final ResizableIntArray yCoords, final ResizableIntArray types) {
         final int size = mPreviewEventTimes.getLength();
         final int[] pt = mPreviewEventTimes.getPrimitiveArray();
         final int[] px = mPreviewXCoordinates.getPrimitiveArray();
@@ -189,11 +189,17 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
                 yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
+                if (GesturePreviewTrail.DBG_SHOW_POINTS) {
+                    types.add(d1, GesturePreviewTrail.POINT_TYPE_INTERPOLATED);
+                }
                 d1++;
             }
             eventTimes.add(d1, pt[p2]);
             xCoords.add(d1, px[p2]);
             yCoords.add(d1, py[p2]);
+            if (GesturePreviewTrail.DBG_SHOW_POINTS) {
+                types.add(d1, GesturePreviewTrail.POINT_TYPE_SAMPLED);
+            }
         }
         return lastInterpolatedDrawIndex;
     }
