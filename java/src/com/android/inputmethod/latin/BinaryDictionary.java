@@ -107,13 +107,16 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo) {
-        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, 0);
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords) {
+        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
+                0 /* sessionId */);
     }
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo, int sessionId) {
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int sessionId) {
         if (!isValidDictionary()) return null;
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
@@ -139,8 +142,6 @@ public final class BinaryDictionary extends Dictionary {
                 inputSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes);
-        final boolean blockPotentiallyOffensive =
-                Settings.getInstance().getBlockPotentiallyOffensive();
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;
@@ -150,7 +151,7 @@ public final class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 final int flags = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_FLAGS;
-                if (blockPotentiallyOffensive
+                if (blockOffensiveWords
                         && 0 != (flags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
                         && 0 == (flags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
                     // If we block potentially offensive words, and if the word is possibly
