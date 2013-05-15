@@ -56,13 +56,8 @@ public final class KeyboardId {
     public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
 
-    public static final int FORM_FACTOR_PHONE = 0;
-    public static final int FORM_FACTOR_TABLET7 = 1;
-    public static final int FORM_FACTOR_TABLET10 = 2;
-
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
-    public final int mDeviceFormFactor;
     // TODO: Remove this member. It is used only for logging purpose.
     public final int mOrientation;
     public final int mWidth;
@@ -82,7 +77,6 @@ public final class KeyboardId {
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
         mLocale = SubtypeLocale.getSubtypeLocale(mSubtype);
-        mDeviceFormFactor = params.mDeviceFormFactor;
         mOrientation = params.mOrientation;
         mWidth = params.mKeyboardWidth;
         mHeight = params.mKeyboardHeight;
@@ -107,7 +101,6 @@ public final class KeyboardId {
 
     private static int computeHashCode(final KeyboardId id) {
         return Arrays.hashCode(new Object[] {
-                id.mDeviceFormFactor,
                 id.mOrientation,
                 id.mElementId,
                 id.mMode,
@@ -130,8 +123,7 @@ public final class KeyboardId {
     private boolean equals(final KeyboardId other) {
         if (other == this)
             return true;
-        return other.mDeviceFormFactor == mDeviceFormFactor
-                && other.mOrientation == mOrientation
+        return other.mOrientation == mOrientation
                 && other.mElementId == mElementId
                 && other.mMode == mMode
                 && other.mWidth == mWidth
@@ -195,11 +187,11 @@ public final class KeyboardId {
     public String toString() {
         final String orientation = (mOrientation == Configuration.ORIENTATION_PORTRAIT)
                 ? "port" : "land";
-        return String.format("[%s %s:%s %s-%s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
+        return String.format("[%s %s:%s %s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                deviceFormFactor(mDeviceFormFactor), orientation, mWidth, mHeight,
+                orientation, mWidth, mHeight,
                 modeName(mMode),
                 imeAction(),
                 (navigateNext() ? "navigateNext" : ""),
@@ -234,15 +226,6 @@ public final class KeyboardId {
         case ELEMENT_PHONE: return "phone";
         case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
-        default: return null;
-        }
-    }
-
-    public static String deviceFormFactor(final int deviceFormFactor) {
-        switch (deviceFormFactor) {
-        case FORM_FACTOR_PHONE: return "phone";
-        case FORM_FACTOR_TABLET7: return "tablet7";
-        case FORM_FACTOR_TABLET10: return "tablet10";
         default: return null;
         }
     }

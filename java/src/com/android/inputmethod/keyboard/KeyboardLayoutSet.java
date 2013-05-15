@@ -106,7 +106,6 @@ public final class KeyboardLayoutSet {
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
-        int mDeviceFormFactor;
         int mOrientation;
         int mKeyboardWidth;
         int mKeyboardHeight;
@@ -217,10 +216,8 @@ public final class KeyboardLayoutSet {
                     mPackageName, NO_SETTINGS_KEY, mEditorInfo);
         }
 
-        public Builder setScreenGeometry(final int deviceFormFactor, final int widthPixels,
-                final int heightPixels) {
+        public Builder setScreenGeometry(final int widthPixels, final int heightPixels) {
             final Params params = mParams;
-            params.mDeviceFormFactor = deviceFormFactor;
             params.mOrientation = (heightPixels > widthPixels)
                     ? Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
             setDefaultKeyboardSize(widthPixels, heightPixels);
