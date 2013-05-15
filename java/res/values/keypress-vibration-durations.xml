@@ -42,7 +42,7 @@
         <!-- LG Optimus G -->
         <item>MODEL=LG-E97[013]|LS970|L-01E:MANUFACTURER=LGE,15</item>
         <!-- HTC One X -->
-        <item>MODEL=HTC One X:MANUFACTURER=HTC,15</item>
+        <item>MODEL=HTC One X:MANUFACTURER=HTC,20</item>
         <!-- Motorola Razor M -->
         <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
         <!-- Sony Xperia Z -->
