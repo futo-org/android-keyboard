@@ -370,7 +370,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             // When user hits the space or the enter key, just cancel the while-typing timer.
             final int typedCode = typedKey.mCode;
             if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
-                startWhileTypingFadeinAnimation(keyboardView);
+                if (isTyping) {
+                    startWhileTypingFadeinAnimation(keyboardView);
+                }
                 return;
             }
 
@@ -614,8 +616,18 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     @ExternallyReferenced
     public void setAltCodeKeyWhileTypingAnimAlpha(final int alpha) {
+        if (mAltCodeKeyWhileTypingAnimAlpha == alpha) {
+            return;
+        }
+        // Update the visual of alt-code-key-while-typing.
         mAltCodeKeyWhileTypingAnimAlpha = alpha;
-        updateAltCodeKeyWhileTyping();
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
+        for (final Key key : keyboard.mAltCodeKeysWhileTyping) {
+            invalidateKey(key);
+        }
     }
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
@@ -1280,16 +1292,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         shortcutKey.setEnabled(available);
         invalidateKey(shortcutKey);
-    }
-
-    private void updateAltCodeKeyWhileTyping() {
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard == null) {
-            return;
-        }
-        for (final Key key : keyboard.mAltCodeKeysWhileTyping) {
-            invalidateKey(key);
-        }
     }
 
     public void startDisplayLanguageOnSpacebar(final boolean subtypeChanged,
