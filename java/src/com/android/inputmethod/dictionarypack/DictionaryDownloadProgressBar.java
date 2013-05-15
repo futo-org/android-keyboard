@@ -16,9 +16,13 @@
 
 package com.android.inputmethod.dictionarypack;
 
+import android.app.DownloadManager;
+import android.app.DownloadManager.Query;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -78,7 +82,8 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
                 mReporterThread = null;
                 return;
             }
-            final UpdaterThread updaterThread = new UpdaterThread(downloadManagerPendingId);
+            final UpdaterThread updaterThread =
+                    new UpdaterThread(getContext(), downloadManagerPendingId);
             updaterThread.start();
             mReporterThread = updaterThread;
         } else {
@@ -99,22 +104,72 @@ public class DictionaryDownloadProgressBar extends ProgressBar {
         updateReporterThreadRunningStatusAccordingToVisibility();
     }
 
-    private static class UpdaterThread extends Thread {
-        private final static int REPORT_PERIOD = 1000; // how often to report progress
+    private class UpdaterThread extends Thread {
+        private final static int REPORT_PERIOD = 150; // how often to report progress, in ms
+        final DownloadManager mDownloadManager;
         final int mId;
-        public UpdaterThread(final int id) {
+        public UpdaterThread(final Context context, final int id) {
             super();
+            mDownloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             mId = id;
         }
         @Override
         public void run() {
             try {
-                // TODO: implement the actual query and reporting
+                // It's almost impossible that mDownloadManager is null (it would mean it has been
+                // disabled between pressing the 'install' button and displaying the progress
+                // bar), but just in case.
+                if (null == mDownloadManager) return;
+                final UpdateHelper updateHelper = new UpdateHelper();
+                final Query query = new Query().setFilterById(mId);
+                int lastProgress = 0;
                 while (!isInterrupted()) {
+                    final Cursor cursor = mDownloadManager.query(query);
+                    if (null == cursor) {
+                        // Can't contact DownloadManager: this should never happen.
+                        return;
+                    }
+                    try {
+                        if (cursor.moveToNext()) {
+                            final int columnBytesDownloadedSoFar = cursor.getColumnIndex(
+                                    DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                            final int bytesDownloadedSoFar =
+                                    cursor.getInt(columnBytesDownloadedSoFar);
+                            updateHelper.setProgressFromAnotherThread(bytesDownloadedSoFar);
+                        } else {
+                            // Download has finished and DownloadManager has already been asked to
+                            // clean up the db entry.
+                            updateHelper.setProgressFromAnotherThread(getMax());
+                            return;
+                        }
+                    } finally {
+                        cursor.close();
+                    }
                     Thread.sleep(REPORT_PERIOD);
                 }
             } catch (InterruptedException e) {
                 // Do nothing and terminate normally.
+            }
+        }
+
+        private class UpdateHelper implements Runnable {
+            private int mProgress;
+            @Override
+            public void run() {
+                setProgress(mProgress);
+            }
+            public void setProgressFromAnotherThread(final int progress) {
+                if (mProgress != progress) {
+                    mProgress = progress;
+                    // For some unknown reason, setProgress just does not work from a separate
+                    // thread, although the code in ProgressBar looks like it should. Thus, we
+                    // resort to a runnable posted to the handler of the view.
+                    final Handler handler = getHandler();
+                    // It's possible to come here before this view has been laid out. If so,
+                    // just ignore the call - it will be updated again later.
+                    if (null == handler) return;
+                    handler.post(this);
+                }
             }
         }
     }
