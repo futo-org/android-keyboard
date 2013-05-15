@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,6 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Class to keep long-term log. This is inactive in production, and is only for debug purposes.
@@ -44,10 +44,10 @@ public class PrivateLog {
             + COLUMN_EVENT + " TEXT);";
 
     private static final SimpleDateFormat sDateFormat =
-            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
 
     private static PrivateLog sInstance = new PrivateLog();
-    private static DebugHelper mDebugHelper = null;
+    private static DebugHelper sDebugHelper = null;
 
     private PrivateLog() {
     }
@@ -55,8 +55,8 @@ public class PrivateLog {
     public static synchronized PrivateLog getInstance(final Context context) {
         if (!DEBUG) return sInstance;
         synchronized(PrivateLog.class) {
-            if (sInstance.mDebugHelper == null) {
-                sInstance.mDebugHelper = new DebugHelper(context);
+            if (sDebugHelper == null) {
+                sDebugHelper = new DebugHelper(context);
             }
             return sInstance;
         }
@@ -94,16 +94,9 @@ public class PrivateLog {
 
     }
 
-    public static void log(String event, Context context) {
+    public static void log(String event) {
         if (!DEBUG) return;
-        final SQLiteDatabase l = getInstance(context).mDebugHelper.getWritableDatabase();
-        mDebugHelper.insert(l, event);
-    }
-
-    public static void log(String event, ContentProvider provider) {
-        if (!DEBUG) return;
-        final SQLiteDatabase l =
-                getInstance(provider.getContext()).mDebugHelper.getWritableDatabase();
-        mDebugHelper.insert(l, event);
+        final SQLiteDatabase l = sDebugHelper.getWritableDatabase();
+        DebugHelper.insert(l, event);
     }
 }

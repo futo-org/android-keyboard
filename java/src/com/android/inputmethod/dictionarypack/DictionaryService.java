@@ -21,7 +21,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -190,7 +189,7 @@ public final class DictionaryService extends Service {
         // is still more recent than UPDATE_FREQUENCY, do nothing.
         if (!isLastUpdateAtLeastThisOld(context, UPDATE_FREQUENCY)) return;
 
-        PrivateLog.log("Date changed - registering alarm", context);
+        PrivateLog.log("Date changed - registering alarm");
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         // Best effort to wake between midnight and MAX_ALARM_DELAY in the morning.
@@ -215,7 +214,7 @@ public final class DictionaryService extends Service {
     private static boolean isLastUpdateAtLeastThisOld(final Context context, final long time) {
         final long now = System.currentTimeMillis();
         final long lastUpdate = MetadataDbHelper.getOldestUpdateTime(context);
-        PrivateLog.log("Last update was " + lastUpdate, context);
+        PrivateLog.log("Last update was " + lastUpdate);
         return lastUpdate + time < now;
     }
 

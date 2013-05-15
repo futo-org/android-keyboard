@@ -16,13 +16,11 @@
 
 package com.android.inputmethod.dictionarypack;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -309,8 +307,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      * @param uri the metadata URI we just downloaded
      */
     public static void saveLastUpdateTimeOfUri(final Context context, final String uri) {
-        PrivateLog.log("Save last update time of URI : " + uri + " " + System.currentTimeMillis(),
-                context);
+        PrivateLog.log("Save last update time of URI : " + uri + " " + System.currentTimeMillis());
         final ContentValues values = new ContentValues();
         values.put(CLIENT_LAST_UPDATE_DATE_COLUMN, System.currentTimeMillis());
         final SQLiteDatabase defaultDb = getDb(context, null);
