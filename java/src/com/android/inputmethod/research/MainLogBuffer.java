@@ -196,6 +196,22 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         }
     }
 
+    /**
+     * If there is a safe n-gram at the front of this log buffer, publish it with all details, and
+     * remove the LogUnits that constitute it.
+     *
+     * An n-gram might not be "safe" if it violates privacy controls.  E.g., it might contain
+     * numbers, an out-of-vocabulary word, or another n-gram may have been published recently.  If
+     * there is no safe n-gram, then the LogUnits up through the first word-containing LogUnit are
+     * published, but without disclosing any privacy-related details, such as the word the LogUnit
+     * generated, motion data, etc.
+     *
+     * Note that a LogUnit can hold more than one word if the user types without explicit spaces.
+     * In this case, the words may be grouped together in such a way that pulling an n-gram off the
+     * front would require splitting a LogUnit.  Splitting a LogUnit is not possible, so this case
+     * is treated just as the unsafe n-gram case.  This may cause n-grams to be sampled at slightly
+     * less than the target frequency.
+     */
     protected final void publishLogUnitsAtFrontOfBuffer() throws IOException {
         // TODO: Refactor this method to require fewer passes through the LogUnits.  Should really
         // require only one pass.
