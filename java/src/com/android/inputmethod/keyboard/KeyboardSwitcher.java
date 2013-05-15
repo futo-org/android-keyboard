@@ -216,19 +216,19 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onResetKeyboardStateToAlphabet();
     }
 
-    public void onPressKey(final int code) {
+    public void onPressKey(final int code, final boolean isSinglePointer) {
         if (isVibrateAndSoundFeedbackRequired()) {
             mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
         }
-        mState.onPressKey(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
+        mState.onPressKey(code, isSinglePointer, mLatinIME.getCurrentAutoCapsState());
     }
 
     public void onReleaseKey(final int code, final boolean withSliding) {
         mState.onReleaseKey(code, withSliding);
     }
 
-    public void onCancelInput() {
-        mState.onCancelInput(isSinglePointer());
+    public void onFinishSlidingInput() {
+        mState.onFinishSlidingInput();
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -346,15 +346,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return mKeyboardView != null && !mKeyboardView.isInSlidingKeyInput();
     }
 
-    private boolean isSinglePointer() {
-        return mKeyboardView != null && mKeyboardView.getPointerCount() == 1;
-    }
-
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
     public void onCodeInput(final int code) {
-        mState.onCodeInput(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
+        mState.onCodeInput(code, mLatinIME.getCurrentAutoCapsState());
     }
 
     public MainKeyboardView getMainKeyboardView() {

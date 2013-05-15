@@ -459,7 +459,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return false;
         }
         if (key.isEnabled()) {
-            mListener.onPressKey(key.mCode);
+            mListener.onPressKey(key.mCode, getActivePointerTrackerCount() == 1);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
             mTimerProxy.startTypingStateTimer(key);
@@ -525,6 +525,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key.isEnabled()) {
             mListener.onReleaseKey(primaryCode, withSliding);
         }
+    }
+
+    private void callListenerOnFinishSlidingInput() {
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, String.format("[%d] onFinishSlidingInput", mPointerId));
+        }
+        mListener.onFinishSlidingInput();
     }
 
     private void callListenerOnCancelInput() {
@@ -1036,7 +1043,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private void processSildeOutFromOldKey(final Key oldKey) {
         setReleasedKeyGraphics(oldKey);
-        callListenerOnRelease(oldKey, oldKey.mCode, true);
+        callListenerOnRelease(oldKey, oldKey.mCode, true /* withSliding */);
         startSlidingKeyInput(oldKey);
         mTimerProxy.cancelKeyTimers();
     }
@@ -1169,6 +1176,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private void onUpEventInternal(final int x, final int y, final long eventTime) {
         mTimerProxy.cancelKeyTimers();
         final boolean isInSlidingKeyInput = mIsInSlidingKeyInput;
+        final boolean isInSlidingKeyInputFromModifier = mIsInSlidingKeyInputFromModifier;
         resetSlidingKeyInput();
         mIsDetectingGesture = false;
         final Key currentKey = mCurrentKey;
@@ -1189,7 +1197,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
         if (sInGesture) {
             if (currentKey != null) {
-                callListenerOnRelease(currentKey, currentKey.mCode, true);
+                callListenerOnRelease(currentKey, currentKey.mCode, true /* withSliding */);
             }
             mayEndBatchInput(eventTime);
             return;
@@ -1203,6 +1211,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return;
         }
         detectAndSendKey(currentKey, mKeyX, mKeyY, eventTime);
+        if (isInSlidingKeyInputFromModifier) {
+            callListenerOnFinishSlidingInput();
+        }
     }
 
     public void onShowMoreKeysPanel(final int translatedX, final int translatedY,
@@ -1328,7 +1339,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
         final int code = key.mCode;
         callListenerOnCodeInput(key, code, x, y, eventTime);
-        callListenerOnRelease(key, code, false);
+        callListenerOnRelease(key, code, false /* withSliding */);
     }
 
     private void printTouchEvent(final String title, final int x, final int y,
