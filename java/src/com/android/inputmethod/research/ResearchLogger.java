@@ -422,11 +422,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // Commit mCurrentLogUnit before closing.
         commitCurrentLogUnit();
 
-        mMainLogBuffer.shiftAndPublishAll();
+        try {
+            mMainLogBuffer.shiftAndPublishAll();
+        } catch (final IOException e) {
+            Log.w(TAG, "IOException when publishing LogBuffer", e);
+        }
         logStatistics();
         commitCurrentLogUnit();
         mMainLogBuffer.setIsStopping();
-        mMainLogBuffer.shiftAndPublishAll();
+        try {
+            mMainLogBuffer.shiftAndPublishAll();
+        } catch (final IOException e) {
+            Log.w(TAG, "IOException when publishing LogBuffer", e);
+        }
         mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
         mFeedbackLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
 

@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -135,9 +136,11 @@ public class LogUnit {
      * @param researchLog where to publish the contents of this {@code LogUnit}
      * @param canIncludePrivateData whether the private data in this {@code LogUnit} should be
      * included
+     *
+     * @throws IOException if publication to the log file is not possible
      */
     public synchronized void publishTo(final ResearchLog researchLog,
-            final boolean canIncludePrivateData) {
+            final boolean canIncludePrivateData) throws IOException {
         // Write out any logStatement that passes the privacy filter.
         final int size = mLogStatementList.size();
         if (size != 0) {
