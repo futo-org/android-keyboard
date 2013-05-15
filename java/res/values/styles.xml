@@ -64,18 +64,18 @@
         <item name="gestureFloatingPreviewHorizontalPadding">@dimen/gesture_floating_preview_horizontal_padding</item>
         <item name="gestureFloatingPreviewVerticalPadding">@dimen/gesture_floating_preview_vertical_padding</item>
         <item name="gestureFloatingPreviewRoundRadius">@dimen/gesture_floating_preview_round_radius</item>
-        <item name="gesturePreviewTrailMinSamplingDistance">@dimen/gesture_preview_trail_min_sampling_distance</item>
-        <item name="gesturePreviewTrailMaxInterpolationAngularThreshold">@integer/gesture_preview_trail_max_interpolation_angular_threshold</item>
-        <item name="gesturePreviewTrailMaxInterpolationDistanceThreshold">@dimen/gesture_preview_trail_max_interpolation_distance_threshold</item>
-        <item name="gesturePreviewTrailMaxInterpolationSegments">@integer/gesture_preview_trail_max_interpolation_segments</item>
-        <item name="gesturePreviewTrailFadeoutStartDelay">@integer/config_gesture_preview_trail_fadeout_start_delay</item>
-        <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
-        <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>
-        <item name="gesturePreviewTrailColor">@color/highlight_color_default</item>
-        <item name="gesturePreviewTrailStartWidth">@dimen/gesture_preview_trail_start_width</item>
-        <item name="gesturePreviewTrailEndWidth">@dimen/gesture_preview_trail_end_width</item>
-        <item name="gesturePreviewTrailBodyRatio">@integer/gesture_preview_trail_body_ratio</item>
-        <item name="gesturePreviewTrailShadowRatio">@integer/gesture_preview_trail_shadow_ratio</item>
+        <item name="gestureTrailMinSamplingDistance">@dimen/gesture_trail_min_sampling_distance</item>
+        <item name="gestureTrailMaxInterpolationAngularThreshold">@integer/gesture_trail_max_interpolation_angular_threshold</item>
+        <item name="gestureTrailMaxInterpolationDistanceThreshold">@dimen/gesture_trail_max_interpolation_distance_threshold</item>
+        <item name="gestureTrailMaxInterpolationSegments">@integer/gesture_trail_max_interpolation_segments</item>
+        <item name="gestureTrailFadeoutStartDelay">@integer/config_gesture_trail_fadeout_start_delay</item>
+        <item name="gestureTrailFadeoutDuration">@integer/config_gesture_trail_fadeout_duration</item>
+        <item name="gestureTrailUpdateInterval">@integer/config_gesture_trail_update_interval</item>
+        <item name="gestureTrailColor">@color/highlight_color_default</item>
+        <item name="gestureTrailStartWidth">@dimen/gesture_trail_start_width</item>
+        <item name="gestureTrailEndWidth">@dimen/gesture_trail_end_width</item>
+        <item name="gestureTrailBodyRatio">@integer/gesture_trail_body_ratio</item>
+        <item name="gestureTrailShadowRatio">@integer/gesture_trail_shadow_ratio</item>
         <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
@@ -348,7 +348,7 @@
         <item name="keyTextShadowRadius">0.0</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
-        <item name="gesturePreviewTrailColor">@color/highlight_color_ics</item>
+        <item name="gestureTrailColor">@color/highlight_color_ics</item>
     </style>
     <style
         name="MainKeyboardView.IceCreamSandwich"

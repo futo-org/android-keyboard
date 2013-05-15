@@ -108,25 +108,25 @@
         <attr name="backgroundDimAlpha" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
-        <!-- Minimum distance between gesture preview trail sampling points. -->
-        <attr name="gesturePreviewTrailMinSamplingDistance" format="dimension" />
-        <!-- Maximum angular threshold between gesture preview trail interpolation segments in degree. -->
-        <attr name="gesturePreviewTrailMaxInterpolationAngularThreshold" format="integer" />
-        <!-- Maximum distance threshold between gesture preview trail interpolation segments. -->
-        <attr name="gesturePreviewTrailMaxInterpolationDistanceThreshold" format="dimension" />
-        <!-- Maximum number of gesture preview trail interpolation segments. -->
-        <attr name="gesturePreviewTrailMaxInterpolationSegments" format="integer" />
+        <!-- Minimum distance between gesture trail sampling points. -->
+        <attr name="gestureTrailMinSamplingDistance" format="dimension" />
+        <!-- Maximum angular threshold between gesture trail interpolation segments in degree. -->
+        <attr name="gestureTrailMaxInterpolationAngularThreshold" format="integer" />
+        <!-- Maximum distance threshold between gesture trail interpolation segments. -->
+        <attr name="gestureTrailMaxInterpolationDistanceThreshold" format="dimension" />
+        <!-- Maximum number of gesture trail interpolation segments. -->
+        <attr name="gestureTrailMaxInterpolationSegments" format="integer" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->
-        <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
-        <!-- Duration while gesture preview trail is fading out in millisecond. -->
-        <attr name="gesturePreviewTrailFadeoutDuration" format="integer" />
-        <!-- Interval of updating gesture preview trail in millisecond. -->
-        <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
-        <attr name="gesturePreviewTrailColor" format="color" />
-        <attr name="gesturePreviewTrailStartWidth" format="dimension" />
-        <attr name="gesturePreviewTrailEndWidth" format="dimension" />
-        <attr name="gesturePreviewTrailBodyRatio" format="integer" />
-        <attr name="gesturePreviewTrailShadowRatio" format="integer" />
+        <attr name="gestureTrailFadeoutStartDelay" format="integer" />
+        <!-- Duration while gesture trail is fading out in millisecond. -->
+        <attr name="gestureTrailFadeoutDuration" format="integer" />
+        <!-- Interval of updating gesture trail in millisecond. -->
+        <attr name="gestureTrailUpdateInterval" format="integer" />
+        <attr name="gestureTrailColor" format="color" />
+        <attr name="gestureTrailStartWidth" format="dimension" />
+        <attr name="gestureTrailEndWidth" format="dimension" />
+        <attr name="gestureTrailBodyRatio" format="integer" />
+        <attr name="gestureTrailShadowRatio" format="integer" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Attributes for GestureFloatingPreviewText -->

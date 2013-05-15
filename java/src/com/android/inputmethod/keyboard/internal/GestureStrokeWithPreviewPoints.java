@@ -63,18 +63,18 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
 
         public GestureStrokePreviewParams(final TypedArray mainKeyboardViewAttr) {
             mMinSamplingDistance = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailMinSamplingDistance,
+                    R.styleable.MainKeyboardView_gestureTrailMinSamplingDistance,
                     (float)DEFAULT.mMinSamplingDistance);
             final int interpolationAngularDegree = mainKeyboardViewAttr.getInteger(R.styleable
-                    .MainKeyboardView_gesturePreviewTrailMaxInterpolationAngularThreshold, 0);
+                    .MainKeyboardView_gestureTrailMaxInterpolationAngularThreshold, 0);
             mMaxInterpolationAngularThreshold = (interpolationAngularDegree <= 0)
                     ? DEFAULT.mMaxInterpolationAngularThreshold
                     : degreeToRadian(interpolationAngularDegree);
             mMaxInterpolationDistanceThreshold = mainKeyboardViewAttr.getDimension(R.styleable
-                    .MainKeyboardView_gesturePreviewTrailMaxInterpolationDistanceThreshold,
+                    .MainKeyboardView_gestureTrailMaxInterpolationDistanceThreshold,
                     (float)DEFAULT.mMaxInterpolationDistanceThreshold);
             mMaxInterpolationSegments = mainKeyboardViewAttr.getInteger(
-                    R.styleable.MainKeyboardView_gesturePreviewTrailMaxInterpolationSegments,
+                    R.styleable.MainKeyboardView_gestureTrailMaxInterpolationSegments,
                     DEFAULT.mMaxInterpolationSegments);
         }
     }
@@ -145,9 +145,9 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
      *
      * @param lastInterpolatedIndex the start index of the last interpolated segment of
      *        <code>eventTimes</code>, <code>xCoords</code>, and <code>yCoords</code>.
-     * @param eventTimes the event time array of gesture preview trail to be drawn.
-     * @param xCoords the x-coordinates array of gesture preview trail to be drawn.
-     * @param yCoords the y-coordinates array of gesture preview trail to be drawn.
+     * @param eventTimes the event time array of gesture trail to be drawn.
+     * @param xCoords the x-coordinates array of gesture trail to be drawn.
+     * @param yCoords the y-coordinates array of gesture trail to be drawn.
      * @return the start index of the last interpolated segment of input arrays.
      */
     public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
@@ -189,16 +189,16 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
                 yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
-                if (GesturePreviewTrail.DBG_SHOW_POINTS) {
-                    types.add(d1, GesturePreviewTrail.POINT_TYPE_INTERPOLATED);
+                if (GestureTrail.DBG_SHOW_POINTS) {
+                    types.add(d1, GestureTrail.POINT_TYPE_INTERPOLATED);
                 }
                 d1++;
             }
             eventTimes.add(d1, pt[p2]);
             xCoords.add(d1, px[p2]);
             yCoords.add(d1, py[p2]);
-            if (GesturePreviewTrail.DBG_SHOW_POINTS) {
-                types.add(d1, GesturePreviewTrail.POINT_TYPE_SAMPLED);
+            if (GestureTrail.DBG_SHOW_POINTS) {
+                types.add(d1, GestureTrail.POINT_TYPE_SAMPLED);
             }
         }
         return lastInterpolatedDrawIndex;
