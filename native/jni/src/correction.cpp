@@ -23,6 +23,8 @@
 #include "defines.h"
 #include "proximity_info_state.h"
 #include "suggest_utils.h"
+#include "suggest/policyimpl/utils/edit_distance.h"
+#include "suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy.h"
 
 namespace latinime {
 
@@ -906,50 +908,11 @@ inline static bool isUpperCase(unsigned short c) {
     return totalFreq;
 }
 
-/* Damerau-Levenshtein distance */
-inline static int editDistanceInternal(int *editDistanceTable, const int *before,
-        const int beforeLength, const int *after, const int afterLength) {
-    // dp[li][lo] dp[a][b] = dp[ a * lo + b]
-    int *dp = editDistanceTable;
-    const int li = beforeLength + 1;
-    const int lo = afterLength + 1;
-    for (int i = 0; i < li; ++i) {
-        dp[lo * i] = i;
-    }
-    for (int i = 0; i < lo; ++i) {
-        dp[i] = i;
-    }
-
-    for (int i = 0; i < li - 1; ++i) {
-        for (int j = 0; j < lo - 1; ++j) {
-            const int ci = toBaseLowerCase(before[i]);
-            const int co = toBaseLowerCase(after[j]);
-            const int cost = (ci == co) ? 0 : 1;
-            dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
-                    min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
-            if (i > 0 && j > 0 && ci == toBaseLowerCase(after[j - 1])
-                    && co == toBaseLowerCase(before[i - 1])) {
-                dp[(i + 1) * lo + (j + 1)] = min(
-                        dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
-            }
-        }
-    }
-
-    if (DEBUG_EDIT_DISTANCE) {
-        AKLOGI("IN = %d, OUT = %d", beforeLength, afterLength);
-        for (int i = 0; i < li; ++i) {
-            for (int j = 0; j < lo; ++j) {
-                AKLOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
-            }
-        }
-    }
-    return dp[li * lo - 1];
-}
-
 /* static */ int Correction::RankingAlgorithm::editDistance(const int *before,
         const int beforeLength, const int *after, const int afterLength) {
-    int table[(beforeLength + 1) * (afterLength + 1)];
-    return editDistanceInternal(table, before, beforeLength, after, afterLength);
+    const DamerauLevenshteinEditDistancePolicy daemaruLevenshtein(
+            before, beforeLength, after, afterLength);
+    return static_cast<int>(EditDistance::getEditDistance(&daemaruLevenshtein));
 }
 
 
