@@ -94,6 +94,12 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             super(c);
         }
 
+        @Override
+        public void onAttachedToWindow() {
+            // Make onAttachedToWindow "public"
+            super.onAttachedToWindow();
+        }
+
         // overriding hidden API in EditText
         public Locale getTextServicesLocale() {
             // This method is necessary because EditText is asking this method for the language
