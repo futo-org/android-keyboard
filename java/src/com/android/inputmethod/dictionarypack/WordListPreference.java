@@ -194,9 +194,7 @@ public final class WordListPreference extends Preference {
         ((ViewGroup)view).setLayoutTransition(null);
         final Button button = (Button)view.findViewById(R.id.wordlist_button);
         button.setText(getButtonLabel(mStatus));
-        // String identity match. This is an ==, not an .equals, on purpose.
-        button.setVisibility(mWordlistId == mInterfaceState.mLastClickedId
-                ? View.VISIBLE : View.INVISIBLE);
+        button.setVisibility(mInterfaceState.isOpen(mWordlistId) ? View.VISIBLE : View.INVISIBLE);
         button.setOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
@@ -210,15 +208,16 @@ public final class WordListPreference extends Preference {
             if (!(parent instanceof ListView)) return;
             final ListView listView = (ListView)parent;
             final int indexToOpen;
-            if (mInterfaceState.mLastClickedId == mWordlistId) {
-                // This button was being shown. Clear last state to record that there isn't a
-                // displayed button any more, and note that we don't want to open any button.
-                mInterfaceState.mLastClickedId = null;
+            // Close all first, we'll open back any item that needs to be open.
+            mInterfaceState.closeAll();
+            if (mInterfaceState.isOpen(mWordlistId)) {
+                // This button being shown. Take note that we don't want to open any button in the
+                // loop below.
                 indexToOpen = -1;
             } else {
-                // This button was not being shown. Mark it as the latest selected button, and
-                // remember the index of this child as the one to open in the following loop.
-                mInterfaceState.mLastClickedId = mWordlistId;
+                // This button was not being shown. Open it, and remember the index of this
+                // child as the one to open in the following loop.
+                mInterfaceState.setOpen(mWordlistId, mStatus);
                 indexToOpen = listView.indexOfChild(v);
             }
             final int lastDisplayedIndex =
