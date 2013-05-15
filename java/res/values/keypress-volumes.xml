@@ -27,6 +27,6 @@
         <item>HARDWARE=mako,0.3f</item>
         <item>HARDWARE=manta,0.2f</item>
         <!-- Default value for unknown device -->
-        <item>DEFAULT,0.2f</item>
+        <item>,0.2f</item>
     </string-array>
 </resources>
