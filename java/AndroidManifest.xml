@@ -57,11 +57,19 @@
         <activity android:name=".setup.SetupActivity"
                 android:label="@string/english_ime_name"
                 android:icon="@mipmap/ic_launcher_keyboard"
-                android:launchMode="singleTop"
-                android:clearTaskOnLaunch="true">
+                android:launchMode="singleTask"
+                android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".setup.SetupWizardActivity"
+                android:label="@string/english_ime_name"
+                android:clearTaskOnLaunch="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
