@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
@@ -45,6 +46,8 @@ public final class RichInputMethodManager {
 
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfo mInputMethodInfoOfThisIme;
+
+    private static final int INDEX_NOT_FOUND = -1;
 
     public static RichInputMethodManager getInstance() {
         sInstance.checkInitialized();
@@ -98,10 +101,99 @@ public final class RichInputMethodManager {
     }
 
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
-        final boolean result = mImmWrapper.switchToNextInputMethod(token, onlyCurrentIme);
-        if (!result) {
-            mImmWrapper.mImm.switchToLastInputMethod(token);
+        if (mImmWrapper.switchToNextInputMethod(token, onlyCurrentIme)) {
+            return true;
+        }
+        // Was not able to call {@link InputMethodManager#switchToNextInputMethodIBinder,boolean)}
+        // because the current device is running ICS or previous and lacks the API.
+        if (switchToNextInputSubtypeInThisIme(token, onlyCurrentIme)) {
+            return true;
+        }
+        return switchToNextInputMethodAndSubtype(token);
+    }
+
+    private boolean switchToNextInputSubtypeInThisIme(final IBinder token,
+            final boolean onlyCurrentIme) {
+        final InputMethodManager imm = mImmWrapper.mImm;
+        final InputMethodSubtype currentSubtype = imm.getCurrentInputMethodSubtype();
+        final List<InputMethodSubtype> enabledSubtypes = imm.getEnabledInputMethodSubtypeList(
+                mInputMethodInfoOfThisIme, true /* allowsImplicitlySelectedSubtypes */);
+        final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
+        if (currentIndex == INDEX_NOT_FOUND) {
+            Log.w(TAG, "Can't find current subtype in enabled subtypes: subtype="
+                    + SubtypeLocale.getSubtypeDisplayName(currentSubtype));
             return false;
+        }
+        final int nextIndex = (currentIndex + 1) % enabledSubtypes.size();
+        if (nextIndex <= currentIndex && !onlyCurrentIme) {
+            // The current subtype is the last or only enabled one and it needs to switch to
+            // next IME.
+            return false;
+        }
+        final InputMethodSubtype nextSubtype = enabledSubtypes.get(nextIndex);
+        setInputMethodAndSubtype(token, nextSubtype);
+        return true;
+    }
+
+    private boolean switchToNextInputMethodAndSubtype(final IBinder token) {
+        final InputMethodManager imm = mImmWrapper.mImm;
+        final List<InputMethodInfo> enabledImis = imm.getEnabledInputMethodList();
+        final int currentIndex = getImiIndexInList(mInputMethodInfoOfThisIme, enabledImis);
+        if (currentIndex == INDEX_NOT_FOUND) {
+            Log.w(TAG, "Can't find current IME in enabled IMEs: IME package="
+                    + mInputMethodInfoOfThisIme.getPackageName());
+            return false;
+        }
+        final InputMethodInfo nextImi = getNextNonAuxiliaryIme(currentIndex, enabledImis);
+        final List<InputMethodSubtype> enabledSubtypes = imm.getEnabledInputMethodSubtypeList(
+                nextImi, true /* allowsImplicitlySelectedSubtypes */);
+        if (enabledSubtypes.isEmpty()) {
+            // The next IME has no subtype.
+            imm.setInputMethod(token, nextImi.getId());
+            return true;
+        }
+        final InputMethodSubtype firstSubtype = enabledSubtypes.get(0);
+        imm.setInputMethodAndSubtype(token, nextImi.getId(), firstSubtype);
+        return true;
+    }
+
+    private static int getImiIndexInList(final InputMethodInfo inputMethodInfo,
+            final List<InputMethodInfo> imiList) {
+        final int count = imiList.size();
+        for (int index = 0; index < count; index++) {
+            final InputMethodInfo imi = imiList.get(index);
+            if (imi.equals(inputMethodInfo)) {
+                return index;
+            }
+        }
+        return INDEX_NOT_FOUND;
+    }
+
+    // This method mimics {@link InputMethodManager#switchToNextInputMethod(IBinder,boolean)}.
+    private static InputMethodInfo getNextNonAuxiliaryIme(final int currentIndex,
+            final List<InputMethodInfo> imiList) {
+        final int count = imiList.size();
+        for (int i = 1; i < count; i++) {
+            final int nextIndex = (currentIndex + i) % count;
+            final InputMethodInfo nextImi = imiList.get(nextIndex);
+            if (!isAuxiliaryIme(nextImi)) {
+                return nextImi;
+            }
+        }
+        return imiList.get(currentIndex);
+    }
+
+    // Copied from {@link InputMethodInfo}. See how auxiliary of IME is determined.
+    private static boolean isAuxiliaryIme(final InputMethodInfo imi) {
+        final int count = imi.getSubtypeCount();
+        if (count == 0) {
+            return false;
+        }
+        for (int index = 0; index < count; index++) {
+            final InputMethodSubtype subtype = imi.getSubtypeAt(index);
+            if (!subtype.isAuxiliary()) {
+                return false;
+            }
         }
         return true;
     }
@@ -136,24 +228,35 @@ public final class RichInputMethodManager {
 
     private static boolean checkIfSubtypeBelongsToList(final InputMethodSubtype subtype,
             final List<InputMethodSubtype> subtypes) {
-        for (final InputMethodSubtype ims : subtypes) {
+        return getSubtypeIndexInList(subtype, subtypes) != INDEX_NOT_FOUND;
+    }
+
+    private static int getSubtypeIndexInList(final InputMethodSubtype subtype,
+            final List<InputMethodSubtype> subtypes) {
+        final int count = subtypes.size();
+        for (int index = 0; index < count; index++) {
+            final InputMethodSubtype ims = subtypes.get(index);
             if (ims.equals(subtype)) {
-                return true;
+                return index;
             }
         }
-        return false;
+        return INDEX_NOT_FOUND;
     }
 
     public boolean checkIfSubtypeBelongsToThisIme(final InputMethodSubtype subtype) {
-        final InputMethodInfo myImi = mInputMethodInfoOfThisIme;
-        final int count = myImi.getSubtypeCount();
-        for (int i = 0; i < count; i++) {
-            final InputMethodSubtype ims = myImi.getSubtypeAt(i);
+        return getSubtypeIndexInIme(subtype, mInputMethodInfoOfThisIme) != INDEX_NOT_FOUND;
+    }
+
+    private static int getSubtypeIndexInIme(final InputMethodSubtype subtype,
+            final InputMethodInfo imi) {
+        final int count = imi.getSubtypeCount();
+        for (int index = 0; index < count; index++) {
+            final InputMethodSubtype ims = imi.getSubtypeAt(index);
             if (ims.equals(subtype)) {
-                return true;
+                return index;
             }
         }
-        return false;
+        return INDEX_NOT_FOUND;
     }
 
     public InputMethodSubtype getCurrentInputMethodSubtype(
