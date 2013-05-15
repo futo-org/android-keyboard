@@ -250,6 +250,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
 
         public void postResumeSuggestions() {
+            removeMessages(MSG_RESUME_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS), mDelayUpdateSuggestions);
         }
 
@@ -759,7 +760,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mSuggestedWords = SuggestedWords.EMPTY;
 
-        mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart);
+        mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart,
+                false /* shouldFinishComposition */);
 
         if (isDifferentTextField) {
             mainKeyboardView.closing();
@@ -1148,13 +1150,14 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // This will reset the whole input state to the starting state. It will clear
     // the composing word, reset the last composed word, tell the inputconnection about it.
     private void resetEntireInputState(final int newCursorPosition) {
+        final boolean shouldFinishComposition = mWordComposer.isComposingWord();
         resetComposingState(true /* alsoResetLastComposedWord */);
         if (mSettings.getCurrent().mBigramPredictionEnabled) {
             clearSuggestionStrip();
         } else {
             setSuggestedWords(mSettings.getCurrent().mSuggestPuncList, false);
         }
-        mConnection.resetCachesUponCursorMove(newCursorPosition);
+        mConnection.resetCachesUponCursorMove(newCursorPosition, shouldFinishComposition);
     }
 
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
@@ -2436,10 +2439,15 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     private void restartSuggestionsOnWordTouchedByCursor() {
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mLastSelectionStart != mLastSelectionEnd) return;
+        // If we don't know the cursor location, return.
+        if (mLastSelectionStart < 0) return;
         if (!mConnection.isCursorTouchingWord(mSettings.getCurrent())) return;
         final Range range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
                 0 /* additionalPrecedingWordsCount */);
         if (null == range) return; // Happens if we don't have an input connection at all
+        // If for some strange reason (editor bug or so) we measure the text before the cursor as
+        // longer than what the entire text is supposed to be, the safe thing to do is bail out.
+        if (range.mCharsBefore > mLastSelectionStart) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final String typedWord = range.mWord.toString();
         if (range.mWord instanceof SpannableString) {
