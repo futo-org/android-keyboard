@@ -1418,7 +1418,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             logUnit.setContainsCorrection();
         }
         researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
-        researchLogger.commitCurrentLogUnitAsWord(originallyTypedWord, Long.MAX_VALUE, isBatchMode);
     }
 
     /**
