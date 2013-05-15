@@ -103,12 +103,12 @@ public final class ResourceUtils {
     /**
      * Find the condition that fulfills specified key value pairs from an array of
      * "condition,constant", and return the corresponding string constant. A condition is
-     * "pattern1[:pattern2...] (or an empty string for the default). A pattern is "key=value"
-     * string. The condition matches only if all patterns of the condition are true for the
-     * specified key value pairs.
+     * "pattern1[:pattern2...] (or an empty string for the default). A pattern is
+     * "key=regexp_value" string. The condition matches only if all patterns of the condition
+     * are true for the specified key value pairs.
      *
      * For example, "condition,constant" has the following format.
-     * (See {@link ResourceUtilsTests#testFindConstantForKeyValuePairsCombined()})
+     * (See {@link ResourceUtilsTests#testFindConstantForKeyValuePairsRegexp()})
      *  - HARDWARE=mako,constantForNexus4
      *  - MODEL=Nexus 4:MANUFACTURER=LGE,constantForNexus4
      *  - ,defaultConstant
@@ -156,8 +156,8 @@ public final class ResourceUtils {
             if (value == null) {
                 throw new RuntimeException("Found unknown key: " + condition);
             }
-            final String patternValue = pattern.substring(posEqual + 1);
-            if (!value.equals(patternValue)) {
+            final String patternRegexpValue = pattern.substring(posEqual + 1);
+            if (!value.matches(patternRegexpValue)) {
                 return false;
             }
         }
