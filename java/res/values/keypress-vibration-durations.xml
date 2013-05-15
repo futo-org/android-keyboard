@@ -18,16 +18,16 @@
 */
 -->
 <resources>
-    <!-- Build.HARDWARE,duration_in_milliseconds -->
+    <!-- Build condition,duration_in_milliseconds -->
     <string-array name="keypress_vibration_durations" translatable="false">
         <!-- Nexus S -->
-        <item>herring,5</item>
+        <item>HARDWARE=herring,5</item>
         <!-- Galaxy Nexus -->
-        <item>tuna,5</item>
+        <item>HARDWARE=tuna,5</item>
         <!-- Nexus 4 -->
-        <item>mako,5</item>
+        <item>HARDWARE=mako,5</item>
         <!-- Nexus 10 -->
-        <item>manta,16</item>
+        <item>HARDWARE=manta,16</item>
         <!-- Default value for unknown device -->
         <item>DEFAULT,20</item>
     </string-array>
