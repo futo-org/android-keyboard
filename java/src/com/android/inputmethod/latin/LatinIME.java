@@ -90,7 +90,7 @@ import java.util.TreeSet;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public final class LatinIME extends InputMethodService implements KeyboardActionListener,
+public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener,
         Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
@@ -188,6 +188,8 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
 
+    // TODO: This boolean is persistent state and causes large side effects at unexpected times.
+    // Find a way to remove it for readability.
     private boolean mIsAutoCorrectionIndicatorOn;
 
     private AlertDialog mOptionsDialog;
@@ -902,7 +904,12 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         // we know for sure the cursor moved while we were composing and we should reset
         // the state.
         final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-        if (!mExpectingUpdateSelection
+        // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
+        // will be reset when the keyboard shows up anyway.
+        // TODO: revisit this when LatinIME supports hardware keyboards.
+        // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
+        // TODO: find a better way to simulate actual execution.
+        if (isInputViewShown() && !mExpectingUpdateSelection
                 && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
             // TAKE CARE: there is a race condition when we enter this test even when the user
             // did not explicitly move the cursor. This happens when typing fast, where two keys
@@ -2507,7 +2514,10 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
 
         // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
         // We never want to auto-correct on a resumed suggestion. Please refer to the three
-        // places above where suggestedWords is affected.
+        // places above where suggestedWords is affected. We also need to reset
+        // mIsAutoCorrectionIndicatorOn to avoid showSuggestionStrip touching the text to adapt it.
+        // TODO: remove mIsAutoCorrectionIndicator on (see comment on definition)
+        mIsAutoCorrectionIndicatorOn = false;
         showSuggestionStrip(suggestedWords, typedWord);
     }
 

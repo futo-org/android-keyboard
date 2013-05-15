@@ -39,7 +39,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.Locale;
 
-public class InputTestsBase extends ServiceTestCase<LatinIME> {
+public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     private static final String PREF_DEBUG_MODE = "debug_mode";
 
@@ -121,7 +121,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     public InputTestsBase() {
-        super(LatinIME.class);
+        super(LatinIMEForTests.class);
     }
 
     // TODO: Isn't there a way to make this generic somehow? We can take a <T> and return a <T>
