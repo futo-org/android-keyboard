@@ -57,6 +57,7 @@ public final class SettingsValues {
     public final boolean mShowsLanguageSwitchKey;
     public final boolean mUseContactsDict;
     public final boolean mUseDoubleSpacePeriod;
+    public final boolean mBlockPotentiallyOffensive;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mGestureInputEnabled;
@@ -126,6 +127,7 @@ public final class SettingsValues {
         mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true);
+        mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res);
         mAutoCorrectEnabled = Settings.readAutoCorrectEnabled(autoCorrectionThresholdRawValue, res);
         mBigramPredictionEnabled = readBigramPredictionEnabled(prefs, res);
 
