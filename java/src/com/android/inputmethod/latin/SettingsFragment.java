@@ -113,6 +113,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         }
 
         final Preference feedbackSettings = findPreference(Settings.PREF_SEND_FEEDBACK);
+        final Preference aboutSettings = findPreference(Settings.PREF_ABOUT_KEYBOARD);
         if (feedbackSettings != null) {
             if (FeedbackUtils.isFeedbackFormSupported()) {
                 feedbackSettings.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -122,8 +123,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                         return true;
                     }
                 });
+                aboutSettings.setTitle(FeedbackUtils.getAboutKeyboardTitleResId());
+                aboutSettings.setIntent(FeedbackUtils.getAboutKeyboardIntent(getActivity()));
             } else {
                 miscSettings.removePreference(feedbackSettings);
+                miscSettings.removePreference(aboutSettings);
             }
         }
 

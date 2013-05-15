@@ -554,4 +554,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; i
 
     <!-- The text of the toast warning a download is starting automatically to enable suggestions for the selected language [CHAR LIMIT=100] -->
     <string name="toast_downloading_suggestions">Downloading: suggestions for <xliff:g id="language" example="English">%1$s</xliff:g> will be ready soon.</string>
+
+    <!-- Version text [CHAR LIMIT=30]-->
+    <string name="version_text">Version <xliff:g id="version_number" example="1.0.1864.643521">%1$s</xliff:g></string>
 </resources>
