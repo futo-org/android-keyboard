@@ -100,6 +100,12 @@ public final class RichInputMethodManager {
         throw new RuntimeException("Input method id for " + packageName + " not found.");
     }
 
+    public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(
+            boolean allowsImplicitlySelectedSubtypes) {
+        return mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
+                mInputMethodInfoOfThisIme, allowsImplicitlySelectedSubtypes);
+    }
+
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
         if (mImmWrapper.switchToNextInputMethod(token, onlyCurrentIme)) {
             return true;
@@ -116,8 +122,8 @@ public final class RichInputMethodManager {
             final boolean onlyCurrentIme) {
         final InputMethodManager imm = mImmWrapper.mImm;
         final InputMethodSubtype currentSubtype = imm.getCurrentInputMethodSubtype();
-        final List<InputMethodSubtype> enabledSubtypes = imm.getEnabledInputMethodSubtypeList(
-                mInputMethodInfoOfThisIme, true /* allowsImplicitlySelectedSubtypes */);
+        final List<InputMethodSubtype> enabledSubtypes = getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */);
         final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
         if (currentIndex == INDEX_NOT_FOUND) {
             Log.w(TAG, "Can't find current subtype in enabled subtypes: subtype="
@@ -214,8 +220,8 @@ public final class RichInputMethodManager {
             final InputMethodSubtype subtype) {
         final boolean subtypeEnabled = checkIfSubtypeBelongsToThisImeAndEnabled(subtype);
         final boolean subtypeExplicitlyEnabled = checkIfSubtypeBelongsToList(
-                subtype, mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
-                        mInputMethodInfoOfThisIme, false /* allowsImplicitlySelectedSubtypes */));
+                subtype, getMyEnabledInputMethodSubtypeList(
+                        false /* allowsImplicitlySelectedSubtypes */));
         return subtypeEnabled && !subtypeExplicitlyEnabled;
     }
 
@@ -312,8 +318,7 @@ public final class RichInputMethodManager {
         if (filteredImisCount > 1) {
             return true;
         }
-        final List<InputMethodSubtype> subtypes =
-                mImmWrapper.mImm.getEnabledInputMethodSubtypeList(null, true);
+        final List<InputMethodSubtype> subtypes = getMyEnabledInputMethodSubtypeList(true);
         int keyboardCount = 0;
         // imm.getEnabledInputMethodSubtypeList(null, true) will return the current IME's
         // both explicitly and implicitly enabled input method subtype.

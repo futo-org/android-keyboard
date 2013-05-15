@@ -115,7 +115,7 @@ public final class SubtypeSwitcher {
      */
     public void updateParametersOnStartInputView() {
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
-                mRichImm.getInputMethodManager().getEnabledInputMethodSubtypeList(null, true);
+                mRichImm.getMyEnabledInputMethodSubtypeList(true);
         mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
         updateShortcutIME();
     }
