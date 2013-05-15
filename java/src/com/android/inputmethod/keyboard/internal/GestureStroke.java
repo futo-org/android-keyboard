@@ -145,7 +145,7 @@ public class GestureStroke {
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         mKeyWidth = keyWidth;
         mMinYCoordinate = -(int)(keyboardHeight * EXTRA_GESTURE_TRAIL_AREA_ABOVE_KEYBOARD_RATIO);
-        mMaxYCoordinate = keyboardHeight - 1;
+        mMaxYCoordinate = keyboardHeight;
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mDetectFastMoveSpeedThreshold = (int)(keyWidth * mParams.mDetectFastMoveSpeedThreshold);
         mGestureDynamicDistanceThresholdFrom =
