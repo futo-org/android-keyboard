@@ -203,17 +203,27 @@ public final class WordListPreference extends Preference {
         @Override
         public void onClick(final View v) {
             final Button button = (Button)v.findViewById(R.id.wordlist_button);
-            animateButton(button, ANIMATION_IN);
             final ViewParent parent = v.getParent();
             // Just in case something changed in the framework, test for the concrete class
             if (!(parent instanceof ListView)) return;
             final ListView listView = (ListView)parent;
             final int myIndex = listView.indexOfChild(v) + listView.getFirstVisiblePosition();
             if (NOT_AN_INDEX != sLastClickedIndex) {
+                // If another button is showing, hide it
                 animateButton(getButtonForIndex(listView, sLastClickedIndex), ANIMATION_OUT);
             }
-            sLastClickedIndex = myIndex;
-            sLastClickedWordlistId = mWordlistId;
+            if (sLastClickedWordlistId == mWordlistId) {
+                // This button was being shown. Clear last state to record that there isn't a
+                // displayed button any more.
+                sLastClickedIndex = NOT_AN_INDEX;
+                sLastClickedWordlistId = null;
+            } else {
+                // This button was not being shown. Show it and mark it as the latest selected
+                // button.
+                animateButton(button, ANIMATION_IN);
+                sLastClickedIndex = myIndex;
+                sLastClickedWordlistId = mWordlistId;
+            }
         }
     }
 
