@@ -78,6 +78,8 @@
   <com.android.inputmethod.dictionarypack.ButtonSwitcher
       android:id="@+android:id/wordlist_button_switcher"
       android:layout_weight="0"
+      android:layout_marginStart="13dip"
+      android:layout_marginLeft="13dip"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
     <Button
