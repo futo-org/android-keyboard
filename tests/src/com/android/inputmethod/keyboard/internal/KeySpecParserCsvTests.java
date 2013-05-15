@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.app.Instrumentation;
 import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.StringUtils;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
-@SmallTest
+@MediumTest
 public class KeySpecParserCsvTests extends InstrumentationTestCase {
     private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
