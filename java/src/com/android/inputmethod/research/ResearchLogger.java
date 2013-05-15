@@ -166,7 +166,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private File mUserRecordingFile = null;
 
     private boolean mIsPasswordView = false;
-    private boolean mIsLoggingSuspended = false;
     private SharedPreferences mPrefs;
 
     // digits entered by the user are replaced with this codepoint.
@@ -411,7 +410,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.d(TAG, "start called");
         }
         maybeShowSplashScreen();
-        updateSuspendedState();
         requestIndicatorRedraw();
         mStatistics.reset();
         checkForEmptyEditor();
@@ -450,14 +448,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private void restart() {
         stop();
         start();
-    }
-
-    private long mResumeTime = 0L;
-    private void updateSuspendedState() {
-        final long time = System.currentTimeMillis();
-        if (time > mResumeTime) {
-            mIsLoggingSuspended = false;
-        }
     }
 
     @Override
@@ -745,7 +735,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
+        return !mIsPasswordView && sIsLogging && !mInFeedbackDialog;
     }
 
     public void requestIndicatorRedraw() {
