@@ -23,7 +23,7 @@
         android:id="@+id/setup_step_bullets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/setup_step_vertical_padding"
+        android:paddingTop="@dimen/setup_step_vertical_padding"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/setup_step1_bullet"
