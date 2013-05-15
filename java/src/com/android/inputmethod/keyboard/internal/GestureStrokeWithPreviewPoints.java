@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.TypedArray;
+
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResizableIntArray;
 
 public final class GestureStrokeWithPreviewPoints extends GestureStroke {
@@ -25,6 +28,8 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     private final ResizableIntArray mPreviewXCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
     private final ResizableIntArray mPreviewYCoordinates = new ResizableIntArray(PREVIEW_CAPACITY);
 
+    private final GestureStrokePreviewParams mPreviewParams;
+
     private int mStrokeId;
     private int mLastPreviewSize;
     private final HermiteInterpolator mInterpolator = new HermiteInterpolator();
@@ -32,23 +37,53 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
 
     private int mLastX;
     private int mLastY;
-    private double mMinPreviewSamplingDistance;
     private double mDistanceFromLastSample;
-    private double mInterpolationDistanceThreshold;
 
-    // TODO: Move these constants to resource.
-    // TODO: Use "dp" instead of ratio to the keyWidth because table has rather large keys.
-    // The minimum trail distance between sample points for preview in keyWidth unit when using
-    // interpolation.
-    private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH = 0.2f;
-    // The angular threshold to use interpolation in radian. PI/12 is 15 degree.
-    private static final double INTERPOLATION_ANGULAR_THRESHOLD = Math.PI / 12.0d;
-    // The distance threshold to use interpolation in keyWidth unit.
-    private static final float INTERPOLATION_DISTANCE_THRESHOLD_TO_KEY_WIDTH = 0.5f;
-    private static final int MAX_INTERPOLATION_PARTITIONS = 6;
+    public static final class GestureStrokePreviewParams {
+        public final double mMinSamplingDistance; // in pixel
+        public final double mMaxInterpolationAngularThreshold; // in radian
+        public final double mMaxInterpolationDistanceThreshold; // in pixel
+        public final int mMaxInterpolationSegments;
 
-    public GestureStrokeWithPreviewPoints(final int pointerId, final GestureStrokeParams params) {
-        super(pointerId, params);
+        public static final GestureStrokePreviewParams DEFAULT = new GestureStrokePreviewParams();
+
+        private static final int DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD = 15; // in degree
+
+        private GestureStrokePreviewParams() {
+            mMinSamplingDistance = 0.0d;
+            mMaxInterpolationAngularThreshold =
+                    degreeToRadian(DEFAULT_MAX_INTERPOLATION_ANGULAR_THRESHOLD);
+            mMaxInterpolationDistanceThreshold = mMinSamplingDistance;
+            mMaxInterpolationSegments = 4;
+        }
+
+        private static double degreeToRadian(final int degree) {
+            return (double)degree / 180.0d * Math.PI;
+        }
+
+        public GestureStrokePreviewParams(final TypedArray mainKeyboardViewAttr) {
+            mMinSamplingDistance = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailMinSamplingDistance,
+                    (float)DEFAULT.mMinSamplingDistance);
+            final int interpolationAngularDegree = mainKeyboardViewAttr.getInteger(R.styleable
+                    .MainKeyboardView_gesturePreviewTrailMaxInterpolationAngularThreshold, 0);
+            mMaxInterpolationAngularThreshold = (interpolationAngularDegree <= 0)
+                    ? DEFAULT.mMaxInterpolationAngularThreshold
+                    : degreeToRadian(interpolationAngularDegree);
+            mMaxInterpolationDistanceThreshold = mainKeyboardViewAttr.getDimension(R.styleable
+                    .MainKeyboardView_gesturePreviewTrailMaxInterpolationDistanceThreshold,
+                    (float)DEFAULT.mMaxInterpolationDistanceThreshold);
+            mMaxInterpolationSegments = mainKeyboardViewAttr.getInteger(
+                    R.styleable.MainKeyboardView_gesturePreviewTrailMaxInterpolationSegments,
+                    DEFAULT.mMaxInterpolationSegments);
+        }
+    }
+
+    public GestureStrokeWithPreviewPoints(final int pointerId,
+            final GestureStrokeParams strokeParams,
+            final GestureStrokePreviewParams previewParams) {
+        super(pointerId, strokeParams);
+        mPreviewParams = previewParams;
     }
 
     @Override
@@ -66,19 +101,12 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         return mStrokeId;
     }
 
-    @Override
-    public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
-        super.setKeyboardGeometry(keyWidth, keyboardHeight);
-        mMinPreviewSamplingDistance = keyWidth * MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH;
-        mInterpolationDistanceThreshold = keyWidth * INTERPOLATION_DISTANCE_THRESHOLD_TO_KEY_WIDTH;
-    }
-
     private boolean needsSampling(final int x, final int y) {
         mDistanceFromLastSample += Math.hypot(x - mLastX, y - mLastY);
         mLastX = x;
         mLastY = y;
         final boolean isDownEvent = (mPreviewEventTimes.getLength() == 0);
-        if (mDistanceFromLastSample >= mMinPreviewSamplingDistance || isDownEvent) {
+        if (mDistanceFromLastSample >= mPreviewParams.mMinSamplingDistance || isDownEvent) {
             mDistanceFromLastSample = 0.0d;
             return true;
         }
@@ -144,19 +172,19 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
             final double m1 = Math.atan2(mInterpolator.mSlope1Y, mInterpolator.mSlope1X);
             final double m2 = Math.atan2(mInterpolator.mSlope2Y, mInterpolator.mSlope2X);
             final double deltaAngle = Math.abs(angularDiff(m2, m1));
-            final int partitionsByAngle = (int)Math.ceil(
-                    deltaAngle / INTERPOLATION_ANGULAR_THRESHOLD);
+            final int segmentsByAngle = (int)Math.ceil(
+                    deltaAngle / mPreviewParams.mMaxInterpolationAngularThreshold);
             final double deltaDistance = Math.hypot(mInterpolator.mP1X - mInterpolator.mP2X,
                     mInterpolator.mP1Y - mInterpolator.mP2Y);
-            final int partitionsByDistance = (int)Math.ceil(deltaDistance
-                    / mInterpolationDistanceThreshold);
-            final int partitions = Math.min(MAX_INTERPOLATION_PARTITIONS,
-                    Math.max(partitionsByAngle, partitionsByDistance));
+            final int segmentsByDistance = (int)Math.ceil(deltaDistance
+                    / mPreviewParams.mMaxInterpolationDistanceThreshold);
+            final int segments = Math.min(mPreviewParams.mMaxInterpolationSegments,
+                    Math.max(segmentsByAngle, segmentsByDistance));
             final int t1 = eventTimes.get(d1);
             final int dt = pt[p2] - pt[p1];
             d1++;
-            for (int i = 1; i < partitions; i++) {
-                final float t = i / (float)partitions;
+            for (int i = 1; i < segments; i++) {
+                final float t = i / (float)segments;
                 mInterpolator.interpolate(t);
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
