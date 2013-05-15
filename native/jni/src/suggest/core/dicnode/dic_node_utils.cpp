@@ -21,6 +21,7 @@
 #include "dic_node.h"
 #include "dic_node_utils.h"
 #include "dic_node_vector.h"
+#include "multi_bigram_map.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
 
@@ -191,11 +192,11 @@ namespace latinime {
  * Computes the combined bigram / unigram cost for the given dicNode.
  */
 /* static */ float DicNodeUtils::getBigramNodeImprobability(const uint8_t *const dicRoot,
-        const DicNode *const node, hash_map_compat<int, int16_t> *bigramCacheMap) {
+        const DicNode *const node, MultiBigramMap *multiBigramMap) {
     if (node->isImpossibleBigramWord()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(dicRoot, node, bigramCacheMap);
+    const int probability = getBigramNodeProbability(dicRoot, node, multiBigramMap);
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - probability)
             / static_cast<float>(MAX_PROBABILITY);
@@ -203,82 +204,24 @@ namespace latinime {
 }
 
 /* static */ int DicNodeUtils::getBigramNodeProbability(const uint8_t *const dicRoot,
-        const DicNode *const node, hash_map_compat<int, int16_t> *bigramCacheMap) {
+        const DicNode *const node, MultiBigramMap *multiBigramMap) {
     const int unigramProbability = node->getProbability();
-    const int encodedDiffOfBigramProbability =
-            getBigramNodeEncodedDiffProbability(dicRoot, node, bigramCacheMap);
-    if (NOT_A_PROBABILITY == encodedDiffOfBigramProbability) {
+    const int wordPos = node->getPos();
+    const int prevWordPos = node->getPrevWordPos();
+    if (NOT_VALID_WORD == wordPos || NOT_VALID_WORD == prevWordPos) {
+        // Note: Normally wordPos comes from the dictionary and should never equal NOT_VALID_WORD.
         return backoff(unigramProbability);
     }
-    return BinaryFormat::computeProbabilityForBigram(
-            unigramProbability, encodedDiffOfBigramProbability);
+    if (multiBigramMap) {
+        return multiBigramMap->getBigramProbability(
+                dicRoot, prevWordPos, wordPos, unigramProbability);
+    }
+    return BinaryFormat::getBigramProbability(dicRoot, prevWordPos, wordPos, unigramProbability);
 }
 
 ///////////////////////////////////////
 // Bigram / Unigram dictionary utils //
 ///////////////////////////////////////
-
-/* static */ int16_t DicNodeUtils::getBigramNodeEncodedDiffProbability(const uint8_t *const dicRoot,
-        const DicNode *const node, hash_map_compat<int, int16_t> *bigramCacheMap) {
-    const int wordPos = node->getPos();
-    const int prevWordPos = node->getPrevWordPos();
-    return getBigramProbability(dicRoot, prevWordPos, wordPos, bigramCacheMap);
-}
-
-// TODO: Move this to BigramDictionary
-/* static */ int16_t DicNodeUtils::getBigramProbability(const uint8_t *const dicRoot, int pos,
-        const int nextPos, hash_map_compat<int, int16_t> *bigramCacheMap) {
-    // TODO: this is painfully slow compared to the method used in the previous version of the
-    // algorithm. Switch to that method.
-    if (NOT_VALID_WORD == pos) return NOT_A_PROBABILITY;
-    if (NOT_VALID_WORD == nextPos) return NOT_A_PROBABILITY;
-
-    // Create a hash code for the given node pair (based on Josh Bloch's effective Java).
-    // TODO: Use a real hash map data structure that deals with collisions.
-    int hash = 17;
-    hash = hash * 31 + pos;
-    hash = hash * 31 + nextPos;
-
-    hash_map_compat<int, int16_t>::const_iterator mapPos = bigramCacheMap->find(hash);
-    if (mapPos != bigramCacheMap->end()) {
-        return mapPos->second;
-    }
-    if (NOT_VALID_WORD == pos) {
-        return NOT_A_PROBABILITY;
-    }
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(dicRoot, &pos);
-    if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) {
-        return NOT_A_PROBABILITY;
-    }
-    if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
-        BinaryFormat::getCodePointAndForwardPointer(dicRoot, &pos);
-    } else {
-        pos = BinaryFormat::skipOtherCharacters(dicRoot, pos);
-    }
-    pos = BinaryFormat::skipChildrenPosition(flags, pos);
-    pos = BinaryFormat::skipProbability(flags, pos);
-    uint8_t bigramFlags;
-    int count = 0;
-    do {
-        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(dicRoot, &pos);
-        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(dicRoot,
-                bigramFlags, &pos);
-        if (bigramPos == nextPos) {
-            const int16_t probability = BinaryFormat::MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
-            if (static_cast<int>(bigramCacheMap->size()) < MAX_BIGRAM_MAP_SIZE) {
-                (*bigramCacheMap)[hash] = probability;
-            }
-            return probability;
-        }
-        count++;
-    } while ((BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags)
-            && count < MAX_BIGRAMS_CONSIDERED_PER_CONTEXT);
-    if (static_cast<int>(bigramCacheMap->size()) < MAX_BIGRAM_MAP_SIZE) {
-        // TODO: does this -1 mean NOT_VALID_WORD?
-        (*bigramCacheMap)[hash] = -1;
-    }
-    return NOT_A_PROBABILITY;
-}
 
 /* static */ bool DicNodeUtils::isMatchedNodeCodePoint(const ProximityInfoState *pInfoState,
         const int pointIndex, const bool exactOnly, const int nodeCodePoint) {

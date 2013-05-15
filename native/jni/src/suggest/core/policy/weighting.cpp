@@ -18,13 +18,14 @@
 
 #include "char_utils.h"
 #include "defines.h"
-#include "hash_map_compat.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
+
+class MultiBigramMap;
 
 static inline void profile(const CorrectionType correctionType, DicNode *const node) {
 #if DEBUG_DICT
@@ -71,14 +72,14 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
 /* static */ void Weighting::addCostAndForwardInputIndex(const Weighting *const weighting,
         const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
         const DicNode *const parentDicNode, DicNode *const dicNode,
-        hash_map_compat<int, int16_t> *const bigramCacheMap) {
+        MultiBigramMap *const multiBigramMap) {
     const int inputSize = traverseSession->getInputSize();
     DicNode_InputStateG inputStateG;
     inputStateG.mNeedsToUpdateInputStateG = false; // Don't use input info by default
     const float spatialCost = Weighting::getSpatialCost(weighting, correctionType,
             traverseSession, parentDicNode, dicNode, &inputStateG);
     const float languageCost = Weighting::getLanguageCost(weighting, correctionType,
-            traverseSession, parentDicNode, dicNode, bigramCacheMap);
+            traverseSession, parentDicNode, dicNode, multiBigramMap);
     const ErrorType errorType = weighting->getErrorType(correctionType, traverseSession,
             parentDicNode, dicNode);
     profile(correctionType, dicNode);
@@ -127,14 +128,14 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
 /* static */ float Weighting::getLanguageCost(const Weighting *const weighting,
         const CorrectionType correctionType, const DicTraverseSession *const traverseSession,
         const DicNode *const parentDicNode, const DicNode *const dicNode,
-        hash_map_compat<int, int16_t> *const bigramCacheMap) {
+        MultiBigramMap *const multiBigramMap) {
     switch(correctionType) {
     case CT_OMISSION:
         return 0.0f;
     case CT_SUBSTITUTION:
         return 0.0f;
     case CT_NEW_WORD_SPACE_OMITTION:
-        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, bigramCacheMap);
+        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, multiBigramMap);
     case CT_MATCH:
         return 0.0f;
     case CT_COMPLETION:
@@ -142,11 +143,11 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_TERMINAL: {
         const float languageImprobability =
                 DicNodeUtils::getBigramNodeImprobability(
-                        traverseSession->getOffsetDict(), dicNode, bigramCacheMap);
+                        traverseSession->getOffsetDict(), dicNode, multiBigramMap);
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
-        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, bigramCacheMap);
+        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, multiBigramMap);
     case CT_INSERTION:
         return 0.0f;
     case CT_TRANSPOSITION:

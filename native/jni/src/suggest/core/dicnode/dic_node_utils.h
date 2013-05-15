@@ -21,7 +21,6 @@
 #include <vector>
 
 #include "defines.h"
-#include "hash_map_compat.h"
 
 namespace latinime {
 
@@ -29,6 +28,7 @@ class DicNode;
 class DicNodeVector;
 class ProximityInfo;
 class ProximityInfoState;
+class MultiBigramMap;
 
 class DicNodeUtils {
  public:
@@ -42,7 +42,7 @@ class DicNodeUtils {
     static void getAllChildDicNodes(DicNode *dicNode, const uint8_t *const dicRoot,
             DicNodeVector *childDicNodes);
     static float getBigramNodeImprobability(const uint8_t *const dicRoot,
-            const DicNode *const node, hash_map_compat<int, int16_t> *const bigramCacheMap);
+            const DicNode *const node, MultiBigramMap *const multiBigramMap);
     static bool isDicNodeFilteredOut(const int nodeCodePoint, const ProximityInfo *const pInfo,
             const std::vector<int> *const codePointsFilter);
     // TODO: Move to private
@@ -57,15 +57,11 @@ class DicNodeUtils {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodeUtils);
-    // Max cache size for the space omission error correction bigram lookup
-    static const int MAX_BIGRAM_MAP_SIZE = 20000;
     // Max number of bigrams to look up
     static const int MAX_BIGRAMS_CONSIDERED_PER_CONTEXT = 500;
 
     static int getBigramNodeProbability(const uint8_t *const dicRoot, const DicNode *const node,
-            hash_map_compat<int, int16_t> *bigramCacheMap);
-    static int16_t getBigramNodeEncodedDiffProbability(const uint8_t *const dicRoot,
-            const DicNode *const node, hash_map_compat<int, int16_t> *bigramCacheMap);
+            MultiBigramMap *multiBigramMap);
     static void createAndGetPassingChildNode(DicNode *dicNode, const ProximityInfoState *pInfoState,
             const int pointIndex, const bool exactOnly, DicNodeVector *childDicNodes);
     static void createAndGetAllLeavingChildNodes(DicNode *dicNode, const uint8_t *const dicRoot,
@@ -76,8 +72,6 @@ class DicNodeUtils {
             const int terminalDepth, const ProximityInfoState *pInfoState, const int pointIndex,
             const bool exactOnly, const std::vector<int> *const codePointsFilter,
             const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
-    static int16_t getBigramProbability(const uint8_t *const dicRoot, int pos, const int nextPos,
-            hash_map_compat<int, int16_t> *bigramCacheMap);
 
     // TODO: Move to proximity info
     static bool isMatchedNodeCodePoint(const ProximityInfoState *pInfoState, const int pointIndex,
