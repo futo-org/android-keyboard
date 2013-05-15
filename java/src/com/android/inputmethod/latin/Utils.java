@@ -475,7 +475,7 @@ public final class Utils {
         return 0;
     }
 
-    public static String getSdkVersion(Context context) {
+    public static String getVersionName(Context context) {
         try {
             if (context == null) {
                 return "";
