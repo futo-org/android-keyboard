@@ -108,6 +108,7 @@ public class UserDictionarySettings extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().getActionBar().setTitle(R.string.edit_personal_dictionary);
     }
 
     @Override
