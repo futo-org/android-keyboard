@@ -28,14 +28,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
-import android.os.Build.VERSION_CODES;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -64,6 +63,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.AppWorkaroundsUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -91,7 +91,7 @@ import java.util.TreeSet;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener,
+        SuggestionStripView.Listener, TargetPackageInfoGetterTask.OnTargetPackageInfoKnownListener,
         Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
@@ -141,7 +141,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
     @UsedForTesting Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
-    private ApplicationInfo mTargetApplicationInfo;
+    private AppWorkaroundsUtils mAppWorkAroundsUtils = new AppWorkaroundsUtils();
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -711,10 +711,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
-        mTargetApplicationInfo =
-                TargetApplicationGetter.getCachedApplicationInfo(editorInfo.packageName);
-        if (null == mTargetApplicationInfo) {
-            new TargetApplicationGetter(this /* context */, this /* listener */)
+        final PackageInfo packageInfo =
+                TargetPackageInfoGetterTask.getCachedPackageInfo(editorInfo.packageName);
+        mAppWorkAroundsUtils.setPackageInfo(packageInfo);
+        if (null == packageInfo) {
+            new TargetPackageInfoGetterTask(this /* context */, this /* listener */)
                     .execute(editorInfo.packageName);
         }
 
@@ -819,10 +820,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
-    // Callback for the TargetApplicationGetter
+    // Callback for the TargetPackageInfoGetterTask
     @Override
-    public void onTargetApplicationKnown(final ApplicationInfo info) {
-        mTargetApplicationInfo = info;
+    public void onTargetPackageInfoKnown(final PackageInfo info) {
+        mAppWorkAroundsUtils.setPackageInfo(info);
     }
 
     @Override
@@ -1369,8 +1370,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        if (Constants.CODE_ENTER == code && mTargetApplicationInfo != null
-                && mTargetApplicationInfo.targetSdkVersion < VERSION_CODES.JELLY_BEAN) {
+        if (Constants.CODE_ENTER == code && mAppWorkAroundsUtils.isBeforeJellyBean()) {
             // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
@@ -1864,8 +1864,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                if (mTargetApplicationInfo != null
-                        && mTargetApplicationInfo.targetSdkVersion < VERSION_CODES.JELLY_BEAN) {
+                if (mAppWorkAroundsUtils.isBeforeJellyBean()) {
                     // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
                     // a hardware keyboard event on pressing enter or delete. This is bad for many
                     // reasons (there are race conditions with commits) but some applications are
@@ -2785,12 +2784,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
-        final StringBuilder s = new StringBuilder();
-        s.append("Target application : ").append(mTargetApplicationInfo.name)
-                .append("\nPackage : ").append(mTargetApplicationInfo.packageName)
-                .append("\nTarget app sdk version : ")
-                .append(mTargetApplicationInfo.targetSdkVersion)
-                .append("\nAttributes : ").append(mSettings.getCurrent().mInputAttributes)
+        final StringBuilder s = new StringBuilder(mAppWorkAroundsUtils.toString());
+        s.append("\nAttributes : ").append(mSettings.getCurrent().mInputAttributes)
                 .append("\nContext : ").append(context);
         throw new RuntimeException(s.toString());
     }
