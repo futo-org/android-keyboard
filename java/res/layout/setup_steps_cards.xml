@@ -23,7 +23,7 @@
         android:id="@+id/setup_step_bullets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/setup_step_vertical_padding"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/setup_step1_bullet"
@@ -40,8 +40,7 @@
     </LinearLayout>
     <com.android.inputmethod.latin.setup.SetupStepIndicatorView
         android:id="@+id/setup_step_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        style="@style/setupStepIndicatorStyle" />
     <FrameLayout
         android:id="@+id/setup_steps_pane"
         android:layout_width="match_parent"
@@ -60,5 +59,5 @@
         android:id="@+id/setup_finish"
         android:text="@string/setup_finish_action"
         style="@style/setupStepActionLabelStyle"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="@dimen/setup_step_horizontal_line_height" />
 </merge>

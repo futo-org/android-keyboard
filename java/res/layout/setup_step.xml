@@ -25,14 +25,14 @@
     <TextView
         android:id="@+id/setup_step_title"
         style="@style/setupStepTitleStyle"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp" />
+        android:paddingTop="@dimen/setup_step_vertical_padding"
+        android:paddingBottom="@dimen/setup_step_vertical_padding" />
     <TextView
         android:id="@+id/setup_step_instruction"
         style="@style/setupStepInstructionStyle"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="@dimen/setup_step_vertical_padding" />
     <TextView
         android:id="@+id/setup_step_action_label"
         style="@style/setupStepActionLabelStyle"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="@dimen/setup_step_horizontal_line_height" />
 </LinearLayout>
