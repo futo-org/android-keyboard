@@ -559,15 +559,6 @@ Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; i
     <string name="version_text">Version <xliff:g id="version_number" example="1.0.1864.643521">%1$s</xliff:g></string>
 
     <!-- User dictionary settings -->
-    <!-- User dictionary settings, The titlebar text of the User dictionary settings screen. -->
-    <!-- This resource is corresponding to msgid="765659257455000490" -->
-    <string name="user_dict_settings_titlebar">User dictionary</string>
-    <!-- User dictionary settings, The title of the list item to go into the User dictionary settings screen when there is only one user dictionary. [CHAR LIMIT=35] -->
-    <!-- This resource is corresponding to msgid="524997218433540614" -->
-    <string name="user_dict_single_settings_title">Personal dictionary</string>
-    <!-- User dictionary settings, The title of the list item to go into the User dictionary list when there are several user dictionaries. [CHAR LIMIT=35] -->
-    <!-- This resource is corresponding to msgid="3735224433307996276" -->
-    <string name="user_dict_multiple_settings_title">Personal dictionaries</string>
     <!-- User dictionary settings.  The summary of the listem item to go into the User dictionary settings screen. -->
     <string name="user_dict_settings_summary" translatable="false">""</string>
     <!-- User dictionary settings. The title of the menu item to add a new word to the user dictionary. -->
