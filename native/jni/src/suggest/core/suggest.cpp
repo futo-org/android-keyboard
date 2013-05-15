@@ -164,8 +164,8 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
         const bool isExactMatch = terminalDicNode->isExactMatch();
         const int outputTypeFlags =
-                isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0
-                | isExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0;
+                (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
+                        | (isExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
 
         // Entries that are blacklisted or do not represent a word should not be output.
         const bool isValidWord = !terminalAttributes.isBlacklistedOrNotAWord();
