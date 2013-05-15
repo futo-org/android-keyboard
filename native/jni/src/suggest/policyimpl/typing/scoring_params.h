@@ -57,7 +57,7 @@ class ScoringParams {
     static const float HAS_MULTI_WORD_TERMINAL_COST;
     static const float TYPING_BASE_OUTPUT_SCORE;
     static const float TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
-    static const float MAX_NORM_DISTANCE_FOR_EDIT;
+    static const float NORMALIZED_SPATIAL_DISTANCE_THRESHOLD_FOR_EDIT;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ScoringParams);
