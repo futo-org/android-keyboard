@@ -163,11 +163,9 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_OMISSION:
             return true;
         case CT_ADDITIONAL_PROXIMITY:
-            // Should return true?
-            return false;
+            return true;
         case CT_SUBSTITUTION:
-            // Should return true?
-            return false;
+            return true;
         case CT_NEW_WORD_SPACE_OMITTION:
             return false;
         case CT_MATCH:
@@ -194,7 +192,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_OMISSION:
             return false;
         case CT_ADDITIONAL_PROXIMITY:
-            return false;
+            return true;
         case CT_SUBSTITUTION:
             return false;
         case CT_NEW_WORD_SPACE_OMITTION:
