@@ -313,10 +313,8 @@ public final class SetupActivity extends Activity {
                 final int paddingEnd = ViewCompatUtils.getPaddingEnd(mActionLabel);
                 ViewCompatUtils.setPaddingRelative(mActionLabel, paddingEnd, 0, paddingEnd, 0);
             } else {
-                final Drawable icon = res.getDrawable(actionIcon);
-                icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-                TextViewCompatUtils.setCompoundDrawablesRelative(
-                        mActionLabel, icon, null, null, null);
+                TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                        mActionLabel, res.getDrawable(actionIcon), null, null, null);
             }
         }
 
