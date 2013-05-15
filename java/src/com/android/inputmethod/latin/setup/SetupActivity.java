@@ -63,7 +63,8 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
     private static final int STEP_3 = 3;
-    private boolean mWasLanguageAndInputSettingsInvoked;
+    private static final int STEP_LAUNCHING_IME_SETTINGS = 4;
+    private static final int STEP_BACK_FROM_IME_SETTINGS = 5;
 
     private final SettingsPoolingHandler mHandler = new SettingsPoolingHandler(this);
 
@@ -83,7 +84,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
             }
             switch (msg.what) {
             case MSG_POLLING_IME_SETTINGS:
-                if (SetupActivity.isThisImeEnabled(setupActivity)) {
+                if (isThisImeEnabled(setupActivity)) {
                     setupActivity.invokeSetupWizardOfThisIme();
                     return;
                 }
@@ -112,17 +113,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         RichInputMethodManager.init(this);
 
         if (savedInstanceState == null) {
-            mStepNumber = determineSetupStepNumber();
-            if (mStepNumber == STEP_1 && !mWasLanguageAndInputSettingsInvoked) {
-                mStepNumber = STEP_WELCOME;
-            }
-            if (mStepNumber == STEP_3) {
-                // This IME already has been enabled and set as current IME.
-                // TODO: Implement tutorial.
-                invokeSettingsOfThisIme();
-                finish();
-                return;
-            }
+            mStepNumber = determineSetupStepNumberFromLauncher();
         } else {
             mStepNumber = savedInstanceState.getInt(STATE_STEP);
         }
@@ -265,7 +256,6 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(intent);
-        mWasLanguageAndInputSettingsInvoked = true;
     }
 
     private void invokeSubtypeEnablerOfThisIme() {
@@ -313,6 +303,17 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         return myImi.getId().equals(currentImeId);
     }
 
+    private int determineSetupStepNumberFromLauncher() {
+        final int stepNumber = determineSetupStepNumber();
+        if (stepNumber == STEP_1) {
+            return STEP_WELCOME;
+        }
+        if (stepNumber == STEP_3) {
+            return STEP_LAUNCHING_IME_SETTINGS;
+        }
+        return stepNumber;
+    }
+
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
         if (!isThisImeEnabled(this)) {
@@ -336,10 +337,14 @@ public final class SetupActivity extends Activity implements View.OnClickListene
         mStepNumber = savedInstanceState.getInt(STATE_STEP);
     }
 
+    private static boolean isInSetupSteps(final int stepNumber) {
+        return stepNumber >= STEP_1 && stepNumber <= STEP_3;
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (mStepNumber != STEP_WELCOME) {
+        if (isInSetupSteps(mStepNumber)) {
             mStepNumber = determineSetupStepNumber();
         }
     }
@@ -347,6 +352,15 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
+        if (mStepNumber == STEP_LAUNCHING_IME_SETTINGS) {
+            invokeSettingsOfThisIme();
+            mStepNumber = STEP_BACK_FROM_IME_SETTINGS;
+            return;
+        }
+        if (mStepNumber == STEP_BACK_FROM_IME_SETTINGS) {
+            finish();
+            return;
+        }
         updateSetupStepView();
     }
 
@@ -374,7 +388,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     @Override
     public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && mStepNumber != STEP_WELCOME) {
+        if (hasFocus && isInSetupSteps(mStepNumber)) {
             mStepNumber = determineSetupStepNumber();
             updateSetupStepView();
         }
@@ -383,7 +397,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
     private void updateSetupStepView() {
         final boolean welcomeScreen = (mStepNumber == STEP_WELCOME);
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
-        mSetupScreen.setVisibility(welcomeScreen ? View.GONE: View.VISIBLE);
+        mSetupScreen.setVisibility(welcomeScreen ? View.GONE : View.VISIBLE);
         if (welcomeScreen) {
             mWelcomeVideoView.setVisibility(View.VISIBLE);
             mWelcomeVideoView.setVideoURI(mWelcomeVideoUri);
@@ -410,7 +424,7 @@ public final class SetupActivity extends Activity implements View.OnClickListene
 
         public SetupStep(final int stepNo, final String applicationName, final TextView bulletView,
                 final View stepView, final int title, final int instruction,
-                final int finishedInstruction,final int actionIcon, final int actionLabel) {
+                final int finishedInstruction, final int actionIcon, final int actionLabel) {
             mStepNo = stepNo;
             mStepView = stepView;
             mBulletView = bulletView;
