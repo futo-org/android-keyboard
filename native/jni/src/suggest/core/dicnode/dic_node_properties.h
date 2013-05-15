@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include "binary_format.h"
 #include "defines.h"
 
 namespace latinime {
@@ -142,6 +143,10 @@ class DicNodeProperties {
 
     bool hasChildren() const {
         return mChildrenCount > 0 || mDepth != mLeavingDepth;
+    }
+
+    bool hasBlacklistedOrNotAWordFlag() const {
+        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mFlags);
     }
 
  private:
