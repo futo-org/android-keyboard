@@ -65,16 +65,19 @@ public final class WordListPreference extends Preference {
     static final private int ANIMATION_IN = 1;
     static final private int ANIMATION_OUT = 2;
 
-    private static String sLastClickedWordlistId = null;
+    private final DictionaryListInterfaceState mInterfaceState;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
             new OnWordListPreferenceClick();
     private final OnActionButtonClick mActionButtonClickHandler =
             new OnActionButtonClick();
 
-    public WordListPreference(final Context context, final String clientId, final String wordlistId,
-            final int version, final Locale locale, final String description, final int status) {
+    public WordListPreference(final Context context,
+            final DictionaryListInterfaceState dictionaryListInterfaceState, final String clientId,
+            final String wordlistId, final int version, final Locale locale,
+            final String description, final int status) {
         super(context, null);
         mContext = context;
+        mInterfaceState = dictionaryListInterfaceState;
         mClientId = clientId;
         mVersion = version;
         mWordlistId = wordlistId;
@@ -192,7 +195,8 @@ public final class WordListPreference extends Preference {
         final Button button = (Button)view.findViewById(R.id.wordlist_button);
         button.setText(getButtonLabel(mStatus));
         // String identity match. This is an ==, not an .equals, on purpose.
-        button.setVisibility(mWordlistId == sLastClickedWordlistId ? View.VISIBLE : View.INVISIBLE);
+        button.setVisibility(mWordlistId == mInterfaceState.mLastClickedId
+                ? View.VISIBLE : View.INVISIBLE);
         button.setOnClickListener(mActionButtonClickHandler);
         view.setOnClickListener(mPreferenceClickHandler);
     }
@@ -206,15 +210,15 @@ public final class WordListPreference extends Preference {
             if (!(parent instanceof ListView)) return;
             final ListView listView = (ListView)parent;
             final int indexToOpen;
-            if (sLastClickedWordlistId == mWordlistId) {
+            if (mInterfaceState.mLastClickedId == mWordlistId) {
                 // This button was being shown. Clear last state to record that there isn't a
                 // displayed button any more, and note that we don't want to open any button.
-                sLastClickedWordlistId = null;
+                mInterfaceState.mLastClickedId = null;
                 indexToOpen = -1;
             } else {
                 // This button was not being shown. Mark it as the latest selected button, and
                 // remember the index of this child as the one to open in the following loop.
-                sLastClickedWordlistId = mWordlistId;
+                mInterfaceState.mLastClickedId = mWordlistId;
                 indexToOpen = listView.indexOfChild(v);
             }
             final int lastDisplayedIndex =
