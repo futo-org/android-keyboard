@@ -122,6 +122,7 @@ public final class SuggestedWords {
 
     public static final class SuggestedWordInfo {
         public static final int MAX_SCORE = Integer.MAX_VALUE;
+        public static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
         public static final int KIND_TYPED = 0; // What user typed
         public static final int KIND_CORRECTION = 1; // Simple correction/suggestion
         public static final int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
@@ -132,6 +133,11 @@ public final class SuggestedWords {
         public static final int KIND_SHORTCUT = 7; // A shortcut
         public static final int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
         public static final int KIND_RESUMED = 9; // A resumed suggestion (comes from a span)
+
+        public static final int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
+        public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
+        public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
+
         public final String mWord;
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above
