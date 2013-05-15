@@ -397,13 +397,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 protected void publish(final ArrayList<LogUnit> logUnits,
                         boolean canIncludePrivateData) {
                     canIncludePrivateData |= IS_LOGGING_EVERYTHING;
-                    final int length = logUnits.size();
-                    for (int i = 0; i < length; i++) {
-                        final LogUnit logUnit = logUnits.get(i);
-                        final String word = logUnit.getWord();
-                        if (word != null && word.length() > 0 && hasLetters(word)) {
-                            Log.d(TAG, "onPublish: " + word + ", hc: "
-                                    + logUnit.containsCorrection());
+                    for (final LogUnit logUnit : logUnits) {
+                        if (DEBUG) {
+                            final String wordsString = logUnit.getWordsAsString();
+                            Log.d(TAG, "onPublish: '" + wordsString
+                                    + "', hc: " + logUnit.containsCorrection()
+                                    + ", cipd: " + canIncludePrivateData);
+                        }
+                        for (final String word : logUnit.getWordsAsStringArray()) {
                             final Dictionary dictionary = getDictionary();
                             mStatistics.recordWordEntered(
                                     dictionary != null && dictionary.isValidWord(word),
@@ -852,8 +853,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     /* package for test */ void commitCurrentLogUnit() {
         if (DEBUG) {
-            Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasWord() ?
-                    ": " + mCurrentLogUnit.getWord() : ""));
+            Log.d(TAG, "commitCurrentLogUnit" + (mCurrentLogUnit.hasOneOrMoreWords() ?
+                    ": " + mCurrentLogUnit.getWordsAsString() : ""));
         }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
@@ -893,8 +894,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
         // Check that expected word matches.
         if (oldLogUnit != null) {
-            final String oldLogUnitWord = oldLogUnit.getWord();
-            if (oldLogUnitWord != null && !oldLogUnitWord.equals(expectedWord)) {
+            final String oldLogUnitWords = oldLogUnit.getWordsAsString();
+            if (oldLogUnitWords != null && !oldLogUnitWords.equals(expectedWord)) {
                 return;
             }
         }
@@ -916,7 +917,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         enqueueEvent(LOGSTATEMENT_UNCOMMIT_CURRENT_LOGUNIT);
         if (DEBUG) {
             Log.d(TAG, "uncommitCurrentLogUnit (dump=" + dumpCurrentLogUnit + ") back to "
-                    + (mCurrentLogUnit.hasWord() ? ": '" + mCurrentLogUnit.getWord() + "'" : ""));
+                    + (mCurrentLogUnit.hasOneOrMoreWords() ? ": '"
+                        + mCurrentLogUnit.getWordsAsString() + "'" : ""));
         }
     }
 
@@ -950,8 +952,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         for (LogUnit logUnit : logUnits) {
             if (DEBUG) {
-                Log.d(TAG, "publishLogBuffer: " + (logUnit.hasWord() ? logUnit.getWord()
-                        : "<wordless>") + ", correction?: " + logUnit.containsCorrection());
+                Log.d(TAG, "publishLogBuffer: " + (logUnit.hasOneOrMoreWords()
+                        ? logUnit.getWordsAsString() : "<wordless>")
+                        + ", correction?: " + logUnit.containsCorrection());
             }
             researchLog.publish(logUnit, canIncludePrivateData);
         }
@@ -986,7 +989,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         if (word.length() > 0 && hasLetters(word)) {
-            mCurrentLogUnit.setWord(word);
+            mCurrentLogUnit.setWords(word);
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
         enqueueCommitText(word, isBatchMode);
@@ -1478,7 +1481,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
             if (logUnit != null) {
-                logUnit.setWord(originallyTypedWord);
+                logUnit.setWords(originallyTypedWord);
             }
         }
         researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
@@ -1616,7 +1619,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * Log a call to LatinIME.commitCurrentAutoCorrection().
      *
      * SystemResponse: The IME has committed an auto-correction.  An auto-correction changes the raw
-     * text input to another word that the user more likely desired to type.
+     * text input to another word (or words) that the user more likely desired to type.
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_COMMITCURRENTAUTOCORRECTION =
             new LogStatement("LatinIMECommitCurrentAutoCorrection", true, true, "typedWord",
@@ -1827,7 +1830,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int enteredWordPos, final SuggestedWords suggestedWords) {
         final ResearchLogger researchLogger = getInstance();
         if (!TextUtils.isEmpty(enteredText) && hasLetters(enteredText.toString())) {
-            researchLogger.mCurrentLogUnit.setWord(enteredText.toString());
+            researchLogger.mCurrentLogUnit.setWords(enteredText.toString());
         }
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
                 enteredWordPos);
