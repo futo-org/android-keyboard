@@ -18,15 +18,21 @@ package com.android.inputmethod.latin.suggestions;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 
 /**
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
 public final class MoreSuggestionsView extends MoreKeysKeyboardView {
+    private static final String TAG = MoreSuggestionsView.class.getSimpleName();
+
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.moreSuggestionsViewStyle);
     }
@@ -54,9 +60,24 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
 
     @Override
     public void onCodeInput(final int code, final int x, final int y) {
-        final int index = code - MoreSuggestions.SUGGESTION_CODE_BASE;
-        if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
-            mListener.onCustomRequest(index);
+        final Keyboard keyboard = getKeyboard();
+        if (!(keyboard instanceof MoreSuggestions)) {
+            Log.e(TAG, "Expected keyboard is MoreSuggestions, but found "
+                    + keyboard.getClass().getName());
+            return;
         }
+        final SuggestedWords suggestedWords = ((MoreSuggestions)keyboard).mSuggestedWords;
+        final int index = code - MoreSuggestions.SUGGESTION_CODE_BASE;
+        if (index < 0 || index >= suggestedWords.size()) {
+            Log.e(TAG, "Selected suggestion has an illegal index: " + index);
+            return;
+        }
+        if (!(mListener instanceof MoreSuggestionsListener)) {
+            Log.e(TAG, "Expected mListener is MoreSuggestionsListener, but found "
+                    + mListener.getClass().getName());
+            return;
+        }
+        ((MoreSuggestionsListener)mListener).onSuggestionSelected(
+                index, suggestedWords.getInfo(index));
     }
 }

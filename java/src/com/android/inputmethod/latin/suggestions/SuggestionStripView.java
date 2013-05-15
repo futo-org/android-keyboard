@@ -50,7 +50,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
@@ -65,6 +64,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.suggestions.MoreSuggestions.MoreSuggestionsListener;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ArrayList<View> mDividers = CollectionUtils.newArrayList();
 
     Listener mListener;
-    SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
 
     private final SuggestionStripViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
@@ -652,15 +652,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         dismissMoreSuggestions();
     }
 
-    private final KeyboardActionListener mMoreSuggestionsListener =
-            new KeyboardActionListener.Adapter() {
+    private final MoreSuggestionsListener mMoreSuggestionsListener = new MoreSuggestionsListener() {
         @Override
-        public boolean onCustomRequest(final int requestCode) {
-            final int index = requestCode;
-            final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
+        public void onSuggestionSelected(final int index, final SuggestedWordInfo wordInfo) {
             mListener.pickSuggestionManually(index, wordInfo);
             dismissMoreSuggestions();
-            return true;
         }
 
         @Override
