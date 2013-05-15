@@ -80,9 +80,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             traverseSession, parentDicNode, dicNode, &inputStateG);
     const float languageCost = Weighting::getLanguageCost(weighting, correctionType,
             traverseSession, parentDicNode, dicNode, bigramCacheMap);
-    const bool edit = Weighting::isEditCorrection(correctionType);
-    const bool proximity = Weighting::isProximityCorrection(weighting, correctionType,
-            traverseSession, dicNode);
+    const ErrorType errorType = weighting->getErrorType(correctionType, traverseSession,
+            parentDicNode, dicNode);
     profile(correctionType, dicNode);
     if (inputStateG.mNeedsToUpdateInputStateG) {
         dicNode->updateInputIndexG(&inputStateG);
@@ -91,7 +90,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
                 (correctionType == CT_TRANSPOSITION));
     }
     dicNode->addCost(spatialCost, languageCost, weighting->needsToNormalizeCompoundDistance(),
-            inputSize, edit, proximity);
+            inputSize, errorType);
 }
 
 /* static */ float Weighting::getSpatialCost(const Weighting *const weighting,
@@ -155,62 +154,6 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return 0.0f;
     default:
         return 0.0f;
-    }
-}
-
-/* static */ bool Weighting::isEditCorrection(const CorrectionType correctionType) {
-    switch(correctionType) {
-        case CT_OMISSION:
-            return true;
-        case CT_ADDITIONAL_PROXIMITY:
-            return true;
-        case CT_SUBSTITUTION:
-            return true;
-        case CT_NEW_WORD_SPACE_OMITTION:
-            return false;
-        case CT_MATCH:
-            return false;
-        case CT_COMPLETION:
-            return false;
-        case CT_TERMINAL:
-            return false;
-        case CT_NEW_WORD_SPACE_SUBSTITUTION:
-            return false;
-        case CT_INSERTION:
-            return true;
-        case CT_TRANSPOSITION:
-            return true;
-        default:
-            return false;
-    }
-}
-
-/* static */ bool Weighting::isProximityCorrection(const Weighting *const weighting,
-        const CorrectionType correctionType,
-        const DicTraverseSession *const traverseSession, const DicNode *const dicNode) {
-    switch(correctionType) {
-        case CT_OMISSION:
-            return false;
-        case CT_ADDITIONAL_PROXIMITY:
-            return true;
-        case CT_SUBSTITUTION:
-            return false;
-        case CT_NEW_WORD_SPACE_OMITTION:
-            return false;
-        case CT_MATCH:
-            return weighting->isProximityDicNode(traverseSession, dicNode);
-        case CT_COMPLETION:
-            return false;
-        case CT_TERMINAL:
-            return false;
-        case CT_NEW_WORD_SPACE_SUBSTITUTION:
-            return false;
-        case CT_INSERTION:
-            return false;
-        case CT_TRANSPOSITION:
-            return false;
-        default:
-            return false;
     }
 }
 

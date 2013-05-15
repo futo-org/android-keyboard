@@ -21,4 +21,39 @@
 
 namespace latinime {
 const TypingWeighting TypingWeighting::sInstance;
+
+ErrorType TypingWeighting::getErrorType(const CorrectionType correctionType,
+        const DicTraverseSession *const traverseSession,
+        const DicNode *const parentDicNode, const DicNode *const dicNode) const {
+    switch (correctionType) {
+        case CT_MATCH:
+            if (isProximityDicNode(traverseSession, dicNode)) {
+                return ET_PROXIMITY_CORRECTION;
+            } else {
+                return ET_NOT_AN_ERROR;
+            }
+        case CT_ADDITIONAL_PROXIMITY:
+            return ET_PROXIMITY_CORRECTION;
+        case CT_OMISSION:
+            if (parentDicNode->canBeIntentionalOmission()) {
+                return ET_INTENTIONAL_OMISSION;
+            } else {
+                return ET_EDIT_CORRECTION;
+            }
+            break;
+        case CT_SUBSTITUTION:
+        case CT_INSERTION:
+        case CT_TRANSPOSITION:
+            return ET_EDIT_CORRECTION;
+        case CT_NEW_WORD_SPACE_OMITTION:
+        case CT_NEW_WORD_SPACE_SUBSTITUTION:
+            return ET_NEW_WORD;
+        case CT_TERMINAL:
+            return ET_NOT_AN_ERROR;
+        case CT_COMPLETION:
+            return ET_COMPLETION;
+        default:
+            return ET_NOT_AN_ERROR;
+    }
+}
 }  // namespace latinime

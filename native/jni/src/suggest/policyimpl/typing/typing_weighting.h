@@ -50,13 +50,14 @@ class TypingWeighting : public Weighting {
     }
 
     float getOmissionCost(const DicNode *const parentDicNode, const DicNode *const dicNode) const {
-        bool sameCodePoint = false;
-        bool isFirstLetterOmission = false;
-        float cost = 0.0f;
-        sameCodePoint = dicNode->isSameNodeCodePoint(parentDicNode);
+        const bool isZeroCostOmission = parentDicNode->isZeroCostOmission();
+        const bool sameCodePoint = dicNode->isSameNodeCodePoint(parentDicNode);
         // If the traversal omitted the first letter then the dicNode should now be on the second.
-        isFirstLetterOmission = dicNode->getDepth() == 2;
-        if (isFirstLetterOmission) {
+        const bool isFirstLetterOmission = dicNode->getDepth() == 2;
+        float cost = 0.0f;
+        if (isZeroCostOmission) {
+            cost = 0.0f;
+        } else if (isFirstLetterOmission) {
             cost = ScoringParams::OMISSION_COST_FIRST_CHAR;
         } else {
             cost = sameCodePoint ? ScoringParams::OMISSION_COST_SAME_CHAR
@@ -156,15 +157,8 @@ class TypingWeighting : public Weighting {
 
     float getTerminalLanguageCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, const float dicNodeLanguageImprobability) const {
-        const bool hasEditCount = dicNode->getEditCorrectionCount() > 0;
-        const bool isSameLength = dicNode->getDepth() == traverseSession->getInputSize();
-        const bool hasMultipleWords = dicNode->hasMultipleWords();
-        const bool hasProximityErrors = dicNode->getProximityCorrectionCount() > 0;
-        // Gesture input is always assumed to have proximity errors
-        // because the input word shouldn't be treated as perfect
-        const bool isExactMatch = !hasEditCount && !hasMultipleWords
-                && !hasProximityErrors && isSameLength;
-        const float languageImprobability = isExactMatch ? 0.0f : dicNodeLanguageImprobability;
+        const float languageImprobability = (dicNode->isExactMatch()) ?
+                0.0f : dicNodeLanguageImprobability;
         return languageImprobability * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
@@ -188,6 +182,10 @@ class TypingWeighting : public Weighting {
                 ScoringParams::COST_NEW_WORD_CAPITALIZED : ScoringParams::COST_NEW_WORD);
         return cost * traverseSession->getMultiWordCostMultiplier();
     }
+
+    ErrorType getErrorType(const CorrectionType correctionType,
+            const DicTraverseSession *const traverseSession,
+            const DicNode *const parentDicNode, const DicNode *const dicNode) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(TypingWeighting);
