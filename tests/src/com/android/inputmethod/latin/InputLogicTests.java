@@ -24,7 +24,7 @@ public class InputLogicTests extends InputTestsBase {
     public void testTypeWord() {
         final String WORD_TO_TYPE = "abcd";
         type(WORD_TO_TYPE);
-        assertEquals("type word", WORD_TO_TYPE, mTextView.getText().toString());
+        assertEquals("type word", WORD_TO_TYPE, mEditText.getText().toString());
     }
 
     public void testPickSuggestionThenBackspace() {
@@ -35,7 +35,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("press suggestion then backspace", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testPickAutoCorrectionThenBackspace() {
@@ -48,10 +48,10 @@ public class InputLogicTests extends InputTestsBase {
         pickSuggestionManually(0, WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
         type(Constants.CODE_DELETE);
         assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testPickTypedWordOverAutoCorrectionThenBackspace() {
@@ -63,10 +63,10 @@ public class InputLogicTests extends InputTestsBase {
         pickSuggestionManually(1, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
         type(Constants.CODE_DELETE);
         assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testPickDifferentSuggestionThenBackspace() {
@@ -79,10 +79,10 @@ public class InputLogicTests extends InputTestsBase {
         pickSuggestionManually(2, WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
         type(Constants.CODE_DELETE);
         assertEquals("pick different suggestion then backspace", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testDeleteSelection() {
@@ -102,7 +102,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(typedLength, typedLength,
                 SELECTION_START, SELECTION_END, -1, -1);
         type(Constants.CODE_DELETE);
-        assertEquals("delete selection", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("delete selection", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testDeleteSelectionTwice() {
@@ -123,21 +123,21 @@ public class InputLogicTests extends InputTestsBase {
                 SELECTION_START, SELECTION_END, -1, -1);
         type(Constants.CODE_DELETE);
         type(Constants.CODE_DELETE);
-        assertEquals("delete selection twice", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("delete selection twice", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrect() {
         final String STRING_TO_TYPE = "tgis ";
         final String EXPECTED_RESULT = "this ";
         type(STRING_TO_TYPE);
-        assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("simple auto-correct", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrectWithPeriod() {
         final String STRING_TO_TYPE = "tgis.";
         final String EXPECTED_RESULT = "this.";
         type(STRING_TO_TYPE);
-        assertEquals("auto-correct with period", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("auto-correct with period", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrectWithPeriodThenRevert() {
@@ -147,7 +147,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with period then revert", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testAutoCorrectWithSpaceThenRevert() {
@@ -157,7 +157,7 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space then revert", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testAutoCorrectToSelfDoesNotRevert() {
@@ -167,14 +167,14 @@ public class InputLogicTests extends InputTestsBase {
         mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto-correct with space does not revert", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testDoubleSpace() {
         final String STRING_TO_TYPE = "this  ";
         final String EXPECTED_RESULT = "this. ";
         type(STRING_TO_TYPE);
-        assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testCancelDoubleSpace() {
@@ -182,7 +182,7 @@ public class InputLogicTests extends InputTestsBase {
         final String EXPECTED_RESULT = "this  ";
         type(STRING_TO_TYPE);
         type(Constants.CODE_DELETE);
-        assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testBackspaceAtStartAfterAutocorrect() {
@@ -197,7 +197,7 @@ public class InputLogicTests extends InputTestsBase {
                 NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor to start of line then backspace",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testAutoCorrectThenMoveCursorThenBackspace() {
@@ -212,7 +212,7 @@ public class InputLogicTests extends InputTestsBase {
                 NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         type(Constants.CODE_DELETE);
         assertEquals("auto correct then move cursor then backspace",
-                EXPECTED_RESULT, mTextView.getText().toString());
+                EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testNoSpaceAfterManualPick() {
@@ -221,7 +221,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         pickSuggestionManually(0, WORD_TO_TYPE);
         assertEquals("no space after manual pick", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenType() {
@@ -231,7 +231,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD1_TO_TYPE);
         pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
-        assertEquals("manual pick then type", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("manual pick then type", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManualPickThenSeparator() {
@@ -241,7 +241,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD1_TO_TYPE);
         pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
-        assertEquals("manual pick then separator", EXPECTED_RESULT, mTextView.getText().toString());
+        assertEquals("manual pick then separator", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
     public void testManualPickThenStripperThenPick() {
@@ -254,7 +254,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         pickSuggestionManually(0, WORD_TO_TYPE);
         assertEquals("manual pick then \\n then manual pick", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenSpaceThenType() {
@@ -265,7 +265,7 @@ public class InputLogicTests extends InputTestsBase {
         pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then space then type", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testManualPickThenManualPick() {
@@ -279,7 +279,7 @@ public class InputLogicTests extends InputTestsBase {
         // to actually pass the right string.
         pickSuggestionManually(1, WORD2_TO_PICK);
         assertEquals("manual pick then manual pick", EXPECTED_RESULT,
-                mTextView.getText().toString());
+                mEditText.getText().toString());
     }
 
     public void testDeleteWholeComposingWord() {
@@ -288,7 +288,7 @@ public class InputLogicTests extends InputTestsBase {
         for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
             type(Constants.CODE_DELETE);
         }
-        assertEquals("delete whole composing word", "", mTextView.getText().toString());
+        assertEquals("delete whole composing word", "", mEditText.getText().toString());
     }
     // TODO: Add some tests for non-BMP characters
 }

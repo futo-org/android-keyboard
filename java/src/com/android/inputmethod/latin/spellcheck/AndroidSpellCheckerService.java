@@ -64,8 +64,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
             CollectionUtils.newSynchronizedTreeMap();
     private ContactsBinaryDictionary mContactsDictionary;
 
-    // The threshold for a candidate to be offered as a suggestion.
-    private float mSuggestionThreshold;
     // The threshold for a suggestion to be considered "recommended".
     private float mRecommendedThreshold;
     // Whether to use the contacts dictionary
@@ -112,8 +110,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
 
     @Override public void onCreate() {
         super.onCreate();
-        mSuggestionThreshold =
-                Float.parseFloat(getString(R.string.spellchecker_suggestion_threshold_value));
         mRecommendedThreshold =
                 Float.parseFloat(getString(R.string.spellchecker_recommended_threshold_value));
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -198,8 +194,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public SuggestionsGatherer newSuggestionsGatherer(final String text, int maxLength) {
-        return new SuggestionsGatherer(
-                text, mSuggestionThreshold, mRecommendedThreshold, maxLength);
+        return new SuggestionsGatherer(text, mRecommendedThreshold, maxLength);
     }
 
     // TODO: remove this class and replace it by storage local to the session.
@@ -217,7 +212,6 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         private final ArrayList<String> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;
-        private final float mSuggestionThreshold;
         private final float mRecommendedThreshold;
         private final int mMaxLength;
         private int mLength = 0;
@@ -227,10 +221,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         private String mBestSuggestion = null;
         private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
-        SuggestionsGatherer(final String originalText, final float suggestionThreshold,
-                final float recommendedThreshold, final int maxLength) {
+        SuggestionsGatherer(final String originalText, final float recommendedThreshold,
+                final int maxLength) {
             mOriginalText = originalText;
-            mSuggestionThreshold = suggestionThreshold;
             mRecommendedThreshold = recommendedThreshold;
             mMaxLength = maxLength;
             mSuggestions = CollectionUtils.newArrayList(maxLength + 1);
