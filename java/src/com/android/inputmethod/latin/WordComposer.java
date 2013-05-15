@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 
@@ -211,9 +210,8 @@ public final class WordComposer {
     }
 
     /**
-     * Internal method to retrieve reasonable proximity info for a character.
+     * Add a dummy key by retrieving reasonable coordinates
      */
-    @UsedForTesting
     public void addKeyInfo(final int codePoint, final Keyboard keyboard) {
         final int x, y;
         final Key key;
