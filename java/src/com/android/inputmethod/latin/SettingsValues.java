@@ -34,6 +34,9 @@ import java.util.Arrays;
  */
 public final class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
+    // "floatNegativeInfinity" is a special marker string for Float.NEGATIVE_INFINITE
+    // currently used for auto-correction
+    private static final String FLOAT_NEGATIVE_INFINITY_MARKER_STRING = "floatNegativeInfinity";
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
@@ -266,8 +269,12 @@ public final class SettingsValues {
         try {
             final int arrayIndex = Integer.valueOf(currentAutoCorrectionSetting);
             if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
-                autoCorrectionThreshold = Float.parseFloat(
-                        autoCorrectionThresholdValues[arrayIndex]);
+                final String val = autoCorrectionThresholdValues[arrayIndex];
+                if (FLOAT_NEGATIVE_INFINITY_MARKER_STRING.equals(val)) {
+                    autoCorrectionThreshold = Float.NEGATIVE_INFINITY;
+                } else {
+                    autoCorrectionThreshold = Float.parseFloat(val);
+                }
             }
         } catch (NumberFormatException e) {
             // Whenever the threshold settings are correct, never come here.
@@ -275,7 +282,7 @@ public final class SettingsValues {
             Log.w(TAG, "Cannot load auto correction threshold setting."
                     + " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting
                     + ", autoCorrectionThresholdValues: "
-                    + Arrays.toString(autoCorrectionThresholdValues));
+                    + Arrays.toString(autoCorrectionThresholdValues), e);
         }
         return autoCorrectionThreshold;
     }
