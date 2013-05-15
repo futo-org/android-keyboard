@@ -48,7 +48,7 @@ class ScoringParams {
     static const float ADDITIONAL_PROXIMITY_COST;
     static const float SUBSTITUTION_COST;
     static const float COST_NEW_WORD;
-    static const float COST_NEW_WORD_CAPITALIZED;
+    static const float COST_SECOND_OR_LATER_WORD_FIRST_CHAR_UPPERCASE;
     static const float DISTANCE_WEIGHT_LANGUAGE;
     static const float COST_FIRST_LOOKAHEAD;
     static const float COST_LOOKAHEAD;
