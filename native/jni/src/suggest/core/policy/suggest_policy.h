@@ -20,6 +20,7 @@
 #include "defines.h"
 
 namespace latinime {
+
 class Traversal;
 class Scoring;
 class Weighting;
