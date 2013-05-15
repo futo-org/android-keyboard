@@ -333,6 +333,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         private static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
                 final ObjectAnimator animatorToStart) {
+            if (animatorToCancel == null || animatorToStart == null) {
+                // TODO: Stop using null as a no-operation animator.
+                return;
+            }
             float startFraction = 0.0f;
             if (animatorToCancel.isStarted()) {
                 animatorToCancel.cancel();
@@ -581,6 +585,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
         if (resId == 0) {
+            // TODO: Stop returning null.
             return null;
         }
         final ObjectAnimator animator = (ObjectAnimator)AnimatorInflater.loadAnimator(
