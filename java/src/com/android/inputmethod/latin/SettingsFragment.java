@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.app.Activity;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -31,17 +33,20 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
+
+import java.util.TreeSet;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
+import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
+import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = SettingsFragment.class.getSimpleName();
+    private static final boolean DBG_USE_INTERNAL_USER_SETTINGS = false;
 
     private ListPreference mVoicePreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -197,9 +202,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
         final ResolveInfo ri = context.getPackageManager().resolveActivity(
                 editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (ri == null) {
-            // TODO: Set a intent that invokes our own edit personal dictionary activity.
-            Log.w(TAG, "No activity that responds to " + editPersonalDictionaryIntent.getAction());
+        if (DBG_USE_INTERNAL_USER_SETTINGS || ri == null) {
+            // TODO: Support ICS
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                updateUserDictionaryPreference(editPersonalDictionary);
+            } else {
+                removePreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY, getPreferenceScreen());
+            }
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
@@ -407,5 +416,34 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                         AudioManager.FX_KEYPRESS_STANDARD, getValueFromPercentage(value));
             }
         });
+    }
+
+    private void updateUserDictionaryPreference(Preference userDictionaryPreference) {
+        final Activity activity = getActivity();
+        final TreeSet<String> localeList = UserDictionaryList.getUserDictionaryLocalesSet(activity);
+        if (null == localeList) {
+            // The locale list is null if and only if the user dictionary service is
+            // not present or disabled. In this case we need to remove the preference.
+            getPreferenceScreen().removePreference(userDictionaryPreference);
+        } else if (localeList.size() <= 1) {
+            final Intent intent =
+                    new Intent(UserDictionaryList.USER_DICTIONARY_SETTINGS_INTENT_ACTION);
+            userDictionaryPreference.setTitle(R.string.user_dict_single_settings_title);
+            userDictionaryPreference.setIntent(intent);
+            userDictionaryPreference.setFragment(UserDictionarySettings.class.getName());
+            // If the size of localeList is 0, we don't set the locale parameter in the
+            // extras. This will be interpreted by the UserDictionarySettings class as
+            // meaning "the current locale".
+            // Note that with the current code for UserDictionaryList#getUserDictionaryLocalesSet()
+            // the locale list always has at least one element, since it always includes the current
+            // locale explicitly. @see UserDictionaryList.getUserDictionaryLocalesSet().
+            if (localeList.size() == 1) {
+                final String locale = (String)localeList.toArray()[0];
+                userDictionaryPreference.getExtras().putString("locale", locale);
+            }
+        } else {
+            userDictionaryPreference.setTitle(R.string.user_dict_multiple_settings_title);
+            userDictionaryPreference.setFragment(UserDictionaryList.class.getName());
+        }
     }
 }

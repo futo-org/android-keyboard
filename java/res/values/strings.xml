@@ -564,4 +564,76 @@ Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; i
 
     <!-- Version text [CHAR LIMIT=30]-->
     <string name="version_text">Version <xliff:g id="version_number" example="1.0.1864.643521">%1$s</xliff:g></string>
+
+    <!-- User dictionary settings -->
+    <!-- User dictionary settings, The titlebar text of the User dictionary settings screen. -->
+    <!-- This resource is corresponding to msgid="765659257455000490" -->
+    <string name="user_dict_settings_titlebar">User dictionary</string>
+    <!-- User dictionary settings, The title of the list item to go into the User dictionary settings screen when there is only one user dictionary. [CHAR LIMIT=35] -->
+    <!-- This resource is corresponding to msgid="524997218433540614" -->
+    <string name="user_dict_single_settings_title">Personal dictionary</string>
+    <!-- User dictionary settings, The title of the list item to go into the User dictionary list when there are several user dictionaries. [CHAR LIMIT=35] -->
+    <!-- This resource is corresponding to msgid="3735224433307996276" -->
+    <string name="user_dict_multiple_settings_title">Personal dictionaries</string>
+    <!-- User dictionary settings.  The summary of the listem item to go into the User dictionary settings screen. -->
+    <string name="user_dict_settings_summary" translatable="false">""</string>
+    <!-- User dictionary settings. The title of the menu item to add a new word to the user dictionary. -->
+    <!-- This resource is corresponding to  msgid="4056762757149923551" -->
+    <string name="user_dict_settings_add_menu_title">Add</string>
+    <!-- User dictionary settings. The title of the dialog to add a new word to the user dictionary. [CHAR LIMIT=25] -->
+    <!-- This resource is corresponding to msgid="4702613990174126482" -->
+    <string name="user_dict_settings_add_dialog_title">Add to dictionary</string>
+    <!-- User dictionary settings. The title of the screen to add/edit a new word to the user dictionary; it describes the phrase that will be added to the user dictionary. [CHAR LIMIT=25] -->
+    <!-- This resource is corresponding to msgid="742580720124344291" -->
+    <string name="user_dict_settings_add_screen_title">Phrase</string>
+    <!-- User dictionary settings. Text on the dialog button to pop more options for adding a word. [CHAR LIMIT=16] -->
+    <!-- This resource is corresponding to msgid="8848798370746019825" -->
+    <string name="user_dict_settings_add_dialog_more_options">More options</string>
+    <!-- User dictionary settings. Text on the dialog button mask advanced options. [CHAR LIMIT=15] -->
+    <!-- This resource is corresponding to msgid="2441785268726036101" -->
+    <string name="user_dict_settings_add_dialog_less_options">Less options</string>
+    <!-- User dictionary settings. Text on the dialog button to confirm adding a word. [CHAR LIMIT=15] -->
+    <!-- This resource is corresponding to msgid="6225823625332416144" -->
+    <string name="user_dict_settings_add_dialog_confirm">OK</string>
+    <!-- User dictionary settings. Label to put before the word field (that's the word that will actually be added to the user dictionary when OK is pressed). [CHAR LIMIT=20] -->
+    <!-- This resource is corresponding to msgid="7868879174905963135" -->
+    <string name="user_dict_settings_add_word_option_name">Word:</string>
+    <!-- User dictionary settings. Label to put before the shortcut field (once a shortcut is registered, the user can type the shortcut and get the word it points to in the suggestions). [CHAR LIMIT=20] -->
+    <!-- This resource is corresponding to msgid="660089258866063925" -->
+    <string name="user_dict_settings_add_shortcut_option_name">Shortcut:</string>
+    <!-- User dictionary settings. Label to put before the language field. [CHAR LIMIT=20] -->
+    <!-- This resource is corresponding to msgid="5696358317061318532" -->
+    <string name="user_dict_settings_add_locale_option_name">Language:</string>
+    <!-- User dictionary settings. Hint for the text field to type the word to add to the user dictionary. [CHAR LIMIT=35] -->
+    <!-- This resource is corresponding to msgid="5725254076556821247" -->
+    <string name="user_dict_settings_add_word_hint">Type a word</string>
+    <!-- User dictionary settings. Hint for the text field to type the optional shortcut to add to the user dictionary. [CHAR LIMIT=35] -->
+    <!-- This resource is corresponding to msgid="7333763456561873445" -->
+    <string name="user_dict_settings_add_shortcut_hint">Optional shortcut</string>
+    <!-- User dictionary settings. The title of the dialog to edit an existing word in the user dictionary. -->
+    <!-- This resource is corresponding to msgid="8967476444840548674" -->
+    <string name="user_dict_settings_edit_dialog_title">Edit word</string>
+    <!-- User dictionary settings. The title of the context menu item to edit the current word -->
+    <!-- This resource is corresponding to msgid="2210564879320004837" -->
+    <string name="user_dict_settings_context_menu_edit_title">Edit</string>
+    <!-- User dictionary settings. The title of the context menu item to delete the current word -->
+    <!-- This resource is corresponding to msgid="9140703913776549054" -->
+    <string name="user_dict_settings_context_menu_delete_title">Delete</string>
+    <!-- User dictionary settings. The text to show when there are no user-defined words in the dictionary  [CHAR LIMIT=200] -->
+    <!-- This resource is corresponding to msgid="8165273379942105271" -->
+    <string name="user_dict_settings_empty_text">You don\'t have any words in the user dictionary. Add a word by touching the Add (+) button.</string>
+    <!-- User dictionary settings. The list item to choose to insert a word into the user dictionary for all languages -->
+    <!-- This resource is corresponding to msgid="6742000040975959247" -->
+    <string name="user_dict_settings_all_languages">For all languages</string>
+    <!-- User dictionary settings. The text to show for the option that shows the entire list of supported locales to choose one [CHAR LIMIT=30] -->
+    <!-- This resource is corresponding to msgid="7316375944684977910" -->
+    <string name="user_dict_settings_more_languages">More languages…</string>
+    <!-- User dictionary settings. Label to delete an entry in the user dictionary [CHAR LIMIT=30]
+         This resource is copied from packages/apps/Settings/res/values/strings.xml -->
+    <!-- This resource is corresponding to msgid="4219243412325163003" -->
+    <string name="user_dict_settings_delete">Delete</string>
+    <!-- User dictionary settings. Index of the user dictionary [CHAR LIMIT=30]
+         This resource is copied from packages/apps/Settings/res/values/strings.xml -->
+    <!-- This resource is corresponding to msgid="5433275485499039199" -->
+    <string name="user_dict_fast_scroll_alphabet">\u0020ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>
