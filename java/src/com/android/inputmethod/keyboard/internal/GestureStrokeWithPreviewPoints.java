@@ -34,14 +34,18 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     private int mLastY;
     private double mMinPreviewSamplingDistance;
     private double mDistanceFromLastSample;
+    private double mInterpolationDistanceThreshold;
 
     // TODO: Move these constants to resource.
+    // TODO: Use "dp" instead of ratio to the keyWidth because table has rather large keys.
     // The minimum trail distance between sample points for preview in keyWidth unit when using
     // interpolation.
     private static final float MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH = 0.2f;
     // The angular threshold to use interpolation in radian. PI/12 is 15 degree.
     private static final double INTERPOLATION_ANGULAR_THRESHOLD = Math.PI / 12.0d;
-    private static final int MAX_INTERPOLATION_PARTITION = 4;
+    // The distance threshold to use interpolation in keyWidth unit.
+    private static final float INTERPOLATION_DISTANCE_THRESHOLD_TO_KEY_WIDTH = 0.5f;
+    private static final int MAX_INTERPOLATION_PARTITIONS = 6;
 
     public GestureStrokeWithPreviewPoints(final int pointerId, final GestureStrokeParams params) {
         super(pointerId, params);
@@ -66,6 +70,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public void setKeyboardGeometry(final int keyWidth, final int keyboardHeight) {
         super.setKeyboardGeometry(keyWidth, keyboardHeight);
         mMinPreviewSamplingDistance = keyWidth * MIN_PREVIEW_SAMPLING_RATIO_TO_KEY_WIDTH;
+        mInterpolationDistanceThreshold = keyWidth * INTERPOLATION_DISTANCE_THRESHOLD_TO_KEY_WIDTH;
     }
 
     private boolean needsSampling(final int x, final int y) {
@@ -138,14 +143,20 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
             mInterpolator.setInterval(p0, p1, p2, p3);
             final double m1 = Math.atan2(mInterpolator.mSlope1Y, mInterpolator.mSlope1X);
             final double m2 = Math.atan2(mInterpolator.mSlope2Y, mInterpolator.mSlope2X);
-            final double dm = Math.abs(angularDiff(m2, m1));
-            final int partition = Math.min((int)Math.ceil(dm / INTERPOLATION_ANGULAR_THRESHOLD),
-                    MAX_INTERPOLATION_PARTITION);
+            final double deltaAngle = Math.abs(angularDiff(m2, m1));
+            final int partitionsByAngle = (int)Math.ceil(
+                    deltaAngle / INTERPOLATION_ANGULAR_THRESHOLD);
+            final double deltaDistance = Math.hypot(mInterpolator.mP1X - mInterpolator.mP2X,
+                    mInterpolator.mP1Y - mInterpolator.mP2Y);
+            final int partitionsByDistance = (int)Math.ceil(deltaDistance
+                    / mInterpolationDistanceThreshold);
+            final int partitions = Math.min(MAX_INTERPOLATION_PARTITIONS,
+                    Math.max(partitionsByAngle, partitionsByDistance));
             final int t1 = eventTimes.get(d1);
             final int dt = pt[p2] - pt[p1];
             d1++;
-            for (int i = 1; i < partition; i++) {
-                final float t = i / (float)partition;
+            for (int i = 1; i < partitions; i++) {
+                final float t = i / (float)partitions;
                 mInterpolator.interpolate(t);
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
