@@ -77,12 +77,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Resources res = getResources();
         final Context context = getActivity();
 
-        // When we are called from the Settings application but we are not already running, the
-        // {@link SubtypeLocale} class may not have been initialized. It is safe to call
-        // {@link SubtypeLocale#init(Context)} multiple times.
+        // When we are called from the Settings application but we are not already running, some
+        // singleton and utility classes may not have been initialized.  We have to call
+        // initialization method of these classes here. See {@link LatinIME#onCreate()}.
+        SubtypeSwitcher.init(context);
         SubtypeLocale.init(context);
-        // Ditto for {@link AudioAndHapticFeedbackManager} class.
         AudioAndHapticFeedbackManager.init(context);
+
         mVoicePreference = (ListPreference) findPreference(Settings.PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
