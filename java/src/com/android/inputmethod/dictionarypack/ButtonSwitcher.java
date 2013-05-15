@@ -16,9 +16,12 @@
 
 package com.android.inputmethod.dictionarypack;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -115,22 +118,35 @@ public class ButtonSwitcher extends FrameLayout {
     }
 
     private void animateButtonPosition(final int oldStatus, final int newStatus) {
-        animateButton(getButton(oldStatus), ANIMATION_OUT);
-        animateButton(getButton(newStatus), ANIMATION_IN);
+        final View oldButton = getButton(oldStatus);
+        final View newButton = getButton(newStatus);
+        if (null != oldButton && null != newButton) {
+            // Transition between two buttons : animate out, then in
+            animateButton(oldButton, ANIMATION_OUT).setListener(
+                    new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(final Animator animation) {
+                            animateButton(newButton, ANIMATION_IN);
+                        }
+                    });
+        } else if (null != oldButton) {
+            animateButton(oldButton, ANIMATION_OUT);
+        } else if (null != newButton) {
+            animateButton(newButton, ANIMATION_IN);
+        }
     }
 
     public void setInternalOnClickListener(final OnClickListener listener) {
         mOnClickListener = listener;
     }
 
-    private void animateButton(final View button, final int direction) {
-        if (null == button) return;
+    private ViewPropertyAnimator animateButton(final View button, final int direction) {
         final float outerX = getWidth();
         final float innerX = button.getX() - button.getTranslationX();
         if (ANIMATION_IN == direction) {
-            button.animate().translationX(0);
+            return button.animate().translationX(0);
         } else {
-            button.animate().translationX(outerX - innerX);
+            return button.animate().translationX(outerX - innerX);
         }
     }
 }
