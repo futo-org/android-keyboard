@@ -43,7 +43,6 @@ public final class WordListPreference extends Preference {
     // What to display in the "status" field when we receive unknown data as a status from
     // the content provider. Empty string sounds sensible.
     static final private String NO_STATUS_MESSAGE = "";
-    static final private int NOT_AN_INDEX = -1;
 
     /// Actions
     static final private int ACTION_UNKNOWN = 0;
@@ -66,7 +65,6 @@ public final class WordListPreference extends Preference {
     static final private int ANIMATION_IN = 1;
     static final private int ANIMATION_OUT = 2;
 
-    private static int sLastClickedIndex = NOT_AN_INDEX;
     private static String sLastClickedWordlistId = null;
     private final OnWordListPreferenceClick mPreferenceClickHandler =
             new OnWordListPreferenceClick();
@@ -202,38 +200,36 @@ public final class WordListPreference extends Preference {
     private class OnWordListPreferenceClick implements View.OnClickListener {
         @Override
         public void onClick(final View v) {
-            final Button button = (Button)v.findViewById(R.id.wordlist_button);
+            // Note : v is the preference view
             final ViewParent parent = v.getParent();
             // Just in case something changed in the framework, test for the concrete class
             if (!(parent instanceof ListView)) return;
             final ListView listView = (ListView)parent;
-            final int myIndex = listView.indexOfChild(v) + listView.getFirstVisiblePosition();
-            if (NOT_AN_INDEX != sLastClickedIndex) {
-                // If another button is showing, hide it
-                animateButton(getButtonForIndex(listView, sLastClickedIndex), ANIMATION_OUT);
-            }
+            final int indexToOpen;
             if (sLastClickedWordlistId == mWordlistId) {
                 // This button was being shown. Clear last state to record that there isn't a
-                // displayed button any more.
-                sLastClickedIndex = NOT_AN_INDEX;
+                // displayed button any more, and note that we don't want to open any button.
                 sLastClickedWordlistId = null;
+                indexToOpen = -1;
             } else {
-                // This button was not being shown. Show it and mark it as the latest selected
-                // button.
-                animateButton(button, ANIMATION_IN);
-                sLastClickedIndex = myIndex;
+                // This button was not being shown. Mark it as the latest selected button, and
+                // remember the index of this child as the one to open in the following loop.
                 sLastClickedWordlistId = mWordlistId;
+                indexToOpen = listView.indexOfChild(v);
+            }
+            final int lastDisplayedIndex =
+                    listView.getLastVisiblePosition() - listView.getFirstVisiblePosition();
+            // The "lastDisplayedIndex" is actually displayed, hence the <=
+            for (int i = 0; i <= lastDisplayedIndex; ++i) {
+                final Button button =
+                        (Button)listView.getChildAt(i).findViewById(R.id.wordlist_button);
+                if (i == indexToOpen) {
+                    animateButton(button, ANIMATION_IN);
+                } else {
+                    animateButton(button, ANIMATION_OUT);
+                }
             }
         }
-    }
-
-    private Button getButtonForIndex(final ListView listView, final int index) {
-        final int indexInChildren = index - listView.getFirstVisiblePosition();
-        if (indexInChildren < 0 || index > listView.getLastVisiblePosition()) {
-            // The view is offscreen.
-            return null;
-        }
-        return (Button)listView.getChildAt(indexInChildren).findViewById(R.id.wordlist_button);
     }
 
     private void animateButton(final Button button, final int direction) {
