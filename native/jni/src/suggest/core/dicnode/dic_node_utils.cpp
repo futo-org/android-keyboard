@@ -280,15 +280,6 @@ namespace latinime {
     return NOT_A_PROBABILITY;
 }
 
-/* static */ int DicNodeUtils::getWordPos(const uint8_t *const dicRoot, const int *word,
-        const int wordLength) {
-    if (!word) {
-        return NOT_VALID_WORD;
-    }
-    return BinaryFormat::getTerminalPosition(
-            dicRoot, word, wordLength, false /* forceLowerCaseSearch */);
-}
-
 /* static */ bool DicNodeUtils::isMatchedNodeCodePoint(const ProximityInfoState *pInfoState,
         const int pointIndex, const bool exactOnly, const int nodeCodePoint) {
     if (!pInfoState) {

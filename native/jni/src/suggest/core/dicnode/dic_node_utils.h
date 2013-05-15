@@ -41,7 +41,6 @@ class DicNodeUtils {
     static void initByCopy(DicNode *srcNode, DicNode *destNode);
     static void getAllChildDicNodes(DicNode *dicNode, const uint8_t *const dicRoot,
             DicNodeVector *childDicNodes);
-    static int getWordPos(const uint8_t *const dicRoot, const int *word, const int prevWordLength);
     static float getBigramNodeImprobability(const uint8_t *const dicRoot,
             const DicNode *const node, hash_map_compat<int, int16_t> *const bigramCacheMap);
     static bool isDicNodeFilteredOut(const int nodeCodePoint, const ProximityInfo *const pInfo,
