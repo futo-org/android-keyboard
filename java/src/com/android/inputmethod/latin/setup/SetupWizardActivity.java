@@ -61,6 +61,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private SetupStepGroup mSetupStepGroup;
     private static final String STATE_STEP = "step";
     private int mStepNumber;
+    private boolean mNeedsToAdjustStepNumberToSystemState;
     private static final int STEP_WELCOME = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
@@ -159,9 +160,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         step2.setAction(new Runnable() {
             @Override
             public void run() {
-                // Invoke input method picker.
-                RichInputMethodManager.getInstance().getInputMethodManager()
-                        .showInputMethodPicker();
+                invokeInputMethodPicker();
             }
         });
         mSetupStepGroup.addStep(step2);
@@ -245,6 +244,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        mNeedsToAdjustStepNumberToSystemState = true;
     }
 
     private void invokeSettingsOfThisIme() {
@@ -260,6 +260,14 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivity(intent);
+        mNeedsToAdjustStepNumberToSystemState = true;
+    }
+
+    void invokeInputMethodPicker() {
+        // Invoke input method picker.
+        RichInputMethodManager.getInstance().getInputMethodManager()
+                .showInputMethodPicker();
+        mNeedsToAdjustStepNumberToSystemState = true;
     }
 
     void invokeSubtypeEnablerOfThisIme() {
@@ -313,6 +321,9 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     @Override
     protected void onRestart() {
         super.onRestart();
+        // Probably the setup wizard has been invoked from "Recent" menu. The setup step number
+        // needs to be adjusted to system state, because the state (IME is enabled and/or current)
+        // may have been changed.
         if (isInSetupSteps(mStepNumber)) {
             mStepNumber = determineSetupStepNumber();
         }
@@ -371,7 +382,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     @Override
     public void onWindowFocusChanged(final boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && isInSetupSteps(mStepNumber)) {
+        if (hasFocus && mNeedsToAdjustStepNumberToSystemState) {
+            mNeedsToAdjustStepNumberToSystemState = false;
             mStepNumber = determineSetupStepNumber();
             updateSetupStepView();
         }
