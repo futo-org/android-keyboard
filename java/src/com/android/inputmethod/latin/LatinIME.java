@@ -2021,9 +2021,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Returns true if we did an autocorrection, false otherwise.
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
-        }
         boolean didAutoCorrect = false;
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -2046,6 +2043,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mSettings.getCurrent().isUsuallyPrecededBySpace(primaryCode)) {
             promotePhantomSpace();
+        }
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
         sendKeyCodePoint(primaryCode);
 
@@ -2594,10 +2594,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void promotePhantomSpace() {
         if (mSettings.getCurrent().shouldInsertSpacesAutomatically()
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
-            sendKeyCodePoint(Constants.CODE_SPACE);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();
             }
+            sendKeyCodePoint(Constants.CODE_SPACE);
         }
     }
 
