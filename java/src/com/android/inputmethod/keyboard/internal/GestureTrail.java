@@ -36,10 +36,11 @@ import com.android.inputmethod.latin.ResizableIntArray;
  * @attr ref R.styleable#MainKeyboardView_gestureTrailWidth
  */
 final class GestureTrail {
-    public static final boolean DBG_SHOW_POINTS = false;
-    public static final int POINT_TYPE_SAMPLED = 0;
-    public static final int POINT_TYPE_INTERPOLATED = 1;
-    public static final int POINT_TYPE_COMPROMISED = 2;
+    public static final boolean DEBUG_SHOW_POINTS = false;
+    public static final int POINT_TYPE_SAMPLED = 1;
+    public static final int POINT_TYPE_INTERPOLATED = 2;
+    private static final int FADEOUT_START_DELAY_FOR_DEBUG = 2000; // millisecond
+    private static final int FADEOUT_DURATION_FOR_DEBUG = 200; // millisecond
 
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewPoints.PREVIEW_CAPACITY;
 
@@ -48,7 +49,7 @@ final class GestureTrail {
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mPointTypes = new ResizableIntArray(
-            DBG_SHOW_POINTS ? DEFAULT_CAPACITY : 0);
+            DEBUG_SHOW_POINTS ? DEFAULT_CAPACITY : 0);
     private int mCurrentStrokeId = -1;
     // The wall time of the zero value in {@link #mEventTimes}
     private long mCurrentTimeBase;
@@ -83,10 +84,12 @@ final class GestureTrail {
                     R.styleable.MainKeyboardView_gestureTrailShadowRatio, 0);
             mTrailShadowEnabled = (trailShadowRatioInt > 0);
             mTrailShadowRatio = (float)trailShadowRatioInt / (float)PERCENTAGE_INT;
-            mFadeoutStartDelay = DBG_SHOW_POINTS ? 2000 : mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureTrailFadeoutStartDelay, 0);
-            mFadeoutDuration = DBG_SHOW_POINTS ? 200 : mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_gestureTrailFadeoutDuration, 0);
+            mFadeoutStartDelay = DEBUG_SHOW_POINTS ? FADEOUT_START_DELAY_FOR_DEBUG
+                    : mainKeyboardViewAttr.getInt(
+                            R.styleable.MainKeyboardView_gestureTrailFadeoutStartDelay, 0);
+            mFadeoutDuration = DEBUG_SHOW_POINTS ? FADEOUT_DURATION_FOR_DEBUG
+                    : mainKeyboardViewAttr.getInt(
+                            R.styleable.MainKeyboardView_gestureTrailFadeoutDuration, 0);
             mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
             mUpdateInterval = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_gestureTrailUpdateInterval, 0);
@@ -117,7 +120,7 @@ final class GestureTrail {
 
     private void addStrokeLocked(final GestureStrokeWithPreviewPoints stroke, final long downTime) {
         final int trailSize = mEventTimes.getLength();
-        stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates);
+        stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates, mPointTypes);
         if (mEventTimes.getLength() == trailSize) {
             return;
         }
@@ -255,22 +258,14 @@ final class GestureTrail {
                         final int alpha = getAlpha(elapsedTime, params);
                         paint.setAlpha(alpha);
                         canvas.drawPath(path, paint);
-                        if (DBG_SHOW_POINTS) {
-                            if (pointTypes[i] == POINT_TYPE_INTERPOLATED) {
-                                paint.setColor(Color.RED);
-                            } else if (pointTypes[i] == POINT_TYPE_SAMPLED) {
-                                paint.setColor(0xFFA000FF);
-                            } else {
-                                paint.setColor(Color.GREEN);
-                            }
-                            canvas.drawCircle(p1x - 1, p1y - 1, 2, paint);
-                            paint.setColor(params.mTrailColor);
-                        }
                     }
                 }
                 p1x = p2x;
                 p1y = p2y;
                 r1 = r2;
+            }
+            if (DEBUG_SHOW_POINTS) {
+                debugDrawPoints(canvas, startIndex, trailSize, paint);
             }
         }
 
@@ -281,11 +276,14 @@ final class GestureTrail {
                 System.arraycopy(eventTimes, startIndex, eventTimes, 0, newSize);
                 System.arraycopy(xCoords, startIndex, xCoords, 0, newSize);
                 System.arraycopy(yCoords, startIndex, yCoords, 0, newSize);
+                if (DEBUG_SHOW_POINTS) {
+                    System.arraycopy(pointTypes, startIndex, pointTypes, 0, newSize);
+                }
             }
             mEventTimes.setLength(newSize);
             mXCoordinates.setLength(newSize);
             mYCoordinates.setLength(newSize);
-            if (DBG_SHOW_POINTS) {
+            if (DEBUG_SHOW_POINTS) {
                 mPointTypes.setLength(newSize);
             }
             // The start index of the last segment of the stroke
@@ -294,5 +292,27 @@ final class GestureTrail {
             mLastInterpolatedDrawIndex = Math.max(mLastInterpolatedDrawIndex - startIndex, 0);
         }
         return newSize > 0;
+    }
+
+    private void debugDrawPoints(final Canvas canvas, final int startIndex, final int endIndex,
+            final Paint paint) {
+        final int[] xCoords = mXCoordinates.getPrimitiveArray();
+        final int[] yCoords = mYCoordinates.getPrimitiveArray();
+        final int[] pointTypes = mPointTypes.getPrimitiveArray();
+        // {@link Paint} that is zero width stroke and anti alias off draws exactly 1 pixel.
+        paint.setAntiAlias(false);
+        paint.setStrokeWidth(0);
+        for (int i = startIndex; i < endIndex; i++) {
+            final int pointType = pointTypes[i];
+            if (pointType == POINT_TYPE_INTERPOLATED) {
+                paint.setColor(Color.RED);
+            } else if (pointType == POINT_TYPE_SAMPLED) {
+                paint.setColor(0xFFA000FF);
+            } else {
+                paint.setColor(Color.GREEN);
+            }
+            canvas.drawPoint(getXCoordValue(xCoords[i]), yCoords[i], paint);
+        }
+        paint.setAntiAlias(true);
     }
 }
