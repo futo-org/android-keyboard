@@ -194,6 +194,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // gesture, and when committing the earlier word, split the LogUnit.
     private long mSavedDownEventTime;
     private Bundle mFeedbackDialogBundle = null;
+    // Whether the feedback dialog is visible, and the user is typing into it.  Normal logging is
+    // not performed on text that the user types into the feedback dialog.
     private boolean mInFeedbackDialog = false;
     private Handler mUserRecordingTimeoutHandler;
     private static final long USER_RECORDING_TIMEOUT_MS = 30L * DateUtils.SECOND_IN_MILLIS;
@@ -655,7 +657,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
                 feedbackContents, accountName, recording);
 
-        final ResearchLog feedbackLog = new ResearchLog(mResearchLogDirectory.getLogFilePath(
+        final ResearchLog feedbackLog = new FeedbackLog(mResearchLogDirectory.getLogFilePath(
                 System.currentTimeMillis(), System.nanoTime()), mLatinIME);
         final LogBuffer feedbackLogBuffer = new LogBuffer();
         feedbackLogBuffer.shiftIn(feedbackLogUnit);
@@ -718,8 +720,28 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mIsPasswordView = isPasswordView;
     }
 
-    private boolean isAllowedToLog() {
-        return !mIsPasswordView && sIsLogging && !mInFeedbackDialog;
+    /**
+     * Returns true if logging is permitted.
+     *
+     * This method is called when adding a LogStatement to a LogUnit, and when adding a LogUnit to a
+     * ResearchLog.  It is checked in both places in case conditions change between these times, and
+     * as a defensive measure in case refactoring changes the logging pipeline.
+     */
+    private boolean isAllowedToLogTo(final ResearchLog researchLog) {
+        // Logging is never allowed in these circumstances
+        if (mIsPasswordView) return false;
+        if (!sIsLogging) return false;
+        if (mInFeedbackDialog) {
+            // The FeedbackDialog is up.  Normal logging should not happen (the user might be trying
+            // out things while the dialog is up, and their reporting of an issue may not be
+            // representative of what they normally type).  However, after the user has finished
+            // entering their feedback, the logger packs their comments and an encoded version of
+            // any demonstration of the issue into a special "FeedbackLog".  So if the FeedbackLog
+            // is the destination, we do want to allow logging to it.
+            return researchLog.isFeedbackLog();
+        }
+        // No other exclusions.  Logging is permitted.
+        return true;
     }
 
     public void requestIndicatorRedraw() {
@@ -752,7 +774,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // and remove this method.
         // The check for MainKeyboardView ensures that the indicator only decorates the main
         // keyboard, not every keyboard.
-        if (IS_SHOWING_INDICATOR && (isAllowedToLog() || isReplaying())
+        if (IS_SHOWING_INDICATOR && (isAllowedToLogTo(mMainResearchLog) || isReplaying())
                 && view instanceof MainKeyboardView) {
             final int savedColor = paint.getColor();
             paint.setColor(getIndicatorColor());
@@ -787,7 +809,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private synchronized void enqueueEvent(final LogUnit logUnit, final LogStatement logStatement,
             final Object... values) {
         assert values.length == logStatement.getKeys().length;
-        if (isAllowedToLog() && logUnit != null) {
+        if (isAllowedToLogTo(mMainResearchLog) && logUnit != null) {
             final long time = SystemClock.uptimeMillis();
             logUnit.addLogStatement(logStatement, time, values);
         }
@@ -886,7 +908,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final ResearchLog researchLog, final boolean canIncludePrivateData) {
         final LogUnit openingLogUnit = new LogUnit();
         if (logUnits.isEmpty()) return;
-        if (!isAllowedToLog()) return;
+        if (!isAllowedToLogTo(researchLog)) return;
         // LogUnits not containing private data, such as contextual data for the log, do not require
         // logSegment boundary statements.
         if (canIncludePrivateData) {
