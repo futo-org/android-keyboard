@@ -24,9 +24,16 @@ import android.os.Build.VERSION_CODES;
  */
 public class AppWorkaroundsUtils {
     private PackageInfo mPackageInfo; // May be null
+    private boolean mIsBrokenByRecorrection = false;
 
     public void setPackageInfo(final PackageInfo packageInfo) {
         mPackageInfo = packageInfo;
+        mIsBrokenByRecorrection = AppWorkaroundsHelper.evaluateIsBrokenByRecorrection(
+                packageInfo);
+    }
+
+    public boolean isBrokenByRecorrection() {
+        return mIsBrokenByRecorrection;
     }
 
     public boolean isBeforeJellyBean() {
