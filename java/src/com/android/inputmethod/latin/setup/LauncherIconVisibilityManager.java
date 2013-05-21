@@ -68,8 +68,15 @@ public final class LauncherIconVisibilityManager extends BroadcastReceiver {
         // 1) the package has been re-installed, 2) the device has been booted,
         // 3) a multiuser has been created.
         // There is no good reason to keep the process alive if this IME isn't a current IME.
-        RichInputMethodManager.init(context);
-        if (!SetupActivity.isThisImeCurrent(context)) {
+        final boolean isCurrentImeOfCurrentUser;
+        if (RichInputMethodManager.isInputMethodManagerValidForUserOfThisProcess(context)) {
+            RichInputMethodManager.init(context);
+            isCurrentImeOfCurrentUser = SetupActivity.isThisImeCurrent(context);
+        } else {
+            isCurrentImeOfCurrentUser = false;
+        }
+
+        if (!isCurrentImeOfCurrentUser) {
             final int myPid = Process.myPid();
             Log.i(TAG, "Killing my process: pid=" + myPid);
             Process.killProcess(myPid);
