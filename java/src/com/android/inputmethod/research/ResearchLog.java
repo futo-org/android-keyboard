@@ -81,6 +81,17 @@ public class ResearchLog {
     }
 
     /**
+     * Returns true if this is a FeedbackLog.
+     *
+     * FeedbackLogs record only the data associated with a Feedback dialog. Instead of normal
+     * logging, they contain a LogStatement with the complete feedback string and optionally a
+     * recording of the user's supplied demo of the problem.
+     */
+    public boolean isFeedbackLog() {
+        return false;
+    }
+
+    /**
      * Waits for any publication requests to finish and closes the {@link JsonWriter} used for
      * output.
      *
