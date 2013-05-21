@@ -54,6 +54,13 @@ public final class RichInputMethodManager {
         return sInstance;
     }
 
+    // Caveat: This may cause IPC
+    public static boolean isInputMethodManagerValidForUserOfThisProcess(final Context context) {
+        // Basically called to check whether this IME has been triggered by the current user or not
+        return !((InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE)).
+                getInputMethodList().isEmpty();
+    }
+
     public static void init(final Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sInstance.initInternal(context, prefs);
