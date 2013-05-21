@@ -2450,6 +2450,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * do nothing.
      */
     private void restartSuggestionsOnWordTouchedByCursor() {
+        // HACK: We may want to special-case some apps that exhibit bad behavior in case of
+        // recorrection. This is a temporary, stopgap measure that will be removed later.
+        // TODO: remove this.
+        if (mAppWorkAroundsUtils.isBrokenByRecorrection()) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mLastSelectionStart != mLastSelectionEnd) return;
         // If we don't know the cursor location, return.
