@@ -58,7 +58,6 @@ public final class KeyboardState {
         public void cancelDoubleTapTimer();
         public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
-        public void hapticAndAudioFeedback(int code);
     }
 
     private final SwitchActions mSwitchActions;
@@ -387,7 +386,6 @@ public final class KeyboardState {
         }
         if (mIsAlphabetMode && code == Constants.CODE_SHIFT) {
             mLongPressShiftLockFired = true;
-            mSwitchActions.hapticAndAudioFeedback(code);
         }
     }
 
