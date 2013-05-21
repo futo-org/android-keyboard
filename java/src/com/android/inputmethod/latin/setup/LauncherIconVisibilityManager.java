@@ -91,7 +91,7 @@ public final class LauncherIconVisibilityManager extends BroadcastReceiver {
         } else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             Log.i(TAG, "Boot has been completed");
             return true;
-        } else if (IntentCompatUtils.has_ACTION_USER_INITIALIZE(intent)) {
+        } else if (IntentCompatUtils.is_ACTION_USER_INITIALIZE(action)) {
             Log.i(TAG, "User initialize");
             return true;
         }
