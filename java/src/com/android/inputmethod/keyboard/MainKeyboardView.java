@@ -987,16 +987,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     /**
      * Called when a key is long pressed.
      * @param tracker the pointer tracker which pressed the parent key
-     * @return true if the long press is handled, false otherwise. Subclasses should call the
-     * method on the base class if the subclass doesn't wish to handle the call.
      */
-    private boolean onLongPress(final PointerTracker tracker) {
+    private void onLongPress(final PointerTracker tracker) {
         if (isShowingMoreKeysPanel()) {
-            return false;
+            return;
         }
         final Key key = tracker.getKey();
         if (key == null) {
-            return false;
+            return;
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_onLongPress();
@@ -1008,17 +1006,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             invokeCodeInput(embeddedCode);
             invokeReleaseKey(code);
             KeyboardSwitcher.getInstance().hapticAndAudioFeedback(code);
-            return true;
+            return;
         }
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
             if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
                 invokeReleaseKey(code);
-                return true;
+                return;
             }
         }
-        return openMoreKeysPanel(key, tracker);
+        openMoreKeysPanel(key, tracker);
     }
 
     private boolean invokeCustomRequest(final int requestCode) {
@@ -1034,10 +1032,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyboardActionListener.onReleaseKey(code, false);
     }
 
-    private boolean openMoreKeysPanel(final Key key, final PointerTracker tracker) {
+    private void openMoreKeysPanel(final Key key, final PointerTracker tracker) {
         final MoreKeysPanel moreKeysPanel = onCreateMoreKeysPanel(key, getContext());
         if (moreKeysPanel == null) {
-            return false;
+            return;
         }
 
         final int[] lastCoords = CoordinateUtils.newInstance();
@@ -1059,7 +1057,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int translatedX = moreKeysPanel.translateX(CoordinateUtils.x(lastCoords));
         final int translatedY = moreKeysPanel.translateY(CoordinateUtils.y(lastCoords));
         tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
-        return true;
     }
 
     public boolean isInSlidingKeyInput() {
