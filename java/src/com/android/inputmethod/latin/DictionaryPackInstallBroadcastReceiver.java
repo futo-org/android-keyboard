@@ -75,7 +75,7 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
             final String packageName = packageUri.getSchemeSpecificPart();
             if (null == packageName) return;
             // TODO: do this in a more appropriate place
-            TargetApplicationGetter.removeApplicationInfoCache(packageName);
+            TargetPackageInfoGetterTask.removeCachedPackageInfo(packageName);
             final PackageInfo packageInfo;
             try {
                 packageInfo = manager.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
