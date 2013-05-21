@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.annotations.UsedForTesting;
-
 /**
  * Interpolates XY-coordinates using Cubic Hermite Curve.
  */
@@ -54,7 +52,6 @@ public final class HermiteInterpolator {
      * @param minPos the minimum index of left-open interval of valid data.
      * @param maxPos the maximum index of left-open interval of valid data.
      */
-    @UsedForTesting
     public void reset(final int[] xCoords, final int[] yCoords, final int minPos,
             final int maxPos) {
         mXCoords = xCoords;
@@ -79,7 +76,6 @@ public final class HermiteInterpolator {
      *           valid points, <code>p3</code> must be equal or greater than <code>maxPos</code> of
      *           {@link #reset(int[],int[],int,int)}.
      */
-    @UsedForTesting
     public void setInterval(final int p0, final int p1, final int p2, final int p3) {
         mP1X = mXCoords[p1];
         mP1Y = mYCoords[p1];
@@ -152,7 +148,6 @@ public final class HermiteInterpolator {
      *
      * @param t the interpolation parameter. The value must be in close interval <code>[0,1]</code>.
      */
-    @UsedForTesting
     public void interpolate(final float t) {
         final float omt = 1.0f - t;
         final float tm2 = 2.0f * t;
