@@ -149,11 +149,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mLongPressTimeoutCode = 0;
     }
 
-    @Override
-    public void hapticAndAudioFeedback(final int code) {
-        // Nothing to do.
-    }
-
     public void onLongPressTimeout(final int code) {
         // TODO: Handle simultaneous long presses.
         if (mLongPressTimeoutCode == code) {

@@ -1008,7 +1008,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             tracker.onLongPressed();
             invokeCodeInput(embeddedCode);
             invokeReleaseKey(code);
-            KeyboardSwitcher.getInstance().hapticAndAudioFeedback(code);
+            AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, this);
             return;
         }
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {

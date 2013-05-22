@@ -480,6 +480,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputAttributes inputAttributes =
                 new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
         mSettings.loadSettings(locale, inputAttributes);
+        AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(mSettings.getCurrent());
         // May need to reset the contacts dictionary depending on the user settings.
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
@@ -2701,7 +2702,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mSubtypeSwitcher.onNetworkStateChanged(intent);
             } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-                mKeyboardSwitcher.onRingerModeChanged();
+                AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
             }
         }
     };

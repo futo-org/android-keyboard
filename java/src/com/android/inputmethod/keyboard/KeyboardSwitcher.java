@@ -32,6 +32,7 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetExcep
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -68,8 +69,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
     };
 
-    private final AudioAndHapticFeedbackManager mFeedbackManager =
-            AudioAndHapticFeedbackManager.getInstance();
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
@@ -151,16 +150,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard();
-            mFeedbackManager.onSettingsChanged(settingsValues);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
             return;
         }
-    }
-
-    public void onRingerModeChanged() {
-        mFeedbackManager.onRingerModeChanged();
     }
 
     public void saveKeyboardState() {
@@ -217,9 +211,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer) {
-        if (isVibrateAndSoundFeedbackRequired()) {
-            mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
-        }
+        hapticAndAudioFeedback(code);
         mState.onPressKey(code, isSinglePointer, mLatinIME.getCurrentAutoCapsState());
     }
 
@@ -328,22 +320,23 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void hapticAndAudioFeedback(final int code) {
-        mFeedbackManager.hapticAndAudioFeedback(code, mKeyboardView);
+    private void hapticAndAudioFeedback(final int code) {
+        if (mKeyboardView == null || mKeyboardView.isInSlidingKeyInput()) {
+            return;
+        }
+        AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, mKeyboardView);
     }
 
     public void onLongPressTimeout(final int code) {
         mState.onLongPressTimeout(code);
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard != null && keyboard.mId.isAlphabetKeyboard() && code == Constants.CODE_SHIFT) {
+            hapticAndAudioFeedback(code);
+        }
     }
 
     public boolean isInMomentarySwitchState() {
         return mState.isInMomentarySwitchState();
-    }
-
-    private boolean isVibrateAndSoundFeedbackRequired() {
-        return mKeyboardView != null && !mKeyboardView.isInSlidingKeyInput();
     }
 
     /**
