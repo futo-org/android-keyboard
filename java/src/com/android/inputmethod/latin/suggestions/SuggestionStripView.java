@@ -54,6 +54,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
+import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
@@ -689,7 +690,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onLongClick(final View view) {
-        KeyboardSwitcher.getInstance().hapticAndAudioFeedback(Constants.NOT_A_CODE);
+        AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
+                Constants.NOT_A_CODE, this);
         return showMoreSuggestions();
     }
 
