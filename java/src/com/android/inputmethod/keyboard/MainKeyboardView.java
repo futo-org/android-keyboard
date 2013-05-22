@@ -240,7 +240,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             case MSG_REPEAT_KEY:
                 final Key currentKey = tracker.getKey();
                 if (currentKey != null && currentKey.mCode == msg.arg1) {
-                    tracker.onRegisterKey(currentKey);
+                    tracker.onRepeatKey(currentKey);
+                    AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
+                            currentKey.mCode, keyboardView);
                     startKeyRepeatTimer(tracker, mKeyRepeatInterval);
                 }
                 break;

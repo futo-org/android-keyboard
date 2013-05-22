@@ -1266,15 +1266,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!key.isRepeatable()) return;
         // Don't start key repeat when we are in sliding input mode.
         if (mIsInSlidingKeyInput) return;
-        onRegisterKey(key);
+        onRepeatKey(key);
         mTimerProxy.startKeyRepeatTimer(this);
     }
 
-    public void onRegisterKey(final Key key) {
-        if (key != null) {
-            detectAndSendKey(key, key.mX, key.mY, SystemClock.uptimeMillis());
-            mTimerProxy.startTypingStateTimer(key);
-        }
+    public void onRepeatKey(final Key key) {
+        detectAndSendKey(key, key.mX, key.mY, SystemClock.uptimeMillis());
+        mTimerProxy.startTypingStateTimer(key);
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,
