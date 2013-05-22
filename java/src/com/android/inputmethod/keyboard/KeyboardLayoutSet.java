@@ -36,6 +36,7 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -424,6 +425,7 @@ public final class KeyboardLayoutSet {
                 SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false);
     }
 
+    @UsedForTesting
     public static KeyboardLayoutSet createKeyboardSetForTest(final Context context,
             final InputMethodSubtype subtype, final int orientation,
             final boolean testCasesHaveTouchCoordinates) {
