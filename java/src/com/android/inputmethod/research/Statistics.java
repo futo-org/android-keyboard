@@ -61,6 +61,16 @@ public class Statistics {
     boolean mIsEmptyUponStarting;
     boolean mIsEmptinessStateKnown;
 
+    // Counts of how often an n-gram is collected or not, and the reasons for the decision.
+    // Keep consistent with publishability result code list in MainLogBuffer
+    int mPublishableCount;
+    int mUnpublishableStoppingCount;
+    int mUnpublishableIncorrectWordCount;
+    int mUnpublishableSampledTooRecently;
+    int mUnpublishableDictionaryUnavailable;
+    int mUnpublishableMayContainDigit;
+    int mUnpublishableNotInDictionary;
+
     // Timers to count average time to enter a key, first press a delete key,
     // between delete keys, and then to return typing after a delete key.
     final AverageTimeCounter mKeyCounter = new AverageTimeCounter();
@@ -133,6 +143,13 @@ public class Statistics {
         mAfterDeleteKeyCounter.reset();
         mGesturesCharsCount = 0;
         mGesturesDeletedCount = 0;
+        mPublishableCount = 0;
+        mUnpublishableStoppingCount = 0;
+        mUnpublishableIncorrectWordCount = 0;
+        mUnpublishableSampledTooRecently = 0;
+        mUnpublishableDictionaryUnavailable = 0;
+        mUnpublishableMayContainDigit = 0;
+        mUnpublishableNotInDictionary = 0;
 
         mLastTapTime = 0;
         mIsLastKeyDeleteKey = false;
@@ -229,5 +246,32 @@ public class Statistics {
         }
         mIsLastKeyDeleteKey = isDeletion;
         mLastTapTime = time;
+    }
+
+    public void recordPublishabilityResultCode(final int publishabilityResultCode) {
+        // Keep consistent with publishability result code list in MainLogBuffer
+        switch (publishabilityResultCode) {
+        case MainLogBuffer.PUBLISHABILITY_PUBLISHABLE:
+            mPublishableCount++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_STOPPING:
+            mUnpublishableStoppingCount++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_INCORRECT_WORD_COUNT:
+            mUnpublishableIncorrectWordCount++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_SAMPLED_TOO_RECENTLY:
+            mUnpublishableSampledTooRecently++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_DICTIONARY_UNAVAILABLE:
+            mUnpublishableDictionaryUnavailable++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_MAY_CONTAIN_DIGIT:
+            mUnpublishableMayContainDigit++;
+            break;
+        case MainLogBuffer.PUBLISHABILITY_UNPUBLISHABLE_NOT_IN_DICTIONARY:
+            mUnpublishableNotInDictionary++;
+            break;
+        }
     }
 }

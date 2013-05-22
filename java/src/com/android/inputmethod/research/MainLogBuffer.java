@@ -63,6 +63,15 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
 
+    // Keep consistent with switch statement in Statistics.recordPublishabilityResultCode()
+    public static final int PUBLISHABILITY_PUBLISHABLE = 0;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_STOPPING = 1;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_INCORRECT_WORD_COUNT = 2;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_SAMPLED_TOO_RECENTLY = 3;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_DICTIONARY_UNAVAILABLE = 4;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_MAY_CONTAIN_DIGIT = 5;
+    public static final int PUBLISHABILITY_UNPUBLISHABLE_NOT_IN_DICTIONARY = 6;
+
     // The size of the n-grams logged.  E.g. N_GRAM_SIZE = 2 means to sample bigrams.
     public static final int N_GRAM_SIZE = 2;
 
@@ -105,21 +114,24 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
     }
 
     /**
-     * Determines whether uploading the n words at the front the MainLogBuffer will not violate
-     * user privacy.
+     * Determines whether the string determined by a series of LogUnits will not violate user
+     * privacy if published.
      *
-     * The size of the MainLogBuffer is just enough to hold one n-gram, its corrections, and any
-     * non-character data that is typed between words.  The decision about privacy is made based on
-     * the buffer's entire content.  If it is decided that the privacy risks are too great to upload
-     * the contents of this buffer, a censored version of the LogItems may still be uploaded.  E.g.,
-     * the screen orientation and other characteristics about the device can be uploaded without
-     * revealing much about the user.
+     * @param logUnits a LogUnit list to check for publishability
+     * @param nGramSize the smallest n-gram acceptable to be published.  if
+     * {@link ResearchLogger.IS_LOGGING_EVERYTHING} is true, then publish if there are more than
+     * {@code minNGramSize} words in the logUnits, otherwise wait.  if {@link
+     * ResearchLogger.IS_LOGGING_EVERYTHING} is false, then ensure that there are exactly nGramSize
+     * words in the LogUnits.
+     *
+     * @return one of the {@code PUBLISHABILITY_*} result codes defined in this class.
      */
-    private boolean isSafeNGram(final ArrayList<LogUnit> logUnits, final int minNGramSize) {
+    private int getPublishabilityResultCode(final ArrayList<LogUnit> logUnits,
+            final int nGramSize) {
         // Bypass privacy checks when debugging.
         if (ResearchLogger.IS_LOGGING_EVERYTHING) {
             if (mIsStopping) {
-                return true;
+                return PUBLISHABILITY_UNPUBLISHABLE_STOPPING;
             }
             // Only check that it is the right length.  If not, wait for later words to make
             // complete n-grams.
@@ -129,13 +141,17 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
                 final LogUnit logUnit = logUnits.get(i);
                 numWordsInLogUnitList += logUnit.getNumWords();
             }
-            return numWordsInLogUnitList >= minNGramSize;
+            if (numWordsInLogUnitList >= nGramSize) {
+                return PUBLISHABILITY_PUBLISHABLE;
+            } else {
+                return PUBLISHABILITY_UNPUBLISHABLE_INCORRECT_WORD_COUNT;
+            }
         }
 
         // Check that we are not sampling too frequently.  Having sampled recently might disclose
         // too much of the user's intended meaning.
         if (mNumWordsUntilSafeToSample > 0) {
-            return false;
+            return PUBLISHABILITY_UNPUBLISHABLE_SAMPLED_TOO_RECENTLY;
         }
         // Reload the dictionary in case it has changed (e.g., because the user has changed
         // languages).
@@ -144,7 +160,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             // Main dictionary is unavailable.  Since we cannot check it, we cannot tell if a
             // word is out-of-vocabulary or not.  Therefore, we must judge the entire buffer
             // contents to potentially pose a privacy risk.
-            return false;
+            return PUBLISHABILITY_UNPUBLISHABLE_DICTIONARY_UNAVAILABLE;
         }
 
         // Check each word in the buffer.  If any word poses a privacy threat, we cannot upload
@@ -155,7 +171,7 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
             if (!logUnit.hasOneOrMoreWords()) {
                 // Digits outside words are a privacy threat.
                 if (logUnit.mayContainDigit()) {
-                    return false;
+                    return PUBLISHABILITY_UNPUBLISHABLE_MAY_CONTAIN_DIGIT;
                 }
             } else {
                 numWordsInLogUnitList += logUnit.getNumWords();
@@ -168,14 +184,18 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
                                     + ResearchLogger.hasLetters(word)
                                     + ", isValid: " + (dictionary.isValidWord(word)));
                         }
-                        return false;
+                        return PUBLISHABILITY_UNPUBLISHABLE_NOT_IN_DICTIONARY;
                     }
                 }
             }
         }
 
         // Finally, only return true if the ngram is the right size.
-        return numWordsInLogUnitList == minNGramSize;
+        if (numWordsInLogUnitList == nGramSize) {
+            return PUBLISHABILITY_PUBLISHABLE;
+        } else {
+            return PUBLISHABILITY_UNPUBLISHABLE_INCORRECT_WORD_COUNT;
+        }
     }
 
     public void shiftAndPublishAll() throws IOException {
@@ -216,7 +236,9 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
         // TODO: Refactor this method to require fewer passes through the LogUnits.  Should really
         // require only one pass.
         ArrayList<LogUnit> logUnits = peekAtFirstNWords(N_GRAM_SIZE);
-        if (isSafeNGram(logUnits, N_GRAM_SIZE)) {
+        final int publishabilityResultCode = getPublishabilityResultCode(logUnits, N_GRAM_SIZE);
+        ResearchLogger.recordPublishabilityResultCode(publishabilityResultCode);
+        if (publishabilityResultCode == MainLogBuffer.PUBLISHABILITY_PUBLISHABLE) {
             // Good n-gram at the front of the buffer.  Publish it, disclosing details.
             publish(logUnits, true /* canIncludePrivateData */);
             shiftOutWords(N_GRAM_SIZE);
