@@ -58,7 +58,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         }
 
         private static double degreeToRadian(final int degree) {
-            return (double)degree / 180.0d * Math.PI;
+            return degree / 180.0d * Math.PI;
         }
 
         public GestureStrokePreviewParams(final TypedArray mainKeyboardViewAttr) {
@@ -125,8 +125,18 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
 
     }
 
+    /**
+     * Append sampled preview points.
+     *
+     * @param eventTimes the event time array of gesture trail to be drawn.
+     * @param xCoords the x-coordinates array of gesture trail to be drawn.
+     * @param yCoords the y-coordinates array of gesture trail to be drawn.
+     * @param types the point types array of gesture trail. This is valid only when
+     * {@link GestureTrail#DEBUG_SHOW_POINTS} is true.
+     */
     public void appendPreviewStroke(final ResizableIntArray eventTimes,
-            final ResizableIntArray xCoords, final ResizableIntArray yCoords) {
+            final ResizableIntArray xCoords, final ResizableIntArray yCoords,
+            final ResizableIntArray types) {
         final int length = mPreviewEventTimes.getLength() - mLastPreviewSize;
         if (length <= 0) {
             return;
@@ -134,6 +144,9 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
         eventTimes.append(mPreviewEventTimes, mLastPreviewSize, length);
         xCoords.append(mPreviewXCoordinates, mLastPreviewSize, length);
         yCoords.append(mPreviewYCoordinates, mLastPreviewSize, length);
+        if (GestureTrail.DEBUG_SHOW_POINTS) {
+            types.fill(GestureTrail.POINT_TYPE_SAMPLED, types.getLength(), length);
+        }
         mLastPreviewSize = mPreviewEventTimes.getLength();
     }
 
@@ -148,6 +161,8 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
      * @param eventTimes the event time array of gesture trail to be drawn.
      * @param xCoords the x-coordinates array of gesture trail to be drawn.
      * @param yCoords the y-coordinates array of gesture trail to be drawn.
+     * @param types the point types array of gesture trail. This is valid only when
+     * {@link GestureTrail#DEBUG_SHOW_POINTS} is true.
      * @return the start index of the last interpolated segment of input arrays.
      */
     public int interpolateStrokeAndReturnStartIndexOfLastSegment(final int lastInterpolatedIndex,
@@ -189,7 +204,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
                 eventTimes.add(d1, (int)(dt * t) + t1);
                 xCoords.add(d1, (int)mInterpolator.mInterpolatedX);
                 yCoords.add(d1, (int)mInterpolator.mInterpolatedY);
-                if (GestureTrail.DBG_SHOW_POINTS) {
+                if (GestureTrail.DEBUG_SHOW_POINTS) {
                     types.add(d1, GestureTrail.POINT_TYPE_INTERPOLATED);
                 }
                 d1++;
@@ -197,7 +212,7 @@ public final class GestureStrokeWithPreviewPoints extends GestureStroke {
             eventTimes.add(d1, pt[p2]);
             xCoords.add(d1, px[p2]);
             yCoords.add(d1, py[p2]);
-            if (GestureTrail.DBG_SHOW_POINTS) {
+            if (GestureTrail.DEBUG_SHOW_POINTS) {
                 types.add(d1, GestureTrail.POINT_TYPE_SAMPLED);
             }
         }
