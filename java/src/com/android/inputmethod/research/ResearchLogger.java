@@ -1660,12 +1660,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
-     * Shared event for logging committed text.
+     * Shared events for logging committed text.
+     *
+     * The "CommitTextEventHappened" LogStatement is written to the log even if privacy rules
+     * indicate that the word contents should not be logged.  It has no contents, and only serves to
+     * record the event and thereby make it easier to calculate word-level statistics even when the
+     * word contents are unknown.
      */
     private static final LogStatement LOGSTATEMENT_COMMITTEXT =
-            new LogStatement("CommitText", true, false, "committedText", "isBatchMode");
+            new LogStatement("CommitText", true /* isPotentiallyPrivate */,
+                    false /* isPotentiallyRevealing */, "committedText", "isBatchMode");
+    private static final LogStatement LOGSTATEMENT_COMMITTEXT_EVENT_HAPPENED =
+            new LogStatement("CommitTextEventHappened", false /* isPotentiallyPrivate */,
+                    false /* isPotentiallyRevealing */);
     private void enqueueCommitText(final String word, final boolean isBatchMode) {
+        // Event containing the word; will be published only if privacy checks pass
         enqueueEvent(LOGSTATEMENT_COMMITTEXT, word, isBatchMode);
+        // Event not containing the word; will always be published
+        enqueueEvent(LOGSTATEMENT_COMMITTEXT_EVENT_HAPPENED);
     }
 
     /**
