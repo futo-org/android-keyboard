@@ -32,7 +32,6 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetExcep
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -300,39 +299,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 ? keyboardView.getTimerProxy().isInDoubleTapShiftKeyTimeout() : false;
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void startLongPressTimer(final int code) {
-        final MainKeyboardView keyboardView = getMainKeyboardView();
-        if (keyboardView != null) {
-            final TimerProxy timer = keyboardView.getTimerProxy();
-            timer.startLongPressTimer(code);
-        }
-    }
-
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void cancelLongPressTimer() {
-        final MainKeyboardView keyboardView = getMainKeyboardView();
-        if (keyboardView != null) {
-            final TimerProxy timer = keyboardView.getTimerProxy();
-            timer.cancelLongPressTimer();
-        }
-    }
-
     private void hapticAndAudioFeedback(final int code) {
         if (mKeyboardView == null || mKeyboardView.isInSlidingKeyInput()) {
             return;
         }
         AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, mKeyboardView);
-    }
-
-    public void onLongPressTimeout(final int code) {
-        mState.onLongPressTimeout(code);
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard != null && keyboard.mId.isAlphabetKeyboard() && code == Constants.CODE_SHIFT) {
-            hapticAndAudioFeedback(code);
-        }
     }
 
     /**

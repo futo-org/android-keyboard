@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.test.AndroidTestCase;
 
+import com.android.inputmethod.latin.Constants;
+
 public class KeyboardStateTestsBase extends AndroidTestCase
         implements MockKeyboardSwitcher.MockConstants {
     protected MockKeyboardSwitcher mSwitcher;
@@ -119,7 +121,11 @@ public class KeyboardStateTestsBase extends AndroidTestCase
 
     public void longPressKey(final int code, final int afterPress, final int afterLongPress) {
         pressKey(code, afterPress);
-        mSwitcher.onLongPressTimeout(code);
+        // Long press shift key will register {@link Constants#CODE_CAPS_LOCK}. See
+        // {@link R.xml#key_styles_common} and its baseForShiftKeyStyle. We thus emulate the
+        // behavior here.
+        final int longPressCode = code == CODE_SHIFT ? Constants.CODE_CAPSLOCK : code;
+        mSwitcher.onCodeInput(longPressCode);
         assertLayout("afterLongPress", afterLongPress, mSwitcher.getLayoutId());
     }
 

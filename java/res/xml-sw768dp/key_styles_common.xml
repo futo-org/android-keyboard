@@ -35,34 +35,38 @@
                 latin:keyLabelFlags="hasShiftedLetterHint" />
         </default>
     </switch>
+    <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
+    <key-style
+        latin:styleName="baseForShiftKeyStyle"
+        latin:code="!code/key_shift"
+        latin:keyActionFlags="noKeyPreview"
+        latin:keyLabelFlags="preserveCase"
+        latin:moreKeys="!noPanelAutoMoreKey!, |!code/key_capslock" />
     <switch>
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="!code/key_shift"
                 latin:keyIcon="!icon/shift_key_shifted"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="stickyOff" />
+                latin:backgroundType="stickyOff"
+                latin:parentStyle="baseForShiftKeyStyle" />
         </case>
         <case
             latin:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="!code/key_shift"
                 latin:keyIcon="!icon/shift_key_shifted"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="stickyOn" />
+                latin:backgroundType="stickyOn"
+                latin:parentStyle="baseForShiftKeyStyle" />
         </case>
         <default>
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="!code/key_shift"
                 latin:keyIcon="!icon/shift_key"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="stickyOff" />
+                latin:backgroundType="stickyOff"
+                latin:parentStyle="baseForShiftKeyStyle" />
         </default>
     </switch>
     <key-style
