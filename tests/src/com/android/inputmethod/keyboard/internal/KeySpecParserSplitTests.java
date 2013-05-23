@@ -55,8 +55,8 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
         return names.toArray(new String[names.size()]);
     }
 
-    private static void assertArrayEquals(final String message, final Object[] expected,
-            final Object[] actual) {
+    private static <T> void assertArrayEquals(final String message, final T[] expected,
+            final T[] actual) {
         if (expected == actual) {
             return;
         }
@@ -69,8 +69,12 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
             return;
         }
         for (int i = 0; i < expected.length; i++) {
-            assertEquals(message + " [" + i + "]",
-                    Arrays.toString(expected), Arrays.toString(actual));
+            final T e = expected[i];
+            final T a = actual[i];
+            if (e == a) {
+                continue;
+            }
+            assertEquals(message + " [" + i + "]", e, a);
         }
     }
 
