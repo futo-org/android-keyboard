@@ -67,7 +67,7 @@ public class LogUnit {
     private String[] mWordArray = EMPTY_STRING_ARRAY;
     private boolean mMayContainDigit;
     private boolean mIsPartOfMegaword;
-    private boolean mContainsCorrection;
+    private boolean mContainsUserDeletions;
 
     // mCorrectionType indicates whether the word was corrected at all, and if so, the nature of the
     // correction.
@@ -277,13 +277,13 @@ public class LogUnit {
     }
 
     // TODO: Refactor to eliminate getter/setters
-    public void setContainsCorrection() {
-        mContainsCorrection = true;
+    public void setContainsUserDeletions() {
+        mContainsUserDeletions = true;
     }
 
     // TODO: Refactor to eliminate getter/setters
-    public boolean containsCorrection() {
-        return mContainsCorrection;
+    public boolean containsUserDeletions() {
+        return mContainsUserDeletions;
     }
 
     // TODO: Refactor to eliminate getter/setters
@@ -323,7 +323,7 @@ public class LogUnit {
                         true /* isPartOfMegaword */);
                 newLogUnit.mWords = null;
                 newLogUnit.mMayContainDigit = mMayContainDigit;
-                newLogUnit.mContainsCorrection = mContainsCorrection;
+                newLogUnit.mContainsUserDeletions = mContainsUserDeletions;
 
                 // Purge the logStatements and associated data from this LogUnit.
                 laterLogStatements.clear();
@@ -346,7 +346,7 @@ public class LogUnit {
             setWords(logUnit.mWords);
         }
         mMayContainDigit = mMayContainDigit || logUnit.mMayContainDigit;
-        mContainsCorrection = mContainsCorrection || logUnit.mContainsCorrection;
+        mContainsUserDeletions = mContainsUserDeletions || logUnit.mContainsUserDeletions;
         mIsPartOfMegaword = false;
     }
 
