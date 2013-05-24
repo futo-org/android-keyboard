@@ -35,6 +35,7 @@
 #include "dictionary.h"
 #include "jni.h"
 #include "jni_common.h"
+#include "suggest_options.h"
 
 namespace latinime {
 
@@ -128,10 +129,9 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
         jlong proximityInfo, jlong dicTraverseSession, jintArray xCoordinatesArray,
         jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
-        jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jboolean isGesture,
-        jintArray prevWordCodePointsForBigrams, jboolean useFullEditDistance,
-        jintArray outputCodePointsArray, jintArray scoresArray, jintArray spaceIndicesArray,
-        jintArray outputTypesArray) {
+        jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jintArray suggestOptions,
+        jintArray prevWordCodePointsForBigrams, jintArray outputCodePointsArray,
+        jintArray scoresArray, jintArray spaceIndicesArray, jintArray outputTypesArray) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
@@ -159,6 +159,11 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
         prevWordCodePoints = prevWordCodePointsInternal;
     }
 
+    const jsize numberOfOptions = env->GetArrayLength(suggestOptions);
+    int options[numberOfOptions];
+    env->GetIntArrayRegion(suggestOptions, 0, numberOfOptions, options);
+    SuggestOptions givenOptions(options, numberOfOptions);
+
     // Output values
     /* By the way, let's check the output array length here to make sure */
     const jsize outputCodePointsLength = env->GetArrayLength(outputCodePointsArray);
@@ -185,11 +190,12 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     memset(outputTypes, 0, sizeof(outputTypes));
 
     int count;
-    if (isGesture || inputSize > 0) {
+    if (givenOptions.isGesture() || inputSize > 0) {
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, commitPoint, isGesture, useFullEditDistance,
-                outputCodePoints, scores, spaceIndices, outputTypes);
+                prevWordCodePointsLength, commitPoint, givenOptions.isGesture(),
+                givenOptions.useFullEditDistance(), outputCodePoints, scores,
+                spaceIndices, outputTypes);
     } else {
         count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
                 inputCodePoints, inputSize, outputCodePoints, scores, outputTypes);
@@ -288,7 +294,7 @@ static JNINativeMethod sMethods[] = {
      const_cast<char *>("(J)V"),
      reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {const_cast<char *>("getSuggestionsNative"),
-     const_cast<char *>("(JJJ[I[I[I[I[IIIZ[IZ[I[I[I[I)I"),
+     const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I)I"),
      reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
     {const_cast<char *>("getProbabilityNative"),
      const_cast<char *>("(J[I)I"),

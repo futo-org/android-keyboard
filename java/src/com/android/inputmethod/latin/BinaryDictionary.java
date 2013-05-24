@@ -45,7 +45,7 @@ public final class BinaryDictionary extends Dictionary {
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
 
-    private final boolean mUseFullEditDistance;
+    private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
     private final SparseArray<DicTraverseSession> mDicTraverseSessions =
             CollectionUtils.newSparseArray();
@@ -79,7 +79,7 @@ public final class BinaryDictionary extends Dictionary {
             final boolean useFullEditDistance, final Locale locale, final String dictType) {
         super(dictType);
         mLocale = locale;
-        mUseFullEditDistance = useFullEditDistance;
+        mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length);
     }
 
@@ -94,7 +94,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
-            boolean isGesture, int[] prevWordCodePointArray, boolean useFullEditDistance,
+            int[] suggestOptions, int[] prevWordCodePointArray,
             int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
@@ -135,12 +135,13 @@ public final class BinaryDictionary extends Dictionary {
 
         final InputPointers ips = composer.getInputPointers();
         final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
+        mNativeSuggestOptions.setIsGesture(isGesture);
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
-                inputSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
-                mUseFullEditDistance, mOutputCodePoints, mOutputScores, mSpaceIndices,
+                inputSize, 0 /* commitPoint */, mNativeSuggestOptions.getOptions(),
+                prevWordCodePointArray, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes);
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
