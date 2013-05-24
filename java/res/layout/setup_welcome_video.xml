@@ -36,13 +36,15 @@
                 android:id="@+id/setup_welcome_video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/setup_background" />
+                android:background="@color/setup_background"
+                android:contentDescription="@string/setup_welcome_additional_description"/>
             <ImageView
                 android:id="@+id/setup_welcome_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:contentDescription="@string/setup_welcome_additional_description"/>
         </LinearLayout>
         <View
             android:layout_weight="@integer/setup_welcome_video_end_padding_weight_in_screen"
