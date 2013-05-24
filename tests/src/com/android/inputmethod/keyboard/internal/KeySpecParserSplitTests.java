@@ -17,10 +17,13 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.app.Instrumentation;
+import android.content.Context;
+import android.content.res.Resources;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,15 +32,23 @@ import java.util.Locale;
 
 @MediumTest
 public class KeySpecParserSplitTests extends InstrumentationTestCase {
-    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+    private static final Locale TEST_LOCALE = Locale.ENGLISH;
+    final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         final Instrumentation instrumentation = getInstrumentation();
-        mTextsSet.setLanguage(Locale.ENGLISH.getLanguage());
-        mTextsSet.loadStringResources(instrumentation.getTargetContext());
+        final Context targetContext = instrumentation.getTargetContext();
+        mTextsSet.setLanguage(TEST_LOCALE.getLanguage());
+        new RunInLocale<Void>() {
+            @Override
+            protected Void job(final Resources res) {
+                mTextsSet.loadStringResources(targetContext);
+                return null;
+            }
+        }.runInLocale(targetContext.getResources(), TEST_LOCALE);
         final String[] testResourceNames = getAllResourceIdNames(
                 com.android.inputmethod.latin.tests.R.string.class);
         mTextsSet.loadStringResourcesInternal(instrumentation.getContext(),
