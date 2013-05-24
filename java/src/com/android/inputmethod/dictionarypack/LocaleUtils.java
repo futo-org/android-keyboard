@@ -144,7 +144,7 @@ public final class LocaleUtils {
     public static String getMatchLevelSortedString(final int matchLevel) {
         // This works because the match levels are 0~99 (actually 0~30)
         // Ideally this should use a number of digits equals to the 1og10 of the greater matchLevel
-        return String.format("%02d", MATCH_LEVEL_MAX - matchLevel);
+        return String.format(Locale.ROOT, "%02d", MATCH_LEVEL_MAX - matchLevel);
     }
 
     /**

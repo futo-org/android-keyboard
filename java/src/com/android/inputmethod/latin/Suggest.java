@@ -379,7 +379,8 @@ public final class Suggest {
                     typedWord, cur.toString(), cur.mScore);
             final String scoreInfoString;
             if (normalizedScore > 0) {
-                scoreInfoString = String.format("%d (%4.2f)", cur.mScore, normalizedScore);
+                scoreInfoString = String.format(
+                        Locale.ROOT, "%d (%4.2f)", cur.mScore, normalizedScore);
             } else {
                 scoreInfoString = Integer.toString(cur.mScore);
             }
