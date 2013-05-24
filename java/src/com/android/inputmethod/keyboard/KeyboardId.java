@@ -187,7 +187,7 @@ public final class KeyboardId {
     public String toString() {
         final String orientation = (mOrientation == Configuration.ORIENTATION_PORTRAIT)
                 ? "port" : "land";
-        return String.format("[%s %s:%s %s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
+        return String.format(Locale.ROOT, "[%s %s:%s %s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),

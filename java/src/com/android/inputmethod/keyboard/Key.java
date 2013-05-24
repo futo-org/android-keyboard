@@ -453,7 +453,7 @@ public class Key implements Comparable<Key> {
         } else {
             label = "/" + mLabel;
         }
-        return String.format("%s%s %d,%d %dx%d %s/%s/%s",
+        return String.format(Locale.ROOT, "%s%s %d,%d %dx%d %s/%s/%s",
                 Constants.printableCode(mCode), label, mX, mY, mWidth, mHeight, mHintLabel,
                 KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
     }

@@ -35,8 +35,8 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     private static final String CODE_SETTINGS = "!code/key_settings";
     private static final String ICON_SETTINGS = "!icon/settings_key";
-    private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase();
-    private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase();
+    private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase(Locale.ROOT);
+    private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase(Locale.ROOT);
     private static final String CODE_NON_EXISTING = "!code/non_existing";
     private static final String ICON_NON_EXISTING = "!icon/non_existing";
 
@@ -587,7 +587,7 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { null, "a", "b", "c" }, true);
         // Upper case specification will not work.
         assertGetBooleanValue("HAS LABEL", HAS_LABEL,
-                new String[] { HAS_LABEL.toUpperCase(), "a", "b", "c" },
+                new String[] { HAS_LABEL.toUpperCase(Locale.ROOT), "a", "b", "c" },
                 new String[] { "!HASLABEL!", "a", "b", "c" }, false);
 
         assertGetBooleanValue("No has label", HAS_LABEL,
@@ -600,13 +600,13 @@ public class KeySpecParserTests extends AndroidTestCase {
         // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label", HAS_LABEL,
                 new String[] {
-                    "a", HAS_LABEL.toUpperCase(), "b", "c", HAS_LABEL, "d" },
+                    "a", HAS_LABEL.toUpperCase(Locale.ROOT), "b", "c", HAS_LABEL, "d" },
                 new String[] {
                     "a", "!HASLABEL!", "b", "c", null, "d" }, true);
         // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label with needs dividers", HAS_LABEL,
                 new String[] {
-                    "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(), "d" },
+                    "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(Locale.ROOT), "d" },
                 new String[] {
                     "a", null, "b", NEEDS_DIVIDER, "!HASLABEL!", "d" }, true);
     }
@@ -625,7 +625,7 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { null, "a", "b", "c" }, 3);
         // Upper case specification will not work.
         assertGetIntValue("FIXED COLUMN ORDER 3", FIXED_COLUMN_ORDER, -1,
-                new String[] { FIXED_COLUMN_ORDER.toUpperCase() + "3", "a", "b", "c" },
+                new String[] { FIXED_COLUMN_ORDER.toUpperCase(Locale.ROOT) + "3", "a", "b", "c" },
                 new String[] { "!FIXEDCOLUMNORDER!3", "a", "b", "c" }, -1);
 
         assertGetIntValue("No fixed column order", FIXED_COLUMN_ORDER, -1,
@@ -641,7 +641,7 @@ public class KeySpecParserTests extends AndroidTestCase {
         // Upper case specification will not work.
         assertGetIntValue("Multiple fixed column order 5,3 with has label", FIXED_COLUMN_ORDER, -1,
                 new String[] {
-                    FIXED_COLUMN_ORDER.toUpperCase() + "5", HAS_LABEL, "a",
+                    FIXED_COLUMN_ORDER.toUpperCase(Locale.ROOT) + "5", HAS_LABEL, "a",
                     FIXED_COLUMN_ORDER + "3", "b" },
                 new String[] { "!FIXEDCOLUMNORDER!5", HAS_LABEL, "a", null, "b" }, 3);
     }
