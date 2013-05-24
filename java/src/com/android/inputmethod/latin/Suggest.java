@@ -229,7 +229,7 @@ public final class Suggest {
         // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
-                || (consideredWord.length() > 1 && !AutoCorrection.isValidWord(mDictionaries,
+                || (consideredWord.length() > 1 && !AutoCorrection.isValidWord(this,
                         consideredWord, wordComposer.isFirstCharCapitalized()));
 
         final boolean hasAutoCorrection;

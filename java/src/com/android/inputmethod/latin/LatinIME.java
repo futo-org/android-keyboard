@@ -2371,7 +2371,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean showingAddToDictionaryHint =
                 SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind && mSuggest != null
                 // If the suggestion is not in the dictionary, the hint should be shown.
-                && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
+                && !AutoCorrection.isValidWord(mSuggest, suggestion, true);
 
         if (mSettings.isInternal()) {
             Stats.onSeparator((char)Constants.CODE_SPACE,

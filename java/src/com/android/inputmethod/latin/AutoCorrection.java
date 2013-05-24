@@ -32,12 +32,13 @@ public final class AutoCorrection {
         // Purely static class: can't instantiate.
     }
 
-    public static boolean isValidWord(final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final String word, final boolean ignoreCase) {
+    public static boolean isValidWord(final Suggest suggest, final String word,
+            final boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
-        final String lowerCasedWord = word.toLowerCase();
+        final ConcurrentHashMap<String, Dictionary> dictionaries = suggest.getUnigramDictionaries();
+        final String lowerCasedWord = word.toLowerCase(suggest.mLocale);
         for (final String key : dictionaries.keySet()) {
             final Dictionary dictionary = dictionaries.get(key);
             // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
