@@ -18,9 +18,8 @@
    want a dialog, but it must be its own activity so we can launch the soft
    keyboard on it.  A regular dialog will not work since it would be launched from
    the IME. -->
-<ScrollView>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
-         xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:layout_marginStart="8dip"
