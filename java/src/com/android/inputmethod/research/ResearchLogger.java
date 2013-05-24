@@ -1896,6 +1896,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
+     * Call this method when the logging system has attempted publication of an n-gram.
+     *
+     * Statistics are gathered about the success or failure.
+     *
+     * @param publishabilityResultCode a result code as defined by
+     * {@code MainLogBuffer.PUBLISHABILITY_*}
+     */
+    static void recordPublishabilityResultCode(final int publishabilityResultCode) {
+        final ResearchLogger researchLogger = getInstance();
+        final Statistics statistics = researchLogger.mStatistics;
+        statistics.recordPublishabilityResultCode(publishabilityResultCode);
+    }
+
+    /**
      * Log statistics.
      *
      * ContextualData, recorded at the end of a session.
@@ -1907,7 +1921,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete",
                     "dictionaryWordCount", "splitWordsCount", "gestureInputCount",
                     "gestureCharsCount", "gesturesDeletedCount", "manualSuggestionsCount",
-                    "revertCommitsCount", "correctedWordsCount", "autoCorrectionsCount");
+                    "revertCommitsCount", "correctedWordsCount", "autoCorrectionsCount",
+                    "publishableCount", "unpublishableStoppingCount",
+                    "unpublishableIncorrectWordCount", "unpublishableSampledTooRecentlyCount",
+                    "unpublishableDictionaryUnavailableCount", "unpublishableMayContainDigitCount",
+                    "unpublishableNotInDictionaryCount");
     private static void logStatistics() {
         final ResearchLogger researchLogger = getInstance();
         final Statistics statistics = researchLogger.mStatistics;
@@ -1922,6 +1940,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 statistics.mGesturesInputCount, statistics.mGesturesCharsCount,
                 statistics.mGesturesDeletedCount, statistics.mManualSuggestionsCount,
                 statistics.mRevertCommitsCount, statistics.mCorrectedWordsCount,
-                statistics.mAutoCorrectionsCount);
+                statistics.mAutoCorrectionsCount, statistics.mPublishableCount,
+                statistics.mUnpublishableStoppingCount, statistics.mUnpublishableIncorrectWordCount,
+                statistics.mUnpublishableSampledTooRecently,
+                statistics.mUnpublishableDictionaryUnavailable,
+                statistics.mUnpublishableMayContainDigit, statistics.mUnpublishableNotInDictionary);
     }
 }
