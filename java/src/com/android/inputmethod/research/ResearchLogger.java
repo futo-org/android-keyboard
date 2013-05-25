@@ -1618,25 +1618,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isExpectingCommitText = false;
-    /**
-     * Log a call to (UnknownClass).commitPartialText
-     *
-     * SystemResponse: The IME is committing part of a word.  This happens if a space is
-     * automatically inserted to split a single typed string into two or more words.
-     */
-    // TODO: This method is currently unused.  Find where it should be called from in the IME and
-    // add invocations.
-    private static final LogStatement LOGSTATEMENT_COMMIT_PARTIAL_TEXT =
-            new LogStatement("CommitPartialText", true, false, "newCursorPosition");
-    public static void commitPartialText(final String committedWord,
-            final long lastTimestampOfWordData, final boolean isBatchMode) {
-        final ResearchLogger researchLogger = getInstance();
-        final String scrubbedWord = scrubDigitsFromString(committedWord);
-        researchLogger.enqueueEvent(LOGSTATEMENT_COMMIT_PARTIAL_TEXT);
-        researchLogger.mStatistics.recordAutoCorrection(SystemClock.uptimeMillis());
-        researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, lastTimestampOfWordData,
-                isBatchMode);
-    }
 
     /**
      * Log a call to RichInputConnection.commitText().
