@@ -41,6 +41,10 @@ class Dictionary {
     static const int KIND_APP_DEFINED = 6; // Suggested by the application
     static const int KIND_SHORTCUT = 7; // A shortcut
     static const int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
+    // KIND_RESUMED: A resumed suggestion (comes from a span, currently this type is used only
+    // in java for re-correction)
+    static const int KIND_RESUMED = 9;
+    static const int KIND_OOV_CORRECTION = 10; // Most probable string correction
 
     static const int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
