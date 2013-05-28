@@ -20,18 +20,22 @@ import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UN
 import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
 import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.util.Arrays;
 import java.util.Locale;
 
 @SmallTest
 public class KeySpecParserTests extends AndroidTestCase {
-    private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
-    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+    private final static Locale TEST_LOCALE = Locale.ENGLISH;
+    final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
+    final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     private static final String CODE_SETTINGS = "!code/key_settings";
     private static final String ICON_SETTINGS = "!icon/settings_key";
@@ -48,10 +52,17 @@ public class KeySpecParserTests extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        final String language = Locale.ENGLISH.getLanguage();
+        final String language = TEST_LOCALE.getLanguage();
         mCodesSet.setLanguage(language);
         mTextsSet.setLanguage(language);
-        mTextsSet.loadStringResources(getContext());
+        final Context context = getContext();
+        new RunInLocale<Void>() {
+            @Override
+            protected Void job(final Resources res) {
+                mTextsSet.loadStringResources(context);
+                return null;
+            }
+        }.runInLocale(context.getResources(), TEST_LOCALE);
 
         mCodeSettings = KeySpecParser.parseCode(
                 CODE_SETTINGS, mCodesSet, CODE_UNSPECIFIED);
