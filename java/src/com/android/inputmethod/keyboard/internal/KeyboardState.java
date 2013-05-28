@@ -574,11 +574,6 @@ public final class KeyboardState {
         }
     }
 
-    public boolean isInMomentarySwitchState() {
-        return mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL
-                || mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE;
-    }
-
     private static boolean isSpaceCharacter(final int c) {
         return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
     }

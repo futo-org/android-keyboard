@@ -335,10 +335,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public boolean isInMomentarySwitchState() {
-        return mState.isInMomentarySwitchState();
-    }
-
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
