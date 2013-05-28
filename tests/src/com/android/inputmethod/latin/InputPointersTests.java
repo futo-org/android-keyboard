@@ -108,13 +108,13 @@ public class InputPointersTests extends AndroidTestCase {
         assertNotSame("pointerIds after copy", dst.getPointerIds(), src.getPointerIds());
         assertNotSame("times after copy", dst.getTimes(), src.getTimes());
         final int size = dst.getPointerSize();
-        assertArrayEquals("xCoordinates values after copy",
+        assertIntArrayEquals("xCoordinates values after copy",
                 dst.getXCoordinates(), 0, src.getXCoordinates(), 0, size);
-        assertArrayEquals("yCoordinates values after copy",
+        assertIntArrayEquals("yCoordinates values after copy",
                 dst.getYCoordinates(), 0, src.getYCoordinates(), 0, size);
-        assertArrayEquals("pointerIds values after copy",
+        assertIntArrayEquals("pointerIds values after copy",
                 dst.getPointerIds(), 0, src.getPointerIds(), 0, size);
-        assertArrayEquals("times values after copy",
+        assertIntArrayEquals("times values after copy",
                 dst.getTimes(), 0, src.getTimes(), 0, size);
     }
 
@@ -135,34 +135,34 @@ public class InputPointersTests extends AndroidTestCase {
 
         dst.append(src, 0, 0);
         assertEquals("size after append zero", dstLen, dst.getPointerSize());
-        assertArrayEquals("xCoordinates after append zero",
+        assertIntArrayEquals("xCoordinates after append zero",
                 dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
-        assertArrayEquals("yCoordinates after append zero",
+        assertIntArrayEquals("yCoordinates after append zero",
                 dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
-        assertArrayEquals("pointerIds after append zero",
+        assertIntArrayEquals("pointerIds after append zero",
                 dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
-        assertArrayEquals("times after append zero",
+        assertIntArrayEquals("times after append zero",
                 dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
 
         dst.append(src, 0, srcLen);
         assertEquals("size after append", dstLen + srcLen, dst.getPointerSize());
         assertTrue("primitive length after append",
                 dst.getPointerIds().length >= dstLen + srcLen);
-        assertArrayEquals("original xCoordinates values after append",
+        assertIntArrayEquals("original xCoordinates values after append",
                 dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
-        assertArrayEquals("original yCoordinates values after append",
+        assertIntArrayEquals("original yCoordinates values after append",
                 dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
-        assertArrayEquals("original pointerIds values after append",
+        assertIntArrayEquals("original pointerIds values after append",
                 dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
-        assertArrayEquals("original times values after append",
+        assertIntArrayEquals("original times values after append",
                 dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
-        assertArrayEquals("appended xCoordinates values after append",
+        assertIntArrayEquals("appended xCoordinates values after append",
                 src.getXCoordinates(), 0, dst.getXCoordinates(), dstLen, srcLen);
-        assertArrayEquals("appended yCoordinates values after append",
+        assertIntArrayEquals("appended yCoordinates values after append",
                 src.getYCoordinates(), 0, dst.getYCoordinates(), dstLen, srcLen);
-        assertArrayEquals("appended pointerIds values after append",
+        assertIntArrayEquals("appended pointerIds values after append",
                 src.getPointerIds(), 0, dst.getPointerIds(), dstLen, srcLen);
-        assertArrayEquals("appended times values after append",
+        assertIntArrayEquals("appended times values after append",
                 src.getTimes(), 0, dst.getTimes(), dstLen, srcLen);
     }
 
@@ -190,47 +190,55 @@ public class InputPointersTests extends AndroidTestCase {
 
         dst.append(srcPointerId, srcTimes, srcXCoords, srcYCoords, 0, 0);
         assertEquals("size after append zero", dstLen, dst.getPointerSize());
-        assertArrayEquals("xCoordinates after append zero",
+        assertIntArrayEquals("xCoordinates after append zero",
                 dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
-        assertArrayEquals("yCoordinates after append zero",
+        assertIntArrayEquals("yCoordinates after append zero",
                 dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
-        assertArrayEquals("pointerIds after append zero",
+        assertIntArrayEquals("pointerIds after append zero",
                 dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
-        assertArrayEquals("times after append zero",
+        assertIntArrayEquals("times after append zero",
                 dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
 
         dst.append(srcPointerId, srcTimes, srcXCoords, srcYCoords, 0, srcLen);
         assertEquals("size after append", dstLen + srcLen, dst.getPointerSize());
         assertTrue("primitive length after append",
                 dst.getPointerIds().length >= dstLen + srcLen);
-        assertArrayEquals("original xCoordinates values after append",
+        assertIntArrayEquals("original xCoordinates values after append",
                 dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
-        assertArrayEquals("original yCoordinates values after append",
+        assertIntArrayEquals("original yCoordinates values after append",
                 dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
-        assertArrayEquals("original pointerIds values after append",
+        assertIntArrayEquals("original pointerIds values after append",
                 dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
-        assertArrayEquals("original times values after append",
+        assertIntArrayEquals("original times values after append",
                 dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
-        assertArrayEquals("appended xCoordinates values after append",
+        assertIntArrayEquals("appended xCoordinates values after append",
                 srcXCoords.getPrimitiveArray(), 0, dst.getXCoordinates(), dstLen, srcLen);
-        assertArrayEquals("appended yCoordinates values after append",
+        assertIntArrayEquals("appended yCoordinates values after append",
                 srcYCoords.getPrimitiveArray(), 0, dst.getYCoordinates(), dstLen, srcLen);
-        assertArrayEquals("appended pointerIds values after append",
+        assertIntArrayEquals("appended pointerIds values after append",
                 srcPointerIds, 0, dst.getPointerIds(), dstLen, srcLen);
-        assertArrayEquals("appended times values after append",
+        assertIntArrayEquals("appended times values after append",
                 srcTimes.getPrimitiveArray(), 0, dst.getTimes(), dstLen, srcLen);
     }
 
-    private static void assertArrayEquals(String message, int[] expecteds, int expectedPos,
-            int[] actuals, int actualPos, int length) {
-        if (expecteds == null && actuals == null) {
+    // TODO: Consolidate this method with
+    // {@link ResizableIntArrayTests#assertIntArrayEquals(String,int[],int,int[],int,int)}.
+    private static void assertIntArrayEquals(final String message, final int[] expecteds,
+            final int expectedPos, final int[] actuals, final int actualPos, final int length) {
+        if (expecteds == actuals) {
             return;
         }
         if (expecteds == null || actuals == null) {
-            fail(message + ": expecteds=" + expecteds + " actuals=" + actuals);
+            assertEquals(message, Arrays.toString(expecteds), Arrays.toString(actuals));
+            return;
+        }
+        if (expecteds.length < expectedPos + length || actuals.length < actualPos + length) {
+            fail(message + ": insufficient length: expecteds=" + Arrays.toString(expecteds)
+                    + " actuals=" + Arrays.toString(actuals));
+            return;
         }
         for (int i = 0; i < length; i++) {
-            assertEquals(message + ": element at " + i,
+            assertEquals(message + " [" + i + "]",
                     expecteds[i + expectedPos], actuals[i + actualPos]);
         }
     }

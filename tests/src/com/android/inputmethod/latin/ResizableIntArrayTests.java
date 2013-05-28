@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import java.util.Arrays;
+
 @SmallTest
 public class ResizableIntArrayTests extends AndroidTestCase {
     private static final int DEFAULT_CAPACITY = 48;
@@ -186,7 +188,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertEquals("length after copy", dst.getLength(), src.getLength());
         assertSame("array after copy", array, dst.getPrimitiveArray());
         assertNotSame("array after copy", dst.getPrimitiveArray(), src.getPrimitiveArray());
-        assertArrayEquals("values after copy",
+        assertIntArrayEquals("values after copy",
                 dst.getPrimitiveArray(), 0, src.getPrimitiveArray(), 0, dst.getLength());
 
         final int smallerLength = DEFAULT_CAPACITY / 2;
@@ -197,7 +199,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertEquals("length after copy to smaller", dst.getLength(), src.getLength());
         assertNotSame("array after copy to smaller", array2, array3);
         assertNotSame("array after copy to smaller", array3, src.getPrimitiveArray());
-        assertArrayEquals("values after copy to smaller",
+        assertIntArrayEquals("values after copy to smaller",
                 dst.getPrimitiveArray(), 0, src.getPrimitiveArray(), 0, dst.getLength());
     }
 
@@ -220,7 +222,7 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         dst.append(src, 0, 0);
         assertEquals("length after append zero", dstLen, dst.getLength());
         assertSame("array after append zero", array, dst.getPrimitiveArray());
-        assertArrayEquals("values after append zero",
+        assertIntArrayEquals("values after append zero",
                 dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
 
         dst.append(src, 0, srcLen);
@@ -228,9 +230,9 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertSame("array after append", array, dst.getPrimitiveArray());
         assertTrue("primitive length after append",
                 dst.getPrimitiveArray().length >= dstLen + srcLen);
-        assertArrayEquals("original values after append",
+        assertIntArrayEquals("original values after append",
                 dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
-        assertArrayEquals("appended values after append",
+        assertIntArrayEquals("appended values after append",
                 src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen, srcLen);
 
         dst.append(src, 0, srcLen);
@@ -238,11 +240,11 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertNotSame("array after 2nd append", array, dst.getPrimitiveArray());
         assertTrue("primitive length after 2nd append",
                 dst.getPrimitiveArray().length >= dstLen + srcLen * 2);
-        assertArrayEquals("original values after 2nd append",
+        assertIntArrayEquals("original values after 2nd append",
                 dstCopy.getPrimitiveArray(), 0, dst.getPrimitiveArray(), 0, dstLen);
-        assertArrayEquals("appended values after 2nd append",
+        assertIntArrayEquals("appended values after 2nd append",
                 src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen, srcLen);
-        assertArrayEquals("appended values after 2nd append",
+        assertIntArrayEquals("appended values after 2nd append",
                 src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen + srcLen, srcLen);
     }
 
@@ -319,16 +321,22 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         }
     }
 
-    private static void assertArrayEquals(String message, int[] expecteds, int expectedPos,
-            int[] actuals, int actualPos, int length) {
-        if (expecteds == null && actuals == null) {
+    private static void assertIntArrayEquals(final String message, final int[] expecteds,
+            final int expectedPos, final int[] actuals, final int actualPos, final int length) {
+        if (expecteds == actuals) {
             return;
         }
         if (expecteds == null || actuals == null) {
-            fail(message + ": expecteds=" + expecteds + " actuals=" + actuals);
+            assertEquals(message, Arrays.toString(expecteds), Arrays.toString(actuals));
+            return;
+        }
+        if (expecteds.length < expectedPos + length || actuals.length < actualPos + length) {
+            fail(message + ": insufficient length: expecteds=" + Arrays.toString(expecteds)
+                    + " actuals=" + Arrays.toString(actuals));
+            return;
         }
         for (int i = 0; i < length; i++) {
-            assertEquals(message + ": element at " + i,
+            assertEquals(message + " [" + i + "]",
                     expecteds[i + expectedPos], actuals[i + actualPos]);
         }
     }
