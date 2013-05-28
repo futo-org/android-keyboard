@@ -41,60 +41,60 @@ public class StringUtilsTests extends AndroidTestCase {
     }
 
     public void testContainsInExtraValues() {
-        assertFalse("null", StringUtils.containsInCommaConcatenatedText("key", null));
-        assertFalse("empty", StringUtils.containsInCommaConcatenatedText("key", ""));
+        assertFalse("null", StringUtils.containsInCommaSplittableText("key", null));
+        assertFalse("empty", StringUtils.containsInCommaSplittableText("key", ""));
         assertFalse("not in 1 element",
-                StringUtils.containsInCommaConcatenatedText("key", "key1"));
+                StringUtils.containsInCommaSplittableText("key", "key1"));
         assertFalse("not in 2 elements",
-                StringUtils.containsInCommaConcatenatedText("key", "key1,key2"));
+                StringUtils.containsInCommaSplittableText("key", "key1,key2"));
 
-        assertTrue("in 1 element", StringUtils.containsInCommaConcatenatedText("key", "key"));
-        assertTrue("in 2 elements", StringUtils.containsInCommaConcatenatedText("key", "key1,key"));
+        assertTrue("in 1 element", StringUtils.containsInCommaSplittableText("key", "key"));
+        assertTrue("in 2 elements", StringUtils.containsInCommaSplittableText("key", "key1,key"));
     }
 
     public void testAppendToExtraValuesIfNotExists() {
         assertEquals("null", "key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", null));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", null));
         assertEquals("empty", "key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", ""));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", ""));
 
         assertEquals("not in 1 element", "key1,key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1"));
         assertEquals("not in 2 elements", "key1,key2,key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key2"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key2"));
 
         assertEquals("in 1 element", "key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key"));
         assertEquals("in 2 elements at position 1", "key,key2",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key,key2"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key,key2"));
         assertEquals("in 2 elements at position 2", "key1,key",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key"));
         assertEquals("in 3 elements at position 2", "key1,key,key3",
-                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key,key3"));
+                StringUtils.appendToCommaSplittableTextIfNotExists("key", "key1,key,key3"));
     }
 
     public void testRemoveFromExtraValuesIfExists() {
-        assertEquals("null", "", StringUtils.removeFromCommaConcatenatedTextIfExists("key", null));
-        assertEquals("empty", "", StringUtils.removeFromCommaConcatenatedTextIfExists("key", ""));
+        assertEquals("null", "", StringUtils.removeFromCommaSplittableTextIfExists("key", null));
+        assertEquals("empty", "", StringUtils.removeFromCommaSplittableTextIfExists("key", ""));
 
         assertEquals("not in 1 element", "key1",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key1"));
         assertEquals("not in 2 elements", "key1,key2",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key2"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key1,key2"));
 
         assertEquals("in 1 element", "",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key"));
         assertEquals("in 2 elements at position 1", "key2",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key,key2"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key,key2"));
         assertEquals("in 2 elements at position 2", "key1",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key1,key"));
         assertEquals("in 3 elements at position 2", "key1,key3",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key,key3"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key1,key,key3"));
 
         assertEquals("in 3 elements at position 1,2,3", "",
-                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key,key,key"));
+                StringUtils.removeFromCommaSplittableTextIfExists("key", "key,key,key"));
         assertEquals("in 5 elements at position 2,4", "key1,key3,key5",
-                StringUtils.removeFromCommaConcatenatedTextIfExists(
+                StringUtils.removeFromCommaSplittableTextIfExists(
                         "key", "key1,key,key3,key,key5"));
     }
 
