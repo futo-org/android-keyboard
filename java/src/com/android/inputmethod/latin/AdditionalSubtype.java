@@ -49,13 +49,13 @@ public final class AdditionalSubtype {
                 && SubtypeLocale.isExceptionalLocale(localeString)) {
             final String layoutDisplayName = SubtypeLocale.getKeyboardLayoutSetDisplayName(
                     keyboardLayoutSetName);
-            layoutDisplayNameExtraValue = StringUtils.appendToCommaConcatenatedTextIfNotExists(
+            layoutDisplayNameExtraValue = StringUtils.appendToCommaSplittableTextIfNotExists(
                     UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME + "=" + layoutDisplayName, extraValue);
         } else {
             layoutDisplayNameExtraValue = extraValue;
         }
         final String additionalSubtypeExtraValue =
-                StringUtils.appendToCommaConcatenatedTextIfNotExists(
+                StringUtils.appendToCommaSplittableTextIfNotExists(
                         IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocale.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
@@ -67,8 +67,8 @@ public final class AdditionalSubtype {
         final String localeString = subtype.getLocale();
         final String keyboardLayoutSetName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
-        final String extraValue = StringUtils.removeFromCommaConcatenatedTextIfExists(
-                layoutExtraValue, StringUtils.removeFromCommaConcatenatedTextIfExists(
+        final String extraValue = StringUtils.removeFromCommaSplittableTextIfExists(
+                layoutExtraValue, StringUtils.removeFromCommaSplittableTextIfExists(
                         IS_ADDITIONAL_SUBTYPE, subtype.getExtraValue()));
         final String basePrefSubtype = localeString + LOCALE_AND_LAYOUT_SEPARATOR
                 + keyboardLayoutSetName;
