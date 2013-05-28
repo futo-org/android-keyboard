@@ -27,6 +27,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.PatternSyntaxException;
 
 public final class ResourceUtils {
     private static final String TAG = ResourceUtils.class.getSimpleName();
@@ -83,20 +84,37 @@ public final class ResourceUtils {
             return overrideValue;
         }
 
-        final String defaultValue = findDefaultConstant(overrideArray);
-        // The defaultValue might be an empty string.
-        if (defaultValue == null) {
-            Log.w(TAG, "Couldn't find override value nor default value:"
-                    + " resource="+ res.getResourceEntryName(overrideResId)
-                    + " build=" + sBuildKeyValuesDebugString);
-        } else {
-            Log.i(TAG, "Found default value:"
-                    + " resource="+ res.getResourceEntryName(overrideResId)
-                    + " build=" + sBuildKeyValuesDebugString
-                    + " default=" + defaultValue);
+        String defaultValue = null;
+        try {
+            defaultValue = findDefaultConstant(overrideArray);
+            // The defaultValue might be an empty string.
+            if (defaultValue == null) {
+                Log.w(TAG, "Couldn't find override value nor default value:"
+                        + " resource="+ res.getResourceEntryName(overrideResId)
+                        + " build=" + sBuildKeyValuesDebugString);
+            } else {
+                Log.i(TAG, "Found default value:"
+                        + " resource="+ res.getResourceEntryName(overrideResId)
+                        + " build=" + sBuildKeyValuesDebugString
+                        + " default=" + defaultValue);
+            }
+        } catch (final DeviceOverridePatternSyntaxError e) {
+            Log.w(TAG, "Syntax error, ignored", e);
         }
         sDeviceOverrideValueMap.put(key, defaultValue);
         return defaultValue;
+    }
+
+    @SuppressWarnings("serial")
+    static class DeviceOverridePatternSyntaxError extends Exception {
+        public DeviceOverridePatternSyntaxError(final String message, final String expression) {
+            this(message, expression, null);
+        }
+
+        public DeviceOverridePatternSyntaxError(final String message, final String expression,
+                final Throwable throwable) {
+            super(message + ": " + expression, throwable);
+        }
     }
 
     /**
@@ -123,10 +141,12 @@ public final class ResourceUtils {
         if (conditionConstantArray == null || keyValuePairs == null) {
             return null;
         }
+        String foundValue = null;
         for (final String conditionConstant : conditionConstantArray) {
             final int posComma = conditionConstant.indexOf(',');
             if (posComma < 0) {
-                throw new RuntimeException("Array element has no comma: " + conditionConstant);
+                Log.w(TAG, "Array element has no comma: " + conditionConstant);
+                continue;
             }
             final String condition = conditionConstant.substring(0, posComma);
             if (condition.isEmpty()) {
@@ -134,44 +154,59 @@ public final class ResourceUtils {
                 // {@link #findConstantForDefault(String[])}.
                 continue;
             }
-            if (fulfillsCondition(keyValuePairs, condition)) {
-                return conditionConstant.substring(posComma + 1);
+            try {
+                if (fulfillsCondition(keyValuePairs, condition)) {
+                    // Take first match
+                    if (foundValue == null) {
+                        foundValue = conditionConstant.substring(posComma + 1);
+                    }
+                    // And continue walking through all conditions.
+                }
+            } catch (final DeviceOverridePatternSyntaxError e) {
+                Log.w(TAG, "Syntax error, ignored", e);
             }
         }
-        return null;
+        return foundValue;
     }
 
     private static boolean fulfillsCondition(final HashMap<String,String> keyValuePairs,
-            final String condition) {
+            final String condition) throws DeviceOverridePatternSyntaxError {
         final String[] patterns = condition.split(":");
         // Check all patterns in a condition are true
+        boolean matchedAll = true;
         for (final String pattern : patterns) {
             final int posEqual = pattern.indexOf('=');
             if (posEqual < 0) {
-                throw new RuntimeException("Pattern has no '=': " + condition);
+                throw new DeviceOverridePatternSyntaxError("Pattern has no '='", condition);
             }
             final String key = pattern.substring(0, posEqual);
             final String value = keyValuePairs.get(key);
             if (value == null) {
-                throw new RuntimeException("Found unknown key: " + condition);
+                throw new DeviceOverridePatternSyntaxError("Unknown key", condition);
             }
             final String patternRegexpValue = pattern.substring(posEqual + 1);
-            if (!value.matches(patternRegexpValue)) {
-                return false;
+            try {
+                if (!value.matches(patternRegexpValue)) {
+                    matchedAll = false;
+                    // And continue walking through all patterns.
+                }
+            } catch (final PatternSyntaxException e) {
+                throw new DeviceOverridePatternSyntaxError("Syntax error", condition, e);
             }
         }
-        return true;
+        return matchedAll;
     }
 
     @UsedForTesting
-    static String findDefaultConstant(final String[] conditionConstantArray) {
+    static String findDefaultConstant(final String[] conditionConstantArray)
+            throws DeviceOverridePatternSyntaxError {
         if (conditionConstantArray == null) {
             return null;
         }
         for (final String condition : conditionConstantArray) {
             final int posComma = condition.indexOf(',');
             if (posComma < 0) {
-                throw new RuntimeException("Array element has no comma: " + condition);
+                throw new DeviceOverridePatternSyntaxError("Array element has no comma", condition);
             }
             if (posComma == 0) { // condition is empty.
                 return condition.substring(posComma + 1);
