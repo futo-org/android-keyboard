@@ -19,25 +19,41 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.ResourceUtils.DeviceOverridePatternSyntaxError;
+
 import java.util.HashMap;
 
 @SmallTest
 public class ResourceUtilsTests extends AndroidTestCase {
     public void testFindDefaultConstant() {
         final String[] nullArray = null;
-        assertNull(ResourceUtils.findDefaultConstant(nullArray));
-
         final String[] emptyArray = {};
-        assertNull(ResourceUtils.findDefaultConstant(emptyArray));
-
         final String[] array = {
-            "HARDWARE=grouper,0.3",
-            "HARDWARE=mako,0.4",
-            ",defaultValue1",
-            "HARDWARE=manta,0.2",
-            ",defaultValue2",
+                "HARDWARE=grouper,0.3",
+                "HARDWARE=mako,0.4",
+                ",defaultValue1",
+                "HARDWARE=manta,0.2",
+                ",defaultValue2",
         };
-        assertEquals(ResourceUtils.findDefaultConstant(array), "defaultValue1");
+
+        try {
+            assertNull(ResourceUtils.findDefaultConstant(nullArray));
+            assertNull(ResourceUtils.findDefaultConstant(emptyArray));
+            assertEquals(ResourceUtils.findDefaultConstant(array), "defaultValue1");
+        } catch (final DeviceOverridePatternSyntaxError e) {
+            fail(e.getMessage());
+        }
+
+        final String[] errorArray = {
+            "HARDWARE=grouper,0.3",
+            "no_comma"
+        };
+        try {
+            final String defaultValue = ResourceUtils.findDefaultConstant(errorArray);
+            fail("exception should be thrown: defaultValue=" + defaultValue);
+        } catch (final DeviceOverridePatternSyntaxError e) {
+            assertEquals("Array element has no comma: no_comma", e.getMessage());
+        }
     }
 
     public void testFindConstantForKeyValuePairsSimple() {
@@ -67,33 +83,23 @@ public class ResourceUtilsTests extends AndroidTestCase {
 
         final HashMap<String,String> keyValues = CollectionUtils.newHashMap();
         keyValues.put(HARDWARE_KEY, "grouper");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.3");
+        assertEquals("0.3", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "mako");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.4");
+        assertEquals("0.4", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "manta");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.2");
+        assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
 
-        try {
-            keyValues.clear();
-            keyValues.put("hardware", "grouper");
-            final String constant = ResourceUtils.findConstantForKeyValuePairs(keyValues, array);
-            fail("condition without HARDWARE must fail: constant=" + constant);
-        } catch (final RuntimeException e) {
-            assertEquals(e.getMessage(), "Found unknown key: HARDWARE=grouper");
-        }
+        keyValues.clear();
+        keyValues.put("hardware", "grouper");
+        assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
+
         keyValues.clear();
         keyValues.put(HARDWARE_KEY, "MAKO");
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "mantaray");
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
 
-        try {
-            final String constant = ResourceUtils.findConstantForKeyValuePairs(
-                    emptyKeyValue, array);
-            fail("emptyCondition shouldn't match: constant=" + constant);
-        } catch (final RuntimeException e) {
-            assertEquals(e.getMessage(), "Found unknown key: HARDWARE=grouper");
-        }
+        assertNull(ResourceUtils.findConstantForKeyValuePairs(emptyKeyValue, array));
     }
 
     public void testFindConstantForKeyValuePairsCombined() {
@@ -102,6 +108,8 @@ public class ResourceUtilsTests extends AndroidTestCase {
         final String MANUFACTURER_KEY = "MANUFACTURER";
         final String[] array = {
             ",defaultValue",
+            "no_comma",
+            "error_pattern,0.1",
             "HARDWARE=grouper:MANUFACTURER=asus,0.3",
             "HARDWARE=mako:MODEL=Nexus 4,0.4",
             "HARDWARE=manta:MODEL=Nexus 10:MANUFACTURER=samsung,0.2"
@@ -117,25 +125,25 @@ public class ResourceUtilsTests extends AndroidTestCase {
         keyValues.put(HARDWARE_KEY, "grouper");
         keyValues.put(MODEL_KEY, "Nexus 7");
         keyValues.put(MANUFACTURER_KEY, "asus");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.3");
+        assertEquals("0.3", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray));
 
         keyValues.clear();
         keyValues.put(HARDWARE_KEY, "mako");
         keyValues.put(MODEL_KEY, "Nexus 4");
         keyValues.put(MANUFACTURER_KEY, "LGE");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.4");
+        assertEquals("0.4", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray));
 
         keyValues.clear();
         keyValues.put(HARDWARE_KEY, "manta");
         keyValues.put(MODEL_KEY, "Nexus 10");
         keyValues.put(MANUFACTURER_KEY, "samsung");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.2");
+        assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray));
         keyValues.put(HARDWARE_KEY, "mantaray");
         assertNull(ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray), "0.2");
+        assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, failArray));
     }
 
     public void testFindConstantForKeyValuePairsRegexp() {
@@ -144,6 +152,8 @@ public class ResourceUtilsTests extends AndroidTestCase {
         final String MANUFACTURER_KEY = "MANUFACTURER";
         final String[] array = {
             ",defaultValue",
+            "no_comma",
+            "HARDWARE=error_regexp:MANUFACTURER=error[regexp,0.1",
             "HARDWARE=grouper|tilapia:MANUFACTURER=asus,0.3",
             "HARDWARE=[mM][aA][kK][oO]:MODEL=Nexus 4,0.4",
             "HARDWARE=manta.*:MODEL=Nexus 10:MANUFACTURER=samsung,0.2"
@@ -153,24 +163,24 @@ public class ResourceUtilsTests extends AndroidTestCase {
         keyValues.put(HARDWARE_KEY, "grouper");
         keyValues.put(MODEL_KEY, "Nexus 7");
         keyValues.put(MANUFACTURER_KEY, "asus");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.3");
+        assertEquals("0.3", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "tilapia");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.3");
+        assertEquals("0.3", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
 
         keyValues.clear();
         keyValues.put(HARDWARE_KEY, "mako");
         keyValues.put(MODEL_KEY, "Nexus 4");
         keyValues.put(MANUFACTURER_KEY, "LGE");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.4");
+        assertEquals("0.4", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "MAKO");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.4");
+        assertEquals("0.4", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
 
         keyValues.clear();
         keyValues.put(HARDWARE_KEY, "manta");
         keyValues.put(MODEL_KEY, "Nexus 10");
         keyValues.put(MANUFACTURER_KEY, "samsung");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.2");
+        assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "mantaray");
-        assertEquals(ResourceUtils.findConstantForKeyValuePairs(keyValues, array), "0.2");
+        assertEquals("0.2", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
     }
 }
