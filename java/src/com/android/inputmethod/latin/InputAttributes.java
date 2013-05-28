@@ -199,7 +199,6 @@ public final class InputAttributes {
         if (editorInfo == null) return false;
         final String findingKey = (packageName != null) ? packageName + "." + key
                 : key;
-        return StringUtils.containsInCommaConcatenatedText(
-                findingKey, editorInfo.privateImeOptions);
+        return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
     }
 }

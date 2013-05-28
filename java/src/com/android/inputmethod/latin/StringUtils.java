@@ -42,33 +42,38 @@ public final class StringUtils {
         return false;
     }
 
-    private static final String SEPARATOR_FOR_COMMA_CONCATENATED_TEXT = ",";
+    /**
+     * Comma-Splittable Text is similar to Comma-Separated Values (CSV) but has much simpler syntax.
+     * Unlike CSV, Comma-Splittable Text has no escaping mechanism, so that the text can't contain
+     * a comma character in it.
+     */
+    private static final String SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT = ",";
 
-    public static boolean containsInCommaConcatenatedText(final String text,
+    public static boolean containsInCommaSplittableText(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
             return false;
         }
-        return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT));
+        return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT));
     }
 
-    public static String appendToCommaConcatenatedTextIfNotExists(final String text,
+    public static String appendToCommaSplittableTextIfNotExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
             return text;
         }
-        if (containsInCommaConcatenatedText(text, extraValues)) {
+        if (containsInCommaSplittableText(text, extraValues)) {
             return extraValues;
         }
-        return extraValues + SEPARATOR_FOR_COMMA_CONCATENATED_TEXT + text;
+        return extraValues + SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT + text;
     }
 
-    public static String removeFromCommaConcatenatedTextIfExists(final String text,
+    public static String removeFromCommaSplittableTextIfExists(final String text,
             final String extraValues) {
         if (TextUtils.isEmpty(extraValues)) {
             return "";
         }
-        final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT);
+        final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT);
         if (!containsInArray(text, elements)) {
             return extraValues;
         }
@@ -78,7 +83,7 @@ public final class StringUtils {
                 result.add(element);
             }
         }
-        return TextUtils.join(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT, result);
+        return TextUtils.join(SEPARATOR_FOR_COMMA_SPLITTABLE_TEXT, result);
     }
 
     /**
