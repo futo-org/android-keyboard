@@ -260,14 +260,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     if (DEBUG) {
                         final String wordsString = logUnit.getWordsAsString();
                         Log.d(TAG, "onPublish: '" + wordsString
-                                + "', hc: " + logUnit.containsCorrection()
+                                + "', hc: " + logUnit.containsUserDeletions()
                                 + ", cipd: " + canIncludePrivateData);
                     }
                     for (final String word : logUnit.getWordsAsStringArray()) {
                         final Dictionary dictionary = getDictionary();
                         mStatistics.recordWordEntered(
                                 dictionary != null && dictionary.isValidWord(word),
-                                logUnit.containsCorrection());
+                                logUnit.containsUserDeletions());
                     }
                 }
                 publishLogUnits(logUnits, mMainResearchLog, canIncludePrivateData);
@@ -819,8 +819,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.setMayContainDigit();
     }
 
-    private void setCurrentLogUnitContainsCorrection() {
-        mCurrentLogUnit.setContainsCorrection();
+    private void setCurrentLogUnitContainsUserDeletions() {
+        mCurrentLogUnit.setContainsUserDeletions();
     }
 
     private void setCurrentLogUnitCorrectionType(final int correctionType) {
@@ -920,7 +920,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (DEBUG) {
                 Log.d(TAG, "publishLogBuffer: " + (logUnit.hasOneOrMoreWords()
                         ? logUnit.getWordsAsString() : "<wordless>")
-                        + ", correction?: " + logUnit.containsCorrection());
+                        + ", correction?: " + logUnit.containsUserDeletions());
             }
             researchLog.publish(logUnit, canIncludePrivateData);
         }
@@ -1286,7 +1286,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         if (!replacedWord.equals(suggestion.toString())) {
             // The user chose something other than what was already there.
-            researchLogger.setCurrentLogUnitContainsCorrection();
+            researchLogger.setCurrentLogUnitContainsUserDeletions();
             researchLogger.setCurrentLogUnitCorrectionType(LogUnit.CORRECTIONTYPE_TYPO);
         }
         final String scrubbedWord = scrubDigitsFromString(suggestion);
@@ -1463,7 +1463,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord,
                 separatorString);
         if (logUnit != null) {
-            logUnit.setContainsCorrection();
+            logUnit.setContainsUserDeletions();
         }
         researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
     }
