@@ -315,9 +315,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             default:
                 final int longpressTimeout =
                         Settings.getInstance().getCurrent().mKeyLongpressTimeout;
-                if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
-                    // We use longer timeout for sliding finger input started from the symbols
-                    // mode key.
+                if (tracker.isInSlidingKeyInputFromModifier()) {
+                    // We use longer timeout for sliding finger input started from the modifier key.
                     delay = longpressTimeout * 3;
                 } else {
                     delay = longpressTimeout;
