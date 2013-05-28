@@ -40,57 +40,62 @@ public class StringUtilsTests extends AndroidTestCase {
         }));
     }
 
-    public void testContainsInCsv() {
-        assertFalse("null", StringUtils.containsInCsv("key", null));
-        assertFalse("empty", StringUtils.containsInCsv("key", ""));
-        assertFalse("not in 1 element", StringUtils.containsInCsv("key", "key1"));
-        assertFalse("not in 2 elements", StringUtils.containsInCsv("key", "key1,key2"));
+    public void testContainsInExtraValues() {
+        assertFalse("null", StringUtils.containsInCommaConcatenatedText("key", null));
+        assertFalse("empty", StringUtils.containsInCommaConcatenatedText("key", ""));
+        assertFalse("not in 1 element",
+                StringUtils.containsInCommaConcatenatedText("key", "key1"));
+        assertFalse("not in 2 elements",
+                StringUtils.containsInCommaConcatenatedText("key", "key1,key2"));
 
-        assertTrue("in 1 element", StringUtils.containsInCsv("key", "key"));
-        assertTrue("in 2 elements", StringUtils.containsInCsv("key", "key1,key"));
+        assertTrue("in 1 element", StringUtils.containsInCommaConcatenatedText("key", "key"));
+        assertTrue("in 2 elements", StringUtils.containsInCommaConcatenatedText("key", "key1,key"));
     }
 
-    public void testAppendToCsvIfNotExists() {
-        assertEquals("null", "key", StringUtils.appendToCsvIfNotExists("key", null));
-        assertEquals("empty", "key", StringUtils.appendToCsvIfNotExists("key", ""));
+    public void testAppendToExtraValuesIfNotExists() {
+        assertEquals("null", "key",
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", null));
+        assertEquals("empty", "key",
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", ""));
 
         assertEquals("not in 1 element", "key1,key",
-                StringUtils.appendToCsvIfNotExists("key", "key1"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1"));
         assertEquals("not in 2 elements", "key1,key2,key",
-                StringUtils.appendToCsvIfNotExists("key", "key1,key2"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key2"));
 
         assertEquals("in 1 element", "key",
-                StringUtils.appendToCsvIfNotExists("key", "key"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key"));
         assertEquals("in 2 elements at position 1", "key,key2",
-                StringUtils.appendToCsvIfNotExists("key", "key,key2"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key,key2"));
         assertEquals("in 2 elements at position 2", "key1,key",
-                StringUtils.appendToCsvIfNotExists("key", "key1,key"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key"));
         assertEquals("in 3 elements at position 2", "key1,key,key3",
-                StringUtils.appendToCsvIfNotExists("key", "key1,key,key3"));
+                StringUtils.appendToCommaConcatenatedTextIfNotExists("key", "key1,key,key3"));
     }
 
-    public void testRemoveFromCsvIfExists() {
-        assertEquals("null", "", StringUtils.removeFromCsvIfExists("key", null));
-        assertEquals("empty", "", StringUtils.removeFromCsvIfExists("key", ""));
+    public void testRemoveFromExtraValuesIfExists() {
+        assertEquals("null", "", StringUtils.removeFromCommaConcatenatedTextIfExists("key", null));
+        assertEquals("empty", "", StringUtils.removeFromCommaConcatenatedTextIfExists("key", ""));
 
         assertEquals("not in 1 element", "key1",
-                StringUtils.removeFromCsvIfExists("key", "key1"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1"));
         assertEquals("not in 2 elements", "key1,key2",
-                StringUtils.removeFromCsvIfExists("key", "key1,key2"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key2"));
 
         assertEquals("in 1 element", "",
-                StringUtils.removeFromCsvIfExists("key", "key"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key"));
         assertEquals("in 2 elements at position 1", "key2",
-                StringUtils.removeFromCsvIfExists("key", "key,key2"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key,key2"));
         assertEquals("in 2 elements at position 2", "key1",
-                StringUtils.removeFromCsvIfExists("key", "key1,key"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key"));
         assertEquals("in 3 elements at position 2", "key1,key3",
-                StringUtils.removeFromCsvIfExists("key", "key1,key,key3"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key1,key,key3"));
 
         assertEquals("in 3 elements at position 1,2,3", "",
-                StringUtils.removeFromCsvIfExists("key", "key,key,key"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists("key", "key,key,key"));
         assertEquals("in 5 elements at position 2,4", "key1,key3,key5",
-                StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
+                StringUtils.removeFromCommaConcatenatedTextIfExists(
+                        "key", "key1,key,key3,key,key5"));
     }
 
 
