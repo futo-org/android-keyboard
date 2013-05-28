@@ -215,10 +215,6 @@ public final class Constants {
         }
     }
 
-    // Constants for CSV parsing.
-    public static final char CSV_SEPARATOR = ',';
-    public static final char CSV_ESCAPE = '\\';
-
     private Constants() {
         // This utility class is not publicly instantiable.
     }
