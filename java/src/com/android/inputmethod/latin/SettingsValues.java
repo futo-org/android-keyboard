@@ -80,6 +80,10 @@ public final class SettingsValues {
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
+    // Setting values for additional features
+    public final int[] mAdditionalFeaturesSettingValues =
+            new int[AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
+
     // Debug settings
     public final boolean mIsInternal;
 
@@ -149,6 +153,8 @@ public final class SettingsValues {
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
         mSuggestionVisibility = createSuggestionVisibility(res, showSuggestionsSetting);
+        AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
+                prefs, mAdditionalFeaturesSettingValues);
         mIsInternal = Settings.isInternal(prefs);
     }
 

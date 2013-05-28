@@ -207,6 +207,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
             removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());
+        } else {
+            AdditionalFeaturesSettingUtils.addAdditionalFeaturesPreferences(context, this);
         }
 
         setupKeyLongpressTimeoutSettings(prefs, res);

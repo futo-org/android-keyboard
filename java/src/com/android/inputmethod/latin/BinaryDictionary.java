@@ -136,6 +136,8 @@ public final class BinaryDictionary extends Dictionary {
         final InputPointers ips = composer.getInputPointers();
         final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
         mNativeSuggestOptions.setIsGesture(isGesture);
+        mNativeSuggestOptions.setAdditionalFeaturesOptions(
+                AdditionalFeaturesSettingUtils.getAdditionalNativeSuggestOptions());
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),
