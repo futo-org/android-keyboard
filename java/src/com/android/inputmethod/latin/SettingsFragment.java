@@ -329,6 +329,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             }
 
             @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
+            }
+
+            @Override
             public int readValue(final String key) {
                 return Settings.readKeypressVibrationDuration(sp, res);
             }
@@ -356,6 +361,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             @Override
             public void writeValue(final int value, final String key) {
                 sp.edit().putInt(key, value).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
             }
 
             @Override
@@ -394,6 +404,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             @Override
             public void writeValue(final int value, final String key) {
                 sp.edit().putFloat(key, getValueFromPercentage(value)).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                sp.edit().remove(key).apply();
             }
 
             @Override

@@ -32,6 +32,7 @@ public final class SeekBarDialogPreference extends DialogPreference
         public int readValue(final String key);
         public int readDefaultValue(final String key);
         public void writeValue(final int value, final String key);
+        public void writeDefaultValue(final String key);
         public void feedbackValue(final int value);
     }
 
@@ -122,12 +123,16 @@ public final class SeekBarDialogPreference extends DialogPreference
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         super.onClick(dialog, which);
+        final String key = getKey();
         if (which == DialogInterface.BUTTON_NEUTRAL) {
-            setValue(clipValue(mValueProxy.readDefaultValue(getKey())), false /* fromUser */);
+            setValue(clipValue(mValueProxy.readDefaultValue(key)), false /* fromUser */);
+            mValueProxy.writeDefaultValue(key);
+            return;
         }
-        if (which != DialogInterface.BUTTON_NEGATIVE) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
             setSummary(mValueView.getText());
-            mValueProxy.writeValue(getClippedValueFromProgress(mSeekBar.getProgress()), getKey());
+            mValueProxy.writeValue(getClippedValueFromProgress(mSeekBar.getProgress()), key);
+            return;
         }
     }
 
