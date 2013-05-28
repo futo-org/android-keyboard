@@ -57,6 +57,11 @@ public class ButtonSwitcher extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
+    public void reset() {
+        mStatus = NOT_INITIALIZED;
+        mAnimateToStatus = NOT_INITIALIZED;
+    }
+
     @Override
     protected void onLayout(final boolean changed, final int left, final int top, final int right,
             final int bottom) {
@@ -64,9 +69,7 @@ public class ButtonSwitcher extends FrameLayout {
         mInstallButton = (Button)findViewById(R.id.dict_install_button);
         mCancelButton = (Button)findViewById(R.id.dict_cancel_button);
         mDeleteButton = (Button)findViewById(R.id.dict_delete_button);
-        mInstallButton.setOnClickListener(mOnClickListener);
-        mCancelButton.setOnClickListener(mOnClickListener);
-        mDeleteButton.setOnClickListener(mOnClickListener);
+        setInternalOnClickListener(mOnClickListener);
         setButtonPositionWithoutAnimation(mStatus);
         if (mAnimateToStatus != NOT_INITIALIZED) {
             // We have been asked to animate before we were ready, so we took a note of it.
@@ -139,6 +142,12 @@ public class ButtonSwitcher extends FrameLayout {
 
     public void setInternalOnClickListener(final OnClickListener listener) {
         mOnClickListener = listener;
+        if (null != mInstallButton) {
+            // Already laid out : do it now
+            mInstallButton.setOnClickListener(mOnClickListener);
+            mCancelButton.setOnClickListener(mOnClickListener);
+            mDeleteButton.setOnClickListener(mOnClickListener);
+        }
     }
 
     private ViewPropertyAnimator animateButton(final View button, final int direction) {

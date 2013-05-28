@@ -16,8 +16,11 @@
 
 package com.android.inputmethod.dictionarypack;
 
+import android.view.View;
+
 import com.android.inputmethod.latin.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -37,6 +40,7 @@ public class DictionaryListInterfaceState {
     }
 
     private HashMap<String, State> mWordlistToState = CollectionUtils.newHashMap();
+    private ArrayList<View> mViewCache = CollectionUtils.newArrayList();
 
     public boolean isOpen(final String wordlistId) {
         final State state = mWordlistToState.get(wordlistId);
@@ -63,5 +67,17 @@ public class DictionaryListInterfaceState {
         for (final State state : mWordlistToState.values()) {
             state.mOpen = false;
         }
+    }
+
+    public View findFirstOrphanedView() {
+        for (final View v : mViewCache) {
+            if (null == v.getParent()) return v;
+        }
+        return null;
+    }
+
+    public View addToCacheAndReturnView(final View view) {
+        mViewCache.add(view);
+        return view;
     }
 }
