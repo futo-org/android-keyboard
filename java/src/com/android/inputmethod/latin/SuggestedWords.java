@@ -132,7 +132,10 @@ public final class SuggestedWords {
         public static final int KIND_APP_DEFINED = 6; // Suggested by the application
         public static final int KIND_SHORTCUT = 7; // A shortcut
         public static final int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
-        public static final int KIND_RESUMED = 9; // A resumed suggestion (comes from a span)
+        // KIND_RESUMED: A resumed suggestion (comes from a span, currently this type is used only
+        // in java for re-correction)
+        public static final int KIND_RESUMED = 9;
+        public static final int KIND_OOV_CORRECTION = 10; // Most probable string correction
 
         public static final int KIND_MASK_FLAGS = 0xFFFFFF00; // Mask to get the flags
         public static final int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
