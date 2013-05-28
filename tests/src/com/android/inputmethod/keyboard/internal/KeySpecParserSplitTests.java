@@ -21,7 +21,6 @@ import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @MediumTest
-public class KeySpecParserCsvTests extends InstrumentationTestCase {
+public class KeySpecParserSplitTests extends InstrumentationTestCase {
     private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     @Override
@@ -78,7 +77,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
     private void assertTextArray(final String message, final String value,
             final String ... expectedArray) {
         final String resolvedActual = KeySpecParser.resolveTextReference(value, mTextsSet);
-        final String[] actual = StringUtils.parseCsvString(resolvedActual);
+        final String[] actual = KeySpecParser.splitKeySpecs(resolvedActual);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
     }
@@ -101,7 +100,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
     private static final String SURROGATE1 = PAIR1 + PAIR2;
     private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
 
-    public void testParseCsvTextZero() {
+    public void testSplitZero() {
         assertTextArray("Empty string", "");
         assertTextArray("Empty entry", ",");
         assertTextArray("Empty entry at beginning", ",a", "a");
@@ -110,7 +109,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
         assertTextArray("Empty entries with escape", ",a,b\\,c,,d,", "a", "b\\,c", "d");
     }
 
-    public void testParseCsvTextSingle() {
+    public void testSplitSingle() {
         assertTextArray("Single char", "a", "a");
         assertTextArray("Surrogate pair", PAIR1, PAIR1);
         assertTextArray("Single escape", "\\", "\\");
@@ -139,7 +138,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
         assertTextArray("Incomplete resource reference 4", "!" + SURROGATE2, "!" + SURROGATE2);
     }
 
-    public void testParseCsvTextSingleEscaped() {
+    public void testSplitSingleEscaped() {
         assertTextArray("Escaped char", "\\a", "\\a");
         assertTextArray("Escaped surrogate pair", "\\" + PAIR1, "\\" + PAIR1);
         assertTextArray("Escaped comma", "\\,", "\\,");
@@ -174,7 +173,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
         assertTextArray("Escaped !TEXT/NAME", "\\!TEXT/EMPTY_STRING", "\\!TEXT/EMPTY_STRING");
     }
 
-    public void testParseCsvTextMulti() {
+    public void testSplitMulti() {
         assertTextArray("Multiple chars", "a,b,c", "a", "b", "c");
         assertTextArray("Multiple chars", "a,b,\\c", "a", "b", "\\c");
         assertTextArray("Multiple chars and escape at beginning and end",
@@ -189,7 +188,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 " abc ", " def ", " ghi ");
     }
 
-    public void testParseCsvTextMultiEscaped() {
+    public void testSplitMultiEscaped() {
         assertTextArray("Multiple chars with comma", "a,\\,,c", "a", "\\,", "c");
         assertTextArray("Multiple chars with comma surrounded by spaces", " a , \\, , c ",
                 " a ", " \\, ", " c ");
@@ -208,17 +207,17 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "\\!", "\\!TEXT/EMPTY_STRING");
     }
 
-    public void testParseCsvResourceError() {
+    public void testSplitResourceError() {
         assertError("Incomplete resource name", "!text/", "!text/");
         assertError("Non existing resource", "!text/non_existing");
     }
 
-    public void testParseCsvResourceZero() {
+    public void testSplitResourceZero() {
         assertTextArray("Empty string",
                 "!text/empty_string");
     }
 
-    public void testParseCsvResourceSingle() {
+    public void testSplitResourceSingle() {
         assertTextArray("Single char",
                 "!text/single_char", "a");
         assertTextArray("Space",
@@ -240,7 +239,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "\\\\!text/single_char", "\\\\a");
     }
 
-    public void testParseCsvResourceSingleEscaped() {
+    public void testSplitResourceSingleEscaped() {
         assertTextArray("Escaped char",
                 "!text/escaped_char", "\\a");
         assertTextArray("Escaped comma",
@@ -267,7 +266,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "!text/escaped_label_with_escape", "a\\\\c");
     }
 
-    public void testParseCsvResourceMulti() {
+    public void testSplitResourceMulti() {
         assertTextArray("Multiple chars",
                 "!text/multiple_chars", "a", "b", "c");
         assertTextArray("Multiple chars surrounded by spaces",
@@ -279,7 +278,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "!text/multiple_labels_surrounded_by_spaces", " abc ", " def ", " ghi ");
     }
 
-    public void testParseCsvResourcetMultiEscaped() {
+    public void testSplitResourcetMultiEscaped() {
         assertTextArray("Multiple chars with comma",
                 "!text/multiple_chars_with_comma",
                 "a", "\\,", "c");
@@ -300,7 +299,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 " ab\\\\ ", " d\\\\\\, ", " g\\,i ");
     }
 
-    public void testParseMultipleResources() {
+    public void testSplitMultipleResources() {
         assertTextArray("Literals and resources",
                 "1,!text/multiple_chars,z", "1", "a", "b", "c", "z");
         assertTextArray("Literals and resources and escape at end",
@@ -322,7 +321,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "abcabc", "def", "ghi");
     }
 
-    public void testParseIndirectReference() {
+    public void testSplitIndirectReference() {
         assertTextArray("Indirect",
                 "!text/indirect_string", "a", "b", "c");
         assertTextArray("Indirect with literal",
@@ -331,7 +330,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
                 "!text/indirect2_string", "a", "b", "c");
     }
 
-    public void testParseInfiniteIndirectReference() {
+    public void testSplitInfiniteIndirectReference() {
         assertError("Infinite indirection",
                 "1,!text/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
     }

@@ -100,7 +100,7 @@ public final class SettingsValues {
         mWordConnectors =
                 StringUtils.toCodePointArray(res.getString(R.string.symbols_word_connectors));
         Arrays.sort(mWordConnectors);
-        final String[] suggestPuncsSpec = StringUtils.parseCsvString(res.getString(
+        final String[] suggestPuncsSpec = KeySpecParser.splitKeySpecs(res.getString(
                 R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = res.getString(R.string.symbols_word_separators);

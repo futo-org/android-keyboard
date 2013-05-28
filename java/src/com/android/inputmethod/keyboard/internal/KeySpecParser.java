@@ -53,7 +53,9 @@ public final class KeySpecParser {
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
 
     // Constants for parsing.
-    private static final char LABEL_END = '|';
+    private static final char COMMA = ',';
+    private static final char BACKSLASH = '\\';
+    private static final char VERTICAL_BAR = '|';
     private static final String PREFIX_TEXT = "!text/";
     static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
@@ -62,6 +64,59 @@ public final class KeySpecParser {
 
     private KeySpecParser() {
         // Intentional empty constructor for utility class.
+    }
+
+    /**
+     * Split the text containing multiple key specifications separated by commas into an array of
+     * key specifications.
+     * A key specification can contain a character escaped by the backslash character, including a
+     * comma character.
+     * Note that an empty key specification will be eliminated from the result array.
+     *
+     * @param text the text containing multiple key specifications.
+     * @return an array of key specification text. Null if the specified <code>text</code> is empty
+     * or has no key specifications.
+     */
+    public static String[] splitKeySpecs(final String text) {
+        final int size = text.length();
+        if (size == 0) {
+            return null;
+        }
+        // Optimization for one-letter key specification.
+        if (size == 1) {
+            return text.charAt(0) == COMMA ? null : new String[] { text };
+        }
+
+        ArrayList<String> list = null;
+        int start = 0;
+        // The characters in question in this loop are COMMA and BACKSLASH. These characters never
+        // match any high or low surrogate character. So it is OK to iterate through with char
+        // index.
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == COMMA) {
+                // Skip empty entry.
+                if (pos - start > 0) {
+                    if (list == null) {
+                        list = CollectionUtils.newArrayList();
+                    }
+                    list.add(text.substring(start, pos));
+                }
+                // Skip comma
+                start = pos + 1;
+            } else if (c == BACKSLASH) {
+                // Skip escape character and escaped character.
+                pos++;
+            }
+        }
+        final String remain = (size - start > 0) ? text.substring(start) : null;
+        if (list == null) {
+            return remain != null ? new String[] { remain } : null;
+        }
+        if (remain != null) {
+            list.add(remain);
+        }
+        return list.toArray(new String[list.size()]);
     }
 
     private static boolean hasIcon(final String moreKeySpec) {
@@ -78,14 +133,14 @@ public final class KeySpecParser {
     }
 
     private static String parseEscape(final String text) {
-        if (text.indexOf(Constants.CSV_ESCAPE) < 0) {
+        if (text.indexOf(BACKSLASH) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == Constants.CSV_ESCAPE && pos + 1 < length) {
+            if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
                 pos++;
                 sb.append(text.charAt(pos));
@@ -97,20 +152,20 @@ public final class KeySpecParser {
     }
 
     private static int indexOfLabelEnd(final String moreKeySpec, final int start) {
-        if (moreKeySpec.indexOf(Constants.CSV_ESCAPE, start) < 0) {
-            final int end = moreKeySpec.indexOf(LABEL_END, start);
+        if (moreKeySpec.indexOf(BACKSLASH, start) < 0) {
+            final int end = moreKeySpec.indexOf(VERTICAL_BAR, start);
             if (end == 0) {
-                throw new KeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
+                throw new KeySpecParserError(VERTICAL_BAR + " at " + start + ": " + moreKeySpec);
             }
             return end;
         }
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == Constants.CSV_ESCAPE && pos + 1 < length) {
+            if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
                 pos++;
-            } else if (c == LABEL_END) {
+            } else if (c == VERTICAL_BAR) {
                 return pos;
             }
         }
@@ -136,9 +191,9 @@ public final class KeySpecParser {
             return null;
         }
         if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-            throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+            throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
         }
-        return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
+        return parseEscape(moreKeySpec.substring(end + /* VERTICAL_BAR */1));
     }
 
     static String getOutputText(final String moreKeySpec) {
@@ -169,7 +224,7 @@ public final class KeySpecParser {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+                throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
             }
             return parseCode(moreKeySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
         }
@@ -204,7 +259,7 @@ public final class KeySpecParser {
 
     public static int getIconId(final String moreKeySpec) {
         if (moreKeySpec != null && hasIcon(moreKeySpec)) {
-            final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
+            final int end = moreKeySpec.indexOf(VERTICAL_BAR, PREFIX_ICON.length());
             final String name = (end < 0) ? moreKeySpec.substring(PREFIX_ICON.length())
                     : moreKeySpec.substring(PREFIX_ICON.length(), end);
             return KeyboardIconsSet.getIconId(name);
@@ -351,7 +406,7 @@ public final class KeySpecParser {
                     final String name = text.substring(pos + prefixLen, end);
                     sb.append(textsSet.getText(name));
                     pos = end - 1;
-                } else if (c == Constants.CSV_ESCAPE) {
+                } else if (c == BACKSLASH) {
                     if (sb != null) {
                         // Append both escape character and escaped character.
                         sb.append(text.substring(pos, Math.min(pos + 2, size)));
@@ -366,7 +421,6 @@ public final class KeySpecParser {
                 text = sb.toString();
             }
         } while (sb != null);
-
         return text;
     }
 
