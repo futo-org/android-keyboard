@@ -22,7 +22,8 @@ public class NativeSuggestOptions {
     private static final int USE_FULL_EDIT_DISTANCE = 1;
     private static final int OPTIONS_SIZE = 2;
 
-    private final int[] mOptions = new int[OPTIONS_SIZE];
+    private final int[] mOptions = new int[OPTIONS_SIZE
+            + AdditionalFeaturesSettingUtils.ADDITIONAL_FEATURES_SETTINGS_SIZE];
 
     public void setIsGesture(final boolean value) {
         setBooleanOption(IS_GESTURE, value);
@@ -32,11 +33,21 @@ public class NativeSuggestOptions {
         setBooleanOption(USE_FULL_EDIT_DISTANCE, value);
     }
 
+    public void setAdditionalFeaturesOptions(final int[] additionalOptions) {
+        for (int i = 0; i < additionalOptions.length; i++) {
+            setIntegerOption(OPTIONS_SIZE + i, additionalOptions[i]);
+        }
+    }
+
     public int[] getOptions() {
         return mOptions;
     }
 
     private void setBooleanOption(final int key, final boolean value) {
         mOptions[key] = value ? 1 : 0;
+    }
+
+    private void setIntegerOption(final int key, final int value) {
+        mOptions[key] = value;
     }
 }
