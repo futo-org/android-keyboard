@@ -35,33 +35,50 @@ public final class StringUtils {
         return text.codePointCount(0, text.length());
     }
 
-    public static boolean containsInArray(final String key, final String[] array) {
+    public static boolean containsInArray(final String text, final String[] array) {
         for (final String element : array) {
-            if (key.equals(element)) return true;
+            if (text.equals(element)) return true;
         }
         return false;
     }
 
-    public static boolean containsInCsv(final String key, final String csv) {
-        if (TextUtils.isEmpty(csv)) return false;
-        return containsInArray(key, csv.split(","));
+    private static final String SEPARATOR_FOR_COMMA_CONCATENATED_TEXT = ",";
+
+    public static boolean containsInCommaConcatenatedText(final String text,
+            final String extraValues) {
+        if (TextUtils.isEmpty(extraValues)) {
+            return false;
+        }
+        return containsInArray(text, extraValues.split(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT));
     }
 
-    public static String appendToCsvIfNotExists(final String key, final String csv) {
-        if (TextUtils.isEmpty(csv)) return key;
-        if (containsInCsv(key, csv)) return csv;
-        return csv + "," + key;
+    public static String appendToCommaConcatenatedTextIfNotExists(final String text,
+            final String extraValues) {
+        if (TextUtils.isEmpty(extraValues)) {
+            return text;
+        }
+        if (containsInCommaConcatenatedText(text, extraValues)) {
+            return extraValues;
+        }
+        return extraValues + SEPARATOR_FOR_COMMA_CONCATENATED_TEXT + text;
     }
 
-    public static String removeFromCsvIfExists(final String key, final String csv) {
-        if (TextUtils.isEmpty(csv)) return "";
-        final String[] elements = csv.split(",");
-        if (!containsInArray(key, elements)) return csv;
+    public static String removeFromCommaConcatenatedTextIfExists(final String text,
+            final String extraValues) {
+        if (TextUtils.isEmpty(extraValues)) {
+            return "";
+        }
+        final String[] elements = extraValues.split(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT);
+        if (!containsInArray(text, elements)) {
+            return extraValues;
+        }
         final ArrayList<String> result = CollectionUtils.newArrayList(elements.length - 1);
         for (final String element : elements) {
-            if (!key.equals(element)) result.add(element);
+            if (!text.equals(element)) {
+                result.add(element);
+            }
         }
-        return TextUtils.join(",", result);
+        return TextUtils.join(SEPARATOR_FOR_COMMA_CONCATENATED_TEXT, result);
     }
 
     /**

@@ -49,13 +49,14 @@ public final class AdditionalSubtype {
                 && SubtypeLocale.isExceptionalLocale(localeString)) {
             final String layoutDisplayName = SubtypeLocale.getKeyboardLayoutSetDisplayName(
                     keyboardLayoutSetName);
-            layoutDisplayNameExtraValue = StringUtils.appendToCsvIfNotExists(
+            layoutDisplayNameExtraValue = StringUtils.appendToCommaConcatenatedTextIfNotExists(
                     UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME + "=" + layoutDisplayName, extraValue);
         } else {
             layoutDisplayNameExtraValue = extraValue;
         }
-        final String additionalSubtypeExtraValue = StringUtils.appendToCsvIfNotExists(
-                IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
+        final String additionalSubtypeExtraValue =
+                StringUtils.appendToCommaConcatenatedTextIfNotExists(
+                        IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocale.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
@@ -66,8 +67,9 @@ public final class AdditionalSubtype {
         final String localeString = subtype.getLocale();
         final String keyboardLayoutSetName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
-        final String extraValue = StringUtils.removeFromCsvIfExists(layoutExtraValue,
-                StringUtils.removeFromCsvIfExists(IS_ADDITIONAL_SUBTYPE, subtype.getExtraValue()));
+        final String extraValue = StringUtils.removeFromCommaConcatenatedTextIfExists(
+                layoutExtraValue, StringUtils.removeFromCommaConcatenatedTextIfExists(
+                        IS_ADDITIONAL_SUBTYPE, subtype.getExtraValue()));
         final String basePrefSubtype = localeString + LOCALE_AND_LAYOUT_SEPARATOR
                 + keyboardLayoutSetName;
         return extraValue.isEmpty() ? basePrefSubtype

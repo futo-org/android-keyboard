@@ -199,6 +199,7 @@ public final class InputAttributes {
         if (editorInfo == null) return false;
         final String findingKey = (packageName != null) ? packageName + "." + key
                 : key;
-        return StringUtils.containsInCsv(findingKey, editorInfo.privateImeOptions);
+        return StringUtils.containsInCommaConcatenatedText(
+                findingKey, editorInfo.privateImeOptions);
     }
 }
