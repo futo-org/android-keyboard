@@ -304,7 +304,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                 // the description.
                 final String key = matchLevelString + "." + description + "." + wordlistId;
                 final WordListPreference existingPref = prefMap.get(key);
-                if (null == existingPref || hasPriority(status, existingPref.mStatus)) {
+                if (null == existingPref || existingPref.hasPriorityOver(status)) {
                     final WordListPreference oldPreference = mCurrentPreferenceMap.get(key);
                     final WordListPreference pref;
                     if (null != oldPreference
@@ -315,7 +315,7 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                         // need to be the same, others have been tested through the key of the
                         // map. Also, status may differ so we don't want to use #equals() here.
                         pref = oldPreference;
-                        pref.mStatus = status;
+                        pref.setStatus(status);
                     } else {
                         // Otherwise, discard it and create a new one instead.
                         pref = new WordListPreference(activity, mDictionaryListInterfaceState,
@@ -329,18 +329,6 @@ public final class DictionarySettingsFragment extends PreferenceFragment
             mCurrentPreferenceMap = prefMap;
             return prefMap.values();
         }
-    }
-
-    /**
-     * Finds out if a given status has priority over another for display order.
-     *
-     * @param newStatus
-     * @param oldStatus
-     * @return whether newStatus has priority over oldStatus.
-     */
-    private static boolean hasPriority(final int newStatus, final int oldStatus) {
-        // Both of these should be one of MetadataDbHelper.STATUS_*
-        return newStatus > oldStatus;
     }
 
     @Override

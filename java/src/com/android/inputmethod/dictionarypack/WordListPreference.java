@@ -61,7 +61,7 @@ public final class WordListPreference extends Preference {
     public final Locale mLocale;
     public final String mDescription;
     // The status
-    public int mStatus;
+    private int mStatus;
     // The size of the dictionary file
     private final int mFilesize;
 
@@ -92,7 +92,7 @@ public final class WordListPreference extends Preference {
         setKey(wordlistId);
     }
 
-    private void setStatus(final int status) {
+    public void setStatus(final int status) {
         if (status == mStatus) return;
         mStatus = status;
         setSummary(getSummary(status));
@@ -104,6 +104,11 @@ public final class WordListPreference extends Preference {
         if (null != orphanedView) return orphanedView; // Will be sent to onBindView
         final View newView = super.onCreateView(parent);
         return mInterfaceState.addToCacheAndReturnView(newView);
+    }
+
+    public boolean hasPriorityOver(final int otherPrefStatus) {
+        // Both of these should be one of MetadataDbHelper.STATUS_*
+        return mStatus > otherPrefStatus;
     }
 
     private String getSummary(final int status) {
