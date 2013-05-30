@@ -72,9 +72,9 @@ final class SuggestionStripLayoutHelper {
     public final float mMinMoreSuggestionsWidth;
     public final int mMoreSuggestionsBottomGap;
 
-    private final ArrayList<TextView> mWords;
-    private final ArrayList<View> mDividers;
-    private final ArrayList<TextView> mInfos;
+    private final ArrayList<TextView> mWordViews;
+    private final ArrayList<View> mDividerViews;
+    private final ArrayList<TextView> mDebugInfoViews;
 
     private final int mColorValidTypedWord;
     private final int mColorTypedWord;
@@ -82,7 +82,7 @@ final class SuggestionStripLayoutHelper {
     private final int mColorSuggested;
     private final float mAlphaObsoleted;
     private final float mCenterSuggestionWeight;
-    private final int mCenterSuggestionIndex;
+    private final int mCenterPositionInStrip;
     private final Drawable mMoreSuggestionsHint;
     private static final String MORE_SUGGESTIONS_HINT = "\u2026";
     private static final String LEFTWARDS_ARROW = "\u2190";
@@ -95,7 +95,7 @@ final class SuggestionStripLayoutHelper {
 
     private final int mSuggestionStripOption;
 
-    private final ArrayList<CharSequence> mTexts = CollectionUtils.newArrayList();
+    private final ArrayList<CharSequence> mWords = CollectionUtils.newArrayList();
 
     public boolean mMoreSuggestionsAvailable;
 
@@ -104,19 +104,20 @@ final class SuggestionStripLayoutHelper {
     private final TextView mHintToSaveView;
 
     public SuggestionStripLayoutHelper(final Context context, final AttributeSet attrs,
-            final int defStyle, final ArrayList<TextView> words, final ArrayList<View> dividers,
-            final ArrayList<TextView> infos) {
-        mWords = words;
-        mDividers = dividers;
-        mInfos = infos;
+            final int defStyle, final ArrayList<TextView> wordViews,
+            final ArrayList<View> dividerViews, final ArrayList<TextView> debugInfoViews) {
+        mWordViews = wordViews;
+        mDividerViews = dividerViews;
+        mDebugInfoViews = debugInfoViews;
 
-        final TextView word = words.get(0);
-        final View divider = dividers.get(0);
-        mPadding = word.getCompoundPaddingLeft() + word.getCompoundPaddingRight();
-        divider.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mDividerWidth = divider.getMeasuredWidth();
+        final TextView wordView = wordViews.get(0);
+        final View dividerView = dividerViews.get(0);
+        mPadding = wordView.getCompoundPaddingLeft() + wordView.getCompoundPaddingRight();
+        dividerView.measure(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mDividerWidth = dividerView.getMeasuredWidth();
 
-        final Resources res = word.getResources();
+        final Resources res = wordView.getResources();
         mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
 
         final TypedArray a = context.obtainStyledAttributes(attrs,
@@ -156,7 +157,7 @@ final class SuggestionStripLayoutHelper {
 
         mMoreSuggestionsHint = getMoreSuggestionsHint(res,
                 res.getDimension(R.dimen.more_suggestions_hint_text_size), mColorAutoCorrect);
-        mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
+        mCenterPositionInStrip = mSuggestionsCountInStrip / 2;
         mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                 R.dimen.more_suggestions_bottom_gap);
         mMoreSuggestionsRowHeight = res.getDimensionPixelSize(R.dimen.more_suggestions_row_height);
@@ -211,8 +212,9 @@ final class SuggestionStripLayoutHelper {
                 && suggestedWords.willAutoCorrect();
         final boolean isTypedWordValid = indexInSuggestedWords == 0
                 && suggestedWords.mTypedWordValid;
-        if (!isAutoCorrect && !isTypedWordValid)
+        if (!isAutoCorrect && !isTypedWordValid) {
             return word;
+        }
 
         final int len = word.length();
         final Spannable spannedWord = new SpannableString(word);
@@ -227,31 +229,31 @@ final class SuggestionStripLayoutHelper {
         return spannedWord;
     }
 
-    private int getIndexInSuggestedWords(final int indexInStrip,
+    private int getIndexInSuggestedWords(final int positionInStrip,
             final SuggestedWords suggestedWords) {
         // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
         // suggestions.
         final int mostImportantIndexInSuggestedWords = suggestedWords.willAutoCorrect() ? 1 : 0;
-        if (indexInStrip == mCenterSuggestionIndex) {
+        if (positionInStrip == mCenterPositionInStrip) {
             return mostImportantIndexInSuggestedWords;
-        } else if (indexInStrip == mostImportantIndexInSuggestedWords) {
-            return mCenterSuggestionIndex;
-        } else {
-            return indexInStrip;
         }
+        if (positionInStrip == mostImportantIndexInSuggestedWords) {
+            return mCenterPositionInStrip;
+        }
+        return positionInStrip;
     }
 
-    private int getSuggestionTextColor(final int indexInStrip,
+    private int getSuggestionTextColor(final int positionInStrip,
             final SuggestedWords suggestedWords) {
         final int indexInSuggestedWords = getIndexInSuggestedWords(
-                indexInStrip, suggestedWords);
+                positionInStrip, suggestedWords);
         // TODO: Need to revisit this logic with bigram suggestions
         final boolean isSuggested = (indexInSuggestedWords != 0);
 
         final int color;
-        if (indexInStrip == mCenterSuggestionIndex && suggestedWords.willAutoCorrect()) {
+        if (positionInStrip == mCenterPositionInStrip && suggestedWords.willAutoCorrect()) {
             color = mColorAutoCorrect;
-        } else if (indexInStrip == mCenterSuggestionIndex && suggestedWords.mTypedWordValid) {
+        } else if (positionInStrip == mCenterPositionInStrip && suggestedWords.mTypedWordValid) {
             color = mColorValidTypedWord;
         } else if (isSuggested) {
             color = mColorSuggested;
@@ -261,7 +263,7 @@ final class SuggestionStripLayoutHelper {
         if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
             // If we auto-correct, then the autocorrection is in slot 0 and the typed word
             // is in slot 1.
-            if (indexInStrip == mCenterSuggestionIndex
+            if (positionInStrip == mCenterPositionInStrip
                     && AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(
                             suggestedWords.getWord(1), suggestedWords.getWord(0))) {
                 return 0xFFFF0000;
@@ -270,9 +272,8 @@ final class SuggestionStripLayoutHelper {
 
         if (suggestedWords.mIsObsoleteSuggestions && isSuggested) {
             return applyAlpha(color, mAlphaObsoleted);
-        } else {
-            return color;
         }
+        return color;
     }
 
     private static int applyAlpha(final int color, final float alpha) {
@@ -280,91 +281,91 @@ final class SuggestionStripLayoutHelper {
         return Color.argb(newAlpha, Color.red(color), Color.green(color), Color.blue(color));
     }
 
-    private static void addDivider(final ViewGroup stripView, final View divider) {
-        stripView.addView(divider);
+    private static void addDivider(final ViewGroup stripView, final View dividerView) {
+        stripView.addView(dividerView);
         final LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams)divider.getLayoutParams();
+                (LinearLayout.LayoutParams)dividerView.getLayoutParams();
         params.gravity = Gravity.CENTER;
     }
 
     public void layout(final SuggestedWords suggestedWords, final ViewGroup stripView,
-            final ViewGroup placer, final int stripWidth) {
+            final ViewGroup placerView) {
         if (suggestedWords.mIsPunctuationSuggestions) {
             layoutPunctuationSuggestions(suggestedWords, stripView);
             return;
         }
 
         final int countInStrip = mSuggestionsCountInStrip;
-        setupTexts(suggestedWords, countInStrip);
+        setupWords(suggestedWords, countInStrip);
         mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
         int x = 0;
-        for (int indexInStrip = 0; indexInStrip < countInStrip; indexInStrip++) {
-            if (indexInStrip != 0) {
-                final View divider = mDividers.get(indexInStrip);
+        for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
+            if (positionInStrip != 0) {
+                final View divider = mDividerViews.get(positionInStrip);
                 // Add divider if this isn't the left most suggestion in suggestions strip.
                 addDivider(stripView, divider);
                 x += divider.getMeasuredWidth();
             }
 
-            final int width = getSuggestionWidth(indexInStrip, stripWidth);
-            final TextView word = layoutWord(suggestedWords, indexInStrip, width);
-            stripView.addView(word);
-            setLayoutWeight(word, getSuggestionWeight(indexInStrip),
+            final int width = getSuggestionWidth(positionInStrip, placerView.getWidth());
+            final TextView wordView = layoutWord(suggestedWords, positionInStrip, width);
+            stripView.addView(wordView);
+            setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
                     ViewGroup.LayoutParams.MATCH_PARENT);
-            x += word.getMeasuredWidth();
+            x += wordView.getMeasuredWidth();
 
             if (SuggestionStripView.DBG) {
-                layoutDebugInfo(suggestedWords, indexInStrip, placer, x);
+                layoutDebugInfo(suggestedWords, positionInStrip, placerView, x);
             }
         }
     }
 
     /**
      * Format appropriately the suggested word indirectly specified by
-     * <code>indexInStrip</code> as text in a corresponding {@link TextView}. When the
+     * <code>positionInStrip</code> as text in a corresponding {@link TextView}. When the
      * suggested word doesn't exist, the corresponding {@link TextView} will be disabled
      * and never respond to user interaction. The suggested word may be shrunk or ellipsized to
      * fit in the specified width.
      *
-     * The <code>indexInStrip</code> argument is the index in the suggestion strip. The indices
+     * The <code>positionInStrip</code> argument is the index in the suggestion strip. The indices
      * increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
-     * The index of the most important suggestion is in {@link #mCenterSuggestionIndex}. This
+     * The index of the most important suggestion is in {@link #mCenterPositionInStrip}. This
      * usually doesn't match the index in <code>suggedtedWords</code> -- see
      * {@link #getIndexInSuggestedWords(int,SuggestedWords)}.
      *
      * @param suggestedWords the list of suggestions.
-     * @param indexInStrip the in the suggestion strip.
+     * @param positionInStrip the in the suggestion strip.
      * @param width the maximum width for layout in pixels.
      * @return the {@link TextView} containing the suggested word appropriately formatted.
      */
-    private TextView layoutWord(final SuggestedWords suggestedWords, final int indexInStrip,
+    private TextView layoutWord(final SuggestedWords suggestedWords, final int positionInStrip,
             final int width) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(indexInStrip, suggestedWords);
-        final CharSequence styled = mTexts.get(indexInSuggestedWords);
-        final TextView word = mWords.get(indexInSuggestedWords);
-        if (indexInStrip == mCenterSuggestionIndex && mMoreSuggestionsAvailable) {
+        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
+        final CharSequence word = mWords.get(indexInSuggestedWords);
+        final TextView wordView = mWordViews.get(indexInSuggestedWords);
+        if (positionInStrip == mCenterPositionInStrip && mMoreSuggestionsAvailable) {
             // TODO: This "more suggestions hint" should have a nicely designed icon.
-            word.setCompoundDrawablesWithIntrinsicBounds(
+            wordView.setCompoundDrawablesWithIntrinsicBounds(
                     null, null, null, mMoreSuggestionsHint);
             // HACK: Align with other TextViews that have no compound drawables.
-            word.setCompoundDrawablePadding(-mMoreSuggestionsHint.getIntrinsicHeight());
+            wordView.setCompoundDrawablePadding(-mMoreSuggestionsHint.getIntrinsicHeight());
         } else {
-            word.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            wordView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 
         // Disable this suggestion if the suggestion is null or empty.
-        word.setEnabled(!TextUtils.isEmpty(styled));
-        word.setTextColor(getSuggestionTextColor(indexInStrip, suggestedWords));
-        final CharSequence text = getEllipsizedText(styled, width, word.getPaint());
-        final float scaleX = word.getTextScaleX();
-        word.setText(text); // TextView.setText() resets text scale x to 1.0.
-        word.setTextScaleX(scaleX);
-        return word;
+        wordView.setEnabled(!TextUtils.isEmpty(word));
+        wordView.setTextColor(getSuggestionTextColor(positionInStrip, suggestedWords));
+        final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
+        final float scaleX = wordView.getTextScaleX();
+        wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
+        wordView.setTextScaleX(scaleX);
+        return wordView;
     }
 
-    private void layoutDebugInfo(final SuggestedWords suggestedWords, final int indexInStrip,
-            final ViewGroup placer, final int x) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(indexInStrip, suggestedWords);
+    private void layoutDebugInfo(final SuggestedWords suggestedWords, final int positionInStrip,
+            final ViewGroup placerView, final int x) {
+        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
         if (indexInSuggestedWords >= suggestedWords.size()) {
             return;
         }
@@ -372,42 +373,42 @@ final class SuggestionStripLayoutHelper {
         if (debugInfo == null) {
             return;
         }
-        final TextView info = mInfos.get(indexInSuggestedWords);
-        info.setText(debugInfo);
-        placer.addView(info);
-        info.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int infoWidth = info.getMeasuredWidth();
-        final int y = info.getMeasuredHeight();
+        final TextView debugInfoView = mDebugInfoViews.get(indexInSuggestedWords);
+        debugInfoView.setText(debugInfo);
+        placerView.addView(debugInfoView);
+        debugInfoView.measure(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int infoWidth = debugInfoView.getMeasuredWidth();
+        final int y = debugInfoView.getMeasuredHeight();
         ViewLayoutUtils.placeViewAt(
-                info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
+                debugInfoView, x - infoWidth, y, infoWidth, debugInfoView.getMeasuredHeight());
     }
 
-    private int getSuggestionWidth(final int indexInStrip, final int maxWidth) {
+    private int getSuggestionWidth(final int positionInStrip, final int maxWidth) {
         final int paddings = mPadding * mSuggestionsCountInStrip;
         final int dividers = mDividerWidth * (mSuggestionsCountInStrip - 1);
         final int availableWidth = maxWidth - paddings - dividers;
-        return (int)(availableWidth * getSuggestionWeight(indexInStrip));
+        return (int)(availableWidth * getSuggestionWeight(positionInStrip));
     }
 
-    private float getSuggestionWeight(final int indexInStrip) {
-        if (indexInStrip == mCenterSuggestionIndex) {
+    private float getSuggestionWeight(final int positionInStrip) {
+        if (positionInStrip == mCenterPositionInStrip) {
             return mCenterSuggestionWeight;
-        } else {
-            // TODO: Revisit this for cases of 5 or more suggestions
-            return (1.0f - mCenterSuggestionWeight) / (mSuggestionsCountInStrip - 1);
         }
+        // TODO: Revisit this for cases of 5 or more suggestions
+        return (1.0f - mCenterSuggestionWeight) / (mSuggestionsCountInStrip - 1);
     }
 
-    private void setupTexts(final SuggestedWords suggestedWords, final int countInStrip) {
-        mTexts.clear();
+    private void setupWords(final SuggestedWords suggestedWords, final int countInStrip) {
+        mWords.clear();
         final int count = Math.min(suggestedWords.size(), countInStrip);
         for (int pos = 0; pos < count; pos++) {
             final CharSequence styled = getStyledSuggestionWord(suggestedWords, pos);
-            mTexts.add(styled);
+            mWords.add(styled);
         }
         for (int pos = count; pos < countInStrip; pos++) {
             // Make this inactive for touches in layout().
-            mTexts.add(null);
+            mWords.add(null);
         }
     }
 
@@ -417,10 +418,10 @@ final class SuggestionStripLayoutHelper {
         for (int indexInStrip = 0; indexInStrip < countInStrip; indexInStrip++) {
             if (indexInStrip != 0) {
                 // Add divider if this isn't the left most suggestion in suggestions strip.
-                addDivider(stripView, mDividers.get(indexInStrip));
+                addDivider(stripView, mDividerViews.get(indexInStrip));
             }
 
-            final TextView word = mWords.get(indexInStrip);
+            final TextView word = mWordViews.get(indexInStrip);
             word.setEnabled(true);
             word.setTextColor(mColorAutoCorrect);
             final String text = suggestedWords.getWord(indexInStrip);
@@ -448,7 +449,7 @@ final class SuggestionStripLayoutHelper {
         stripView.addView(wordView);
         setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        stripView.addView(mDividers.get(0));
+        stripView.addView(mDividerViews.get(0));
 
         final TextView leftArrowView = mLeftwardsArrowView;
         leftArrowView.setTextColor(mColorAutoCorrect);
@@ -501,13 +502,10 @@ final class SuggestionStripLayoutHelper {
 
     private static CharSequence getEllipsizedText(final CharSequence text, final int maxWidth,
             final TextPaint paint) {
-        if (text == null) return null;
-        paint.setTextScaleX(1.0f);
-        final int width = getTextWidth(text, paint);
-        if (width <= maxWidth) {
-            return text;
+        if (text == null) {
+            return null;
         }
-        final float scaleX = maxWidth / (float)width;
+        final float scaleX = getTextScaleX(text, maxWidth, paint);
         if (scaleX >= MIN_TEXT_XSCALE) {
             paint.setTextScaleX(scaleX);
             return text;
@@ -522,7 +520,9 @@ final class SuggestionStripLayoutHelper {
     }
 
     private static int getTextWidth(final CharSequence text, final TextPaint paint) {
-        if (TextUtils.isEmpty(text)) return 0;
+        if (TextUtils.isEmpty(text)) {
+            return 0;
+        }
         final Typeface savedTypeface = paint.getTypeface();
         paint.setTypeface(getTextTypeface(text));
         final int len = text.length();
@@ -537,18 +537,20 @@ final class SuggestionStripLayoutHelper {
     }
 
     private static Typeface getTextTypeface(final CharSequence text) {
-        if (!(text instanceof SpannableString))
+        if (!(text instanceof SpannableString)) {
             return Typeface.DEFAULT;
+        }
 
         final SpannableString ss = (SpannableString)text;
         final StyleSpan[] styles = ss.getSpans(0, text.length(), StyleSpan.class);
-        if (styles.length == 0)
+        if (styles.length == 0) {
             return Typeface.DEFAULT;
-
-        switch (styles[0].getStyle()) {
-        case Typeface.BOLD: return Typeface.DEFAULT_BOLD;
-        // TODO: BOLD_ITALIC, ITALIC case?
-        default: return Typeface.DEFAULT;
         }
+
+        if (styles[0].getStyle() == Typeface.BOLD) {
+            return Typeface.DEFAULT_BOLD;
+        }
+        // TODO: BOLD_ITALIC, ITALIC case?
+        return Typeface.DEFAULT;
     }
 }

@@ -65,9 +65,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreSuggestionsView mMoreSuggestionsView;
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
 
-    private final ArrayList<TextView> mWords = CollectionUtils.newArrayList();
-    private final ArrayList<TextView> mInfos = CollectionUtils.newArrayList();
-    private final ArrayList<View> mDividers = CollectionUtils.newArrayList();
+    private final ArrayList<TextView> mWordViews = CollectionUtils.newArrayList();
+    private final ArrayList<TextView> mDebugInfoViews = CollectionUtils.newArrayList();
+    private final ArrayList<View> mDividerViews = CollectionUtils.newArrayList();
 
     Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
@@ -96,16 +96,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             word.setTag(pos);
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
-            mWords.add(word);
+            mWordViews.add(word);
             final View divider = inflater.inflate(R.layout.suggestion_divider, null);
             divider.setTag(pos);
             divider.setOnClickListener(this);
-            mDividers.add(divider);
-            mInfos.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
+            mDividerViews.add(divider);
+            mDebugInfoViews.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
         }
 
         mLayoutHelper = new SuggestionStripLayoutHelper(
-                context, attrs, defStyle, mWords, mDividers, mInfos);
+                context, attrs, defStyle, mWordViews, mDividerViews, mDebugInfoViews);
 
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
@@ -131,7 +131,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void setSuggestions(final SuggestedWords suggestedWords) {
         clear();
         mSuggestedWords = suggestedWords;
-        mLayoutHelper.layout(mSuggestedWords, mSuggestionsStrip, this, getWidth());
+        mLayoutHelper.layout(mSuggestedWords, mSuggestionsStrip, this);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.suggestionStripView_setSuggestions(mSuggestedWords);
         }
@@ -237,7 +237,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mOriginX = mLastX;
         mOriginY = mLastY;
         for (int i = 0; i < layoutHelper.mSuggestionsCountInStrip; i++) {
-            mWords.get(i).setPressed(false);
+            mWordViews.get(i).setPressed(false);
         }
         return true;
     }
@@ -314,11 +314,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         final Object tag = view.getTag();
-        if (!(tag instanceof Integer))
+        if (!(tag instanceof Integer)) {
             return;
+        }
         final int index = (Integer) tag;
-        if (index >= mSuggestedWords.size())
+        if (index >= mSuggestedWords.size()) {
             return;
+        }
 
         final SuggestedWordInfo wordInfo = mSuggestedWords.getInfo(index);
         mListener.pickSuggestionManually(index, wordInfo);
