@@ -32,6 +32,7 @@ import com.android.inputmethod.latin.DictionaryInfoUtils.DictionaryInfo;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -319,20 +320,12 @@ public final class BinaryDictionaryFileDumper {
                 // Try the next method.
             } finally {
                 // Ignore exceptions while closing files.
-                try {
-                    if (null != afd) afd.close();
-                    if (null != inputStream) inputStream.close();
-                    if (null != uncompressedStream) uncompressedStream.close();
-                    if (null != decryptedStream) decryptedStream.close();
-                    if (null != bufferedInputStream) bufferedInputStream.close();
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception while closing a file descriptor", e);
-                }
-                try {
-                    if (null != bufferedOutputStream) bufferedOutputStream.close();
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception while closing a file", e);
-                }
+                closeAssetFileDescriptorAndReportAnyException(afd);
+                closeCloseableAndReportAnyException(inputStream);
+                closeCloseableAndReportAnyException(uncompressedStream);
+                closeCloseableAndReportAnyException(decryptedStream);
+                closeCloseableAndReportAnyException(bufferedInputStream);
+                closeCloseableAndReportAnyException(bufferedOutputStream);
             }
         }
 
@@ -349,6 +342,26 @@ public final class BinaryDictionaryFileDumper {
             }
         } catch (RemoteException e) {
             Log.e(TAG, "In addition, communication with the dictionary provider was cut", e);
+        }
+    }
+
+    // Ideally the two following methods should be merged, but AssetFileDescriptor does not
+    // implement Closeable although it does implement #close(), and Java does not have
+    // structural typing.
+    private static void closeAssetFileDescriptorAndReportAnyException(
+            final AssetFileDescriptor file) {
+        try {
+            if (null != file) file.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while closing a file", e);
+        }
+    }
+
+    private static void closeCloseableAndReportAnyException(final Closeable file) {
+        try {
+            if (null != file) file.close();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while closing a file", e);
         }
     }
 
