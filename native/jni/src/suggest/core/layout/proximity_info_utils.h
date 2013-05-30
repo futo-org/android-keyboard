@@ -19,10 +19,10 @@
 
 #include <cmath>
 
-#include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
+#include "suggest/core/layout/additional_proximity_chars.h"
 #include "suggest/core/layout/geometry_utils.h"
 
 namespace latinime {
