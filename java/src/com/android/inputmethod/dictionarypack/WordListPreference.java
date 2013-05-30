@@ -98,6 +98,14 @@ public final class WordListPreference extends Preference {
         setSummary(getSummary(status));
     }
 
+    @Override
+    public View onCreateView(final ViewGroup parent) {
+        final View orphanedView = mInterfaceState.findFirstOrphanedView();
+        if (null != orphanedView) return orphanedView; // Will be sent to onBindView
+        final View newView = super.onCreateView(parent);
+        return mInterfaceState.addToCacheAndReturnView(newView);
+    }
+
     private String getSummary(final int status) {
         switch (status) {
             // If we are deleting the word list, for the user it's like it's already deleted.
@@ -209,6 +217,9 @@ public final class WordListPreference extends Preference {
 
         final ButtonSwitcher buttonSwitcher =
                 (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
+        // We need to clear the state of the button switcher, because we reuse views; if we didn't
+        // reset it would animate from whatever its old state was.
+        buttonSwitcher.reset();
         if (mInterfaceState.isOpen(mWordlistId)) {
             // The button is open.
             final int previousStatus = mInterfaceState.getStatus(mWordlistId);
