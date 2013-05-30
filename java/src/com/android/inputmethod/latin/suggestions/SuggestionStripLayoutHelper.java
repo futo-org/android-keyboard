@@ -23,9 +23,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.Paint.Align;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -40,14 +40,13 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
@@ -71,7 +70,11 @@ final class SuggestionStripLayoutHelper {
     private int mMaxMoreSuggestionsRow;
     public final float mMinMoreSuggestionsWidth;
     public final int mMoreSuggestionsBottomGap;
+    public boolean mMoreSuggestionsAvailable;
 
+    // The index of these {@link ArrayList} is the position in the suggestion strip. The indices
+    // increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
+    // The position of the most important suggestion is in {@link #mCenterPositionInStrip}
     private final ArrayList<TextView> mWordViews;
     private final ArrayList<View> mDividerViews;
     private final ArrayList<TextView> mDebugInfoViews;
@@ -89,15 +92,13 @@ final class SuggestionStripLayoutHelper {
 
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
+
+    private final int mSuggestionStripOption;
+    // These constants are the flag values of
+    // {@link R.styleable#SuggestionStripView_suggestionStripOption} attribute.
     private static final int AUTO_CORRECT_BOLD = 0x01;
     private static final int AUTO_CORRECT_UNDERLINE = 0x02;
     private static final int VALID_TYPED_WORD_BOLD = 0x04;
-
-    private final int mSuggestionStripOption;
-
-    private final ArrayList<CharSequence> mWords = CollectionUtils.newArrayList();
-
-    public boolean mMoreSuggestionsAvailable;
 
     private final TextView mWordToSaveView;
     private final TextView mLeftwardsArrowView;
@@ -205,7 +206,7 @@ final class SuggestionStripLayoutHelper {
         return new BitmapDrawable(res, buffer);
     }
 
-    private CharSequence getStyledSuggestionWord(final SuggestedWords suggestedWords,
+    private CharSequence getStyledSuggestedWord(final SuggestedWords suggestedWords,
             final int indexInSuggestedWords) {
         final String word = suggestedWords.getWord(indexInSuggestedWords);
         final boolean isAutoCorrect = indexInSuggestedWords == 1
@@ -233,7 +234,8 @@ final class SuggestionStripLayoutHelper {
             final SuggestedWords suggestedWords) {
         // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
         // suggestions.
-        final int mostImportantIndexInSuggestedWords = suggestedWords.willAutoCorrect() ? 1 : 0;
+        final int mostImportantIndexInSuggestedWords = suggestedWords.willAutoCorrect()
+                ? SuggestedWords.INDEX_OF_AUTO_CORRECTION : SuggestedWords.INDEX_OF_TYPED_WORD;
         if (positionInStrip == mCenterPositionInStrip) {
             return mostImportantIndexInSuggestedWords;
         }
@@ -245,10 +247,9 @@ final class SuggestionStripLayoutHelper {
 
     private int getSuggestionTextColor(final int positionInStrip,
             final SuggestedWords suggestedWords) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(
-                positionInStrip, suggestedWords);
+        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
         // TODO: Need to revisit this logic with bigram suggestions
-        final boolean isSuggested = (indexInSuggestedWords != 0);
+        final boolean isSuggested = (indexInSuggestedWords != SuggestedWords.INDEX_OF_TYPED_WORD);
 
         final int color;
         if (positionInStrip == mCenterPositionInStrip && suggestedWords.willAutoCorrect()) {
@@ -265,7 +266,8 @@ final class SuggestionStripLayoutHelper {
             // is in slot 1.
             if (positionInStrip == mCenterPositionInStrip
                     && AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(
-                            suggestedWords.getWord(1), suggestedWords.getWord(0))) {
+                            suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION),
+                            suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD))) {
                 return 0xFFFF0000;
             }
         }
@@ -296,7 +298,7 @@ final class SuggestionStripLayoutHelper {
         }
 
         final int countInStrip = mSuggestionsCountInStrip;
-        setupWords(suggestedWords, countInStrip);
+        setupWordViewsTextAndColor(suggestedWords, countInStrip);
         mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
         int x = 0;
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
@@ -308,41 +310,37 @@ final class SuggestionStripLayoutHelper {
             }
 
             final int width = getSuggestionWidth(positionInStrip, placerView.getWidth());
-            final TextView wordView = layoutWord(suggestedWords, positionInStrip, width);
+            final TextView wordView = layoutWord(positionInStrip, width);
             stripView.addView(wordView);
             setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
                     ViewGroup.LayoutParams.MATCH_PARENT);
             x += wordView.getMeasuredWidth();
 
             if (SuggestionStripView.DBG) {
-                layoutDebugInfo(suggestedWords, positionInStrip, placerView, x);
+                layoutDebugInfo(positionInStrip, placerView, x);
             }
         }
     }
 
     /**
-     * Format appropriately the suggested word indirectly specified by
-     * <code>positionInStrip</code> as text in a corresponding {@link TextView}. When the
-     * suggested word doesn't exist, the corresponding {@link TextView} will be disabled
-     * and never respond to user interaction. The suggested word may be shrunk or ellipsized to
-     * fit in the specified width.
+     * Format appropriately the suggested word in {@link #mWordViews} specified by
+     * <code>positionInStrip</code>. When the suggested word doesn't exist, the corresponding
+     * {@link TextView} will be disabled and never respond to user interaction. The suggested word
+     * may be shrunk or ellipsized to fit in the specified width.
      *
      * The <code>positionInStrip</code> argument is the index in the suggestion strip. The indices
      * increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
-     * The index of the most important suggestion is in {@link #mCenterPositionInStrip}. This
+     * The position of the most important suggestion is in {@link #mCenterPositionInStrip}. This
      * usually doesn't match the index in <code>suggedtedWords</code> -- see
      * {@link #getIndexInSuggestedWords(int,SuggestedWords)}.
      *
-     * @param suggestedWords the list of suggestions.
-     * @param positionInStrip the in the suggestion strip.
+     * @param positionInStrip the position in the suggestion strip.
      * @param width the maximum width for layout in pixels.
      * @return the {@link TextView} containing the suggested word appropriately formatted.
      */
-    private TextView layoutWord(final SuggestedWords suggestedWords, final int positionInStrip,
-            final int width) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
-        final CharSequence word = mWords.get(indexInSuggestedWords);
-        final TextView wordView = mWordViews.get(indexInSuggestedWords);
+    private TextView layoutWord(final int positionInStrip, final int width) {
+        final TextView wordView = mWordViews.get(positionInStrip);
+        final CharSequence word = wordView.getText();
         if (positionInStrip == mCenterPositionInStrip && mMoreSuggestionsAvailable) {
             // TODO: This "more suggestions hint" should have a nicely designed icon.
             wordView.setCompoundDrawablesWithIntrinsicBounds(
@@ -355,7 +353,6 @@ final class SuggestionStripLayoutHelper {
 
         // Disable this suggestion if the suggestion is null or empty.
         wordView.setEnabled(!TextUtils.isEmpty(word));
-        wordView.setTextColor(getSuggestionTextColor(positionInStrip, suggestedWords));
         final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
         final float scaleX = wordView.getTextScaleX();
         wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
@@ -363,18 +360,13 @@ final class SuggestionStripLayoutHelper {
         return wordView;
     }
 
-    private void layoutDebugInfo(final SuggestedWords suggestedWords, final int positionInStrip,
-            final ViewGroup placerView, final int x) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
-        if (indexInSuggestedWords >= suggestedWords.size()) {
-            return;
-        }
-        final String debugInfo = Utils.getDebugInfo(suggestedWords, indexInSuggestedWords);
+    private void layoutDebugInfo(final int positionInStrip, final ViewGroup placerView,
+            final int x) {
+        final TextView debugInfoView = mDebugInfoViews.get(positionInStrip);
+        final CharSequence debugInfo = debugInfoView.getText();
         if (debugInfo == null) {
             return;
         }
-        final TextView debugInfoView = mDebugInfoViews.get(indexInSuggestedWords);
-        debugInfoView.setText(debugInfo);
         placerView.addView(debugInfoView);
         debugInfoView.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -399,39 +391,52 @@ final class SuggestionStripLayoutHelper {
         return (1.0f - mCenterSuggestionWeight) / (mSuggestionsCountInStrip - 1);
     }
 
-    private void setupWords(final SuggestedWords suggestedWords, final int countInStrip) {
-        mWords.clear();
+    private void setupWordViewsTextAndColor(final SuggestedWords suggestedWords,
+            final int countInStrip) {
         final int count = Math.min(suggestedWords.size(), countInStrip);
-        for (int pos = 0; pos < count; pos++) {
-            final CharSequence styled = getStyledSuggestionWord(suggestedWords, pos);
-            mWords.add(styled);
+        for (int positionInStrip = 0; positionInStrip < count; positionInStrip++) {
+            final int indexInSuggestedWords =
+                    getIndexInSuggestedWords(positionInStrip, suggestedWords);
+            final TextView wordView = mWordViews.get(positionInStrip);
+            // {@link TextView#getTag()} is used to get the index in suggestedWords at
+            // {@link SuggestionStripView#onClick(View)}.
+            wordView.setTag(indexInSuggestedWords);
+            wordView.setText(getStyledSuggestedWord(suggestedWords, indexInSuggestedWords));
+            wordView.setTextColor(getSuggestionTextColor(positionInStrip, suggestedWords));
+            if (SuggestionStripView.DBG) {
+                mDebugInfoViews.get(positionInStrip).setText(
+                        Utils.getDebugInfo(suggestedWords, indexInSuggestedWords));
+            }
         }
-        for (int pos = count; pos < countInStrip; pos++) {
-            // Make this inactive for touches in layout().
-            mWords.add(null);
+        for (int positionInStrip = count; positionInStrip < countInStrip; positionInStrip++) {
+            mWordViews.get(positionInStrip).setText(null);
+            // Make this inactive for touches in {@link #layoutWord(int,int)}.
+            if (SuggestionStripView.DBG) {
+                mDebugInfoViews.get(positionInStrip).setText(null);
+            }
         }
     }
 
     private void layoutPunctuationSuggestions(final SuggestedWords suggestedWords,
             final ViewGroup stripView) {
         final int countInStrip = Math.min(suggestedWords.size(), PUNCTUATIONS_IN_STRIP);
-        for (int indexInStrip = 0; indexInStrip < countInStrip; indexInStrip++) {
-            if (indexInStrip != 0) {
+        for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
+            if (positionInStrip != 0) {
                 // Add divider if this isn't the left most suggestion in suggestions strip.
-                addDivider(stripView, mDividerViews.get(indexInStrip));
+                addDivider(stripView, mDividerViews.get(positionInStrip));
             }
 
-            final TextView word = mWordViews.get(indexInStrip);
-            word.setEnabled(true);
-            word.setTextColor(mColorAutoCorrect);
-            final String text = suggestedWords.getWord(indexInStrip);
-            word.setText(text);
-            word.setTextScaleX(1.0f);
-            word.setCompoundDrawables(null, null, null, null);
-            stripView.addView(word);
-            setLayoutWeight(word, 1.0f, mSuggestionsStripHeight);
+            final TextView wordView = mWordViews.get(positionInStrip);
+            wordView.setEnabled(true);
+            wordView.setTextColor(mColorAutoCorrect);
+            final String punctuation = suggestedWords.getWord(positionInStrip);
+            wordView.setText(punctuation);
+            wordView.setTextScaleX(1.0f);
+            wordView.setCompoundDrawables(null, null, null, null);
+            stripView.addView(wordView);
+            setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
         }
-        mMoreSuggestionsAvailable = false;
+        mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
     }
 
     public void layoutAddToDictionaryHint(final String word, final ViewGroup stripView,

@@ -61,7 +61,7 @@ public final class MoreSuggestions extends Keyboard {
             super();
         }
 
-        public int layout(final SuggestedWords suggestedWords, final int fromPos,
+        public int layout(final SuggestedWords suggestedWords, final int fromIndex,
                 final int maxWidth, final int minWidth, final int maxRow, final Paint paint,
                 final Resources res) {
             clearKeys();
@@ -70,53 +70,54 @@ public final class MoreSuggestions extends Keyboard {
             final float padding = res.getDimension(R.dimen.more_suggestions_key_horizontal_padding);
 
             int row = 0;
-            int pos = fromPos, rowStartPos = fromPos;
+            int index = fromIndex;
+            int rowStartIndex = fromIndex;
             final int size = Math.min(suggestedWords.size(), SuggestionStripView.MAX_SUGGESTIONS);
-            while (pos < size) {
-                final String word = suggestedWords.getWord(pos);
+            while (index < size) {
+                final String word = suggestedWords.getWord(index);
                 // TODO: Should take care of text x-scaling.
-                mWidths[pos] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
-                final int numColumn = pos - rowStartPos + 1;
+                mWidths[index] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
+                final int numColumn = index - rowStartIndex + 1;
                 final int columnWidth =
                         (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
                 if (numColumn > MAX_COLUMNS_IN_ROW
-                        || !fitInWidth(rowStartPos, pos + 1, columnWidth)) {
+                        || !fitInWidth(rowStartIndex, index + 1, columnWidth)) {
                     if ((row + 1) >= maxRow) {
                         break;
                     }
-                    mNumColumnsInRow[row] = pos - rowStartPos;
-                    rowStartPos = pos;
+                    mNumColumnsInRow[row] = index - rowStartIndex;
+                    rowStartIndex = index;
                     row++;
                 }
-                mColumnOrders[pos] = pos - rowStartPos;
-                mRowNumbers[pos] = row;
-                pos++;
+                mColumnOrders[index] = index - rowStartIndex;
+                mRowNumbers[index] = row;
+                index++;
             }
-            mNumColumnsInRow[row] = pos - rowStartPos;
+            mNumColumnsInRow[row] = index - rowStartIndex;
             mNumRows = row + 1;
             mBaseWidth = mOccupiedWidth = Math.max(
-                    minWidth, calcurateMaxRowWidth(fromPos, pos));
+                    minWidth, calcurateMaxRowWidth(fromIndex, index));
             mBaseHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
-            return pos - fromPos;
+            return index - fromIndex;
         }
 
-        private boolean fitInWidth(final int startPos, final int endPos, final int width) {
-            for (int pos = startPos; pos < endPos; pos++) {
-                if (mWidths[pos] > width)
+        private boolean fitInWidth(final int startIndex, final int endIndex, final int width) {
+            for (int index = startIndex; index < endIndex; index++) {
+                if (mWidths[index] > width)
                     return false;
             }
             return true;
         }
 
-        private int calcurateMaxRowWidth(final int startPos, final int endPos) {
+        private int calcurateMaxRowWidth(final int startIndex, final int endIndex) {
             int maxRowWidth = 0;
-            int pos = startPos;
+            int index = startIndex;
             for (int row = 0; row < mNumRows; row++) {
                 final int numColumnInRow = mNumColumnsInRow[row];
                 int maxKeyWidth = 0;
-                while (pos < endPos && mRowNumbers[pos] == row) {
-                    maxKeyWidth = Math.max(maxKeyWidth, mWidths[pos]);
-                    pos++;
+                while (index < endIndex && mRowNumbers[index] == row) {
+                    maxKeyWidth = Math.max(maxKeyWidth, mWidths[index]);
+                    index++;
                 }
                 maxRowWidth = Math.max(maxRowWidth,
                         maxKeyWidth * numColumnInRow + mDividerWidth * (numColumnInRow - 1));
@@ -130,40 +131,40 @@ public final class MoreSuggestions extends Keyboard {
             { 2, 0, 1},
         };
 
-        public int getNumColumnInRow(final int pos) {
-            return mNumColumnsInRow[mRowNumbers[pos]];
+        public int getNumColumnInRow(final int index) {
+            return mNumColumnsInRow[mRowNumbers[index]];
         }
 
-        public int getColumnNumber(final int pos) {
-            final int columnOrder = mColumnOrders[pos];
-            final int numColumn = getNumColumnInRow(pos);
+        public int getColumnNumber(final int index) {
+            final int columnOrder = mColumnOrders[index];
+            final int numColumn = getNumColumnInRow(index);
             return COLUMN_ORDER_TO_NUMBER[numColumn - 1][columnOrder];
         }
 
-        public int getX(final int pos) {
-            final int columnNumber = getColumnNumber(pos);
-            return columnNumber * (getWidth(pos) + mDividerWidth);
+        public int getX(final int index) {
+            final int columnNumber = getColumnNumber(index);
+            return columnNumber * (getWidth(index) + mDividerWidth);
         }
 
-        public int getY(final int pos) {
-            final int row = mRowNumbers[pos];
+        public int getY(final int index) {
+            final int row = mRowNumbers[index];
             return (mNumRows -1 - row) * mDefaultRowHeight + mTopPadding;
         }
 
-        public int getWidth(final int pos) {
-            final int numColumnInRow = getNumColumnInRow(pos);
+        public int getWidth(final int index) {
+            final int numColumnInRow = getNumColumnInRow(index);
             return (mOccupiedWidth - mDividerWidth * (numColumnInRow - 1)) / numColumnInRow;
         }
 
-        public void markAsEdgeKey(final Key key, final int pos) {
-            final int row = mRowNumbers[pos];
+        public void markAsEdgeKey(final Key key, final int index) {
+            final int row = mRowNumbers[index];
             if (row == 0)
                 key.markAsBottomEdge(this);
             if (row == mNumRows - 1)
                 key.markAsTopEdge(this);
 
             final int numColumnInRow = mNumColumnsInRow[row];
-            final int column = getColumnNumber(pos);
+            final int column = getColumnNumber(index);
             if (column == 0)
                 key.markAsLeftEdge(this);
             if (column == numColumnInRow - 1)
@@ -174,15 +175,15 @@ public final class MoreSuggestions extends Keyboard {
     public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestedWords;
-        private int mFromPos;
-        private int mToPos;
+        private int mFromIndex;
+        private int mToIndex;
 
         public Builder(final Context context, final MoreSuggestionsView paneView) {
             super(context, new MoreSuggestionsParam());
             mPaneView = paneView;
         }
 
-        public Builder layout(final SuggestedWords suggestedWords, final int fromPos,
+        public Builder layout(final SuggestedWords suggestedWords, final int fromIndex,
                 final int maxWidth, final int minWidth, final int maxRow,
                 final Keyboard parentKeyboard) {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
@@ -190,10 +191,10 @@ public final class MoreSuggestions extends Keyboard {
             mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
 
             mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
-            final int count = mParams.layout(suggestedWords, fromPos, maxWidth, minWidth, maxRow,
+            final int count = mParams.layout(suggestedWords, fromIndex, maxWidth, minWidth, maxRow,
                     mPaneView.newLabelPaint(null /* key */), mResources);
-            mFromPos = fromPos;
-            mToPos = fromPos + count;
+            mFromIndex = fromIndex;
+            mToIndex = fromIndex + count;
             mSuggestedWords = suggestedWords;
             return this;
         }
@@ -201,20 +202,20 @@ public final class MoreSuggestions extends Keyboard {
         @Override
         public MoreSuggestions build() {
             final MoreSuggestionsParam params = mParams;
-            for (int pos = mFromPos; pos < mToPos; pos++) {
-                final int x = params.getX(pos);
-                final int y = params.getY(pos);
-                final int width = params.getWidth(pos);
-                final String word = mSuggestedWords.getWord(pos);
-                final String info = Utils.getDebugInfo(mSuggestedWords, pos);
-                final int index = pos + SUGGESTION_CODE_BASE;
+            for (int index = mFromIndex; index < mToIndex; index++) {
+                final int x = params.getX(index);
+                final int y = params.getY(index);
+                final int width = params.getWidth(index);
+                final String word = mSuggestedWords.getWord(index);
+                final String info = Utils.getDebugInfo(mSuggestedWords, index);
+                final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
-                        params, word, info, KeyboardIconsSet.ICON_UNDEFINED, index, null, x, y,
-                        width, params.mDefaultRowHeight, 0);
-                params.markAsEdgeKey(key, pos);
+                        params, word, info, KeyboardIconsSet.ICON_UNDEFINED, indexInMoreSuggestions,
+                        null, x, y, width, params.mDefaultRowHeight, 0);
+                params.markAsEdgeKey(key, index);
                 params.onAddKey(key);
-                final int columnNumber = params.getColumnNumber(pos);
-                final int numColumnInRow = params.getNumColumnInRow(pos);
+                final int columnNumber = params.getColumnNumber(index);
+                final int numColumnInRow = params.getNumColumnInRow(index);
                 if (columnNumber < numColumnInRow - 1) {
                     final Divider divider = new Divider(params, params.mDivider, x + width, y,
                             params.mDividerWidth, params.mDefaultRowHeight);
