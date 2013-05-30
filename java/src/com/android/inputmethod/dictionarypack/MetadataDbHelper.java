@@ -572,7 +572,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      * If several clients use the same metadata URL, we know to only download it once, and
      * dispatch the update process across all relevant clients when the download ends. This means
      * several clients may share a single download ID if they share a metadata URI.
-     * The dispatching is done in {@link UpdateHandler#downloadFinished(Context, Intent)}, which
+     * The dispatching is done in
+     * {@link UpdateHandler#downloadFinished(Context, android.content.Intent)}, which
      * finds out about the list of relevant clients by calling this method.
      *
      * @param context a context instance to open the databases
@@ -863,17 +864,20 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                                 r.getAsString(WORDLISTID_COLUMN),
                                 Integer.toString(STATUS_INSTALLED) },
                         null, null, null);
-                if (c.moveToFirst()) {
-                    // There should never be more than one file, but if there are, it's a bug
-                    // and we should remove them all. I think it might happen if the power of the
-                    // phone is suddenly cut during an update.
-                    final int filenameIndex = c.getColumnIndex(LOCAL_FILENAME_COLUMN);
-                    do {
-                        Utils.l("Setting for removal", c.getString(filenameIndex));
-                        filenames.add(c.getString(filenameIndex));
-                    } while (c.moveToNext());
+                try {
+                    if (c.moveToFirst()) {
+                        // There should never be more than one file, but if there are, it's a bug
+                        // and we should remove them all. I think it might happen if the power of
+                        // the phone is suddenly cut during an update.
+                        final int filenameIndex = c.getColumnIndex(LOCAL_FILENAME_COLUMN);
+                        do {
+                            Utils.l("Setting for removal", c.getString(filenameIndex));
+                            filenames.add(c.getString(filenameIndex));
+                        } while (c.moveToNext());
+                    }
+                } finally {
+                    c.close();
                 }
-
                 r.put(STATUS_COLUMN, STATUS_INSTALLED);
                 db.beginTransactionNonExclusive();
                 // Delete all old entries. There should never be any stalled entries, but if
