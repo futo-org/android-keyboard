@@ -855,6 +855,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
+        if (mWordComposer.isComposingWord()) mConnection.finishComposingText();
         resetComposingState(true /* alsoResetLastComposedWord */);
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
