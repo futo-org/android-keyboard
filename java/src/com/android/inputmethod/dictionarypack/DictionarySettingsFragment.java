@@ -222,7 +222,9 @@ public final class DictionarySettingsFragment extends PreferenceFragment
                     refreshNetworkState();
 
                     removeAnyDictSettings(prefScreen);
+                    int i = 0;
                     for (Preference preference : prefList) {
+                        preference.setOrder(i++);
                         prefScreen.addPreference(preference);
                     }
                 }
