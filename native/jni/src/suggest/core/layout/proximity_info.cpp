@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "suggest/core/layout/proximity_info.h"
+
 #include <cstring>
 #include <cmath>
 
@@ -22,10 +24,9 @@
 #include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
-#include "geometry_utils.h"
 #include "jni.h"
-#include "proximity_info.h"
-#include "proximity_info_params.h"
+#include "suggest/core/layout/geometry_utils.h"
+#include "suggest/core/layout/proximity_info_params.h"
 
 namespace latinime {
 
@@ -58,7 +59,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           MOST_COMMON_KEY_HEIGHT(mostCommonKeyHeight),
           NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE(1.0f +
-                  SQUARE_FLOAT(static_cast<float>(mostCommonKeyHeight) /
+                  GeometryUtils::SQUARE_FLOAT(static_cast<float>(mostCommonKeyHeight) /
                           static_cast<float>(mostCommonKeyWidth))),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
@@ -150,7 +151,7 @@ float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
     return ProximityInfoUtils::getSquaredDistanceFloat(centerX, centerY, touchX, touchY)
-            / SQUARE_FLOAT(keyWidth);
+            / GeometryUtils::SQUARE_FLOAT(keyWidth);
 }
 
 int ProximityInfo::getCodePointOf(const int keyIndex) const {
@@ -173,7 +174,7 @@ void ProximityInfo::initializeG() {
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
         for (int j = i + 1; j < KEY_COUNT; j++) {
-            mKeyKeyDistancesG[i][j] = getDistanceInt(
+            mKeyKeyDistancesG[i][j] = GeometryUtils::getDistanceInt(
                     mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
             mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
         }

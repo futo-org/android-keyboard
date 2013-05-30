@@ -15,7 +15,7 @@
  */
 
 #include "defines.h"
-#include "proximity_info_params.h"
+#include "suggest/core/layout/proximity_info_params.h"
 
 namespace latinime {
 const float ProximityInfoParams::NOT_A_DISTANCE_FLOAT = -1.0f;

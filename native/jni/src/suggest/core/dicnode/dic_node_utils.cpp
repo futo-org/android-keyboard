@@ -22,8 +22,8 @@
 #include "dic_node_utils.h"
 #include "dic_node_vector.h"
 #include "multi_bigram_map.h"
-#include "proximity_info.h"
-#include "proximity_info_state.h"
+#include "suggest/core/layout/proximity_info.h"
+#include "suggest/core/layout/proximity_info_state.h"
 
 namespace latinime {
 

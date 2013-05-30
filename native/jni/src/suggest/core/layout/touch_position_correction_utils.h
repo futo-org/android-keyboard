@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_SUGGEST_UTILS_H
-#define LATINIME_SUGGEST_UTILS_H
+#ifndef LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H
+#define LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H
 
 #include "defines.h"
 #include "proximity_info_params.h"
 
 namespace latinime {
-class SuggestUtils {
+class TouchPositionCorrectionUtils {
  public:
     // TODO: (OLD) Remove
     static float getLengthScalingFactor(const float normalizedSquaredDistance) {
@@ -82,7 +82,7 @@ class SuggestUtils {
         }
     }
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(TouchPositionCorrectionUtils);
 };
 } // namespace latinime
-#endif // LATINIME_SUGGEST_UTILS_H
+#endif // LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H

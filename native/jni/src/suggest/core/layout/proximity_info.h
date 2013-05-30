@@ -20,7 +20,7 @@
 #include "defines.h"
 #include "hash_map_compat.h"
 #include "jni.h"
-#include "proximity_info_utils.h"
+#include "suggest/core/layout/proximity_info_utils.h"
 
 namespace latinime {
 

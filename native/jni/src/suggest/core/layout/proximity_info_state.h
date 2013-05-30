@@ -23,8 +23,8 @@
 #include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
-#include "proximity_info_params.h"
-#include "proximity_info_state_utils.h"
+#include "suggest/core/layout/proximity_info_params.h"
+#include "suggest/core/layout/proximity_info_state_utils.h"
 
 namespace latinime {
 
