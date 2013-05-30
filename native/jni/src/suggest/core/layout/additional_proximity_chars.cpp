@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "additional_proximity_chars.h"
+#include "suggest/core/layout/additional_proximity_chars.h"
 
 namespace latinime {
 // TODO: Stop using hardcoded additional proximity characters.
