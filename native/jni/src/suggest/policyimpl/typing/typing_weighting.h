@@ -18,8 +18,8 @@
 #define LATINIME_TYPING_WEIGHTING_H
 
 #include "defines.h"
-#include "suggest_utils.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
@@ -74,7 +74,7 @@ class TypingWeighting : public Weighting {
         // the keyboard (like accented letters)
         const float normalizedSquaredLength = traverseSession->getProximityInfoState(0)
                 ->getPointToKeyLength(pointIndex, dicNode->getNodeCodePoint());
-        const float normalizedDistance = SuggestUtils::getSweetSpotFactor(
+        const float normalizedDistance = TouchPositionCorrectionUtils::getSweetSpotFactor(
                 traverseSession->isTouchPositionCorrectionEnabled(), normalizedSquaredLength);
         const float weightedDistance = ScoringParams::DISTANCE_WEIGHT_LENGTH * normalizedDistance;
 

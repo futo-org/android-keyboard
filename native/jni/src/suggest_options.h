@@ -39,6 +39,8 @@ class SuggestOptions{
     }
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(SuggestOptions);
+
     // Need to update com.android.inputmethod.latin.NativeSuggestOptions when you add, remove or
     // reorder options.
     static const int IS_GESTURE = 0;

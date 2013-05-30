@@ -21,8 +21,8 @@
 #include "char_utils.h"
 #include "correction.h"
 #include "defines.h"
-#include "proximity_info_state.h"
-#include "suggest_utils.h"
+#include "suggest/core/layout/proximity_info_state.h"
+#include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/policyimpl/utils/edit_distance.h"
 #include "suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy.h"
 
@@ -676,8 +676,8 @@ inline static bool isUpperCase(unsigned short c) {
             if (i < adjustedProximityMatchedCount) {
                 multiplyIntCapped(typedLetterMultiplier, &finalFreq);
             }
-            const float factor =
-                    SuggestUtils::getLengthScalingFactor(static_cast<float>(squaredDistance));
+            const float factor = TouchPositionCorrectionUtils::getLengthScalingFactor(
+                    static_cast<float>(squaredDistance));
             if (factor > 0.0f) {
                 multiplyRate(static_cast<int>(factor * 100.0f), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {

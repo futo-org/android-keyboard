@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+#include "suggest/core/layout/proximity_info_state_utils.h"
+
 #include <cmath>
 #include <cstring> // for memset()
 #include <sstream> // for debug prints
 #include <vector>
 
 #include "defines.h"
-#include "geometry_utils.h"
-#include "proximity_info.h"
-#include "proximity_info_params.h"
-#include "proximity_info_state_utils.h"
+#include "suggest/core/layout/geometry_utils.h"
+#include "suggest/core/layout/proximity_info.h"
+#include "suggest/core/layout/proximity_info_params.h"
 
 namespace latinime {
 
@@ -103,12 +104,12 @@ namespace latinime {
             const int time = times ? times[i] : -1;
 
             if (i > 1) {
-                const float prevAngle = getAngle(
+                const float prevAngle = GeometryUtils::getAngle(
                         inputXCoordinates[i - 2], inputYCoordinates[i - 2],
                         inputXCoordinates[i - 1], inputYCoordinates[i - 1]);
-                const float currentAngle = getAngle(
+                const float currentAngle = GeometryUtils::getAngle(
                         inputXCoordinates[i - 1], inputYCoordinates[i - 1], x, y);
-                sumAngle += getAngleDiff(prevAngle, currentAngle);
+                sumAngle += GeometryUtils::getAngleDiff(prevAngle, currentAngle);
             }
 
             if (pushTouchPoint(proximityInfo, maxPointToKeyLength, i, c, x, y, time,
@@ -157,7 +158,8 @@ namespace latinime {
     const float sweetSpotCenterY = proximityInfo->getSweetSpotCenterYAt(keyIndex);
     const float inputX = static_cast<float>((*sampledInputXs)[inputIndex]);
     const float inputY = static_cast<float>((*sampledInputYs)[inputIndex]);
-    return SQUARE_FLOAT(inputX - sweetSpotCenterX) + SQUARE_FLOAT(inputY - sweetSpotCenterY);
+    return GeometryUtils::SQUARE_FLOAT(inputX - sweetSpotCenterX)
+            + GeometryUtils::SQUARE_FLOAT(inputY - sweetSpotCenterY);
 }
 
 /* static */ float ProximityInfoStateUtils::calculateNormalizedSquaredDistance(
@@ -174,7 +176,8 @@ namespace latinime {
     }
     const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(proximityInfo,
             sampledInputXs, sampledInputYs, keyIndex, inputIndex);
-    const float squaredRadius = SQUARE_FLOAT(proximityInfo->getSweetSpotRadiiAt(keyIndex));
+    const float squaredRadius = GeometryUtils::SQUARE_FLOAT(
+            proximityInfo->getSweetSpotRadiiAt(keyIndex));
     return squaredDistance / squaredRadius;
 }
 
@@ -285,7 +288,7 @@ namespace latinime {
             if (i < sampledInputSize - 1 && j >= (*sampledInputIndice)[i + 1]) {
                 break;
             }
-            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += GeometryUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -296,7 +299,7 @@ namespace latinime {
                 break;
             }
             // TODO: use mSampledLengthCache instead?
-            length += getDistanceInt(xCoordinates[j], yCoordinates[j],
+            length += GeometryUtils::getDistanceInt(xCoordinates[j], yCoordinates[j],
                     xCoordinates[j + 1], yCoordinates[j + 1]);
             duration += times[j + 1] - times[j];
         }
@@ -349,7 +352,7 @@ namespace latinime {
     const int y1 = (*sampledInputYs)[index0];
     const int x2 = (*sampledInputXs)[index1];
     const int y2 = (*sampledInputYs)[index1];
-    return getAngle(x1, y1, x2, y2);
+    return GeometryUtils::getAngle(x1, y1, x2, y2);
 }
 
 // Calculating point to key distance for all near keys and returning the distance between
@@ -411,9 +414,9 @@ namespace latinime {
     }
 
     const int baseSampleRate = mostCommonKeyWidth;
-    const int distPrev = getDistanceInt(sampledInputXs->back(), sampledInputYs->back(),
-            (*sampledInputXs)[size - 2], (*sampledInputYs)[size - 2])
-                    * ProximityInfoParams::DISTANCE_BASE_SCALE;
+    const int distPrev = GeometryUtils::getDistanceInt(sampledInputXs->back(),
+            sampledInputYs->back(), (*sampledInputXs)[size - 2],
+            (*sampledInputYs)[size - 2]) * ProximityInfoParams::DISTANCE_BASE_SCALE;
     float score = 0.0f;
 
     // Location
@@ -425,10 +428,11 @@ namespace latinime {
         score += ProximityInfoParams::LOCALMIN_DISTANCE_AND_NEAR_TO_KEY_SCORE;
     }
     // Angle
-    const float angle1 = getAngle(x, y, sampledInputXs->back(), sampledInputYs->back());
-    const float angle2 = getAngle(sampledInputXs->back(), sampledInputYs->back(),
+    const float angle1 = GeometryUtils::getAngle(x, y, sampledInputXs->back(),
+            sampledInputYs->back());
+    const float angle2 = GeometryUtils::getAngle(sampledInputXs->back(), sampledInputYs->back(),
             (*sampledInputXs)[size - 2], (*sampledInputYs)[size - 2]);
-    const float angleDiff = getAngleDiff(angle1, angle2);
+    const float angleDiff = GeometryUtils::getAngleDiff(angle1, angle2);
 
     // Save corner
     if (distPrev > baseSampleRate * ProximityInfoParams::CORNER_CHECK_DISTANCE_THRESHOLD_SCALE
@@ -472,13 +476,13 @@ namespace latinime {
         }
         // Check if the last point should be skipped.
         if (isLastPoint && size > 0) {
-            if (getDistanceInt(x, y, sampledInputXs->back(), sampledInputYs->back())
+            if (GeometryUtils::getDistanceInt(x, y, sampledInputXs->back(), sampledInputYs->back())
                     * ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE < mostCommonKeyWidth) {
                 // This point is not used because it's too close to the previous point.
                 if (DEBUG_GEO_FULL) {
                     AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %d, "
                            "width = %d", size, x, y, sampledInputXs->back(),
-                           sampledInputYs->back(), getDistanceInt(
+                           sampledInputYs->back(), GeometryUtils::getDistanceInt(
                                    x, y, sampledInputXs->back(), sampledInputYs->back()),
                            mostCommonKeyWidth
                                    / ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE);
@@ -499,7 +503,7 @@ namespace latinime {
     // Pushing point information.
     if (size > 0) {
         sampledLengthCache->push_back(
-                sampledLengthCache->back() + getDistanceInt(
+                sampledLengthCache->back() + GeometryUtils::getDistanceInt(
                         x, y, sampledInputXs->back(), sampledInputYs->back()));
     } else {
         sampledLengthCache->push_back(0);
@@ -540,7 +544,8 @@ namespace latinime {
     while (start > 0 && tempBeelineDistance < lookupRadius) {
         tempTime += times[start] - times[start - 1];
         --start;
-        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[start], yCoordinates[start]);
+        tempBeelineDistance = GeometryUtils::getDistanceInt(x0, y0, xCoordinates[start],
+                yCoordinates[start]);
     }
     // Exclusive unless this is an edge point
     if (start > 0 && start < actualInputIndex) {
@@ -553,7 +558,8 @@ namespace latinime {
     while (end < (inputSize - 1) && tempBeelineDistance < lookupRadius) {
         tempTime += times[end + 1] - times[end];
         ++end;
-        tempBeelineDistance = getDistanceInt(x0, y0, xCoordinates[end], yCoordinates[end]);
+        tempBeelineDistance = GeometryUtils::getDistanceInt(x0, y0, xCoordinates[end],
+                yCoordinates[end]);
     }
     // Exclusive unless this is an edge point
     if (end > actualInputIndex && end < (inputSize - 1)) {
@@ -571,7 +577,7 @@ namespace latinime {
     const int y2 = yCoordinates[start];
     const int x3 = xCoordinates[end];
     const int y3 = yCoordinates[end];
-    const int beelineDistance = getDistanceInt(x2, y2, x3, y3);
+    const int beelineDistance = GeometryUtils::getDistanceInt(x2, y2, x3, y3);
     int adjustedStartTime = times[start];
     if (start == 0 && actualInputIndex == 0 && inputSize > 1) {
         adjustedStartTime += ProximityInfoParams::FIRST_POINT_TIME_OFFSET_MILLIS;
@@ -613,7 +619,7 @@ namespace latinime {
     }
     const float previousDirection = getDirection(sampledInputXs, sampledInputYs, index - 1, index);
     const float nextDirection = getDirection(sampledInputXs, sampledInputYs, index, index + 1);
-    const float directionDiff = getAngleDiff(previousDirection, nextDirection);
+    const float directionDiff = GeometryUtils::getAngleDiff(previousDirection, nextDirection);
     return directionDiff;
 }
 
@@ -636,7 +642,7 @@ namespace latinime {
     }
     const float previousDirection = getDirection(sampledInputXs, sampledInputYs, index0, index1);
     const float nextDirection = getDirection(sampledInputXs, sampledInputYs, index1, index2);
-    return getAngleDiff(previousDirection, nextDirection);
+    return GeometryUtils::getAngleDiff(previousDirection, nextDirection);
 }
 
 // This function basically converts from a length to an edit distance. Accordingly, it's obviously

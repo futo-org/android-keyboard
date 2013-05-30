@@ -21,7 +21,7 @@
 
 #include "correction_state.h"
 #include "defines.h"
-#include "proximity_info_state.h"
+#include "suggest/core/layout/proximity_info_state.h"
 
 namespace latinime {
 

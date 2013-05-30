@@ -22,8 +22,8 @@
 #include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
-#include "geometry_utils.h"
 #include "hash_map_compat.h"
+#include "suggest/core/layout/geometry_utils.h"
 
 namespace latinime {
 class ProximityInfoUtils {
@@ -87,7 +87,7 @@ class ProximityInfoUtils {
 
     static inline float getSquaredDistanceFloat(const float x1, const float y1, const float x2,
             const float y2) {
-        return SQUARE_FLOAT(x1 - x2) + SQUARE_FLOAT(y1 - y2);
+        return GeometryUtils::SQUARE_FLOAT(x1 - x2) + GeometryUtils::SQUARE_FLOAT(y1 - y2);
     }
 
     static inline float pointToLineSegSquaredDistanceFloat(const float x, const float y,
@@ -98,7 +98,8 @@ class ProximityInfoUtils {
         const float ray2y = y2 - y1;
 
         const float dotProduct = ray1x * ray2x + ray1y * ray2y;
-        const float lineLengthSqr = SQUARE_FLOAT(ray2x) + SQUARE_FLOAT(ray2y);
+        const float lineLengthSqr = GeometryUtils::SQUARE_FLOAT(ray2x)
+                + GeometryUtils::SQUARE_FLOAT(ray2y);
         const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
         float projectionX;
@@ -121,12 +122,14 @@ class ProximityInfoUtils {
      public:
         NormalDistribution(const float u, const float sigma)
                 : mU(u), mSigma(sigma),
-                  mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F * SQUARE_FLOAT(sigma))),
-                  mPreComputedExponentPart(-1.0f / (2.0f * SQUARE_FLOAT(sigma))) {}
+                  mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F
+                          * GeometryUtils::SQUARE_FLOAT(sigma))),
+                  mPreComputedExponentPart(-1.0f / (2.0f * GeometryUtils::SQUARE_FLOAT(sigma))) {}
 
         float getProbabilityDensity(const float x) const {
             const float shiftedX = x - mU;
-            return mPreComputedNonExpPart * expf(mPreComputedExponentPart * SQUARE_FLOAT(shiftedX));
+            return mPreComputedNonExpPart
+                    * expf(mPreComputedExponentPart * GeometryUtils::SQUARE_FLOAT(shiftedX));
         }
 
      private:

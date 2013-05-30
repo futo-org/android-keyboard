@@ -21,9 +21,9 @@
 
 #include "char_utils.h"
 #include "defines.h"
-#include "proximity_info_state.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"

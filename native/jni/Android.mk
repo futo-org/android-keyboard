@@ -53,10 +53,6 @@ LATIN_IME_CORE_SRC_FILES := \
     dictionary.cpp \
     dic_traverse_wrapper.cpp \
     digraph_utils.cpp \
-    proximity_info.cpp \
-    proximity_info_params.cpp \
-    proximity_info_state.cpp \
-    proximity_info_state_utils.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     suggest/core/suggest.cpp \
@@ -64,6 +60,11 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node.cpp \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
+    $(addprefix suggest/core/layout/, \
+        proximity_info.cpp \
+        proximity_info_params.cpp \
+        proximity_info_state.cpp \
+        proximity_info_state_utils.cpp) \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
