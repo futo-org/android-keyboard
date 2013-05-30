@@ -49,9 +49,7 @@ LATIN_IME_CORE_SRC_FILES := \
     bigram_dictionary.cpp \
     char_utils.cpp \
     correction.cpp \
-    dictionary.cpp \
     dic_traverse_wrapper.cpp \
-    digraph_utils.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     suggest/core/suggest.cpp \
@@ -59,6 +57,9 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node.cpp \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
+    $(addprefix suggest/core/dictionary/, \
+        dictionary.cpp \
+        digraph_utils.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
         proximity_info.cpp \

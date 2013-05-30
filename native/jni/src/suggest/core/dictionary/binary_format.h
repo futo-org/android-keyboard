@@ -21,9 +21,9 @@
 #include <map>
 #include <stdint.h>
 
-#include "bloom_filter.h"
 #include "char_utils.h"
 #include "hash_map_compat.h"
+#include "suggest/core/dictionary/bloom_filter.h"
 
 namespace latinime {
 

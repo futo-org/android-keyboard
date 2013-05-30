@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+#include "suggest/core/dictionary/digraph_utils.h"
+
 #include "char_utils.h"
-#include "binary_format.h"
 #include "defines.h"
-#include "digraph_utils.h"
+#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 

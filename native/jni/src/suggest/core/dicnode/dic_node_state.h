@@ -18,10 +18,10 @@
 #define LATINIME_DIC_NODE_STATE_H
 
 #include "defines.h"
-#include "dic_node_state_input.h"
-#include "dic_node_state_output.h"
-#include "dic_node_state_prevword.h"
-#include "dic_node_state_scoring.h"
+#include "suggest/core/dicnode/dic_node_state_input.h"
+#include "suggest/core/dicnode/dic_node_state_output.h"
+#include "suggest/core/dicnode/dic_node_state_prevword.h"
+#include "suggest/core/dicnode/dic_node_state_scoring.h"
 
 namespace latinime {
 

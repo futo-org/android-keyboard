@@ -19,11 +19,12 @@
 #define LOG_TAG "LatinIME: bigram_dictionary.cpp"
 
 #include "bigram_dictionary.h"
-#include "binary_format.h"
-#include "bloom_filter.h"
+
 #include "char_utils.h"
 #include "defines.h"
-#include "dictionary.h"
+#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/bloom_filter.h"
+#include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
 

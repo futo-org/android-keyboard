@@ -18,7 +18,8 @@
 #define LATINIME_TERMINAL_ATTRIBUTES_H
 
 #include <stdint.h>
-#include "binary_format.h"
+
+#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 

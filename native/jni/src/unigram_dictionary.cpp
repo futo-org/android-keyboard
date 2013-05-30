@@ -18,13 +18,13 @@
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
-#include "binary_format.h"
 #include "char_utils.h"
 #include "defines.h"
-#include "dictionary.h"
-#include "digraph_utils.h"
+#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/digraph_utils.h"
+#include "suggest/core/dictionary/terminal_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
-#include "terminal_attributes.h"
 #include "unigram_dictionary.h"
 #include "words_priority_queue.h"
 #include "words_priority_queue_pool.h"

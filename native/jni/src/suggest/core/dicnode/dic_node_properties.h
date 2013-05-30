@@ -19,8 +19,8 @@
 
 #include <stdint.h>
 
-#include "binary_format.h"
 #include "defines.h"
+#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 
