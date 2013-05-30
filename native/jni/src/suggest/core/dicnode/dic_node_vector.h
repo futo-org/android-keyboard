@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "defines.h"
-#include "dic_node.h"
+#include "suggest/core/dicnode/dic_node.h"
 
 namespace latinime {
 

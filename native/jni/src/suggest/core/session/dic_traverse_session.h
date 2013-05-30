@@ -22,8 +22,8 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "multi_bigram_map.h"
 #include "suggest/core/dicnode/dic_nodes_cache.h"
+#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/layout/proximity_info_state.h"
 
 namespace latinime {

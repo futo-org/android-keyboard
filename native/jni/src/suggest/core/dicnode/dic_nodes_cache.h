@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "dic_node_priority_queue.h"
+#include "suggest/core/dicnode/dic_node_priority_queue.h"
 
 #define INITIAL_QUEUE_ID_ACTIVE 0
 #define INITIAL_QUEUE_ID_NEXT_ACTIVE 1

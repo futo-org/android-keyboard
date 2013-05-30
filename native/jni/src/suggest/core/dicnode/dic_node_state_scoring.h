@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "digraph_utils.h"
+#include "suggest/core/dictionary/digraph_utils.h"
 
 namespace latinime {
 

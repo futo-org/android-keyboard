@@ -17,11 +17,11 @@
 #include <cstring>
 #include <vector>
 
-#include "binary_format.h"
-#include "dic_node.h"
-#include "dic_node_utils.h"
-#include "dic_node_vector.h"
-#include "multi_bigram_map.h"
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state.h"
 

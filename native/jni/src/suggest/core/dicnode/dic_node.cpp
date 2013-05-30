@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "dic_node.h"
+#include "suggest/core/dicnode/dic_node.h"
 
 namespace latinime {
 

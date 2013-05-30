@@ -17,12 +17,11 @@
 #ifndef LATINIME_MULTI_BIGRAM_MAP_H
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
-#include <cstring>
 #include <stdint.h>
 
 #include "defines.h"
-#include "binary_format.h"
 #include "hash_map_compat.h"
+#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 

@@ -29,13 +29,14 @@
 #include <cstdio> // for fopen() etc.
 #endif // USE_MMAP_FOR_DICTIONARY
 
-#include "binary_format.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
+
 #include "correction.h"
-#include "dictionary.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest_options.h"
+#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
 

@@ -16,12 +16,12 @@
 
 #include "suggest/core/session/dic_traverse_session.h"
 
-#include "binary_format.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
 

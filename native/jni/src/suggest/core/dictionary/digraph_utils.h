@@ -17,6 +17,8 @@
 #ifndef DIGRAPH_UTILS_H
 #define DIGRAPH_UTILS_H
 
+#include "defines.h"
+
 namespace latinime {
 
 class DigraphUtils {

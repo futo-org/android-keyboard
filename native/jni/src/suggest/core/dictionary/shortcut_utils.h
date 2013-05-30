@@ -19,7 +19,7 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "terminal_attributes.h"
+#include "suggest/core/dictionary/terminal_attributes.h"
 
 namespace latinime {
 

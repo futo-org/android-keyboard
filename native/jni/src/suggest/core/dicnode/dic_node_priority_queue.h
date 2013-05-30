@@ -21,8 +21,8 @@
 #include <vector>
 
 #include "defines.h"
-#include "dic_node.h"
-#include "dic_node_release_listener.h"
+#include "suggest/core/dicnode/dic_node.h"
+#include "suggest/core/dicnode/dic_node_release_listener.h"
 
 #define MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY 200
 

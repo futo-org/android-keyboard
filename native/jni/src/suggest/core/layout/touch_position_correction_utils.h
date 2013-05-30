@@ -18,7 +18,7 @@
 #define LATINIME_TOUCH_POSITION_CORRECTION_UTILS_H
 
 #include "defines.h"
-#include "proximity_info_params.h"
+#include "suggest/core/layout/proximity_info_params.h"
 
 namespace latinime {
 class TouchPositionCorrectionUtils {

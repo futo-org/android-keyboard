@@ -17,9 +17,9 @@
 #include <list>
 
 #include "defines.h"
-#include "dic_node_priority_queue.h"
-#include "dic_node_utils.h"
-#include "dic_nodes_cache.h"
+#include "suggest/core/dicnode/dic_node_priority_queue.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dicnode/dic_nodes_cache.h"
 
 namespace latinime {
 
