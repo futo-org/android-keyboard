@@ -23,6 +23,9 @@ namespace latinime {
 
 class SuggestOptions{
  public:
+    SuggestOptions(const int *const options, const int length)
+            : mOptions(options), mLength(length) {}
+
     AK_FORCE_INLINE bool isGesture() const {
         return getBoolOption(IS_GESTURE);
     }
@@ -31,14 +34,18 @@ class SuggestOptions{
         return getBoolOption(USE_FULL_EDIT_DISTANCE);
     }
 
-    SuggestOptions(const int *const options, const int length)
-            : mOptions(options), mLength(length) {}
+    AK_FORCE_INLINE bool getAdditionalFeaturesBoolOption(const int key) const {
+        return getBoolOption(key + ADDITIONAL_FEATURES_OPTIONS);
+    }
 
  private:
     // Need to update com.android.inputmethod.latin.NativeSuggestOptions when you add, remove or
     // reorder options.
     static const int IS_GESTURE = 0;
     static const int USE_FULL_EDIT_DISTANCE = 1;
+    // Additional features options are stored after the other options and used as setting values of
+    // experimental features.
+    static const int ADDITIONAL_FEATURES_OPTIONS = 2;
 
     const int *const mOptions;
     const int mLength;
