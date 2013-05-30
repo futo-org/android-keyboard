@@ -34,12 +34,14 @@ static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong tra
     void *ts = reinterpret_cast<void *>(traverseSession);
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
-        DicTraverseWrapper::initDicTraverseSession(ts, dict, 0, 0);
+        DicTraverseWrapper::initDicTraverseSession(
+                ts, dict, 0 /* prevWord */, 0 /* prevWordLength*/, 0 /* suggestOptions */);
         return;
     }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
-    DicTraverseWrapper::initDicTraverseSession(ts, dict, prevWord, previousWordLength);
+    DicTraverseWrapper::initDicTraverseSession(
+            ts, dict, prevWord, previousWordLength, 0 /* suggestOptions */);
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {

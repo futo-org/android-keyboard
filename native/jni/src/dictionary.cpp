@@ -25,6 +25,7 @@
 #include "binary_format.h"
 #include "defines.h"
 #include "dic_traverse_wrapper.h"
+#include "suggest_options.h"
 #include "suggest/core/suggest.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
@@ -53,13 +54,13 @@ Dictionary::~Dictionary() {
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint, bool isGesture,
-        bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
-        int *outputTypes) const {
+        int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
+        const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
+        int *spaceIndices, int *outputTypes) const {
     int result = 0;
-    if (isGesture) {
+    if (suggestOptions->isGesture()) {
         DicTraverseWrapper::initDicTraverseSession(
-                traverseSession, this, prevWordCodePoints, prevWordLength);
+                traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
                 frequencies, spaceIndices, outputTypes);
@@ -70,7 +71,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
     } else {
         if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
             DicTraverseWrapper::initDicTraverseSession(
-                    traverseSession, this, prevWordCodePoints, prevWordLength);
+                    traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
             result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                     ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
                     outWords, frequencies, spaceIndices, outputTypes);
@@ -84,8 +85,8 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
             mBigramDictionary->fillBigramAddressToProbabilityMapAndFilter(prevWordCodePoints,
                     prevWordLength, &bigramMap, bigramFilter);
             result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                    inputCodePoints, inputSize, &bigramMap, bigramFilter, useFullEditDistance,
-                    outWords, frequencies, outputTypes);
+                    inputCodePoints, inputSize, &bigramMap, bigramFilter,
+                    suggestOptions->useFullEditDistance(), outWords, frequencies, outputTypes);
             return result;
         }
     }
