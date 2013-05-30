@@ -46,7 +46,6 @@ LATIN_IME_JNI_SRC_FILES := \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES := \
-    additional_proximity_chars.cpp \
     bigram_dictionary.cpp \
     char_utils.cpp \
     correction.cpp \
@@ -61,6 +60,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/layout/, \
+        additional_proximity_chars.cpp \
         proximity_info.cpp \
         proximity_info_params.cpp \
         proximity_info_state.cpp \
