@@ -162,7 +162,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     const jsize numberOfOptions = env->GetArrayLength(suggestOptions);
     int options[numberOfOptions];
     env->GetIntArrayRegion(suggestOptions, 0, numberOfOptions, options);
-    SuggestOptions givenOptions(options, numberOfOptions);
+    SuggestOptions givenSuggestOptions(options, numberOfOptions);
 
     // Output values
     /* By the way, let's check the output array length here to make sure */
@@ -190,12 +190,11 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     memset(outputTypes, 0, sizeof(outputTypes));
 
     int count;
-    if (givenOptions.isGesture() || inputSize > 0) {
+    if (givenSuggestOptions.isGesture() || inputSize > 0) {
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
-                prevWordCodePointsLength, commitPoint, givenOptions.isGesture(),
-                givenOptions.useFullEditDistance(), outputCodePoints, scores,
-                spaceIndices, outputTypes);
+                prevWordCodePointsLength, commitPoint, &givenSuggestOptions, outputCodePoints,
+                scores, spaceIndices, outputTypes);
     } else {
         count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
                 inputCodePoints, inputSize, outputCodePoints, scores, outputTypes);

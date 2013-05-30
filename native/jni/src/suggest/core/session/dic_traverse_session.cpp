@@ -34,10 +34,11 @@ static void *getSessionInstance(JNIEnv *env, jstring localeStr) {
 
 // TODO: Pass "DicTraverseSession *traverseSession" when the source code structure settles down.
 static void initSessionInstance(void *traverseSession, const Dictionary *const dictionary,
-        const int *prevWord, const int prevWordLength) {
+        const int *prevWord, const int prevWordLength,
+        const SuggestOptions *const suggestOptions) {
     if (traverseSession) {
         DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
-        tSession->init(dictionary, prevWord, prevWordLength);
+        tSession->init(dictionary, prevWord, prevWordLength, suggestOptions);
     }
 }
 
@@ -62,10 +63,11 @@ class TraverseSessionFactoryRegisterer {
 static TraverseSessionFactoryRegisterer traverseSessionFactoryRegisterer;
 
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
-        int prevWordLength) {
+        int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
     mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(mDictionary->getDict(),
             mDictionary->getDictSize());
+    mSuggestOptions = suggestOptions;
     if (!prevWord) {
         mPrevWordPos = NOT_VALID_WORD;
         return;

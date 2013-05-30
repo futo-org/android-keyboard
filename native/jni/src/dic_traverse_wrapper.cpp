@@ -22,5 +22,5 @@ namespace latinime {
 void *(*DicTraverseWrapper::sDicTraverseSessionFactoryMethod)(JNIEnv *, jstring) = 0;
 void (*DicTraverseWrapper::sDicTraverseSessionReleaseMethod)(void *) = 0;
 void (*DicTraverseWrapper::sDicTraverseSessionInitMethod)(
-        void *, const Dictionary *const, const int *, const int) = 0;
+        void *, const Dictionary *const, const int *, const int, const SuggestOptions *const) = 0;
 } // namespace latinime

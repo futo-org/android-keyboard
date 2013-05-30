@@ -30,12 +30,13 @@ namespace latinime {
 
 class Dictionary;
 class ProximityInfo;
+class SuggestOptions;
 
 class DicTraverseSession {
  public:
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr)
             : mPrevWordPos(NOT_VALID_WORD), mProximityInfo(0),
-              mDictionary(0), mDicNodesCache(), mMultiBigramMap(),
+              mDictionary(0), mSuggestOptions(0), mDicNodesCache(), mMultiBigramMap(),
               mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
@@ -45,7 +46,8 @@ class DicTraverseSession {
     // Non virtual inline destructor -- never inherit this class
     AK_FORCE_INLINE ~DicTraverseSession() {}
 
-    void init(const Dictionary *dictionary, const int *prevWord, int prevWordLength);
+    void init(const Dictionary *dictionary, const int *prevWord, int prevWordLength,
+            const SuggestOptions *const suggestOptions);
     // TODO: Remove and merge into init
     void setupForGetSuggestions(const ProximityInfo *pInfo, const int *inputCodePoints,
             const int inputSize, const int *const inputXs, const int *const inputYs,
@@ -61,6 +63,7 @@ class DicTraverseSession {
     // getters and setters
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
+    const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
     int getPrevWordPos() const { return mPrevWordPos; }
     // TODO: REMOVE
     void setPrevWordPos(int pos) { mPrevWordPos = pos; }
@@ -167,6 +170,7 @@ class DicTraverseSession {
     int mPrevWordPos;
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
+    const SuggestOptions *mSuggestOptions;
 
     DicNodesCache mDicNodesCache;
     // Temporary cache for bigram frequencies

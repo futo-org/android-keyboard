@@ -26,6 +26,7 @@ namespace latinime {
 class BigramDictionary;
 class ProximityInfo;
 class SuggestInterface;
+class SuggestOptions;
 class UnigramDictionary;
 
 class Dictionary {
@@ -54,9 +55,9 @@ class Dictionary {
 
     int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
             int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints, int inputSize,
-            int *prevWordCodePoints, int prevWordLength, int commitPoint, bool isGesture,
-            bool useFullEditDistance, int *outWords, int *frequencies, int *spaceIndices,
-            int *outputTypes) const;
+            int *prevWordCodePoints, int prevWordLength, int commitPoint,
+            const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
+            int *spaceIndices, int *outputTypes) const;
 
     int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
