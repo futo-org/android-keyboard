@@ -363,8 +363,14 @@ public final class BinaryDictionaryFileDumper {
      */
     public static void cacheWordListsFromContentProvider(final Locale locale,
             final Context context, final boolean hasDefaultWordList) {
-        final ContentProviderClient providerClient = context.getContentResolver().
+        final ContentProviderClient providerClient;
+        try {
+            providerClient = context.getContentResolver().
                 acquireContentProviderClient(getProviderUriBuilder("").build());
+        } catch (final SecurityException e) {
+            Log.e(TAG, "No permission to communicate with the dictionary provider", e);
+            return;
+        }
         if (null == providerClient) {
             Log.e(TAG, "Can't establish communication with the dictionary provider");
             return;
