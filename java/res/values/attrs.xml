@@ -161,7 +161,7 @@
 
     <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOption" format="integer">
-            <!-- This should be aligned with SuggestionStripViewParams.AUTO_CORRECT_* and etc. -->
+            <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="validTypedWordBold" value="0x04" />

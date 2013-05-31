@@ -93,12 +93,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
-            word.setTag(pos);
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
             mWordViews.add(word);
             final View divider = inflater.inflate(R.layout.suggestion_divider, null);
-            divider.setTag(pos);
             divider.setOnClickListener(this);
             mDividerViews.add(divider);
             mDebugInfoViews.add((TextView)inflater.inflate(R.layout.suggestion_info, null));

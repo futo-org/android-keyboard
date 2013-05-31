@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public final class SuggestedWords {
+    public static final int INDEX_OF_TYPED_WORD = 0;
+    public static final int INDEX_OF_AUTO_CORRECTION = 1;
+
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
@@ -61,12 +64,12 @@ public final class SuggestedWords {
         return mSuggestedWordInfoList.size();
     }
 
-    public String getWord(int pos) {
-        return mSuggestedWordInfoList.get(pos).mWord;
+    public String getWord(final int index) {
+        return mSuggestedWordInfoList.get(index).mWord;
     }
 
-    public SuggestedWordInfo getInfo(int pos) {
-        return mSuggestedWordInfoList.get(pos);
+    public SuggestedWordInfo getInfo(final int index) {
+        return mSuggestedWordInfoList.get(index);
     }
 
     public boolean willAutoCorrect() {
@@ -108,8 +111,8 @@ public final class SuggestedWords {
                 SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
-        for (int pos = 1; pos < previousSize; pos++) {
-            final SuggestedWordInfo prevWordInfo = previousSuggestions.getInfo(pos);
+        for (int index = 1; index < previousSize; index++) {
+            final SuggestedWordInfo prevWordInfo = previousSuggestions.getInfo(index);
             final String prevWord = prevWordInfo.mWord;
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
