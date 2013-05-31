@@ -64,7 +64,8 @@ public final class Utils {
      *        task should be interrupted; otherwise, in-progress tasks are allowed
      *        to complete.
      */
-    public static void cancelTask(AsyncTask<?, ?, ?> task, boolean mayInterruptIfRunning) {
+    public static void cancelTask(final AsyncTask<?, ?, ?> task,
+            final boolean mayInterruptIfRunning) {
         if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
             task.cancel(mayInterruptIfRunning);
         }
@@ -86,26 +87,34 @@ public final class Utils {
         private RingCharBuffer() {
             // Intentional empty constructor for singleton.
         }
+
         @UsedForTesting
         public static RingCharBuffer getInstance() {
             return sRingCharBuffer;
         }
-        public static RingCharBuffer init(InputMethodService context, boolean enabled,
-                boolean usabilityStudy) {
-            if (!(enabled || usabilityStudy)) return null;
+
+        public static RingCharBuffer init(final InputMethodService context, final boolean enabled,
+                final boolean usabilityStudy) {
+            if (!(enabled || usabilityStudy)) {
+                return null;
+            }
             sRingCharBuffer.mContext = context;
             sRingCharBuffer.mEnabled = true;
             UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
-        private static int normalize(int in) {
+
+        private static int normalize(final int in) {
             int ret = in % BUFSIZE;
             return ret < 0 ? ret + BUFSIZE : ret;
         }
+
         // TODO: accept code points
         @UsedForTesting
-        public void push(char c, int x, int y) {
-            if (!mEnabled) return;
+        public void push(final char c, final int x, final int y) {
+            if (!mEnabled) {
+                return;
+            }
             mCharBuf[mEnd] = c;
             mXBuf[mEnd] = x;
             mYBuf[mEnd] = y;
@@ -114,52 +123,54 @@ public final class Utils {
                 ++mLength;
             }
         }
+
         public char pop() {
             if (mLength < 1) {
                 return PLACEHOLDER_DELIMITER_CHAR;
-            } else {
-                mEnd = normalize(mEnd - 1);
-                --mLength;
-                return mCharBuf[mEnd];
             }
+            mEnd = normalize(mEnd - 1);
+            --mLength;
+            return mCharBuf[mEnd];
         }
-        public char getBackwardNthChar(int n) {
+
+        public char getBackwardNthChar(final int n) {
             if (mLength <= n || n < 0) {
                 return PLACEHOLDER_DELIMITER_CHAR;
-            } else {
-                return mCharBuf[normalize(mEnd - n - 1)];
             }
+            return mCharBuf[normalize(mEnd - n - 1)];
         }
-        public int getPreviousX(char c, int back) {
+
+        public int getPreviousX(final char c, final int back) {
+            final int index = normalize(mEnd - 2 - back);
+            if (mLength <= back
+                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
+                return INVALID_COORDINATE;
+            }
+            return mXBuf[index];
+        }
+
+        public int getPreviousY(final char c, final int back) {
             int index = normalize(mEnd - 2 - back);
             if (mLength <= back
                     || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
                 return INVALID_COORDINATE;
-            } else {
-                return mXBuf[index];
             }
+            return mYBuf[index];
         }
-        public int getPreviousY(char c, int back) {
-            int index = normalize(mEnd - 2 - back);
-            if (mLength <= back
-                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
-                return INVALID_COORDINATE;
-            } else {
-                return mYBuf[index];
-            }
-        }
-        public String getLastWord(int ignoreCharCount) {
-            StringBuilder sb = new StringBuilder();
+
+        public String getLastWord(final int ignoreCharCount) {
+            final StringBuilder sb = new StringBuilder();
+            final LatinIME latinIme = (LatinIME)mContext;
             int i = ignoreCharCount;
             for (; i < mLength; ++i) {
-                char c = mCharBuf[normalize(mEnd - 1 - i)];
-                if (!((LatinIME)mContext).isWordSeparator(c)) {
+                final char c = mCharBuf[normalize(mEnd - 1 - i)];
+                if (!latinIme.isWordSeparator(c)) {
                     break;
                 }
             }
             for (; i < mLength; ++i) {
                 char c = mCharBuf[normalize(mEnd - 1 - i)];
-                if (!((LatinIME)mContext).isWordSeparator(c)) {
+                if (!latinIme.isWordSeparator(c)) {
                     sb.append(c);
                 } else {
                     break;
@@ -167,6 +178,7 @@ public final class Utils {
             }
             return sb.reverse().toString();
         }
+
         public void reset() {
             mLength = 0;
         }
@@ -174,11 +186,11 @@ public final class Utils {
 
     // Get the current stack trace
     public static String getStackTrace(final int limit) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         try {
             throw new RuntimeException();
-        } catch (RuntimeException e) {
-            StackTraceElement[] frames = e.getStackTrace();
+        } catch (final RuntimeException e) {
+            final StackTraceElement[] frames = e.getStackTrace();
             // Start at 1 because the first frame is here and we don't care about it
             for (int j = 1; j < frames.length && j < limit + 1; ++j) {
                 sb.append(frames[j].toString() + "\n");
@@ -222,7 +234,7 @@ public final class Utils {
             return OnDemandInitializationHolder.sInstance;
         }
 
-        public void init(InputMethodService ims) {
+        public void init(final InputMethodService ims) {
             mIms = ims;
             mDirectory = ims.getFilesDir();
         }
@@ -232,17 +244,17 @@ public final class Utils {
                     && (mDirectory != null && mDirectory.exists())) {
                 try {
                     mWriter = getPrintWriter(mDirectory, FILENAME, false);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     Log.e(USABILITY_TAG, "Can't create log file.");
                 }
             }
         }
 
-        public static void writeBackSpace(int x, int y) {
+        public static void writeBackSpace(final int x, final int y) {
             UsabilityStudyLogUtils.getInstance().write("<backspace>\t" + x + "\t" + y);
         }
 
-        public void writeChar(char c, int x, int y) {
+        public static void writeChar(final char c, final int x, final int y) {
             String inputChar = String.valueOf(c);
             switch (c) {
                 case '\n':
@@ -279,15 +291,15 @@ public final class Utils {
 
         private synchronized String getBufferedLogs() {
             mWriter.flush();
-            StringBuilder sb = new StringBuilder();
-            BufferedReader br = getBufferedReader();
+            final StringBuilder sb = new StringBuilder();
+            final BufferedReader br = getBufferedReader();
             String line;
             try {
                 while ((line = br.readLine()) != null) {
                     sb.append('\n');
                     sb.append(line);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 Log.e(USABILITY_TAG, "Can't read log file.");
             } finally {
                 if (LatinImeLogger.sDBG) {
@@ -295,7 +307,7 @@ public final class Utils {
                 }
                 try {
                     br.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     // ignore.
                 }
             }
@@ -334,10 +346,10 @@ public final class Utils {
                         srcStream.close();
                         dest.close();
                         destStream.close();
-                    } catch (FileNotFoundException e1) {
+                    } catch (final FileNotFoundException e1) {
                         Log.w(USABILITY_TAG, e1);
                         return;
-                    } catch (IOException e2) {
+                    } catch (final IOException e2) {
                         Log.w(USABILITY_TAG, e2);
                         return;
                     }
@@ -387,13 +399,13 @@ public final class Utils {
             createLogFileIfNotExist();
             try {
                 return new BufferedReader(new FileReader(mFile));
-            } catch (FileNotFoundException e) {
+            } catch (final FileNotFoundException e) {
                 return null;
             }
         }
 
-        private PrintWriter getPrintWriter(
-                File dir, String filename, boolean renew) throws IOException {
+        private PrintWriter getPrintWriter(final File dir, final String filename,
+                final boolean renew) throws IOException {
             mFile = new File(dir, filename);
             if (mFile.exists()) {
                 if (renew) {
@@ -405,8 +417,7 @@ public final class Utils {
     }
 
     public static final class Stats {
-        public static void onNonSeparator(final char code, final int x,
-                final int y) {
+        public static void onNonSeparator(final char code, final int x, final int y) {
             RingCharBuffer.getInstance().push(code, x, y);
             LatinImeLogger.logOnInputChar();
         }
@@ -430,7 +441,9 @@ public final class Utils {
         public static void onAutoCorrection(final String typedWord, final String correctedWord,
                 final String separatorString, final WordComposer wordComposer) {
             final boolean isBatchMode = wordComposer.isBatchMode();
-            if (!isBatchMode && TextUtils.isEmpty(typedWord)) return;
+            if (!isBatchMode && TextUtils.isEmpty(typedWord)) {
+                return;
+            }
             // TODO: this fails when the separator is more than 1 code point long, but
             // the backend can't handle it yet. The only case when this happens is with
             // smileys and other multi-character keys.
@@ -454,36 +467,43 @@ public final class Utils {
     }
 
     public static String getDebugInfo(final SuggestedWords suggestions, final int pos) {
-        if (!LatinImeLogger.sDBG) return null;
+        if (!LatinImeLogger.sDBG) {
+            return null;
+        }
         final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
-        if (wordInfo == null) return null;
+        if (wordInfo == null) {
+            return null;
+        }
         final String info = wordInfo.getDebugString();
-        if (TextUtils.isEmpty(info)) return null;
+        if (TextUtils.isEmpty(info)) {
+            return null;
+        }
         return info;
     }
 
-    public static int getAcitivityTitleResId(Context context, Class<? extends Activity> cls) {
+    public static int getAcitivityTitleResId(final Context context,
+            final Class<? extends Activity> cls) {
         final ComponentName cn = new ComponentName(context, cls);
         try {
             final ActivityInfo ai = context.getPackageManager().getActivityInfo(cn, 0);
             if (ai != null) {
                 return ai.labelRes;
             }
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             Log.e(TAG, "Failed to get settings activity title res id.", e);
         }
         return 0;
     }
 
-    public static String getVersionName(Context context) {
+    public static String getVersionName(final Context context) {
         try {
             if (context == null) {
                 return "";
             }
             final String packageName = context.getPackageName();
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
+            final PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
             return info.versionName;
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             Log.e(TAG, "Could not find version info.", e);
         }
         return "";
