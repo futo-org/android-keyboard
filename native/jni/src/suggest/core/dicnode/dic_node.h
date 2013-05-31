@@ -17,12 +17,12 @@
 #ifndef LATINIME_DIC_NODE_H
 #define LATINIME_DIC_NODE_H
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_state.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
 #include "suggest/core/dicnode/dic_node_properties.h"
 #include "suggest/core/dicnode/dic_node_release_listener.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 
 #if DEBUG_DICT
@@ -221,7 +221,7 @@ class DicNode {
 
     bool isFirstCharUppercase() const {
         const int c = getOutputWordBuf()[0];
-        return isAsciiUpper(c);
+        return CharUtils::isAsciiUpper(c);
     }
 
     bool isFirstWord() const {
@@ -375,7 +375,7 @@ class DicNode {
     // Whether the current codepoint can be an intentional omission, in which case the traversal
     // algorithm will always check for a possible omission here.
     bool canBeIntentionalOmission() const {
-        return isIntentionalOmissionCodePoint(getNodeCodePoint());
+        return CharUtils::isIntentionalOmissionCodePoint(getNodeCodePoint());
     }
 
     // Whether the omission is so frequent that it should incur zero cost.

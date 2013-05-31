@@ -20,10 +20,10 @@
 
 #include "bigram_dictionary.h"
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/bloom_filter.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
@@ -52,7 +52,7 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
     int insertAt = 0;
     while (insertAt < MAX_RESULTS) {
         if (probability > bigramProbability[insertAt] || (bigramProbability[insertAt] == probability
-                && length < getCodePointCount(MAX_WORD_LENGTH,
+                && length < CharUtils::getCodePointCount(MAX_WORD_LENGTH,
                         bigramCodePoints + insertAt * MAX_WORD_LENGTH))) {
             break;
         }
@@ -196,9 +196,9 @@ bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) cons
     // what user typed.
 
     int maxAlt = MAX_ALTERNATIVES;
-    const int firstBaseLowerCodePoint = toBaseLowerCase(*word);
+    const int firstBaseLowerCodePoint = CharUtils::toBaseLowerCase(*word);
     while (maxAlt > 0) {
-        if (toBaseLowerCase(*inputCodePoints) == firstBaseLowerCodePoint) {
+        if (CharUtils::toBaseLowerCase(*inputCodePoints) == firstBaseLowerCodePoint) {
             return true;
         }
         inputCodePoints++;

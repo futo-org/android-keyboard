@@ -18,9 +18,9 @@
 
 #include <cmath>
 
-#include "char_utils.h"
 #include "correction.h"
 #include "defines.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/policyimpl/utils/edit_distance.h"
@@ -528,7 +528,7 @@ inline static int getQuoteCount(const int *word, const int length) {
 }
 
 inline static bool isUpperCase(unsigned short c) {
-    return isAsciiUpper(toBaseCodePoint(c));
+    return CharUtils::isAsciiUpper(CharUtils::toBaseCodePoint(c));
 }
 
 //////////////////////

@@ -19,9 +19,9 @@
 
 #include <cmath>
 
-#include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/additional_proximity_chars.h"
 #include "suggest/core/layout/geometry_utils.h"
 
@@ -37,7 +37,7 @@ class ProximityInfoUtils {
         if (c == NOT_A_CODE_POINT) {
             return NOT_AN_INDEX;
         }
-        const int lowerCode = toLowerCase(c);
+        const int lowerCode = CharUtils::toLowerCase(c);
         hash_map_compat<int, int>::const_iterator mapPos = codeToKeyMap->find(lowerCode);
         if (mapPos != codeToKeyMap->end()) {
             return mapPos->second;

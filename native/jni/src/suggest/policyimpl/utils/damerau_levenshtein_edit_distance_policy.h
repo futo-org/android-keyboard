@@ -17,7 +17,7 @@
 #ifndef LATINIME_DAEMARU_LEVENSHTEIN_EDIT_DISTANCE_POLICY_H
 #define LATINIME_DAEMARU_LEVENSHTEIN_EDIT_DISTANCE_POLICY_H
 
-#include "char_utils.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/policyimpl/utils/edit_distance_policy.h"
 
 namespace latinime {
@@ -31,8 +31,8 @@ class DamerauLevenshteinEditDistancePolicy : public EditDistancePolicy {
     ~DamerauLevenshteinEditDistancePolicy() {}
 
     AK_FORCE_INLINE float getSubstitutionCost(const int index0, const int index1) const {
-        const int c0 = toBaseLowerCase(mString0[index0]);
-        const int c1 = toBaseLowerCase(mString1[index1]);
+        const int c0 = CharUtils::toBaseLowerCase(mString0[index0]);
+        const int c1 = CharUtils::toBaseLowerCase(mString1[index1]);
         return (c0 == c1) ? 0.0f : 1.0f;
     }
 
@@ -45,10 +45,10 @@ class DamerauLevenshteinEditDistancePolicy : public EditDistancePolicy {
     }
 
     AK_FORCE_INLINE bool allowTransposition(const int index0, const int index1) const {
-        const int c0 = toBaseLowerCase(mString0[index0]);
-        const int c1 = toBaseLowerCase(mString1[index1]);
-        if (index0 > 0 && index1 > 0 && c0 == toBaseLowerCase(mString1[index1 - 1])
-                && c1 == toBaseLowerCase(mString0[index0 - 1])) {
+        const int c0 = CharUtils::toBaseLowerCase(mString0[index0]);
+        const int c1 = CharUtils::toBaseLowerCase(mString1[index1]);
+        if (index0 > 0 && index1 > 0 && c0 == CharUtils::toBaseLowerCase(mString1[index1 - 1])
+                && c1 == CharUtils::toBaseLowerCase(mString0[index0 - 1])) {
             return true;
         }
         return false;
