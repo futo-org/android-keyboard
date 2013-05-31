@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+#include "suggest/core/dictionary/char_utils.h"
+
 #include <cstdlib>
 
-#include "char_utils.h"
 #include "defines.h"
 
 namespace latinime {
@@ -36,8 +37,7 @@ struct LatinCapitalSmallPair {
  *    $ apt-get install libicu-dev
  *
  * 3. Build the following code
- *    (You need this file, char_utils.h, and defines.h)
- *    $ g++ -o char_utils -DUPDATING_CHAR_UTILS char_utils.cpp -licuuc
+ *    $ g++ -o char_utils -I../../.. -DUPDATING_CHAR_UTILS char_utils.cpp -licuuc
  */
 #ifdef UPDATING_CHAR_UTILS
 #include <stdio.h>
@@ -47,7 +47,7 @@ extern "C" int main() {
     for (unsigned short c = 0; c < 0xFFFF; c++) {
         if (c <= 0x7F) continue;
         const unsigned short icu4cLowerC = u_tolower(c);
-        const unsigned short myLowerC = latin_tolower(c);
+        const unsigned short myLowerC = CharUtils::latin_tolower(c);
         if (c != icu4cLowerC) {
 #ifdef CONFIRMING_CHAR_UTILS
             if (icu4cLowerC != myLowerC) {
@@ -70,7 +70,8 @@ extern "C" int main() {
  *
  * 5. Update the SORTED_CHAR_MAP[] array below with the output above.
  *    Then, rebuild with -DCONFIRMING_CHAR_UTILS and confirm the program exits successfully.
- *    $ g++ -o char_utils -DUPDATING_CHAR_UTILS -DCONFIRMING_CHAR_UTILS char_utils.cpp -licuuc
+ *    $ g++ -o char_utils -I../../.. -DUPDATING_CHAR_UTILS -DCONFIRMING_CHAR_UTILS char_utils.cpp \
+ *      -licuuc
  *    $ ./char_utils
  *    $
  */
@@ -1054,7 +1055,7 @@ static int compare_pair_capital(const void *a, const void *b) {
             - static_cast<int>((static_cast<const struct LatinCapitalSmallPair *>(b))->capital);
 }
 
-unsigned short latin_tolower(const unsigned short c) {
+/* static */ unsigned short CharUtils::latin_tolower(const unsigned short c) {
     struct LatinCapitalSmallPair *p =
             static_cast<struct LatinCapitalSmallPair *>(bsearch(&c, SORTED_CHAR_MAP,
                     NELEMS(SORTED_CHAR_MAP), sizeof(SORTED_CHAR_MAP[0]), compare_pair_capital));
@@ -1063,7 +1064,7 @@ unsigned short latin_tolower(const unsigned short c) {
 
 /*
  * Table mapping most combined Latin, Greek, and Cyrillic characters
- * to their base characters.  If c is in range, BASE_CHARS[c] == c
+ * to their base characters.  If c is in range, CharUtils::BASE_CHARS[c] == c
  * if c is not a combined character, or the base character if it
  * is combined.
  *
@@ -1074,7 +1075,7 @@ unsigned short latin_tolower(const unsigned short c) {
  *   for ($j = $i; $j < $i + 8; $j++) { \
  *   printf("0x%04X, ", $base[$j] ? $base[$j] : $j)}; print "\n"; }'
  */
-const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
+/* static */ const unsigned short CharUtils::BASE_CHARS[CharUtils::BASE_CHARS_SIZE] = {
     /* U+0000 */ 0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
     /* U+0008 */ 0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
     /* U+0010 */ 0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017,

@@ -16,7 +16,6 @@
 
 #include "suggest/core/policy/weighting.h"
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"

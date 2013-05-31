@@ -21,6 +21,7 @@
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state.h"
@@ -62,9 +63,9 @@ namespace latinime {
         DicNodeVector *childDicNodes) {
     // Passing multiple chars node. No need to traverse child
     const int codePoint = dicNode->getNodeTypedCodePoint();
-    const int baseLowerCaseCodePoint = toBaseLowerCase(codePoint);
+    const int baseLowerCaseCodePoint = CharUtils::toBaseLowerCase(codePoint);
     const bool isMatch = isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, codePoint);
-    if (isMatch || isIntentionalOmissionCodePoint(baseLowerCaseCodePoint)) {
+    if (isMatch || CharUtils::isIntentionalOmissionCodePoint(baseLowerCaseCodePoint)) {
         childDicNodes->pushPassingChild(dicNode);
     }
 }
@@ -125,13 +126,13 @@ namespace latinime {
         return false;
     }
     if (pInfo && (pInfo->getKeyIndexOf(nodeCodePoint) == NOT_AN_INDEX
-            || isIntentionalOmissionCodePoint(nodeCodePoint))) {
+            || CharUtils::isIntentionalOmissionCodePoint(nodeCodePoint))) {
         // If normalized nodeCodePoint is not on the keyboard or skippable, this child is never
         // filtered.
         return false;
     }
-    const int lowerCodePoint = toLowerCase(nodeCodePoint);
-    const int baseLowerCodePoint = toBaseCodePoint(lowerCodePoint);
+    const int lowerCodePoint = CharUtils::toLowerCase(nodeCodePoint);
+    const int baseLowerCodePoint = CharUtils::toBaseCodePoint(lowerCodePoint);
     // TODO: Avoid linear search
     for (int i = 0; i < filterSize; ++i) {
         // Checking if a normalized code point is in filter characters when pInfo is not

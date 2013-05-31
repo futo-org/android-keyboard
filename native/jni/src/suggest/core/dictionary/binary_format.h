@@ -21,9 +21,9 @@
 #include <map>
 #include <stdint.h>
 
-#include "char_utils.h"
 #include "hash_map_compat.h"
 #include "suggest/core/dictionary/bloom_filter.h"
+#include "suggest/core/dictionary/char_utils.h"
 
 namespace latinime {
 
@@ -473,7 +473,8 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
         // there was no match (or we would have found it).
         if (wordPos >= length) return NOT_VALID_WORD;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
-        const int wChar = forceLowerCaseSearch ? toLowerCase(inWord[wordPos]) : inWord[wordPos];
+        const int wChar = forceLowerCaseSearch
+                ? CharUtils::toLowerCase(inWord[wordPos]) : inWord[wordPos];
         while (true) {
             // If there are no more character groups in this node, it means we could not
             // find a matching character for this depth, therefore there is no match.

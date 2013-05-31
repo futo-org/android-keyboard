@@ -20,7 +20,6 @@
 #include <cstring> // for memset()
 #include <vector>
 
-#include "char_utils.h"
 #include "defines.h"
 #include "hash_map_compat.h"
 #include "suggest/core/layout/proximity_info_params.h"

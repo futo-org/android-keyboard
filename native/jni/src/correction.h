@@ -21,6 +21,7 @@
 
 #include "correction_state.h"
 #include "defines.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 
 namespace latinime {
@@ -342,13 +343,13 @@ AK_FORCE_INLINE static void calcEditDistanceOneStep(int *editDistanceTable, cons
     const int *const prevprev =
             outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputSize + 1) : 0;
     current[0] = outputLength;
-    const int co = toBaseLowerCase(output[outputLength - 1]);
-    const int prevCO = outputLength >= 2 ? toBaseLowerCase(output[outputLength - 2]) : 0;
+    const int co = CharUtils::toBaseLowerCase(output[outputLength - 1]);
+    const int prevCO = outputLength >= 2 ? CharUtils::toBaseLowerCase(output[outputLength - 2]) : 0;
     for (int i = 1; i <= inputSize; ++i) {
-        const int ci = toBaseLowerCase(input[i - 1]);
+        const int ci = CharUtils::toBaseLowerCase(input[i - 1]);
         const int cost = (ci == co) ? 0 : 1;
         current[i] = min(current[i - 1] + 1, min(prev[i] + 1, prev[i - 1] + cost));
-        if (i >= 2 && prevprev && ci == prevCO && co == toBaseLowerCase(input[i - 2])) {
+        if (i >= 2 && prevprev && ci == prevCO && co == CharUtils::toBaseLowerCase(input[i - 2])) {
             current[i] = min(current[i], prevprev[i - 2] + 1);
         }
     }
