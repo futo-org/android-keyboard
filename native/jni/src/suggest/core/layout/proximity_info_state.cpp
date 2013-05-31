@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "LatinIME: proximity_info_state.cpp"
+
 #include "suggest/core/layout/proximity_info_state.h"
 
 #include <cstring> // for memset() and memcpy()
 #include <sstream> // for debug prints
 #include <vector>
-
-#define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
 #include "defines.h"
 #include "suggest/core/layout/geometry_utils.h"

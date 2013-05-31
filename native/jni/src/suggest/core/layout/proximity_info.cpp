@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+#define LOG_TAG "LatinIME: proximity_info.cpp"
+
 #include "suggest/core/layout/proximity_info.h"
 
 #include <cstring>
 #include <cmath>
-
-#define LOG_TAG "LatinIME: proximity_info.cpp"
 
 #include "char_utils.h"
 #include "defines.h"
