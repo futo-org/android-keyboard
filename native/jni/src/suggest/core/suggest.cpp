@@ -16,7 +16,6 @@
 
 #include "suggest/core/suggest.h"
 
-#include "char_utils.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"

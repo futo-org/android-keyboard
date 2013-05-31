@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/geometry_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state_utils.h"
@@ -175,7 +176,7 @@ float ProximityInfoState::getPointToKeyLength(
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
         return min(mSampledNormalizedSquaredLengthCache[index], mMaxPointToKeyLength);
     }
-    if (isIntentionalOmissionCodePoint(codePoint)) {
+    if (CharUtils::isIntentionalOmissionCodePoint(codePoint)) {
         return 0.0f;
     }
     // If the char is not a key on the keyboard then return the max length.
@@ -203,7 +204,7 @@ ProximityType ProximityInfoState::getProximityType(const int index, const int co
         const bool checkProximityChars, int *proximityIndex) const {
     const int *currentCodePoints = getProximityCodePointsAt(index);
     const int firstCodePoint = currentCodePoints[0];
-    const int baseLowerC = toBaseLowerCase(codePoint);
+    const int baseLowerC = CharUtils::toBaseLowerCase(codePoint);
 
     // The first char in the array is what user typed. If it matches right away, that means the
     // user typed that same char for this pos.
@@ -215,7 +216,7 @@ ProximityType ProximityInfoState::getProximityType(const int index, const int co
 
     // If the non-accented, lowercased version of that first character matches c, then we have a
     // non-accented version of the accented character the user typed. Treat it as a close char.
-    if (toBaseLowerCase(firstCodePoint) == baseLowerC) {
+    if (CharUtils::toBaseLowerCase(firstCodePoint) == baseLowerC) {
         return PROXIMITY_CHAR;
     }
 
@@ -257,8 +258,8 @@ ProximityType ProximityInfoState::getProximityTypeG(const int index, const int c
     if (!isUsed()) {
         return UNRELATED_CHAR;
     }
-    const int lowerCodePoint = toLowerCase(codePoint);
-    const int baseLowerCodePoint = toBaseCodePoint(lowerCodePoint);
+    const int lowerCodePoint = CharUtils::toLowerCase(codePoint);
+    const int baseLowerCodePoint = CharUtils::toBaseCodePoint(lowerCodePoint);
     for (int i = 0; i < static_cast<int>(mSampledSearchKeyVectors[index].size()); ++i) {
         if (mSampledSearchKeyVectors[index][i] == lowerCodePoint
                 || mSampledSearchKeyVectors[index][i] == baseLowerCodePoint) {

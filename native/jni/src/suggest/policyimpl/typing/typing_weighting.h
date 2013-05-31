@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -98,9 +99,9 @@ class TypingWeighting : public Weighting {
     bool isProximityDicNode(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const {
         const int pointIndex = dicNode->getInputIndex(0);
-        const int primaryCodePoint = toBaseLowerCase(
+        const int primaryCodePoint = CharUtils::toBaseLowerCase(
                 traverseSession->getProximityInfoState(0)->getPrimaryCodePointAt(pointIndex));
-        const int dicNodeChar = toBaseLowerCase(dicNode->getNodeCodePoint());
+        const int dicNodeChar = CharUtils::toBaseLowerCase(dicNode->getNodeCodePoint());
         return primaryCodePoint != dicNodeChar;
     }
 

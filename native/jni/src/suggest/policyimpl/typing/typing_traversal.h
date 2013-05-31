@@ -19,10 +19,10 @@
 
 #include <stdint.h>
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -64,9 +64,9 @@ class TypingTraversal : public Traversal {
         }
         const int point0Index = dicNode->getInputIndex(0);
         const int currentBaseLowerCodePoint =
-                toBaseLowerCase(childDicNode->getNodeCodePoint());
+                CharUtils::toBaseLowerCase(childDicNode->getNodeCodePoint());
         const int typedBaseLowerCodePoint =
-                toBaseLowerCase(traverseSession->getProximityInfoState(0)
+                CharUtils::toBaseLowerCase(traverseSession->getProximityInfoState(0)
                         ->getPrimaryCodePointAt(point0Index));
         return (currentBaseLowerCodePoint != typedBaseLowerCodePoint);
     }
@@ -172,7 +172,7 @@ class TypingTraversal : public Traversal {
         }
         const int c = dicNode->getOutputWordBuf()[0];
         const bool shortCappedWord = dicNode->getDepth()
-                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && isAsciiUpper(c);
+                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && CharUtils::isAsciiUpper(c);
         return !shortCappedWord
                 || probability >= ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED;
     }

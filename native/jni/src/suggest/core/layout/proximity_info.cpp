@@ -21,9 +21,9 @@
 #include <cstring>
 #include <cmath>
 
-#include "char_utils.h"
 #include "defines.h"
 #include "jni.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/additional_proximity_chars.h"
 #include "suggest/core/layout/geometry_utils.h"
 #include "suggest/core/layout/proximity_info_params.h"
@@ -165,7 +165,7 @@ void ProximityInfo::initializeG() {
     // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCodePoints[i];
-        const int lowerCode = toLowerCase(code);
+        const int lowerCode = CharUtils::toLowerCase(code);
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
         mCodeToKeyMap[lowerCode] = i;

@@ -16,9 +16,9 @@
 
 #include "suggest/core/dictionary/digraph_utils.h"
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/char_utils.h"
 
 namespace latinime {
 
@@ -122,7 +122,7 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForDigraphTypeAndCodePoint(
         const DigraphUtils::DigraphType digraphType, const int compositeGlyphCodePoint) {
     const DigraphUtils::digraph_t *digraphs = 0;
-    const int compositeGlyphLowerCodePoint = toLowerCase(compositeGlyphCodePoint);
+    const int compositeGlyphLowerCodePoint = CharUtils::toLowerCase(compositeGlyphCodePoint);
     const int digraphsSize =
             DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(digraphType, &digraphs);
     for (int i = 0; i < digraphsSize; i++) {

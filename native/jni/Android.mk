@@ -47,7 +47,6 @@ LATIN_IME_JNI_SRC_FILES := \
 
 LATIN_IME_CORE_SRC_FILES := \
     bigram_dictionary.cpp \
-    char_utils.cpp \
     correction.cpp \
     dic_traverse_wrapper.cpp \
     unigram_dictionary.cpp \
@@ -58,6 +57,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
+        char_utils.cpp \
         dictionary.cpp \
         digraph_utils.cpp) \
     $(addprefix suggest/core/layout/, \

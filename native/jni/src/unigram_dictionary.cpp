@@ -18,9 +18,9 @@
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
-#include "char_utils.h"
 #include "defines.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/dictionary/terminal_attributes.h"
@@ -696,8 +696,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     int pos = startPos;
     int codePoint = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
-    int baseChar = toBaseLowerCase(codePoint);
-    const int wChar = toBaseLowerCase(inWord[startInputIndex]);
+    int baseChar = CharUtils::toBaseLowerCase(codePoint);
+    const int wChar = CharUtils::toBaseLowerCase(inWord[startInputIndex]);
 
     if (baseChar != wChar) {
         *outPos = hasMultipleChars ? BinaryFormat::skipOtherCharacters(root, pos) : pos;
@@ -709,8 +709,9 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     if (hasMultipleChars) {
         codePoint = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
         while (NOT_A_CODE_POINT != codePoint) {
-            baseChar = toBaseLowerCase(codePoint);
-            if (inputIndex + 1 >= inputSize || toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
+            baseChar = CharUtils::toBaseLowerCase(codePoint);
+            if (inputIndex + 1 >= inputSize
+                    || CharUtils::toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
                 *outPos = BinaryFormat::skipOtherCharacters(root, pos);
                 *outInputIndex = startInputIndex;
                 return false;
