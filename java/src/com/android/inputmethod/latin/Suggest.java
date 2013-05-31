@@ -23,7 +23,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -77,9 +76,9 @@ public final class Suggest {
     }
 
     @UsedForTesting
-    Suggest(final File dictionary, final long startOffset, final long length, final Locale locale) {
-        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionary,
-                startOffset, length /* useFullEditDistance */, false, locale);
+    Suggest(final AssetFileAddress[] dictionaryList, final Locale locale) {
+        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(dictionaryList,
+                false /* useFullEditDistance */, locale);
         mLocale = locale;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
