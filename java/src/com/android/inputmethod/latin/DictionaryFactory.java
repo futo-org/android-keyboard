@@ -21,6 +21,8 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -126,21 +128,22 @@ public final class DictionaryFactory {
 
     /**
      * Create a dictionary from passed data. This is intended for unit tests only.
-     * @param dictionary the file to read
-     * @param startOffset the offset in the file where the data starts
-     * @param length the length of the data
+     * @param dictionaryList the list of files to read, with their offsets and lengths
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return the created dictionary, or null.
      */
-    public static Dictionary createDictionaryForTest(File dictionary, long startOffset, long length,
+    @UsedForTesting
+    public static Dictionary createDictionaryForTest(final AssetFileAddress[] dictionaryList,
             final boolean useFullEditDistance, Locale locale) {
-        if (dictionary.isFile()) {
-            return new BinaryDictionary(dictionary.getAbsolutePath(), startOffset, length,
-                    useFullEditDistance, locale, Dictionary.TYPE_MAIN);
-        } else {
-            Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
-            return null;
+        final DictionaryCollection dictionaryCollection =
+                new DictionaryCollection(Dictionary.TYPE_MAIN);
+        for (final AssetFileAddress address : dictionaryList) {
+            final BinaryDictionary binaryDictionary = new BinaryDictionary(address.mFilename,
+                    address.mOffset, address.mLength, useFullEditDistance, locale,
+                    Dictionary.TYPE_MAIN);
+            dictionaryCollection.addDictionary(binaryDictionary);
         }
+        return dictionaryCollection;
     }
 
     /**
