@@ -24,7 +24,7 @@ import java.io.File;
  * the package file. Open it correctly thus requires the name of the package it is in, but
  * also the offset in the file and the length of this data. This class encapsulates these three.
  */
-final class AssetFileAddress {
+public final class AssetFileAddress {
     public final String mFilename;
     public final long mOffset;
     public final long mLength;
