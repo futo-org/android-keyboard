@@ -212,9 +212,9 @@
     <string name="install_dict" msgid="180852772562189365">"安装"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"取消"</string>
     <string name="delete_dict" msgid="756853268088330054">"删除"</string>
-    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"支持您移动设备上所选语言的词典现已可供下载啦！&lt;br/&gt;建议您&lt;b&gt;下载&lt;/b&gt;这部<xliff:g id="LANGUAGE">%1$s</xliff:g>词典，以享受更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过 3G 进行下载可能需要 1 到 2 分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要支付一定的费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，建议您使用 Wi-Fi 连接自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以访问移动设备的&lt;b&gt;设置&lt;/b&gt;菜单中的&lt;b&gt;语言和输入法&lt;/b&gt;，来下载和删除词典。"</string>
+    <string name="should_download_over_metered_prompt" msgid="2878629598667658845">"支持您移动设备上所选语言的词典现已可供下载啦！&lt;br/&gt;建议您&lt;b&gt;下载&lt;/b&gt;这部<xliff:g id="LANGUAGE">%1$s</xliff:g>词典，以享受更好的输入体验。&lt;br/&gt;&lt;br/&gt;通过 3G 进行下载可能需要 1 到 2 分钟的时间。如果您使用的不是&lt;b&gt;无流量限制的套餐&lt;/b&gt;，则可能需要支付一定的费用。&lt;br/&gt;如果您不确定自己使用的是哪种流量套餐，建议您使用 WLAN 连接自动开始下载。&lt;br/&gt;&lt;br/&gt;提示：您可以访问移动设备的&lt;b&gt;设置&lt;/b&gt;菜单中的&lt;b&gt;语言和输入法&lt;/b&gt;，来下载和删除词典。"</string>
     <string name="download_over_metered" msgid="1643065851159409546">"立即下载 (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g>MB)"</string>
-    <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 Wi-Fi 下载"</string>
+    <string name="do_not_download_over_metered" msgid="2176209579313941583">"通过 WLAN 下载"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g>词典可供下载"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"按此通知即可查看和下载"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"下载中：很快就能启用<xliff:g id="LANGUAGE">%1$s</xliff:g>的词典建议服务了！"</string>
