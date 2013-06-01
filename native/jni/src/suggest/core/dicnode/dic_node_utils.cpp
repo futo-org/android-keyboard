@@ -23,6 +23,7 @@
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
+#include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state.h"
 
@@ -211,7 +212,7 @@ namespace latinime {
     const int prevWordPos = node->getPrevWordPos();
     if (NOT_VALID_WORD == wordPos || NOT_VALID_WORD == prevWordPos) {
         // Note: Normally wordPos comes from the dictionary and should never equal NOT_VALID_WORD.
-        return backoff(unigramProbability);
+        return ProbabilityUtils::backoff(unigramProbability);
     }
     if (multiBigramMap) {
         return multiBigramMap->getBigramProbability(

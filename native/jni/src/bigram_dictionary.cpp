@@ -25,6 +25,7 @@
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/dictionary/probability_utils.h"
 
 namespace latinime {
 
@@ -134,7 +135,7 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
             // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
             // in very bad cases. This means that sometimes, we'll see some bigrams interverted
             // here, but it can't get too bad.
-            const int probability = BinaryFormat::computeProbabilityForBigram(
+            const int probability = ProbabilityUtils::computeProbabilityForBigram(
                     unigramProbability, bigramProbabilityTemp);
             addWordBigram(bigramBuffer, length, probability, bigramProbability, bigramCodePoints,
                     outputTypes);
