@@ -1825,6 +1825,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // like the smiley key or the .com key.
                 final int length = mEnteredText.length();
                 mConnection.deleteSurroundingText(length, 0);
+                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                    ResearchLogger.latinIME_handleBackspace_cancelTextInput(mEnteredText);
+                }
                 mEnteredText = null;
                 // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
                 // In addition we know that spaceState is false, and that we should not be
