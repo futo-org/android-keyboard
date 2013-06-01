@@ -83,6 +83,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+// TODO: Add a unit test for every "logging" method (i.e. that is called from the IME and calls
+// enqueueEvent to record a LogStatement).
 /**
  * Logs the use of the LatinIME keyboard.
  *
@@ -1450,21 +1452,39 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_revertCommit(final String committedWord,
             final String originallyTypedWord, final boolean isBatchMode,
             final String separatorString) {
+        // TODO: Prioritize adding a unit test for this method (as it is especially complex)
+        // TODO: Update the UserRecording LogBuffer as well as the MainLogBuffer
         final ResearchLogger researchLogger = getInstance();
-        // TODO: Verify that mCurrentLogUnit has been restored and contains the reverted word.
-        final LogUnit logUnit;
-        logUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
-        if (originallyTypedWord.length() > 0 && hasLetters(originallyTypedWord)) {
-            if (logUnit != null) {
-                logUnit.setWords(originallyTypedWord);
-            }
+        //
+        // 1. Remove separator LogUnit
+        final LogUnit lastLogUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        // Check that we're not at the beginning of input
+        if (lastLogUnit == null) return;
+        // Check that we're after a separator
+        if (lastLogUnit.getWordsAsString() != null) return;
+        // Remove separator
+        final LogUnit separatorLogUnit = researchLogger.mMainLogBuffer.unshiftIn();
+
+        // 2. Add revert LogStatement
+        final LogUnit revertedLogUnit = researchLogger.mMainLogBuffer.peekLastLogUnit();
+        if (revertedLogUnit == null) return;
+        if (!revertedLogUnit.getWordsAsString().equals(scrubDigitsFromString(committedWord))) {
+            // Any word associated with the reverted LogUnit has already had its digits scrubbed, so
+            // any digits in the committedWord argument must also be scrubbed for an accurate
+            // comparison.
+            return;
         }
-        researchLogger.enqueueEvent(logUnit != null ? logUnit : researchLogger.mCurrentLogUnit,
-                LOGSTATEMENT_LATINIME_REVERTCOMMIT, committedWord, originallyTypedWord,
-                separatorString);
-        if (logUnit != null) {
-            logUnit.setContainsUserDeletions();
-        }
+        researchLogger.enqueueEvent(revertedLogUnit, LOGSTATEMENT_LATINIME_REVERTCOMMIT,
+                committedWord, originallyTypedWord, separatorString);
+
+        // 3. Update the word associated with the LogUnit
+        revertedLogUnit.setWords(originallyTypedWord);
+        revertedLogUnit.setContainsUserDeletions();
+
+        // 4. Re-add the separator LogUnit
+        researchLogger.mMainLogBuffer.shiftIn(separatorLogUnit);
+
+        // 5. Record stats
         researchLogger.mStatistics.recordRevertCommit(SystemClock.uptimeMillis());
     }
 
