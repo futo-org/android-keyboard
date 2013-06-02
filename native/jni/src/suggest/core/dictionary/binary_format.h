@@ -18,12 +18,12 @@
 #define LATINIME_BINARY_FORMAT_H
 
 #include <cstdlib>
-#include <map>
 #include <stdint.h>
 
 #include "hash_map_compat.h"
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/char_utils.h"
+#include "suggest/core/dictionary/probability_utils.h"
 
 namespace latinime {
 
@@ -91,10 +91,6 @@ class BinaryFormat {
             const int length, const bool forceLowerCaseSearch);
     static int getWordAtAddress(const uint8_t *const root, const int address, const int maxDepth,
             int *outWord, int *outUnigramProbability);
-    static int computeProbabilityForBigram(
-            const int unigramProbability, const int bigramProbability);
-    static int getProbability(const int position, const std::map<int, int> *bigramMap,
-            const uint8_t *bigramFilter, const int unigramProbability);
     static int getBigramProbabilityFromHashMap(const int position,
             const hash_map_compat<int, int> *bigramMap, const int unigramProbability);
     static float getMultiWordCostMultiplier(const uint8_t *const dict, const int dictSize);
@@ -678,51 +674,18 @@ AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, co
     return 0;
 }
 
-static inline int backoff(const int unigramProbability) {
-    return unigramProbability;
-    // For some reason, applying the backoff weight gives bad results in tests. To apply the
-    // backoff weight, we divide the probability by 2, which in our storing format means
-    // decreasing the score by 8.
-    // TODO: figure out what's wrong with this.
-    // return unigramProbability > 8 ? unigramProbability - 8 : (0 == unigramProbability ? 0 : 8);
-}
-
-inline int BinaryFormat::computeProbabilityForBigram(
-        const int unigramProbability, const int bigramProbability) {
-    // We divide the range [unigramProbability..255] in 16.5 steps - in other words, we want the
-    // unigram probability to be the median value of the 17th step from the top. A value of
-    // 0 for the bigram probability represents the middle of the 16th step from the top,
-    // while a value of 15 represents the middle of the top step.
-    // See makedict.BinaryDictInputOutput for details.
-    const float stepSize = static_cast<float>(MAX_PROBABILITY - unigramProbability)
-            / (1.5f + MAX_BIGRAM_ENCODED_PROBABILITY);
-    return unigramProbability
-            + static_cast<int>(static_cast<float>(bigramProbability + 1) * stepSize);
-}
-
-// This returns a probability in log space.
-inline int BinaryFormat::getProbability(const int position, const std::map<int, int> *bigramMap,
-        const uint8_t *bigramFilter, const int unigramProbability) {
-    if (!bigramMap || !bigramFilter) return backoff(unigramProbability);
-    if (!isInFilter(bigramFilter, position)) return backoff(unigramProbability);
-    const std::map<int, int>::const_iterator bigramProbabilityIt = bigramMap->find(position);
-    if (bigramProbabilityIt != bigramMap->end()) {
-        const int bigramProbability = bigramProbabilityIt->second;
-        return computeProbabilityForBigram(unigramProbability, bigramProbability);
-    }
-    return backoff(unigramProbability);
-}
-
 // This returns a probability in log space.
 inline int BinaryFormat::getBigramProbabilityFromHashMap(const int position,
         const hash_map_compat<int, int> *bigramMap, const int unigramProbability) {
-    if (!bigramMap) return backoff(unigramProbability);
+    if (!bigramMap) {
+        return ProbabilityUtils::backoff(unigramProbability);
+    }
     const hash_map_compat<int, int>::const_iterator bigramProbabilityIt = bigramMap->find(position);
     if (bigramProbabilityIt != bigramMap->end()) {
         const int bigramProbability = bigramProbabilityIt->second;
-        return computeProbabilityForBigram(unigramProbability, bigramProbability);
+        return ProbabilityUtils::computeProbabilityForBigram(unigramProbability, bigramProbability);
     }
-    return backoff(unigramProbability);
+    return ProbabilityUtils::backoff(unigramProbability);
 }
 
 AK_FORCE_INLINE void BinaryFormat::fillBigramProbabilityToHashMap(
@@ -743,7 +706,9 @@ AK_FORCE_INLINE void BinaryFormat::fillBigramProbabilityToHashMap(
 AK_FORCE_INLINE int BinaryFormat::getBigramProbability(const uint8_t *const root, int position,
         const int nextPosition, const int unigramProbability) {
     position = getBigramListPositionForWordPosition(root, position);
-    if (0 == position) return backoff(unigramProbability);
+    if (0 == position) {
+        return ProbabilityUtils::backoff(unigramProbability);
+    }
 
     uint8_t bigramFlags;
     do {
@@ -752,10 +717,11 @@ AK_FORCE_INLINE int BinaryFormat::getBigramProbability(const uint8_t *const root
                 root, bigramFlags, &position);
         if (bigramPos == nextPosition) {
             const int bigramProbability = MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
-            return computeProbabilityForBigram(unigramProbability, bigramProbability);
+            return ProbabilityUtils::computeProbabilityForBigram(
+                    unigramProbability, bigramProbability);
         }
     } while (FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
-    return backoff(unigramProbability);
+    return ProbabilityUtils::backoff(unigramProbability);
 }
 
 // Returns a pointer to the start of the bigram list.

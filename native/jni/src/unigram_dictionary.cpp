@@ -23,6 +23,7 @@
 #include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
+#include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/dictionary/terminal_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "unigram_dictionary.h"
@@ -935,8 +936,8 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
         // bigramMap contains the bigram frequencies indexed by addresses for fast lookup.
         // bigramFilter is a bloom filter of said frequencies for even faster rejection.
-        const int probability = BinaryFormat::getProbability(initialPos, bigramMap, bigramFilter,
-                unigramProbability);
+        const int probability = ProbabilityUtils::getProbability(
+                initialPos, bigramMap, bigramFilter, unigramProbability);
         onTerminal(probability, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
                 currentWordIndex);
 
