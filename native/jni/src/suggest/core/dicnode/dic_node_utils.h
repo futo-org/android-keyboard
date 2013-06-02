@@ -24,6 +24,7 @@
 
 namespace latinime {
 
+class BinaryDictionaryInfo;
 class DicNode;
 class DicNodeVector;
 class ProximityInfo;
@@ -34,19 +35,20 @@ class DicNodeUtils {
  public:
     static int appendTwoWords(const int *src0, const int16_t length0, const int *src1,
             const int16_t length1, int *dest);
-    static void initAsRoot(const int rootPos, const uint8_t *const dicRoot,
+    static void initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int prevWordNodePos, DicNode *newRootNode);
-    static void initAsRootWithPreviousWord(const int rootPos, const uint8_t *const dicRoot,
+    static void initAsRootWithPreviousWord(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             DicNode *prevWordLastNode, DicNode *newRootNode);
     static void initByCopy(DicNode *srcNode, DicNode *destNode);
-    static void getAllChildDicNodes(DicNode *dicNode, const uint8_t *const dicRoot,
-            DicNodeVector *childDicNodes);
-    static float getBigramNodeImprobability(const uint8_t *const dicRoot,
+    static void getAllChildDicNodes(DicNode *dicNode,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes);
+    static float getBigramNodeImprobability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const DicNode *const node, MultiBigramMap *const multiBigramMap);
     static bool isDicNodeFilteredOut(const int nodeCodePoint, const ProximityInfo *const pInfo,
             const std::vector<int> *const codePointsFilter);
     // TODO: Move to private
-    static void getProximityChildDicNodes(DicNode *dicNode, const uint8_t *const dicRoot,
+    static void getProximityChildDicNodes(DicNode *dicNode,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
             DicNodeVector *childDicNodes);
 
@@ -60,16 +62,18 @@ class DicNodeUtils {
     // Max number of bigrams to look up
     static const int MAX_BIGRAMS_CONSIDERED_PER_CONTEXT = 500;
 
-    static int getBigramNodeProbability(const uint8_t *const dicRoot, const DicNode *const node,
-            MultiBigramMap *multiBigramMap);
+    static int getBigramNodeProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const DicNode *const node, MultiBigramMap *multiBigramMap);
     static void createAndGetPassingChildNode(DicNode *dicNode, const ProximityInfoState *pInfoState,
             const int pointIndex, const bool exactOnly, DicNodeVector *childDicNodes);
-    static void createAndGetAllLeavingChildNodes(DicNode *dicNode, const uint8_t *const dicRoot,
+    static void createAndGetAllLeavingChildNodes(DicNode *dicNode,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
             const std::vector<int> *const codePointsFilter,
             const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
-    static int createAndGetLeavingChildNode(DicNode *dicNode, int pos, const uint8_t *const dicRoot,
-            const int terminalDepth, const ProximityInfoState *pInfoState, const int pointIndex,
+    static int createAndGetLeavingChildNode(DicNode *dicNode, int pos,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int terminalDepth,
+            const ProximityInfoState *pInfoState, const int pointIndex,
             const bool exactOnly, const std::vector<int> *const codePointsFilter,
             const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
 

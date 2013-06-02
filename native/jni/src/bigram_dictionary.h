@@ -24,9 +24,12 @@
 
 namespace latinime {
 
+class BinaryDictionaryInfo;
+
 class BigramDictionary {
  public:
-    BigramDictionary(const uint8_t *const streamStart);
+    BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo);
+
     int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
     void fillBigramAddressToProbabilityMapAndFilter(const int *prevWord, const int prevWordLength,
@@ -35,13 +38,14 @@ class BigramDictionary {
     ~BigramDictionary();
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
+
     void addWordBigram(int *word, int length, int probability, int *bigramProbability,
             int *bigramCodePoints, int *outputTypes) const;
     bool checkFirstCharacter(int *word, int *inputCodePoints) const;
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
 
-    const uint8_t *const DICT_ROOT;
+    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
 };

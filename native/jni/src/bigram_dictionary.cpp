@@ -21,6 +21,7 @@
 #include "bigram_dictionary.h"
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/char_utils.h"
@@ -28,7 +29,8 @@
 
 namespace latinime {
 
-BigramDictionary::BigramDictionary(const uint8_t *const streamStart) : DICT_ROOT(streamStart) {
+BigramDictionary::BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo)
+        : mBinaryDictionaryInfo(binaryDictionaryInfo) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
     }
@@ -103,7 +105,7 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
@@ -149,7 +151,7 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
 int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
         const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return 0;
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength,
             forceLowerCaseSearch);
 
@@ -170,7 +172,7 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
 void BigramDictionary::fillBigramAddressToProbabilityMapAndFilter(const int *prevWord,
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     if (0 == pos) {
@@ -209,7 +211,7 @@ bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) cons
 
 bool BigramDictionary::isValidBigram(const int *word1, int length1, const int *word2,
         int length2) const {
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;

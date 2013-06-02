@@ -105,8 +105,8 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
         traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(), MAX_RESULTS);
         // Create a new dic node here
         DicNode rootNode;
-        DicNodeUtils::initAsRoot(traverseSession->getDicRootPos(),
-                traverseSession->getOffsetDict(), traverseSession->getPrevWordPos(), &rootNode);
+        DicNodeUtils::initAsRoot(traverseSession->getBinaryDictionaryInfo(),
+                traverseSession->getPrevWordPos(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
 }
@@ -158,7 +158,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 terminalIndex, doubleLetterTerminalIndex, doubleLetterLevel);
         const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
                 + doubleLetterCost;
-        const TerminalAttributes terminalAttributes(traverseSession->getOffsetDict(),
+        const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
                 terminalDicNode->getFlags(), terminalDicNode->getAttributesPos());
         const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
         const bool isExactMatch = terminalDicNode->isExactMatch();
@@ -284,7 +284,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             }
 
             DicNodeUtils::getAllChildDicNodes(
-                    &dicNode, traverseSession->getOffsetDict(), &childDicNodes);
+                    &dicNode, traverseSession->getBinaryDictionaryInfo(), &childDicNodes);
 
             const int childDicNodesSize = childDicNodes.getSizeAndLock();
             for (int i = 0; i < childDicNodesSize; ++i) {
@@ -431,7 +431,8 @@ void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
 void Suggest::processDicNodeAsOmission(
         DicTraverseSession *traverseSession, DicNode *dicNode) const {
     DicNodeVector childDicNodes;
-    DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getOffsetDict(), &childDicNodes);
+    DicNodeUtils::getAllChildDicNodes(
+            dicNode, traverseSession->getBinaryDictionaryInfo(), &childDicNodes);
 
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
@@ -456,7 +457,7 @@ void Suggest::processDicNodeAsInsertion(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes;
-    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getOffsetDict(),
+    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getBinaryDictionaryInfo(),
             traverseSession->getProximityInfoState(0), pointIndex + 1, true, &childDicNodes);
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
@@ -474,14 +475,14 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes1;
-    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getOffsetDict(),
+    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getBinaryDictionaryInfo(),
             traverseSession->getProximityInfoState(0), pointIndex + 1, false, &childDicNodes1);
     const int childSize1 = childDicNodes1.getSizeAndLock();
     for (int i = 0; i < childSize1; i++) {
         if (childDicNodes1[i]->hasChildren()) {
             DicNodeVector childDicNodes2;
             DicNodeUtils::getProximityChildDicNodes(
-                    childDicNodes1[i], traverseSession->getOffsetDict(),
+                    childDicNodes1[i], traverseSession->getBinaryDictionaryInfo(),
                     traverseSession->getProximityInfoState(0), pointIndex, false, &childDicNodes2);
             const int childSize2 = childDicNodes2.getSizeAndLock();
             for (int j = 0; j < childSize2; j++) {
@@ -521,8 +522,8 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
 
     // Create a non-cached node here.
     DicNode newDicNode;
-    DicNodeUtils::initAsRootWithPreviousWord(traverseSession->getDicRootPos(),
-            traverseSession->getOffsetDict(), dicNode, &newDicNode);
+    DicNodeUtils::initAsRootWithPreviousWord(
+            traverseSession->getBinaryDictionaryInfo(), dicNode, &newDicNode);
     const CorrectionType correctionType = spaceSubstitution ?
             CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
     Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,

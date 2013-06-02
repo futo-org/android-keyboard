@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
@@ -32,8 +33,9 @@ class TerminalAttributes {
  public:
     class ShortcutIterator {
      public:
-        ShortcutIterator(const uint8_t *dict, const int pos, const uint8_t flags)
-                : mDict(dict), mPos(pos),
+        ShortcutIterator(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int pos,
+                const uint8_t flags)
+                : mBinaryDicitionaryInfo(binaryDictionaryInfo), mPos(pos),
                   mHasNextShortcutTarget(0 != (flags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS)) {
         }
 
@@ -44,11 +46,13 @@ class TerminalAttributes {
         // Gets the shortcut target itself as an int string. For parameters and return value
         // see BinaryFormat::getWordAtAddress.
         inline int getNextShortcutTarget(const int maxDepth, int *outWord, int *outFreq) {
-            const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
+            const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(
+                    mBinaryDicitionaryInfo->getDictRoot(), &mPos);
             mHasNextShortcutTarget = 0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
             unsigned int i;
             for (i = 0; i < MAX_WORD_LENGTH; ++i) {
-                const int codePoint = BinaryFormat::getCodePointAndForwardPointer(mDict, &mPos);
+                const int codePoint = BinaryFormat::getCodePointAndForwardPointer(
+                        mBinaryDicitionaryInfo->getDictRoot(), &mPos);
                 if (NOT_A_CODE_POINT == codePoint) break;
                 outWord[i] = codePoint;
             }
@@ -57,19 +61,21 @@ class TerminalAttributes {
         }
 
      private:
-        const uint8_t *const mDict;
+        const BinaryDictionaryInfo *const mBinaryDicitionaryInfo;
         int mPos;
         bool mHasNextShortcutTarget;
     };
 
-    TerminalAttributes(const uint8_t *const dict, const uint8_t flags, const int pos)
-            : mDict(dict), mFlags(flags), mStartPos(pos) {
+    TerminalAttributes(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
+            const uint8_t flags, const int pos)
+            : mBinaryDicitionaryInfo(binaryDicitonaryInfo), mFlags(flags), mStartPos(pos) {
     }
 
     inline ShortcutIterator getShortcutIterator() const {
         // The size of the shortcuts is stored here so that the whole shortcut chunk can be
         // skipped quickly, so we ignore it.
-        return ShortcutIterator(mDict, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
+        return ShortcutIterator(
+                mBinaryDicitionaryInfo, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
     }
 
     bool isBlacklistedOrNotAWord() const {
@@ -78,7 +84,7 @@ class TerminalAttributes {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
-    const uint8_t *const mDict;
+    const BinaryDictionaryInfo *const mBinaryDicitionaryInfo;
     const uint8_t mFlags;
     const int mStartPos;
 };

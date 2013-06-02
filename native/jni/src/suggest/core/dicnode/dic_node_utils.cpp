@@ -20,6 +20,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
@@ -32,20 +33,23 @@ namespace latinime {
 // Node initialization utils //
 ///////////////////////////////
 
-/* static */ void DicNodeUtils::initAsRoot(const int rootPos, const uint8_t *const dicRoot,
-        const int prevWordNodePos, DicNode *newRootNode) {
-    int curPos = rootPos;
+/* static */ void DicNodeUtils::initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const int prevWordNodePos, DicNode *const newRootNode) {
+    int curPos = binaryDictionaryInfo->getRootPosition();
     const int pos = curPos;
-    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(dicRoot, &curPos);
+    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &curPos);
     const int childrenPos = curPos;
     newRootNode->initAsRoot(pos, childrenPos, childrenCount, prevWordNodePos);
 }
 
-/*static */ void DicNodeUtils::initAsRootWithPreviousWord(const int rootPos,
-        const uint8_t *const dicRoot, DicNode *prevWordLastNode, DicNode *newRootNode) {
-    int curPos = rootPos;
+/*static */ void DicNodeUtils::initAsRootWithPreviousWord(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        DicNode *const prevWordLastNode, DicNode *const newRootNode) {
+    int curPos = binaryDictionaryInfo->getRootPosition();
     const int pos = curPos;
-    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(dicRoot, &curPos);
+    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &curPos);
     const int childrenPos = curPos;
     newRootNode->initAsRootWithPreviousWord(prevWordLastNode, pos, childrenPos, childrenCount);
 }
@@ -71,16 +75,19 @@ namespace latinime {
 }
 
 /* static */ int DicNodeUtils::createAndGetLeavingChildNode(DicNode *dicNode, int pos,
-        const uint8_t *const dicRoot, const int terminalDepth, const ProximityInfoState *pInfoState,
-        const int pointIndex, const bool exactOnly, const std::vector<int> *const codePointsFilter,
-        const ProximityInfo *const pInfo, DicNodeVector *childDicNodes) {
+        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int terminalDepth,
+        const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
+        const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
+        DicNodeVector *childDicNodes) {
     int nextPos = pos;
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(dicRoot, &pos);
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &pos);
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
     const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
 
-    int codePoint = BinaryFormat::getCodePointAndForwardPointer(dicRoot, &pos);
+    int codePoint = BinaryFormat::getCodePointAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &pos);
     ASSERT(NOT_A_CODE_POINT != codePoint);
     const int nodeCodePoint = codePoint;
     // TODO: optimize this
@@ -90,7 +97,8 @@ namespace latinime {
 
     do {
         const int nextCodePoint = hasMultipleChars
-                ? BinaryFormat::getCodePointAndForwardPointer(dicRoot, &pos) : NOT_A_CODE_POINT;
+                ? BinaryFormat::getCodePointAndForwardPointer(
+                        binaryDictionaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
         const bool isLastChar = (NOT_A_CODE_POINT == nextCodePoint);
         if (!isLastChar) {
             additionalWordBuf[additionalSubwordLength++] = nextCodePoint;
@@ -98,12 +106,14 @@ namespace latinime {
         codePoint = nextCodePoint;
     } while (NOT_A_CODE_POINT != codePoint);
 
-    const int probability =
-            isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(dicRoot, pos) : -1;
+    const int probability = isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(
+            binaryDictionaryInfo->getDictRoot(), pos) : -1;
     pos = BinaryFormat::skipProbability(flags, pos);
-    int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(dicRoot, flags, pos) : 0;
+    int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
+            binaryDictionaryInfo->getDictRoot(), flags, pos) : 0;
     const int attributesPos = BinaryFormat::skipChildrenPosition(flags, pos);
-    const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(dicRoot, flags, pos);
+    const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
+            binaryDictionaryInfo->getDictRoot(), flags, pos);
 
     if (isDicNodeFilteredOut(nodeCodePoint, pInfo, codePointsFilter)) {
         return siblingPos;
@@ -111,8 +121,8 @@ namespace latinime {
     if (!isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, nodeCodePoint)) {
         return siblingPos;
     }
-    const int childrenCount = hasChildren
-            ? BinaryFormat::getGroupCountAndForwardPointer(dicRoot, &childrenPos) : 0;
+    const int childrenCount = hasChildren ? BinaryFormat::getGroupCountAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &childrenPos) : 0;
     childDicNodes->pushLeavingChild(dicNode, nextPos, flags, childrenPos, attributesPos, siblingPos,
             nodeCodePoint, childrenCount, probability, -1 /* bigramProbability */, isTerminal,
             hasMultipleChars, hasChildren, additionalSubwordLength, additionalWordBuf);
@@ -148,16 +158,18 @@ namespace latinime {
 }
 
 /* static */ void DicNodeUtils::createAndGetAllLeavingChildNodes(DicNode *dicNode,
-        const uint8_t *const dicRoot, const ProximityInfoState *pInfoState, const int pointIndex,
-        const bool exactOnly, const std::vector<int> *const codePointsFilter,
-        const ProximityInfo *const pInfo, DicNodeVector *childDicNodes) {
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
+        const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
+        DicNodeVector *childDicNodes) {
     const int terminalDepth = dicNode->getLeavingDepth();
     const int childCount = dicNode->getChildrenCount();
     int nextPos = dicNode->getChildrenPos();
     for (int i = 0; i < childCount; i++) {
         const int filterSize = codePointsFilter ? codePointsFilter->size() : 0;
-        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, dicRoot, terminalDepth, pInfoState,
-                pointIndex, exactOnly, codePointsFilter, pInfo, childDicNodes);
+        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
+                terminalDepth, pInfoState, pointIndex, exactOnly, codePointsFilter, pInfo,
+                childDicNodes);
         if (!pInfo && filterSize > 0 && childDicNodes->exceeds(filterSize)) {
             // All code points have been found.
             break;
@@ -165,14 +177,15 @@ namespace latinime {
     }
 }
 
-/* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode, const uint8_t *const dicRoot,
-        DicNodeVector *childDicNodes) {
-    getProximityChildDicNodes(dicNode, dicRoot, 0, 0, false, childDicNodes);
+/* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
+        const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes) {
+    getProximityChildDicNodes(dicNode, binaryDictionaryInfo, 0, 0, false, childDicNodes);
 }
 
 /* static */ void DicNodeUtils::getProximityChildDicNodes(DicNode *dicNode,
-        const uint8_t *const dicRoot, const ProximityInfoState *pInfoState, const int pointIndex,
-        bool exactOnly, DicNodeVector *childDicNodes) {
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
+        DicNodeVector *childDicNodes) {
     if (dicNode->isTotalInputSizeExceedingLimit()) {
         return;
     }
@@ -180,9 +193,9 @@ namespace latinime {
         DicNodeUtils::createAndGetPassingChildNode(dicNode, pInfoState, pointIndex, exactOnly,
                 childDicNodes);
     } else {
-        DicNodeUtils::createAndGetAllLeavingChildNodes(dicNode, dicRoot, pInfoState, pointIndex,
-                exactOnly, 0 /* codePointsFilter */, 0 /* pInfo */,
-                childDicNodes);
+        DicNodeUtils::createAndGetAllLeavingChildNodes(
+                dicNode, binaryDictionaryInfo, pInfoState, pointIndex, exactOnly,
+                0 /* codePointsFilter */, 0 /* pInfo */, childDicNodes);
     }
 }
 
@@ -192,19 +205,21 @@ namespace latinime {
 /**
  * Computes the combined bigram / unigram cost for the given dicNode.
  */
-/* static */ float DicNodeUtils::getBigramNodeImprobability(const uint8_t *const dicRoot,
+/* static */ float DicNodeUtils::getBigramNodeImprobability(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const DicNode *const node, MultiBigramMap *multiBigramMap) {
     if (node->isImpossibleBigramWord()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(dicRoot, node, multiBigramMap);
+    const int probability = getBigramNodeProbability(binaryDictionaryInfo, node, multiBigramMap);
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - probability)
             / static_cast<float>(MAX_PROBABILITY);
     return cost;
 }
 
-/* static */ int DicNodeUtils::getBigramNodeProbability(const uint8_t *const dicRoot,
+/* static */ int DicNodeUtils::getBigramNodeProbability(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const DicNode *const node, MultiBigramMap *multiBigramMap) {
     const int unigramProbability = node->getProbability();
     const int wordPos = node->getPos();
@@ -215,9 +230,10 @@ namespace latinime {
     }
     if (multiBigramMap) {
         return multiBigramMap->getBigramProbability(
-                dicRoot, prevWordPos, wordPos, unigramProbability);
+                binaryDictionaryInfo, prevWordPos, wordPos, unigramProbability);
     }
-    return BinaryFormat::getBigramProbability(dicRoot, prevWordPos, wordPos, unigramProbability);
+    return BinaryFormat::getBigramProbability(
+            binaryDictionaryInfo->getDictRoot(), prevWordPos, wordPos, unigramProbability);
 }
 
 ///////////////////////////////////////

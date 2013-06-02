@@ -19,6 +19,7 @@
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
@@ -32,8 +33,9 @@
 namespace latinime {
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, const unsigned int dictFlags)
-        : DICT_ROOT(streamStart), ROOT_POS(0),
+UnigramDictionary::UnigramDictionary(
+        const BinaryDictionaryInfo *const binaryDicitonaryInfo, const uint8_t dictFlags)
+        : mBinaryDicitonaryInfo(binaryDicitonaryInfo),
           MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH), DICT_FLAGS(dictFlags) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
@@ -315,9 +317,10 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     correction->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance,
             doAutoCompletion, maxErrors);
-    int rootPosition = ROOT_POS;
+    int rootPosition = mBinaryDicitonaryInfo->getRootPosition();
     // Get the number of children of root, then increment the position
-    int childCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &rootPosition);
+    int childCount = BinaryFormat::getGroupCountAndForwardPointer(
+            mBinaryDicitonaryInfo->getDictRoot(), &rootPosition);
     int outputIndex = 0;
 
     correction->initCorrectionState(rootPosition, childCount, (inputSize <= 0));
@@ -747,7 +750,7 @@ int UnigramDictionary::getMostProbableWordLikeInner(const int *const inWord, con
     int newWord[MAX_WORD_LENGTH];
     int depth = 0;
     int maxFreq = -1;
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDicitonaryInfo->getDictRoot();
     int stackChildCount[MAX_WORD_LENGTH];
     int stackInputIndex[MAX_WORD_LENGTH];
     int stackSiblingPos[MAX_WORD_LENGTH];
@@ -806,7 +809,7 @@ int UnigramDictionary::getMostProbableWordLikeInner(const int *const inWord, con
 }
 
 int UnigramDictionary::getProbability(const int *const inWord, const int length) const {
-    const uint8_t *const root = DICT_ROOT;
+    const uint8_t *const root = mBinaryDicitonaryInfo->getDictRoot();
     int pos = BinaryFormat::getTerminalPosition(root, inWord, length,
             false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == pos) {
@@ -823,7 +826,7 @@ int UnigramDictionary::getProbability(const int *const inWord, const int length)
     if (hasMultipleChars) {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     } else {
-        BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos);
+        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
     }
     const int unigramProbability = BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
     return unigramProbability;
@@ -865,7 +868,8 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     // - FLAG_HAS_MULTIPLE_CHARS: whether this node has multiple char or not.
     // - FLAG_IS_TERMINAL: whether this node is a terminal or not (it may still have children)
     // - FLAG_HAS_BIGRAMS: whether this node has bigrams or not
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(DICT_ROOT, &pos);
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
+            mBinaryDicitonaryInfo->getDictRoot(), &pos);
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     const bool isTerminalNode = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
 
@@ -876,7 +880,8 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     // else if FLAG_IS_TERMINAL: the probability
     // else if MASK_GROUP_ADDRESS_TYPE is not NONE: the children address
     // Note that you can't have a node that both is not a terminal and has no children.
-    int c = BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos);
+    int c = BinaryFormat::getCodePointAndForwardPointer(
+            mBinaryDicitonaryInfo->getDictRoot(), &pos);
     ASSERT(NOT_A_CODE_POINT != c);
 
     // We are going to loop through each character and make it look like it's a different
@@ -890,8 +895,8 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
         // We prefetch the next char. If 'c' is the last char of this node, we will have
         // NOT_A_CODE_POINT in the next char. From this we can decide whether this virtual node
         // should behave as a terminal or not and whether we have children.
-        const int nextc = hasMultipleChars
-                ? BinaryFormat::getCodePointAndForwardPointer(DICT_ROOT, &pos) : NOT_A_CODE_POINT;
+        const int nextc = hasMultipleChars ? BinaryFormat::getCodePointAndForwardPointer(
+                    mBinaryDicitonaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
         const bool isLastChar = (NOT_A_CODE_POINT == nextc);
         // If there are more chars in this nodes, then this virtual node is not a terminal.
         // If we are on the last char, this virtual node is a terminal if this node is.
@@ -911,11 +916,11 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
             // We don't have to output other values because we return false, as in
             // "don't traverse children".
             if (!isLastChar) {
-                pos = BinaryFormat::skipOtherCharacters(DICT_ROOT, pos);
+                pos = BinaryFormat::skipOtherCharacters(mBinaryDicitonaryInfo->getDictRoot(), pos);
             }
             pos = BinaryFormat::skipProbability(flags, pos);
-            *nextSiblingPosition =
-                    BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+            *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(
+                    mBinaryDicitonaryInfo->getDictRoot(), flags, pos);
             return false;
         }
 
@@ -928,11 +933,11 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     if (isTerminalNode) {
         // The probability should be here, because we come here only if this is actually
         // a terminal node, and we are on its last char.
-        const int unigramProbability =
-                BinaryFormat::readProbabilityWithoutMovingPointer(DICT_ROOT, pos);
+        const int unigramProbability = BinaryFormat::readProbabilityWithoutMovingPointer(
+                mBinaryDicitonaryInfo->getDictRoot(), pos);
         const int childrenAddressPos = BinaryFormat::skipProbability(flags, pos);
         const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
-        TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
+        TerminalAttributes terminalAttributes(mBinaryDicitonaryInfo, flags, attributesPos);
         // bigramMap contains the bigram frequencies indexed by addresses for fast lookup.
         // bigramFilter is a bloom filter of said frequencies for even faster rejection.
         const int probability = BinaryFormat::getProbability(initialPos, bigramMap, bigramFilter,
@@ -952,16 +957,16 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
         // remaining char in this group for there can't be any.
         if (!hasChildren) {
             pos = BinaryFormat::skipProbability(flags, pos);
-            *nextSiblingPosition =
-                    BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+            *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(
+                    mBinaryDicitonaryInfo->getDictRoot(), flags, pos);
             return false;
         }
 
         // Optimization: Prune out words that are too long compared to how much was typed.
         if (correction->needsToPrune()) {
             pos = BinaryFormat::skipProbability(flags, pos);
-            *nextSiblingPosition =
-                    BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+            *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(
+                    mBinaryDicitonaryInfo->getDictRoot(), flags, pos);
             if (DEBUG_DICT_FULL) {
                 AKLOGI("Traversing was pruned.");
             }
@@ -980,9 +985,12 @@ bool UnigramDictionary::processCurrentNode(const int initialPos,
     // Once this is read, we still need to output the number of nodes in the immediate children of
     // this node, so we read and output it before returning true, as in "please traverse children".
     pos = BinaryFormat::skipProbability(flags, pos);
-    int childrenPos = BinaryFormat::readChildrenPosition(DICT_ROOT, flags, pos);
-    *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
-    *newCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &childrenPos);
+    int childrenPos = BinaryFormat::readChildrenPosition(
+            mBinaryDicitonaryInfo->getDictRoot(), flags, pos);
+    *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(
+            mBinaryDicitonaryInfo->getDictRoot(), flags, pos);
+    *newCount = BinaryFormat::getGroupCountAndForwardPointer(
+            mBinaryDicitonaryInfo->getDictRoot(), &childrenPos);
     *newChildrenPosition = childrenPos;
     return true;
 }
