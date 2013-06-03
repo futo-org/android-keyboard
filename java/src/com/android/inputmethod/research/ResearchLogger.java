@@ -1588,7 +1588,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_REVERTDOUBLESPACEPERIOD =
             new LogStatement("RichInputConnectionRevertDoubleSpacePeriod", false, false);
     public static void richInputConnection_revertDoubleSpacePeriod() {
-        getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_REVERTDOUBLESPACEPERIOD);
+        final ResearchLogger researchLogger = getInstance();
+        // An extra LogUnit is added for the period; this is removed here because of the revert.
+        researchLogger.uncommitCurrentLogUnit(null, true /* dumpCurrentLogUnit */);
+        // TODO: This will probably be lost as the user backspaces further.  Figure out how to put
+        // it into the right logUnit.
+        researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_REVERTDOUBLESPACEPERIOD);
     }
 
     /**
