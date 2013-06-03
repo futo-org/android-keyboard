@@ -29,7 +29,6 @@ class DicTraverseSession;
 class ProximityInfo;
 class SuggestInterface;
 class SuggestOptions;
-class UnigramDictionary;
 
 class Dictionary {
  public:
@@ -82,10 +81,10 @@ class Dictionary {
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
     // also for the malloc version.
     const int mDictSize;
+    const int mDictFlags;
     const int mMmapFd;
     const int mDictBufAdjust;
 
-    const UnigramDictionary *mUnigramDictionary;
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
     SuggestInterface *mTypingSuggest;
