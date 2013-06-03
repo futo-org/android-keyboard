@@ -1274,6 +1274,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
+     * Log a revert of onTextInput() (known in the IME as "EnteredText").
+     *
+     * SystemResponse: Remove the LogUnit recording the textInput
+     */
+    public static void latinIME_handleBackspace_cancelTextInput(final String text) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.uncommitCurrentLogUnit(text, true /* dumpCurrentLogUnit */);
+    }
+
+    /**
      * Log a call to LatinIME.pickSuggestionManually().
      *
      * UserAction: The user has chosen a specific word from the suggestion strip.
