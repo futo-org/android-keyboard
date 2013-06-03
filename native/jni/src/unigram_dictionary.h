@@ -25,6 +25,7 @@
 
 namespace latinime {
 
+class BinaryDictionaryInfo;
 class Correction;
 class ProximityInfo;
 class TerminalAttributes;
@@ -39,7 +40,10 @@ class UnigramDictionary {
     static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
     static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
     static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
-    UnigramDictionary(const uint8_t *const streamStart, const unsigned int dictFlags);
+
+    UnigramDictionary(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
+            const uint8_t dictFlags);
+    virtual ~UnigramDictionary();
     int getProbability(const int *const inWord, const int length) const;
     int getBigramPosition(int pos, int *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -48,7 +52,6 @@ class UnigramDictionary {
             const bool useFullEditDistance, int *outWords, int *frequencies,
             int *outputTypes) const;
     int getDictFlags() const { return DICT_FLAGS; }
-    virtual ~UnigramDictionary();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(UnigramDictionary);
@@ -108,8 +111,7 @@ class UnigramDictionary {
             const int outputWordLength, int *freqArray, int *wordLengthArray,
             int *outputWord) const;
 
-    const uint8_t *const DICT_ROOT;
-    const int ROOT_POS;
+    const BinaryDictionaryInfo *const mBinaryDicitonaryInfo;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int DICT_FLAGS;
 };

@@ -17,10 +17,9 @@
 #ifndef LATINIME_MULTI_BIGRAM_MAP_H
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
-#include <stdint.h>
-
 #include "defines.h"
 #include "hash_map_compat.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
@@ -35,20 +34,20 @@ class MultiBigramMap {
 
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
-    int getBigramProbability(const uint8_t *const dicRoot, const int wordPosition,
-            const int nextWordPosition, const int unigramProbability) {
+    int getBigramProbability(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
+            const int wordPosition, const int nextWordPosition, const int unigramProbability) {
         hash_map_compat<int, BigramMap>::const_iterator mapPosition =
                 mBigramMaps.find(wordPosition);
         if (mapPosition != mBigramMaps.end()) {
             return mapPosition->second.getBigramProbability(nextWordPosition, unigramProbability);
         }
         if (mBigramMaps.size() < MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP) {
-            addBigramsForWordPosition(dicRoot, wordPosition);
+            addBigramsForWordPosition(binaryDicitonaryInfo, wordPosition);
             return mBigramMaps[wordPosition].getBigramProbability(
                     nextWordPosition, unigramProbability);
         }
-        return BinaryFormat::getBigramProbability(
-                dicRoot, wordPosition, nextWordPosition, unigramProbability);
+        return BinaryFormat::getBigramProbability(binaryDicitonaryInfo->getDictRoot(),
+                wordPosition, nextWordPosition, unigramProbability);
     }
 
     void clear() {
@@ -63,8 +62,9 @@ class MultiBigramMap {
         BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP) {}
         ~BigramMap() {}
 
-        void init(const uint8_t *const dicRoot, int position) {
-            BinaryFormat::fillBigramProbabilityToHashMap(dicRoot, position, &mBigramMap);
+        void init(const BinaryDictionaryInfo *const binaryDicitonaryInfo, const int position) {
+            BinaryFormat::fillBigramProbabilityToHashMap(
+                    binaryDicitonaryInfo->getDictRoot(), position, &mBigramMap);
         }
 
         inline int getBigramProbability(const int nextWordPosition, const int unigramProbability)
@@ -78,8 +78,9 @@ class MultiBigramMap {
         hash_map_compat<int, int> mBigramMap;
     };
 
-    void addBigramsForWordPosition(const uint8_t *const dicRoot, const int position) {
-        mBigramMaps[position].init(dicRoot, position);
+    void addBigramsForWordPosition(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
+            const int position) {
+        mBigramMaps[position].init(binaryDicitonaryInfo, position);
     }
 
     hash_map_compat<int, BigramMap> mBigramMaps;

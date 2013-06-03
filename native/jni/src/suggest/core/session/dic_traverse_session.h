@@ -28,6 +28,7 @@
 
 namespace latinime {
 
+class BinaryDictionaryInfo;
 class Dictionary;
 class ProximityInfo;
 class SuggestOptions;
@@ -56,7 +57,7 @@ class DicTraverseSession {
     void resetCache(const int nextActiveCacheSize, const int maxWords);
 
     // TODO: Remove
-    const uint8_t *getOffsetDict() const;
+    const BinaryDictionaryInfo *getBinaryDictionaryInfo() const;
     int getDictFlags() const;
 
     //--------------------
