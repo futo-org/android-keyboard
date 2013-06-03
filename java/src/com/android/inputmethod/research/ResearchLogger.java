@@ -863,7 +863,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // Check that expected word matches.
         if (oldLogUnit != null) {
             final String oldLogUnitWords = oldLogUnit.getWordsAsString();
-            if (oldLogUnitWords != null && !oldLogUnitWords.equals(expectedWord)) {
+            // Because the word is stored in the LogUnit with digits scrubbed, the comparison must
+            // be made on a scrubbed version of the expectedWord as well.
+            if (oldLogUnitWords != null && !oldLogUnitWords.equals(
+                    scrubDigitsFromString(expectedWord))) {
                 return;
             }
         }
