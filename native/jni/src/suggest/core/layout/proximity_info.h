@@ -18,9 +18,9 @@
 #define LATINIME_PROXIMITY_INFO_H
 
 #include "defines.h"
-#include "hash_map_compat.h"
 #include "jni.h"
 #include "suggest/core/layout/proximity_info_utils.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 

@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "defines.h"
-#include "hash_map_compat.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 class ProximityInfo;

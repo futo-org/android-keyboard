@@ -24,9 +24,9 @@
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/bloom_filter.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/probability_utils.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 

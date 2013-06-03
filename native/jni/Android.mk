@@ -57,7 +57,6 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
-        char_utils.cpp \
         binary_dictionary_format.cpp \
         byte_array_utils.cpp \
         dictionary.cpp \
@@ -76,7 +75,8 @@ LATIN_IME_CORE_SRC_FILES := \
         typing_scoring.cpp \
         typing_suggest_policy.cpp \
         typing_traversal.cpp \
-        typing_weighting.cpp)
+        typing_weighting.cpp) \
+    utils/char_utils.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

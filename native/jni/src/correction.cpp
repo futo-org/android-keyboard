@@ -20,11 +20,11 @@
 
 #include "correction.h"
 #include "defines.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/policyimpl/utils/edit_distance.h"
 #include "suggest/policyimpl/utils/damerau_levenshtein_edit_distance_policy.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 

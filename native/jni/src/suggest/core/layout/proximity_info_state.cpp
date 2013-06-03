@@ -23,10 +23,10 @@
 #include <vector>
 
 #include "defines.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/geometry_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state_utils.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 
