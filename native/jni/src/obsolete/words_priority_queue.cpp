@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "words_priority_queue.h"
+#include "obsolete/words_priority_queue.h"
 
 namespace latinime {
 
