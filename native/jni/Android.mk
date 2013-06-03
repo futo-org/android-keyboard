@@ -46,10 +46,10 @@ LATIN_IME_JNI_SRC_FILES := \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES := \
-    correction.cpp \
-    unigram_dictionary.cpp \
     suggest/core/suggest.cpp \
     $(addprefix obsolete/, \
+        correction.cpp \
+        unigram_dictionary.cpp \
         words_priority_queue.cpp) \
     $(addprefix suggest/core/dicnode/, \
         dic_node.cpp \

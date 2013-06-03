@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "obsolete/unigram_dictionary.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -29,7 +30,6 @@
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
-#include "unigram_dictionary.h"
 
 namespace latinime {
 

@@ -18,8 +18,8 @@
 
 #include <cmath>
 
-#include "correction.h"
 #include "defines.h"
+#include "obsolete/correction.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/layout/touch_position_correction_utils.h"
 #include "suggest/policyimpl/utils/edit_distance.h"

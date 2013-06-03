@@ -19,8 +19,8 @@
 
 #include <cstring> // for memset()
 
-#include "correction_state.h"
 #include "defines.h"
+#include "obsolete/correction_state.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "utils/char_utils.h"
 

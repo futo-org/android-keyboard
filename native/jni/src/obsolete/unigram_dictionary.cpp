@@ -19,6 +19,7 @@
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
 #include "defines.h"
+#include "obsolete/unigram_dictionary.h"
 #include "obsolete/words_priority_queue.h"
 #include "obsolete/words_priority_queue_pool.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
@@ -29,7 +30,6 @@
 #include "suggest/core/dictionary/terminal_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "utils/char_utils.h"
-#include "unigram_dictionary.h"
 
 namespace latinime {
 
