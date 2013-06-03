@@ -1797,8 +1797,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                         final String word = mWordComposer.getTypedWord();
                         ResearchLogger.latinIME_handleBackspace_batch(word, 1);
-                        ResearchLogger.getInstance().uncommitCurrentLogUnit(
-                                word, false /* dumpCurrentLogUnit */);
                     }
                     final String rejectedSuggestion = mWordComposer.getTypedWord();
                     mWordComposer.reset();
