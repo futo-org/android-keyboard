@@ -22,9 +22,9 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "dic_traverse_wrapper.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
@@ -50,14 +50,14 @@ Dictionary::~Dictionary() {
     delete mTypingSuggest;
 }
 
-int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
+int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
         const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
         int *spaceIndices, int *outputTypes) const {
     int result = 0;
     if (suggestOptions->isGesture()) {
-        DicTraverseWrapper::initDicTraverseSession(
+        DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
@@ -68,7 +68,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
         return result;
     } else {
         if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
-            DicTraverseWrapper::initDicTraverseSession(
+            DicTraverseSession::initSessionInstance(
                     traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
             result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                     ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,

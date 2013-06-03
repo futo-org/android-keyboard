@@ -35,6 +35,25 @@ class SuggestOptions;
 
 class DicTraverseSession {
  public:
+
+    // A factory method for DicTraverseSession
+    static AK_FORCE_INLINE void *getSessionInstance(JNIEnv *env, jstring localeStr) {
+        return new DicTraverseSession(env, localeStr);
+    }
+
+    static AK_FORCE_INLINE void initSessionInstance(DicTraverseSession *traverseSession,
+            const Dictionary *const dictionary, const int *prevWord, const int prevWordLength,
+            const SuggestOptions *const suggestOptions) {
+        if (traverseSession) {
+            DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
+            tSession->init(dictionary, prevWord, prevWordLength, suggestOptions);
+        }
+    }
+
+    static AK_FORCE_INLINE void releaseSessionInstance(DicTraverseSession *traverseSession) {
+        delete traverseSession;
+    }
+
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr)
             : mPrevWordPos(NOT_VALID_WORD), mProximityInfo(0),
               mDictionary(0), mSuggestOptions(0), mDicNodesCache(), mMultiBigramMap(),

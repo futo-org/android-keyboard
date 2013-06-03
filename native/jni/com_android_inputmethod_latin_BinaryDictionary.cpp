@@ -137,7 +137,8 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
-    void *traverseSession = reinterpret_cast<void *>(dicTraverseSession);
+    DicTraverseSession *traverseSession =
+            reinterpret_cast<DicTraverseSession *>(dicTraverseSession);
 
     // Input values
     int xCoordinates[inputSize];
