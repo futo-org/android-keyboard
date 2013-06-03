@@ -34,10 +34,10 @@
 #include "correction.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "suggest_options.h"
 #include "suggest/core/dictionary/binary_dictionary_format.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/suggest_options.h"
 
 namespace latinime {
 
