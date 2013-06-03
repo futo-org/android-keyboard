@@ -302,6 +302,23 @@ final class SuggestionStripLayoutHelper {
 
         final int countInStrip = mSuggestionsCountInStrip;
         setupWordViewsTextAndColor(suggestedWords, countInStrip);
+        final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
+        final int stripWidth = placerView.getWidth();
+        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
+        if (getTextScaleX(centerWordView.getText(), centerWidth, centerWordView.getPaint())
+                < MIN_TEXT_XSCALE) {
+            // Layout only the most relevant suggested word at the center of the suggestion strip
+            // by consolidating all slots in the strip.
+            mMoreSuggestionsAvailable = (suggestedWords.size() > 1);
+            layoutWord(mCenterPositionInStrip, stripWidth);
+            stripView.addView(centerWordView);
+            setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
+            if (SuggestionStripView.DBG) {
+                layoutDebugInfo(mCenterPositionInStrip, placerView, stripWidth);
+            }
+            return;
+        }
+
         mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
         int x = 0;
         for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
@@ -312,7 +329,7 @@ final class SuggestionStripLayoutHelper {
                 x += divider.getMeasuredWidth();
             }
 
-            final int width = getSuggestionWidth(positionInStrip, placerView.getWidth());
+            final int width = getSuggestionWidth(positionInStrip, stripWidth);
             final TextView wordView = layoutWord(positionInStrip, width);
             stripView.addView(wordView);
             setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
