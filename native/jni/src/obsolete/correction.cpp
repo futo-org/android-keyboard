@@ -918,11 +918,15 @@ inline static bool isUpperCase(unsigned short c) {
 
 // In dictionary.cpp, getSuggestion() method,
 // When USE_SUGGEST_INTERFACE_FOR_TYPING is true:
+//
+//   // TODO: Revise the following logic thoroughly by referring to the logic
+//   // marked as "Otherwise" below.
 //   SUGGEST_INTERFACE_OUTPUT_SCALE was multiplied to the original suggestion scores to convert
 //   them to integers.
 //     score = (int)((original score) * SUGGEST_INTERFACE_OUTPUT_SCALE)
 //   Undo the scaling here to recover the original score.
 //     normalizedScore = ((float)score) / SUGGEST_INTERFACE_OUTPUT_SCALE
+//
 // Otherwise: suggestion scores are computed using the below formula.
 // original score
 //  := powf(mTypedLetterMultiplier (this is defined 2),
@@ -965,9 +969,11 @@ inline static bool isUpperCase(unsigned short c) {
     // so, 0 <= distance / afterLength <= 1
     const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
 
-    if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
+    // TODO: Revise the following logic thoroughly by referring to...
+    if (true /* USE_SUGGEST_INTERFACE_FOR_TYPING */) {
         return (static_cast<float>(score) / SUGGEST_INTERFACE_OUTPUT_SCALE) * weight;
     }
+    // ...this logic.
     const float maxScore = score >= S_INT_MAX ? static_cast<float>(S_INT_MAX)
             : static_cast<float>(MAX_INITIAL_SCORE)
                     * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
