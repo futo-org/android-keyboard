@@ -208,6 +208,9 @@ final class SuggestionStripLayoutHelper {
 
     private CharSequence getStyledSuggestedWord(final SuggestedWords suggestedWords,
             final int indexInSuggestedWords) {
+        if (indexInSuggestedWords >= suggestedWords.size()) {
+            return null;
+        }
         final String word = suggestedWords.getWord(indexInSuggestedWords);
         final boolean isAutoCorrect = indexInSuggestedWords == 1
                 && suggestedWords.willAutoCorrect();
