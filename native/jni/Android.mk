@@ -50,7 +50,7 @@ LATIN_IME_CORE_SRC_FILES := \
     unigram_dictionary.cpp \
     suggest/core/suggest.cpp \
     $(addprefix obsolete/, \
-        words_priority_queue.cpp \
+        words_priority_queue.cpp) \
     $(addprefix suggest/core/dicnode/, \
         dic_node.cpp \
         dic_node_utils.cpp \
