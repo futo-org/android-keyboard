@@ -17,8 +17,8 @@
 #ifndef LATINIME_DAEMARU_LEVENSHTEIN_EDIT_DISTANCE_POLICY_H
 #define LATINIME_DAEMARU_LEVENSHTEIN_EDIT_DISTANCE_POLICY_H
 
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/policyimpl/utils/edit_distance_policy.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 
