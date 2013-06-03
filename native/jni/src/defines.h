@@ -289,6 +289,7 @@ static inline void prof_out(void) {
 
 #define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
 #define SUGGEST_MULTIPLE_WORDS true
+#define USE_SUGGEST_INTERFACE_FOR_TYPING true
 #define SUGGEST_INTERFACE_OUTPUT_SCALE 1000000.0f
 
 // The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
