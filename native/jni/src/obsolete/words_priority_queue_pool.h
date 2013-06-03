@@ -18,7 +18,7 @@
 #define LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 
 #include "defines.h"
-#include "words_priority_queue.h"
+#include "obsolete/words_priority_queue.h"
 
 namespace latinime {
 
