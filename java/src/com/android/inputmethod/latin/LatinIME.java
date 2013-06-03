@@ -1637,8 +1637,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void onStartBatchInput(final LatinIME latinIme) {
             synchronized (mLock) {
                 mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
-                mLatinIme = latinIme;
                 mInBatchInput = true;
+                mLatinIme = latinIme;
+                mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                        SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
             }
         }
 
