@@ -48,8 +48,7 @@ LATIN_IME_JNI_SRC_FILES := \
 LATIN_IME_CORE_SRC_FILES := \
     suggest/core/suggest.cpp \
     $(addprefix obsolete/, \
-        correction.cpp \
-        words_priority_queue.cpp) \
+        correction.cpp) \
     $(addprefix suggest/core/dicnode/, \
         dic_node.cpp \
         dic_node_utils.cpp \
