@@ -46,7 +46,6 @@ LATIN_IME_JNI_SRC_FILES := \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES := \
-    bigram_dictionary.cpp \
     correction.cpp \
     dic_traverse_wrapper.cpp \
     unigram_dictionary.cpp \
@@ -57,6 +56,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_node_utils.cpp \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
+        bigram_dictionary.cpp \
         binary_dictionary_format.cpp \
         byte_array_utils.cpp \
         dictionary.cpp \

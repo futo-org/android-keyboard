@@ -21,9 +21,9 @@
 #include <map> // TODO: remove
 #include <stdint.h>
 
-#include "bigram_dictionary.h"
 #include "defines.h"
 #include "dic_traverse_wrapper.h"
+#include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
