@@ -94,9 +94,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public void startLongPressTimer(PointerTracker tracker);
         public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
-        public void startDoubleTapTimer();
-        public void cancelDoubleTapTimer();
-        public boolean isInDoubleTapTimeout();
+        public void startDoubleTapShiftKeyTimer();
+        public void cancelDoubleTapShiftKeyTimer();
+        public boolean isInDoubleTapShiftKeyTimeout();
         public void cancelKeyTimers();
         public void startUpdateBatchInputTimer(PointerTracker tracker);
         public void cancelUpdateBatchInputTimer(PointerTracker tracker);
@@ -116,11 +116,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             @Override
             public void cancelLongPressTimer() {}
             @Override
-            public void startDoubleTapTimer() {}
+            public void startDoubleTapShiftKeyTimer() {}
             @Override
-            public void cancelDoubleTapTimer() {}
+            public void cancelDoubleTapShiftKeyTimer() {}
             @Override
-            public boolean isInDoubleTapTimeout() { return false; }
+            public boolean isInDoubleTapShiftKeyTimeout() { return false; }
             @Override
             public void cancelKeyTimers() {}
             @Override

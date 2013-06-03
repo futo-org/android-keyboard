@@ -53,9 +53,9 @@ public final class KeyboardState {
          */
         public void requestUpdatingShiftState();
 
-        public void startDoubleTapTimer();
-        public boolean isInDoubleTapTimeout();
-        public void cancelDoubleTapTimer();
+        public void startDoubleTapShiftKeyTimer();
+        public boolean isInDoubleTapShiftKeyTimeout();
+        public void cancelDoubleTapShiftKeyTimer();
         public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
     }
@@ -325,7 +325,7 @@ public final class KeyboardState {
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onPressSymbol();
         } else {
-            mSwitchActions.cancelDoubleTapTimer();
+            mSwitchActions.cancelDoubleTapShiftKeyTimer();
             mSwitchActions.cancelLongPressTimer();
             mLongPressShiftLockFired = false;
             mShiftKeyState.onOtherKeyPressed();
@@ -450,10 +450,10 @@ public final class KeyboardState {
         // importantly the double tap timer.
         if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) return;
         if (mIsAlphabetMode) {
-            mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapTimeout();
+            mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapShiftKeyTimeout();
             if (!mIsInDoubleTapShiftKey) {
                 // This is first tap.
-                mSwitchActions.startDoubleTapTimer();
+                mSwitchActions.startDoubleTapShiftKeyTimer();
             }
             if (mIsInDoubleTapShiftKey) {
                 if (mAlphabetShiftState.isManualShifted() || mIsInAlphabetUnshiftedFromShifted) {
