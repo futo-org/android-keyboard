@@ -202,7 +202,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         private static final int MSG_TYPING_STATE_EXPIRED = 0;
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
-        private static final int MSG_DOUBLE_TAP = 3;
+        private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 3;
         private static final int MSG_UPDATE_BATCH_INPUT = 4;
 
         private final int mKeyRepeatStartTimeout;
@@ -392,19 +392,19 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         @Override
-        public void startDoubleTapTimer() {
-            sendMessageDelayed(obtainMessage(MSG_DOUBLE_TAP),
+        public void startDoubleTapShiftKeyTimer() {
+            sendMessageDelayed(obtainMessage(MSG_DOUBLE_TAP_SHIFT_KEY),
                     ViewConfiguration.getDoubleTapTimeout());
         }
 
         @Override
-        public void cancelDoubleTapTimer() {
-            removeMessages(MSG_DOUBLE_TAP);
+        public void cancelDoubleTapShiftKeyTimer() {
+            removeMessages(MSG_DOUBLE_TAP_SHIFT_KEY);
         }
 
         @Override
-        public boolean isInDoubleTapTimeout() {
-            return hasMessages(MSG_DOUBLE_TAP);
+        public boolean isInDoubleTapShiftKeyTimeout() {
+            return hasMessages(MSG_DOUBLE_TAP_SHIFT_KEY);
         }
 
         @Override

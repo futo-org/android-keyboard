@@ -53,7 +53,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
     private int mAutoCapsState = MockConstants.CAP_MODE_OFF;
 
-    private boolean mIsInDoubleTapTimeout;
+    private boolean mIsInDoubleTapShiftKeyTimeout;
     private int mLongPressTimeoutCode;
 
     private final KeyboardState mState = new KeyboardState(this);
@@ -81,7 +81,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void expireDoubleTapTimeout() {
-        mIsInDoubleTapTimeout = false;
+        mIsInDoubleTapShiftKeyTimeout = false;
     }
 
     @Override
@@ -125,18 +125,18 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void startDoubleTapTimer() {
-        mIsInDoubleTapTimeout = true;
+    public void startDoubleTapShiftKeyTimer() {
+        mIsInDoubleTapShiftKeyTimeout = true;
     }
 
     @Override
-    public void cancelDoubleTapTimer() {
-        mIsInDoubleTapTimeout = false;
+    public void cancelDoubleTapShiftKeyTimer() {
+        mIsInDoubleTapShiftKeyTimeout = false;
     }
 
     @Override
-    public boolean isInDoubleTapTimeout() {
-        return mIsInDoubleTapTimeout;
+    public boolean isInDoubleTapShiftKeyTimeout() {
+        return mIsInDoubleTapShiftKeyTimeout;
     }
 
     @Override
