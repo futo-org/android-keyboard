@@ -17,36 +17,37 @@
 #define LOG_TAG "LatinIME: jni: Session"
 
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
+
 #include "defines.h"
-#include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "jni_common.h"
+#include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
 class Dictionary;
 static jlong latinime_setDicTraverseSession(JNIEnv *env, jclass clazz, jstring localeJStr) {
-    void *traverseSession = DicTraverseWrapper::getDicTraverseSession(env, localeJStr);
+    void *traverseSession = DicTraverseSession::getSessionInstance(env, localeJStr);
     return reinterpret_cast<jlong>(traverseSession);
 }
 
 static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
-    void *ts = reinterpret_cast<void *>(traverseSession);
+    DicTraverseSession *ts = reinterpret_cast<DicTraverseSession *>(traverseSession);
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
-        DicTraverseWrapper::initDicTraverseSession(
+        DicTraverseSession::initSessionInstance(
                 ts, dict, 0 /* prevWord */, 0 /* prevWordLength*/, 0 /* suggestOptions */);
         return;
     }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
-    DicTraverseWrapper::initDicTraverseSession(
+    DicTraverseSession::initSessionInstance(
             ts, dict, prevWord, previousWordLength, 0 /* suggestOptions */);
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {
-    void *ts = reinterpret_cast<void *>(traverseSession);
-    DicTraverseWrapper::releaseDicTraverseSession(ts);
+    DicTraverseSession *ts = reinterpret_cast<DicTraverseSession *>(traverseSession);
+    DicTraverseSession::releaseSessionInstance(ts);
 }
 
 static JNINativeMethod sMethods[] = {

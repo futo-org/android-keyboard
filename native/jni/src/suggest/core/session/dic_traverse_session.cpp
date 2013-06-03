@@ -17,7 +17,6 @@
 #include "suggest/core/session/dic_traverse_session.h"
 
 #include "defines.h"
-#include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
@@ -25,43 +24,6 @@
 #include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
-
-const int DicTraverseSession::CACHE_START_INPUT_LENGTH_THRESHOLD = 20;
-
-// A factory method for DicTraverseSession
-static void *getSessionInstance(JNIEnv *env, jstring localeStr) {
-    return new DicTraverseSession(env, localeStr);
-}
-
-// TODO: Pass "DicTraverseSession *traverseSession" when the source code structure settles down.
-static void initSessionInstance(void *traverseSession, const Dictionary *const dictionary,
-        const int *prevWord, const int prevWordLength,
-        const SuggestOptions *const suggestOptions) {
-    if (traverseSession) {
-        DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
-        tSession->init(dictionary, prevWord, prevWordLength, suggestOptions);
-    }
-}
-
-// TODO: Pass "DicTraverseSession *traverseSession" when the source code structure settles down.
-static void releaseSessionInstance(void *traverseSession) {
-    delete static_cast<DicTraverseSession *>(traverseSession);
-}
-
-// An ad-hoc internal class to register the factory method defined above
-class TraverseSessionFactoryRegisterer {
- public:
-    TraverseSessionFactoryRegisterer() {
-        DicTraverseWrapper::setTraverseSessionFactoryMethod(getSessionInstance);
-        DicTraverseWrapper::setTraverseSessionInitMethod(initSessionInstance);
-        DicTraverseWrapper::setTraverseSessionReleaseMethod(releaseSessionInstance);
-    }
- private:
-    DISALLOW_COPY_AND_ASSIGN(TraverseSessionFactoryRegisterer);
-};
-
-// To invoke the TraverseSessionFactoryRegisterer constructor in the global constructor.
-static TraverseSessionFactoryRegisterer traverseSessionFactoryRegisterer;
 
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {

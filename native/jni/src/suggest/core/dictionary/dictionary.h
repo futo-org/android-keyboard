@@ -25,6 +25,7 @@
 namespace latinime {
 
 class BigramDictionary;
+class DicTraverseSession;
 class ProximityInfo;
 class SuggestInterface;
 class SuggestOptions;
@@ -54,9 +55,9 @@ class Dictionary {
 
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust);
 
-    int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
-            int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints, int inputSize,
-            int *prevWordCodePoints, int prevWordLength, int commitPoint,
+    int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
+            int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
+            int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
             const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
             int *spaceIndices, int *outputTypes) const;
 

@@ -47,7 +47,6 @@ LATIN_IME_JNI_SRC_FILES := \
 
 LATIN_IME_CORE_SRC_FILES := \
     correction.cpp \
-    dic_traverse_wrapper.cpp \
     unigram_dictionary.cpp \
     words_priority_queue.cpp \
     suggest/core/suggest.cpp \
