@@ -35,7 +35,8 @@
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest_options.h"
-#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/binary_dictionary_format.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
@@ -110,8 +111,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         return 0;
     }
     Dictionary *dictionary = 0;
-    if (BinaryFormat::UNKNOWN_FORMAT
-            == BinaryFormat::detectFormat(static_cast<uint8_t *>(dictBuf),
+    if (BinaryDictionaryFormat::UNKNOWN_VERSION
+            == BinaryDictionaryFormat::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
                     static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
@@ -260,7 +261,7 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
 static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
-    const void *dictBuf = dictionary->getDict();
+    const void *dictBuf = dictionary->getBinaryDictionaryInfo()->getDictBuf();
     if (!dictBuf) return;
 #ifdef USE_MMAP_FOR_DICTIONARY
     releaseDictBuf(static_cast<const char *>(dictBuf) - dictionary->getDictBufAdjust(),

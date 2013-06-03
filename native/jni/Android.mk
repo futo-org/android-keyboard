@@ -58,6 +58,8 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
         char_utils.cpp \
+        binary_dictionary_format.cpp \
+        byte_array_utils.cpp \
         dictionary.cpp \
         digraph_utils.cpp) \
     $(addprefix suggest/core/layout/, \

@@ -34,13 +34,11 @@
 namespace latinime {
 
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
-        : mDict(static_cast<unsigned char *>(dict)),
-          mOffsetDict((static_cast<unsigned char *>(dict))
-                  + BinaryFormat::getHeaderSize(mDict, dictSize)),
+        : mBinaryDicitonaryInfo(static_cast<const uint8_t *>(dict), dictSize),
           mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mUnigramDictionary(new UnigramDictionary(mOffsetDict,
-                  BinaryFormat::getFlags(mDict, dictSize))),
-          mBigramDictionary(new BigramDictionary(mOffsetDict)),
+          mUnigramDictionary(new UnigramDictionary(&mBinaryDicitonaryInfo,
+                  BinaryFormat::getFlags(mBinaryDicitonaryInfo.getDictBuf(), dictSize))),
+          mBigramDictionary(new BigramDictionary(&mBinaryDicitonaryInfo)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
 }

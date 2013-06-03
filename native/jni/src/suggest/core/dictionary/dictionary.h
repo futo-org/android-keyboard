@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 
 namespace latinime {
 
@@ -64,11 +65,8 @@ class Dictionary {
 
     int getProbability(const int *word, int length) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
-    const uint8_t *getDict() const { // required to release dictionary buffer
-        return mDict;
-    }
-    const uint8_t *getOffsetDict() const {
-        return mOffsetDict;
+    const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
+        return &mBinaryDicitonaryInfo;
     }
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
@@ -78,9 +76,8 @@ class Dictionary {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
-    const uint8_t *mDict;
-    const uint8_t *mOffsetDict;
 
+    const BinaryDictionaryInfo mBinaryDicitonaryInfo;
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
     // also for the malloc version.
     const int mDictSize;

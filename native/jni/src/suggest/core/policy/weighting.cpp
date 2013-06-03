@@ -142,7 +142,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_TERMINAL: {
         const float languageImprobability =
                 DicNodeUtils::getBigramNodeImprobability(
-                        traverseSession->getOffsetDict(), dicNode, multiBigramMap);
+                        traverseSession->getBinaryDictionaryInfo(), dicNode, multiBigramMap);
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
     case CT_NEW_WORD_SPACE_SUBSTITUTION:

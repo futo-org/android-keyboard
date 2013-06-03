@@ -20,6 +20,7 @@
 #include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/dictionary.h"
 
@@ -65,7 +66,8 @@ static TraverseSessionFactoryRegisterer traverseSessionFactoryRegisterer;
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
-    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(mDictionary->getDict(),
+    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(
+            mDictionary->getBinaryDictionaryInfo()->getDictBuf(),
             mDictionary->getDictSize());
     mSuggestOptions = suggestOptions;
     if (!prevWord) {
@@ -73,12 +75,14 @@ void DicTraverseSession::init(const Dictionary *const dictionary, const int *pre
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
-    mPrevWordPos = BinaryFormat::getTerminalPosition(dictionary->getOffsetDict(), prevWord,
+    mPrevWordPos = BinaryFormat::getTerminalPosition(
+            dictionary->getBinaryDictionaryInfo()->getDictRoot(), prevWord,
             prevWordLength, false /* forceLowerCaseSearch */);
     if (mPrevWordPos == NOT_VALID_WORD) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
-        mPrevWordPos = BinaryFormat::getTerminalPosition(dictionary->getOffsetDict(), prevWord,
+        mPrevWordPos = BinaryFormat::getTerminalPosition(
+                dictionary->getBinaryDictionaryInfo()->getDictRoot(), prevWord,
                 prevWordLength, true /* forceLowerCaseSearch */);
     }
 }
@@ -93,8 +97,8 @@ void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,
             maxSpatialDistance, maxPointerCount);
 }
 
-const uint8_t *DicTraverseSession::getOffsetDict() const {
-    return mDictionary->getOffsetDict();
+const BinaryDictionaryInfo *DicTraverseSession::getBinaryDictionaryInfo() const {
+    return mDictionary->getBinaryDictionaryInfo();
 }
 
 int DicTraverseSession::getDictFlags() const {
