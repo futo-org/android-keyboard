@@ -203,14 +203,12 @@ static inline void prof_out(void) {
 #define DEBUG_DICT true
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
-#define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
 #define DEBUG_PROXIMITY_INFO false
 #define DEBUG_PROXIMITY_CHARS false
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
-#define DEBUG_WORDS_PRIORITY_QUEUE false
 #define DEBUG_SAMPLING_POINTS false
 #define DEBUG_POINTS_PROBABILITY false
 #define DEBUG_DOUBLE_LETTER false
@@ -229,14 +227,12 @@ static inline void prof_out(void) {
 #define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
-#define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
 #define DEBUG_PROXIMITY_INFO false
 #define DEBUG_PROXIMITY_CHARS false
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
-#define DEBUG_WORDS_PRIORITY_QUEUE false
 #define DEBUG_SAMPLING_POINTS false
 #define DEBUG_POINTS_PROBABILITY false
 #define DEBUG_DOUBLE_LETTER false
@@ -310,38 +306,18 @@ static inline void prof_out(void) {
 #define FIRST_CHAR_DIFFERENT_DEMOTION_RATE 96
 #define TWO_WORDS_CAPITALIZED_DEMOTION_RATE 50
 #define TWO_WORDS_CORRECTION_DEMOTION_BASE 80
-#define TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER 1
 #define ZERO_DISTANCE_PROMOTION_RATE 110.0f
 #define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
 #define MAX_PROBABILITY 255
 #define MAX_BIGRAM_ENCODED_PROBABILITY 15
+#define MULTIPLE_WORDS_DEMOTION_RATE 80
 
 // Assuming locale strings such as en_US, sr-Latn etc.
 #define MAX_LOCALE_STRING_LENGTH 10
 
-// Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
-// for better performance.
-// Holds up to 1 candidate for each word
-#define SUB_QUEUE_MAX_WORDS 1
-#define SUB_QUEUE_MAX_COUNT 10
-#define SUB_QUEUE_MIN_WORD_LENGTH 4
-// TODO: Extend this limitation
-#define MULTIPLE_WORDS_SUGGESTION_MAX_WORDS 5
-// TODO: Remove this limitation
-#define MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH 12
-// TODO: Remove this limitation
-#define MULTIPLE_WORDS_SUGGESTION_MAX_TOTAL_TRAVERSE_COUNT 45
-#define MULTIPLE_WORDS_DEMOTION_RATE 80
-#define MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION 6
-
-#define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35f
-#define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185f
 /* heuristic... This should be changed if we change the unit of the probability. */
 #define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_PROBABILITY * 58 / 100)
-
-#define MAX_DEPTH_MULTIPLIER 3
-#define FIRST_WORD_INDEX 0
 
 // Max value for length, distance and probability which are used in weighting
 // TODO: Remove
@@ -349,12 +325,6 @@ static inline void prof_out(void) {
 
 // The max number of the keys in one keyboard layout
 #define MAX_KEY_COUNT_IN_A_KEYBOARD 64
-
-// TODO: Reduce this constant if possible; check the maximum number of digraphs in the same
-// word in the dictionary for languages with digraphs, like German and French
-#define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
-
-#define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 
 // TODO: Remove
 #define MAX_POINTER_COUNT 1

@@ -267,8 +267,7 @@ AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *
 
 inline float BinaryFormat::getMultiWordCostMultiplier(const uint8_t *const dict,
         const int dictSize) {
-    const int headerValue = readHeaderValueInt(dict, dictSize,
-            "MULTIPLE_WORDS_DEMOTION_RATE");
+    const int headerValue = readHeaderValueInt(dict, dictSize, "MULTIPLE_WORDS_DEMOTION_RATE");
     if (headerValue == S_INT_MIN) {
         return 1.0f;
     }
