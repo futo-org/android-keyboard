@@ -1816,17 +1816,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 SystemClock.uptimeMillis());
     }
 
+    private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE =
+            new LogStatement("LatinIMEHandleBackspace", true, false, "numCharacters");
     /**
      * Log a call to LatinIME.handleBackspace() that is not a batch delete.
      *
      * UserInput: The user is deleting one or more characters by hitting the backspace key once.
      * The covers single character deletes as well as deleting selections.
+     *
+     * @param numCharacters how many characters the backspace operation deleted
+     * @param shouldUncommitLogUnit whether to uncommit the last {@code LogUnit} in the
+     * {@code LogBuffer}
      */
-    private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE =
-            new LogStatement("LatinIMEHandleBackspace", true, false, "numCharacters");
-    public static void latinIME_handleBackspace(final int numCharacters) {
+    public static void latinIME_handleBackspace(final int numCharacters,
+            final boolean shouldUncommitLogUnit) {
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_HANDLEBACKSPACE, numCharacters);
+        if (shouldUncommitLogUnit) {
+            ResearchLogger.getInstance().uncommitCurrentLogUnit(
+                    null, true /* dumpCurrentLogUnit */);
+        }
     }
 
     /**
@@ -1844,6 +1853,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 numCharacters);
         researchLogger.mStatistics.recordGestureDelete(deletedText.length(),
                 SystemClock.uptimeMillis());
+        researchLogger.uncommitCurrentLogUnit(deletedText.toString(),
+                false /* dumpCurrentLogUnit */);
     }
 
     /**

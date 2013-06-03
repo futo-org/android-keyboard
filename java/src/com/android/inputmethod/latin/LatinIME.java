@@ -1859,7 +1859,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mLastSelectionEnd = mLastSelectionStart;
                 mConnection.deleteSurroundingText(numCharsDeleted, 0);
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted);
+                    ResearchLogger.latinIME_handleBackspace(numCharsDeleted,
+                            false /* shouldUncommitLogUnit */);
                 }
             } else {
                 // There is no selection, just delete one character.
@@ -1877,12 +1878,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mConnection.deleteSurroundingText(1, 0);
                 }
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(1);
+                    ResearchLogger.latinIME_handleBackspace(1, true /* shouldUncommitLogUnit */);
                 }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     mConnection.deleteSurroundingText(1, 0);
                     if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                        ResearchLogger.latinIME_handleBackspace(1);
+                        ResearchLogger.latinIME_handleBackspace(1,
+                                true /* shouldUncommitLogUnit */);
                     }
                 }
             }
