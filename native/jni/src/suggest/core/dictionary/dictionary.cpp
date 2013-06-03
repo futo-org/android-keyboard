@@ -22,7 +22,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "obsolete/unigram_dictionary.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -35,16 +34,15 @@ namespace latinime {
 
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
         : mBinaryDicitonaryInfo(static_cast<const uint8_t *>(dict), dictSize),
-          mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mUnigramDictionary(new UnigramDictionary(&mBinaryDicitonaryInfo,
-                  BinaryFormat::getFlags(mBinaryDicitonaryInfo.getDictBuf(), dictSize))),
+          mDictSize(dictSize),
+          mDictFlags(BinaryFormat::getFlags(mBinaryDicitonaryInfo.getDictBuf(), dictSize)),
+          mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
           mBigramDictionary(new BigramDictionary(&mBinaryDicitonaryInfo)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
 }
 
 Dictionary::~Dictionary() {
-    delete mUnigramDictionary;
     delete mBigramDictionary;
     delete mGestureSuggest;
     delete mTypingSuggest;
@@ -67,26 +65,15 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
         }
         return result;
     } else {
-        if (USE_SUGGEST_INTERFACE_FOR_TYPING) {
-            DicTraverseSession::initSessionInstance(
-                    traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
-            result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
-                    ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
-                    outWords, frequencies, spaceIndices, outputTypes);
-            if (DEBUG_DICT) {
-                DUMP_RESULT(outWords, frequencies);
-            }
-            return result;
-        } else {
-            std::map<int, int> bigramMap;
-            uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-            mBigramDictionary->fillBigramAddressToProbabilityMapAndFilter(prevWordCodePoints,
-                    prevWordLength, &bigramMap, bigramFilter);
-            result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                    inputCodePoints, inputSize, &bigramMap, bigramFilter,
-                    suggestOptions->useFullEditDistance(), outWords, frequencies, outputTypes);
-            return result;
+        DicTraverseSession::initSessionInstance(
+                traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
+        result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
+                ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
+                outWords, frequencies, spaceIndices, outputTypes);
+        if (DEBUG_DICT) {
+            DUMP_RESULT(outWords, frequencies);
         }
+        return result;
     }
 }
 
@@ -98,7 +85,27 @@ int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, in
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    return mUnigramDictionary->getProbability(word, length);
+    const uint8_t *const root = mBinaryDicitonaryInfo.getDictRoot();
+    int pos = BinaryFormat::getTerminalPosition(root, word, length,
+            false /* forceLowerCaseSearch */);
+    if (NOT_VALID_WORD == pos) {
+        return NOT_A_PROBABILITY;
+    }
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    if (flags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD)) {
+        // If this is not a word, or if it's a blacklisted entry, it should behave as
+        // having no probability outside of the suggestion process (where it should be used
+        // for shortcuts).
+        return NOT_A_PROBABILITY;
+    }
+    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
+    if (hasMultipleChars) {
+        pos = BinaryFormat::skipOtherCharacters(root, pos);
+    } else {
+        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
+    }
+    const int unigramProbability = BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
+    return unigramProbability;
 }
 
 bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
@@ -106,7 +113,7 @@ bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, 
 }
 
 int Dictionary::getDictFlags() const {
-    return mUnigramDictionary->getDictFlags();
+    return mDictFlags;
 }
 
 } // namespace latinime
