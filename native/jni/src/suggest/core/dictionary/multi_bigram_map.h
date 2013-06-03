@@ -18,9 +18,9 @@
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
 #include "defines.h"
-#include "hash_map_compat.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 

@@ -21,9 +21,9 @@
 #include <vector>
 
 #include "defines.h"
-#include "hash_map_compat.h"
 #include "suggest/core/layout/proximity_info_params.h"
 #include "suggest/core/layout/proximity_info_state_utils.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 

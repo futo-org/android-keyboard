@@ -18,7 +18,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_format.h"
-#include "suggest/core/dictionary/char_utils.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 

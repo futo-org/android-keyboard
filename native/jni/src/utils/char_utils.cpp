@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/char_utils.h"
+#include "utils/char_utils.h"
 
 #include <cstdlib>
 
@@ -37,7 +37,7 @@ struct LatinCapitalSmallPair {
  *    $ apt-get install libicu-dev
  *
  * 3. Build the following code
- *    $ g++ -o char_utils -I../../.. -DUPDATING_CHAR_UTILS char_utils.cpp -licuuc
+ *    $ g++ -o char_utils -I.. -DUPDATING_CHAR_UTILS char_utils.cpp -licuuc
  */
 #ifdef UPDATING_CHAR_UTILS
 #include <stdio.h>
@@ -70,8 +70,7 @@ extern "C" int main() {
  *
  * 5. Update the SORTED_CHAR_MAP[] array below with the output above.
  *    Then, rebuild with -DCONFIRMING_CHAR_UTILS and confirm the program exits successfully.
- *    $ g++ -o char_utils -I../../.. -DUPDATING_CHAR_UTILS -DCONFIRMING_CHAR_UTILS char_utils.cpp \
- *      -licuuc
+ *    $ g++ -o char_utils -I.. -DUPDATING_CHAR_UTILS -DCONFIRMING_CHAR_UTILS char_utils.cpp -licuuc
  *    $ ./char_utils
  *    $
  */

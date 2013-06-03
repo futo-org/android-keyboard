@@ -20,10 +20,10 @@
 #include <cstdlib>
 #include <stdint.h>
 
-#include "hash_map_compat.h"
 #include "suggest/core/dictionary/bloom_filter.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/probability_utils.h"
+#include "utils/char_utils.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 

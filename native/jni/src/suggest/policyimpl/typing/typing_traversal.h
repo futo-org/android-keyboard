@@ -22,11 +22,11 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
+#include "utils/char_utils.h"
 
 namespace latinime {
 class TypingTraversal : public Traversal {

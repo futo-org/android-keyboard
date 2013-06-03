@@ -22,8 +22,8 @@
 #include "suggest/core/dicnode/dic_node_profiler.h"
 #include "suggest/core/dicnode/dic_node_properties.h"
 #include "suggest/core/dicnode/dic_node_release_listener.h"
-#include "suggest/core/dictionary/char_utils.h"
 #include "suggest/core/dictionary/digraph_utils.h"
+#include "utils/char_utils.h"
 
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
