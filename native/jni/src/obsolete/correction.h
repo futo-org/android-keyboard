@@ -135,6 +135,27 @@ class Correction {
  private:
     DISALLOW_COPY_AND_ASSIGN(Correction);
 
+    // The following "rate"s are used as a multiplier before dividing by 100, so they are in
+    // percent.
+    static const int WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE;
+    static const int WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X;
+    static const int WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE;
+    static const int WORDS_WITH_MISTYPED_SPACE_DEMOTION_RATE;
+    static const int WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE;
+    static const int WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE;
+    static const int WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE;
+    static const int FULL_MATCHED_WORDS_PROMOTION_RATE;
+    static const int WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE;
+    static const int WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE;
+    static const int WORDS_WITH_MATCH_SKIP_PROMOTION_RATE;
+    static const int WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE;
+    static const int WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_MULTIPLIER;
+    static const int CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE;
+    static const int INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE;
+    static const int FIRST_CHAR_DIFFERENT_DEMOTION_RATE;
+    static const int TWO_WORDS_CAPITALIZED_DEMOTION_RATE;
+    static const int TWO_WORDS_CORRECTION_DEMOTION_BASE;
+
     /////////////////////////
     // static inline utils //
     /////////////////////////
