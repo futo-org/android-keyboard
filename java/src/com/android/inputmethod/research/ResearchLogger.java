@@ -854,23 +854,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         // The user has deleted this word and returned to the previous.  Check that the word in the
         // logUnit matches the expected word.  If so, restore the last log unit committed to be the
         // current logUnit.  I.e., pull out the last LogUnit from all the LogBuffers, and make
-        // restore it to mCurrentLogUnit so the new edits are captured with the word.  Optionally
-        // dump the contents of mCurrentLogUnit (useful if they contain deletions of the next word
-        // that should not be reported to protect user privacy)
+        // it the mCurrentLogUnit so the new edits are captured with the word.  Optionally dump the
+        // contents of mCurrentLogUnit (useful if they contain deletions of the next word that
+        // should not be reported to protect user privacy)
         //
         // Note that we don't use mLastLogUnit here, because it only goes one word back and is only
         // needed for reverts, which only happen one back.
         final LogUnit oldLogUnit = mMainLogBuffer.peekLastLogUnit();
 
-        // Check that expected word matches.
+        // Check that expected word matches.  It's ok if both strings are null, because this is the
+        // case where the LogUnit is storing a non-word, e.g. a separator.
         if (oldLogUnit != null) {
-            final String oldLogUnitWords = oldLogUnit.getWordsAsString();
             // Because the word is stored in the LogUnit with digits scrubbed, the comparison must
             // be made on a scrubbed version of the expectedWord as well.
-            if (oldLogUnitWords != null && !oldLogUnitWords.equals(
-                    scrubDigitsFromString(expectedWord))) {
-                return;
-            }
+            final String scrubbedExpectedWord = scrubDigitsFromString(expectedWord);
+            final String oldLogUnitWords = oldLogUnit.getWordsAsString();
+            if (!TextUtils.equals(scrubbedExpectedWord, oldLogUnitWords)) return;
         }
 
         // Uncommit, merging if necessary.
@@ -986,7 +985,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return Character.isDigit(codePoint) ? DIGIT_REPLACEMENT_CODEPOINT : codePoint;
     }
 
-    /* package for test */ static String scrubDigitsFromString(String s) {
+    /* package for test */ static String scrubDigitsFromString(final String s) {
+        if (s == null) return null;
         StringBuilder sb = null;
         final int length = s.length();
         for (int i = 0; i < length; i = s.offsetByCodePoints(i, 1)) {
