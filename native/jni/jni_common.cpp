@@ -55,8 +55,8 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 namespace latinime {
-int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods,
-        int numMethods) {
+int registerNativeMethods(JNIEnv *env, const char *const className, const JNINativeMethod *methods,
+        const int numMethods) {
     jclass clazz = env->FindClass(className);
     if (!clazz) {
         AKLOGE("Native registration unable to find class '%s'", className);
