@@ -30,6 +30,27 @@ namespace latinime {
 
 class ProximityInfo;
 
+// private static const member variables
+// The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
+const int Correction::WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE = 80;
+const int Correction::WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X = 12;
+const int Correction::WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE = 58;
+const int Correction::WORDS_WITH_MISTYPED_SPACE_DEMOTION_RATE = 50;
+const int Correction::WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE = 75;
+const int Correction::WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE = 75;
+const int Correction::WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE = 70;
+const int Correction::FULL_MATCHED_WORDS_PROMOTION_RATE = 120;
+const int Correction::WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE = 90;
+const int Correction::WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE = 70;
+const int Correction::WORDS_WITH_MATCH_SKIP_PROMOTION_RATE = 105;
+const int Correction::WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE = 148;
+const int Correction::WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_MULTIPLIER = 3;
+const int Correction::CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE = 45;
+const int Correction::INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE = 70;
+const int Correction::FIRST_CHAR_DIFFERENT_DEMOTION_RATE = 96;
+const int Correction::TWO_WORDS_CAPITALIZED_DEMOTION_RATE = 50;
+const int Correction::TWO_WORDS_CORRECTION_DEMOTION_BASE = 80;
+
 /////////////////////////////
 // edit distance funcitons //
 /////////////////////////////

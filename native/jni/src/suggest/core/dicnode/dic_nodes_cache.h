@@ -22,12 +22,6 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 
-#define INITIAL_QUEUE_ID_ACTIVE 0
-#define INITIAL_QUEUE_ID_NEXT_ACTIVE 1
-#define INITIAL_QUEUE_ID_TERMINAL 2
-#define INITIAL_QUEUE_ID_CACHE_FOR_CONTINUOUS_SUGGESTION 3
-#define PRIORITY_QUEUES_SIZE 4
-
 namespace latinime {
 
 class DicNode;
@@ -38,11 +32,12 @@ class DicNode;
 class DicNodesCache {
  public:
     AK_FORCE_INLINE DicNodesCache()
-            : mActiveDicNodes(&mDicNodePriorityQueues[INITIAL_QUEUE_ID_ACTIVE]),
-              mNextActiveDicNodes(&mDicNodePriorityQueues[INITIAL_QUEUE_ID_NEXT_ACTIVE]),
-              mTerminalDicNodes(&mDicNodePriorityQueues[INITIAL_QUEUE_ID_TERMINAL]),
-              mCachedDicNodesForContinuousSuggestion(
-                      &mDicNodePriorityQueues[INITIAL_QUEUE_ID_CACHE_FOR_CONTINUOUS_SUGGESTION]),
+            : mActiveDicNodes(&mDicNodePriorityQueues[DIC_NODES_CACHE_INITIAL_QUEUE_ID_ACTIVE]),
+              mNextActiveDicNodes(&mDicNodePriorityQueues[
+                      DIC_NODES_CACHE_INITIAL_QUEUE_ID_NEXT_ACTIVE]),
+              mTerminalDicNodes(&mDicNodePriorityQueues[DIC_NODES_CACHE_INITIAL_QUEUE_ID_TERMINAL]),
+              mCachedDicNodesForContinuousSuggestion(&mDicNodePriorityQueues[
+                      DIC_NODES_CACHE_INITIAL_QUEUE_ID_CACHE_FOR_CONTINUOUS_SUGGESTION]),
               mInputIndex(0), mLastCachedInputIndex(0) {
     }
 
@@ -147,9 +142,8 @@ class DicNodesCache {
             mCachedDicNodesForContinuousSuggestion->dump();
         }
         mInputIndex = mLastCachedInputIndex;
-        mCachedDicNodesForContinuousSuggestion =
-                moveNodesAndReturnReusableEmptyQueue(
-                        mCachedDicNodesForContinuousSuggestion, &mActiveDicNodes);
+        mCachedDicNodesForContinuousSuggestion = moveNodesAndReturnReusableEmptyQueue(
+                mCachedDicNodesForContinuousSuggestion, &mActiveDicNodes);
     }
 
     AK_FORCE_INLINE static DicNodePriorityQueue *moveNodesAndReturnReusableEmptyQueue(
@@ -169,7 +163,7 @@ class DicNodesCache {
         mTerminalDicNodes->clear();
     }
 
-    DicNodePriorityQueue mDicNodePriorityQueues[PRIORITY_QUEUES_SIZE];
+    DicNodePriorityQueue mDicNodePriorityQueues[DIC_NODES_CACHE_PRIORITY_QUEUES_SIZE];
     // Active dicNodes currently being expanded.
     DicNodePriorityQueue *mActiveDicNodes;
     // Next dicNodes to be expanded.
