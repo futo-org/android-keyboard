@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-#include <cstring> // for memset()
-
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
-
-#include "defines.h" // for macros below
-
-#ifdef USE_MMAP_FOR_DICTIONARY
-#include <cerrno>
-#include <fcntl.h>
-#include <sys/mman.h>
-#else // USE_MMAP_FOR_DICTIONARY
-#include <cstdlib>
-#include <cstdio> // for fopen() etc.
-#endif // USE_MMAP_FOR_DICTIONARY
 
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 
+#include <cerrno>
+#include <cstring> // for memset()
+#include <fcntl.h>
+#include <sys/mman.h>
+
+#include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "obsolete/correction.h"
@@ -60,8 +53,6 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     int fd = 0;
     void *dictBuf = 0;
     int adjust = 0;
-#ifdef USE_MMAP_FOR_DICTIONARY
-    /* mmap version */
     fd = open(sourceDirChars, O_RDONLY);
     if (fd < 0) {
         AKLOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
@@ -77,35 +68,6 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         return 0;
     }
     dictBuf = static_cast<char *>(dictBuf) + adjust;
-#else // USE_MMAP_FOR_DICTIONARY
-    /* malloc version */
-    FILE *file = 0;
-    file = fopen(sourceDirChars, "rb");
-    if (file == 0) {
-        AKLOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
-        return 0;
-    }
-    dictBuf = malloc(dictSize);
-    if (!dictBuf) {
-        AKLOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
-        return 0;
-    }
-    int ret = fseek(file, static_cast<long>(dictOffset), SEEK_SET);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
-        return 0;
-    }
-    ret = fread(dictBuf, dictSize, 1, file);
-    if (ret != 1) {
-        AKLOGE("DICT: Failure in fread. ret=%d errno=%d", ret, errno);
-        return 0;
-    }
-    ret = fclose(file);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in fclose. ret=%d errno=%d", ret, errno);
-        return 0;
-    }
-#endif // USE_MMAP_FOR_DICTIONARY
     if (!dictBuf) {
         AKLOGE("DICT: dictBuf is null");
         return 0;
@@ -115,11 +77,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
             == BinaryDictionaryFormat::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
                     static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
-#ifdef USE_MMAP_FOR_DICTIONARY
         releaseDictBuf(static_cast<const char *>(dictBuf) - adjust, adjDictSize, fd);
-#else // USE_MMAP_FOR_DICTIONARY
-        releaseDictBuf(dictBuf, 0, 0);
-#endif // USE_MMAP_FOR_DICTIONARY
     } else {
         dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust);
     }
@@ -264,17 +222,12 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dic
     if (!dictionary) return;
     const void *dictBuf = dictionary->getBinaryDictionaryInfo()->getDictBuf();
     if (!dictBuf) return;
-#ifdef USE_MMAP_FOR_DICTIONARY
     releaseDictBuf(static_cast<const char *>(dictBuf) - dictionary->getDictBufAdjust(),
             dictionary->getDictSize() + dictionary->getDictBufAdjust(), dictionary->getMmapFd());
-#else // USE_MMAP_FOR_DICTIONARY
-    releaseDictBuf(dictBuf, 0, 0);
-#endif // USE_MMAP_FOR_DICTIONARY
     delete dictionary;
 }
 
 static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd) {
-#ifdef USE_MMAP_FOR_DICTIONARY
     int ret = munmap(const_cast<void *>(dictBuf), length);
     if (ret != 0) {
         AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
@@ -283,33 +236,44 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
     if (ret != 0) {
         AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
     }
-#else // USE_MMAP_FOR_DICTIONARY
-    free(const_cast<void *>(dictBuf));
-#endif // USE_MMAP_FOR_DICTIONARY
 }
 
-static JNINativeMethod sMethods[] = {
-    {const_cast<char *>("openNative"),
-     const_cast<char *>("(Ljava/lang/String;JJ)J"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
-    {const_cast<char *>("closeNative"),
-     const_cast<char *>("(J)V"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
-    {const_cast<char *>("getSuggestionsNative"),
-     const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I)I"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
-    {const_cast<char *>("getProbabilityNative"),
-     const_cast<char *>("(J[I)I"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)},
-    {const_cast<char *>("isValidBigramNative"),
-     const_cast<char *>("(J[I[I)Z"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)},
-    {const_cast<char *>("calcNormalizedScoreNative"),
-     const_cast<char *>("([I[II)F"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)},
-    {const_cast<char *>("editDistanceNative"),
-     const_cast<char *>("([I[I)I"),
-     reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)}
+static const JNINativeMethod sMethods[] = {
+    {
+        const_cast<char *>("openNative"),
+        const_cast<char *>("(Ljava/lang/String;JJ)J"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_open)
+    },
+    {
+        const_cast<char *>("closeNative"),
+        const_cast<char *>("(J)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_close)
+    },
+    {
+        const_cast<char *>("getSuggestionsNative"),
+        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
+    },
+    {
+        const_cast<char *>("getProbabilityNative"),
+        const_cast<char *>("(J[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)
+    },
+    {
+        const_cast<char *>("isValidBigramNative"),
+        const_cast<char *>("(J[I[I)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)
+    },
+    {
+        const_cast<char *>("calcNormalizedScoreNative"),
+        const_cast<char *>("([I[II)F"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)
+    },
+    {
+        const_cast<char *>("editDistanceNative"),
+        const_cast<char *>("([I[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)
+    }
 };
 
 int register_BinaryDictionary(JNIEnv *env) {

@@ -264,11 +264,6 @@ static inline void prof_out(void) {
 // of the binary dictionary where a {key,value} string pair scheme is used.
 #define LARGEST_INT_DIGIT_COUNT 11
 
-// Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().
-// We measured and compared performance of both, and found mmap() is fairly good in terms of
-// loading time, and acceptable even for several initial lookups which involve page faults.
-#define USE_MMAP_FOR_DICTIONARY
-
 #define NOT_VALID_WORD (-99)
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)

@@ -20,7 +20,7 @@
 #include "jni.h"
 
 namespace latinime {
-int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods,
-        int numMethods);
+int registerNativeMethods(JNIEnv *env, const char *const className, const JNINativeMethod *methods,
+        const int numMethods);
 } // namespace latinime
 #endif // LATINIME_JNI_COMMON_H
