@@ -248,11 +248,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 }
                 break;
             case MSG_LONGPRESS_KEY:
-                if (tracker != null) {
-                    keyboardView.onLongPress(tracker);
-                } else {
-                    KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
-                }
+                keyboardView.onLongPress(tracker);
                 break;
             case MSG_UPDATE_BATCH_INPUT:
                 tracker.updateBatchInputByTimer(SystemClock.uptimeMillis());
@@ -281,23 +277,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // TODO: Suppress layout changes in key repeat mode
         public boolean isInKeyRepeat() {
             return hasMessages(MSG_REPEAT_KEY);
-        }
-
-        @Override
-        public void startLongPressTimer(final int code) {
-            cancelLongPressTimer();
-            final int delay;
-            switch (code) {
-            case Constants.CODE_SHIFT:
-                delay = mLongPressShiftLockTimeout;
-                break;
-            default:
-                delay = 0;
-                break;
-            }
-            if (delay > 0) {
-                sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, code, 0), delay);
-            }
         }
 
         @Override
@@ -1002,7 +981,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             ResearchLogger.mainKeyboardView_onLongPress();
         }
         final int code = key.mCode;
-        if (key.hasEmbeddedMoreKey()) {
+        if (key.hasNoPanelAutoMoreKey()) {
             final int embeddedCode = key.mMoreKeys[0].mCode;
             tracker.onLongPressed();
             invokeCodeInput(embeddedCode);

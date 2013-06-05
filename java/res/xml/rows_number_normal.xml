@@ -117,7 +117,7 @@
                 <Key
                     latin:code="0x002F"
                     latin:keyLabel="/ :"
-                    latin:moreKeys="!embeddedMoreKey!,:"
+                    latin:moreKeys="!noPanelAutoMoreKey!,:"
                     latin:keyStyle="numKeyStyle" />
             </case>
             <default>

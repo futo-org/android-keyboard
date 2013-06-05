@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.RecapitalizeStatus;
  * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int,boolean,int)}, {@link #onReleaseKey(int,boolean)},
  * {@link #onCodeInput(int,int)}, {@link #onFinishSlidingInput()}, {@link #onCancelInput()},
- * {@link #onUpdateShiftState(int,int)}, {@link #onLongPressTimeout(int)}.
+ * {@link #onUpdateShiftState(int,int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -56,8 +56,6 @@ public final class KeyboardState {
         public void startDoubleTapShiftKeyTimer();
         public boolean isInDoubleTapShiftKeyTimeout();
         public void cancelDoubleTapShiftKeyTimer();
-        public void startLongPressTimer(int code);
-        public void cancelLongPressTimer();
     }
 
     private final SwitchActions mSwitchActions;
@@ -320,13 +318,16 @@ public final class KeyboardState {
             Log.d(TAG, "onPressKey: code=" + Constants.printableCode(code)
                    + " single=" + isSinglePointer + " autoCaps=" + autoCaps + " " + this);
         }
+        if (code != Constants.CODE_SHIFT) {
+            // Because the double tap shift key timer is to detect two consecutive shift key press,
+            // it should be canceled when a non-shift key is pressed.
+            mSwitchActions.cancelDoubleTapShiftKeyTimer();
+        }
         if (code == Constants.CODE_SHIFT) {
             onPressShift();
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onPressSymbol();
         } else {
-            mSwitchActions.cancelDoubleTapShiftKeyTimer();
-            mSwitchActions.cancelLongPressTimer();
             mLongPressShiftLockFired = false;
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
@@ -378,15 +379,6 @@ public final class KeyboardState {
             mPrevSymbolsKeyboardWasShifted = false;
         }
         mSymbolKeyState.onRelease();
-    }
-
-    public void onLongPressTimeout(final int code) {
-        if (DEBUG_EVENT) {
-            Log.d(TAG, "onLongPressTimeout: code=" + Constants.printableCode(code) + " " + this);
-        }
-        if (mIsAlphabetMode && code == Constants.CODE_SHIFT) {
-            mLongPressShiftLockFired = true;
-        }
     }
 
     public void onUpdateShiftState(final int autoCaps, final int recapitalizeMode) {
@@ -448,7 +440,9 @@ public final class KeyboardState {
         mLongPressShiftLockFired = false;
         // If we are recapitalizing, we don't do any of the normal processing, including
         // importantly the double tap timer.
-        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) return;
+        if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
+            return;
+        }
         if (mIsAlphabetMode) {
             mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapShiftKeyTimeout();
             if (!mIsInDoubleTapShiftKey) {
@@ -484,7 +478,6 @@ public final class KeyboardState {
                     setShifted(MANUAL_SHIFT);
                     mShiftKeyState.onPress();
                 }
-                mSwitchActions.startLongPressTimer(Constants.CODE_SHIFT);
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
@@ -615,6 +608,12 @@ public final class KeyboardState {
                 mPrevSymbolsKeyboardWasShifted = false;
             }
             break;
+        }
+
+        if (code == Constants.CODE_CAPSLOCK) {
+            // Changing shift lock state will be handled at {@link #onPressShift()} when the shift
+            // key is released.
+            mLongPressShiftLockFired = true;
         }
 
         // If the code is a letter, update keyboard shift state.
