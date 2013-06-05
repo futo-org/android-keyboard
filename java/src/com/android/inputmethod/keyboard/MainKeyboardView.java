@@ -808,10 +808,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final KeyDrawParams drawParams = mKeyDrawParams;
         previewText.setTextColor(drawParams.mPreviewTextColor);
         final Drawable background = previewText.getBackground();
-        if (background != null) {
-            background.setState(KEY_PREVIEW_BACKGROUND_DEFAULT_STATE);
-            background.setAlpha(PREVIEW_ALPHA);
-        }
         final String label = key.getPreviewLabel();
         // What we show as preview should match what we show on a key top in onDraw().
         if (label != null) {
@@ -865,6 +861,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (background != null) {
             final int hasMoreKeys = (key.mMoreKeys != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
             background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
+            background.setAlpha(PREVIEW_ALPHA);
         }
         ViewLayoutUtils.placeViewAt(
                 previewText, previewX, previewY, previewWidth, previewHeight);
