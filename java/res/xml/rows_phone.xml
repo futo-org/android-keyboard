@@ -70,7 +70,7 @@
             latin:keyStyle="num0KeyStyle"
             latin:code="0x0030"
             latin:keyLabel="0 +"
-            latin:moreKeys="!embeddedMoreKey!,+" />
+            latin:moreKeys="!noPanelAutoMoreKey!,+" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key

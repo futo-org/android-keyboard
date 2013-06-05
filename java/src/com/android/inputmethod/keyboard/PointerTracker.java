@@ -92,7 +92,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         public boolean isTypingState();
         public void startKeyRepeatTimer(PointerTracker tracker);
         public void startLongPressTimer(PointerTracker tracker);
-        public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
         public void startDoubleTapShiftKeyTimer();
         public void cancelDoubleTapShiftKeyTimer();
@@ -111,8 +110,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             public void startKeyRepeatTimer(PointerTracker tracker) {}
             @Override
             public void startLongPressTimer(PointerTracker tracker) {}
-            @Override
-            public void startLongPressTimer(int code) {}
             @Override
             public void cancelLongPressTimer() {}
             @Override

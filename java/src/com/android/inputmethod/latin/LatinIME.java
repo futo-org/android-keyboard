@@ -1420,8 +1420,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
-            // Note: calling back to the keyboard on Shift key is handled in onPressKey()
-            // and onReleaseKey().
+            // Note: Calling back to the keyboard on Shift key is handled in
+            // {@link #onPressKey(int,boolean)} and {@link #onReleaseKey(int,boolean)}.
             final Keyboard currentKeyboard = switcher.getKeyboard();
             if (null != currentKeyboard && currentKeyboard.mId.isAlphabetKeyboard()) {
                 // TODO: Instead of checking for alphabetic keyboard here, separate keycodes for
@@ -1429,9 +1429,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 handleRecapitalize();
             }
             break;
+        case Constants.CODE_CAPSLOCK:
+            // Note: Changing keyboard to shift lock state is handled in
+            // {@link KeyboardSwitcher#onCodeInput(int)}.
+            break;
         case Constants.CODE_SWITCH_ALPHA_SYMBOL:
-            // Note: calling back to the keyboard on symbol key is handled in onPressKey()
-            // and onReleaseKey().
+            // Note: Calling back to the keyboard on symbol key is handled in
+            // {@link #onPressKey(int,boolean)} and {@link #onReleaseKey(int,boolean)}.
             break;
         case Constants.CODE_SETTINGS:
             onSettingsKeyPressed();
@@ -1484,8 +1488,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             break;
         }
         switcher.onCodeInput(primaryCode);
-        // Reset after any single keystroke, except shift and symbol-shift
+        // Reset after any single keystroke, except shift, capslock, and symbol-shift
         if (!didAutoCorrect && primaryCode != Constants.CODE_SHIFT
+                && primaryCode != Constants.CODE_CAPSLOCK
                 && primaryCode != Constants.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
         if (Constants.CODE_DELETE != primaryCode) {
