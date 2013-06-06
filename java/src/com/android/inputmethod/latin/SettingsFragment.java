@@ -190,9 +190,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
-        // Service yet
-        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS || 0 >= number) {
+        if (0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
