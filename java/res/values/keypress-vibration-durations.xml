@@ -51,7 +51,7 @@
         <!-- HTC One X -->
         <item>MODEL=HTC One X:MANUFACTURER=HTC,20</item>
         <!-- HTC One -->
-        <item>MODEL=HTC One:MANUFACTURER=HTC,15</item>
+        <item>MODEL=HTC One( special edition)?:MANUFACTURER=HTC,15</item>
         <!-- Motorola Razor M -->
         <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
         <!-- Sony Xperia Z -->
