@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -301,12 +302,14 @@ public class DictionaryInfoUtils {
 
     private static void addOrUpdateDictInfo(final ArrayList<DictionaryInfo> dictList,
             final DictionaryInfo newElement) {
-        for (final DictionaryInfo info : dictList) {
-            if (info.mLocale.equals(newElement.mLocale)) {
-                if (newElement.mVersion <= info.mVersion) {
+        final Iterator<DictionaryInfo> iter = dictList.iterator();
+        while (iter.hasNext()) {
+            final DictionaryInfo thisDictInfo = iter.next();
+            if (thisDictInfo.mLocale.equals(newElement.mLocale)) {
+                if (newElement.mVersion <= thisDictInfo.mVersion) {
                     return;
                 }
-                dictList.remove(info);
+                iter.remove();
             }
         }
         dictList.add(newElement);
