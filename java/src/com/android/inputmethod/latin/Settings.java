@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = Settings.class.getSimpleName();
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
     public static final String PREF_AUTO_CAP = "auto_cap";
@@ -114,6 +116,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
+        if (mSettingsValues == null) {
+            // TODO: Introduce a static function to register this class and ensure that
+            // loadSettings must be called before "onSharedPreferenceChanged" is called.
+            Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
+            return;
+        }
         loadSettings(mCurrentLocale, mSettingsValues.mInputAttributes);
     }
 
