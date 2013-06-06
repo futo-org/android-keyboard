@@ -43,19 +43,22 @@ public final class SubtypeSwitcher {
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
+
     private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
 
-    /*-----------------------------------------------------------*/
-    // Variants which should be changed only by reload functions.
-    private NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
+    private final NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
-    /*-----------------------------------------------------------*/
-
     private boolean mIsNetworkConnected;
+
+    // Dummy no language QWERTY subtype. See {@link R.xml.method}.
+    private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
+            R.string.subtype_no_language_qwerty, R.drawable.ic_subtype_keyboard, "zz", "keyboard",
+            "KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable",
+            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
 
     static final class NeedsToDisplayLanguage {
         private int mEnabledSubtypeCount;
@@ -96,11 +99,6 @@ public final class SubtypeSwitcher {
         mRichImm = RichInputMethodManager.getInstance();
         mConnectivityManager = (ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
-        mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
-        if (mNoLanguageSubtype == null) {
-            throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
-        }
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -255,10 +253,20 @@ public final class SubtypeSwitcher {
     }
 
     public InputMethodSubtype getCurrentSubtype() {
-        return mRichImm.getCurrentInputMethodSubtype(mNoLanguageSubtype);
+        return mRichImm.getCurrentInputMethodSubtype(getNoLanguageSubtype());
     }
 
     public InputMethodSubtype getNoLanguageSubtype() {
-        return mNoLanguageSubtype;
+        if (mNoLanguageSubtype == null) {
+            mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                    SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
+        }
+        if (mNoLanguageSubtype != null) {
+            return mNoLanguageSubtype;
+        }
+        Log.w(TAG, "Can't find no lanugage with QWERTY subtype");
+        Log.w(TAG, "No input method subtype found; return dummy subtype: "
+                + DUMMY_NO_LANGUAGE_SUBTYPE);
+        return DUMMY_NO_LANGUAGE_SUBTYPE;
     }
 }
