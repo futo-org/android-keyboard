@@ -37,7 +37,7 @@
         <item>MODEL=(SAMSUNG-)?GT-I(930[05][NT]?|9308):MANUFACTURER=samsung,8</item>
         <item>MODEL=(SAMSUNG-)?SGH-(T999[V]?|I747[M]?|N064|N035):MANUFACTURER=samsung,8</item>
         <item>MODEL=(SAMSUNG-)?SCH-(J021|R530|I535|I939):MANUFACTURER=samsung,8</item>
-        <item>MODEL=(SAMSUNG-)?(SCL21|SC-06D|SC-03E]):MANUFACTURER=samsung,8</item>
+        <item>MODEL=(SAMSUNG-)?(SCL21|SC-06D|SC-03E):MANUFACTURER=samsung,8</item>
         <item>MODEL=(SAMSUNG-)?(SHV-210[KLS]?|SPH-L710):MANUFACTURER=samsung,8</item>
         <!-- Samsung Galaxy S4 -->
         <item>MODEL=(SAMSUNG-)?GT-I(950[0258][G]?):MANUFACTURER=samsung,7</item>
@@ -51,7 +51,7 @@
         <!-- HTC One X -->
         <item>MODEL=HTC One X:MANUFACTURER=HTC,20</item>
         <!-- HTC One -->
-        <item>MODEL=HTC One:MANUFACTURER=HTC,15</item>
+        <item>MODEL=HTC One( special edition)?:MANUFACTURER=HTC,15</item>
         <!-- Motorola Razor M -->
         <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
         <!-- Sony Xperia Z -->
