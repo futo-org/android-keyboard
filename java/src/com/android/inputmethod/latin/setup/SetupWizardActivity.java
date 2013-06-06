@@ -28,6 +28,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -36,7 +37,6 @@ import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SettingsActivity;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -47,6 +47,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
     private static final boolean ENABLE_WELCOME_VIDEO = true;
+
+    private InputMethodManager mImm;
 
     private View mSetupWizard;
     private View mWelcomeScreen;
@@ -69,15 +71,19 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private static final int STEP_LAUNCHING_IME_SETTINGS = 4;
     private static final int STEP_BACK_FROM_IME_SETTINGS = 5;
 
-    final SettingsPoolingHandler mHandler = new SettingsPoolingHandler(this);
+    private SettingsPoolingHandler mHandler;
 
-    static final class SettingsPoolingHandler
+    private static final class SettingsPoolingHandler
             extends StaticInnerHandlerWrapper<SetupWizardActivity> {
         private static final int MSG_POLLING_IME_SETTINGS = 0;
         private static final long IME_SETTINGS_POLLING_INTERVAL = 200;
 
-        public SettingsPoolingHandler(final SetupWizardActivity outerInstance) {
+        private final InputMethodManager mImmInHandler;
+
+        public SettingsPoolingHandler(final SetupWizardActivity outerInstance,
+                final InputMethodManager imm) {
             super(outerInstance);
+            mImmInHandler = imm;
         }
 
         @Override
@@ -88,7 +94,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
             }
             switch (msg.what) {
             case MSG_POLLING_IME_SETTINGS:
-                if (SetupActivity.isThisImeEnabled(setupWizardActivity)) {
+                if (SetupActivity.isThisImeEnabled(setupWizardActivity, mImmInHandler)) {
                     setupWizardActivity.invokeSetupWizardOfThisIme();
                     return;
                 }
@@ -112,10 +118,11 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         setTheme(android.R.style.Theme_Translucent_NoTitleBar);
         super.onCreate(savedInstanceState);
 
+        mImm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        mHandler = new SettingsPoolingHandler(this, mImm);
+
         setContentView(R.layout.setup_wizard);
         mSetupWizard = findViewById(R.id.setup_wizard);
-
-        RichInputMethodManager.init(this);
 
         if (savedInstanceState == null) {
             mStepNumber = determineSetupStepNumberFromLauncher();
@@ -143,11 +150,12 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                 R.string.setup_step1_title, R.string.setup_step1_instruction,
                 R.string.setup_step1_finished_instruction, R.drawable.ic_setup_step1,
                 R.string.setup_step1_action);
+        final SettingsPoolingHandler handler = mHandler;
         step1.setAction(new Runnable() {
             @Override
             public void run() {
                 invokeLanguageAndInputSettings();
-                mHandler.startPollingImeSettings();
+                handler.startPollingImeSettings();
             }
         });
         mSetupStepGroup.addStep(step1);
@@ -265,14 +273,15 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     void invokeInputMethodPicker() {
         // Invoke input method picker.
-        RichInputMethodManager.getInstance().getInputMethodManager()
-                .showInputMethodPicker();
+        mImm.showInputMethodPicker();
         mNeedsToAdjustStepNumberToSystemState = true;
     }
 
     void invokeSubtypeEnablerOfThisIme() {
-        final InputMethodInfo imi =
-                RichInputMethodManager.getInstance().getInputMethodInfoOfThisIme();
+        final InputMethodInfo imi = SetupActivity.getInputMethodInfoOf(getPackageName(), mImm);
+        if (imi == null) {
+            return;
+        }
         final Intent intent = new Intent();
         intent.setAction(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -293,10 +302,10 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
-        if (!SetupActivity.isThisImeEnabled(this)) {
+        if (!SetupActivity.isThisImeEnabled(this, mImm)) {
             return STEP_1;
         }
-        if (!SetupActivity.isThisImeCurrent(this)) {
+        if (!SetupActivity.isThisImeCurrent(this, mImm)) {
             return STEP_2;
         }
         return STEP_3;
