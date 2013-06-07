@@ -32,6 +32,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.TreeSet;
@@ -45,6 +46,7 @@ import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = SettingsFragment.class.getSimpleName();
     private static final boolean DBG_USE_INTERNAL_USER_DICTIONARY_SETTINGS = false;
 
     private ListPreference mVoicePreference;
@@ -246,7 +248,14 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        (new BackupManager(getActivity())).dataChanged();
+        final Activity activity = getActivity();
+        if (activity == null) {
+            // TODO: Introduce a static function to register this class and ensure that
+            // onCreate must be called before "onSharedPreferenceChanged" is called.
+            Log.w(TAG, "onSharedPreferenceChanged called before activity starts.");
+            return;
+        }
+        (new BackupManager(activity)).dataChanged();
         final Resources res = getResources();
         if (key.equals(Settings.PREF_POPUP_ON)) {
             setPreferenceEnabled(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
