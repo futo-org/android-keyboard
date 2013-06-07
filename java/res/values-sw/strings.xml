@@ -31,7 +31,7 @@
     <string name="correction_category" msgid="2236750915056607613">"Marekebisho ya maandishi"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Kuandika kwa ishara"</string>
     <string name="misc_category" msgid="6894192814868233453">"Chaguo zingine"</string>
-    <string name="advanced_settings" msgid="362895144495591463">"Mipangilio mahiri"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Mipangilio ya kina"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Chaguo za wataalamu"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Badilisha hadi kwa mbinu zingine za ingizo"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Ufunguo wa kubadilisha lugha unashughulikia mbinu zingine za ingizo pia"</string>

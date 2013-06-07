@@ -87,7 +87,7 @@
     <string name="spoken_description_shift" msgid="244197883292549308">"Mayús"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Mayúsculas activadas (tocar para inhabilitar)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Bloqueo de mayúsculas activado (tocar para inhabilitar)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Suprimir"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Eliminar"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Símbolos"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Letras"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"Números"</string>
