@@ -36,8 +36,6 @@ import java.util.TreeMap;
  * Various helper functions for the state database
  */
 public class MetadataDbHelper extends SQLiteOpenHelper {
-
-    @SuppressWarnings("unused")
     private static final String TAG = MetadataDbHelper.class.getSimpleName();
 
     // This was the initial release version of the database. It should never be
@@ -437,37 +435,37 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
      */
     public static ContentValues completeWithDefaultValues(final ContentValues result)
             throws BadFormatException {
-        if (!result.containsKey(WORDLISTID_COLUMN) || !result.containsKey(LOCALE_COLUMN)) {
+        if (null == result.get(WORDLISTID_COLUMN) || null == result.get(LOCALE_COLUMN)) {
             throw new BadFormatException();
         }
         // 0 for the pending id, because there is none
-        if (!result.containsKey(PENDINGID_COLUMN)) result.put(PENDINGID_COLUMN, 0);
+        if (null == result.get(PENDINGID_COLUMN)) result.put(PENDINGID_COLUMN, 0);
         // This is a binary blob of a dictionary
-        if (!result.containsKey(TYPE_COLUMN)) result.put(TYPE_COLUMN, TYPE_BULK);
+        if (null == result.get(TYPE_COLUMN)) result.put(TYPE_COLUMN, TYPE_BULK);
         // This word list is unknown, but it's present, else we wouldn't be here, so INSTALLED
-        if (!result.containsKey(STATUS_COLUMN)) result.put(STATUS_COLUMN, STATUS_INSTALLED);
+        if (null == result.get(STATUS_COLUMN)) result.put(STATUS_COLUMN, STATUS_INSTALLED);
         // No description unless specified, because we can't guess it
-        if (!result.containsKey(DESCRIPTION_COLUMN)) result.put(DESCRIPTION_COLUMN, "");
+        if (null == result.get(DESCRIPTION_COLUMN)) result.put(DESCRIPTION_COLUMN, "");
         // File name - this is an asset, so it works as an already deleted file.
         //     hence, we need to supply a non-existent file name. Anything will
         //     do as long as it returns false when tested with File#exist(), and
         //     the empty string does not, so it's set to "_".
-        if (!result.containsKey(LOCAL_FILENAME_COLUMN)) result.put(LOCAL_FILENAME_COLUMN, "_");
+        if (null == result.get(LOCAL_FILENAME_COLUMN)) result.put(LOCAL_FILENAME_COLUMN, "_");
         // No remote file name : this can't be downloaded. Unless specified.
-        if (!result.containsKey(REMOTE_FILENAME_COLUMN)) result.put(REMOTE_FILENAME_COLUMN, "");
+        if (null == result.get(REMOTE_FILENAME_COLUMN)) result.put(REMOTE_FILENAME_COLUMN, "");
         // 0 for the update date : 1970/1/1. Unless specified.
-        if (!result.containsKey(DATE_COLUMN)) result.put(DATE_COLUMN, 0);
+        if (null == result.get(DATE_COLUMN)) result.put(DATE_COLUMN, 0);
         // Checksum unknown unless specified
-        if (!result.containsKey(CHECKSUM_COLUMN)) result.put(CHECKSUM_COLUMN, "");
+        if (null == result.get(CHECKSUM_COLUMN)) result.put(CHECKSUM_COLUMN, "");
         // No filesize unless specified
-        if (!result.containsKey(FILESIZE_COLUMN)) result.put(FILESIZE_COLUMN, 0);
+        if (null == result.get(FILESIZE_COLUMN)) result.put(FILESIZE_COLUMN, 0);
         // Smallest possible version unless specified
-        if (!result.containsKey(VERSION_COLUMN)) result.put(VERSION_COLUMN, 1);
+        if (null == result.get(VERSION_COLUMN)) result.put(VERSION_COLUMN, 1);
         // Assume current format unless specified
-        if (!result.containsKey(FORMATVERSION_COLUMN))
+        if (null == result.get(FORMATVERSION_COLUMN))
             result.put(FORMATVERSION_COLUMN, UpdateHandler.MAXIMUM_SUPPORTED_FORMAT_VERSION);
         // No flags unless specified
-        if (!result.containsKey(FLAGS_COLUMN)) result.put(FLAGS_COLUMN, 0);
+        if (null == result.get(FLAGS_COLUMN)) result.put(FLAGS_COLUMN, 0);
         return result;
     }
 
