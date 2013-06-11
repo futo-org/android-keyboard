@@ -21,6 +21,8 @@
 
 namespace latinime {
 
+class BinaryDictionaryHeader;
+
 class DigraphUtils {
  public:
     typedef enum {
@@ -37,17 +39,14 @@ class DigraphUtils {
 
     typedef struct { int first; int second; int compositeGlyph; } digraph_t;
 
-    static bool hasDigraphForCodePoint(const int dictFlags, const int compositeGlyphCodePoint);
-    static int getAllDigraphsForDictionaryAndReturnSize(
-            const int dictFlags, const digraph_t **const digraphs);
-    static int getDigraphCodePointForIndex(const int dictFlags, const int compositeGlyphCodePoint,
-            const DigraphCodePointIndex digraphCodePointIndex);
+    static bool hasDigraphForCodePoint(
+            const BinaryDictionaryHeader *const header, const int compositeGlyphCodePoint);
     static int getDigraphCodePointForIndex(const int compositeGlyphCodePoint,
             const DigraphCodePointIndex digraphCodePointIndex);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DigraphUtils);
-    static DigraphType getDigraphTypeForDictionary(const int dictFlags);
+    static DigraphType getDigraphTypeForDictionary(const BinaryDictionaryHeader *const header);
     static int getAllDigraphsForDigraphTypeAndReturnSize(
             const DigraphType digraphType, const digraph_t **const digraphs);
     static const digraph_t *getDigraphForCodePoint(const int compositeGlyphCodePoint);

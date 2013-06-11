@@ -33,11 +33,10 @@
 namespace latinime {
 
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
-        : mBinaryDicitonaryInfo(static_cast<const uint8_t *>(dict), dictSize),
+        : mBinaryDictionaryInfo(static_cast<const uint8_t *>(dict), dictSize),
           mDictSize(dictSize),
-          mDictFlags(BinaryFormat::getFlags(mBinaryDicitonaryInfo.getDictBuf(), dictSize)),
           mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-          mBigramDictionary(new BigramDictionary(&mBinaryDicitonaryInfo)),
+          mBigramDictionary(new BigramDictionary(&mBinaryDictionaryInfo)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
 }
@@ -85,7 +84,7 @@ int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, in
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    const uint8_t *const root = mBinaryDicitonaryInfo.getDictRoot();
+    const uint8_t *const root = mBinaryDictionaryInfo.getDictRoot();
     int pos = BinaryFormat::getTerminalPosition(root, word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == pos) {
@@ -110,10 +109,6 @@ int Dictionary::getProbability(const int *word, int length) const {
 
 bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
     return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
-}
-
-int Dictionary::getDictFlags() const {
-    return mDictFlags;
 }
 
 } // namespace latinime

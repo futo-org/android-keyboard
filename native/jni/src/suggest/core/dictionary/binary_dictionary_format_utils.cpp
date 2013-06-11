@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_format.h"
+#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 
 namespace latinime {
 
@@ -31,7 +31,6 @@ const int BinaryDictionaryFormat::DICTIONARY_MINIMUM_SIZE = 4;
 // then options that must be 0. Hence the first 32-bits of the format are always as follow
 // and it's okay to consider them a magic number as a whole.
 const uint32_t BinaryDictionaryFormat::FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
-const int BinaryDictionaryFormat::FORMAT_VERSION_1_HEADER_SIZE = 5;
 
 // The versions of Latin IME that only handle format version 1 only test for the magic
 // number, so we had to change it so that version 2 files would be rejected by older
@@ -39,9 +38,6 @@ const int BinaryDictionaryFormat::FORMAT_VERSION_1_HEADER_SIZE = 5;
 const uint32_t BinaryDictionaryFormat::FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
 const int BinaryDictionaryFormat::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
-const int BinaryDictionaryFormat::VERSION_2_MAGIC_NUMBER_SIZE = 4;
-const int BinaryDictionaryFormat::VERSION_2_DICTIONARY_VERSION_SIZE = 2;
-const int BinaryDictionaryFormat::VERSION_2_DICTIONARY_FLAG_SIZE = 2;
 
 /* static */ BinaryDictionaryFormat::FORMAT_VERSION BinaryDictionaryFormat::detectFormatVersion(
         const uint8_t *const dict, const int dictSize) {
