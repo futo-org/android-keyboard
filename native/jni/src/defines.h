@@ -268,9 +268,6 @@ static inline void prof_out(void) {
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
 #define NOT_A_COORDINATE (-1)
-#define MATCH_CHAR_WITHOUT_DISTANCE_INFO (-2)
-#define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO (-3)
-#define ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO (-4)
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
 
@@ -278,22 +275,12 @@ static inline void prof_out(void) {
 #define KEYCODE_SINGLE_QUOTE '\''
 #define KEYCODE_HYPHEN_MINUS '-'
 
-#define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
-#define SUGGEST_MULTIPLE_WORDS true
 #define SUGGEST_INTERFACE_OUTPUT_SCALE 1000000.0f
-
-#define ZERO_DISTANCE_PROMOTION_RATE 110.0f
-#define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
-#define HALF_SCORE_SQUARED_RADIUS 32.0f
 #define MAX_PROBABILITY 255
 #define MAX_BIGRAM_ENCODED_PROBABILITY 15
-#define MULTIPLE_WORDS_DEMOTION_RATE 80
 
 // Assuming locale strings such as en_US, sr-Latn etc.
 #define MAX_LOCALE_STRING_LENGTH 10
-
-/* heuristic... This should be changed if we change the unit of the probability. */
-#define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_PROBABILITY * 58 / 100)
 
 // Max value for length, distance and probability which are used in weighting
 // TODO: Remove
