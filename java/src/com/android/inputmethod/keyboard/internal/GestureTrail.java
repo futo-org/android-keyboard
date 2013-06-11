@@ -245,7 +245,7 @@ final class GestureTrail {
                     final float body1 = r1 * params.mTrailBodyRatio;
                     final float body2 = r2 * params.mTrailBodyRatio;
                     final Path path = roundedLine.makePath(p1x, p1y, body1, p2x, p2y, body2);
-                    if (path != null) {
+                    if (!path.isEmpty()) {
                         roundedLine.getBounds(mRoundedLineBounds);
                         if (params.mTrailShadowEnabled) {
                             final float shadow2 = r2 * params.mTrailShadowRatio;
