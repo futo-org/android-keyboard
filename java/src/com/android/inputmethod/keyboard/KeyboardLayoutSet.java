@@ -80,6 +80,14 @@ public final class KeyboardLayoutSet {
     private final Context mContext;
     private final Params mParams;
 
+    // How many layouts we forcibly keep in cache. This only includes ALPHABET (default) and
+    // ALPHABET_AUTOMATIC_SHIFTED layouts - other layouts may stay in memory in the map of
+    // soft-references, but we forcibly cache this many alphabetic/auto-shifted layouts.
+    private static final int FORCIBLE_CACHE_SIZE = 4;
+    // By construction of soft references, anything that is also referenced somewhere else
+    // will stay in the cache. So we forcibly keep some references in an array to prevent
+    // them from disappearing from sKeyboardCache.
+    private static final Keyboard[] sForcibleKeyboardCache = new Keyboard[FORCIBLE_CACHE_SIZE];
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
             CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
@@ -110,6 +118,7 @@ public final class KeyboardLayoutSet {
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
+        boolean mIsSpellChecker;
         int mOrientation;
         int mKeyboardWidth;
         int mKeyboardHeight;
@@ -185,7 +194,18 @@ public final class KeyboardLayoutSet {
                     elementParams.mProximityCharsCorrectionEnabled);
             keyboard = builder.build();
             sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
-
+            if ((id.mElementId == KeyboardId.ELEMENT_ALPHABET
+                    || id.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED)
+                    && !mParams.mIsSpellChecker) {
+                // We only forcibly cache the primary, "ALPHABET", layouts.
+                for (int i = sForcibleKeyboardCache.length - 1; i >= 1; --i) {
+                    sForcibleKeyboardCache[i] = sForcibleKeyboardCache[i - 1];
+                }
+                sForcibleKeyboardCache[0] = keyboard;
+                if (DEBUG_CACHE) {
+                    Log.d(TAG, "forcing caching of keyboard with id=" + id);
+                }
+            }
             if (DEBUG_CACHE) {
                 Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
@@ -269,6 +289,11 @@ public final class KeyboardLayoutSet {
             mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
                     + SubtypeLocale.getKeyboardLayoutSetName(keyboardSubtype);
+            return this;
+        }
+
+        public Builder setIsSpellChecker(final boolean isSpellChecker) {
+            mParams.mIsSpellChecker = true;
             return this;
         }
 
@@ -422,7 +447,8 @@ public final class KeyboardLayoutSet {
         final InputMethodSubtype subtype =
                 AdditionalSubtype.createAdditionalSubtype(locale, layout, null);
         return createKeyboardSet(context, subtype, SPELLCHECKER_DUMMY_KEYBOARD_WIDTH,
-                SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false);
+                SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false /* testCasesHaveTouchCoordinates */,
+                true /* isSpellChecker */);
     }
 
     @UsedForTesting
@@ -442,18 +468,20 @@ public final class KeyboardLayoutSet {
             throw new RuntimeException("Orientation should be ORIENTATION_LANDSCAPE or "
                     + "ORIENTATION_PORTRAIT: orientation=" + orientation);
         }
-        return createKeyboardSet(context, subtype, width, height, testCasesHaveTouchCoordinates);
+        return createKeyboardSet(context, subtype, width, height, testCasesHaveTouchCoordinates,
+                false /* isSpellChecker */);
     }
 
     private static KeyboardLayoutSet createKeyboardSet(final Context context,
             final InputMethodSubtype subtype, final int width, final int height,
-            final boolean testCasesHaveTouchCoordinates) {
+            final boolean testCasesHaveTouchCoordinates, final boolean isSpellChecker) {
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 context, editorInfo);
         builder.setScreenGeometry(width, height);
         builder.setSubtype(subtype);
+        builder.setIsSpellChecker(isSpellChecker);
         if (!testCasesHaveTouchCoordinates) {
             // For spell checker and tests
             builder.disableTouchPositionCorrectionData();
