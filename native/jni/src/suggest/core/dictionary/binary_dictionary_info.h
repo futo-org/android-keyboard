@@ -20,16 +20,19 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_format.h"
+#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
+#include "suggest/core/dictionary/binary_dictionary_header.h"
 
 namespace latinime {
+
+class BinaryDictionaryHeader;
 
 class BinaryDictionaryInfo {
  public:
     BinaryDictionaryInfo(const uint8_t *const dictBuf, const int dictSize)
             : mDictBuf(dictBuf),
-              mFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, dictSize)),
-              mDictRoot(mDictBuf + BinaryDictionaryFormat::getHeaderSize(mDictBuf, mFormat)) {}
+              mDictionaryFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, dictSize)),
+              mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()) {}
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
         return mDictBuf;
@@ -40,18 +43,23 @@ class BinaryDictionaryInfo {
     }
 
     AK_FORCE_INLINE BinaryDictionaryFormat::FORMAT_VERSION getFormat() const {
-        return mFormat;
+        return mDictionaryFormat;
     }
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
     }
 
+    AK_FORCE_INLINE const BinaryDictionaryHeader *getHeader() const {
+        return &mDictionaryHeader;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryInfo);
 
     const uint8_t *const mDictBuf;
-    const BinaryDictionaryFormat::FORMAT_VERSION mFormat;
+    const BinaryDictionaryFormat::FORMAT_VERSION mDictionaryFormat;
+    const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
 };
 }

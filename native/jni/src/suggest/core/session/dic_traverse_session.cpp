@@ -19,6 +19,7 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/dictionary.h"
@@ -28,9 +29,8 @@ namespace latinime {
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
-    mMultiWordCostMultiplier = BinaryFormat::getMultiWordCostMultiplier(
-            mDictionary->getBinaryDictionaryInfo()->getDictBuf(),
-            mDictionary->getDictSize());
+    mMultiWordCostMultiplier = mDictionary->getBinaryDictionaryInfo()
+            ->getHeader()->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWord) {
         mPrevWordPos = NOT_VALID_WORD;
@@ -61,10 +61,6 @@ void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,
 
 const BinaryDictionaryInfo *DicTraverseSession::getBinaryDictionaryInfo() const {
     return mDictionary->getBinaryDictionaryInfo();
-}
-
-int DicTraverseSession::getDictFlags() const {
-    return mDictionary->getDictFlags();
 }
 
 void DicTraverseSession::resetCache(const int nextActiveCacheSize, const int maxWords) {

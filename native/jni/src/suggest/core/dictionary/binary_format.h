@@ -17,7 +17,6 @@
 #ifndef LATINIME_BINARY_FORMAT_H
 #define LATINIME_BINARY_FORMAT_H
 
-#include <cstdlib>
 #include <stdint.h>
 
 #include "suggest/core/dictionary/bloom_filter.h"
@@ -61,17 +60,9 @@ class BinaryFormat {
     // Mask and flags for attribute address type selection.
     static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
 
-    static const int UNKNOWN_FORMAT = -1;
     static const int SHORTCUT_LIST_SIZE_SIZE = 2;
 
-    static int detectFormat(const uint8_t *const dict, const int dictSize);
-    static int getHeaderSize(const uint8_t *const dict, const int dictSize);
-    static int getFlags(const uint8_t *const dict, const int dictSize);
     static bool hasBlacklistedOrNotAWordFlag(const int flags);
-    static void readHeaderValue(const uint8_t *const dict, const int dictSize,
-            const char *const key, int *outValue, const int outValueSize);
-    static int readHeaderValueInt(const uint8_t *const dict, const int dictSize,
-            const char *const key);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t *const dict, int *pos);
     static int getCodePointAndForwardPointer(const uint8_t *const dict, int *pos);
@@ -93,19 +84,10 @@ class BinaryFormat {
             int *outWord, int *outUnigramProbability);
     static int getBigramProbabilityFromHashMap(const int position,
             const hash_map_compat<int, int> *bigramMap, const int unigramProbability);
-    static float getMultiWordCostMultiplier(const uint8_t *const dict, const int dictSize);
     static void fillBigramProbabilityToHashMap(const uint8_t *const root, int position,
             hash_map_compat<int, int> *bigramMap);
     static int getBigramProbability(const uint8_t *const root, int position,
             const int nextPosition, const int unigramProbability);
-
-    // Flags for special processing
-    // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
-    // something very bad (like, the apocalypse) will happen. Please update both at the same time.
-    enum {
-        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
-        REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
-    };
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
@@ -119,20 +101,6 @@ class BinaryFormat {
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
 
-    // Any file smaller than this is not a dictionary.
-    static const int DICTIONARY_MINIMUM_SIZE = 4;
-    // Originally, format version 1 had a 16-bit magic number, then the version number `01'
-    // then options that must be 0. Hence the first 32-bits of the format are always as follow
-    // and it's okay to consider them a magic number as a whole.
-    static const int FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
-    static const int FORMAT_VERSION_1_HEADER_SIZE = 5;
-    // The versions of Latin IME that only handle format version 1 only test for the magic
-    // number, so we had to change it so that version 2 files would be rejected by older
-    // implementations. On this occasion, we made the magic number 32 bits long.
-    static const int FORMAT_VERSION_2_MAGIC_NUMBER = -1681835266; // 0x9BC13AFE
-    // Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
-    static const int FORMAT_VERSION_2_MINIMUM_SIZE = 12;
-
     static const int CHARACTER_ARRAY_TERMINATOR_SIZE = 1;
     static const int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
     static const int CHARACTER_ARRAY_TERMINATOR = 0x1F;
@@ -142,120 +110,8 @@ class BinaryFormat {
     static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
-AK_FORCE_INLINE int BinaryFormat::detectFormat(const uint8_t *const dict, const int dictSize) {
-    // The magic number is stored big-endian.
-    // If the dictionary is less than 4 bytes, we can't even read the magic number, so we don't
-    // understand this format.
-    if (dictSize < DICTIONARY_MINIMUM_SIZE) return UNKNOWN_FORMAT;
-    const int magicNumber = (dict[0] << 24) + (dict[1] << 16) + (dict[2] << 8) + dict[3];
-    switch (magicNumber) {
-    case FORMAT_VERSION_1_MAGIC_NUMBER:
-        // Format 1 header is exactly 5 bytes long and looks like:
-        // Magic number (2 bytes) 0x78 0xB1
-        // Version number (1 byte) 0x01
-        // Options (2 bytes) must be 0x00 0x00
-        return 1;
-    case FORMAT_VERSION_2_MAGIC_NUMBER:
-        // Version 2 dictionaries are at least 12 bytes long (see below details for the header).
-        // If this dictionary has the version 2 magic number but is less than 12 bytes long, then
-        // it's an unknown format and we need to avoid confidently reading the next bytes.
-        if (dictSize < FORMAT_VERSION_2_MINIMUM_SIZE) return UNKNOWN_FORMAT;
-        // Format 2 header is as follows:
-        // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
-        // Version number (2 bytes) 0x00 0x02
-        // Options (2 bytes)
-        // Header size (4 bytes) : integer, big endian
-        return (dict[4] << 8) + dict[5];
-    default:
-        return UNKNOWN_FORMAT;
-    }
-}
-
-inline int BinaryFormat::getFlags(const uint8_t *const dict, const int dictSize) {
-    switch (detectFormat(dict, dictSize)) {
-    case 1:
-        return NO_FLAGS; // TODO: NO_FLAGS is unused anywhere else?
-    default:
-        return (dict[6] << 8) + dict[7];
-    }
-}
-
 inline bool BinaryFormat::hasBlacklistedOrNotAWordFlag(const int flags) {
     return (flags & (FLAG_IS_BLACKLISTED | FLAG_IS_NOT_A_WORD)) != 0;
-}
-
-inline int BinaryFormat::getHeaderSize(const uint8_t *const dict, const int dictSize) {
-    switch (detectFormat(dict, dictSize)) {
-    case 1:
-        return FORMAT_VERSION_1_HEADER_SIZE;
-    case 2:
-        // See the format of the header in the comment in detectFormat() above
-        return (dict[8] << 24) + (dict[9] << 16) + (dict[10] << 8) + dict[11];
-    default:
-        return S_INT_MAX;
-    }
-}
-
-inline void BinaryFormat::readHeaderValue(const uint8_t *const dict, const int dictSize,
-        const char *const key, int *outValue, const int outValueSize) {
-    int outValueIndex = 0;
-    // Only format 2 and above have header attributes as {key,value} string pairs. For prior
-    // formats, we just return an empty string, as if the key wasn't found.
-    if (2 <= detectFormat(dict, dictSize)) {
-        const int headerOptionsOffset = 4 /* magic number */
-                + 2 /* dictionary version */ + 2 /* flags */;
-        const int headerSize =
-                (dict[headerOptionsOffset] << 24) + (dict[headerOptionsOffset + 1] << 16)
-                + (dict[headerOptionsOffset + 2] << 8) + dict[headerOptionsOffset + 3];
-        const int headerEnd = headerOptionsOffset + 4 + headerSize;
-        int index = headerOptionsOffset + 4;
-        while (index < headerEnd) {
-            int keyIndex = 0;
-            int codePoint = getCodePointAndForwardPointer(dict, &index);
-            while (codePoint != NOT_A_CODE_POINT) {
-                if (codePoint != key[keyIndex++]) {
-                    break;
-                }
-                codePoint = getCodePointAndForwardPointer(dict, &index);
-            }
-            if (codePoint == NOT_A_CODE_POINT && key[keyIndex] == 0) {
-                // We found the key! Copy and return the value.
-                codePoint = getCodePointAndForwardPointer(dict, &index);
-                while (codePoint != NOT_A_CODE_POINT && outValueIndex < outValueSize) {
-                    outValue[outValueIndex++] = codePoint;
-                    codePoint = getCodePointAndForwardPointer(dict, &index);
-                }
-                // Finished copying. Break to go to the termination code.
-                break;
-            }
-            // We didn't find the key, skip the remainder of it and its value
-            while (codePoint != NOT_A_CODE_POINT) {
-                codePoint = getCodePointAndForwardPointer(dict, &index);
-            }
-            codePoint = getCodePointAndForwardPointer(dict, &index);
-            while (codePoint != NOT_A_CODE_POINT) {
-                codePoint = getCodePointAndForwardPointer(dict, &index);
-            }
-        }
-        // We couldn't find it - fall through and return an empty value.
-    }
-    // Put a terminator 0 if possible at all (always unless outValueSize is <= 0)
-    if (outValueIndex >= outValueSize) outValueIndex = outValueSize - 1;
-    if (outValueIndex >= 0) outValue[outValueIndex] = 0;
-}
-
-inline int BinaryFormat::readHeaderValueInt(const uint8_t *const dict, const int dictSize,
-        const char *const key) {
-    const int bufferSize = LARGEST_INT_DIGIT_COUNT;
-    int intBuffer[bufferSize];
-    char charBuffer[bufferSize];
-    BinaryFormat::readHeaderValue(dict, dictSize, key, intBuffer, bufferSize);
-    for (int i = 0; i < bufferSize; ++i) {
-        charBuffer[i] = intBuffer[i];
-    }
-    // If not a number, return S_INT_MIN
-    if (!isdigit(charBuffer[0])) return S_INT_MIN;
-    return atoi(charBuffer);
 }
 
 AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *const dict,
@@ -263,18 +119,6 @@ AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *
     const int msb = dict[(*pos)++];
     if (msb < 0x80) return msb;
     return ((msb & 0x7F) << 8) | dict[(*pos)++];
-}
-
-inline float BinaryFormat::getMultiWordCostMultiplier(const uint8_t *const dict,
-        const int dictSize) {
-    const int headerValue = readHeaderValueInt(dict, dictSize, "MULTIPLE_WORDS_DEMOTION_RATE");
-    if (headerValue == S_INT_MIN) {
-        return 1.0f;
-    }
-    if (headerValue <= 0) {
-        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
-    }
-    return 100.0f / static_cast<float>(headerValue);
 }
 
 inline uint8_t BinaryFormat::getFlagsAndForwardPointer(const uint8_t *const dict, int *pos) {

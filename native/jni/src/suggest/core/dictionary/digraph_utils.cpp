@@ -16,8 +16,10 @@
 
 #include "suggest/core/dictionary/digraph_utils.h"
 
+#include <cstdlib>
+
 #include "defines.h"
-#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -33,8 +35,8 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
         { DIGRAPH_TYPE_GERMAN_UMLAUT, DIGRAPH_TYPE_FRENCH_LIGATURES };
 
 /* static */ bool DigraphUtils::hasDigraphForCodePoint(
-        const int dictFlags, const int compositeGlyphCodePoint) {
-    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(dictFlags);
+        const BinaryDictionaryHeader *const header, const int compositeGlyphCodePoint) {
+    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(header);
     if (DigraphUtils::getDigraphForDigraphTypeAndCodePoint(digraphType, compositeGlyphCodePoint)) {
         return true;
     }
@@ -43,22 +45,14 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
 
 // Returns the digraph type associated with the given dictionary.
 /* static */ DigraphUtils::DigraphType DigraphUtils::getDigraphTypeForDictionary(
-        const int dictFlags) {
-    if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & dictFlags) {
+        const BinaryDictionaryHeader *const header) {
+    if (header->requiresGermanUmlautProcessing()) {
         return DIGRAPH_TYPE_GERMAN_UMLAUT;
     }
-    if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & dictFlags) {
+    if (header->requiresFrenchLigatureProcessing()) {
         return DIGRAPH_TYPE_FRENCH_LIGATURES;
     }
     return DIGRAPH_TYPE_NONE;
-}
-
-// Retrieves the set of all digraphs associated with the given dictionary flags.
-// Returns the size of the digraph array, or 0 if none exist.
-/* static */ int DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(
-        const int dictFlags, const DigraphUtils::digraph_t **const digraphs) {
-    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(dictFlags);
-    return getAllDigraphsForDigraphTypeAndReturnSize(digraphType, digraphs);
 }
 
 // Returns the digraph codepoint for the given composite glyph codepoint and digraph codepoint index
@@ -124,7 +118,7 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
     const DigraphUtils::digraph_t *digraphs = 0;
     const int compositeGlyphLowerCodePoint = CharUtils::toLowerCase(compositeGlyphCodePoint);
     const int digraphsSize =
-            DigraphUtils::getAllDigraphsForDictionaryAndReturnSize(digraphType, &digraphs);
+            DigraphUtils::getAllDigraphsForDigraphTypeAndReturnSize(digraphType, &digraphs);
     for (int i = 0; i < digraphsSize; i++) {
         if (digraphs[i].compositeGlyph == compositeGlyphLowerCodePoint) {
             return &digraphs[i];

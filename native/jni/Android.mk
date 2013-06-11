@@ -55,7 +55,9 @@ LATIN_IME_CORE_SRC_FILES := \
         dic_nodes_cache.cpp) \
     $(addprefix suggest/core/dictionary/, \
         bigram_dictionary.cpp \
-        binary_dictionary_format.cpp \
+        binary_dictionary_format_utils.cpp \
+        binary_dictionary_header.cpp \
+        binary_dictionary_header_reading_utils.cpp \
         byte_array_utils.cpp \
         dictionary.cpp \
         digraph_utils.cpp) \
