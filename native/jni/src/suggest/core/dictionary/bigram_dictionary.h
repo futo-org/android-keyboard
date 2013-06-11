@@ -17,9 +17,6 @@
 #ifndef LATINIME_BIGRAM_DICTIONARY_H
 #define LATINIME_BIGRAM_DICTIONARY_H
 
-#include <map>
-#include <stdint.h>
-
 #include "defines.h"
 
 namespace latinime {
@@ -32,10 +29,9 @@ class BigramDictionary {
 
     int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
             int *frequencies, int *outputTypes) const;
-    void fillBigramAddressToProbabilityMapAndFilter(const int *prevWord, const int prevWordLength,
-            std::map<int, int> *map, uint8_t *filter) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
 

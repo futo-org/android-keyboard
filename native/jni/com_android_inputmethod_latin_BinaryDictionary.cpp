@@ -22,15 +22,16 @@
 #include <cstring> // for memset()
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "obsolete/correction.h"
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/suggest_options.h"
+#include "utils/autocorrection_threshold_utils.h"
 
 namespace latinime {
 
@@ -201,7 +202,7 @@ static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass 
     int afterCodePoints[afterLength];
     env->GetIntArrayRegion(before, 0, beforeLength, beforeCodePoints);
     env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
-    return Correction::RankingAlgorithm::calcNormalizedScore(beforeCodePoints, beforeLength,
+    return AutocorrectionThresholdUtils::calcNormalizedScore(beforeCodePoints, beforeLength,
             afterCodePoints, afterLength, score);
 }
 
@@ -213,7 +214,7 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
     int afterCodePoints[afterLength];
     env->GetIntArrayRegion(before, 0, beforeLength, beforeCodePoints);
     env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
-    return Correction::RankingAlgorithm::editDistance(beforeCodePoints, beforeLength,
+    return AutocorrectionThresholdUtils::editDistance(beforeCodePoints, beforeLength,
             afterCodePoints, afterLength);
 }
 

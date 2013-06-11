@@ -17,7 +17,6 @@
 #ifndef LATINIME_PROBABILITY_UTILS_H
 #define LATINIME_PROBABILITY_UTILS_H
 
-#include <map>
 #include <stdint.h>
 
 #include "defines.h"
@@ -47,24 +46,6 @@ class ProbabilityUtils {
                 / (1.5f + MAX_BIGRAM_ENCODED_PROBABILITY);
         return unigramProbability
                 + static_cast<int>(static_cast<float>(bigramProbability + 1) * stepSize);
-    }
-
-    // This returns a probability in log space.
-    static AK_FORCE_INLINE int getProbability(const int position,
-            const std::map<int, int> *const bigramMap,
-            const uint8_t *bigramFilter, const int unigramProbability) {
-        if (!bigramMap || !bigramFilter) {
-            return backoff(unigramProbability);
-        }
-        if (!isInFilter(bigramFilter, position)){
-            return backoff(unigramProbability);
-        }
-        const std::map<int, int>::const_iterator bigramProbabilityIt = bigramMap->find(position);
-        if (bigramProbabilityIt != bigramMap->end()) {
-            const int bigramProbability = bigramProbabilityIt->second;
-            return computeProbabilityForBigram(unigramProbability, bigramProbability);
-        }
-        return backoff(unigramProbability);
     }
 
  private:

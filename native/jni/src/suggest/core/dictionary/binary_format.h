@@ -19,7 +19,6 @@
 
 #include <stdint.h>
 
-#include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/probability_utils.h"
 #include "utils/char_utils.h"
 #include "utils/hash_map_compat.h"
