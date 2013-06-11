@@ -24,8 +24,6 @@
 
 namespace latinime {
 
-class Correction;
-
 class ProximityInfo {
  public:
     ProximityInfo(JNIEnv *env, const jstring localeJStr,
@@ -41,7 +39,6 @@ class ProximityInfo {
     float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y,
             const float verticalScale) const;
-    bool sameAsTyped(const unsigned short *word, int length) const;
     int getCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
@@ -95,8 +92,6 @@ class ProximityInfo {
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
 
     void initializeG();
-    float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
-    bool hasInputCoordinates() const;
 
     const int GRID_WIDTH;
     const int GRID_HEIGHT;

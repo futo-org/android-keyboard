@@ -181,48 +181,6 @@ namespace latinime {
     return squaredDistance / squaredRadius;
 }
 
-/* static */ void ProximityInfoStateUtils::initNormalizedSquaredDistances(
-        const ProximityInfo *const proximityInfo, const int inputSize, const int *inputXCoordinates,
-        const int *inputYCoordinates, const int *const inputProximities,
-        const std::vector<int> *const sampledInputXs, const std::vector<int> *const sampledInputYs,
-        int *normalizedSquaredDistances) {
-    memset(normalizedSquaredDistances, NOT_A_DISTANCE,
-            sizeof(normalizedSquaredDistances[0]) * MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH);
-    const bool hasInputCoordinates = sampledInputXs->size() > 0 && sampledInputYs->size() > 0;
-    for (int i = 0; i < inputSize; ++i) {
-        const int *proximityCodePoints = getProximityCodePointsAt(inputProximities, i);
-        const int primaryKey = proximityCodePoints[0];
-        const int x = inputXCoordinates[i];
-        const int y = inputYCoordinates[i];
-        if (DEBUG_PROXIMITY_CHARS) {
-            int a = x + y + primaryKey;
-            a += 0;
-            AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
-        }
-        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityCodePoints[j] > 0; ++j) {
-            const int currentCodePoint = proximityCodePoints[j];
-            const float squaredDistance =
-                    hasInputCoordinates ? calculateNormalizedSquaredDistance(
-                            proximityInfo, sampledInputXs, sampledInputYs,
-                            proximityInfo->getKeyIndexOf(currentCodePoint), i) :
-                            ProximityInfoParams::NOT_A_DISTANCE_FLOAT;
-            if (squaredDistance >= 0.0f) {
-                normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        static_cast<int>(squaredDistance
-                                * ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
-            } else {
-                normalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        (j == 0) ? MATCH_CHAR_WITHOUT_DISTANCE_INFO :
-                                PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
-            }
-            if (DEBUG_PROXIMITY_CHARS) {
-                AKLOGI("--- Proximity (%d) = %c", j, currentCodePoint);
-            }
-        }
-    }
-
-}
-
 /* static */ void ProximityInfoStateUtils::initGeometricDistanceInfos(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
         const int lastSavedInputSize, const float verticalSweetSpotScale,

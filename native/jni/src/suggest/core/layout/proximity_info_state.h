@@ -53,7 +53,6 @@ class ProximityInfoState {
               mSampledSearchKeyVectors(), mTouchPositionCorrectionEnabled(false),
               mSampledInputSize(0), mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
-        memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
         memset(mMostProbableString, 0, sizeof(mMostProbableString));
     }
@@ -91,6 +90,19 @@ class ProximityInfoState {
         return false;
     }
 
+    // TODO: Promote insertion letter correction if that letter is a proximity of the previous
+    // letter like follows:
+    // // Demotion for a word with excessive character
+    // if (excessiveCount > 0) {
+    //     multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
+    //     if (!lastCharExceeded
+    //             && !proximityInfoState->existsAdjacentProximityChars(excessivePos)) {
+    //         // If an excessive character is not adjacent to the left char or the right char,
+    //         // we will demote this word.
+    //         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE,
+    //                 &finalFreq);
+    //     }
+    // }
     inline bool existsAdjacentProximityChars(const int index) const {
         if (index < 0 || index >= mSampledInputSize) return false;
         const int currentCodePoint = getPrimaryCodePointAt(index);
@@ -104,12 +116,6 @@ class ProximityInfoState {
             return true;
         }
         return false;
-    }
-
-    inline int getNormalizedSquaredDistance(
-            const int inputIndex, const int proximityIndex) const {
-        return mNormalizedSquaredDistances[
-                inputIndex * MAX_PROXIMITY_CHARS_SIZE + proximityIndex];
     }
 
     inline const int *getPrimaryInputWord() const {
@@ -190,24 +196,10 @@ class ProximityInfoState {
 
     float getProbability(const int index, const int charCode) const;
 
-    float getLineToKeyDistance(
-            const int from, const int to, const int keyId, const bool extend) const;
-
     bool isKeyInSerchKeysAfterIndex(const int index, const int keyId) const;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
-    /////////////////////////////////////////
-    // Defined in proximity_info_state.cpp //
-    /////////////////////////////////////////
-    float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
-
-    float calculateSquaredDistanceFromSweetSpotCenter(
-            const int keyIndex, const int inputIndex) const;
-
-    /////////////////////////////////////////
-    // Defined here                        //
-    /////////////////////////////////////////
 
     inline const int *getProximityCodePointsAt(const int index) const {
         return ProximityInfoStateUtils::getProximityCodePointsAt(mInputProximities, index);
@@ -249,7 +241,6 @@ class ProximityInfoState {
     std::vector<std::vector<int> > mSampledSearchKeyVectors;
     bool mTouchPositionCorrectionEnabled;
     int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
-    int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mSampledInputSize;
     int mPrimaryInputWord[MAX_WORD_LENGTH];
     float mMostProbableStringProbability;

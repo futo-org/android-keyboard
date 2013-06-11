@@ -23,31 +23,6 @@
 namespace latinime {
 class TouchPositionCorrectionUtils {
  public:
-    // TODO: (OLD) Remove
-    static float getLengthScalingFactor(const float normalizedSquaredDistance) {
-        // Promote or demote the score according to the distance from the sweet spot
-        static const float A = ZERO_DISTANCE_PROMOTION_RATE / 100.0f;
-        static const float B = 1.0f;
-        static const float C = 0.5f;
-        static const float MIN = 0.3f;
-        static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
-        static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-        const float x = normalizedSquaredDistance / static_cast<float>(
-                ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
-        const float factor = max((x < R1)
-                ? (A * (R1 - x) + B * x) / R1
-                : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
-        // factor is a piecewise linear function like:
-        // A -_                  .
-        //     ^-_               .
-        // B      \              .
-        //         \_            .
-        // C         ------------.
-        //                       .
-        // 0   R1 R2             .
-        return factor;
-    }
-
     static float getSweetSpotFactor(const bool isTouchPositionCorrectionEnabled,
             const float normalizedSquaredDistance) {
         // Promote or demote the score according to the distance from the sweet spot

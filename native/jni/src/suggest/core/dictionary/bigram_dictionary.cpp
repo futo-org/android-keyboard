@@ -23,7 +23,6 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
-#include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/probability_utils.h"
 #include "utils/char_utils.h"
@@ -168,30 +167,6 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     pos = BinaryFormat::skipChildrenPosition(flags, pos);
     pos = BinaryFormat::skipShortcuts(root, flags, pos);
     return pos;
-}
-
-void BigramDictionary::fillBigramAddressToProbabilityMapAndFilter(const int *prevWord,
-        const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
-    memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
-    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
-    int pos = getBigramListPositionForWord(prevWord, prevWordLength,
-            false /* forceLowerCaseSearch */);
-    if (0 == pos) {
-        // If no bigrams for this exact string, search again in lower case.
-        pos = getBigramListPositionForWord(prevWord, prevWordLength,
-                true /* forceLowerCaseSearch */);
-    }
-    if (0 == pos) return;
-
-    uint8_t bigramFlags;
-    do {
-        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        const int probability = BinaryFormat::MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
-        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
-                &pos);
-        (*map)[bigramPos] = probability;
-        setInFilter(filter, bigramPos);
-    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
 }
 
 bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) const {

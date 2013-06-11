@@ -47,8 +47,6 @@ LATIN_IME_JNI_SRC_FILES := \
 
 LATIN_IME_CORE_SRC_FILES := \
     suggest/core/suggest.cpp \
-    $(addprefix obsolete/, \
-        correction.cpp) \
     $(addprefix suggest/core/dicnode/, \
         dic_node.cpp \
         dic_node_utils.cpp \
@@ -76,7 +74,9 @@ LATIN_IME_CORE_SRC_FILES := \
         typing_suggest_policy.cpp \
         typing_traversal.cpp \
         typing_weighting.cpp) \
-    utils/char_utils.cpp
+    $(addprefix utils/, \
+        char_utils.cpp \
+        ranking_algorithm.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \

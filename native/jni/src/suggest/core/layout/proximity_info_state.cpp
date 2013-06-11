@@ -156,11 +156,6 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (!isGeometric && pointerId == 0) {
         ProximityInfoStateUtils::initPrimaryInputWord(
                 inputSize, mInputProximities, mPrimaryInputWord);
-        if (mTouchPositionCorrectionEnabled) {
-            ProximityInfoStateUtils::initNormalizedSquaredDistances(
-                    mProximityInfo, inputSize, xCoordinates, yCoordinates, mInputProximities,
-                    &mSampledInputXs, &mSampledInputYs, mNormalizedSquaredDistances);
-        }
     }
     if (DEBUG_GEO_FULL) {
         AKLOGI("ProximityState init finished: %d points out of %d", mSampledInputSize, inputSize);
@@ -277,26 +272,6 @@ bool ProximityInfoState::isKeyInSerchKeysAfterIndex(const int index, const int k
 float ProximityInfoState::getDirection(const int index0, const int index1) const {
     return ProximityInfoStateUtils::getDirection(
             &mSampledInputXs, &mSampledInputYs, index0, index1);
-}
-
-float ProximityInfoState::getLineToKeyDistance(
-        const int from, const int to, const int keyId, const bool extend) const {
-    if (from < 0 || from > mSampledInputSize - 1) {
-        return 0.0f;
-    }
-    if (to < 0 || to > mSampledInputSize - 1) {
-        return 0.0f;
-    }
-    const int x0 = mSampledInputXs[from];
-    const int y0 = mSampledInputYs[from];
-    const int x1 = mSampledInputXs[to];
-    const int y1 = mSampledInputYs[to];
-
-    const int keyX = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
-    const int keyY = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
-
-    return ProximityInfoUtils::pointToLineSegSquaredDistanceFloat(
-            keyX, keyY, x0, y0, x1, y1, extend);
 }
 
 float ProximityInfoState::getMostProbableString(int *const codePointBuf) const {

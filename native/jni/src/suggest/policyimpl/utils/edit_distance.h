@@ -62,6 +62,26 @@ class EditDistance {
         return dp[(beforeLength + 1) * (afterLength + 1) - 1];
     }
 
+    AK_FORCE_INLINE static void dumpEditDistance10ForDebug(const float *const editDistanceTable,
+            const int editDistanceTableWidth, const int outputLength) {
+        if (DEBUG_DICT) {
+            AKLOGI("EditDistanceTable");
+            for (int i = 0; i <= 10; ++i) {
+                float c[11];
+                for (int j = 0; j <= 10; ++j) {
+                    if (j < editDistanceTableWidth + 1 && i < outputLength + 1) {
+                        c[j] = (editDistanceTable + i * (editDistanceTableWidth + 1))[j];
+                    } else {
+                        c[j] = -1.0f;
+                    }
+                }
+                AKLOGI("[ %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f ]",
+                        c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10]);
+                (void)c; // To suppress compiler warning
+            }
+        }
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(EditDistance);
 };
