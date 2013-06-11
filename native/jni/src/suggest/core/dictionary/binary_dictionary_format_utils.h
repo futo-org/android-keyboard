@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_BINARY_DICTIONARY_FORMAT_H
-#define LATINIME_BINARY_DICTIONARY_FORMAT_H
+#ifndef LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H
+#define LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H
 
 #include <stdint.h>
 
@@ -42,30 +42,13 @@ class BinaryDictionaryFormat {
 
     static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
 
-    static AK_FORCE_INLINE int getHeaderSize(
-            const uint8_t *const dict, const FORMAT_VERSION format) {
-        switch (format) {
-        case VERSION_1:
-            return FORMAT_VERSION_1_HEADER_SIZE;
-        case VERSION_2:
-            // See the format of the header in the comment in detectFormat() above
-            return ByteArrayUtils::readUint32(dict, 8);
-        default:
-            return S_INT_MAX;
-        }
-    }
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormat);
 
     static const int DICTIONARY_MINIMUM_SIZE;
     static const uint32_t FORMAT_VERSION_1_MAGIC_NUMBER;
-    static const int FORMAT_VERSION_1_HEADER_SIZE;
     static const uint32_t FORMAT_VERSION_2_MAGIC_NUMBER;
     static const int FORMAT_VERSION_2_MINIMUM_SIZE;
-    static const int VERSION_2_MAGIC_NUMBER_SIZE;
-    static const int VERSION_2_DICTIONARY_VERSION_SIZE ;
-    static const int VERSION_2_DICTIONARY_FLAG_SIZE;
 };
 } // namespace latinime
-#endif /* LATINIME_BINARY_DICTIONARY_FORMAT_H */
+#endif /* LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H */

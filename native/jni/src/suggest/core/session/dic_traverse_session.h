@@ -77,7 +77,6 @@ class DicTraverseSession {
 
     // TODO: Remove
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const;
-    int getDictFlags() const;
 
     //--------------------
     // getters and setters

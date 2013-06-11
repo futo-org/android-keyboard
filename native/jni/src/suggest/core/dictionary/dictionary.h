@@ -66,22 +66,20 @@ class Dictionary {
     int getProbability(const int *word, int length) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
-        return &mBinaryDicitonaryInfo;
+        return &mBinaryDictionaryInfo;
     }
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
-    int getDictFlags() const;
     virtual ~Dictionary();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
-    const BinaryDictionaryInfo mBinaryDicitonaryInfo;
+    const BinaryDictionaryInfo mBinaryDictionaryInfo;
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
     // also for the malloc version.
     const int mDictSize;
-    const int mDictFlags;
     const int mMmapFd;
     const int mDictBufAdjust;
 

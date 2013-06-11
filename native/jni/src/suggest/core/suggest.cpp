@@ -19,6 +19,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/dictionary/shortcut_utils.h"
@@ -294,7 +295,8 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     processDicNodeAsMatch(traverseSession, childDicNode);
                     continue;
                 }
-                if (DigraphUtils::hasDigraphForCodePoint(traverseSession->getDictFlags(),
+                if (DigraphUtils::hasDigraphForCodePoint(
+                        traverseSession->getBinaryDictionaryInfo()->getHeader(),
                         childDicNode->getNodeCodePoint())) {
                     correctionDicNode.initByCopy(childDicNode);
                     correctionDicNode.advanceDigraphIndex();
