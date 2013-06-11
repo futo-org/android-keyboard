@@ -76,7 +76,7 @@ LATIN_IME_CORE_SRC_FILES := \
         typing_weighting.cpp) \
     $(addprefix utils/, \
         char_utils.cpp \
-        ranking_algorithm.cpp)
+        autocorrection_threshold_utils.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
