@@ -37,16 +37,18 @@ public final class RoundedLine {
      * @param p2x the x-coordinate of the end point.
      * @param p2y the y-coordinate of the end point.
      * @param r2 the radius at the end point
-     * @return the path of rounded line
+     * @return an instance of {@link Path} that holds the result rounded line, or an instance of
+     * {@link Path} that holds an empty path if the start and end points are equal.
      */
     public Path makePath(final float p1x, final float p1y, final float r1,
             final float p2x, final float p2y, final float r2) {
+        mPath.rewind();
         final double dx = p2x - p1x;
         final double dy = p2y - p1y;
         // Distance of the points.
         final double l = Math.hypot(dx, dy);
         if (Double.compare(0.0d, l) == 0) {
-            return null;
+            return mPath; // Return an empty path
         }
         // Angle of the line p1-p2
         final double a = Math.atan2(dy, dx);
@@ -86,7 +88,6 @@ public final class RoundedLine {
         mArc2.set(p2x, p2y, p2x, p2y);
         mArc2.inset(-r2, -r2);
 
-        mPath.rewind();
         // Trail cap at P1.
         mPath.moveTo(p1x, p1y);
         mPath.arcTo(mArc1, angle, a1);
