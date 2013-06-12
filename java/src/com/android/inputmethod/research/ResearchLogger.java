@@ -429,6 +429,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mMainResearchLog.blockingClose(RESEARCHLOG_CLOSE_TIMEOUT_IN_MS);
 
         resetLogBuffers();
+        cancelFeedbackDialog();
     }
 
     public void abort() {
@@ -701,13 +702,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mInFeedbackDialog = false;
     }
 
+    private void cancelFeedbackDialog() {
+        if (isMakingUserRecording()) {
+            cancelRecording();
+        }
+        mInFeedbackDialog = false;
+    }
+
     public void initSuggest(final Suggest suggest) {
         mSuggest = suggest;
         // MainLogBuffer now has an out-of-date Suggest object.  Close down MainLogBuffer and create
         // a new one.
         if (mMainLogBuffer != null) {
-            stop();
-            start();
+            restart();
         }
     }
 
