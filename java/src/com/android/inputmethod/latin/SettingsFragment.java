@@ -42,6 +42,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
+import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
@@ -130,7 +131,12 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 feedbackSettings.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(final Preference pref) {
-                        FeedbackUtils.showFeedbackForm(getActivity());
+                        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                            // Use development-only feedback mechanism
+                            ResearchLogger.getInstance().presentFeedbackDialogFromSettings();
+                        } else {
+                            FeedbackUtils.showFeedbackForm(getActivity());
+                        }
                         return true;
                     }
                 });
@@ -140,6 +146,10 @@ public final class SettingsFragment extends InputMethodSettingsFragment
                 miscSettings.removePreference(feedbackSettings);
                 miscSettings.removePreference(aboutSettings);
             }
+        }
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+            // The about screen contains items that may be confusing in development-only versions.
+            miscSettings.removePreference(aboutSettings);
         }
 
         final boolean showVoiceKeyOption = res.getBoolean(

@@ -466,6 +466,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         presentFeedbackDialog(latinIME);
     }
 
+    public void presentFeedbackDialogFromSettings() {
+        if (mLatinIME != null) {
+            presentFeedbackDialog(mLatinIME);
+        }
+    }
+
     public void presentFeedbackDialog(final LatinIME latinIME) {
         if (isMakingUserRecording()) {
             saveRecording();
