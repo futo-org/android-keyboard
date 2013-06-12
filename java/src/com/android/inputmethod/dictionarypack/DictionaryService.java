@@ -54,12 +54,7 @@ public final class DictionaryService extends Service {
     /**
      * The package name, to use in the intent actions.
      */
-    private static final String PACKAGE_NAME = "com.android.android.inputmethod.latin";
-
-    /**
-     * The action of the intent to tell the dictionary provider to update now.
-     */
-    private static final String UPDATE_NOW_INTENT_ACTION = PACKAGE_NAME + ".UPDATE_NOW";
+    private static final String PACKAGE_NAME = "com.android.inputmethod.latin";
 
     /**
      * The action of the date changing, used to schedule a periodic freshness check
@@ -173,7 +168,7 @@ public final class DictionaryService extends Service {
             // at midnight local time, but it may happen if the user changes the date
             // by hand or something similar happens.
             checkTimeAndMaybeSetupUpdateAlarm(context);
-        } else if (UPDATE_NOW_INTENT_ACTION.equals(intent.getAction())) {
+        } else if (DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION.equals(intent.getAction())) {
             // Intent to trigger an update now.
             UpdateHandler.update(context, false);
         } else {
@@ -196,7 +191,7 @@ public final class DictionaryService extends Service {
         // It doesn't matter too much if this is very inexact.
         final long now = System.currentTimeMillis();
         final long alarmTime = now + new Random().nextInt(MAX_ALARM_DELAY);
-        final Intent updateIntent = new Intent(DictionaryService.UPDATE_NOW_INTENT_ACTION);
+        final Intent updateIntent = new Intent(DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
                 updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
