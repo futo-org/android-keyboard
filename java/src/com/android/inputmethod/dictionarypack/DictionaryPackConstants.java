@@ -28,13 +28,13 @@ public class DictionaryPackConstants {
      * The root domain for the dictionary pack, upon which authorities and actions will append
      * their own distinctive strings.
      */
-    private static final String DICTIONARY_DOMAIN = "com.android.inputmethod.dictionarypack";
+    private static final String DICTIONARY_DOMAIN = "com.android.inputmethod.dictionarypack.aosp";
 
     /**
      * Authority for the ContentProvider protocol.
      */
     // TODO: find some way to factorize this string with the one in the resources
-    public static final String AUTHORITY = DICTIONARY_DOMAIN + ".aosp";
+    public static final String AUTHORITY = DICTIONARY_DOMAIN;
 
     /**
      * The action of the intent for publishing that new dictionary data is available.
@@ -52,7 +52,14 @@ public class DictionaryPackConstants {
      */
     public static final String UNKNOWN_DICTIONARY_PROVIDER_CLIENT = DICTIONARY_DOMAIN
             + ".UNKNOWN_CLIENT";
+
     // In the above intents, the name of the string extra that contains the name of the client
     // we want information about.
     public static final String DICTIONARY_PROVIDER_CLIENT_EXTRA = "client";
+
+    /**
+     * The action of the intent to tell the dictionary provider to update now.
+     */
+    public static final String UPDATE_NOW_INTENT_ACTION = DICTIONARY_DOMAIN
+            + ".UPDATE_NOW";
 }
