@@ -179,11 +179,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mDisplayOrientation;
 
     // Object for reacting to adding/removing a dictionary pack.
-    // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
-    // Service yet.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
-            ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
-                    ? null : new DictionaryPackInstallBroadcastReceiver(this);
+            new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private String mEnteredText;
@@ -458,19 +455,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
 
-        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
-        // Service yet.
-        if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            final IntentFilter packageFilter = new IntentFilter();
-            packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
-            packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-            packageFilter.addDataScheme(SCHEME_PACKAGE);
-            registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
+        final IntentFilter packageFilter = new IntentFilter();
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packageFilter.addDataScheme(SCHEME_PACKAGE);
+        registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
 
-            final IntentFilter newDictFilter = new IntentFilter();
-            newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
-            registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
-        }
+        final IntentFilter newDictFilter = new IntentFilter();
+        newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
+        registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
     }
 
     // Has to be package-visible for unit tests
@@ -587,11 +580,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.getInstance().onDestroy();
         }
-        // TODO: The development-only-diagnostic version is not supported by the Dictionary Pack
-        // Service yet.
-        if (!ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            unregisterReceiver(mDictionaryPackInstallReceiver);
-        }
+        unregisterReceiver(mDictionaryPackInstallReceiver);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();
