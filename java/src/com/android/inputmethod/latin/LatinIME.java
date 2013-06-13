@@ -844,8 +844,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
+        // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
         if (mWordComposer.isComposingWord()) mConnection.finishComposingText();
         resetComposingState(true /* alsoResetLastComposedWord */);
+        mRichImm.clearSubtypeCaches();
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput, mLastSelectionStart,
