@@ -94,12 +94,17 @@ import java.util.Map;
                 .value(words.mIsPunctuationSuggestions);
         jsonWriter.name("isObsoleteSuggestions").value(words.mIsObsoleteSuggestions);
         jsonWriter.name("isPrediction").value(words.mIsPrediction);
-        jsonWriter.name("words");
+        jsonWriter.name("suggestedWords");
         jsonWriter.beginArray();
         final int size = words.size();
         for (int j = 0; j < size; j++) {
             final SuggestedWordInfo wordInfo = words.getInfo(j);
-            jsonWriter.value(wordInfo.toString());
+            jsonWriter.beginObject();
+            jsonWriter.name("word").value(wordInfo.toString());
+            jsonWriter.name("score").value(wordInfo.mScore);
+            jsonWriter.name("kind").value(wordInfo.mKind);
+            jsonWriter.name("sourceDict").value(wordInfo.mSourceDict);
+            jsonWriter.endObject();
         }
         jsonWriter.endArray();
         jsonWriter.endObject();
