@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -46,6 +47,10 @@ public final class RichInputMethodManager {
 
     private InputMethodManagerCompatWrapper mImmWrapper;
     private InputMethodInfo mInputMethodInfoOfThisIme;
+    final HashMap<InputMethodInfo, List<InputMethodSubtype>>
+            mSubtypeListCacheWithImplicitlySelectedSubtypes = CollectionUtils.newHashMap();
+    final HashMap<InputMethodInfo, List<InputMethodSubtype>>
+            mSubtypeListCacheWithoutImplicitlySelectedSubtypes = CollectionUtils.newHashMap();
 
     private static final int INDEX_NOT_FOUND = -1;
 
@@ -102,8 +107,8 @@ public final class RichInputMethodManager {
 
     public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(
             boolean allowsImplicitlySelectedSubtypes) {
-        return mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
-                mInputMethodInfoOfThisIme, allowsImplicitlySelectedSubtypes);
+        return getEnabledInputMethodSubtypeList(mInputMethodInfoOfThisIme,
+                allowsImplicitlySelectedSubtypes);
     }
 
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
@@ -151,8 +156,8 @@ public final class RichInputMethodManager {
             return false;
         }
         final InputMethodInfo nextImi = getNextNonAuxiliaryIme(currentIndex, enabledImis);
-        final List<InputMethodSubtype> enabledSubtypes = imm.getEnabledInputMethodSubtypeList(
-                nextImi, true /* allowsImplicitlySelectedSubtypes */);
+        final List<InputMethodSubtype> enabledSubtypes = getEnabledInputMethodSubtypeList(nextImi,
+                true /* allowsImplicitlySelectedSubtypes */);
         if (enabledSubtypes.isEmpty()) {
             // The next IME has no subtype.
             imm.setInputMethod(token, nextImi.getId());
@@ -227,9 +232,8 @@ public final class RichInputMethodManager {
 
     public boolean checkIfSubtypeBelongsToImeAndEnabled(final InputMethodInfo imi,
             final InputMethodSubtype subtype) {
-        return checkIfSubtypeBelongsToList(
-                subtype, mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
-                        imi, true /* allowsImplicitlySelectedSubtypes */));
+        return checkIfSubtypeBelongsToList(subtype, getEnabledInputMethodSubtypeList(imi,
+                true /* allowsImplicitlySelectedSubtypes */));
     }
 
     private static boolean checkIfSubtypeBelongsToList(final InputMethodSubtype subtype,
@@ -290,8 +294,7 @@ public final class RichInputMethodManager {
         for (InputMethodInfo imi : imiList) {
             // We can return true immediately after we find two or more filtered IMEs.
             if (filteredImisCount > 1) return true;
-            final List<InputMethodSubtype> subtypes =
-                    mImmWrapper.mImm.getEnabledInputMethodSubtypeList(imi, true);
+            final List<InputMethodSubtype> subtypes = getEnabledInputMethodSubtypeList(imi, true);
             // IMEs that have no subtypes should be counted.
             if (subtypes.isEmpty()) {
                 ++filteredImisCount;
@@ -354,5 +357,26 @@ public final class RichInputMethodManager {
     public void setAdditionalInputMethodSubtypes(final InputMethodSubtype[] subtypes) {
         mImmWrapper.mImm.setAdditionalInputMethodSubtypes(
                 mInputMethodInfoOfThisIme.getId(), subtypes);
+        // Clear the cache so that we go read the subtypes again next time.
+        clearSubtypeCaches();
+    }
+
+    private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(final InputMethodInfo imi,
+            final boolean allowsImplicitlySelectedSubtypes) {
+        final HashMap<InputMethodInfo, List<InputMethodSubtype>> cache =
+                allowsImplicitlySelectedSubtypes
+                ? mSubtypeListCacheWithImplicitlySelectedSubtypes
+                : mSubtypeListCacheWithoutImplicitlySelectedSubtypes;
+        final List<InputMethodSubtype> cachedList = cache.get(imi);
+        if (null != cachedList) return cachedList;
+        final List<InputMethodSubtype> result = mImmWrapper.mImm.getEnabledInputMethodSubtypeList(
+                imi, allowsImplicitlySelectedSubtypes);
+        cache.put(imi, result);
+        return result;
+    }
+
+    public void clearSubtypeCaches() {
+        mSubtypeListCacheWithImplicitlySelectedSubtypes.clear();
+        mSubtypeListCacheWithoutImplicitlySelectedSubtypes.clear();
     }
 }
