@@ -50,6 +50,9 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_TERMINAL:
         PROF_TERMINAL(node->mProfiler);
         return;
+    case CT_TERMINAL_INSERTION:
+        PROF_TERMINAL_INSERTION(node->mProfiler);
+        return;
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
         PROF_SPACE_SUBSTITUTION(node->mProfiler);
         return;
@@ -113,6 +116,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return weighting->getCompletionCost(traverseSession, dicNode);
     case CT_TERMINAL:
         return weighting->getTerminalSpatialCost(traverseSession, dicNode);
+    case CT_TERMINAL_INSERTION:
+        return weighting->getTerminalInsertionCost(traverseSession, dicNode);
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
         return weighting->getSpaceSubstitutionCost(traverseSession, dicNode);
     case CT_INSERTION:
@@ -146,6 +151,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
                         traverseSession->getBinaryDictionaryInfo(), dicNode, multiBigramMap);
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
+    case CT_TERMINAL_INSERTION:
+        return 0.0f;
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
         return weighting->getNewWordBigramLanguageCost(
                 traverseSession, parentDicNode, multiBigramMap);
@@ -163,9 +170,9 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         case CT_OMISSION:
             return 0;
         case CT_ADDITIONAL_PROXIMITY:
-            return 0;
+            return 0; /* 0 because CT_MATCH will be called */
         case CT_SUBSTITUTION:
-            return 0;
+            return 0; /* 0 because CT_MATCH will be called */
         case CT_NEW_WORD_SPACE_OMITTION:
             return 0;
         case CT_MATCH:
@@ -174,12 +181,14 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return 1;
         case CT_TERMINAL:
             return 0;
+        case CT_TERMINAL_INSERTION:
+            return 1;
         case CT_NEW_WORD_SPACE_SUBSTITUTION:
             return 1;
         case CT_INSERTION:
-            return 2;
+            return 2; /* look ahead + skip the current char */
         case CT_TRANSPOSITION:
-            return 2;
+            return 2; /* look ahead + skip the current char */
         default:
             return 0;
     }

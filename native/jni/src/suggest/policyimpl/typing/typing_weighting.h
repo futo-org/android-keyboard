@@ -175,6 +175,15 @@ class TypingWeighting : public Weighting {
         return dicNodeLanguageImprobability * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
+    float getTerminalInsertionCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
+        const int inputIndex = dicNode->getInputIndex(0);
+        const int inputSize = traverseSession->getInputSize();
+        ASSERT(inputIndex < inputSize);
+        // TODO: Implement more efficient logic
+        return  ScoringParams::TERMINAL_INSERTION_COST * (inputSize - inputIndex);
+    }
+
     AK_FORCE_INLINE bool needsToNormalizeCompoundDistance() const {
         return false;
     }

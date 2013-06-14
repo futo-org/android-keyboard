@@ -31,6 +31,7 @@
 #define PROF_TRANSPOSITION(profiler) profiler.profTransposition()
 #define PROF_NEARESTKEY(profiler) profiler.profNearestKey()
 #define PROF_TERMINAL(profiler) profiler.profTerminal()
+#define PROF_TERMINAL_INSERTION(profiler) profiler.profTerminalInsertion()
 #define PROF_NEW_WORD(profiler) profiler.profNewWord()
 #define PROF_NEW_WORD_BIGRAM(profiler) profiler.profNewWordBigram()
 #define PROF_NODE_RESET(profiler) profiler.reset()
@@ -47,6 +48,7 @@
 #define PROF_TRANSPOSITION(profiler)
 #define PROF_NEARESTKEY(profiler)
 #define PROF_TERMINAL(profiler)
+#define PROF_TERMINAL_INSERTION(profiler)
 #define PROF_NEW_WORD(profiler)
 #define PROF_NEW_WORD_BIGRAM(profiler)
 #define PROF_NODE_RESET(profiler)
@@ -62,7 +64,7 @@ class DicNodeProfiler {
             : mProfOmission(0), mProfInsertion(0), mProfTransposition(0),
               mProfAdditionalProximity(0), mProfSubstitution(0),
               mProfSpaceSubstitution(0), mProfSpaceOmission(0),
-              mProfMatch(0), mProfCompletion(0), mProfTerminal(0),
+              mProfMatch(0), mProfCompletion(0), mProfTerminal(0), mProfTerminalInsertion(0),
               mProfNearestKey(0), mProfNewWord(0), mProfNewWordBigram(0) {}
 
     int mProfOmission;
@@ -75,6 +77,7 @@ class DicNodeProfiler {
     int mProfMatch;
     int mProfCompletion;
     int mProfTerminal;
+    int mProfTerminalInsertion;
     int mProfNearestKey;
     int mProfNewWord;
     int mProfNewWordBigram;
@@ -121,6 +124,10 @@ class DicNodeProfiler {
 
     void profTerminal() {
         ++mProfTerminal;
+    }
+
+    void profTerminalInsertion() {
+        ++mProfTerminalInsertion;
     }
 
     void profNewWord() {
