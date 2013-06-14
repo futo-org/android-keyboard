@@ -43,8 +43,8 @@ namespace latinime {
         const ProximityInfo *const proximityInfo, const int maxPointToKeyLength,
         const int *const inputProximities, const int *const inputXCoordinates,
         const int *const inputYCoordinates, const int *const times, const int *const pointerIds,
-        const float verticalSweetSpotScale, const int inputSize, const bool isGeometric,
-        const int pointerId, const int pushTouchPointStartIndex, std::vector<int> *sampledInputXs,
+        const int inputSize, const bool isGeometric, const int pointerId,
+        const int pushTouchPointStartIndex, std::vector<int> *sampledInputXs,
         std::vector<int> *sampledInputYs, std::vector<int> *sampledInputTimes,
         std::vector<int> *sampledLengthCache, std::vector<int> *sampledInputIndice) {
     if (DEBUG_SAMPLING_POINTS) {
@@ -113,7 +113,7 @@ namespace latinime {
             }
 
             if (pushTouchPoint(proximityInfo, maxPointToKeyLength, i, c, x, y, time,
-                    verticalSweetSpotScale, isGeometric /* doSampling */, i == lastInputIndex,
+                    isGeometric, isGeometric /* doSampling */, i == lastInputIndex,
                     sumAngle, currentNearKeysDistances, prevNearKeysDistances,
                     prevPrevNearKeysDistances, sampledInputXs, sampledInputYs, sampledInputTimes,
                     sampledLengthCache, sampledInputIndice)) {
@@ -183,7 +183,7 @@ namespace latinime {
 
 /* static */ void ProximityInfoStateUtils::initGeometricDistanceInfos(
         const ProximityInfo *const proximityInfo, const int sampledInputSize,
-        const int lastSavedInputSize, const float verticalSweetSpotScale,
+        const int lastSavedInputSize, const bool isGeometric,
         const std::vector<int> *const sampledInputXs,
         const std::vector<int> *const sampledInputYs,
         std::vector<NearKeycodesSet> *sampledNearKeySets,
@@ -199,7 +199,7 @@ namespace latinime {
             const int y = (*sampledInputYs)[i];
             const float normalizedSquaredDistance =
                     proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(
-                            k, x, y, verticalSweetSpotScale);
+                            k, x, y, isGeometric);
             (*sampledNormalizedSquaredLengthCache)[index] = normalizedSquaredDistance;
             if (normalizedSquaredDistance
                     < ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
@@ -317,14 +317,13 @@ namespace latinime {
 // the given point and the nearest key position.
 /* static */ float ProximityInfoStateUtils::updateNearKeysDistances(
         const ProximityInfo *const proximityInfo, const float maxPointToKeyLength, const int x,
-        const int y, const float verticalSweetspotScale,
-        NearKeysDistanceMap *const currentNearKeysDistances) {
+        const int y, const bool isGeometric, NearKeysDistanceMap *const currentNearKeysDistances) {
     currentNearKeysDistances->clear();
     const int keyCount = proximityInfo->getKeyCount();
     float nearestKeyDistance = maxPointToKeyLength;
     for (int k = 0; k < keyCount; ++k) {
         const float dist = proximityInfo->getNormalizedSquaredDistanceFromCenterFloatG(k, x, y,
-                verticalSweetspotScale);
+                isGeometric);
         if (dist < ProximityInfoParams::NEAR_KEY_THRESHOLD_FOR_DISTANCE) {
             currentNearKeysDistances->insert(std::pair<int, float>(k, dist));
         }
@@ -405,7 +404,7 @@ namespace latinime {
 // Returning if previous point is popped or not.
 /* static */ bool ProximityInfoStateUtils::pushTouchPoint(const ProximityInfo *const proximityInfo,
         const int maxPointToKeyLength, const int inputIndex, const int nodeCodePoint, int x, int y,
-        const int time, const float verticalSweetSpotScale, const bool doSampling,
+        const int time, const bool isGeometric, const bool doSampling,
         const bool isLastPoint, const float sumAngle,
         NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
@@ -419,7 +418,7 @@ namespace latinime {
     bool popped = false;
     if (nodeCodePoint < 0 && doSampling) {
         const float nearest = updateNearKeysDistances(proximityInfo, maxPointToKeyLength, x, y,
-                verticalSweetSpotScale, currentNearKeysDistances);
+                isGeometric, currentNearKeysDistances);
         const float score = getPointScore(mostCommonKeyWidth, x, y, time, isLastPoint, nearest,
                 sumAngle, currentNearKeysDistances, prevNearKeysDistances,
                 prevPrevNearKeysDistances, sampledInputXs, sampledInputYs);
@@ -453,8 +452,8 @@ namespace latinime {
     if (nodeCodePoint >= 0 && (x < 0 || y < 0)) {
         const int keyId = proximityInfo->getKeyIndexOf(nodeCodePoint);
         if (keyId >= 0) {
-            x = proximityInfo->getKeyCenterXOfKeyIdG(keyId);
-            y = proximityInfo->getKeyCenterYOfKeyIdG(keyId);
+            x = proximityInfo->getKeyCenterXOfKeyIdG(keyId, NOT_AN_INDEX, isGeometric);
+            y = proximityInfo->getKeyCenterYOfKeyIdG(keyId, NOT_AN_INDEX, isGeometric);
         }
     }
 

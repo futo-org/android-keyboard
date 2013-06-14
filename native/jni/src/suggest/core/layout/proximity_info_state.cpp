@@ -97,15 +97,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 pushTouchPointStartIndex, lastSavedInputSize);
     }
 
-    // TODO: Remove the dependency of "isGeometric"
-    const float verticalSweetSpotScale = isGeometric
-            ? ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G
-            : ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE;
-
     if (xCoordinates && yCoordinates) {
         mSampledInputSize = ProximityInfoStateUtils::updateTouchPoints(mProximityInfo,
                 mMaxPointToKeyLength, mInputProximities, xCoordinates, yCoordinates, times,
-                pointerIds, verticalSweetSpotScale, inputSize, isGeometric, pointerId,
+                pointerIds, inputSize, isGeometric, pointerId,
                 pushTouchPointStartIndex, &mSampledInputXs, &mSampledInputYs, &mSampledTimes,
                 &mSampledLengthCache, &mSampledInputIndice);
     }
@@ -123,7 +118,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     if (mSampledInputSize > 0) {
         ProximityInfoStateUtils::initGeometricDistanceInfos(mProximityInfo, mSampledInputSize,
-                lastSavedInputSize, verticalSweetSpotScale, &mSampledInputXs, &mSampledInputYs,
+                lastSavedInputSize, isGeometric, &mSampledInputXs, &mSampledInputYs,
                 &mSampledNearKeySets, &mSampledNormalizedSquaredLengthCache);
         if (isGeometric) {
             // updates probabilities of skipping or mapping each key for all points.
