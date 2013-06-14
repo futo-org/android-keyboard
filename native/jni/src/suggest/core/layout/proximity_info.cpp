@@ -134,24 +134,13 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 }
 
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloatG(
-        const int keyId, const int x, const int y, const float verticalScale) const {
-    const bool correctTouchPosition = hasTouchPositionCorrectionData();
-    const float centerX = static_cast<float>(correctTouchPosition ? getSweetSpotCenterXAt(keyId)
-            : getKeyCenterXOfKeyIdG(keyId));
-    const float visualKeyCenterY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
-    float centerY;
-    if (correctTouchPosition) {
-        const float sweetSpotCenterY = static_cast<float>(getSweetSpotCenterYAt(keyId));
-        const float gapY = sweetSpotCenterY - visualKeyCenterY;
-        centerY = visualKeyCenterY + gapY * verticalScale;
-    } else {
-        centerY = visualKeyCenterY;
-    }
+        const int keyId, const int x, const int y, const bool isGeometric) const {
+    const float centerX = static_cast<float>(getKeyCenterXOfKeyIdG(keyId, x, isGeometric));
+    const float centerY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId, y, isGeometric));
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
-    const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
     return ProximityInfoUtils::getSquaredDistanceFloat(centerX, centerY, touchX, touchY)
-            / GeometryUtils::SQUARE_FLOAT(keyWidth);
+            / GeometryUtils::SQUARE_FLOAT(static_cast<float>(getMostCommonKeyWidth()));
 }
 
 int ProximityInfo::getCodePointOf(const int keyIndex) const {
@@ -168,41 +157,80 @@ void ProximityInfo::initializeG() {
         const int lowerCode = CharUtils::toLowerCase(code);
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
+        if (hasTouchPositionCorrectionData()) {
+            // Computes sweet spot center points for geometric input.
+            const float verticalScale = ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G;
+            const float sweetSpotCenterY = static_cast<float>(mSweetSpotCenterYs[i]);
+            const float gapY = sweetSpotCenterY - mCenterYsG[i];
+            mSweetSpotCenterYsG[i] = static_cast<int>(mCenterYsG[i] + gapY * verticalScale);
+        }
         mCodeToKeyMap[lowerCode] = i;
         mKeyIndexToCodePointG[i] = lowerCode;
     }
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
         for (int j = i + 1; j < KEY_COUNT; j++) {
-            mKeyKeyDistancesG[i][j] = GeometryUtils::getDistanceInt(
-                    mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
+            if (hasTouchPositionCorrectionData()) {
+                // Computes distances using sweet spots if they exist.
+                // We have two types of Y coordinate sweet spots, for geometric and for the others.
+                // The sweet spots for geometric input are used for calculating key-key distances
+                // here.
+                mKeyKeyDistancesG[i][j] = GeometryUtils::getDistanceInt(
+                        mSweetSpotCenterXs[i], mSweetSpotCenterYsG[i],
+                        mSweetSpotCenterXs[j], mSweetSpotCenterYsG[j]);
+            } else {
+                mKeyKeyDistancesG[i][j] = GeometryUtils::getDistanceInt(
+                        mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
+            }
             mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
         }
     }
 }
 
-int ProximityInfo::getKeyCenterXOfCodePointG(int charCode) const {
-    return getKeyCenterXOfKeyIdG(
-            ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, charCode, &mCodeToKeyMap));
-}
-
-int ProximityInfo::getKeyCenterYOfCodePointG(int charCode) const {
-    return getKeyCenterYOfKeyIdG(
-            ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, charCode, &mCodeToKeyMap));
-}
-
-int ProximityInfo::getKeyCenterXOfKeyIdG(int keyId) const {
-    if (keyId >= 0) {
-        return mCenterXsG[keyId];
+// referencePointX is used only for keys wider than most common key width. When the referencePointX
+// is NOT_A_COORDINATE, this method calculates the return value without using the line segment.
+// isGeometric is currently not used because we don't have extra X coordinates sweet spots for
+// geometric input.
+int ProximityInfo::getKeyCenterXOfKeyIdG(
+        const int keyId, const int referencePointX, const bool isGeometric) const {
+    if (keyId < 0) {
+        return 0;
     }
-    return 0;
+    int centerX = (hasTouchPositionCorrectionData()) ? static_cast<int>(mSweetSpotCenterXs[keyId])
+            : mCenterXsG[keyId];
+    const int keyWidth = mKeyWidths[keyId];
+    if (referencePointX != NOT_A_COORDINATE
+            && keyWidth > getMostCommonKeyWidth()) {
+        // For keys wider than most common keys, we use a line segment instead of the center point;
+        // thus, centerX is adjusted depending on referencePointX.
+        const int keyWidthHalfDiff = (keyWidth - getMostCommonKeyWidth()) / 2;
+        if (referencePointX < centerX - keyWidthHalfDiff) {
+            centerX -= keyWidthHalfDiff;
+        } else if (referencePointX > centerX + keyWidthHalfDiff) {
+            centerX += keyWidthHalfDiff;
+        } else {
+            centerX = referencePointX;
+        }
+    }
+    return centerX;
 }
 
-int ProximityInfo::getKeyCenterYOfKeyIdG(int keyId) const {
-    if (keyId >= 0) {
+// referencePointY is currently not used because we don't specially handle keys higher than the
+// most common key height. When the referencePointY is NOT_A_COORDINATE, this method should
+// calculate the return value without using the line segment.
+int ProximityInfo::getKeyCenterYOfKeyIdG(
+        const int keyId,  const int referencePointY, const bool isGeometric) const {
+    // TODO: Remove "isGeometric" and have separate "proximity_info"s for gesture and typing.
+    if (keyId < 0) {
+        return 0;
+    }
+    if (!hasTouchPositionCorrectionData()) {
         return mCenterYsG[keyId];
+    } else if (isGeometric) {
+        return static_cast<int>(mSweetSpotCenterYsG[keyId]);
+    } else {
+        return static_cast<int>(mSweetSpotCenterYs[keyId]);
     }
-    return 0;
 }
 
 int ProximityInfo::getKeyKeyDistanceG(const int keyId0, const int keyId1) const {

@@ -38,8 +38,7 @@ class ProximityInfoStateUtils {
     static int updateTouchPoints(const ProximityInfo *const proximityInfo,
             const int maxPointToKeyLength, const int *const inputProximities,
             const int *const inputXCoordinates, const int *const inputYCoordinates,
-            const int *const times, const int *const pointerIds,
-            const float verticalSweetSpotScale, const int inputSize,
+            const int *const times, const int *const pointerIds, const int inputSize,
             const bool isGeometric, const int pointerId, const int pushTouchPointStartIndex,
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs,
             std::vector<int> *sampledInputTimes, std::vector<int> *sampledLengthCache,
@@ -84,8 +83,7 @@ class ProximityInfoStateUtils {
             const std::vector<float> *const sampledNormalizedSquaredLengthCache, const int keyCount,
             const int inputIndex, const int keyId);
     static void initGeometricDistanceInfos(const ProximityInfo *const proximityInfo,
-            const int sampledInputSize, const int lastSavedInputSize,
-            const float verticalSweetSpotScale,
+            const int sampledInputSize, const int lastSavedInputSize, const bool isGeometric,
             const std::vector<int> *const sampledInputXs,
             const std::vector<int> *const sampledInputYs,
             std::vector<NearKeycodesSet> *sampledNearKeySets,
@@ -120,7 +118,7 @@ class ProximityInfoStateUtils {
 
     static float updateNearKeysDistances(const ProximityInfo *const proximityInfo,
             const float maxPointToKeyLength, const int x, const int y,
-            const float verticalSweetSpotScale,
+            const bool isGeometric,
             NearKeysDistanceMap *const currentNearKeysDistances);
     static bool isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
@@ -133,7 +131,7 @@ class ProximityInfoStateUtils {
             std::vector<int> *sampledInputXs, std::vector<int> *sampledInputYs);
     static bool pushTouchPoint(const ProximityInfo *const proximityInfo,
             const int maxPointToKeyLength, const int inputIndex, const int nodeCodePoint, int x,
-            int y, const int time, const float verticalSweetSpotScale,
+            int y, const int time, const bool isGeometric,
             const bool doSampling, const bool isLastPoint,
             const float sumAngle, NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
