@@ -18,6 +18,7 @@
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "utils/hash_map_compat.h"
@@ -34,7 +35,7 @@ class MultiBigramMap {
 
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
-    int getBigramProbability(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
+    int getBigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int wordPosition, const int nextWordPosition, const int unigramProbability) {
         hash_map_compat<int, BigramMap>::const_iterator mapPosition =
                 mBigramMaps.find(wordPosition);
@@ -42,11 +43,11 @@ class MultiBigramMap {
             return mapPosition->second.getBigramProbability(nextWordPosition, unigramProbability);
         }
         if (mBigramMaps.size() < MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP) {
-            addBigramsForWordPosition(binaryDicitonaryInfo, wordPosition);
+            addBigramsForWordPosition(binaryDictionaryInfo, wordPosition);
             return mBigramMaps[wordPosition].getBigramProbability(
                     nextWordPosition, unigramProbability);
         }
-        return BinaryFormat::getBigramProbability(binaryDicitonaryInfo->getDictRoot(),
+        return readBigramProbabilityFromBinaryDictionary(binaryDictionaryInfo,
                 wordPosition, nextWordPosition, unigramProbability);
     }
 
@@ -62,15 +63,29 @@ class MultiBigramMap {
         BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP) {}
         ~BigramMap() {}
 
-        void init(const BinaryDictionaryInfo *const binaryDicitonaryInfo, const int position) {
-            BinaryFormat::fillBigramProbabilityToHashMap(
-                    binaryDicitonaryInfo->getDictRoot(), position, &mBigramMap);
+        void init(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) {
+            const int bigramsListPos = BinaryFormat::getBigramListPositionForWordPosition(
+                    binaryDictionaryInfo->getDictRoot(), nodePos);
+            if (0 == bigramsListPos) {
+                return;
+            }
+            for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+                    bigramsIt.hasNext(); /* no-op */) {
+                bigramsIt.next();
+                mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
+            }
         }
 
-        inline int getBigramProbability(const int nextWordPosition, const int unigramProbability)
-                const {
-           return BinaryFormat::getBigramProbabilityFromHashMap(
-                   nextWordPosition, &mBigramMap, unigramProbability);
+        AK_FORCE_INLINE int getBigramProbability(
+                const int nextWordPosition, const int unigramProbability) const {
+            const hash_map_compat<int, int>::const_iterator bigramProbabilityIt =
+                    mBigramMap.find(nextWordPosition);
+            if (bigramProbabilityIt != mBigramMap.end()) {
+                const int bigramProbability = bigramProbabilityIt->second;
+                return ProbabilityUtils::computeProbabilityForBigram(
+                        unigramProbability, bigramProbability);
+            }
+            return ProbabilityUtils::backoff(unigramProbability);
         }
 
      private:
@@ -78,9 +93,28 @@ class MultiBigramMap {
         hash_map_compat<int, int> mBigramMap;
     };
 
-    void addBigramsForWordPosition(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
-            const int position) {
-        mBigramMaps[position].init(binaryDicitonaryInfo, position);
+    AK_FORCE_INLINE void addBigramsForWordPosition(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int position) {
+        mBigramMaps[position].init(binaryDictionaryInfo, position);
+    }
+
+    AK_FORCE_INLINE int readBigramProbabilityFromBinaryDictionary(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos,
+            const int nextWordPosition, const int unigramProbability) {
+        const int bigramsListPos = BinaryFormat::getBigramListPositionForWordPosition(
+                binaryDictionaryInfo->getDictRoot(), nodePos);
+        if (0 == bigramsListPos) {
+            return ProbabilityUtils::backoff(unigramProbability);
+        }
+        for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+                bigramsIt.hasNext(); /* no-op */) {
+            bigramsIt.next();
+            if (bigramsIt.getBigramPos() == nextWordPosition) {
+                return ProbabilityUtils::computeProbabilityForBigram(
+                        unigramProbability, bigramsIt.getProbability());
+            }
+        }
+        return ProbabilityUtils::backoff(unigramProbability);
     }
 
     hash_map_compat<int, BigramMap> mBigramMaps;

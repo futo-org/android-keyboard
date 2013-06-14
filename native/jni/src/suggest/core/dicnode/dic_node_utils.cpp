@@ -233,8 +233,7 @@ namespace latinime {
         return multiBigramMap->getBigramProbability(
                 binaryDictionaryInfo, prevWordPos, wordPos, unigramProbability);
     }
-    return BinaryFormat::getBigramProbability(
-            binaryDictionaryInfo->getDictRoot(), prevWordPos, wordPos, unigramProbability);
+    return ProbabilityUtils::backoff(unigramProbability);
 }
 
 ///////////////////////////////////////
