@@ -300,33 +300,6 @@ static inline void prof_out(void) {
 #define DIC_NODES_CACHE_INITIAL_QUEUE_ID_CACHE_FOR_CONTINUOUS_SUGGESTION 3
 #define DIC_NODES_CACHE_PRIORITY_QUEUES_SIZE 4
 
-// Size, in bytes, of the bloom filter index for bigrams
-// 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
-// where k is the number of hash functions, n the number of bigrams, and m the number of
-// bits we can test.
-// At the moment 100 is the maximum number of bigrams for a word with the current
-// dictionaries, so n = 100. 1024 buckets give us m = 1024.
-// With 1 hash function, our false positive rate is about 9.3%, which should be enough for
-// our uses since we are only using this to increase average performance. For the record,
-// k = 2 gives 3.1% and k = 3 gives 1.6%. With k = 1, making m = 2048 gives 4.8%,
-// and m = 4096 gives 2.4%.
-#define BIGRAM_FILTER_BYTE_SIZE 128
-// Must be smaller than BIGRAM_FILTER_BYTE_SIZE * 8, and preferably prime. 1021 is the largest
-// prime under 128 * 8.
-#define BIGRAM_FILTER_MODULO 1021
-#if BIGRAM_FILTER_BYTE_SIZE * 8 < BIGRAM_FILTER_MODULO
-#error "BIGRAM_FILTER_MODULO is larger than BIGRAM_FILTER_BYTE_SIZE"
-#endif
-
-// Max number of bigram maps (previous word contexts) to be cached. Increasing this number could
-// improve bigram lookup speed for multi-word suggestions, but at the cost of more memory usage.
-// Also, there are diminishing returns since the most frequently used bigrams are typically near
-// the beginning of the input and are thus the first ones to be cached. Note that these bigrams
-// are reset for each new composing word.
-#define MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP 25
-// Most common previous word contexts currently have 100 bigrams
-#define DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP 100
-
 template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
 template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
 

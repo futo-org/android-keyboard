@@ -17,10 +17,13 @@
 #ifndef LATINIME_MULTI_BIGRAM_MAP_H
 #define LATINIME_MULTI_BIGRAM_MAP_H
 
+#include <cstddef>
+
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
+#include "suggest/core/dictionary/bloom_filter.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -60,7 +63,7 @@ class MultiBigramMap {
 
     class BigramMap {
      public:
-        BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP) {}
+        BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP), mBloomFilter() {}
         ~BigramMap() {}
 
         void init(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) {
@@ -73,24 +76,30 @@ class MultiBigramMap {
                     bigramsIt.hasNext(); /* no-op */) {
                 bigramsIt.next();
                 mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
+                mBloomFilter.setInFilter(bigramsIt.getBigramPos());
             }
         }
 
         AK_FORCE_INLINE int getBigramProbability(
                 const int nextWordPosition, const int unigramProbability) const {
-            const hash_map_compat<int, int>::const_iterator bigramProbabilityIt =
-                    mBigramMap.find(nextWordPosition);
-            if (bigramProbabilityIt != mBigramMap.end()) {
-                const int bigramProbability = bigramProbabilityIt->second;
-                return ProbabilityUtils::computeProbabilityForBigram(
-                        unigramProbability, bigramProbability);
+            if (mBloomFilter.isInFilter(nextWordPosition)) {
+                const hash_map_compat<int, int>::const_iterator bigramProbabilityIt =
+                        mBigramMap.find(nextWordPosition);
+                if (bigramProbabilityIt != mBigramMap.end()) {
+                    const int bigramProbability = bigramProbabilityIt->second;
+                    return ProbabilityUtils::computeProbabilityForBigram(
+                            unigramProbability, bigramProbability);
+                }
             }
             return ProbabilityUtils::backoff(unigramProbability);
         }
 
      private:
-        // Note: Default copy constructor needed for use in hash_map.
+        // NOTE: The BigramMap class doesn't use DISALLOW_COPY_AND_ASSIGN() because its default
+        // copy constructor is needed for use in hash_map.
+        static const int DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP;
         hash_map_compat<int, int> mBigramMap;
+        BloomFilter mBloomFilter;
     };
 
     AK_FORCE_INLINE void addBigramsForWordPosition(
@@ -117,6 +126,7 @@ class MultiBigramMap {
         return ProbabilityUtils::backoff(unigramProbability);
     }
 
+    static const size_t MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP;
     hash_map_compat<int, BigramMap> mBigramMaps;
 };
 } // namespace latinime
