@@ -84,11 +84,16 @@ public class KeyboardParams {
 
     public void onAddKey(final Key newKey) {
         final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
-        final boolean zeroWidthSpacer = key.isSpacer() && key.mWidth == 0;
-        if (!zeroWidthSpacer) {
-            mKeys.add(key);
-            updateHistogram(key);
+        final boolean isSpacer = key.isSpacer();
+        if (isSpacer && key.mWidth == 0) {
+            // Ignore zero width {@link Spacer}.
+            return;
         }
+        mKeys.add(key);
+        if (isSpacer) {
+            return;
+        }
+        updateHistogram(key);
         if (key.mCode == Constants.CODE_SHIFT) {
             mShiftKeys.add(key);
         }
