@@ -1308,9 +1308,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY =
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
-                    "suggestion", "x", "y", "isBatchMode");
+                    "suggestion", "x", "y", "isBatchMode", "score", "kind", "sourceDict");
     public static void latinIME_pickSuggestionManually(final String replacedWord,
-            final int index, final String suggestion, final boolean isBatchMode) {
+            final int index, final String suggestion, final boolean isBatchMode,
+            final int score, final int kind, final String sourceDict) {
         final ResearchLogger researchLogger = getInstance();
         if (!replacedWord.equals(suggestion.toString())) {
             // The user chose something other than what was already there.
@@ -1321,7 +1322,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
                 suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
-                Constants.SUGGESTION_STRIP_COORDINATE, isBatchMode);
+                Constants.SUGGESTION_STRIP_COORDINATE, isBatchMode, score, kind, sourceDict);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());
     }
@@ -1843,7 +1844,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private static final LogStatement LOGSTATEMENT_LATINIME_ONENDBATCHINPUT =
             new LogStatement("LatinIMEOnEndBatchInput", true, false, "enteredText",
-                    "enteredWordPos");
+                    "enteredWordPos", "suggestedWords");
     public static void latinIME_onEndBatchInput(final CharSequence enteredText,
             final int enteredWordPos, final SuggestedWords suggestedWords) {
         final ResearchLogger researchLogger = getInstance();
@@ -1851,7 +1852,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             researchLogger.mCurrentLogUnit.setWords(enteredText.toString());
         }
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONENDBATCHINPUT, enteredText,
-                enteredWordPos);
+                enteredWordPos, suggestedWords);
         researchLogger.mCurrentLogUnit.initializeSuggestions(suggestedWords);
         researchLogger.mStatistics.recordGestureInput(enteredText.length(),
                 SystemClock.uptimeMillis());
