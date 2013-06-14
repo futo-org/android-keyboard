@@ -21,6 +21,7 @@
 #include "bigram_dictionary.h"
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/dictionary.h"
@@ -100,12 +101,11 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
  * and the bigrams are used to boost unigram result scores, it makes little sense to
  * reduce their scope to the ones that match the first letter.
  */
-int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *inputCodePoints,
+int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, int *inputCodePoints,
         int inputSize, int *bigramCodePoints, int *bigramProbability, int *outputTypes) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
-    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
@@ -116,21 +116,20 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
     }
     // If still no bigrams, we really don't have them!
     if (0 == pos) return 0;
-    uint8_t bigramFlags;
+
     int bigramCount = 0;
-    do {
-        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        int bigramBuffer[MAX_WORD_LENGTH];
-        int unigramProbability = 0;
-        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
-                &pos);
-        const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
-                bigramBuffer, &unigramProbability);
+    int unigramProbability = 0;
+    int bigramBuffer[MAX_WORD_LENGTH];
+    for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
+            bigramsIt.hasNext(); /* no-op */) {
+        bigramsIt.next();
+        const int length = BinaryFormat::getWordAtAddress(
+                mBinaryDictionaryInfo->getDictRoot(), bigramsIt.getBigramPos(),
+                MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
 
         // inputSize == 0 means we are trying to find bigram predictions.
         if (inputSize < 1 || checkFirstCharacter(bigramBuffer, inputCodePoints)) {
-            const int bigramProbabilityTemp =
-                    BinaryFormat::MASK_ATTRIBUTE_PROBABILITY & bigramFlags;
+            const int bigramProbabilityTemp = bigramsIt.getProbability();
             // Due to space constraints, the probability for bigrams is approximate - the lower the
             // unigram probability, the worse the precision. The theoritical maximum error in
             // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
@@ -142,7 +141,7 @@ int BigramDictionary::getBigrams(const int *prevWord, int prevWordLength, int *i
                     outputTypes);
             ++bigramCount;
         }
-    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    }
     return min(bigramCount, MAX_RESULTS);
 }
 
@@ -187,22 +186,20 @@ bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) cons
 
 bool BigramDictionary::isValidBigram(const int *word1, int length1, const int *word2,
         int length2) const {
-    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;
-    int nextWordPos = BinaryFormat::getTerminalPosition(root, word2, length2,
-            false /* forceLowerCaseSearch */);
+    int nextWordPos = BinaryFormat::getTerminalPosition(mBinaryDictionaryInfo->getDictRoot(),
+            word2, length2, false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == nextWordPos) return false;
-    uint8_t bigramFlags;
-    do {
-        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
-                &pos);
-        if (bigramPos == nextWordPos) {
+
+    for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
+            bigramsIt.hasNext(); /* no-op */) {
+        bigramsIt.next();
+        if (bigramsIt.getBigramPos() == nextWordPos) {
             return true;
         }
-    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    }
     return false;
 }
 

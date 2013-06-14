@@ -27,8 +27,8 @@ class BigramDictionary {
  public:
     BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo);
 
-    int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
-            int *frequencies, int *outputTypes) const;
+    int getPredictions(const int *word, int length, int *inputCodePoints, int inputSize,
+            int *outWords, int *frequencies, int *outputTypes) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
 
