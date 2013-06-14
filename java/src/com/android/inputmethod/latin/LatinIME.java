@@ -2357,7 +2357,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 LastComposedWord.NOT_A_SEPARATOR);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
-                    mWordComposer.isBatchMode());
+                    mWordComposer.isBatchMode(), suggestionInfo.mScore, suggestionInfo.mKind,
+                    suggestionInfo.mSourceDict);
         }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
