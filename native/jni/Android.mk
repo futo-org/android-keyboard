@@ -57,9 +57,11 @@ LATIN_IME_CORE_SRC_FILES := \
         binary_dictionary_format_utils.cpp \
         binary_dictionary_header.cpp \
         binary_dictionary_header_reading_utils.cpp \
+        bloom_filter.cpp \
         byte_array_utils.cpp \
         dictionary.cpp \
-        digraph_utils.cpp) \
+        digraph_utils.cpp \
+        multi_bigram_map.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
         proximity_info.cpp \
