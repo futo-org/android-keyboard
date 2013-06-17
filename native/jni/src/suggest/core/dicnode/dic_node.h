@@ -128,7 +128,7 @@ class DicNode {
     void initAsRootWithPreviousWord(DicNode *dicNode, const int pos, const int childrenPos,
             const int childrenCount) {
         mIsUsed = true;
-        mIsCachedForNextSuggestion = false;
+        mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(
                 pos, 0, childrenPos, 0, 0, 0, childrenCount, 0, 0, false, false, true, 0, 0);
         // TODO: Move to dicNodeState?
@@ -477,6 +477,11 @@ class DicNode {
 
     inline uint16_t getDepth() const {
         return mDicNodeProperties.getDepth();
+    }
+
+    // "Length" includes spaces.
+    inline uint16_t getTotalLength() const {
+        return getDepth() + mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
     }
 
     AK_FORCE_INLINE void dump(const char *tag) const {

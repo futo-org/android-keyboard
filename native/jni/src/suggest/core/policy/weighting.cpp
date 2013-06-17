@@ -106,7 +106,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         // only used for typing
         return weighting->getSubstitutionCost();
     case CT_NEW_WORD_SPACE_OMITTION:
-        return weighting->getNewWordCost(traverseSession, dicNode);
+        return weighting->getNewWordSpatialCost(traverseSession, dicNode, inputStateG);
     case CT_MATCH:
         return weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
     case CT_COMPLETION:
@@ -134,7 +134,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_SUBSTITUTION:
         return 0.0f;
     case CT_NEW_WORD_SPACE_OMITTION:
-        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, multiBigramMap);
+        return weighting->getNewWordBigramLanguageCost(
+                traverseSession, parentDicNode, multiBigramMap);
     case CT_MATCH:
         return 0.0f;
     case CT_COMPLETION:
@@ -146,7 +147,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
     case CT_NEW_WORD_SPACE_SUBSTITUTION:
-        return weighting->getNewWordBigramCost(traverseSession, parentDicNode, multiBigramMap);
+        return weighting->getNewWordBigramLanguageCost(
+                traverseSession, parentDicNode, multiBigramMap);
     case CT_INSERTION:
         return 0.0f;
     case CT_TRANSPOSITION:

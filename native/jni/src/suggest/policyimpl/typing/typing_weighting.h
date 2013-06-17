@@ -138,12 +138,12 @@ class TypingWeighting : public Weighting {
         return cost + weightedDistance;
     }
 
-    float getNewWordCost(const DicTraverseSession *const traverseSession,
-            const DicNode *const dicNode) const {
+    float getNewWordSpatialCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode, DicNode_InputStateG *inputStateG) const {
         return ScoringParams::COST_NEW_WORD * traverseSession->getMultiWordCostMultiplier();
     }
 
-    float getNewWordBigramCost(const DicTraverseSession *const traverseSession,
+    float getNewWordBigramLanguageCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode,
             MultiBigramMap *const multiBigramMap) const {
         return DicNodeUtils::getBigramNodeImprobability(traverseSession->getBinaryDictionaryInfo(),
