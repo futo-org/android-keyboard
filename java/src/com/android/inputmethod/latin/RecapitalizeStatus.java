@@ -163,7 +163,10 @@ public class RecapitalizeStatus {
             final int codePoint = mStringBefore.codePointBefore(nonWhitespaceEnd);
             if (!Character.isWhitespace(codePoint)) break;
         }
-        if (0 != nonWhitespaceStart || len != nonWhitespaceEnd) {
+        // If nonWhitespaceStart >= nonWhitespaceEnd, that means the selection contained only
+        // whitespace, so we leave it as is.
+        if ((0 != nonWhitespaceStart || len != nonWhitespaceEnd)
+                && nonWhitespaceStart < nonWhitespaceEnd) {
             mCursorEndAfter = mCursorStartBefore + nonWhitespaceEnd;
             mCursorStartBefore = mCursorStartAfter = mCursorStartBefore + nonWhitespaceStart;
             mStringAfter = mStringBefore =
