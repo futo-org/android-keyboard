@@ -56,7 +56,7 @@
         <item>MODEL=XT907:MANUFACTURER=motorola,30</item>
         <!-- Sony Xperia Z -->
         <item>MODEL=C6603:MANUFACTURER=Sony,35</item>
-        <!-- Default value for unknown device -->
-        <item>,20</item>
+        <!-- Default value for unknown device. The negative value means system default. -->
+        <item>,-1</item>
     </string-array>
 </resources>
