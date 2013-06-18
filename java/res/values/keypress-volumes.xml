@@ -26,7 +26,7 @@
         <item>HARDWARE=grouper,0.3f</item>
         <item>HARDWARE=mako,0.3f</item>
         <item>HARDWARE=manta,0.2f</item>
-        <!-- Default value for unknown device -->
-        <item>,0.2f</item>
+        <!-- Default value for unknown device. The negative value means system default. -->
+        <item>,-1.0f</item>
     </string-array>
 </resources>
