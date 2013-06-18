@@ -453,6 +453,9 @@ public final class SettingsFragment extends InputMethodSettingsFragment
 
             @Override
             public String getValueText(final int value) {
+                if (value < 0) {
+                    return res.getString(R.string.settings_system_default);
+                }
                 return Integer.toString(value);
             }
 
