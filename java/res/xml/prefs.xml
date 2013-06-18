@@ -170,14 +170,12 @@
             <com.android.inputmethod.latin.SeekBarDialogPreference
                 android:key="pref_key_longpress_timeout"
                 android:title="@string/prefs_key_longpress_timeout_settings"
-                latin:valueFormatText="@string/abbreviation_unit_milliseconds"
                 latin:minValue="@integer/config_min_longpress_timeout"
                 latin:maxValue="@integer/config_max_longpress_timeout"
                 latin:stepValue="@integer/config_longpress_timeout_step" />
             <com.android.inputmethod.latin.SeekBarDialogPreference
                 android:key="pref_vibration_duration_settings"
                 android:title="@string/prefs_keypress_vibration_duration_settings"
-                latin:valueFormatText="@string/abbreviation_unit_milliseconds"
                 latin:maxValue="@integer/config_max_vibration_duration" />
             <com.android.inputmethod.latin.SeekBarDialogPreference
                 android:key="pref_keypress_sound_volume"
