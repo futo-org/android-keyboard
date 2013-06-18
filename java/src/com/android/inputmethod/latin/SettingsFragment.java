@@ -364,6 +364,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             public void feedbackValue(final int value) {
                 AudioAndHapticFeedbackManager.getInstance().vibrate(value);
             }
+
+            @Override
+            public String getValueText(final int value) {
+                return res.getString(R.string.abbreviation_unit_milliseconds, value);
+            }
         });
     }
 
@@ -393,6 +398,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             @Override
             public int readDefaultValue(final String key) {
                 return Settings.readDefaultKeyLongpressTimeout(res);
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return res.getString(R.string.abbreviation_unit_milliseconds, value);
             }
 
             @Override
@@ -436,6 +446,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             @Override
             public int readDefaultValue(final String key) {
                 return getPercentageFromValue(Settings.readDefaultKeypressSoundVolume(res));
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return Integer.toString(value);
             }
 
             @Override

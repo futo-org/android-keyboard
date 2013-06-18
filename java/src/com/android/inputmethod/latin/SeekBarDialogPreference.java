@@ -33,10 +33,10 @@ public final class SeekBarDialogPreference extends DialogPreference
         public int readDefaultValue(final String key);
         public void writeValue(final int value, final String key);
         public void writeDefaultValue(final String key);
+        public String getValueText(final int value);
         public void feedbackValue(final int value);
     }
 
-    private final int mValueFormatResId;
     private final int mMaxValue;
     private final int mMinValue;
     private final int mStepValue;
@@ -50,7 +50,6 @@ public final class SeekBarDialogPreference extends DialogPreference
         super(context, attrs);
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.SeekBarDialogPreference, 0, 0);
-        mValueFormatResId = a.getResourceId(R.styleable.SeekBarDialogPreference_valueFormatText, 0);
         mMaxValue = a.getInt(R.styleable.SeekBarDialogPreference_maxValue, 0);
         mMinValue = a.getInt(R.styleable.SeekBarDialogPreference_minValue, 0);
         mStepValue = a.getInt(R.styleable.SeekBarDialogPreference_stepValue, 0);
@@ -60,15 +59,8 @@ public final class SeekBarDialogPreference extends DialogPreference
 
     public void setInterface(final ValueProxy proxy) {
         mValueProxy = proxy;
-        setSummary(getValueText(clipValue(proxy.readValue(getKey()))));
-    }
-
-    private String getValueText(final int value) {
-        if (mValueFormatResId == 0) {
-            return Integer.toString(value);
-        } else {
-            return getContext().getString(mValueFormatResId, value);
-        }
+        final int value = mValueProxy.readValue(getKey());
+        setSummary(mValueProxy.getValueText(value));
     }
 
     @Override
@@ -101,16 +93,11 @@ public final class SeekBarDialogPreference extends DialogPreference
         return clipValue(getValueFromProgress(progress));
     }
 
-    private void setValue(final int value, final boolean fromUser) {
-        mValueView.setText(getValueText(value));
-        if (!fromUser) {
-            mSeekBar.setProgress(getProgressFromValue(value));
-        }
-    }
-
     @Override
     protected void onBindDialogView(final View view) {
-        setValue(clipValue(mValueProxy.readValue(getKey())), false /* fromUser */);
+        final int value = mValueProxy.readValue(getKey());
+        mValueView.setText(mValueProxy.getValueText(value));
+        mSeekBar.setProgress(getProgressFromValue(clipValue(value)));
     }
 
     @Override
@@ -125,13 +112,15 @@ public final class SeekBarDialogPreference extends DialogPreference
         super.onClick(dialog, which);
         final String key = getKey();
         if (which == DialogInterface.BUTTON_NEUTRAL) {
-            setValue(clipValue(mValueProxy.readDefaultValue(key)), false /* fromUser */);
+            final int value = mValueProxy.readDefaultValue(key);
+            setSummary(mValueProxy.getValueText(value));
             mValueProxy.writeDefaultValue(key);
             return;
         }
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            setSummary(mValueView.getText());
-            mValueProxy.writeValue(getClippedValueFromProgress(mSeekBar.getProgress()), key);
+            final int value = getClippedValueFromProgress(mSeekBar.getProgress());
+            setSummary(mValueProxy.getValueText(value));
+            mValueProxy.writeValue(value, key);
             return;
         }
     }
@@ -139,7 +128,11 @@ public final class SeekBarDialogPreference extends DialogPreference
     @Override
     public void onProgressChanged(final SeekBar seekBar, final int progress,
             final boolean fromUser) {
-        setValue(getClippedValueFromProgress(progress), fromUser);
+        final int value = getClippedValueFromProgress(progress);
+        mValueView.setText(mValueProxy.getValueText(value));
+        if (!fromUser) {
+            mSeekBar.setProgress(getProgressFromValue(value));
+        }
     }
 
     @Override
