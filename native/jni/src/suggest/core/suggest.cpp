@@ -530,6 +530,12 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
             CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
     Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,
             &newDicNode, traverseSession->getMultiBigramMap());
-    traverseSession->getDicTraverseCache()->copyPushNextActive(&newDicNode);
+    if (newDicNode.getCompoundDistance() < static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
+        // newDicNode is worth continuing to traverse.
+        // CAVEAT: This pruning is important for speed. Remove this when we can afford not to prune
+        // here because here is not the right place to do pruning. Pruning should take place only
+        // in DicNodePriorityQueue.
+        traverseSession->getDicTraverseCache()->copyPushNextActive(&newDicNode);
+    }
 }
 } // namespace latinime
