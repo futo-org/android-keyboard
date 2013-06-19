@@ -27,5 +27,6 @@ public class CommandList {
         Dicttool.addCommand("package", Package.Packager.class);
         Dicttool.addCommand("unpackage", Package.Unpackager.class);
         Dicttool.addCommand("makedict", Makedict.class);
+        Dicttool.addCommand("test", Test.class);
     }
 }

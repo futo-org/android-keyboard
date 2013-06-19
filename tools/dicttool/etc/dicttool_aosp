@@ -33,6 +33,7 @@ progdir=`pwd`
 prog="${progdir}"/`basename "${prog}"`
 cd "${oldwd}"
 
+classname=com.android.inputmethod.latin.dicttool.Dicttool
 jarfile=dicttool_aosp.jar
 frameworkdir="$progdir"
 if [ ! -r "$frameworkdir/$jarfile" ]
@@ -51,12 +52,21 @@ then
     exit 1
 fi
 
+lib=junit.jar
+if [ ! -r "$frameworkdir/$lib" ]
+then
+    echo `basename "$prog"`": can't find lib $lib"
+    exit 1
+fi
+
 if [ "$OSTYPE" = "cygwin" ] ; then
     jarpath=`cygpath -w  "$frameworkdir/$jarfile"`
+    libpath=`cygpath -w  "$frameworkdir/$lib"`
     progdir=`cygpath -w  "$progdir"`
 else
     jarpath="$frameworkdir/$jarfile"
+    libpath="$frameworkdir/$lib"
 fi
 
 # might need more memory, e.g. -Xmx128M
-exec java -ea -jar "$jarpath" "$@"
+exec java -ea -classpath "$libpath":"$jarpath" "$classname" "$@"
