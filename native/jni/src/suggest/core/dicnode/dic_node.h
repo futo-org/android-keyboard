@@ -51,6 +51,11 @@ namespace latinime {
 
 // This struct is purely a bucket to return values. No instances of this struct should be kept.
 struct DicNode_InputStateG {
+    DicNode_InputStateG()
+            : mNeedsToUpdateInputStateG(false), mPointerId(0), mInputIndex(0),
+              mPrevCodePoint(0), mTerminalDiffCost(0.0f), mRawLength(0.0f),
+              mDoubleLetterLevel(NOT_A_DOUBLE_LETTER) {}
+
     bool mNeedsToUpdateInputStateG;
     int mPointerId;
     int16_t mInputIndex;
