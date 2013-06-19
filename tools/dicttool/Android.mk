@@ -28,12 +28,10 @@ LOCAL_ANNOTATIONS_SRC_FILES := \
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(LOCAL_ANNOTATIONS_SRC_FILES) \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/Constants.java
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/Constants.java \
+        $(call all-java-files-under, tests)
 
-ifeq ($(DICTTOOL_UNITTEST), true)
-    LOCAL_SRC_FILES += $(call all-java-files-under, tests)
-    LOCAL_JAVA_LIBRARIES := junit
-endif
+LOCAL_JAVA_LIBRARIES := junit
 
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool_aosp

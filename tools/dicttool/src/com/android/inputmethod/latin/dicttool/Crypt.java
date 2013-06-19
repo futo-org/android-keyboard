@@ -40,10 +40,12 @@ public class Crypt {
         public Encrypter() {
         }
 
+        @Override
         public String getHelp() {
             return COMMAND + " <src_filename> <dst_filename>: Encrypts a file";
         }
 
+        @Override
         public void run() {
             throw new UnsupportedOperationException();
         }
@@ -55,10 +57,12 @@ public class Crypt {
         public Decrypter() {
         }
 
+        @Override
         public String getHelp() {
             return COMMAND + " <src_filename> <dst_filename>: Decrypts a file";
         }
 
+        @Override
         public void run() {
             throw new UnsupportedOperationException();
         }
