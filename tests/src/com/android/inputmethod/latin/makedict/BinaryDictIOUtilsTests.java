@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 @LargeTest
-public class BinaryDictIOUtilsTests  extends AndroidTestCase {
+public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOUtilsTests.class.getSimpleName();
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
             new FormatSpec.FormatOptions(3, true);
@@ -53,12 +53,17 @@ public class BinaryDictIOUtilsTests  extends AndroidTestCase {
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
         "\u00FC" /* ü */, "\u00E2" /* â */, "\u00F1" /* ñ */, // accented characters
         "\u4E9C" /* 亜 */, "\u4F0A" /* 伊 */, "\u5B87" /* 宇 */, // kanji
-        "\uD841\uDE28" /* 𠘨 */, "\uD840\uDC0B" /* 𠀋 */, "\uD861\uDeD7" /* 𨛗 */ // surrogate pair
+        "\uD841\uDE28" /* 𠘨 */, "\uD840\uDC0B" /* 𠀋 */, "\uD861\uDED7" /* 𨛗 */ // surrogate pair
     };
 
     public BinaryDictIOUtilsTests() {
+        this(System.currentTimeMillis());
+    }
+
+    public BinaryDictIOUtilsTests(final long seed) {
         super();
-        final Random random = new Random(123456);
+        Log.d(TAG, "Seed for test is " + seed);
+        final Random random = new Random(seed);
         sWords.clear();
         for (int i = 0; i < MAX_UNIGRAMS; ++i) {
             sWords.add(generateWord(random.nextInt()));

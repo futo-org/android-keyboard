@@ -53,64 +53,6 @@ public final class UserHistoryDictIOUtils {
         public int getFrequency(final String word1, final String word2);
     }
 
-    public static final class ByteArrayWrapper implements FusionDictionaryBufferInterface {
-        private byte[] mBuffer;
-        private int mPosition;
-
-        public ByteArrayWrapper(final byte[] buffer) {
-            mBuffer = buffer;
-            mPosition = 0;
-        }
-
-        @Override
-        public int readUnsignedByte() {
-            return mBuffer[mPosition++] & 0xFF;
-        }
-
-        @Override
-        public int readUnsignedShort() {
-            final int retval = readUnsignedByte();
-            return (retval << 8) + readUnsignedByte();
-        }
-
-        @Override
-        public int readUnsignedInt24() {
-            final int retval = readUnsignedShort();
-            return (retval << 8) + readUnsignedByte();
-        }
-
-        @Override
-        public int readInt() {
-            final int retval = readUnsignedShort();
-            return (retval << 16) + readUnsignedShort();
-        }
-
-        @Override
-        public int position() {
-            return mPosition;
-        }
-
-        @Override
-        public void position(int position) {
-            mPosition = position;
-        }
-
-        @Override
-        public void put(final byte b) {
-            mBuffer[mPosition++] = b;
-        }
-
-        @Override
-        public int limit() {
-            return mBuffer.length - 1;
-        }
-
-        @Override
-        public int capacity() {
-            return mBuffer.length;
-        }
-    }
-
     /**
      * Writes dictionary to file.
      */

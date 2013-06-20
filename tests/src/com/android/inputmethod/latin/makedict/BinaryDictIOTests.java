@@ -22,8 +22,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.inputmethod.latin.ByteArrayWrapper;
 import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
@@ -106,7 +106,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             if (bufferType == USE_BYTE_ARRAY) {
                 final byte[] array = new byte[(int)file.length()];
                 inStream.read(array);
-                return new UserHistoryDictIOUtils.ByteArrayWrapper(array);
+                return new ByteArrayWrapper(array);
             } else if (bufferType == USE_BYTE_BUFFER){
                 final ByteBuffer buffer = inStream.getChannel().map(
                         FileChannel.MapMode.READ_ONLY, 0, file.length());

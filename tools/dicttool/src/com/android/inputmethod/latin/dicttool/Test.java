@@ -16,10 +16,16 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtilsTests;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest;
+import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.IOException;
 
+/**
+ * Dicttool command implementing self-tests.
+ */
 public class Test extends Dicttool.Command {
     public static final String COMMAND = "test";
 
@@ -37,7 +43,9 @@ public class Test extends Dicttool.Command {
     }
 
     private void test() throws IOException, UnsupportedFormatException {
-        final BinaryDictOffdeviceUtilsTests tests = new BinaryDictOffdeviceUtilsTests();
-        tests.testGetRawDictWorks();
+        new BinaryDictOffdeviceUtilsTests().testGetRawDictWorks();
+        new FusionDictionaryTest().testFusion();
+        new BinaryDictInputOutputTest().testFlattenNodes();
+        new BinaryDictIOUtilsTests().testRandomWords();
     }
 }
