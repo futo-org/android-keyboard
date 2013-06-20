@@ -147,7 +147,7 @@ class TypingTraversal : public Traversal {
     AK_FORCE_INLINE bool sameAsTyped(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
         return traverseSession->getProximityInfoState(0)->sameAsTyped(
-                dicNode->getOutputWordBuf(), dicNode->getDepth());
+                dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
     AK_FORCE_INLINE int getMaxCacheSize() const {
@@ -171,7 +171,7 @@ class TypingTraversal : public Traversal {
             return false;
         }
         const int c = dicNode->getOutputWordBuf()[0];
-        const bool shortCappedWord = dicNode->getDepth()
+        const bool shortCappedWord = dicNode->getNodeCodePointCount()
                 < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && CharUtils::isAsciiUpper(c);
         return !shortCappedWord
                 || probability >= ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED;
