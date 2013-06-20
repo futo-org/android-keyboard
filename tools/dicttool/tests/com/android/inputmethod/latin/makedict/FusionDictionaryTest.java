@@ -73,10 +73,6 @@ public class FusionDictionaryTest extends TestCase {
         for (final String word : words) {
             if (--limit < 0) return;
             final CharGroup cg = FusionDictionary.findWordInTree(dict.mRoot, word);
-            if (null == cg) {
-                System.out.println("word " + dumpWord(word));
-                dumpDict(dict);
-            }
             assertNotNull(cg);
         }
     }

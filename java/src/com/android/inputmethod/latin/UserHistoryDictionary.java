@@ -261,7 +261,7 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
             inStream = new FileInputStream(file);
             inStream.read(buffer);
             UserHistoryDictIOUtils.readDictionaryBinary(
-                    new UserHistoryDictIOUtils.ByteArrayWrapper(buffer), listener);
+                    new ByteArrayWrapper(buffer), listener);
         } catch (FileNotFoundException e) {
             // This is an expected condition: we don't have a user history dictionary for this
             // language yet. It will be created sometime later.

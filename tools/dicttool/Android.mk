@@ -16,10 +16,22 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LATINIME_BASE_SOURCE_DIRECTORY := ../../java/src/com/android/inputmethod
+BUILD_TOP := ../../../../..
+FRAMEWORK_TOP := $(BUILD_TOP)/frameworks/base/core/java
+LATINIME_DIR := $(BUILD_TOP)/packages/inputmethods/LatinIME
+LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_DIR)/java/src/com/android/inputmethod
 LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
 MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_CORE_SOURCE_DIRECTORY)/makedict
+DICTTOOL_COMPAT_TESTS_DIRECTORY := compat
+DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
+        $(LATINIME_DIR)/tests/src/com/android/inputmethod/latin/makedict/
+
+USED_TARGETTED_UTILS := \
+        $(FRAMEWORK_TOP)/android/util/SparseArray.java \
+        $(FRAMEWORK_TOP)/com/android/internal/util/ArrayUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/CollectionUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SOURCE_DIRECTORY))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)
@@ -29,7 +41,10 @@ LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(LOCAL_ANNOTATIONS_SRC_FILES) \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/Constants.java \
-        $(call all-java-files-under, tests)
+        $(call all-java-files-under, tests) \
+        $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIRECTORY)) \
+        $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIRECTORY)) \
+        $(USED_TARGETTED_UTILS)
 
 LOCAL_JAVA_LIBRARIES := junit
 
