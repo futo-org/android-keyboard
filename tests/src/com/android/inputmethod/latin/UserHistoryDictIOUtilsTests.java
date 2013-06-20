@@ -153,7 +153,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
             inStream.read(buffer);
 
             UserHistoryDictIOUtils.readDictionaryBinary(
-                    new UserHistoryDictIOUtils.ByteArrayWrapper(buffer), listener);
+                    new ByteArrayWrapper(buffer), listener);
         } catch (FileNotFoundException e) {
             Log.e(TAG, "file not found", e);
         } catch (IOException e) {
