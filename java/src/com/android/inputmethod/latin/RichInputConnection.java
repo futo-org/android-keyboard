@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -441,25 +440,33 @@ public final class RichInputConnection {
      * Represents a range of text, relative to the current cursor position.
      */
     public static final class Range {
-        /** Characters before selection start */
-        public final int mCharsBefore;
+        private final CharSequence mTextAtCursor;
+        private final int mWordAtCursorStartIndex;
+        private final int mWordAtCursorEndIndex;
+        private final int mCursorIndex;
 
-        /**
-         * Characters after selection start, including one trailing word
-         * separator.
-         */
-        public final int mCharsAfter;
-
-        /** The actual characters that make up a word */
         public final CharSequence mWord;
 
-        public Range(int charsBefore, int charsAfter, CharSequence word) {
-            if (charsBefore < 0 || charsAfter < 0) {
+        public int getNumberOfCharsInWordBeforeCursor() {
+            return mCursorIndex - mWordAtCursorStartIndex;
+        }
+
+        public int getNumberOfCharsInWordAfterCursor() {
+            return mWordAtCursorEndIndex - mCursorIndex;
+        }
+
+        public Range(final CharSequence textAtCursor, final int wordAtCursorStartIndex,
+                final int wordAtCursorEndIndex, final int cursorIndex) {
+            if (wordAtCursorStartIndex < 0 || cursorIndex < wordAtCursorStartIndex
+                    || cursorIndex > wordAtCursorEndIndex
+                    || wordAtCursorEndIndex > textAtCursor.length()) {
                 throw new IndexOutOfBoundsException();
             }
-            this.mCharsBefore = charsBefore;
-            this.mCharsAfter = charsAfter;
-            this.mWord = word;
+            mTextAtCursor = textAtCursor;
+            mWordAtCursorStartIndex = wordAtCursorStartIndex;
+            mWordAtCursorEndIndex = wordAtCursorEndIndex;
+            mCursorIndex = cursorIndex;
+            mWord = mTextAtCursor.subSequence(mWordAtCursorStartIndex, mWordAtCursorEndIndex);
         }
     }
 
@@ -571,10 +578,8 @@ public final class RichInputConnection {
             }
         }
 
-        final SpannableString word = new SpannableString(TextUtils.concat(
-                before.subSequence(startIndexInBefore, before.length()),
-                after.subSequence(0, endIndexInAfter)));
-        return new Range(before.length() - startIndexInBefore, endIndexInAfter, word);
+        return new Range(TextUtils.concat(before, after), startIndexInBefore,
+                before.length() + endIndexInAfter, before.length());
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
