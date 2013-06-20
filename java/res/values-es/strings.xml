@@ -43,6 +43,7 @@
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin retraso"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminado"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"Predeterminado"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir contactos"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizar nombres de contactos para sugerencias y correcciones"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Punto y espacio"</string>
@@ -87,7 +88,7 @@
     <string name="spoken_description_shift" msgid="244197883292549308">"Mayús"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Mayúsculas activadas (tocar para inhabilitar)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Bloqueo de mayúsculas activado (tocar para inhabilitar)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Suprimir"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Eliminar"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Símbolos"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Letras"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"Números"</string>
