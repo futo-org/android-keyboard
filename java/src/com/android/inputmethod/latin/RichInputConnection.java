@@ -338,7 +338,6 @@ public final class RichInputConnection {
     public void setComposingRegion(final int start, final int end) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-        mCurrentCursorPosition = end;
         final CharSequence textBeforeCursor =
                 getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE + (end - start), 0);
         mCommittedTextBeforeComposingText.setLength(0);
@@ -720,6 +719,14 @@ public final class RichInputConnection {
         // mCurrentCursorPosition. We assume that if the updated position is between the old
         // position and the expected position, then it must be a belated update.
         return (newSelStart - oldSelStart) * (mCurrentCursorPosition - newSelStart) >= 0;
+    }
+
+    /**
+     * The user moved the cursor by hand. Take a note of it.
+     * @param newCursorPosition The new cursor position.
+     */
+    public void userMovedCursor(final int newCursorPosition) {
+        mCurrentCursorPosition = newCursorPosition;
     }
 
     /**
