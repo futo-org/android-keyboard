@@ -122,19 +122,25 @@ class TypingWeighting : public Weighting {
 
     float getInsertionCost(const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const {
-        const int16_t parentPointIndex = parentDicNode->getInputIndex(0);
-        const int prevCodePoint =
-                traverseSession->getProximityInfoState(0)->getPrimaryCodePointAt(parentPointIndex);
-
+        const int16_t insertedPointIndex = parentDicNode->getInputIndex(0);
+        const int prevCodePoint = traverseSession->getProximityInfoState(0)->getPrimaryCodePointAt(
+                insertedPointIndex);
         const int currentCodePoint = dicNode->getNodeCodePoint();
         const bool sameCodePoint = prevCodePoint == currentCodePoint;
+        const bool existsAdjacentProximityChars = traverseSession->getProximityInfoState(0)
+                ->existsAdjacentProximityChars(insertedPointIndex);
         const float dist = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
-                parentPointIndex + 1, currentCodePoint);
+                insertedPointIndex + 1, dicNode->getNodeCodePoint());
         const float weightedDistance = dist * ScoringParams::DISTANCE_WEIGHT_LENGTH;
         const bool singleChar = dicNode->getNodeCodePointCount() == 1;
-        const float cost = (singleChar ? ScoringParams::INSERTION_COST_FIRST_CHAR : 0.0f)
-                + (sameCodePoint ? ScoringParams::INSERTION_COST_SAME_CHAR
-                        : ScoringParams::INSERTION_COST);
+        float cost = (singleChar ? ScoringParams::INSERTION_COST_FIRST_CHAR : 0.0f);
+        if (sameCodePoint) {
+            cost += ScoringParams::INSERTION_COST_SAME_CHAR;
+        } else if (existsAdjacentProximityChars) {
+            cost += ScoringParams::INSERTION_COST_PROXIMITY_CHAR;
+        } else {
+            cost += ScoringParams::INSERTION_COST;
+        }
         return cost + weightedDistance;
     }
 

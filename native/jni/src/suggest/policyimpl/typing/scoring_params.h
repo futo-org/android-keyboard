@@ -42,6 +42,7 @@ class ScoringParams {
     static const float OMISSION_COST_FIRST_CHAR;
     static const float INSERTION_COST;
     static const float INSERTION_COST_SAME_CHAR;
+    static const float INSERTION_COST_PROXIMITY_CHAR;
     static const float INSERTION_COST_FIRST_CHAR;
     static const float TRANSPOSITION_COST;
     static const float SPACE_SUBSTITUTION_COST;
