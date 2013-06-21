@@ -306,12 +306,15 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     @Override
     public void onClick(final View view) {
         if (mLayoutHelper.isAddToDictionaryShowing(view)) {
-            mListener.addWordToUserDictionary(mLayoutHelper.getAddToDictionaryWord().toString());
+            mListener.addWordToUserDictionary(mLayoutHelper.getAddToDictionaryWord());
             clear();
             return;
         }
 
         final Object tag = view.getTag();
+        // Integer tag is set at
+        // {@link SuggestionStripLayoutHelper#setupWordViewsTextAndColor(SuggestedWords,int)} and
+        // {@link SuggestionStripLayoutHelper#layoutPunctuationSuggestions(SuggestedWords,ViewGroup}
         if (!(tag instanceof Integer)) {
             return;
         }

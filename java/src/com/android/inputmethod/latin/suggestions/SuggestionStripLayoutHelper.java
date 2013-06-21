@@ -449,8 +449,10 @@ final class SuggestionStripLayoutHelper {
             final TextView wordView = mWordViews.get(positionInStrip);
             wordView.setEnabled(true);
             wordView.setTextColor(mColorAutoCorrect);
-            final String punctuation = suggestedWords.getWord(positionInStrip);
-            wordView.setText(punctuation);
+            // {@link TextView#getTag()} is used to get the index in suggestedWords at
+            // {@link SuggestionStripView#onClick(View)}.
+            wordView.setTag(positionInStrip);
+            wordView.setText(suggestedWords.getWord(positionInStrip));
             wordView.setTextScaleX(1.0f);
             wordView.setCompoundDrawables(null, null, null, null);
             stripView.addView(wordView);
@@ -468,6 +470,8 @@ final class SuggestionStripLayoutHelper {
         final int wordWidth = (int)(width * mCenterSuggestionWeight);
         final CharSequence text = getEllipsizedText(word, wordWidth, wordView.getPaint());
         final float wordScaleX = wordView.getTextScaleX();
+        // {@link TextView#setTag()} is used to hold the word to be added to dictionary. The word
+        // will be extracted at {@link #getAddToDictionaryWord()}.
         wordView.setTag(word);
         wordView.setText(text);
         wordView.setTextScaleX(wordScaleX);
@@ -497,8 +501,10 @@ final class SuggestionStripLayoutHelper {
         hintView.setOnClickListener(listener);
     }
 
-    public CharSequence getAddToDictionaryWord() {
-        return (CharSequence)mWordToSaveView.getTag();
+    public String getAddToDictionaryWord() {
+        // String tag is set at
+        // {@link #layoutAddToDictionaryHint(String,ViewGroup,int,CharSequence,OnClickListener}.
+        return (String)mWordToSaveView.getTag();
     }
 
     public boolean isAddToDictionaryShowing(final View v) {
