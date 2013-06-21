@@ -57,6 +57,17 @@ class ByteArrayUtils {
         return value;
     }
 
+    static AK_FORCE_INLINE int readSint24andAdvancePosition(
+            const uint8_t *const buffer, int *const pos) {
+        const uint8_t value = readUint8(buffer, *pos);
+        if (value < 0x80) {
+            return readUint24andAdvancePosition(buffer, pos);
+        } else {
+            (*pos)++;
+            return -(((value & 0x7F) << 16) ^ readUint16andAdvancePosition(buffer, pos));
+        }
+    }
+
     static AK_FORCE_INLINE uint32_t readUint24andAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint32_t value = readUint24(buffer, *pos);
