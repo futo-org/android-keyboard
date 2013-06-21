@@ -28,13 +28,13 @@
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
         do { char charBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getDepth(), charBuf); \
+        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf); \
         AKLOGI("%20s, \"%c\", size = %03d, total = %03d, index(0) = %02d, dist = %.4f, %s,,", \
                 __FUNCTION__, getNodeCodePoint(), inputSize, getTotalInputIndex(), \
                 getInputIndex(0), getNormalizedCompoundDistance(), charBuf); } while (0)
 #define DUMP_WORD_AND_SCORE(header) \
         do { char charBuf[50]; char prevWordCharBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getDepth(), charBuf); \
+        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf); \
         INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.mPrevWord, \
                 mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf); \
         AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d,,", header, \
@@ -162,7 +162,7 @@ class DicNode {
             const bool isTerminal, const bool hasMultipleChars, const bool hasChildren,
             const uint16_t additionalSubwordLength, const int *additionalSubword) {
         mIsUsed = true;
-        uint16_t newDepth = static_cast<uint16_t>(dicNode->getDepth() + 1);
+        uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + additionalSubwordLength);
@@ -185,7 +185,7 @@ class DicNode {
     }
 
     bool isRoot() const {
-        return getDepth() == 0;
+        return getNodeCodePointCount() == 0;
     }
 
     bool hasChildren() const {
@@ -193,12 +193,12 @@ class DicNode {
     }
 
     bool isLeavingNode() const {
-        ASSERT(getDepth() <= getLeavingDepth());
-        return getDepth() == getLeavingDepth();
+        ASSERT(getNodeCodePointCount() <= getLeavingDepth());
+        return getNodeCodePointCount() == getLeavingDepth();
     }
 
     AK_FORCE_INLINE bool isFirstLetter() const {
-        return getDepth() == 1;
+        return getNodeCodePointCount() == 1;
     }
 
     bool isCached() const {
@@ -211,7 +211,7 @@ class DicNode {
 
     // Used to expand the node in DicNodeUtils
     int getNodeTypedCodePoint() const {
-        return mDicNodeState.mDicNodeStateOutput.getCodePointAt(getDepth());
+        return mDicNodeState.mDicNodeStateOutput.getCodePointAt(getNodeCodePointCount());
     }
 
     bool isImpossibleBigramWord() const {
@@ -220,7 +220,7 @@ class DicNode {
         }
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
                 - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
-        const int currentWordLen = getDepth();
+        const int currentWordLen = getNodeCodePointCount();
         return (prevWordLen == 1 && currentWordLen == 1);
     }
 
@@ -268,13 +268,13 @@ class DicNode {
 
     AK_FORCE_INLINE bool isTerminalWordNode() const {
         const bool isTerminalNodes = mDicNodeProperties.isTerminal();
-        const int currentNodeDepth = getDepth();
+        const int currentNodeDepth = getNodeCodePointCount();
         const int terminalNodeDepth = mDicNodeProperties.getLeavingDepth();
         return isTerminalNodes && currentNodeDepth > 0 && currentNodeDepth == terminalNodeDepth;
     }
 
     bool shouldBeFilterdBySafetyNetForBigram() const {
-        const uint16_t currentDepth = getDepth();
+        const uint16_t currentDepth = getNodeCodePointCount();
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
                 - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
         return !(currentDepth > 0 && (currentDepth != 1 || prevWordLen != 1));
@@ -286,7 +286,7 @@ class DicNode {
 
     bool isTotalInputSizeExceedingLimit() const {
         const int prevWordsLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        const int currentWordDepth = getDepth();
+        const int currentWordDepth = getNodeCodePointCount();
         // TODO: 3 can be 2? Needs to be investigated.
         // TODO: Have a const variable for 3 (or 2)
         return prevWordsLen + currentWordDepth > MAX_WORD_LENGTH - 3;
@@ -321,7 +321,7 @@ class DicNode {
 
     void outputResult(int *dest) const {
         const uint16_t prevWordLength = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        const uint16_t currentDepth = getDepth();
+        const uint16_t currentDepth = getNodeCodePointCount();
         DicNodeUtils::appendTwoWords(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
                    prevWordLength, getOutputWordBuf(), currentDepth, dest);
         DUMP_WORD_AND_SCORE("OUTPUT");
@@ -480,13 +480,13 @@ class DicNode {
         return mDicNodeProperties.getAttributesPos();
     }
 
-    inline uint16_t getDepth() const {
+    inline uint16_t getNodeCodePointCount() const {
         return mDicNodeProperties.getDepth();
     }
 
-    // "Length" includes spaces.
-    inline uint16_t getTotalLength() const {
-        return getDepth() + mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
+    // Returns code point count including spaces
+    inline uint16_t getTotalNodeCodePointCount() const {
+        return getNodeCodePointCount() + mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
     }
 
     AK_FORCE_INLINE void dump(const char *tag) const {
@@ -521,8 +521,8 @@ class DicNode {
         } else if (diff < -MIN_DIFF) {
             return false;
         }
-        const int depth = getDepth();
-        const int depthDiff = right->getDepth() - depth;
+        const int depth = getNodeCodePointCount();
+        const int depthDiff = right->getNodeCodePointCount() - depth;
         if (depthDiff != 0) {
             return depthDiff > 0;
         }

@@ -55,7 +55,7 @@ class TypingWeighting : public Weighting {
         const bool isZeroCostOmission = parentDicNode->isZeroCostOmission();
         const bool sameCodePoint = dicNode->isSameNodeCodePoint(parentDicNode);
         // If the traversal omitted the first letter then the dicNode should now be on the second.
-        const bool isFirstLetterOmission = dicNode->getDepth() == 2;
+        const bool isFirstLetterOmission = dicNode->getNodeCodePointCount() == 2;
         float cost = 0.0f;
         if (isZeroCostOmission) {
             cost = 0.0f;
@@ -83,7 +83,7 @@ class TypingWeighting : public Weighting {
         const bool isProximity = isProximityDicNode(traverseSession, dicNode);
         float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_PROXIMITY_COST
                 : ScoringParams::PROXIMITY_COST) : 0.0f;
-        if (dicNode->getDepth() == 2) {
+        if (dicNode->getNodeCodePointCount() == 2) {
             // At the second character of the current word, we check if the first char is uppercase
             // and the word is a second or later word of a multiple word suggestion. We demote it
             // if so.
@@ -131,7 +131,7 @@ class TypingWeighting : public Weighting {
         const float dist = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
                 parentPointIndex + 1, currentCodePoint);
         const float weightedDistance = dist * ScoringParams::DISTANCE_WEIGHT_LENGTH;
-        const bool singleChar = dicNode->getDepth() == 1;
+        const bool singleChar = dicNode->getNodeCodePointCount() == 1;
         const float cost = (singleChar ? ScoringParams::INSERTION_COST_FIRST_CHAR : 0.0f)
                 + (sameCodePoint ? ScoringParams::INSERTION_COST_SAME_CHAR
                         : ScoringParams::INSERTION_COST);
