@@ -201,6 +201,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
         private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
         private static final int MSG_RESUME_SUGGESTIONS = 4;
+        private static final int MSG_REOPEN_DICTIONARIES = 5;
 
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
@@ -241,11 +242,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.restartSuggestionsOnWordTouchedByCursor();
                 break;
+            case MSG_REOPEN_DICTIONARIES:
+                latinIme.initSuggest();
+                // In theory we could call latinIme.updateSuggestionStrip() right away, but
+                // in the practice, the dictionary is not finished opening yet so we wouldn't
+                // get any suggestions. Wait one frame.
+                postUpdateSuggestionStrip();
+                break;
             }
         }
 
         public void postUpdateSuggestionStrip() {
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP), mDelayUpdateSuggestions);
+        }
+
+        public void postReopenDictionaries() {
+            sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
         public void postResumeSuggestions() {
@@ -259,6 +271,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public boolean hasPendingUpdateSuggestions() {
             return hasMessages(MSG_UPDATE_SUGGESTION_STRIP);
+        }
+
+        public boolean hasPendingReopenDictionaries() {
+            return hasMessages(MSG_REOPEN_DICTIONARIES);
         }
 
         public void postUpdateShiftState() {
@@ -474,8 +490,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
         mSettings.loadSettings(locale, inputAttributes);
         AudioAndHapticFeedbackManager.getInstance().onSettingsChanged(mSettings.getCurrent());
-        // May need to reset the contacts dictionary depending on the user settings.
-        resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
+        // To load the keyboard we need to load all the settings once, but resetting the
+        // contacts dictionary should be deferred until after the new layout has been displayed
+        // to improve responsivity. In the language switching process, we post a reopenDictionaries
+        // message, then come here to read the settings for the new language before we change
+        // the layout; at this time, we need to skip resetting the contacts dictionary. It will
+        // be done later inside {@see #initSuggest()} when the reopenDictionaries message is
+        // processed.
+        if (!mHandler.hasPendingReopenDictionaries()) {
+            // May need to reset the contacts dictionary depending on the user settings.
+            resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
+        }
     }
 
     // Note that this method is called from a non-UI thread.
@@ -2619,18 +2644,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting
     void loadKeyboard() {
-        // TODO: Why are we calling {@link #loadSettings()} and {@link #initSuggest()} in a
-        // different order than in {@link #onStartInputView}?
-        initSuggest();
+        // Since we are switching languages, the most urgent thing is to let the keyboard graphics
+        // update. LoadKeyboard does that, but we need to wait for buffer flip for it to be on
+        // the screen. Anything we do right now will delay this, so wait until the next frame
+        // before we do the rest, like reopening dictionaries and updating suggestions. So we
+        // post a message.
+        mHandler.postReopenDictionaries();
         loadSettings();
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettings.getCurrent());
         }
-        // Since we just changed languages, we should re-evaluate suggestions with whatever word
-        // we are currently composing. If we are not composing anything, we may want to display
-        // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
-        mHandler.postUpdateSuggestionStrip();
     }
 
     // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
