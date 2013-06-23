@@ -28,6 +28,8 @@ import android.util.Log;
 
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.LogUtils;
+import com.android.inputmethod.latin.utils.Utils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -98,7 +100,7 @@ public final class ActionBatch {
         final boolean mForceStartNow;
         public StartDownloadAction(final String clientId,
                 final WordListMetadata wordList, final boolean forceStartNow) {
-            Utils.l("New download action for client ", clientId, " : ", wordList);
+            LogUtils.l("New download action for client ", clientId, " : ", wordList);
             mClientId = clientId;
             mWordList = wordList;
             mForceStartNow = forceStartNow;
@@ -110,7 +112,7 @@ public final class ActionBatch {
                 Log.e(TAG, "UpdateAction with a null parameter!");
                 return;
             }
-            Utils.l("Downloading word list");
+            LogUtils.l("Downloading word list");
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -132,7 +134,7 @@ public final class ActionBatch {
                         + " for an upgrade action. Fall back to download.");
             }
             // Download it.
-            Utils.l("Upgrade word list, downloading", mWordList.mRemoteFilename);
+            LogUtils.l("Upgrade word list, downloading", mWordList.mRemoteFilename);
 
             // TODO: if DownloadManager is disabled or not installed, download by ourselves
             if (null == manager) return;
@@ -142,7 +144,7 @@ public final class ActionBatch {
             // DownloadManager also stupidly cuts the extension to replace with its own that it
             // gets from the content-type. We need to circumvent this.
             final String disambiguator = "#" + System.currentTimeMillis()
-                    + com.android.inputmethod.latin.Utils.getVersionName(context) + ".dict";
+                    + Utils.getVersionName(context) + ".dict";
             final Uri uri = Uri.parse(mWordList.mRemoteFilename + disambiguator);
             final Request request = new Request(uri);
 
@@ -178,7 +180,7 @@ public final class ActionBatch {
 
             final long downloadId = UpdateHandler.registerDownloadRequest(manager, request, db,
                     mWordList.mId, mWordList.mVersion);
-            Utils.l("Starting download of", uri, "with id", downloadId);
+            LogUtils.l("Starting download of", uri, "with id", downloadId);
             PrivateLog.log("Starting download of " + uri + ", id : " + downloadId);
         }
     }
@@ -195,7 +197,8 @@ public final class ActionBatch {
 
         public InstallAfterDownloadAction(final String clientId,
                 final ContentValues wordListValues) {
-            Utils.l("New InstallAfterDownloadAction for client ", clientId, " : ", wordListValues);
+            LogUtils.l("New InstallAfterDownloadAction for client ", clientId, " : ",
+                    wordListValues);
             mClientId = clientId;
             mWordListValues = wordListValues;
         }
@@ -213,7 +216,7 @@ public final class ActionBatch {
                         + " for an InstallAfterDownload action. Bailing out.");
                 return;
             }
-            Utils.l("Setting word list as installed");
+            LogUtils.l("Setting word list as installed");
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             MetadataDbHelper.markEntryAsFinishedDownloadingAndInstalled(db, mWordListValues);
         }
@@ -229,7 +232,7 @@ public final class ActionBatch {
         final WordListMetadata mWordList;
 
         public EnableAction(final String clientId, final WordListMetadata wordList) {
-            Utils.l("New EnableAction for client ", clientId, " : ", wordList);
+            LogUtils.l("New EnableAction for client ", clientId, " : ", wordList);
             mClientId = clientId;
             mWordList = wordList;
         }
@@ -240,7 +243,7 @@ public final class ActionBatch {
                 Log.e(TAG, "EnableAction with a null parameter!");
                 return;
             }
-            Utils.l("Enabling word list");
+            LogUtils.l("Enabling word list");
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -264,7 +267,7 @@ public final class ActionBatch {
         // The word list to disable. May not be null.
         final WordListMetadata mWordList;
         public DisableAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New Disable action for client ", clientId, " : ", wordlist);
+            LogUtils.l("New Disable action for client ", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -275,7 +278,7 @@ public final class ActionBatch {
                 Log.e(TAG, "DisableAction with a null word list!");
                 return;
             }
-            Utils.l("Disabling word list : " + mWordList);
+            LogUtils.l("Disabling word list : " + mWordList);
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -311,7 +314,7 @@ public final class ActionBatch {
         // The word list to make available. May not be null.
         final WordListMetadata mWordList;
         public MakeAvailableAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New MakeAvailable action", clientId, " : ", wordlist);
+            LogUtils.l("New MakeAvailable action", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -328,7 +331,7 @@ public final class ActionBatch {
                 Log.e(TAG, "Unexpected state of the word list '" + mWordList.mId + "' "
                         + " for a makeavailable action. Marking as available anyway.");
             }
-            Utils.l("Making word list available : " + mWordList);
+            LogUtils.l("Making word list available : " + mWordList);
             // If mLocalFilename is null, then it's a remote file that hasn't been downloaded
             // yet, so we set the local filename to the empty string.
             final ContentValues values = MetadataDbHelper.makeContentValues(0,
@@ -360,7 +363,7 @@ public final class ActionBatch {
         // The word list to mark pre-installed. May not be null.
         final WordListMetadata mWordList;
         public MarkPreInstalledAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New MarkPreInstalled action", clientId, " : ", wordlist);
+            LogUtils.l("New MarkPreInstalled action", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -377,7 +380,7 @@ public final class ActionBatch {
                 Log.e(TAG, "Unexpected state of the word list '" + mWordList.mId + "' "
                         + " for a markpreinstalled action. Marking as preinstalled anyway.");
             }
-            Utils.l("Marking word list preinstalled : " + mWordList);
+            LogUtils.l("Marking word list preinstalled : " + mWordList);
             // This word list is pre-installed : we don't have its file. We should reset
             // the local file name to the empty string so that we don't try to open it
             // accidentally. The remote filename may be set by the application if it so wishes.
@@ -401,7 +404,7 @@ public final class ActionBatch {
         private final String mClientId;
         final WordListMetadata mWordList;
         public UpdateDataAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New UpdateData action for client ", clientId, " : ", wordlist);
+            LogUtils.l("New UpdateData action for client ", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -419,7 +422,7 @@ public final class ActionBatch {
                 Log.e(TAG, "Trying to update data about a non-existing word list. Bailing out.");
                 return;
             }
-            Utils.l("Updating data about a word list : " + mWordList);
+            LogUtils.l("Updating data about a word list : " + mWordList);
             final ContentValues values = MetadataDbHelper.makeContentValues(
                     oldValues.getAsInteger(MetadataDbHelper.PENDINGID_COLUMN),
                     oldValues.getAsInteger(MetadataDbHelper.TYPE_COLUMN),
@@ -453,7 +456,7 @@ public final class ActionBatch {
         final boolean mHasNewerVersion;
         public ForgetAction(final String clientId, final WordListMetadata wordlist,
                 final boolean hasNewerVersion) {
-            Utils.l("New TryRemove action for client ", clientId, " : ", wordlist);
+            LogUtils.l("New TryRemove action for client ", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
             mHasNewerVersion = hasNewerVersion;
@@ -465,7 +468,7 @@ public final class ActionBatch {
                 Log.e(TAG, "TryRemoveAction with a null word list!");
                 return;
             }
-            Utils.l("Trying to remove word list : " + mWordList);
+            LogUtils.l("Trying to remove word list : " + mWordList);
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -525,7 +528,7 @@ public final class ActionBatch {
         // The word list to delete. May not be null.
         final WordListMetadata mWordList;
         public StartDeleteAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New StartDelete action for client ", clientId, " : ", wordlist);
+            LogUtils.l("New StartDelete action for client ", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -536,7 +539,7 @@ public final class ActionBatch {
                 Log.e(TAG, "StartDeleteAction with a null word list!");
                 return;
             }
-            Utils.l("Trying to delete word list : " + mWordList);
+            LogUtils.l("Trying to delete word list : " + mWordList);
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -564,7 +567,7 @@ public final class ActionBatch {
         // The word list to delete. May not be null.
         final WordListMetadata mWordList;
         public FinishDeleteAction(final String clientId, final WordListMetadata wordlist) {
-            Utils.l("New FinishDelete action for client", clientId, " : ", wordlist);
+            LogUtils.l("New FinishDelete action for client", clientId, " : ", wordlist);
             mClientId = clientId;
             mWordList = wordlist;
         }
@@ -575,7 +578,7 @@ public final class ActionBatch {
                 Log.e(TAG, "FinishDeleteAction with a null word list!");
                 return;
             }
-            Utils.l("Trying to delete word list : " + mWordList);
+            LogUtils.l("Trying to delete word list : " + mWordList);
             final SQLiteDatabase db = MetadataDbHelper.getDb(context, mClientId);
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
@@ -632,7 +635,7 @@ public final class ActionBatch {
      * @param reporter a Reporter to send errors to.
      */
     public void execute(final Context context, final ProblemReporter reporter) {
-        Utils.l("Executing a batch of actions");
+        LogUtils.l("Executing a batch of actions");
         Queue<Action> remainingActions = mActions;
         while (!remainingActions.isEmpty()) {
             final Action a = remainingActions.poll();

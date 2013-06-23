@@ -21,8 +21,8 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResizableIntArray;
-import com.android.inputmethod.latin.ResourceUtils;
+import com.android.inputmethod.latin.utils.ResizableIntArray;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 public class GestureStroke {
     private static final String TAG = GestureStroke.class.getSimpleName();

@@ -30,11 +30,11 @@ import android.view.textservice.TextInfo;
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;

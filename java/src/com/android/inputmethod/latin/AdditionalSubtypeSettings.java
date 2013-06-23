@@ -44,6 +44,9 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.IntentUtils;
+
 import java.util.ArrayList;
 import java.util.TreeSet;
 

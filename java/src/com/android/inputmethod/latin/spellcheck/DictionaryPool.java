@@ -19,10 +19,10 @@ package com.android.inputmethod.latin.spellcheck;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;

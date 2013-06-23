@@ -16,16 +16,19 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.FormatSpec;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
+
+import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +42,7 @@ import java.util.Locale;
 /**
  * Helper class to get the address of a mmap'able dictionary file.
  */
-final class BinaryDictionaryGetter {
+final public class BinaryDictionaryGetter {
 
     /**
      * Used for Log actions from this class

@@ -26,7 +26,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 
 import java.util.Arrays;
 import java.util.Locale;

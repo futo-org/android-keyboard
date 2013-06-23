@@ -19,6 +19,9 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

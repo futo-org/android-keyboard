@@ -29,6 +29,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.utils.Utils;
 import com.android.inputmethod.research.ResearchLogger;
 
 public final class DebugSettings extends PreferenceFragment

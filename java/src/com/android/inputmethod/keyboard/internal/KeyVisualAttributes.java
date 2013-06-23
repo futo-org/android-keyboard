@@ -21,7 +21,7 @@ import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 public final class KeyVisualAttributes {
     public final Typeface mTypeface;

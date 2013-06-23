@@ -22,6 +22,8 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

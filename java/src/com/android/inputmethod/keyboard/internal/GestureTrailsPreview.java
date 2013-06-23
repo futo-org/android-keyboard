@@ -30,8 +30,8 @@ import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.internal.GestureTrail.Params;
-import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 
 /**
  * Draw gesture trail preview graphics during gesture.

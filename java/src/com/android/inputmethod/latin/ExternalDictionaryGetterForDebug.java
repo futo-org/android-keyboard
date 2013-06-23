@@ -23,6 +23,9 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

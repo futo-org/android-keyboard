@@ -19,9 +19,9 @@ package com.android.inputmethod.event;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 

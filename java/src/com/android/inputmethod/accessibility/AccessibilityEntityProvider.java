@@ -35,8 +35,8 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.CoordinateUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates

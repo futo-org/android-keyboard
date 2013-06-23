@@ -23,10 +23,10 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
