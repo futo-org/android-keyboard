@@ -18,8 +18,8 @@
 #define LATINIME_BINARY_DICTIONARY_BIGRAMS_ITERATOR_H
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_bigrams_reading_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 
 namespace latinime {
 
@@ -35,15 +35,17 @@ class BinaryDictionaryBigramsIterator {
     }
 
     AK_FORCE_INLINE void next() {
-        mBigramFlags = BinaryDictionaryBigramsReadingUtils::getFlagsAndForwardPointer(
+        mBigramFlags = BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
                 mBinaryDictionaryInfo, &mPos);
-        mBigramPos = BinaryDictionaryBigramsReadingUtils::getBigramAddressAndForwardPointer(
-                mBinaryDictionaryInfo, mBigramFlags, &mPos);
-        mHasNext = BinaryDictionaryBigramsReadingUtils::hasNext(mBigramFlags);
+        mBigramPos =
+                BinaryDictionaryTerminalAttributesReadingUtils::getBigramAddressAndForwardPointer(
+                        mBinaryDictionaryInfo, mBigramFlags, &mPos);
+        mHasNext = BinaryDictionaryTerminalAttributesReadingUtils::hasNext(mBigramFlags);
     }
 
     AK_FORCE_INLINE int getProbability() const {
-        return BinaryDictionaryBigramsReadingUtils::getBigramProbability(mBigramFlags);
+        return BinaryDictionaryTerminalAttributesReadingUtils::getProbabilityFromFlags(
+                mBigramFlags);
     }
 
     AK_FORCE_INLINE int getBigramPos() const {
@@ -59,7 +61,7 @@ class BinaryDictionaryBigramsIterator {
 
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
     int mPos;
-    BinaryDictionaryBigramsReadingUtils::BigramFlags mBigramFlags;
+    BinaryDictionaryTerminalAttributesReadingUtils::BigramFlags mBigramFlags;
     int mBigramPos;
     bool mHasNext;
 };
