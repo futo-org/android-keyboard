@@ -215,22 +215,30 @@ int ProximityInfo::getKeyCenterXOfKeyIdG(
     return centerX;
 }
 
-// referencePointY is currently not used because we don't specially handle keys higher than the
-// most common key height. When the referencePointY is NOT_A_COORDINATE, this method should
-// calculate the return value without using the line segment.
+// When the referencePointY is NOT_A_COORDINATE, this method calculates the return value without
+// using the line segment.
 int ProximityInfo::getKeyCenterYOfKeyIdG(
         const int keyId,  const int referencePointY, const bool isGeometric) const {
     // TODO: Remove "isGeometric" and have separate "proximity_info"s for gesture and typing.
     if (keyId < 0) {
         return 0;
     }
+    int centerY;
     if (!hasTouchPositionCorrectionData()) {
-        return mCenterYsG[keyId];
+        centerY = mCenterYsG[keyId];
     } else if (isGeometric) {
-        return static_cast<int>(mSweetSpotCenterYsG[keyId]);
+        centerY = static_cast<int>(mSweetSpotCenterYsG[keyId]);
     } else {
-        return static_cast<int>(mSweetSpotCenterYs[keyId]);
+        centerY = static_cast<int>(mSweetSpotCenterYs[keyId]);
     }
+    if (referencePointY != NOT_A_COORDINATE &&
+            centerY + mKeyHeights[keyId] > KEYBOARD_HEIGHT && centerY < referencePointY) {
+        // When the distance between center point and bottom edge of the keyboard is shorter than
+        // the key height, we assume the key is located at the bottom row of the keyboard.
+        // The center point is extended to the bottom edge for such keys.
+        return referencePointY;
+    }
+    return centerY;
 }
 
 int ProximityInfo::getKeyKeyDistanceG(const int keyId0, const int keyId1) const {
