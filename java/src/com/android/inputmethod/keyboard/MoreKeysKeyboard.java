@@ -279,8 +279,14 @@ public final class MoreKeysKeyboard extends Keyboard {
             mParentKey = parentKey;
 
             final int width, height;
+            // {@link KeyPreviewDrawParams#mPreviewVisibleWidth} should have been set at
+            // {@link MainKeyboardView#showKeyPreview(PointerTracker}, though there may be
+            // some chances that the value is zero. <code>width == 0</code> will cause
+            // zero-division error at
+            // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
             final boolean singleMoreKeyWithPreview = parentKeyboardView.isKeyPreviewPopupEnabled()
-                    && !parentKey.noKeyPreview() && parentKey.mMoreKeys.length == 1;
+                    && !parentKey.noKeyPreview() && parentKey.mMoreKeys.length == 1
+                    && keyPreviewDrawParams.mPreviewVisibleWidth > 0;
             if (singleMoreKeyWithPreview) {
                 // Use pre-computed width and height if this more keys keyboard has only one key to
                 // mitigate visual flicker between key preview and more keys keyboard.
@@ -291,22 +297,10 @@ public final class MoreKeysKeyboard extends Keyboard {
                 // adjusted with their bottom paddings deducted.
                 width = keyPreviewDrawParams.mPreviewVisibleWidth;
                 height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
-                // TODO: Remove this check.
-                if (width == 0) {
-                    throw new IllegalArgumentException(
-                            "Zero width key detected: " + parentKey + " in " + parentKeyboard.mId);
-                }
             } else {
                 width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth,
                         context.getResources());
                 height = parentKeyboard.mMostCommonKeyHeight;
-                // TODO: Remove this check.
-                if (width == 0) {
-                    throw new IllegalArgumentException(
-                            "Zero width calculated: " + parentKey
-                            + " moreKeys=" + java.util.Arrays.toString(parentKey.mMoreKeys)
-                            + " in " + parentKeyboard.mId);
-                }
             }
             final int dividerWidth;
             if (parentKey.needsDividersInMoreKeys()) {
