@@ -2495,11 +2495,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (null == range) return; // Happens if we don't have an input connection at all
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
         // longer than what the entire text is supposed to be, the safe thing to do is bail out.
-        if (range.mCharsBefore > mLastSelectionStart) return;
+        final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
+        if (numberOfCharsInWordBeforeCursor > mLastSelectionStart) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
-        final String typedWord = range.mWord.toString();
-        if (range.mWord instanceof SpannableString) {
-            final SpannableString spannableString = (SpannableString)range.mWord;
+        final CharSequence word = range.mWord;
+        final String typedWord = word.toString();
+        if (word instanceof SpannableString) {
+            final SpannableString spannableString = (SpannableString)word;
             int i = 0;
             for (Object object : spannableString.getSpans(0, spannableString.length(),
                     SuggestionSpan.class)) {
@@ -2515,9 +2517,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mWordComposer.setComposingWord(typedWord, mKeyboardSwitcher.getKeyboard());
-        mWordComposer.setCursorPositionWithinWord(range.mCharsBefore);
-        mConnection.setComposingRegion(mLastSelectionStart - range.mCharsBefore,
-                mLastSelectionEnd + range.mCharsAfter);
+        mWordComposer.setCursorPositionWithinWord(numberOfCharsInWordBeforeCursor);
+        mConnection.setComposingRegion(
+                mLastSelectionStart - numberOfCharsInWordBeforeCursor,
+                mLastSelectionEnd + range.getNumberOfCharsInWordAfterCursor());
         final SuggestedWords suggestedWords;
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
