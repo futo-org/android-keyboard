@@ -242,6 +242,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
         SubtypeSwitcher.getInstance().forceLocale(mEditText.mCurrentLocale);
         mLatinIME.loadKeyboard();
+        runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();
     }
