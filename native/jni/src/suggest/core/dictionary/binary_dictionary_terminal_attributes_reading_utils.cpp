@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_bigrams_reading_utils.h"
+#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/byte_array_utils.h"
 
 namespace latinime {
 
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
-// Flag for presence of more attributes
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
-// Mask for attribute probability, stored on 4 bits inside the flags byte.
-const BinaryDictionaryBigramsReadingUtils::BigramFlags
-        BinaryDictionaryBigramsReadingUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
-const int BinaryDictionaryBigramsReadingUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
+typedef BinaryDictionaryTerminalAttributesReadingUtils TaUtils;
 
-/* static */ int BinaryDictionaryBigramsReadingUtils::getBigramAddressAndForwardPointer(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const BigramFlags flags,
+const TaUtils::TerminalAttributeFlags TaUtils::MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
+const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
+const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
+const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
+const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
+// Flag for presence of more attributes
+const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
+// Mask for attribute probability, stored on 4 bits inside the flags byte.
+const TaUtils::TerminalAttributeFlags TaUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
+const int TaUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
+
+/* static */ int TaUtils::getBigramAddressAndForwardPointer(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo, const TerminalAttributeFlags flags,
         int *const pos) {
     int offset = 0;
     const int origin = *pos;
