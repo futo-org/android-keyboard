@@ -146,7 +146,8 @@ public class LogUnit {
         if (size != 0) {
             // Note that jsonWriter is only set to a non-null value if the logUnit start text is
             // output and at least one logStatement is output.
-            JsonWriter jsonWriter = null;
+            JsonWriter jsonWriter = researchLog.getInitializedJsonWriterLocked();
+            outputLogUnitStart(jsonWriter, canIncludePrivateData);
             for (int i = 0; i < size; i++) {
                 final LogStatement logStatement = mLogStatementList.get(i);
                 if (!canIncludePrivateData && logStatement.isPotentiallyPrivate()) {
@@ -155,42 +156,35 @@ public class LogUnit {
                 if (mIsPartOfMegaword && logStatement.isPotentiallyRevealing()) {
                     continue;
                 }
-                // Only retrieve the jsonWriter if we need to.  If we don't get this far, then
-                // researchLog.getInitializedJsonWriterLocked() will not ever be called, and the
-                // file will not have been opened for writing.
-                if (jsonWriter == null) {
-                    jsonWriter = researchLog.getInitializedJsonWriterLocked();
-                    outputLogUnitStart(jsonWriter, canIncludePrivateData);
-                }
                 logStatement.outputToLocked(jsonWriter, mTimeList.get(i), mValuesList.get(i));
             }
-            if (jsonWriter != null) {
-                // We must have called logUnitStart earlier, so emit a logUnitStop.
-                outputLogUnitStop(jsonWriter);
-            }
+            outputLogUnitStop(jsonWriter);
         }
     }
 
     private static final String WORD_KEY = "_wo";
+    private static final String NUM_WORDS_KEY = "_nw";
     private static final String CORRECTION_TYPE_KEY = "_corType";
     private static final String LOG_UNIT_BEGIN_KEY = "logUnitStart";
     private static final String LOG_UNIT_END_KEY = "logUnitEnd";
 
     final LogStatement LOGSTATEMENT_LOG_UNIT_BEGIN_WITH_PRIVATE_DATA =
             new LogStatement(LOG_UNIT_BEGIN_KEY, false /* isPotentiallyPrivate */,
-                    false /* isPotentiallyRevealing */, WORD_KEY, CORRECTION_TYPE_KEY);
+                    false /* isPotentiallyRevealing */, WORD_KEY, CORRECTION_TYPE_KEY,
+                    NUM_WORDS_KEY);
     final LogStatement LOGSTATEMENT_LOG_UNIT_BEGIN_WITHOUT_PRIVATE_DATA =
             new LogStatement(LOG_UNIT_BEGIN_KEY, false /* isPotentiallyPrivate */,
-                    false /* isPotentiallyRevealing */);
+                    false /* isPotentiallyRevealing */, NUM_WORDS_KEY);
     private void outputLogUnitStart(final JsonWriter jsonWriter,
             final boolean canIncludePrivateData) {
         final LogStatement logStatement;
         if (canIncludePrivateData) {
             LOGSTATEMENT_LOG_UNIT_BEGIN_WITH_PRIVATE_DATA.outputToLocked(jsonWriter,
-                    SystemClock.uptimeMillis(), getWordsAsString(), getCorrectionType());
+                    SystemClock.uptimeMillis(), getWordsAsString(), getCorrectionType(),
+                    getNumWords());
         } else {
             LOGSTATEMENT_LOG_UNIT_BEGIN_WITHOUT_PRIVATE_DATA.outputToLocked(jsonWriter,
-                    SystemClock.uptimeMillis());
+                    SystemClock.uptimeMillis(), getNumWords());
         }
     }
 
