@@ -23,8 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.CoordinateUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and

@@ -25,7 +25,11 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.LogUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -238,7 +242,7 @@ public final class SubtypeLocale {
                             + " nameResId=" + subtype.getNameResId()
                             + " locale=" + subtype.getLocale()
                             + " extra=" + subtype.getExtraValue()
-                            + "\n" + Utils.getStackTrace());
+                            + "\n" + LogUtils.getStackTrace());
                     return "";
                 }
             }

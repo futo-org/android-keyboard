@@ -25,6 +25,9 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
+
 import java.util.ArrayList;
 
 public final class AdditionalSubtype {

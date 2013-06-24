@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.latin.userdictionary;
 
-import com.android.inputmethod.compat.UserDictionaryCompatUtils;
-import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.R;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -29,6 +25,10 @@ import android.provider.UserDictionary;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+
+import com.android.inputmethod.compat.UserDictionaryCompatUtils;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;

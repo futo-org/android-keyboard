@@ -17,7 +17,7 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
 

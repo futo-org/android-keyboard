@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.utils.AdditionalFeaturesSettingUtils;
+
 public class NativeSuggestOptions {
     // Need to update suggest_options.h when you add, remove or reorder options.
     private static final int IS_GESTURE = 0;

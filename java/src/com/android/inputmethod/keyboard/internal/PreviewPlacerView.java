@@ -24,8 +24,8 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.CoordinateUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 import java.util.ArrayList;
 

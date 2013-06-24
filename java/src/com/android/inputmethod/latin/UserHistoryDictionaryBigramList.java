@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.Set;

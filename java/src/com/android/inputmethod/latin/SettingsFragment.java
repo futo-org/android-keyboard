@@ -35,15 +35,18 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import java.util.TreeSet;
-
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
+import com.android.inputmethod.latin.utils.AdditionalFeaturesSettingUtils;
+import com.android.inputmethod.latin.utils.FeedbackUtils;
+import com.android.inputmethod.latin.utils.Utils;
 import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
+
+import java.util.TreeSet;
 
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {

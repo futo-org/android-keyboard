@@ -28,6 +28,7 @@ import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.Arrays;
 import java.util.Locale;

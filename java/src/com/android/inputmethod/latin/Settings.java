@@ -23,7 +23,9 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.HashMap;
 import java.util.Locale;

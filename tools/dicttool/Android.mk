@@ -30,8 +30,8 @@ DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
 USED_TARGETTED_UTILS := \
         $(FRAMEWORK_TOP)/android/util/SparseArray.java \
         $(FRAMEWORK_TOP)/com/android/internal/util/ArrayUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/CollectionUtils.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SOURCE_DIRECTORY))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)

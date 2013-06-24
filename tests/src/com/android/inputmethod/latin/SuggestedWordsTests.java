@@ -21,6 +21,8 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.utils.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.Locale;
 

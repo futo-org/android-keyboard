@@ -21,10 +21,10 @@ import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Locale;
 

@@ -21,7 +21,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.SparseArray;
 
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 public final class TypefaceUtils {
     private TypefaceUtils() {
