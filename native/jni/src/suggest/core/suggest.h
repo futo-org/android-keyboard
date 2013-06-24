@@ -82,6 +82,8 @@ class Suggest : public SuggestInterface {
 
     // Threshold for autocorrection classifier
     static const float AUTOCORRECT_CLASSIFICATION_THRESHOLD;
+    // Final score penalty to exact match words that are not the most probable exact match.
+    static const int FINAL_SCORE_PENALTY_FOR_NOT_BEST_EXACT_MATCHED_WORD;
 
     const Traversal *const TRAVERSAL;
     const Scoring *const SCORING;
