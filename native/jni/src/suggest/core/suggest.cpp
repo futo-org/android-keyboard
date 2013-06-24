@@ -36,6 +36,7 @@ namespace latinime {
 const int Suggest::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
 const float Suggest::AUTOCORRECT_CLASSIFICATION_THRESHOLD = 0.33f;
+const int Suggest::FINAL_SCORE_PENALTY_FOR_NOT_BEST_EXACT_MATCHED_WORD = 1;
 
 /**
  * Returns a set of suggestions for the given input touch points. The commitPoint argument indicates
@@ -148,6 +149,8 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             &doubleLetterTerminalIndex, &doubleLetterLevel);
 
     int maxScore = S_INT_MIN;
+    int bestExactMatchedNodeTerminalIndex = -1;
+    int bestExactMatchedNodeOutputWordIndex = -1;
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
             ++terminalIndex) {
@@ -186,7 +189,6 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         const int finalScore = SCORING->calculateFinalScore(
                 compoundDistance, traverseSession->getInputSize(),
                 isForceCommitMultiWords || (isValidWord && SCORING->doesAutoCorrectValidWord()));
-
         maxScore = max(maxScore, finalScore);
 
         if (TRAVERSAL->allowPartialCommit()) {
@@ -200,6 +202,25 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         if (isValidWord) {
             outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
             frequencies[outputWordIndex] = finalScore;
+            if (isSafeExactMatch) {
+                // Demote exact matches that are not the highest probable node among all exact
+                // matches.
+                const bool isBestTerminal = bestExactMatchedNodeTerminalIndex < 0
+                        || terminals[bestExactMatchedNodeTerminalIndex].getProbability()
+                                < terminalDicNode->getProbability();
+                const int outputWordIndexToBeDemoted = isBestTerminal ?
+                        bestExactMatchedNodeOutputWordIndex : outputWordIndex;
+                if (outputWordIndexToBeDemoted >= 0) {
+                    frequencies[outputWordIndexToBeDemoted] -=
+                            FINAL_SCORE_PENALTY_FOR_NOT_BEST_EXACT_MATCHED_WORD;
+                }
+                if (isBestTerminal) {
+                    // Updates the best exact matched node index.
+                    bestExactMatchedNodeTerminalIndex = terminalIndex;
+                    // Updates the best exact matched output word index.
+                    bestExactMatchedNodeOutputWordIndex = outputWordIndex;
+                }
+            }
             // Populate the outputChars array with the suggested word.
             const int startIndex = outputWordIndex * MAX_WORD_LENGTH;
             terminalDicNode->outputResult(&outputCodePoints[startIndex]);
