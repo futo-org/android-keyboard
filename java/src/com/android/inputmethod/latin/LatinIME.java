@@ -83,6 +83,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
+import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.PositionalInfoForUserDictPendingAddition;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
@@ -437,6 +438,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             richImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
         }
+    }
+
+    // Loading the native library eagerly to avoid unexpected UnsatisfiedLinkError at the initial
+    // JNI call as much as possible.
+    static {
+        JniUtils.loadNativeLibrary();
     }
 
     public LatinIME() {
