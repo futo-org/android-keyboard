@@ -90,20 +90,7 @@ class ProximityInfoState {
         return false;
     }
 
-    // TODO: Promote insertion letter correction if that letter is a proximity of the previous
-    // letter like follows:
-    // // Demotion for a word with excessive character
-    // if (excessiveCount > 0) {
-    //     multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
-    //     if (!lastCharExceeded
-    //             && !proximityInfoState->existsAdjacentProximityChars(excessivePos)) {
-    //         // If an excessive character is not adjacent to the left char or the right char,
-    //         // we will demote this word.
-    //         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE,
-    //                 &finalFreq);
-    //     }
-    // }
-    inline bool existsAdjacentProximityChars(const int index) const {
+    AK_FORCE_INLINE bool existsAdjacentProximityChars(const int index) const {
         if (index < 0 || index >= mSampledInputSize) return false;
         const int currentCodePoint = getPrimaryCodePointAt(index);
         const int leftIndex = index - 1;
