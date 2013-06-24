@@ -27,8 +27,6 @@
         latin:keyWidth="10%p"
     >
         <include
-            latin:keyboardLayout="@xml/keys_dvorak_123" />
-        <include
             latin:keyboardLayout="@xml/rowkeys_dvorak1" />
         </Row>
     <Row

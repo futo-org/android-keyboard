@@ -79,9 +79,13 @@
                 latin:keyLabel="," />
         </case>
         <default>
-            <!-- U+0E46: "ๆ" THAI CHARACTER MAIYAMOK -->
+            <!-- U+0E46: "ๆ" THAI CHARACTER MAIYAMOK
+                 U+0E50: "๐" THAI DIGIT ZERO -->
             <Key
                 latin:keyLabel="&#x0E46;"
+                latin:keyHintLabel="0"
+                latin:additionalMoreKeys="0"
+                latin:moreKeys="&#x0E50;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0E44: "ไ" THAI CHARACTER SARA AI MAIMALAI -->
             <Key

@@ -27,10 +27,7 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/keys_dvorak_123" />
-        <include
-            latin:keyboardLayout="@xml/rowkeys_dvorak1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_dvorak1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
