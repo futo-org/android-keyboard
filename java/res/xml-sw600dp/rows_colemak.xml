@@ -27,8 +27,7 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_colemak1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_colemak1" />
         <include
             latin:keyboardLayout="@xml/key_colemak_colon" />
         <Key

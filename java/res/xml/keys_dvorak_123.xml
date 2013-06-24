@@ -51,7 +51,7 @@
                 latin:keyLabel="\'"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1"
-                latin:moreKeys="!" />
+                latin:moreKeys="!,&quot;" />
         </default>
     </switch>
     <switch>
@@ -72,13 +72,13 @@
                 latin:keyLabel=","
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2"
-                latin:moreKeys="\?" />
+                latin:moreKeys="\?,&lt;" />
             <Key
                 latin:keyLabel="."
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/more_keys_for_punctuation,%" />
+                latin:moreKeys="!text/more_keys_for_punctuation,%,&gt;" />
         </default>
     </switch>
 </merge>

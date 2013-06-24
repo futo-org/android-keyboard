@@ -21,6 +21,8 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
+    <include
+        latin:keyboardLayout="@xml/keys_dvorak_123" />
     <Key
         latin:keyLabel="p"
         latin:keyHintLabel="4"
