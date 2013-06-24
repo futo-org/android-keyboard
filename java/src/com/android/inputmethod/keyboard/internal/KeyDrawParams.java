@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.graphics.Typeface;
 
-import com.android.inputmethod.latin.ResourceUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 public final class KeyDrawParams {
     public Typeface mTypeface;

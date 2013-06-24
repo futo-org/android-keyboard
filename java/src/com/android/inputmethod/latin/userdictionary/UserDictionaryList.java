@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.latin.userdictionary;
 
-import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +25,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.provider.UserDictionary;
 import android.text.TextUtils;
+
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.Locale;
 import java.util.TreeSet;

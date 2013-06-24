@@ -49,9 +49,9 @@ import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.Utils;
 
 import java.util.ArrayList;
 

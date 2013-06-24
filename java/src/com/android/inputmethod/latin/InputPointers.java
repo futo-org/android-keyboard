@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 import android.util.Log;
 

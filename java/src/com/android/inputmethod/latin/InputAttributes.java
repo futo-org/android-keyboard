@@ -20,6 +20,9 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
+
 /**
  * Class to hold attributes of the input field.
  */

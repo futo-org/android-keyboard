@@ -24,10 +24,13 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.UserHistoryDictIOUtils.BigramDictionaryInterface;
-import com.android.inputmethod.latin.UserHistoryDictIOUtils.OnAddWordListener;
-import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
+import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
+import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
+import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
+import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -22,7 +22,8 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 

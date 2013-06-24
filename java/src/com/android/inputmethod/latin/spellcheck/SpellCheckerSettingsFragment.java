@@ -21,7 +21,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.utils.Utils;
 
 /**
  * Preference screen.

@@ -61,7 +61,6 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
@@ -69,6 +68,7 @@ import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
 
 import java.io.File;

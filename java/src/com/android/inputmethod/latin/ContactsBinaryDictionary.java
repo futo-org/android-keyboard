@@ -30,6 +30,8 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.latin.utils.StringUtils;
+
 import java.util.List;
 import java.util.Locale;
 

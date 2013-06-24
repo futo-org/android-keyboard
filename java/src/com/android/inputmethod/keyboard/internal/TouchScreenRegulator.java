@@ -23,8 +23,8 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 public final class TouchScreenRegulator {

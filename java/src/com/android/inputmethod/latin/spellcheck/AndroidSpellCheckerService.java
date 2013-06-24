@@ -25,17 +25,17 @@ import android.view.textservice.SuggestionsInfo;
 
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.latin.BinaryDictionary;
-import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
-import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
+import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

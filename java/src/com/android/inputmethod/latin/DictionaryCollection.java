@@ -16,10 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.Log;
+
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-
-import android.util.Log;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

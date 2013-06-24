@@ -18,7 +18,7 @@ package com.android.inputmethod.dictionarypack;
 
 import android.view.View;
 
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

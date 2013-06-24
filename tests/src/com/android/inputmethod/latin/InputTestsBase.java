@@ -36,6 +36,7 @@ import android.widget.FrameLayout;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.util.Locale;
 

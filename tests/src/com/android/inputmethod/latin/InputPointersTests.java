@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.android.inputmethod.latin.utils.ResizableIntArray;
+
 import java.util.Arrays;
 
 @SmallTest
