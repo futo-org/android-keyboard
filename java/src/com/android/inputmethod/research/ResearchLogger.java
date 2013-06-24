@@ -20,11 +20,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -34,7 +30,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,8 +41,6 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -70,6 +63,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
+import com.android.inputmethod.research.ui.SplashScreen;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,12 +88,12 @@ import java.util.regex.Pattern;
  * This functionality is off by default. See
  * {@link ProductionFlag#USES_DEVELOPMENT_ONLY_DIAGNOSTICS}.
  */
-public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener,
+        SplashScreen.UserConsentListener {
     // TODO: This class has grown quite large and combines several concerns that should be
     // separated.  The following refactorings will be applied as soon as possible after adding
     // support for replaying historical events, fixing some replay bugs, adding some ui constraints
     // on the feedback dialog, and adding the survey dialog.
-    // TODO: Refactor.  Move splash screen code into separate class.
     // TODO: Refactor.  Move feedback screen code into separate class.
     // TODO: Refactor.  Move logging invocations into their own class.
     // TODO: Refactor.  Move currentLogUnit management into separate class.
@@ -184,6 +178,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private final MotionEventReader mMotionEventReader = new MotionEventReader();
     private final Replayer mReplayer = Replayer.getInstance();
     private ResearchLogDirectory mResearchLogDirectory;
+    private SplashScreen mSplashScreen;
 
     private Intent mUploadIntent;
     private Intent mUploadNowIntent;
@@ -301,62 +296,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private Dialog mSplashDialog = null;
-
     private void maybeShowSplashScreen() {
-        if (ResearchSettings.readHasSeenSplash(mPrefs)) {
-            return;
-        }
-        if (mSplashDialog != null && mSplashDialog.isShowing()) {
-            return;
-        }
-        final IBinder windowToken = mMainKeyboardView != null
-                ? mMainKeyboardView.getWindowToken() : null;
-        if (windowToken == null) {
-            return;
-        }
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mLatinIME)
-                .setTitle(R.string.research_splash_title)
-                .setMessage(R.string.research_splash_content)
-                .setPositiveButton(android.R.string.yes,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                onUserLoggingConsent();
-                                mSplashDialog.dismiss();
-                            }
-                })
-                .setNegativeButton(android.R.string.no,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final String packageName = mLatinIME.getPackageName();
-                                final Uri packageUri = Uri.parse("package:" + packageName);
-                                final Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE,
-                                        packageUri);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mLatinIME.startActivity(intent);
-                            }
-                })
-                .setCancelable(true)
-                .setOnCancelListener(
-                        new OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                mLatinIME.requestHideSelf(0);
-                            }
-                });
-        mSplashDialog = builder.create();
-        final Window w = mSplashDialog.getWindow();
-        final WindowManager.LayoutParams lp = w.getAttributes();
-        lp.token = windowToken;
-        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
-        w.setAttributes(lp);
-        w.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        mSplashDialog.show();
+        if (ResearchSettings.readHasSeenSplash(mPrefs)) return;
+        if (mSplashScreen != null && mSplashScreen.isShowing()) return;
+        if (mMainKeyboardView == null) return;
+        final IBinder windowToken = mMainKeyboardView.getWindowToken();
+        if (windowToken == null) return;
+
+        mSplashScreen = new SplashScreen(mLatinIME, this);
+        mSplashScreen.showSplashScreen(windowToken);
     }
 
-    public void onUserLoggingConsent() {
+    @Override
+    public void onSplashScreenUserClickedOk() {
         if (mPrefs == null) {
             mPrefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
             if (mPrefs == null) return;
