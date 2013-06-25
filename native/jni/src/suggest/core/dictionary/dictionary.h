@@ -52,7 +52,7 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust);
+    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufOffset);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
@@ -68,21 +68,12 @@ class Dictionary {
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
         return &mBinaryDictionaryInfo;
     }
-    int getDictSize() const { return mDictSize; }
-    int getMmapFd() const { return mMmapFd; }
-    int getDictBufAdjust() const { return mDictBufAdjust; }
     virtual ~Dictionary();
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
     const BinaryDictionaryInfo mBinaryDictionaryInfo;
-    // Used only for the mmap version of dictionary loading, but we use these as dummy variables
-    // also for the malloc version.
-    const int mDictSize;
-    const int mMmapFd;
-    const int mDictBufAdjust;
-
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
     SuggestInterface *mTypingSuggest;
