@@ -25,7 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LogUtils;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -773,13 +773,13 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         if (TextUtils.isEmpty(valuesClientId) || null == valuesMetadataUri
                 || null == valuesMetadataAdditionalId) {
             // We need all these columns to be filled in
-            LogUtils.l("Missing parameter for updateClientInfo");
+            DebugLogUtils.l("Missing parameter for updateClientInfo");
             return;
         }
         if (!clientId.equals(valuesClientId)) {
             // Mismatch! The client violates the protocol.
-            LogUtils.l("Received an updateClientInfo request for ", clientId, " but the values "
-                    + "contain a different ID : ", valuesClientId);
+            DebugLogUtils.l("Received an updateClientInfo request for ", clientId,
+                    " but the values " + "contain a different ID : ", valuesClientId);
             return;
         }
         final SQLiteDatabase defaultDb = getDb(context, "");
@@ -848,7 +848,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             final ContentValues r) {
         switch (r.getAsInteger(TYPE_COLUMN)) {
             case TYPE_BULK:
-                LogUtils.l("Ended processing a wordlist");
+                DebugLogUtils.l("Ended processing a wordlist");
                 // Updating a bulk word list is a three-step operation:
                 // - Add the new entry to the table
                 // - Remove the old entry from the table
@@ -870,7 +870,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                         // the phone is suddenly cut during an update.
                         final int filenameIndex = c.getColumnIndex(LOCAL_FILENAME_COLUMN);
                         do {
-                            LogUtils.l("Setting for removal", c.getString(filenameIndex));
+                            DebugLogUtils.l("Setting for removal", c.getString(filenameIndex));
                             filenames.add(c.getString(filenameIndex));
                         } while (c.moveToNext());
                     }
