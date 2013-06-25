@@ -60,7 +60,8 @@ public final class DictionaryFactory {
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary = new BinaryDictionary(f.mFilename,
-                        f.mOffset, f.mLength, useFullEditDistance, locale, Dictionary.TYPE_MAIN);
+                        f.mOffset, f.mLength, useFullEditDistance, locale, Dictionary.TYPE_MAIN,
+                        false /* isUpdatable */);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -113,7 +114,8 @@ public final class DictionaryFactory {
                 return null;
             }
             return new BinaryDictionary(sourceDir, afd.getStartOffset(), afd.getLength(),
-                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
+                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN,
+                    false /* isUpdatable */);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource");
             return null;
@@ -142,7 +144,7 @@ public final class DictionaryFactory {
         for (final AssetFileAddress address : dictionaryList) {
             final BinaryDictionary binaryDictionary = new BinaryDictionary(address.mFilename,
                     address.mOffset, address.mLength, useFullEditDistance, locale,
-                    Dictionary.TYPE_MAIN);
+                    Dictionary.TYPE_MAIN, false /* isUpdatable */);
             dictionaryCollection.addDictionary(binaryDictionary);
         }
         return dictionaryCollection;

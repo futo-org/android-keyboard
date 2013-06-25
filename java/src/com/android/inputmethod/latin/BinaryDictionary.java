@@ -78,13 +78,15 @@ public final class BinaryDictionary extends Dictionary {
      * @param length the length of the binary data.
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @param dictType the dictionary type, as a human-readable string
+     * @param isUpdatable whether to open the dictionary file in writable mode.
      */
     public BinaryDictionary(final String filename, final long offset, final long length,
-            final boolean useFullEditDistance, final Locale locale, final String dictType) {
+            final boolean useFullEditDistance, final Locale locale, final String dictType,
+            final boolean isUpdatable) {
         super(dictType);
         mLocale = locale;
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
-        loadDictionary(filename, offset, length);
+        loadDictionary(filename, offset, length, isUpdatable);
     }
 
     static {
@@ -106,8 +108,8 @@ public final class BinaryDictionary extends Dictionary {
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
-            final long length) {
-        mNativeDict = openNative(path, startOffset, length, false /* isUpdatable */);
+            final long length, final boolean isUpdatable) {
+        mNativeDict = openNative(path, startOffset, length, isUpdatable);
     }
 
     @Override
