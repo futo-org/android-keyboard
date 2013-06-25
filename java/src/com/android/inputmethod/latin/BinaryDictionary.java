@@ -91,7 +91,8 @@ public final class BinaryDictionary extends Dictionary {
         JniUtils.loadNativeLibrary();
     }
 
-    private static native long openNative(String sourceDir, long dictOffset, long dictSize);
+    private static native long openNative(String sourceDir, long dictOffset, long dictSize,
+            boolean isUpdatable);
     private static native void closeNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
     private static native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
@@ -106,7 +107,7 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
             final long length) {
-        mNativeDict = openNative(path, startOffset, length);
+        mNativeDict = openNative(path, startOffset, length, false /* isUpdatable */);
     }
 
     @Override

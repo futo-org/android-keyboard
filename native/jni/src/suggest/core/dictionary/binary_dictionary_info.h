@@ -30,9 +30,9 @@ class BinaryDictionaryHeader;
 class BinaryDictionaryInfo {
  public:
     BinaryDictionaryInfo(const uint8_t *const dictBuf, const int dictSize, const int mmapFd,
-            const int dictBufOffset)
+            const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
-              mDictBufOffset(dictBufOffset),
+              mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
               mDictionaryFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, mDictSize)),
               mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()) {}
 
@@ -75,6 +75,7 @@ class BinaryDictionaryInfo {
     const int mDictSize;
     const int mMmapFd;
     const int mDictBufOffset;
+    const bool mIsUpdatable;
     const BinaryDictionaryFormat::FORMAT_VERSION mDictionaryFormat;
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;

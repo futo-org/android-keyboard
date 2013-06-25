@@ -40,7 +40,7 @@ class ProximityInfo;
 static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
-        jlong dictOffset, jlong dictSize) {
+        jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
     PROF_OPEN;
     PROF_START(66);
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
@@ -54,7 +54,9 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     int fd = 0;
     void *dictBuf = 0;
     int offset = 0;
-    fd = open(sourceDirChars, O_RDONLY);
+    const bool updatableMmap = (isUpdatable == JNI_TRUE);
+    const int openMode = updatableMmap ? O_RDWR : O_RDONLY;
+    fd = open(sourceDirChars, openMode);
     if (fd < 0) {
         AKLOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
@@ -63,7 +65,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     offset = static_cast<int>(dictOffset) % pagesize;
     int adjDictOffset = static_cast<int>(dictOffset) - offset;
     int adjDictSize = static_cast<int>(dictSize) + offset;
-    dictBuf = mmap(0, adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
+    const int protMode = updatableMmap ? PROT_READ | PROT_WRITE : PROT_READ;
+    dictBuf = mmap(0, adjDictSize, protMode, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
@@ -80,7 +83,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
         releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);
     } else {
-        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, offset);
+        dictionary = new Dictionary(
+                dictBuf, static_cast<int>(dictSize), fd, offset, updatableMmap);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -245,7 +249,7 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
-        const_cast<char *>("(Ljava/lang/String;JJ)J"),
+        const_cast<char *>("(Ljava/lang/String;JJZ)J"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_open)
     },
     {
