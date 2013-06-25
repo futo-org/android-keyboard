@@ -86,6 +86,7 @@ final class SuggestionStripLayoutHelper {
     private final float mAlphaObsoleted;
     private final float mCenterSuggestionWeight;
     private final int mCenterPositionInStrip;
+    private final int mTypedWordPositionWhenAutocorrect;
     private final Drawable mMoreSuggestionsHint;
     private static final String MORE_SUGGESTIONS_HINT = "\u2026";
     private static final String LEFTWARDS_ARROW = "\u2190";
@@ -159,6 +160,10 @@ final class SuggestionStripLayoutHelper {
         mMoreSuggestionsHint = getMoreSuggestionsHint(res,
                 res.getDimension(R.dimen.more_suggestions_hint_text_size), mColorAutoCorrect);
         mCenterPositionInStrip = mSuggestionsCountInStrip / 2;
+        // Assuming there are at least three suggestions. Also, note that the suggestions are
+        // laid out according to script direction, so this is left of the center for LTR scripts
+        // and right of the center for RTL scripts.
+        mTypedWordPositionWhenAutocorrect = mCenterPositionInStrip - 1;
         mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                 R.dimen.more_suggestions_bottom_gap);
         mMoreSuggestionsRowHeight = res.getDimensionPixelSize(R.dimen.more_suggestions_row_height);
@@ -233,24 +238,31 @@ final class SuggestionStripLayoutHelper {
         return spannedWord;
     }
 
-    private int getIndexInSuggestedWords(final int positionInStrip,
+    private int getPositionInSuggestionStrip(final int indexInSuggestedWords,
             final SuggestedWords suggestedWords) {
-        // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
-        // suggestions.
-        final int mostImportantIndexInSuggestedWords = suggestedWords.willAutoCorrect()
-                ? SuggestedWords.INDEX_OF_AUTO_CORRECTION : SuggestedWords.INDEX_OF_TYPED_WORD;
-        if (positionInStrip == mCenterPositionInStrip) {
-            return mostImportantIndexInSuggestedWords;
+        final int indexToDisplayMostImportantSuggestion;
+        final int indexToDisplaySecondMostImportantSuggestion;
+        if (suggestedWords.willAutoCorrect()) {
+            indexToDisplayMostImportantSuggestion = SuggestedWords.INDEX_OF_AUTO_CORRECTION;
+            indexToDisplaySecondMostImportantSuggestion = SuggestedWords.INDEX_OF_TYPED_WORD;
+        } else {
+            indexToDisplayMostImportantSuggestion = SuggestedWords.INDEX_OF_TYPED_WORD;
+            indexToDisplaySecondMostImportantSuggestion = SuggestedWords.INDEX_OF_AUTO_CORRECTION;
         }
-        if (positionInStrip == mostImportantIndexInSuggestedWords) {
+        if (indexInSuggestedWords == indexToDisplayMostImportantSuggestion) {
             return mCenterPositionInStrip;
         }
-        return positionInStrip;
+        if (indexInSuggestedWords == indexToDisplaySecondMostImportantSuggestion) {
+            return mTypedWordPositionWhenAutocorrect;
+        }
+        // If neither of those, the order in the suggestion strip is the same as in SuggestedWords.
+        return indexInSuggestedWords;
     }
 
-    private int getSuggestionTextColor(final int positionInStrip,
+    private int getSuggestionTextColor(final int indexInSuggestedWords,
             final SuggestedWords suggestedWords) {
-        final int indexInSuggestedWords = getIndexInSuggestedWords(positionInStrip, suggestedWords);
+        final int positionInStrip =
+                getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
         // TODO: Need to revisit this logic with bigram suggestions
         final boolean isSuggested = (indexInSuggestedWords != SuggestedWords.INDEX_OF_TYPED_WORD);
 
@@ -352,7 +364,7 @@ final class SuggestionStripLayoutHelper {
      * increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
      * The position of the most important suggestion is in {@link #mCenterPositionInStrip}. This
      * usually doesn't match the index in <code>suggedtedWords</code> -- see
-     * {@link #getIndexInSuggestedWords(int,SuggestedWords)}.
+     * {@link #getPositionInSuggestionStrip(int,SuggestedWords)}.
      *
      * @param positionInStrip the position in the suggestion strip.
      * @param width the maximum width for layout in pixels.
@@ -413,10 +425,19 @@ final class SuggestionStripLayoutHelper {
 
     private void setupWordViewsTextAndColor(final SuggestedWords suggestedWords,
             final int countInStrip) {
+        // Clear all suggestions first
+        for (int positionInStrip = 0; positionInStrip < countInStrip; ++positionInStrip) {
+            mWordViews.get(positionInStrip).setText(null);
+            // Make this inactive for touches in {@link #layoutWord(int,int)}.
+            if (SuggestionStripView.DBG) {
+                mDebugInfoViews.get(positionInStrip).setText(null);
+            }
+        }
         final int count = Math.min(suggestedWords.size(), countInStrip);
-        for (int positionInStrip = 0; positionInStrip < count; positionInStrip++) {
-            final int indexInSuggestedWords =
-                    getIndexInSuggestedWords(positionInStrip, suggestedWords);
+        for (int indexInSuggestedWords = 0; indexInSuggestedWords < count;
+                indexInSuggestedWords++) {
+            final int positionInStrip =
+                    getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
             final TextView wordView = mWordViews.get(positionInStrip);
             // {@link TextView#getTag()} is used to get the index in suggestedWords at
             // {@link SuggestionStripView#onClick(View)}.
@@ -426,13 +447,6 @@ final class SuggestionStripLayoutHelper {
             if (SuggestionStripView.DBG) {
                 mDebugInfoViews.get(positionInStrip).setText(
                         Utils.getDebugInfo(suggestedWords, indexInSuggestedWords));
-            }
-        }
-        for (int positionInStrip = count; positionInStrip < countInStrip; positionInStrip++) {
-            mWordViews.get(positionInStrip).setText(null);
-            // Make this inactive for touches in {@link #layoutWord(int,int)}.
-            if (SuggestionStripView.DBG) {
-                mDebugInfoViews.get(positionInStrip).setText(null);
             }
         }
     }
