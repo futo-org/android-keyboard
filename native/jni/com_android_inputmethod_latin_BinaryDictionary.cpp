@@ -53,22 +53,22 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     sourceDirChars[sourceDirUtf8Length] = '\0';
     int fd = 0;
     void *dictBuf = 0;
-    int adjust = 0;
+    int offset = 0;
     fd = open(sourceDirChars, O_RDONLY);
     if (fd < 0) {
         AKLOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
     int pagesize = getpagesize();
-    adjust = static_cast<int>(dictOffset) % pagesize;
-    int adjDictOffset = static_cast<int>(dictOffset) - adjust;
-    int adjDictSize = static_cast<int>(dictSize) + adjust;
+    offset = static_cast<int>(dictOffset) % pagesize;
+    int adjDictOffset = static_cast<int>(dictOffset) - offset;
+    int adjDictSize = static_cast<int>(dictSize) + offset;
     dictBuf = mmap(0, adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
     }
-    dictBuf = static_cast<char *>(dictBuf) + adjust;
+    dictBuf = static_cast<char *>(dictBuf) + offset;
     if (!dictBuf) {
         AKLOGE("DICT: dictBuf is null");
         return 0;
@@ -78,9 +78,9 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
             == BinaryDictionaryFormat::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
                     static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
-        releaseDictBuf(static_cast<const char *>(dictBuf) - adjust, adjDictSize, fd);
+        releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);
     } else {
-        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust);
+        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, offset);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -221,10 +221,13 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
 static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
-    const void *dictBuf = dictionary->getBinaryDictionaryInfo()->getDictBuf();
+    const BinaryDictionaryInfo *const binaryDictionaryInfo = dictionary->getBinaryDictionaryInfo();
+    const int dictBufOffset = binaryDictionaryInfo->getDictBufOffset();
+    const void *dictBuf = binaryDictionaryInfo->getDictBuf();
     if (!dictBuf) return;
-    releaseDictBuf(static_cast<const char *>(dictBuf) - dictionary->getDictBufAdjust(),
-            dictionary->getDictSize() + dictionary->getDictBufAdjust(), dictionary->getMmapFd());
+    releaseDictBuf(static_cast<const char *>(dictBuf) - dictBufOffset,
+            binaryDictionaryInfo->getDictSize() + dictBufOffset,
+            binaryDictionaryInfo->getMmapFd());
     delete dictionary;
 }
 
