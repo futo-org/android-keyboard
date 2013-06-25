@@ -961,7 +961,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // TODO: is it still necessary to test for composingSpan related stuff?
             final boolean selectionChangedOrSafeToReset = selectionChanged
                     || (!mWordComposer.isComposingWord()) || noComposingSpan;
-            if (selectionChangedOrSafeToReset) {
+            final boolean hasOrHadSelection = (oldSelStart != oldSelEnd
+                    || newSelStart != newSelEnd);
+            final int moveAmount = newSelStart - oldSelStart;
+            if (selectionChangedOrSafeToReset && (hasOrHadSelection
+                    || !mWordComposer.moveCursorByAndReturnIfInsideComposingWord(moveAmount))) {
                 // If we are composing a word and moving the cursor, we would want to set a
                 // suggestion span for recorrection to work correctly. Unfortunately, that
                 // would involve the keyboard committing some new text, which would move the
@@ -2535,6 +2539,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mWordComposer.setComposingWord(typedWord, mKeyboardSwitcher.getKeyboard());
+        // TODO: this is in chars but the callee expects code points!
         mWordComposer.setCursorPositionWithinWord(numberOfCharsInWordBeforeCursor);
         mConnection.setComposingRegion(
                 mLastSelectionStart - numberOfCharsInWordBeforeCursor,
