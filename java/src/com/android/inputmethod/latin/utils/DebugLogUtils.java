@@ -23,8 +23,8 @@ import com.android.inputmethod.latin.LatinImeLogger;
 /**
  * A class for logging and debugging utility methods.
  */
-public final class LogUtils {
-    private final static String TAG = LogUtils.class.getSimpleName();
+public final class DebugLogUtils {
+    private final static String TAG = DebugLogUtils.class.getSimpleName();
     private final static boolean sDBG = LatinImeLogger.sDBG;
 
     /**

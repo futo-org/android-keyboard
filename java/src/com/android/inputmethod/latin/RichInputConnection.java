@@ -28,7 +28,7 @@ import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
-import com.android.inputmethod.latin.utils.LogUtils;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -107,7 +107,7 @@ public final class RichInputConnection {
                     + "\nActual text = " + reference.length() + " " + reference;
             ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
         } else {
-            Log.e(TAG, LogUtils.getStackTrace(2));
+            Log.e(TAG, DebugLogUtils.getStackTrace(2));
             Log.e(TAG, "Exp <> Actual : " + mCurrentCursorPosition + " <> " + et.selectionStart);
         }
     }
@@ -156,7 +156,7 @@ public final class RichInputConnection {
         if (mNestLevel != 1) {
             // TODO: exception instead
             Log.e(TAG, "Batch edit level incorrect : " + mNestLevel);
-            Log.e(TAG, LogUtils.getStackTrace(4));
+            Log.e(TAG, DebugLogUtils.getStackTrace(4));
         }
     }
 

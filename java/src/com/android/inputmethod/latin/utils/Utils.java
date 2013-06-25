@@ -63,20 +63,6 @@ public final class Utils {
         // This utility class is not publicly instantiable.
     }
 
-    /**
-     * Cancel an {@link AsyncTask}.
-     *
-     * @param mayInterruptIfRunning <tt>true</tt> if the thread executing this
-     *        task should be interrupted; otherwise, in-progress tasks are allowed
-     *        to complete.
-     */
-    public static void cancelTask(final AsyncTask<?, ?, ?> task,
-            final boolean mayInterruptIfRunning) {
-        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
-            task.cancel(mayInterruptIfRunning);
-        }
-    }
-
     // TODO: Make this an external class
     public /* for test */ static final class RingCharBuffer {
         public /* for test */ static final int BUFSIZE = 20;
