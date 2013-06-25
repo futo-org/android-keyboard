@@ -926,19 +926,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        // TODO: refactor the following code to be less contrived.
-        // "newSelStart != composingSpanEnd" || "newSelEnd != composingSpanEnd" means
-        // that the cursor is not at the end of the composing span, or there is a selection.
-        // "mLastSelectionStart != newSelStart" means that the cursor is not in the same place
-        // as last time we were called (if there is a selection, it means the start hasn't
-        // changed, so it's the end that did).
-        final boolean selectionChanged = (newSelStart != composingSpanEnd
-                || newSelEnd != composingSpanEnd) && mLastSelectionStart != newSelStart;
+        final boolean selectionChanged = mLastSelectionStart != newSelStart
+                || mLastSelectionEnd != newSelEnd;
         // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
         // span in the view - we can use that to narrow down whether the cursor was moved
         // by us or not. If we are composing a word but there is no composing span, then
         // we know for sure the cursor moved while we were composing and we should reset
-        // the state.
+        // the state. TODO: rescind this policy: the framework never removes the composing
+        // span on its own accord while editing. This test is useless.
+
         final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
         // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
         // will be reset when the keyboard shows up anyway.
@@ -979,6 +975,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (isSuggestionsStripVisible()) {
                 mHandler.postResumeSuggestions();
             }
+            mConnection.userMovedCursor(newSelEnd);
             // Reset the last recapitalization.
             mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
