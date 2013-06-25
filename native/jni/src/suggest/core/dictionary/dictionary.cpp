@@ -32,10 +32,9 @@
 
 namespace latinime {
 
-Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust)
-        : mBinaryDictionaryInfo(static_cast<const uint8_t *>(dict), dictSize),
-          mDictSize(dictSize),
-          mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
+Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufOffset)
+        : mBinaryDictionaryInfo(
+                static_cast<const uint8_t *>(dict), dictSize, mmapFd, dictBufOffset),
           mBigramDictionary(new BigramDictionary(&mBinaryDictionaryInfo)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {

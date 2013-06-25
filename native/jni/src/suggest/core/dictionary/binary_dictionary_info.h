@@ -29,13 +29,27 @@ class BinaryDictionaryHeader;
 
 class BinaryDictionaryInfo {
  public:
-    BinaryDictionaryInfo(const uint8_t *const dictBuf, const int dictSize)
-            : mDictBuf(dictBuf),
-              mDictionaryFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, dictSize)),
+    BinaryDictionaryInfo(const uint8_t *const dictBuf, const int dictSize, const int mmapFd,
+            const int dictBufOffset)
+            : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
+              mDictBufOffset(dictBufOffset),
+              mDictionaryFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, mDictSize)),
               mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()) {}
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
         return mDictBuf;
+    }
+
+    AK_FORCE_INLINE int getDictSize() const {
+        return mDictSize;
+    }
+
+    AK_FORCE_INLINE int getMmapFd() const {
+        return mMmapFd;
+    }
+
+    AK_FORCE_INLINE int getDictBufOffset() const {
+        return mDictBufOffset;
     }
 
     AK_FORCE_INLINE const uint8_t *getDictRoot() const {
@@ -58,6 +72,9 @@ class BinaryDictionaryInfo {
     DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryInfo);
 
     const uint8_t *const mDictBuf;
+    const int mDictSize;
+    const int mMmapFd;
+    const int mDictBufOffset;
     const BinaryDictionaryFormat::FORMAT_VERSION mDictionaryFormat;
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
