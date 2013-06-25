@@ -68,6 +68,12 @@ class BinaryDictionaryInfo {
         return &mDictionaryHeader;
     }
 
+    AK_FORCE_INLINE bool isDynamicallyUpdatable() const {
+        // TODO: Support dynamic dictionary formats.
+        const bool isUpdatableDictionaryFormat = false;
+        return mIsUpdatable && isUpdatableDictionaryFormat;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryInfo);
 
