@@ -31,7 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LogUtils;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -220,7 +220,7 @@ public final class DictionaryProvider extends ContentProvider {
     @Override
     public Cursor query(final Uri uri, final String[] projection, final String selection,
             final String[] selectionArgs, final String sortOrder) {
-        LogUtils.l("Uri =", uri);
+        DebugLogUtils.l("Uri =", uri);
         PrivateLog.log("Query : " + uri);
         final String clientId = getClientId(uri);
         final int match = matchUri(uri);
@@ -228,7 +228,7 @@ public final class DictionaryProvider extends ContentProvider {
             case DICTIONARY_V1_WHOLE_LIST:
             case DICTIONARY_V2_WHOLE_LIST:
                 final Cursor c = MetadataDbHelper.queryDictionaries(getContext(), clientId);
-                LogUtils.l("List of dictionaries with count", c.getCount());
+                DebugLogUtils.l("List of dictionaries with count", c.getCount());
                 PrivateLog.log("Returned a list of " + c.getCount() + " items");
                 return c;
             case DICTIONARY_V2_DICT_INFO:
