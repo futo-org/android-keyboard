@@ -2652,11 +2652,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // Used by the RingCharBuffer
-    public boolean isWordSeparator(final int code) {
-        return mSettings.getCurrent().isWordSeparator(code);
-    }
-
     // TODO: Make this private
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting

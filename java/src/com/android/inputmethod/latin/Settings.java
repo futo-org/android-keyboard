@@ -152,6 +152,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mSettingsValues.mWordSeparators;
     }
 
+    public boolean isWordSeparator(final int code) {
+        return mSettingsValues.isWordSeparator(code);
+    }
+
     public Locale getCurrentLocale() {
         return mCurrentLocale;
     }

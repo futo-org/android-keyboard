@@ -26,7 +26,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -34,9 +33,7 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -61,121 +58,6 @@ public final class Utils {
 
     private Utils() {
         // This utility class is not publicly instantiable.
-    }
-
-    // TODO: Make this an external class
-    public /* for test */ static final class RingCharBuffer {
-        public /* for test */ static final int BUFSIZE = 20;
-        public /* for test */ int mLength = 0;
-
-        private static RingCharBuffer sRingCharBuffer = new RingCharBuffer();
-        private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
-        private static final int INVALID_COORDINATE = -2;
-        private InputMethodService mContext;
-        private boolean mEnabled = false;
-        private int mEnd = 0;
-        private char[] mCharBuf = new char[BUFSIZE];
-        private int[] mXBuf = new int[BUFSIZE];
-        private int[] mYBuf = new int[BUFSIZE];
-
-        private RingCharBuffer() {
-            // Intentional empty constructor for singleton.
-        }
-
-        @UsedForTesting
-        public static RingCharBuffer getInstance() {
-            return sRingCharBuffer;
-        }
-
-        public static RingCharBuffer init(final InputMethodService context, final boolean enabled,
-                final boolean usabilityStudy) {
-            if (!(enabled || usabilityStudy)) {
-                return null;
-            }
-            sRingCharBuffer.mContext = context;
-            sRingCharBuffer.mEnabled = true;
-            UsabilityStudyLogUtils.getInstance().init(context);
-            return sRingCharBuffer;
-        }
-
-        private static int normalize(final int in) {
-            int ret = in % BUFSIZE;
-            return ret < 0 ? ret + BUFSIZE : ret;
-        }
-
-        // TODO: accept code points
-        @UsedForTesting
-        public void push(final char c, final int x, final int y) {
-            if (!mEnabled) {
-                return;
-            }
-            mCharBuf[mEnd] = c;
-            mXBuf[mEnd] = x;
-            mYBuf[mEnd] = y;
-            mEnd = normalize(mEnd + 1);
-            if (mLength < BUFSIZE) {
-                ++mLength;
-            }
-        }
-
-        public char pop() {
-            if (mLength < 1) {
-                return PLACEHOLDER_DELIMITER_CHAR;
-            }
-            mEnd = normalize(mEnd - 1);
-            --mLength;
-            return mCharBuf[mEnd];
-        }
-
-        public char getBackwardNthChar(final int n) {
-            if (mLength <= n || n < 0) {
-                return PLACEHOLDER_DELIMITER_CHAR;
-            }
-            return mCharBuf[normalize(mEnd - n - 1)];
-        }
-
-        public int getPreviousX(final char c, final int back) {
-            final int index = normalize(mEnd - 2 - back);
-            if (mLength <= back
-                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
-                return INVALID_COORDINATE;
-            }
-            return mXBuf[index];
-        }
-
-        public int getPreviousY(final char c, final int back) {
-            int index = normalize(mEnd - 2 - back);
-            if (mLength <= back
-                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
-                return INVALID_COORDINATE;
-            }
-            return mYBuf[index];
-        }
-
-        public String getLastWord(final int ignoreCharCount) {
-            final StringBuilder sb = new StringBuilder();
-            final LatinIME latinIme = (LatinIME)mContext;
-            int i = ignoreCharCount;
-            for (; i < mLength; ++i) {
-                final char c = mCharBuf[normalize(mEnd - 1 - i)];
-                if (!latinIme.isWordSeparator(c)) {
-                    break;
-                }
-            }
-            for (; i < mLength; ++i) {
-                char c = mCharBuf[normalize(mEnd - 1 - i)];
-                if (!latinIme.isWordSeparator(c)) {
-                    sb.append(c);
-                } else {
-                    break;
-                }
-            }
-            return sb.reverse().toString();
-        }
-
-        public void reset() {
-            mLength = 0;
-        }
     }
 
     // TODO: Make this an external class
@@ -395,7 +277,7 @@ public final class Utils {
     // TODO: Make this an external class
     public static final class Stats {
         public static void onNonSeparator(final char code, final int x, final int y) {
-            RingCharBuffer.getInstance().push(code, x, y);
+            UserLogRingCharBuffer.getInstance().push(code, x, y);
             LatinImeLogger.logOnInputChar();
         }
 
@@ -410,7 +292,7 @@ public final class Utils {
             for (int i = 0; i < length; i = Character.offsetByCodePoints(separator, i, 1)) {
                 int codePoint = Character.codePointAt(separator, i);
                 // TODO: accept code points
-                RingCharBuffer.getInstance().push((char)codePoint, x, y);
+                UserLogRingCharBuffer.getInstance().push((char)codePoint, x, y);
             }
             LatinImeLogger.logOnInputSeparator();
         }
