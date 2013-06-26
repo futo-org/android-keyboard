@@ -1,16 +1,16 @@
 # Keep classes and methods that have the @UsedForTesting annotation
 -keep @com.android.inputmethod.annotations.UsedForTesting class *
 -keepclassmembers class * {
-@com.android.inputmethod.annotations.UsedForTesting *;
+    @com.android.inputmethod.annotations.UsedForTesting *;
 }
 
 # Keep classes and methods that have the @ExternallyReferenced annotation
 -keep @com.android.inputmethod.annotations.ExternallyReferenced class *
 -keepclassmembers class * {
-@com.android.inputmethod.annotations.ExternallyReferenced *;
+    @com.android.inputmethod.annotations.ExternallyReferenced *;
 }
 
 # Keep native methods
--keep class * {
-native <methods>;
+-keepclassmembers class * {
+    native <methods>;
 }
