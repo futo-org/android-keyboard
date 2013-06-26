@@ -64,10 +64,21 @@ class Dictionary {
             int *frequencies, int *outputTypes) const;
 
     int getProbability(const int *word, int length) const;
-    bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
+
+    bool isValidBigram(const int *word0, int length0, const int *word1, int length1) const;
+
+    void addUnigramWord(const int *const word, const int length, const int probability);
+
+    void addBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1, const int probability);
+
+    void removeBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1);
+
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
         return &mBinaryDictionaryInfo;
     }
+
     virtual ~Dictionary();
 
  private:

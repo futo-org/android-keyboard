@@ -106,8 +106,37 @@ int Dictionary::getProbability(const int *word, int length) const {
     return unigramProbability;
 }
 
-bool Dictionary::isValidBigram(const int *word1, int length1, const int *word2, int length2) const {
-    return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
+bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {
+    return mBigramDictionary->isValidBigram(word0, length0, word1, length1);
+}
+
+void Dictionary::addUnigramWord(const int *const word, const int length, const int probability) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::addUnigramWord() is called for non-updatable dictionary.");
+        return;
+    }
+    // TODO: Support dynamic update
+}
+
+void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
+        const int length1, const int probability) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::addBigramWords() is called for non-updatable dictionary.");
+        return;
+    }
+    // TODO: Support dynamic update
+}
+
+void Dictionary::removeBigramWords(const int *const word0, const int length0,
+        const int *const word1, const int length1) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::removeBigramWords() is called for non-updatable dictionary.");
+        return;
+    }
+    // TODO: Support dynamic update
 }
 
 } // namespace latinime

@@ -176,26 +176,26 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
 }
 
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray wordArray) {
+        jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
-    const jsize codePointLength = env->GetArrayLength(wordArray);
-    int codePoints[codePointLength];
-    env->GetIntArrayRegion(wordArray, 0, codePointLength, codePoints);
-    return dictionary->getProbability(codePoints, codePointLength);
+    const jsize wordLength = env->GetArrayLength(word);
+    int codePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
+    return dictionary->getProbability(codePoints, wordLength);
 }
 
 static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray wordArray1, jintArray wordArray2) {
+        jintArray word0, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return JNI_FALSE;
-    const jsize codePointLength1 = env->GetArrayLength(wordArray1);
-    const jsize codePointLength2 = env->GetArrayLength(wordArray2);
-    int codePoints1[codePointLength1];
-    int codePoints2[codePointLength2];
-    env->GetIntArrayRegion(wordArray1, 0, codePointLength1, codePoints1);
-    env->GetIntArrayRegion(wordArray2, 0, codePointLength2, codePoints2);
-    return dictionary->isValidBigram(codePoints1, codePointLength1, codePoints2, codePointLength2);
+    const jsize word0Length = env->GetArrayLength(word0);
+    const jsize word1Length = env->GetArrayLength(word1);
+    int word0CodePoints[word0Length];
+    int word1CodePoints[word1Length];
+    env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
+    env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
+    return dictionary->isValidBigram(word0CodePoints, word0Length, word1CodePoints, word1Length);
 }
 
 static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
@@ -246,6 +246,45 @@ static void releaseDictBuf(const void *dictBuf, const size_t length, const int f
     }
 }
 
+static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,
+        jintArray word, jint probability) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return;
+    }
+    jsize wordLength = env->GetArrayLength(word);
+    int codePoints[wordLength];
+    dictionary->addUnigramWord(codePoints, wordLength, probability);
+}
+
+static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+        jintArray word0, jintArray word1, jint probability) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return;
+    }
+    jsize word0Length = env->GetArrayLength(word0);
+    int word0CodePoints[word0Length];
+    jsize word1Length = env->GetArrayLength(word1);
+    int word1CodePoints[word1Length];
+    dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints,
+            word1Length, probability);
+}
+
+static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass clazz, jlong dict,
+        jintArray word0, jintArray word1) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return;
+    }
+    jsize word0Length = env->GetArrayLength(word0);
+    int word0CodePoints[word0Length];
+    jsize word1Length = env->GetArrayLength(word1);
+    int word1CodePoints[word1Length];
+    dictionary->removeBigramWords(word0CodePoints, word0Length, word1CodePoints,
+            word1Length);
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
@@ -281,6 +320,21 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("editDistanceNative"),
         const_cast<char *>("([I[I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)
+    },
+    {
+        const_cast<char *>("addUnigramWordNative"),
+        const_cast<char *>("(J[II)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addUnigramWord)
+    },
+    {
+        const_cast<char *>("addBigramWordsNative"),
+        const_cast<char *>("(J[I[II)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_addBigramWords)
+    },
+    {
+        const_cast<char *>("removeBigramWordsNative"),
+        const_cast<char *>("(J[I[I)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
     }
 };
 

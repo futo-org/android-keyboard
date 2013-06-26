@@ -97,7 +97,7 @@ public final class BinaryDictionary extends Dictionary {
             boolean isUpdatable);
     private static native void closeNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
-    private static native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
+    private static native boolean isValidBigramNative(long dict, int[] word0, int[] word1);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
@@ -105,6 +105,10 @@ public final class BinaryDictionary extends Dictionary {
             int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
+    private static native void addUnigramWordNative(long dict, int[] word, int probability);
+    private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
+            int probability);
+    private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
