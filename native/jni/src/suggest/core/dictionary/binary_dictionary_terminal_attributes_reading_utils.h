@@ -29,6 +29,7 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
  public:
     typedef uint8_t TerminalAttributeFlags;
     typedef TerminalAttributeFlags BigramFlags;
+    typedef TerminalAttributeFlags ShortcutFlags;
 
     static AK_FORCE_INLINE TerminalAttributeFlags getFlagsAndForwardPointer(
             const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
@@ -59,6 +60,34 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
             const BinaryDictionaryInfo *const binaryDictionaryInfo, const BigramFlags flags,
                     int *const pos);
 
+    // Shortcuts reading methods
+    // This method returns the size of the shortcut list region excluding the shortcut list size
+    // field at the beginning.
+    static AK_FORCE_INLINE int getShortcutListSizeAndForwardPointer(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
+        // readUint16andAdvancePosition() returns an offset *including* the uint16 field itself.
+        return ByteArrayUtils::readUint16andAdvancePosition(
+                binaryDictionaryInfo->getDictRoot(), pos) - SHORTCUT_LIST_SIZE_FIELD_SIZE;
+    }
+
+    static AK_FORCE_INLINE void skipShortcuts(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
+        const int shortcutListSize = getShortcutListSizeAndForwardPointer(
+                binaryDictionaryInfo, pos);
+        *pos += shortcutListSize;
+    }
+
+    static AK_FORCE_INLINE bool isWhitelist(const ShortcutFlags flags) {
+        return getProbabilityFromFlags(flags) == WHITELIST_SHORTCUT_PROBABILITY;
+    }
+
+    static AK_FORCE_INLINE int readShortcutTarget(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int maxLength,
+            int *const outWord, int *const pos) {
+        return ByteArrayUtils::readStringAndAdvancePosition(
+                binaryDictionaryInfo->getDictRoot(), maxLength, outWord, pos);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryTerminalAttributesReadingUtils);
 
@@ -70,6 +99,8 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     static const TerminalAttributeFlags FLAG_ATTRIBUTE_HAS_NEXT;
     static const TerminalAttributeFlags MASK_ATTRIBUTE_PROBABILITY;
     static const int ATTRIBUTE_ADDRESS_SHIFT;
+    static const int SHORTCUT_LIST_SIZE_FIELD_SIZE;
+    static const int WHITELIST_SHORTCUT_PROBABILITY;
 
     static AK_FORCE_INLINE bool isOffsetNegative(const TerminalAttributeFlags flags) {
         return (flags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) != 0;
