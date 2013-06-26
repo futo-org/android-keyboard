@@ -29,12 +29,12 @@ const float BinaryDictionaryHeader::MULTI_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 BinaryDictionaryHeader::BinaryDictionaryHeader(
         const BinaryDictionaryInfo *const binaryDictionaryInfo)
         : mBinaryDictionaryInfo(binaryDictionaryInfo),
-          mDictionaryFlags(BinaryDictionaryHeaderReader::getFlags(binaryDictionaryInfo)),
-          mSize(BinaryDictionaryHeaderReader::getHeaderSize(binaryDictionaryInfo)),
+          mDictionaryFlags(BinaryDictionaryHeaderReadingUtils::getFlags(binaryDictionaryInfo)),
+          mSize(BinaryDictionaryHeaderReadingUtils::getHeaderSize(binaryDictionaryInfo)),
           mMultiWordCostMultiplier(readMultiWordCostMultiplier()) {}
 
 float BinaryDictionaryHeader::readMultiWordCostMultiplier() const {
-    const int headerValue = BinaryDictionaryHeaderReader::readHeaderValueInt(
+    const int headerValue = BinaryDictionaryHeaderReadingUtils::readHeaderValueInt(
             mBinaryDictionaryInfo, MULTIPLE_WORDS_DEMOTION_RATE_KEY);
     if (headerValue == S_INT_MIN) {
         // not found

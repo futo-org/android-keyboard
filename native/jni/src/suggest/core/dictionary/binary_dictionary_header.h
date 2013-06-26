@@ -37,15 +37,16 @@ class BinaryDictionaryHeader {
     }
 
     AK_FORCE_INLINE bool supportsDynamicUpdate() const {
-        return BinaryDictionaryHeaderReader::supportsDynamicUpdate(mDictionaryFlags);
+        return BinaryDictionaryHeaderReadingUtils::supportsDynamicUpdate(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresGermanUmlautProcessing() const {
-        return BinaryDictionaryHeaderReader::requiresGermanUmlautProcessing(mDictionaryFlags);
+        return BinaryDictionaryHeaderReadingUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresFrenchLigatureProcessing() const {
-        return BinaryDictionaryHeaderReader::requiresFrenchLigatureProcessing(mDictionaryFlags);
+        return BinaryDictionaryHeaderReadingUtils::requiresFrenchLigatureProcessing(
+                mDictionaryFlags);
     }
 
     AK_FORCE_INLINE float getMultiWordCostMultiplier() const {
@@ -60,7 +61,7 @@ class BinaryDictionaryHeader {
     static const float MULTI_WORD_COST_MULTIPLIER_SCALE;
 
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
-    const BinaryDictionaryHeaderReader::DictionaryFlags mDictionaryFlags;
+    const BinaryDictionaryHeaderReadingUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
     const float mMultiWordCostMultiplier;
 

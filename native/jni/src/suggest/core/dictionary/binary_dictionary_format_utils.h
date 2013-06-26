@@ -31,7 +31,7 @@ namespace latinime {
  * reading methods and utility methods for various purposes.
  * On the other hand, this file deals with only about dictionary format version.
  */
-class BinaryDictionaryFormat {
+class BinaryDictionaryFormatUtils {
  public:
     // TODO: Remove obsolete version logic
     enum FORMAT_VERSION {
@@ -43,7 +43,7 @@ class BinaryDictionaryFormat {
     static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormat);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormatUtils);
 
     static const int DICTIONARY_MINIMUM_SIZE;
     static const uint32_t FORMAT_VERSION_1_MAGIC_NUMBER;

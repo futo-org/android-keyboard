@@ -24,32 +24,33 @@
 
 namespace latinime {
 
-const int BinaryDictionaryHeaderReader::MAX_OPTION_KEY_LENGTH = 256;
+const int BinaryDictionaryHeaderReadingUtils::MAX_OPTION_KEY_LENGTH = 256;
 
-const int BinaryDictionaryHeaderReader::FORMAT_VERSION_1_HEADER_SIZE = 5;
+const int BinaryDictionaryHeaderReadingUtils::FORMAT_VERSION_1_HEADER_SIZE = 5;
 
-const int BinaryDictionaryHeaderReader::VERSION_2_MAGIC_NUMBER_SIZE = 4;
-const int BinaryDictionaryHeaderReader::VERSION_2_DICTIONARY_VERSION_SIZE = 2;
-const int BinaryDictionaryHeaderReader::VERSION_2_DICTIONARY_FLAG_SIZE = 2;
-const int BinaryDictionaryHeaderReader::VERSION_2_DICTIONARY_HEADER_SIZE_SIZE = 4;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_MAGIC_NUMBER_SIZE = 4;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_VERSION_SIZE = 2;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_FLAG_SIZE = 2;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_HEADER_SIZE_SIZE = 4;
 
-const BinaryDictionaryHeaderReader::DictionaryFlags BinaryDictionaryHeaderReader::NO_FLAGS = 0;
+const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
+        BinaryDictionaryHeaderReadingUtils::NO_FLAGS = 0;
 // Flags for special processing
 // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
 // something very bad (like, the apocalypse) will happen. Please update both at the same time.
-const BinaryDictionaryHeaderReader::DictionaryFlags
-        BinaryDictionaryHeaderReader::GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
-const BinaryDictionaryHeaderReader::DictionaryFlags
-        BinaryDictionaryHeaderReader::SUPPORTS_DYNAMIC_UPDATE_FLAG = 0x2;
-const BinaryDictionaryHeaderReader::DictionaryFlags
-        BinaryDictionaryHeaderReader::FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
+const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
+        BinaryDictionaryHeaderReadingUtils::GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
+const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
+        BinaryDictionaryHeaderReadingUtils::SUPPORTS_DYNAMIC_UPDATE_FLAG = 0x2;
+const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
+        BinaryDictionaryHeaderReadingUtils::FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
 
-/* static */ int BinaryDictionaryHeaderReader::getHeaderSize(
+/* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(
         const BinaryDictionaryInfo *const binaryDictionaryInfo) {
     switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormat::VERSION_1:
+        case BinaryDictionaryFormatUtils::VERSION_1:
             return FORMAT_VERSION_1_HEADER_SIZE;
-        case BinaryDictionaryFormat::VERSION_2:
+        case BinaryDictionaryFormatUtils::VERSION_2:
             // See the format of the header in the comment in
             // BinaryDictionaryFormatUtils::detectFormatVersion()
             return ByteArrayUtils::readUint32(binaryDictionaryInfo->getDictBuf(),
@@ -60,12 +61,13 @@ const BinaryDictionaryHeaderReader::DictionaryFlags
     }
 }
 
-/* static */ BinaryDictionaryHeaderReader::DictionaryFlags BinaryDictionaryHeaderReader::getFlags(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo) {
+/* static */ BinaryDictionaryHeaderReadingUtils::DictionaryFlags
+        BinaryDictionaryHeaderReadingUtils::getFlags(
+                const BinaryDictionaryInfo *const binaryDictionaryInfo) {
     switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormat::VERSION_1:
+        case BinaryDictionaryFormatUtils::VERSION_1:
             return NO_FLAGS;
-        case BinaryDictionaryFormat::VERSION_2:
+        case BinaryDictionaryFormatUtils::VERSION_2:
             return ByteArrayUtils::readUint16(binaryDictionaryInfo->getDictBuf(),
                     VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE);
         default:
@@ -74,7 +76,7 @@ const BinaryDictionaryHeaderReader::DictionaryFlags
 }
 
 // Returns if the key is found or not and reads the found value into outValue.
-/* static */ bool BinaryDictionaryHeaderReader::readHeaderValue(
+/* static */ bool BinaryDictionaryHeaderReadingUtils::readHeaderValue(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const char *const key, int *outValue, const int outValueSize) {
     if (outValueSize <= 0 || !hasHeaderAttributes(binaryDictionaryInfo->getFormat())) {
@@ -97,7 +99,7 @@ const BinaryDictionaryHeaderReader::DictionaryFlags
     return false;
 }
 
-/* static */ int BinaryDictionaryHeaderReader::readHeaderValueInt(
+/* static */ int BinaryDictionaryHeaderReadingUtils::readHeaderValueInt(
         const BinaryDictionaryInfo *const binaryDictionaryInfo, const char *const key) {
     const int bufferSize = LARGEST_INT_DIGIT_COUNT;
     int intBuffer[bufferSize];
