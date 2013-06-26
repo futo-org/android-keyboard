@@ -968,6 +968,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // text, but that is probably too expensive to do, so we decided to leave things
                 // as is.
                 resetEntireInputState(newSelStart);
+            } else {
+                // resetEntireInputState calls resetCachesUponCursorMove, but with the second
+                // argument as true. But in all cases where we don't reset the entire input state,
+                // we still want to tell the rich input connection about the new cursor position so
+                // that it can update its caches.
+                mConnection.resetCachesUponCursorMove(newSelStart,
+                        false /* shouldFinishComposition */);
             }
 
             // We moved the cursor. If we are touching a word, we need to resume suggestion,
@@ -975,7 +982,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (isSuggestionsStripVisible()) {
                 mHandler.postResumeSuggestions();
             }
-            mConnection.userMovedCursor(newSelEnd);
             // Reset the last recapitalization.
             mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
