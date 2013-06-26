@@ -184,13 +184,13 @@ bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) cons
     return false;
 }
 
-bool BigramDictionary::isValidBigram(const int *word1, int length1, const int *word2,
-        int length2) const {
-    int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
+bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *word1,
+        int length1) const {
+    int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;
     int nextWordPos = BinaryFormat::getTerminalPosition(mBinaryDictionaryInfo->getDictRoot(),
-            word2, length2, false /* forceLowerCaseSearch */);
+            word1, length1, false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == nextWordPos) return false;
 
     for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
