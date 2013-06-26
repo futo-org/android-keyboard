@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 #include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
@@ -33,60 +34,66 @@ class TerminalAttributes {
  public:
     class ShortcutIterator {
      public:
-        ShortcutIterator(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int pos,
-                const uint8_t flags)
-                : mBinaryDicitionaryInfo(binaryDictionaryInfo), mPos(pos),
-                  mHasNextShortcutTarget(0 != (flags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS)) {
-        }
+        ShortcutIterator(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+                const int shortcutPos, const bool hasShortcutList)
+                : mBinaryDictionaryInfo(binaryDictionaryInfo), mPos(shortcutPos),
+                  mHasNextShortcutTarget(hasShortcutList) {}
 
         inline bool hasNextShortcutTarget() const {
             return mHasNextShortcutTarget;
         }
 
-        // Gets the shortcut target itself as an int string. For parameters and return value
-        // see BinaryFormat::getWordAtAddress.
-        inline int getNextShortcutTarget(const int maxDepth, int *outWord, int *outFreq) {
-            const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(
-                    mBinaryDicitionaryInfo->getDictRoot(), &mPos);
-            mHasNextShortcutTarget = 0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
-            unsigned int i;
-            for (i = 0; i < MAX_WORD_LENGTH; ++i) {
-                const int codePoint = BinaryFormat::getCodePointAndForwardPointer(
-                        mBinaryDicitionaryInfo->getDictRoot(), &mPos);
-                if (NOT_A_CODE_POINT == codePoint) break;
-                outWord[i] = codePoint;
+        // Gets the shortcut target itself as an int string and put it to outTarget, put its length
+        // to outTargetLength, put whether it is whitelist to outIsWhitelist.
+        AK_FORCE_INLINE void nextShortcutTarget(
+                const int maxDepth, int *const outTarget, int *const outTargetLength,
+                bool *const outIsWhitelist) {
+            const BinaryDictionaryTerminalAttributesReadingUtils::ShortcutFlags flags =
+                    BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
+                            mBinaryDictionaryInfo, &mPos);
+            mHasNextShortcutTarget =
+                    BinaryDictionaryTerminalAttributesReadingUtils::hasNext(flags);
+            if (outIsWhitelist) {
+                *outIsWhitelist =
+                        BinaryDictionaryTerminalAttributesReadingUtils::isWhitelist(flags);
             }
-            *outFreq = BinaryFormat::getAttributeProbabilityFromFlags(shortcutFlags);
-            return i;
+            if (outTargetLength) {
+                *outTargetLength =
+                        BinaryDictionaryTerminalAttributesReadingUtils::readShortcutTarget(
+                                mBinaryDictionaryInfo, maxDepth, outTarget, &mPos);
+            }
         }
 
      private:
-        const BinaryDictionaryInfo *const mBinaryDicitionaryInfo;
+        const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
         int mPos;
         bool mHasNextShortcutTarget;
     };
 
-    TerminalAttributes(const BinaryDictionaryInfo *const binaryDicitonaryInfo,
-            const uint8_t flags, const int pos)
-            : mBinaryDicitionaryInfo(binaryDicitonaryInfo), mFlags(flags), mStartPos(pos) {
-    }
+    TerminalAttributes(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const uint8_t nodeFlags, const int shortcutPos)
+            : mBinaryDictionaryInfo(binaryDictionaryInfo),
+              mNodeFlags(nodeFlags), mShortcutListSizePos(shortcutPos) {}
 
     inline ShortcutIterator getShortcutIterator() const {
         // The size of the shortcuts is stored here so that the whole shortcut chunk can be
         // skipped quickly, so we ignore it.
-        return ShortcutIterator(
-                mBinaryDicitionaryInfo, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
+        int shortcutPos = mShortcutListSizePos;
+        BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
+                mBinaryDictionaryInfo, &shortcutPos);
+        const bool hasShortcutList = 0 != (mNodeFlags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS);
+        return ShortcutIterator(mBinaryDictionaryInfo, shortcutPos, hasShortcutList);
     }
 
     bool isBlacklistedOrNotAWord() const {
-        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mFlags);
+        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mNodeFlags);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
-    const BinaryDictionaryInfo *const mBinaryDicitionaryInfo;
-    const uint8_t mFlags;
-    const int mStartPos;
+    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const uint8_t mNodeFlags;
+    const int mShortcutListSizePos;
 };
 } // namespace latinime
 #endif // LATINIME_TERMINAL_ATTRIBUTES_H

@@ -29,15 +29,15 @@ class ShortcutUtils {
             int outputWordIndex, const int finalScore, int *const outputCodePoints,
             int *const frequencies, int *const outputTypes, const bool sameAsTyped) {
         TerminalAttributes::ShortcutIterator iterator = terminalAttributes->getShortcutIterator();
+        int shortcutTarget[MAX_WORD_LENGTH];
         while (iterator.hasNextShortcutTarget() && outputWordIndex < MAX_RESULTS) {
-            int shortcutTarget[MAX_WORD_LENGTH];
-            int shortcutProbability;
-            const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
-                    MAX_WORD_LENGTH, shortcutTarget, &shortcutProbability);
+            bool isWhilelist;
+            int shortcutTargetStringLength;
+            iterator.nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget,
+                    &shortcutTargetStringLength, &isWhilelist);
             int shortcutScore;
             int kind;
-            if (shortcutProbability == BinaryFormat::WHITELIST_SHORTCUT_PROBABILITY
-                    && sameAsTyped) {
+            if (isWhilelist && sameAsTyped) {
                 shortcutScore = S_INT_MAX;
                 kind = Dictionary::KIND_WHITELIST;
             } else {
