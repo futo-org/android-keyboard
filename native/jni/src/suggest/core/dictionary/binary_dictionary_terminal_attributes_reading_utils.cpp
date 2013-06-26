@@ -33,6 +33,9 @@ const TaUtils::TerminalAttributeFlags TaUtils::FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
 // Mask for attribute probability, stored on 4 bits inside the flags byte.
 const TaUtils::TerminalAttributeFlags TaUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
 const int TaUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
+const int TaUtils::SHORTCUT_LIST_SIZE_FIELD_SIZE = 2;
+// The numeric value of the shortcut probability that means 'whitelist'.
+const int TaUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 
 /* static */ int TaUtils::getBigramAddressAndForwardPointer(
         const BinaryDictionaryInfo *const binaryDictionaryInfo, const TerminalAttributeFlags flags,

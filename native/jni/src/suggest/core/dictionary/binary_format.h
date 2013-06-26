@@ -52,13 +52,9 @@ class BinaryFormat {
 
     // Mask for attribute probability, stored on 4 bits inside the flags byte.
     static const int MASK_ATTRIBUTE_PROBABILITY = 0x0F;
-    // The numeric value of the shortcut probability that means 'whitelist'.
-    static const int WHITELIST_SHORTCUT_PROBABILITY = 15;
 
     // Mask and flags for attribute address type selection.
     static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
-
-    static const int SHORTCUT_LIST_SIZE_SIZE = 2;
 
     static bool hasBlacklistedOrNotAWordFlag(const int flags);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
@@ -73,9 +69,6 @@ class BinaryFormat {
             const int pos);
     static int readChildrenPosition(const uint8_t *const dict, const uint8_t flags, const int pos);
     static bool hasChildrenInFlags(const uint8_t flags);
-    static int getAttributeAddressAndForwardPointer(const uint8_t *const dict, const uint8_t flags,
-            int *pos);
-    static int getAttributeProbabilityFromFlags(const int flags);
     static int getTerminalPosition(const uint8_t *const root, const int *const inWord,
             const int length, const bool forceLowerCaseSearch);
     static int getWordAtAddress(const uint8_t *const root, const int address, const int maxDepth,
@@ -258,38 +251,6 @@ AK_FORCE_INLINE int BinaryFormat::readChildrenPosition(const uint8_t *const dict
 
 inline bool BinaryFormat::hasChildrenInFlags(const uint8_t flags) {
     return (FLAG_GROUP_ADDRESS_TYPE_NOADDRESS != (MASK_GROUP_ADDRESS_TYPE & flags));
-}
-
-AK_FORCE_INLINE int BinaryFormat::getAttributeAddressAndForwardPointer(const uint8_t *const dict,
-        const uint8_t flags, int *pos) {
-    int offset = 0;
-    const int origin = *pos;
-    switch (MASK_ATTRIBUTE_ADDRESS_TYPE & flags) {
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-            offset = dict[origin];
-            *pos = origin + 1;
-            break;
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-            offset = dict[origin] << 8;
-            offset += dict[origin + 1];
-            *pos = origin + 2;
-            break;
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-            offset = dict[origin] << 16;
-            offset += dict[origin + 1] << 8;
-            offset += dict[origin + 2];
-            *pos = origin + 3;
-            break;
-    }
-    if (FLAG_ATTRIBUTE_OFFSET_NEGATIVE & flags) {
-        return origin - offset;
-    } else {
-        return origin + offset;
-    }
-}
-
-inline int BinaryFormat::getAttributeProbabilityFromFlags(const int flags) {
-    return flags & MASK_ATTRIBUTE_PROBABILITY;
 }
 
 // This function gets the byte position of the last chargroup of the exact matching word in the
