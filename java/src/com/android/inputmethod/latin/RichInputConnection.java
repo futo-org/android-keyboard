@@ -730,14 +730,6 @@ public final class RichInputConnection {
     }
 
     /**
-     * The user moved the cursor by hand. Take a note of it.
-     * @param newCursorPosition The new cursor position.
-     */
-    public void userMovedCursor(final int newCursorPosition) {
-        mCurrentCursorPosition = newCursorPosition;
-    }
-
-    /**
      * Looks at the text just before the cursor to find out if it looks like a URL.
      *
      * The weakest point here is, if we don't have enough text bufferized, we may fail to realize
