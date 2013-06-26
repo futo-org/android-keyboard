@@ -928,14 +928,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final boolean selectionChanged = mLastSelectionStart != newSelStart
                 || mLastSelectionEnd != newSelEnd;
+
         // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
         // span in the view - we can use that to narrow down whether the cursor was moved
         // by us or not. If we are composing a word but there is no composing span, then
         // we know for sure the cursor moved while we were composing and we should reset
         // the state. TODO: rescind this policy: the framework never removes the composing
         // span on its own accord while editing. This test is useless.
-
         final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
+
         // If the keyboard is not visible, we don't need to do all the housekeeping work, as it
         // will be reset when the keyboard shows up anyway.
         // TODO: revisit this when LatinIME supports hardware keyboards.
@@ -957,7 +958,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // state-related special processing to kick in.
             mSpaceState = SPACE_STATE_NONE;
 
-            if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan) {
+            // TODO: is it still necessary to test for composingSpan related stuff?
+            final boolean selectionChangedOrSafeToReset = selectionChanged
+                    || (!mWordComposer.isComposingWord()) || noComposingSpan;
+            if (selectionChangedOrSafeToReset) {
                 // If we are composing a word and moving the cursor, we would want to set a
                 // suggestion span for recorrection to work correctly. Unfortunately, that
                 // would involve the keyboard committing some new text, which would move the
