@@ -36,23 +36,17 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int prevWordNodePos, DicNode *const newRootNode) {
-    int curPos = binaryDictionaryInfo->getRootPosition();
-    const int pos = curPos;
-    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &curPos);
-    const int childrenPos = curPos;
-    newRootNode->initAsRoot(pos, childrenPos, childrenCount, prevWordNodePos);
+    const int rootPos = binaryDictionaryInfo->getRootPosition();
+    const int childrenPos = rootPos;
+    newRootNode->initAsRoot(rootPos, childrenPos, prevWordNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         DicNode *const prevWordLastNode, DicNode *const newRootNode) {
-    int curPos = binaryDictionaryInfo->getRootPosition();
-    const int pos = curPos;
-    const int childrenCount = BinaryFormat::getGroupCountAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &curPos);
-    const int childrenPos = curPos;
-    newRootNode->initAsRootWithPreviousWord(prevWordLastNode, pos, childrenPos, childrenCount);
+    const int rootPos = binaryDictionaryInfo->getRootPosition();
+    const int childrenPos = rootPos;
+    newRootNode->initAsRootWithPreviousWord(prevWordLastNode, rootPos, childrenPos);
 }
 
 /* static */ void DicNodeUtils::initByCopy(DicNode *srcNode, DicNode *destNode) {
@@ -76,7 +70,7 @@ namespace latinime {
 }
 
 /* static */ int DicNodeUtils::createAndGetLeavingChildNode(DicNode *dicNode, int pos,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int terminalDepth,
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
         const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
         DicNodeVector *childDicNodes) {
@@ -90,11 +84,10 @@ namespace latinime {
     int codePoint = BinaryFormat::getCodePointAndForwardPointer(
             binaryDictionaryInfo->getDictRoot(), &pos);
     ASSERT(NOT_A_CODE_POINT != codePoint);
-    const int nodeCodePoint = codePoint;
     // TODO: optimize this
-    int additionalWordBuf[MAX_WORD_LENGTH];
-    uint16_t additionalSubwordLength = 0;
-    additionalWordBuf[additionalSubwordLength++] = codePoint;
+    int mergedNodeCodePoints[MAX_WORD_LENGTH];
+    uint16_t mergedNodeCodePointCount = 0;
+    mergedNodeCodePoints[mergedNodeCodePointCount++] = codePoint;
 
     do {
         const int nextCodePoint = hasMultipleChars
@@ -102,7 +95,7 @@ namespace latinime {
                         binaryDictionaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
         const bool isLastChar = (NOT_A_CODE_POINT == nextCodePoint);
         if (!isLastChar) {
-            additionalWordBuf[additionalSubwordLength++] = nextCodePoint;
+            mergedNodeCodePoints[mergedNodeCodePointCount++] = nextCodePoint;
         }
         codePoint = nextCodePoint;
     } while (NOT_A_CODE_POINT != codePoint);
@@ -116,17 +109,14 @@ namespace latinime {
     const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
             binaryDictionaryInfo->getDictRoot(), flags, pos);
 
-    if (isDicNodeFilteredOut(nodeCodePoint, pInfo, codePointsFilter)) {
+    if (isDicNodeFilteredOut(mergedNodeCodePoints[0], pInfo, codePointsFilter)) {
         return siblingPos;
     }
-    if (!isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, nodeCodePoint)) {
+    if (!isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, mergedNodeCodePoints[0])) {
         return siblingPos;
     }
-    const int childrenCount = hasChildren ? BinaryFormat::getGroupCountAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &childrenPos) : 0;
-    childDicNodes->pushLeavingChild(dicNode, nextPos, flags, childrenPos, attributesPos, siblingPos,
-            nodeCodePoint, childrenCount, probability, -1 /* bigramProbability */, isTerminal,
-            hasMultipleChars, hasChildren, additionalSubwordLength, additionalWordBuf);
+    childDicNodes->pushLeavingChild(dicNode, nextPos, flags, childrenPos, attributesPos,
+            probability, isTerminal, hasChildren, mergedNodeCodePointCount, mergedNodeCodePoints);
     return siblingPos;
 }
 
@@ -163,13 +153,16 @@ namespace latinime {
         const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
         const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
         DicNodeVector *childDicNodes) {
-    const int terminalDepth = dicNode->getLeavingDepth();
-    const int childCount = dicNode->getChildrenCount();
+    if (!dicNode->hasChildren()) {
+        return;
+    }
     int nextPos = dicNode->getChildrenPos();
+    const int childCount = BinaryFormat::getGroupCountAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &nextPos);
     for (int i = 0; i < childCount; i++) {
         const int filterSize = codePointsFilter ? codePointsFilter->size() : 0;
         nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
-                terminalDepth, pInfoState, pointIndex, exactOnly, codePointsFilter, pInfo,
+                pInfoState, pointIndex, exactOnly, codePointsFilter, pInfo,
                 childDicNodes);
         if (!pInfo && filterSize > 0 && childDicNodes->exceeds(filterSize)) {
             // All code points have been found.

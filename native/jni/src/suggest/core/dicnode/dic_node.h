@@ -109,12 +109,14 @@ class DicNode {
 
     // TODO: minimize arguments by looking binary_format
     // Init for root with prevWordNodePos which is used for bigram
-    void initAsRoot(const int pos, const int childrenPos, const int childrenCount,
-            const int prevWordNodePos) {
+    void initAsRoot(const int pos, const int childrenPos, const int prevWordNodePos) {
         mIsUsed = true;
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(
-                pos, 0, childrenPos, 0, 0, 0, childrenCount, 0, 0, false, false, true, 0, 0);
+                pos, 0 /* flags */, childrenPos, 0 /* attributesPos */,
+                NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
+                false /* isTerminal */, true /* hasChildren */, 0 /* depth */,
+                0 /* terminalDepth */);
         mDicNodeState.init(prevWordNodePos);
         PROF_NODE_RESET(mProfiler);
     }
@@ -130,12 +132,14 @@ class DicNode {
 
     // TODO: minimize arguments by looking binary_format
     // Init for root with previous word
-    void initAsRootWithPreviousWord(DicNode *dicNode, const int pos, const int childrenPos,
-            const int childrenCount) {
+    void initAsRootWithPreviousWord(DicNode *dicNode, const int pos, const int childrenPos) {
         mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(
-                pos, 0, childrenPos, 0, 0, 0, childrenCount, 0, 0, false, false, true, 0, 0);
+                pos,  0 /* flags */, childrenPos, 0 /* attributesPos */,
+                NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
+                false /* isTerminal */, true /* hasChildren */, 0 /* depth */,
+                0 /* terminalDepth */);
         // TODO: Move to dicNodeState?
         mDicNodeState.mDicNodeStateOutput.init(); // reset for next word
         mDicNodeState.mDicNodeStateInput.init(
@@ -157,19 +161,18 @@ class DicNode {
 
     // TODO: minimize arguments by looking binary_format
     void initAsChild(DicNode *dicNode, const int pos, const uint8_t flags, const int childrenPos,
-            const int attributesPos, const int siblingPos, const int nodeCodePoint,
-            const int childrenCount, const int probability, const int bigramProbability,
-            const bool isTerminal, const bool hasMultipleChars, const bool hasChildren,
-            const uint16_t additionalSubwordLength, const int *additionalSubword) {
+            const int attributesPos, const int probability, const bool isTerminal,
+            const bool hasChildren, const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
         mIsUsed = true;
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
-                dicNode->mDicNodeProperties.getLeavingDepth() + additionalSubwordLength);
-        mDicNodeProperties.init(pos, flags, childrenPos, attributesPos, siblingPos, nodeCodePoint,
-                childrenCount, probability, bigramProbability, isTerminal, hasMultipleChars,
-                hasChildren, newDepth, newLeavingDepth);
-        mDicNodeState.init(&dicNode->mDicNodeState, additionalSubwordLength, additionalSubword);
+                dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
+        mDicNodeProperties.init(pos, flags, childrenPos, attributesPos, mergedNodeCodePoints[0],
+                probability, isTerminal, hasChildren, newDepth, newLeavingDepth);
+        mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
+                mergedNodeCodePoints);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
@@ -193,8 +196,8 @@ class DicNode {
     }
 
     bool isLeavingNode() const {
-        ASSERT(getNodeCodePointCount() <= getLeavingDepth());
-        return getNodeCodePointCount() == getLeavingDepth();
+        ASSERT(getNodeCodePointCount() <= mDicNodeProperties.getLeavingDepth());
+        return getNodeCodePointCount() == mDicNodeProperties.getLeavingDepth();
     }
 
     AK_FORCE_INLINE bool isFirstLetter() const {
@@ -256,12 +259,6 @@ class DicNode {
         return mDicNodeProperties.getChildrenPos();
     }
 
-    // Used in DicNodeUtils
-    int getChildrenCount() const {
-        return mDicNodeProperties.getChildrenCount();
-    }
-
-    // Used in DicNodeUtils
     int getProbability() const {
         return mDicNodeProperties.getProbability();
     }
@@ -278,10 +275,6 @@ class DicNode {
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
                 - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
         return !(currentDepth > 0 && (currentDepth != 1 || prevWordLen != 1));
-    }
-
-    uint16_t getLeavingDepth() const {
-        return mDicNodeProperties.getLeavingDepth();
     }
 
     bool isTotalInputSizeExceedingLimit() const {
@@ -370,7 +363,7 @@ class DicNode {
     }
 
     AK_FORCE_INLINE const int *getOutputWordBuf() const {
-        return mDicNodeState.mDicNodeStateOutput.mWordBuf;
+        return mDicNodeState.mDicNodeStateOutput.mCodePointsBuf;
     }
 
     int getPrevCodePointG(int pointerId) const {
