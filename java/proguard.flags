@@ -9,3 +9,8 @@
 -keepclassmembers class * {
 @com.android.inputmethod.annotations.ExternallyReferenced *;
 }
+
+# Keep native methods
+-keep class * {
+native <methods>;
+}
