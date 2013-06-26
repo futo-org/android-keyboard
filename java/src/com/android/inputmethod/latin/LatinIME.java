@@ -778,6 +778,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // span, so we should reset our state unconditionally, even if restarting is true.
         mEnteredText = null;
         resetComposingState(true /* alsoResetLastComposedWord */);
+        if (isDifferentTextField) mHandler.postResumeSuggestions();
         mDeleteCount = 0;
         mSpaceState = SPACE_STATE_NONE;
         mRecapitalizeStatus.deactivate();
