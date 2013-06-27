@@ -26,50 +26,52 @@ namespace latinime {
 
 class DicNodeStateOutput {
  public:
-    DicNodeStateOutput() : mOutputtedLength(0) {
+    DicNodeStateOutput() : mOutputtedCodePointCount(0) {
         init();
     }
 
     virtual ~DicNodeStateOutput() {}
 
     void init() {
-        mOutputtedLength = 0;
-        mWordBuf[0] = 0;
+        mOutputtedCodePointCount = 0;
+        mCodePointsBuf[0] = 0;
     }
 
     void init(const DicNodeStateOutput *const stateOutput) {
-        memcpy(mWordBuf, stateOutput->mWordBuf,
-                stateOutput->mOutputtedLength * sizeof(mWordBuf[0]));
-        mOutputtedLength = stateOutput->mOutputtedLength;
-        if (mOutputtedLength < MAX_WORD_LENGTH) {
-            mWordBuf[mOutputtedLength] = 0;
+        memcpy(mCodePointsBuf, stateOutput->mCodePointsBuf,
+                stateOutput->mOutputtedCodePointCount * sizeof(mCodePointsBuf[0]));
+        mOutputtedCodePointCount = stateOutput->mOutputtedCodePointCount;
+        if (mOutputtedCodePointCount < MAX_WORD_LENGTH) {
+            mCodePointsBuf[mOutputtedCodePointCount] = 0;
         }
     }
 
-    void addSubword(const uint16_t additionalSubwordLength, const int *const additionalSubword) {
-        if (additionalSubword) {
-            memcpy(&mWordBuf[mOutputtedLength], additionalSubword,
-                    additionalSubwordLength * sizeof(mWordBuf[0]));
-            mOutputtedLength = static_cast<uint16_t>(mOutputtedLength + additionalSubwordLength);
-            if (mOutputtedLength < MAX_WORD_LENGTH) {
-                mWordBuf[mOutputtedLength] = 0;
+    void addMergedNodeCodePoints(const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
+        if (mergedNodeCodePoints) {
+            memcpy(&mCodePointsBuf[mOutputtedCodePointCount], mergedNodeCodePoints,
+                    mergedNodeCodePointCount * sizeof(mCodePointsBuf[0]));
+            mOutputtedCodePointCount = static_cast<uint16_t>(
+                    mOutputtedCodePointCount + mergedNodeCodePointCount);
+            if (mOutputtedCodePointCount < MAX_WORD_LENGTH) {
+                mCodePointsBuf[mOutputtedCodePointCount] = 0;
             }
         }
     }
 
     // TODO: Remove
-    int getCodePointAt(const int id) const {
-        return mWordBuf[id];
+    int getCodePointAt(const int index) const {
+        return mCodePointsBuf[index];
     }
 
     // TODO: Move to private
-    int mWordBuf[MAX_WORD_LENGTH];
+    int mCodePointsBuf[MAX_WORD_LENGTH];
 
  private:
     // Caution!!!
     // Use a default copy constructor and an assign operator because shallow copies are ok
     // for this class
-    uint16_t mOutputtedLength;
+    uint16_t mOutputtedCodePointCount;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_STATE_OUTPUT_H
