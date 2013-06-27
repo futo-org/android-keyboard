@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
@@ -59,7 +60,7 @@ public class ExternalDictionaryGetterForDebug {
         if (0 == fileNames.length) {
             showNoFileDialog(context);
         } else if (1 == fileNames.length) {
-            askInstallFile(context, fileNames[0]);
+            askInstallFile(context, SOURCE_FOLDER, fileNames[0], null /* completeRunnable */);
         } else {
             showChooseFileDialog(context, fileNames);
         }
@@ -82,14 +83,19 @@ public class ExternalDictionaryGetterForDebug {
                 .setItems(fileNames, new OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
-                        askInstallFile(context, fileNames[which]);
+                        askInstallFile(context, SOURCE_FOLDER, fileNames[which],
+                                null /* completeRunnable */);
                     }
                 })
                 .create().show();
     }
 
-    private static void askInstallFile(final Context context, final String fileName) {
-        final File file = new File(SOURCE_FOLDER, fileName.toString());
+    /**
+     * Shows a dialog which offers the user to install the external dictionary.
+     */
+    public static void askInstallFile(final Context context, final String dirPath,
+            final String fileName, final Runnable completeRunnable) {
+        final File file = new File(dirPath, fileName.toString());
         final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
         final StringBuilder message = new StringBuilder();
         final String locale = header.getLocaleString();
@@ -109,12 +115,26 @@ public class ExternalDictionaryGetterForDebug {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
                         dialog.dismiss();
+                        if (completeRunnable != null) {
+                            completeRunnable.run();
+                        }
                     }
                 }).setPositiveButton(android.R.string.ok, new OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
                         installFile(context, file, header);
                         dialog.dismiss();
+                        if (completeRunnable != null) {
+                            completeRunnable.run();
+                        }
+                    }
+                }).setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        // Canceled by the user by hitting the back key
+                        if (completeRunnable != null) {
+                            completeRunnable.run();
+                        }
                     }
                 }).create().show();
     }
