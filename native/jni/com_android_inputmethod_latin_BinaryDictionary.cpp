@@ -37,7 +37,17 @@ namespace latinime {
 
 class ProximityInfo;
 
-static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
+// Helper method
+static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd) {
+    int ret = munmap(const_cast<void *>(dictBuf), length);
+    if (ret != 0) {
+        AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
+    }
+    ret = close(fd);
+    if (ret != 0) {
+        AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
+    }
+}
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
@@ -77,8 +87,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         return 0;
     }
     Dictionary *dictionary = 0;
-    if (BinaryDictionaryFormat::UNKNOWN_VERSION
-            == BinaryDictionaryFormat::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
+    if (BinaryDictionaryFormatUtils::UNKNOWN_VERSION
+            == BinaryDictionaryFormatUtils::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
                     static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
         releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);
@@ -89,6 +99,19 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     PROF_END(66);
     PROF_CLOSE;
     return reinterpret_cast<jlong>(dictionary);
+}
+
+static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const BinaryDictionaryInfo *const binaryDictionaryInfo = dictionary->getBinaryDictionaryInfo();
+    const int dictBufOffset = binaryDictionaryInfo->getDictBufOffset();
+    const void *dictBuf = binaryDictionaryInfo->getDictBuf();
+    if (!dictBuf) return;
+    releaseDictBuf(static_cast<const char *>(dictBuf) - dictBufOffset,
+            binaryDictionaryInfo->getDictSize() + dictBufOffset,
+            binaryDictionaryInfo->getMmapFd());
+    delete dictionary;
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, jlong dict,
@@ -220,30 +243,6 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jclass clazz, ji
     env->GetIntArrayRegion(after, 0, afterLength, afterCodePoints);
     return AutocorrectionThresholdUtils::editDistance(beforeCodePoints, beforeLength,
             afterCodePoints, afterLength);
-}
-
-static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return;
-    const BinaryDictionaryInfo *const binaryDictionaryInfo = dictionary->getBinaryDictionaryInfo();
-    const int dictBufOffset = binaryDictionaryInfo->getDictBufOffset();
-    const void *dictBuf = binaryDictionaryInfo->getDictBuf();
-    if (!dictBuf) return;
-    releaseDictBuf(static_cast<const char *>(dictBuf) - dictBufOffset,
-            binaryDictionaryInfo->getDictSize() + dictBufOffset,
-            binaryDictionaryInfo->getMmapFd());
-    delete dictionary;
-}
-
-static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd) {
-    int ret = munmap(const_cast<void *>(dictBuf), length);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
-    }
-    ret = close(fd);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
-    }
 }
 
 static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, jlong dict,

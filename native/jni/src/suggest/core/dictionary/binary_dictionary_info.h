@@ -33,7 +33,8 @@ class BinaryDictionaryInfo {
             const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
-              mDictionaryFormat(BinaryDictionaryFormat::detectFormatVersion(mDictBuf, mDictSize)),
+              mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
+                      mDictBuf, mDictSize)),
               mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()) {}
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
@@ -56,7 +57,7 @@ class BinaryDictionaryInfo {
         return mDictRoot;
     }
 
-    AK_FORCE_INLINE BinaryDictionaryFormat::FORMAT_VERSION getFormat() const {
+    AK_FORCE_INLINE BinaryDictionaryFormatUtils::FORMAT_VERSION getFormat() const {
         return mDictionaryFormat;
     }
 
@@ -82,7 +83,7 @@ class BinaryDictionaryInfo {
     const int mMmapFd;
     const int mDictBufOffset;
     const bool mIsUpdatable;
-    const BinaryDictionaryFormat::FORMAT_VERSION mDictionaryFormat;
+    const BinaryDictionaryFormatUtils::FORMAT_VERSION mDictionaryFormat;
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
 };

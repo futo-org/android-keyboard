@@ -22,7 +22,7 @@ namespace latinime {
  * Dictionary size
  */
 // Any file smaller than this is not a dictionary.
-const int BinaryDictionaryFormat::DICTIONARY_MINIMUM_SIZE = 4;
+const int BinaryDictionaryFormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
 
 /**
  * Format versions
@@ -30,17 +30,18 @@ const int BinaryDictionaryFormat::DICTIONARY_MINIMUM_SIZE = 4;
 // Originally, format version 1 had a 16-bit magic number, then the version number `01'
 // then options that must be 0. Hence the first 32-bits of the format are always as follow
 // and it's okay to consider them a magic number as a whole.
-const uint32_t BinaryDictionaryFormat::FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
+const uint32_t BinaryDictionaryFormatUtils::FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
 
 // The versions of Latin IME that only handle format version 1 only test for the magic
 // number, so we had to change it so that version 2 files would be rejected by older
 // implementations. On this occasion, we made the magic number 32 bits long.
-const uint32_t BinaryDictionaryFormat::FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+const uint32_t BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
-const int BinaryDictionaryFormat::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
+const int BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
 
-/* static */ BinaryDictionaryFormat::FORMAT_VERSION BinaryDictionaryFormat::detectFormatVersion(
-        const uint8_t *const dict, const int dictSize) {
+/* static */ BinaryDictionaryFormatUtils::FORMAT_VERSION
+        BinaryDictionaryFormatUtils::detectFormatVersion(const uint8_t *const dict,
+                const int dictSize) {
     // The magic number is stored big-endian.
     // If the dictionary is less than 4 bytes, we can't even read the magic number, so we don't
     // understand this format.

@@ -26,7 +26,7 @@ namespace latinime {
 
 class BinaryDictionaryInfo;
 
-class BinaryDictionaryHeaderReader {
+class BinaryDictionaryHeaderReadingUtils {
  public:
     typedef uint16_t DictionaryFlags;
 
@@ -49,10 +49,10 @@ class BinaryDictionaryHeaderReader {
     }
 
     static AK_FORCE_INLINE bool hasHeaderAttributes(
-            const BinaryDictionaryFormat::FORMAT_VERSION format) {
+            const BinaryDictionaryFormatUtils::FORMAT_VERSION format) {
         // Only format 2 and above have header attributes as {key,value} string pairs.
         switch (format) {
-        case BinaryDictionaryFormat::VERSION_2:
+        case BinaryDictionaryFormatUtils::VERSION_2:
             return  true;
             break;
         default:
@@ -61,9 +61,9 @@ class BinaryDictionaryHeaderReader {
     }
 
     static AK_FORCE_INLINE int getHeaderOptionsPosition(
-            const BinaryDictionaryFormat::FORMAT_VERSION format) {
+            const BinaryDictionaryFormatUtils::FORMAT_VERSION format) {
         switch (format) {
-        case BinaryDictionaryFormat::VERSION_2:
+        case BinaryDictionaryFormatUtils::VERSION_2:
             return VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE
                     + VERSION_2_DICTIONARY_FLAG_SIZE + VERSION_2_DICTIONARY_HEADER_SIZE_SIZE;
             break;
@@ -80,7 +80,7 @@ class BinaryDictionaryHeaderReader {
             const BinaryDictionaryInfo *const binaryDictionaryInfo, const char *const key);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReader);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReadingUtils);
 
     static const int FORMAT_VERSION_1_HEADER_SIZE;
 
