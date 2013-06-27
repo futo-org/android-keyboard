@@ -17,9 +17,14 @@
 package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
+import android.os.Parcel;
 import android.test.AndroidTestCase;
+import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.SuggestionSpan;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -27,8 +32,10 @@ import android.view.inputmethod.InputConnectionWrapper;
 
 import com.android.inputmethod.latin.RichInputConnection.Range;
 
+import java.util.Locale;
+
 @SmallTest
-public class RichInputConnectionTests extends AndroidTestCase {
+public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
 
     // The following is meant to be a reasonable default for
     // the "word_separators" resource.
@@ -40,9 +47,29 @@ public class RichInputConnectionTests extends AndroidTestCase {
     }
 
     private class MockConnection extends InputConnectionWrapper {
-        final String mTextBefore;
-        final String mTextAfter;
+        final CharSequence mTextBefore;
+        final CharSequence mTextAfter;
         final ExtractedText mExtractedText;
+
+        public MockConnection(final CharSequence text, final int cursorPosition) {
+            super(null, false);
+            // Interaction of spans with Parcels is completely non-trivial, but in the actual case
+            // the CharSequences do go through Parcels because they go through IPC. There
+            // are some significant differences between the behavior of Spanned objects that
+            // have and that have not gone through parceling, so it's much easier to simulate
+            // the environment with Parcels than try to emulate things by hand.
+            final Parcel p = Parcel.obtain();
+            TextUtils.writeToParcel(text.subSequence(0, cursorPosition), p, 0 /* flags */);
+            TextUtils.writeToParcel(text.subSequence(cursorPosition, text.length()), p,
+                    0 /* flags */);
+            final byte[] marshalled = p.marshall();
+            p.unmarshall(marshalled, 0, marshalled.length);
+            p.setDataPosition(0);
+            mTextBefore = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(p);
+            mTextAfter = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(p);
+            mExtractedText = null;
+            p.recycle();
+        }
 
         public MockConnection(String textBefore, String textAfter, ExtractedText extractedText) {
             super(null, false);
@@ -190,5 +217,96 @@ public class RichInputConnectionTests extends AndroidTestCase {
         r = ic.getWordRangeAtCursor(supplementaryChar, 0);
         ic.endBatchEdit();
         assertTrue(TextUtils.equals("word", r.mWord));
+    }
+
+    /**
+     * Test logic in getting the word range at the cursor.
+     */
+    public void testGetSuggestionSpansAtWord() {
+        helpTestGetSuggestionSpansAtWord(10);
+        helpTestGetSuggestionSpansAtWord(12);
+        helpTestGetSuggestionSpansAtWord(15);
+        helpTestGetSuggestionSpansAtWord(16);
+    }
+
+    private void helpTestGetSuggestionSpansAtWord(final int cursorPos) {
+        final MockInputMethodService mockInputMethodService = new MockInputMethodService();
+        final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
+
+        final String[] SUGGESTIONS1 = { "swing", "strong" };
+        final String[] SUGGESTIONS2 = { "storing", "strung" };
+
+        // Test the usual case.
+        SpannableString text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        Range r;
+        SuggestionSpan[] suggestions;
+
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 1);
+        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+
+        // Test the case with 2 suggestion spans in the same place.
+        text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 2);
+        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+        MoreAsserts.assertEquals(suggestions[1].getSuggestions(), SUGGESTIONS2);
+
+        // Test a case with overlapping spans, 2nd extending past the start of the word
+        text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
+                5 /* start */, 16 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 1);
+        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+
+        // Test a case with overlapping spans, 2nd extending past the end of the word
+        text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
+                10 /* start */, 20 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 1);
+        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+
+        // Test a case with overlapping spans, 2nd extending past both ends of the word
+        text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                10 /* start */, 16 /* end */, 0 /* flags */);
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
+                5 /* start */, 20 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 1);
+        MoreAsserts.assertEquals(suggestions[0].getSuggestions(), SUGGESTIONS1);
+
+        // Test a case with overlapping spans, none right on the word
+        text = new SpannableString("This is a string for test");
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
+                5 /* start */, 16 /* end */, 0 /* flags */);
+        text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS2, 0 /* flags */),
+                5 /* start */, 20 /* end */, 0 /* flags */);
+        mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
+        r = ic.getWordRangeAtCursor(" ", 0);
+        suggestions = r.getSuggestionSpansAtWord();
+        assertEquals(suggestions.length, 0);
     }
 }

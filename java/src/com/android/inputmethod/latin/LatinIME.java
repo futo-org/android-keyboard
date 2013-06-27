@@ -43,7 +43,6 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
@@ -2523,21 +2522,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > mLastSelectionStart) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
-        final CharSequence word = range.mWord;
-        final String typedWord = word.toString();
-        if (word instanceof Spanned) {
-            final Spanned spanned = (Spanned)word;
-            int i = 0;
-            for (Object object : spanned.getSpans(0, spanned.length(),
-                    SuggestionSpan.class)) {
-                SuggestionSpan span = (SuggestionSpan)object;
-                for (String s : span.getSuggestions()) {
-                    ++i;
-                    if (!TextUtils.equals(s, typedWord)) {
-                        suggestions.add(new SuggestedWordInfo(s,
-                                SuggestionStripView.MAX_SUGGESTIONS - i,
-                                SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED));
-                    }
+        final String typedWord = range.mWord.toString();
+        int i = 0;
+        for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
+            for (final String s : span.getSuggestions()) {
+                ++i;
+                if (!TextUtils.equals(s, typedWord)) {
+                    suggestions.add(new SuggestedWordInfo(s,
+                            SuggestionStripView.MAX_SUGGESTIONS - i,
+                            SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED));
                 }
             }
         }
