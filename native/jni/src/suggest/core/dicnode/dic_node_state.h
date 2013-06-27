@@ -55,11 +55,12 @@ class DicNodeState {
         mDicNodeStateScoring.init(&src->mDicNodeStateScoring);
     }
 
-    // Init by copy and adding subword
-    void init(const DicNodeState *const src, const uint16_t additionalSubwordLength,
-            const int *const additionalSubword) {
+    // Init by copy and adding merged node code points.
+    void init(const DicNodeState *const src, const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
         init(src);
-        mDicNodeStateOutput.addSubword(additionalSubwordLength, additionalSubword);
+        mDicNodeStateOutput.addMergedNodeCodePoints(
+                mergedNodeCodePointCount, mergedNodeCodePoints);
     }
 
  private:

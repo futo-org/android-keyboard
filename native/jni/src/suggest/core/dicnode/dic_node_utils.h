@@ -72,7 +72,7 @@ class DicNodeUtils {
             const std::vector<int> *const codePointsFilter,
             const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
     static int createAndGetLeavingChildNode(DicNode *dicNode, int pos,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int terminalDepth,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const ProximityInfoState *pInfoState, const int pointIndex,
             const bool exactOnly, const std::vector<int> *const codePointsFilter,
             const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
