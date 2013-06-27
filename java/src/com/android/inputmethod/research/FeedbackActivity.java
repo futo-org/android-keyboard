@@ -18,7 +18,6 @@ package com.android.inputmethod.research;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.CheckBox;
 
 import com.android.inputmethod.latin.R;
 
