@@ -58,7 +58,6 @@ public class UserDictionaryList extends PreferenceFragment {
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
         final TreeSet<String> localeSet = new TreeSet<String>();
-        boolean addedAllLocale = false;
         if (null == cursor) {
             // The user dictionary service is not present or disabled. Return null.
             return null;
@@ -66,14 +65,10 @@ public class UserDictionaryList extends PreferenceFragment {
             final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
             do {
                 final String locale = cursor.getString(columnIndex);
-                final boolean allLocale = TextUtils.isEmpty(locale);
-                localeSet.add(allLocale ? "" : locale);
-                if (allLocale) {
-                    addedAllLocale = true;
-                }
+                localeSet.add(null != locale ? locale : "");
             } while (cursor.moveToNext());
         }
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED && !addedAllLocale) {
+        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale
             // is different from the system locale
             localeSet.add("");
