@@ -24,8 +24,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 
-import com.android.inputmethod.latin.define.ProductionFlag;
-
 /**
  * Service to invoke the uploader.
  *
@@ -33,8 +31,6 @@ import com.android.inputmethod.latin.define.ProductionFlag;
  */
 public final class UploaderService extends IntentService {
     private static final String TAG = UploaderService.class.getSimpleName();
-    private static final boolean DEBUG = false
-            && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
     public static final long RUN_INTERVAL = AlarmManager.INTERVAL_HOUR;
     public static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
             + ".extra.UPLOAD_UNCONDITIONALLY";

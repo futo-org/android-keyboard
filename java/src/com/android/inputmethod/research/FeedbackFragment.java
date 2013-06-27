@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.research;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
