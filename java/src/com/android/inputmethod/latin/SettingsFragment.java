@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -51,7 +52,10 @@ import java.util.TreeSet;
 public final class SettingsFragment extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = SettingsFragment.class.getSimpleName();
-    private static final boolean DBG_USE_INTERNAL_USER_DICTIONARY_SETTINGS = false;
+    private static final boolean DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
+    private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS =
+            DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
+                    || Build.VERSION.SDK_INT <= 18 /* Build.VERSION.JELLY_BEAN_MR2 */;
 
     private ListPreference mVoicePreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -212,10 +216,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Preference editPersonalDictionary =
                 findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
         final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
-        final ResolveInfo ri = context.getPackageManager().resolveActivity(
-                editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (DBG_USE_INTERNAL_USER_DICTIONARY_SETTINGS || ri == null) {
-            updateUserDictionaryPreference(editPersonalDictionary);
+        final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS ? null
+                : context.getPackageManager().resolveActivity(
+                        editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (ri == null) {
+            overwriteUserDictionaryPreference(editPersonalDictionary);
         }
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
@@ -470,7 +475,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         });
     }
 
-    private void updateUserDictionaryPreference(Preference userDictionaryPreference) {
+    private void overwriteUserDictionaryPreference(Preference userDictionaryPreference) {
         final Activity activity = getActivity();
         final TreeSet<String> localeList = UserDictionaryList.getUserDictionaryLocalesSet(activity);
         if (null == localeList) {
