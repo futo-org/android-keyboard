@@ -20,23 +20,27 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "jni.h"
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/policyimpl/dictionary/dictionary_structure_policy_factory.h"
+#include "utils/log_utils.h"
 
 namespace latinime {
 
 class BinaryDictionaryInfo {
  public:
-    BinaryDictionaryInfo(const uint8_t *const dictBuf, const int dictSize, const int mmapFd,
-            const int dictBufOffset, const bool isUpdatable)
+    BinaryDictionaryInfo(JNIEnv *env, const uint8_t *const dictBuf,
+            const int dictSize, const int mmapFd, const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
               mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
                       mDictBuf, mDictSize)),
               mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
               mStructurePolicy(DictionaryStructurePolicyFactory::getDictionaryStructurePolicy(
-                      mDictionaryFormat)) {}
+                      mDictionaryFormat)) {
+        logDictionaryInfo(env);
+    }
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
         return mDictBuf;
@@ -88,6 +92,33 @@ class BinaryDictionaryInfo {
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
     const DictionaryStructurePolicy *const mStructurePolicy;
+
+    AK_FORCE_INLINE void logDictionaryInfo(JNIEnv *const env) const {
+        const int BUFFER_SIZE = 16;
+        int dictionaryIdCodePointBuffer[BUFFER_SIZE];
+        int versionStringCodePointBuffer[BUFFER_SIZE];
+        int dateStringCodePointBuffer[BUFFER_SIZE];
+        mDictionaryHeader.readHeaderValueOrQuestionMark("dictionary",
+                dictionaryIdCodePointBuffer, BUFFER_SIZE);
+        mDictionaryHeader.readHeaderValueOrQuestionMark("version",
+                versionStringCodePointBuffer, BUFFER_SIZE);
+        mDictionaryHeader.readHeaderValueOrQuestionMark("date",
+                dateStringCodePointBuffer, BUFFER_SIZE);
+
+        char dictionaryIdCharBuffer[BUFFER_SIZE];
+        char versionStringCharBuffer[BUFFER_SIZE];
+        char dateStringCharBuffer[BUFFER_SIZE];
+        intArrayToCharArray(dictionaryIdCodePointBuffer, BUFFER_SIZE,
+                dictionaryIdCharBuffer, BUFFER_SIZE);
+        intArrayToCharArray(versionStringCodePointBuffer, BUFFER_SIZE,
+                versionStringCharBuffer, BUFFER_SIZE);
+        intArrayToCharArray(dateStringCodePointBuffer, BUFFER_SIZE,
+                dateStringCharBuffer, BUFFER_SIZE);
+
+        LogUtils::logToJava(env,
+                "Dictionary info: dictionary = %s ; version = %s ; date = %s ; filesize = %i",
+                dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer, mDictSize);
+    }
 };
 }
 #endif /* LATINIME_BINARY_DICTIONARY_INFO_H */

@@ -22,6 +22,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "jni.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/session/dic_traverse_session.h"
@@ -32,8 +33,9 @@
 
 namespace latinime {
 
-Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufOffset, bool isUpdatable)
-        : mBinaryDictionaryInfo(static_cast<const uint8_t *>(dict), dictSize, mmapFd,
+Dictionary::Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd,
+        int dictBufOffset, bool isUpdatable)
+        : mBinaryDictionaryInfo(env, static_cast<const uint8_t *>(dict), dictSize, mmapFd,
                 dictBufOffset, isUpdatable),
           mBigramDictionary(new BigramDictionary(&mBinaryDictionaryInfo)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),

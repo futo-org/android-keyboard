@@ -82,8 +82,10 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
         if(ByteArrayUtils::compareStringInBufferWithCharArray(
                 binaryDictionaryInfo->getDictBuf(), key, headerSize - pos, &pos) == 0) {
             // The key was found.
-            ByteArrayUtils::readStringAndAdvancePosition(
+            const int length = ByteArrayUtils::readStringAndAdvancePosition(
                     binaryDictionaryInfo->getDictBuf(), outValueSize, outValue, &pos);
+            // Add a 0 terminator to the string.
+            outValue[length < outValueSize ? length : outValueSize - 1] = '\0';
             return true;
         }
         ByteArrayUtils::advancePositionToBehindString(
