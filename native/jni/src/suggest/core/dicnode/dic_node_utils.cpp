@@ -36,17 +36,14 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int prevWordNodePos, DicNode *const newRootNode) {
-    const int rootPos = binaryDictionaryInfo->getRootPosition();
-    const int childrenPos = rootPos;
-    newRootNode->initAsRoot(rootPos, childrenPos, prevWordNodePos);
+    newRootNode->initAsRoot(binaryDictionaryInfo->getRootPosition(), prevWordNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         DicNode *const prevWordLastNode, DicNode *const newRootNode) {
-    const int rootPos = binaryDictionaryInfo->getRootPosition();
-    const int childrenPos = rootPos;
-    newRootNode->initAsRootWithPreviousWord(prevWordLastNode, rootPos, childrenPos);
+    newRootNode->initAsRootWithPreviousWord(
+            prevWordLastNode, binaryDictionaryInfo->getRootPosition());
 }
 
 /* static */ void DicNodeUtils::initByCopy(DicNode *srcNode, DicNode *destNode) {
@@ -80,6 +77,7 @@ namespace latinime {
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
     const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
+    const bool hasShortcuts = (0 != (BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS & flags));
 
     int codePoint = BinaryFormat::getCodePointAndForwardPointer(
             binaryDictionaryInfo->getDictRoot(), &pos);
@@ -101,11 +99,12 @@ namespace latinime {
     } while (NOT_A_CODE_POINT != codePoint);
 
     const int probability = isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(
-            binaryDictionaryInfo->getDictRoot(), pos) : -1;
+            binaryDictionaryInfo->getDictRoot(), pos) : NOT_A_PROBABILITY;
     pos = BinaryFormat::skipProbability(flags, pos);
     int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
-            binaryDictionaryInfo->getDictRoot(), flags, pos) : 0;
-    const int attributesPos = BinaryFormat::skipChildrenPosition(flags, pos);
+            binaryDictionaryInfo->getDictRoot(), flags, pos) : NOT_A_DICT_POS;
+    const int attributesPos =
+            hasShortcuts ? BinaryFormat::skipChildrenPosition(flags, pos) : NOT_A_DICT_POS;
     const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
             binaryDictionaryInfo->getDictRoot(), flags, pos);
 

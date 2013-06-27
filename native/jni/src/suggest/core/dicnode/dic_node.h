@@ -97,7 +97,6 @@ class DicNode {
     DicNode &operator=(const DicNode &dicNode);
     virtual ~DicNode() {}
 
-    // TODO: minimize arguments by looking binary_format
     // Init for copy
     void initByCopy(const DicNode *dicNode) {
         mIsUsed = true;
@@ -107,13 +106,12 @@ class DicNode {
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    // TODO: minimize arguments by looking binary_format
     // Init for root with prevWordNodePos which is used for bigram
-    void initAsRoot(const int pos, const int childrenPos, const int prevWordNodePos) {
+    void initAsRoot(const int rootGroupPos, const int prevWordNodePos) {
         mIsUsed = true;
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(
-                pos, 0 /* flags */, childrenPos, 0 /* attributesPos */,
+                NOT_A_DICT_POS, 0 /* flags */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
                 NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
                 false /* isTerminal */, true /* hasChildren */, 0 /* depth */,
                 0 /* terminalDepth */);
@@ -130,13 +128,12 @@ class DicNode {
         PROF_NODE_COPY(&parentNode->mProfiler, mProfiler);
     }
 
-    // TODO: minimize arguments by looking binary_format
     // Init for root with previous word
-    void initAsRootWithPreviousWord(DicNode *dicNode, const int pos, const int childrenPos) {
+    void initAsRootWithPreviousWord(DicNode *dicNode, const int rootGroupPos) {
         mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(
-                pos,  0 /* flags */, childrenPos, 0 /* attributesPos */,
+                NOT_A_DICT_POS,  0 /* flags */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
                 NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
                 false /* isTerminal */, true /* hasChildren */, 0 /* depth */,
                 0 /* terminalDepth */);

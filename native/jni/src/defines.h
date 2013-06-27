@@ -270,6 +270,7 @@ static inline void prof_out(void) {
 #define NOT_A_COORDINATE (-1)
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
+#define NOT_A_DICT_POS (S_INT_MIN)
 
 #define KEYCODE_SPACE ' '
 #define KEYCODE_SINGLE_QUOTE '\''
