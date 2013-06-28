@@ -439,7 +439,6 @@ public final class BinaryDictionaryFileDumper {
             final ContentProviderClient client, final String clientId) throws RemoteException {
         final String metadataFileUri = MetadataFileUriGetter.getMetadataUri(context);
         final String metadataAdditionalId = MetadataFileUriGetter.getMetadataAdditionalId(context);
-        if (TextUtils.isEmpty(metadataFileUri)) return;
         // Tell the content provider to reset all information about this client id
         final Uri metadataContentUri = getProviderUriBuilder(clientId)
                 .appendPath(QUERY_PATH_METADATA)
