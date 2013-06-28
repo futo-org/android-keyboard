@@ -83,27 +83,14 @@ int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, in
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    const uint8_t *const root = mBinaryDictionaryInfo.getDictRoot();
-    int pos = BinaryFormat::getTerminalPosition(root, word, length,
+    const DictionaryStructurePolicy *const structurePolicy =
+            mBinaryDictionaryInfo.getStructurePolicy();
+    int pos = structurePolicy->getTerminalNodePositionOfWord(&mBinaryDictionaryInfo, word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == pos) {
         return NOT_A_PROBABILITY;
     }
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (flags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD)) {
-        // If this is not a word, or if it's a blacklisted entry, it should behave as
-        // having no probability outside of the suggestion process (where it should be used
-        // for shortcuts).
-        return NOT_A_PROBABILITY;
-    }
-    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
-    if (hasMultipleChars) {
-        pos = BinaryFormat::skipOtherCharacters(root, pos);
-    } else {
-        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
-    }
-    const int unigramProbability = BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
-    return unigramProbability;
+    return structurePolicy->getUnigramProbability(&mBinaryDictionaryInfo, pos);
 }
 
 bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {
