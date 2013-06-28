@@ -293,13 +293,8 @@ final public class BinaryDictionaryGetter {
             final Context context) {
 
         final boolean hasDefaultWordList = DictionaryFactory.isDictionaryAvailable(context, locale);
-        // We need internet access to do the following. Only do this if the package actually
-        // has the permission.
-        if (context.checkCallingOrSelfPermission(android.Manifest.permission.INTERNET)
-                == PackageManager.PERMISSION_GRANTED) {
-            BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
-                    hasDefaultWordList);
-        }
+        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
+                hasDefaultWordList);
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
         final String mainDictId = DictionaryInfoUtils.getMainDictId(locale);
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
