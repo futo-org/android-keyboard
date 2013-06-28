@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
@@ -104,9 +105,16 @@ public final class DictionarySettingsFragment extends PreferenceFragment
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        mUpdateNowMenu = menu.add(Menu.NONE, MENU_UPDATE_NOW, 0, R.string.check_for_updates_now);
-        mUpdateNowMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        refreshNetworkState();
+        final String metadataUri =
+                MetadataDbHelper.getMetadataUriAsString(getActivity(), mClientId);
+        // We only add the "Refresh" button if we have a non-empty URL to refresh from. If the
+        // URL is empty, of course we can't refresh so it makes no sense to display this.
+        if (!TextUtils.isEmpty(metadataUri)) {
+            mUpdateNowMenu =
+                    menu.add(Menu.NONE, MENU_UPDATE_NOW, 0, R.string.check_for_updates_now);
+            mUpdateNowMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            refreshNetworkState();
+        }
     }
 
     @Override
@@ -353,7 +361,12 @@ public final class DictionarySettingsFragment extends PreferenceFragment
         new Thread("updateByHand") {
             @Override
             public void run() {
-                UpdateHandler.update(activity, true);
+                // We call tryUpdate(), which returns whether we could successfully start an update.
+                // If we couldn't, we'll never receive the end callback, so we stop the loading
+                // animation and return to the previous screen.
+                if (!UpdateHandler.tryUpdate(activity, true)) {
+                    stopLoadingAnimation();
+                }
             }
         }.start();
     }
@@ -368,7 +381,9 @@ public final class DictionarySettingsFragment extends PreferenceFragment
     private void startLoadingAnimation() {
         mLoadingView.setVisibility(View.VISIBLE);
         getView().setVisibility(View.GONE);
-        mUpdateNowMenu.setTitle(R.string.cancel);
+        // We come here when the menu element is pressed so presumably it can't be null. But
+        // better safe than sorry.
+        if (null != mUpdateNowMenu) mUpdateNowMenu.setTitle(R.string.cancel);
     }
 
     private void stopLoadingAnimation() {

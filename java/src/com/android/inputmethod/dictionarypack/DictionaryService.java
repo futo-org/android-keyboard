@@ -170,7 +170,7 @@ public final class DictionaryService extends Service {
             checkTimeAndMaybeSetupUpdateAlarm(context);
         } else if (DictionaryPackConstants.UPDATE_NOW_INTENT_ACTION.equals(intent.getAction())) {
             // Intent to trigger an update now.
-            UpdateHandler.update(context, false);
+            UpdateHandler.tryUpdate(context, false);
         } else {
             UpdateHandler.downloadFinished(context, intent);
         }
@@ -221,7 +221,7 @@ public final class DictionaryService extends Service {
      */
     public static void updateNowIfNotUpdatedInAVeryLongTime(final Context context) {
         if (!isLastUpdateAtLeastThisOld(context, VERY_LONG_TIME)) return;
-        UpdateHandler.update(context, false);
+        UpdateHandler.tryUpdate(context, false);
     }
 
     /**
