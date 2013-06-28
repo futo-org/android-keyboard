@@ -150,11 +150,10 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
 int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
         const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return 0;
-    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
-    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength,
-            forceLowerCaseSearch);
-
+    int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+            mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
     if (NOT_VALID_WORD == pos) return 0;
+    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
     if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
     if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
@@ -189,8 +188,8 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
     int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;
-    int nextWordPos = BinaryFormat::getTerminalPosition(mBinaryDictionaryInfo->getDictRoot(),
-            word1, length1, false /* forceLowerCaseSearch */);
+    int nextWordPos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+            mBinaryDictionaryInfo, word1, length1, false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == nextWordPos) return false;
 
     for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);

@@ -22,10 +22,9 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
+#include "suggest/policyimpl/dictionary/dictionary_structure_policy_factory.h"
 
 namespace latinime {
-
-class BinaryDictionaryHeader;
 
 class BinaryDictionaryInfo {
  public:
@@ -35,7 +34,9 @@ class BinaryDictionaryInfo {
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
               mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
                       mDictBuf, mDictSize)),
-              mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()) {}
+              mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
+              mStructurePolicy(DictionaryStructurePolicyFactory::getDictionaryStructurePolicy(
+                      mDictionaryFormat)) {}
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
         return mDictBuf;
@@ -61,10 +62,6 @@ class BinaryDictionaryInfo {
         return mDictionaryFormat;
     }
 
-    AK_FORCE_INLINE int getRootPosition() const {
-        return 0;
-    }
-
     AK_FORCE_INLINE const BinaryDictionaryHeader *getHeader() const {
         return &mDictionaryHeader;
     }
@@ -73,6 +70,10 @@ class BinaryDictionaryInfo {
         // TODO: Support dynamic dictionary formats.
         const bool isUpdatableDictionaryFormat = false;
         return mIsUpdatable && isUpdatableDictionaryFormat;
+    }
+
+    AK_FORCE_INLINE const DictionaryStructurePolicy *getStructurePolicy() const {
+        return mStructurePolicy;
     }
 
  private:
@@ -86,6 +87,7 @@ class BinaryDictionaryInfo {
     const BinaryDictionaryFormatUtils::FORMAT_VERSION mDictionaryFormat;
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
+    const DictionaryStructurePolicy *const mStructurePolicy;
 };
 }
 #endif /* LATINIME_BINARY_DICTIONARY_INFO_H */
