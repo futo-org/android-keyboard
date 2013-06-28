@@ -26,6 +26,7 @@
 #include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state.h"
+#include "suggest/core/policy/dictionary_structure_policy.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -36,14 +37,15 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int prevWordNodePos, DicNode *const newRootNode) {
-    newRootNode->initAsRoot(binaryDictionaryInfo->getRootPosition(), prevWordNodePos);
+    newRootNode->initAsRoot(binaryDictionaryInfo->getStructurePolicy()->getRootPosition(),
+            prevWordNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         DicNode *const prevWordLastNode, DicNode *const newRootNode) {
     newRootNode->initAsRootWithPreviousWord(
-            prevWordLastNode, binaryDictionaryInfo->getRootPosition());
+            prevWordLastNode, binaryDictionaryInfo->getStructurePolicy()->getRootPosition());
 }
 
 /* static */ void DicNodeUtils::initByCopy(DicNode *srcNode, DicNode *destNode) {

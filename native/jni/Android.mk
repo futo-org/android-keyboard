@@ -70,6 +70,7 @@ LATIN_IME_CORE_SRC_FILES := \
         proximity_info_state_utils.cpp) \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
+    suggest/policyimpl/dictionary/patricia_trie_policy.cpp \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \
