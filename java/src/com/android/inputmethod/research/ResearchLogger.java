@@ -57,11 +57,11 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
-import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.MotionEventReader.ReplayData;
 import com.android.inputmethod.research.ui.SplashScreen;
 
@@ -1220,7 +1220,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final RichInputConnection connection) {
         String word = "";
         if (connection != null) {
-            Range range = connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1);
+            TextRange range = connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1);
             if (range != null) {
                 word = range.mWord.toString();
             }

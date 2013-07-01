@@ -17,9 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.inputmethodservice.InputMethodService;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -32,9 +30,9 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -441,100 +439,6 @@ public final class RichInputConnection {
         return getNthPreviousWord(prev, sentenceSeperators, n);
     }
 
-    /**
-     * Represents a range of text, relative to the current cursor position.
-     */
-    public static final class Range {
-        private final CharSequence mTextAtCursor;
-        private final int mWordAtCursorStartIndex;
-        private final int mWordAtCursorEndIndex;
-        private final int mCursorIndex;
-
-        public final CharSequence mWord;
-
-        public int getNumberOfCharsInWordBeforeCursor() {
-            return mCursorIndex - mWordAtCursorStartIndex;
-        }
-
-        public int getNumberOfCharsInWordAfterCursor() {
-            return mWordAtCursorEndIndex - mCursorIndex;
-        }
-
-        /**
-         * Gets the suggestion spans that are put squarely on the word, with the exact start
-         * and end of the span matching the boundaries of the word.
-         * @return the list of spans.
-         */
-        public SuggestionSpan[] getSuggestionSpansAtWord() {
-            if (!(mTextAtCursor instanceof Spanned && mWord instanceof Spanned)) {
-                return new SuggestionSpan[0];
-            }
-            final Spanned text = (Spanned)mTextAtCursor;
-            // Note: it's fine to pass indices negative or greater than the length of the string
-            // to the #getSpans() method. The reason we need to get from -1 to +1 is that, the
-            // spans were cut at the cursor position, and #getSpans(start, end) does not return
-            // spans that end at `start' or begin at `end'. Consider the following case:
-            //              this| is          (The | symbolizes the cursor position
-            //              ---- ---
-            // In this case, the cursor is in position 4, so the 0~7 span has been split into
-            // a 0~4 part and a 4~7 part.
-            // If we called #getSpans(0, 4) in this case, we would only get the part from 0 to 4
-            // of the span, and not the part from 4 to 7, so we would not realize the span actually
-            // extends from 0 to 7. But if we call #getSpans(-1, 5) we'll get both the 0~4 and
-            // the 4~7 spans and we can merge them accordingly.
-            // Any span starting more than 1 char away from the word boundaries in any direction
-            // does not touch the word, so we don't need to consider it. That's why requesting
-            // -1 ~ +1 is enough.
-            // Of course this is only relevant if the cursor is at one end of the word. If it's
-            // in the middle, the -1 and +1 are not necessary, but they are harmless.
-            final SuggestionSpan[] spans = text.getSpans(mWordAtCursorStartIndex - 1,
-                    mWordAtCursorEndIndex + 1, SuggestionSpan.class);
-            int readIndex = 0;
-            int writeIndex = 0;
-            for (; readIndex < spans.length; ++readIndex) {
-                final SuggestionSpan span = spans[readIndex];
-                // The span may be null, as we null them when we find duplicates. Cf a few lines
-                // down.
-                if (null == span) continue;
-                // Tentative span start and end. This may be modified later if we realize the
-                // same span is also applied to other parts of the string.
-                int spanStart = text.getSpanStart(span);
-                int spanEnd = text.getSpanEnd(span);
-                for (int i = readIndex + 1; i < spans.length; ++i) {
-                    if (span.equals(spans[i])) {
-                        // We found the same span somewhere else. Read the new extent of this
-                        // span, and adjust our values accordingly.
-                        spanStart = Math.min(spanStart, text.getSpanStart(spans[i]));
-                        spanEnd = Math.max(spanEnd, text.getSpanEnd(spans[i]));
-                        // ...and mark the span as processed.
-                        spans[i] = null;
-                    }
-                }
-                if (spanStart == mWordAtCursorStartIndex && spanEnd == mWordAtCursorEndIndex) {
-                    // If the span does not start and stop here, we ignore it. It probably extends
-                    // past the start or end of the word, as happens in missing space correction
-                    // or EasyEditSpans put by voice input.
-                    spans[writeIndex++] = spans[readIndex];
-                }
-            }
-            return writeIndex == readIndex ? spans : Arrays.copyOfRange(spans, 0, writeIndex);
-        }
-
-        public Range(final CharSequence textAtCursor, final int wordAtCursorStartIndex,
-                final int wordAtCursorEndIndex, final int cursorIndex) {
-            if (wordAtCursorStartIndex < 0 || cursorIndex < wordAtCursorStartIndex
-                    || cursorIndex > wordAtCursorEndIndex
-                    || wordAtCursorEndIndex > textAtCursor.length()) {
-                throw new IndexOutOfBoundsException();
-            }
-            mTextAtCursor = textAtCursor;
-            mWordAtCursorStartIndex = wordAtCursorStartIndex;
-            mWordAtCursorEndIndex = wordAtCursorEndIndex;
-            mCursorIndex = cursorIndex;
-            mWord = mTextAtCursor.subSequence(mWordAtCursorStartIndex, mWordAtCursorEndIndex);
-        }
-    }
-
     private static boolean isSeparator(int code, String sep) {
         return sep.indexOf(code) != -1;
     }
@@ -581,7 +485,7 @@ public final class RichInputConnection {
      */
     public CharSequence getWordAtCursor(String separators) {
         // getWordRangeAtCursor returns null if the connection is null
-        Range r = getWordRangeAtCursor(separators, 0);
+        TextRange r = getWordRangeAtCursor(separators, 0);
         return (r == null) ? null : r.mWord;
     }
 
@@ -593,7 +497,8 @@ public final class RichInputConnection {
      *   be included in the returned range
      * @return a range containing the text surrounding the cursor
      */
-    public Range getWordRangeAtCursor(final String sep, final int additionalPrecedingWordsCount) {
+    public TextRange getWordRangeAtCursor(final String sep,
+            final int additionalPrecedingWordsCount) {
         mIC = mParent.getCurrentInputConnection();
         if (mIC == null || sep == null) {
             return null;
@@ -643,7 +548,7 @@ public final class RichInputConnection {
             }
         }
 
-        return new Range(TextUtils.concat(before, after), startIndexInBefore,
+        return new TextRange(TextUtils.concat(before, after), startIndexInBefore,
                 before.length() + endIndexInAfter, before.length());
     }
 

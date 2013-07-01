@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.utils.TextRange;
+
 import android.inputmethodservice.InputMethodService;
 import android.os.Parcel;
 import android.test.AndroidTestCase;
@@ -29,8 +31,6 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
-
-import com.android.inputmethod.latin.RichInputConnection.Range;
 
 import java.util.Locale;
 
@@ -169,7 +169,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         mockInputMethodService.setInputConnection(new MockConnection("word wo", "rd", et));
         et.startOffset = 0;
         et.selectionStart = 7;
-        Range r;
+        TextRange r;
 
         ic.beginBatchEdit();
         // basic case
@@ -241,7 +241,7 @@ public class RichInputConnectionAndTextRangeTests extends AndroidTestCase {
         text.setSpan(new SuggestionSpan(Locale.ENGLISH, SUGGESTIONS1, 0 /* flags */),
                 10 /* start */, 16 /* end */, 0 /* flags */);
         mockInputMethodService.setInputConnection(new MockConnection(text, cursorPos));
-        Range r;
+        TextRange r;
         SuggestionSpan[] suggestions;
 
         r = ic.getWordRangeAtCursor(" ", 0);
