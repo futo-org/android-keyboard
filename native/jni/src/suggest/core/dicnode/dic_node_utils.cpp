@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
+#include "suggest/core/dicnode/dic_node_utils.h"
+
 #include <cstring>
-#include <vector>
 
 #include "suggest/core/dicnode/dic_node.h"
-#include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dicnode/dic_node_proximity_filter.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/probability_utils.h"
-#include "suggest/core/layout/proximity_info.h"
-#include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/policy/dictionary_structure_policy.h"
 #include "utils/char_utils.h"
 
@@ -57,21 +56,20 @@ namespace latinime {
 ///////////////////////////////////
 
 /* static */ void DicNodeUtils::createAndGetPassingChildNode(DicNode *dicNode,
-        const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
+        const DicNodeProximityFilter *const childrenFilter,
         DicNodeVector *childDicNodes) {
     // Passing multiple chars node. No need to traverse child
     const int codePoint = dicNode->getNodeTypedCodePoint();
     const int baseLowerCaseCodePoint = CharUtils::toBaseLowerCase(codePoint);
-    const bool isMatch = isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, codePoint);
-    if (isMatch || CharUtils::isIntentionalOmissionCodePoint(baseLowerCaseCodePoint)) {
+    if (!childrenFilter->isFilteredOut(codePoint)
+            || CharUtils::isIntentionalOmissionCodePoint(baseLowerCaseCodePoint)) {
         childDicNodes->pushPassingChild(dicNode);
     }
 }
 
 /* static */ int DicNodeUtils::createAndGetLeavingChildNode(DicNode *dicNode, int pos,
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
-        const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
+        const DicNodeProximityFilter *const childrenFilter,
         DicNodeVector *childDicNodes) {
     int nextPos = pos;
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
@@ -110,10 +108,7 @@ namespace latinime {
     const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
             binaryDictionaryInfo->getDictRoot(), flags, pos);
 
-    if (isDicNodeFilteredOut(mergedNodeCodePoints[0], pInfo, codePointsFilter)) {
-        return siblingPos;
-    }
-    if (!isMatchedNodeCodePoint(pInfoState, pointIndex, exactOnly, mergedNodeCodePoints[0])) {
+    if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
         return siblingPos;
     }
     childDicNodes->pushLeavingChild(dicNode, nextPos, flags, childrenPos, attributesPos,
@@ -121,39 +116,9 @@ namespace latinime {
     return siblingPos;
 }
 
-/* static */ bool DicNodeUtils::isDicNodeFilteredOut(const int nodeCodePoint,
-        const ProximityInfo *const pInfo, const std::vector<int> *const codePointsFilter) {
-    const int filterSize = codePointsFilter ? codePointsFilter->size() : 0;
-    if (filterSize <= 0) {
-        return false;
-    }
-    if (pInfo && (pInfo->getKeyIndexOf(nodeCodePoint) == NOT_AN_INDEX
-            || CharUtils::isIntentionalOmissionCodePoint(nodeCodePoint))) {
-        // If normalized nodeCodePoint is not on the keyboard or skippable, this child is never
-        // filtered.
-        return false;
-    }
-    const int lowerCodePoint = CharUtils::toLowerCase(nodeCodePoint);
-    const int baseLowerCodePoint = CharUtils::toBaseCodePoint(lowerCodePoint);
-    // TODO: Avoid linear search
-    for (int i = 0; i < filterSize; ++i) {
-        // Checking if a normalized code point is in filter characters when pInfo is not
-        // null. When pInfo is null, nodeCodePoint is used to check filtering without
-        // normalizing.
-        if ((pInfo && ((*codePointsFilter)[i] == lowerCodePoint
-                || (*codePointsFilter)[i] == baseLowerCodePoint))
-                        || (!pInfo && (*codePointsFilter)[i] == nodeCodePoint)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 /* static */ void DicNodeUtils::createAndGetAllLeavingChildNodes(DicNode *dicNode,
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
-        const std::vector<int> *const codePointsFilter, const ProximityInfo *const pInfo,
-        DicNodeVector *childDicNodes) {
+        const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes) {
     if (!dicNode->hasChildren()) {
         return;
     }
@@ -161,14 +126,8 @@ namespace latinime {
     const int childCount = BinaryFormat::getGroupCountAndForwardPointer(
             binaryDictionaryInfo->getDictRoot(), &nextPos);
     for (int i = 0; i < childCount; i++) {
-        const int filterSize = codePointsFilter ? codePointsFilter->size() : 0;
         nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
-                pInfoState, pointIndex, exactOnly, codePointsFilter, pInfo,
-                childDicNodes);
-        if (!pInfo && filterSize > 0 && childDicNodes->exceeds(filterSize)) {
-            // All code points have been found.
-            break;
-        }
+                childrenFilter, childDicNodes);
     }
 }
 
@@ -184,13 +143,12 @@ namespace latinime {
     if (dicNode->isTotalInputSizeExceedingLimit()) {
         return;
     }
+    const DicNodeProximityFilter childrenFilter(pInfoState, pointIndex, exactOnly);
     if (!dicNode->isLeavingNode()) {
-        DicNodeUtils::createAndGetPassingChildNode(dicNode, pInfoState, pointIndex, exactOnly,
-                childDicNodes);
+        DicNodeUtils::createAndGetPassingChildNode(dicNode, &childrenFilter, childDicNodes);
     } else {
         DicNodeUtils::createAndGetAllLeavingChildNodes(
-                dicNode, binaryDictionaryInfo, pInfoState, pointIndex, exactOnly,
-                0 /* codePointsFilter */, 0 /* pInfo */, childDicNodes);
+                dicNode, binaryDictionaryInfo, &childrenFilter, childDicNodes);
     }
 }
 
@@ -228,23 +186,6 @@ namespace latinime {
                 binaryDictionaryInfo, prevWordPos, wordPos, unigramProbability);
     }
     return ProbabilityUtils::backoff(unigramProbability);
-}
-
-///////////////////////////////////////
-// Bigram / Unigram dictionary utils //
-///////////////////////////////////////
-
-/* static */ bool DicNodeUtils::isMatchedNodeCodePoint(const ProximityInfoState *pInfoState,
-        const int pointIndex, const bool exactOnly, const int nodeCodePoint) {
-    if (!pInfoState) {
-        return true;
-    }
-    if (exactOnly) {
-        return pInfoState->getPrimaryCodePointAt(pointIndex) == nodeCodePoint;
-    }
-    const ProximityType matchedId = pInfoState->getProximityType(pointIndex, nodeCodePoint,
-            true /* checkProximityChars */);
-    return isProximityChar(matchedId);
 }
 
 ////////////////

@@ -23,6 +23,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/layout/proximity_info_state.h"
+#include "suggest/core/layout/proximity_info_utils.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
@@ -159,7 +160,7 @@ class TypingTraversal : public Traversal {
             const DicNode *const dicNode) const {
         const ProximityType proximityType =
                 getProximityType(traverseSession, parentDicNode, dicNode);
-        if (!DicNodeUtils::isProximityChar(proximityType)) {
+        if (!ProximityInfoUtils::isMatchOrProximityChar(proximityType)) {
             return false;
         }
         return true;

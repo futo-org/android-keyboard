@@ -117,6 +117,10 @@ class ProximityInfoUtils {
         return getSquaredDistanceFloat(x, y, projectionX, projectionY);
     }
 
+     static AK_FORCE_INLINE bool isMatchOrProximityChar(const ProximityType type) {
+         return type == MATCH_CHAR || type == PROXIMITY_CHAR || type == ADDITIONAL_PROXIMITY_CHAR;
+     }
+
     // Normal distribution N(u, sigma^2).
     struct NormalDistribution {
      public:
