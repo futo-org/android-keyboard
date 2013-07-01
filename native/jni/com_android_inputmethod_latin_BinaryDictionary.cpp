@@ -93,8 +93,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
         releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);
     } else {
-        dictionary = new Dictionary(
-                dictBuf, static_cast<int>(dictSize), fd, offset, updatableMmap);
+        dictionary = new Dictionary(env, dictBuf, static_cast<int>(dictSize), fd, offset,
+                updatableMmap);
     }
     PROF_END(66);
     PROF_CLOSE;

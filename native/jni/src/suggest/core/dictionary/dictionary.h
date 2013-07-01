@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "jni.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 
 namespace latinime {
@@ -52,7 +53,8 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufOffset, bool isUpdatable);
+    Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd, int dictBufOffset,
+            bool isUpdatable);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,

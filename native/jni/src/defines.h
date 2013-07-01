@@ -35,6 +35,56 @@
 // Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
 #define MAX_PROXIMITY_CHARS_SIZE 16
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
+#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const int sourceSize,
+        char *dest, const int destSize) {
+    // We want to always terminate with a 0 char, so stop one short of the length to make
+    // sure there is room.
+    const int destLimit = destSize - 1;
+    int si = 0;
+    int di = 0;
+    while (si < sourceSize && di < destLimit && 0 != source[si]) {
+        const int codePoint = source[si++];
+        if (codePoint < 0x7F) { // One byte
+            dest[di++] = codePoint;
+        } else if (codePoint < 0x7FF) { // Two bytes
+            if (di + 1 >= destLimit) break;
+            dest[di++] = 0xC0 + (codePoint >> 6);
+            dest[di++] = 0x80 + (codePoint & 0x3F);
+        } else if (codePoint < 0xFFFF) { // Three bytes
+            if (di + 2 >= destLimit) break;
+            dest[di++] = 0xE0 + (codePoint >> 12);
+            dest[di++] = 0x80 + ((codePoint >> 6) & 0x3F);
+            dest[di++] = 0x80 + (codePoint & 0x3F);
+        } else if (codePoint <= 0x1FFFFF) { // Four bytes
+            if (di + 3 >= destLimit) break;
+            dest[di++] = 0xF0 + (codePoint >> 18);
+            dest[di++] = 0x80 + ((codePoint >> 12) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 6) & 0x3F);
+            dest[di++] = 0x80 + (codePoint & 0x3F);
+        } else if (codePoint <= 0x3FFFFFF) { // Five bytes
+            if (di + 4 >= destLimit) break;
+            dest[di++] = 0xF8 + (codePoint >> 24);
+            dest[di++] = 0x80 + ((codePoint >> 18) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 12) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 6) & 0x3F);
+            dest[di++] = codePoint & 0x3F;
+        } else if (codePoint <= 0x7FFFFFFF) { // Six bytes
+            if (di + 5 >= destLimit) break;
+            dest[di++] = 0xFC + (codePoint >> 30);
+            dest[di++] = 0x80 + ((codePoint >> 24) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 18) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 12) & 0x3F);
+            dest[di++] = 0x80 + ((codePoint >> 6) & 0x3F);
+            dest[di++] = codePoint & 0x3F;
+        } else {
+            // Not a code point... skip.
+        }
+    }
+    dest[di] = 0;
+    return di;
+}
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <android/log.h>
@@ -46,35 +96,13 @@
 
 #define DUMP_RESULT(words, frequencies) do { dumpResult(words, frequencies); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
-#define INTS_TO_CHARS(input, length, output) do { \
-        intArrayToCharArray(input, length, output); } while (0)
-
-// TODO: Support full UTF-8 conversion
-AK_FORCE_INLINE static int intArrayToCharArray(const int *source, const int sourceSize,
-        char *dest) {
-    int si = 0;
-    int di = 0;
-    while (si < sourceSize && di < MAX_WORD_LENGTH - 1 && 0 != source[si]) {
-        const int codePoint = source[si++];
-        if (codePoint < 0x7F) {
-            dest[di++] = codePoint;
-        } else if (codePoint < 0x7FF) {
-            dest[di++] = 0xC0 + (codePoint >> 6);
-            dest[di++] = 0x80 + (codePoint & 0x3F);
-        } else if (codePoint < 0xFFFF) {
-            dest[di++] = 0xE0 + (codePoint >> 12);
-            dest[di++] = 0x80 + ((codePoint & 0xFC0) >> 6);
-            dest[di++] = 0x80 + (codePoint & 0x3F);
-        }
-    }
-    dest[di] = 0;
-    return di;
-}
+#define INTS_TO_CHARS(input, length, output, outlength) do { \
+        intArrayToCharArray(input, length, output, outlength); } while (0)
 
 static inline void dumpWordInfo(const int *word, const int length, const int rank,
         const int probability) {
     static char charBuf[50];
-    const int N = intArrayToCharArray(word, length, charBuf);
+    const int N = intArrayToCharArray(word, length, charBuf, NELEMS(charBuf));
     if (N > 1) {
         AKLOGI("%2d [ %s ] (%d)", rank, charBuf, probability);
     }
@@ -90,7 +118,7 @@ static inline void dumpResult(const int *outWords, const int *frequencies) {
 
 static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
     static char charBuf[50];
-    const int N = intArrayToCharArray(word, length, charBuf);
+    const int N = intArrayToCharArray(word, length, charBuf, NELEMS(charBuf));
     if (N > 1) {
         AKLOGI("[ %s ]", charBuf);
     }
@@ -303,8 +331,6 @@ static inline void prof_out(void) {
 
 template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
 template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
-
-#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 
 // DEBUG
 #define INPUTLENGTH_FOR_DEBUG (-1)

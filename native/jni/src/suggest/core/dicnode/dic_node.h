@@ -28,15 +28,16 @@
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
         do { char charBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf); \
+        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
         AKLOGI("%20s, \"%c\", size = %03d, total = %03d, index(0) = %02d, dist = %.4f, %s,,", \
                 __FUNCTION__, getNodeCodePoint(), inputSize, getTotalInputIndex(), \
                 getInputIndex(0), getNormalizedCompoundDistance(), charBuf); } while (0)
 #define DUMP_WORD_AND_SCORE(header) \
         do { char charBuf[50]; char prevWordCharBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf); \
+        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
         INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.mPrevWord, \
-                mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf); \
+                mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf, \
+                NELEMS(prevWordCharBuf)); \
         AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d,,", header, \
                 getSpatialDistanceForScoring(), getLanguageDistanceForScoring(), \
                 getNormalizedCompoundDistance(), getRawLength(), prevWordCharBuf, charBuf, \

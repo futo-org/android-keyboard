@@ -53,6 +53,20 @@ class BinaryDictionaryHeader {
         return mMultiWordCostMultiplier;
     }
 
+    AK_FORCE_INLINE void readHeaderValueOrQuestionMark(const char *const key,
+            int *outValue, int outValueSize) const {
+        if (outValueSize <= 0) return;
+        if (outValueSize == 1) {
+            outValue[0] = '\0';
+            return;
+        }
+        if (!BinaryDictionaryHeaderReadingUtils::readHeaderValue(mBinaryDictionaryInfo,
+                key, outValue, outValueSize)) {
+            outValue[0] = '?';
+            outValue[1] = '\0';
+        }
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryHeader);
 
