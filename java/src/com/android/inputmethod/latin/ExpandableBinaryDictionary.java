@@ -92,7 +92,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
-    private static final int BINARY_DICT_VERSION = 1;
+    // TODO: Regenerate version 3 binary dictionary.
+    private static final int BINARY_DICT_VERSION = 2;
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
             new FormatSpec.FormatOptions(BINARY_DICT_VERSION);
 
@@ -413,6 +414,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     < mSharedDictionaryController.mLastUpdateTime) {
                 // Otherwise, if the local dictionary is older than the shared dictionary, load the
                 // shared dictionary.
+                loadBinaryDictionary();
+            }
+            if (mBinaryDictionary != null && !mBinaryDictionary.isValidDictionary()) {
+                // Binary dictionary is not valid. Regenerate the dictionary file.
+                mSharedDictionaryController.mLastUpdateTime = time;
+                generateBinaryDictionary();
                 loadBinaryDictionary();
             }
             mLocalDictionaryController.mLastUpdateTime = time;

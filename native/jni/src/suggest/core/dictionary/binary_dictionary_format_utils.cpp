@@ -27,10 +27,6 @@ const int BinaryDictionaryFormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
 /**
  * Format versions
  */
-// Originally, format version 1 had a 16-bit magic number, then the version number `01'
-// then options that must be 0. Hence the first 32-bits of the format are always as follow
-// and it's okay to consider them a magic number as a whole.
-const uint32_t BinaryDictionaryFormatUtils::FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
 
 // The versions of Latin IME that only handle format version 1 only test for the magic
 // number, so we had to change it so that version 2 files would be rejected by older
@@ -50,12 +46,6 @@ const int BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
     }
     const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
     switch (magicNumber) {
-    case FORMAT_VERSION_1_MAGIC_NUMBER:
-        // Format 1 header is exactly 5 bytes long and looks like:
-        // Magic number (2 bytes) 0x78 0xB1
-        // Version number (1 byte) 0x01
-        // Options (2 bytes) must be 0x00 0x00
-        return VERSION_1;
     case FORMAT_VERSION_2_MAGIC_NUMBER:
         // Version 2 dictionaries are at least 12 bytes long.
         // If this dictionary has the version 2 magic number but is less than 12 bytes long,
