@@ -30,8 +30,6 @@ class DictionaryStructurePolicyFactory {
     static const DictionaryStructurePolicy *getDictionaryStructurePolicy(
             const BinaryDictionaryFormatUtils::FORMAT_VERSION dictionaryFormat) {
         switch (dictionaryFormat) {
-            case BinaryDictionaryFormatUtils::VERSION_1:
-                // Fall through
             case BinaryDictionaryFormatUtils::VERSION_2:
                 return PatriciaTriePolicy::getInstance();
             default:
