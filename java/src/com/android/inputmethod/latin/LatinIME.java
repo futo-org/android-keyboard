@@ -73,7 +73,6 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
-import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
@@ -87,6 +86,7 @@ import com.android.inputmethod.latin.utils.PositionalInfoForUserDictPendingAddit
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
+import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.latin.utils.Utils;
 import com.android.inputmethod.latin.utils.Utils.Stats;
 import com.android.inputmethod.research.ResearchLogger;
@@ -2518,7 +2518,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // If we don't know the cursor location, return.
         if (mLastSelectionStart < 0) return;
         if (!mConnection.isCursorTouchingWord(mSettings.getCurrent())) return;
-        final Range range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
+        final TextRange range = mConnection.getWordRangeAtCursor(mSettings.getWordSeparators(),
                 0 /* additionalPrecedingWordsCount */);
         if (null == range) return; // Happens if we don't have an input connection at all
         // If for some strange reason (editor bug or so) we measure the text before the cursor as
