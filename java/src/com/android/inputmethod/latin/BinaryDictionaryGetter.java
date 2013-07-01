@@ -224,14 +224,10 @@ final public class BinaryDictionaryGetter {
         }
     }
 
-    // ## HACK ## we prevent usage of a dictionary before version 18 for English only. The reason
-    // for this is, since those do not include whitelist entries, the new code with an old version
-    // of the dictionary would lose whitelist functionality.
+    // ## HACK ## we prevent usage of a dictionary before version 18. The reason for this is, since
+    // those do not include whitelist entries, the new code with an old version of the dictionary
+    // would lose whitelist functionality.
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
-        // Only for English - other languages didn't have a whitelist, hence this
-        // ad-hoc ## HACK ##
-        if (!Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) return true;
-
         FileInputStream inStream = null;
         try {
             // Read the version of the file

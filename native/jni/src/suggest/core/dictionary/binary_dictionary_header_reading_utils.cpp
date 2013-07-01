@@ -26,8 +26,6 @@ namespace latinime {
 
 const int BinaryDictionaryHeaderReadingUtils::MAX_OPTION_KEY_LENGTH = 256;
 
-const int BinaryDictionaryHeaderReadingUtils::FORMAT_VERSION_1_HEADER_SIZE = 5;
-
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_MAGIC_NUMBER_SIZE = 4;
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_VERSION_SIZE = 2;
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_FLAG_SIZE = 2;
@@ -48,8 +46,6 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 /* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(
         const BinaryDictionaryInfo *const binaryDictionaryInfo) {
     switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormatUtils::VERSION_1:
-            return FORMAT_VERSION_1_HEADER_SIZE;
         case BinaryDictionaryFormatUtils::VERSION_2:
             // See the format of the header in the comment in
             // BinaryDictionaryFormatUtils::detectFormatVersion()
@@ -65,8 +61,6 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
         BinaryDictionaryHeaderReadingUtils::getFlags(
                 const BinaryDictionaryInfo *const binaryDictionaryInfo) {
     switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormatUtils::VERSION_1:
-            return NO_FLAGS;
         case BinaryDictionaryFormatUtils::VERSION_2:
             return ByteArrayUtils::readUint16(binaryDictionaryInfo->getDictBuf(),
                     VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE);

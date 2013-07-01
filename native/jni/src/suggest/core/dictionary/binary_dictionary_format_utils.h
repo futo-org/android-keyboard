@@ -33,10 +33,9 @@ namespace latinime {
  */
 class BinaryDictionaryFormatUtils {
  public:
-    // TODO: Remove obsolete version logic
+    // TODO: Support version 3 format.
     enum FORMAT_VERSION {
-        VERSION_1,
-        VERSION_2,
+        VERSION_2 = 1,
         UNKNOWN_VERSION
     };
 
@@ -46,7 +45,6 @@ class BinaryDictionaryFormatUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormatUtils);
 
     static const int DICTIONARY_MINIMUM_SIZE;
-    static const uint32_t FORMAT_VERSION_1_MAGIC_NUMBER;
     static const uint32_t FORMAT_VERSION_2_MAGIC_NUMBER;
     static const int FORMAT_VERSION_2_MINIMUM_SIZE;
 };
