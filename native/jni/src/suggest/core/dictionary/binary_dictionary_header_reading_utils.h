@@ -82,8 +82,6 @@ class BinaryDictionaryHeaderReadingUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReadingUtils);
 
-    static const int FORMAT_VERSION_1_HEADER_SIZE;
-
     static const int VERSION_2_MAGIC_NUMBER_SIZE;
     static const int VERSION_2_DICTIONARY_VERSION_SIZE;
     static const int VERSION_2_DICTIONARY_FLAG_SIZE;
