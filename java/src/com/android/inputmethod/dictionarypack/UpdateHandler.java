@@ -173,14 +173,15 @@ public final class UpdateHandler {
      * Download latest metadata from the server through DownloadManager for all known clients
      * @param context The context for retrieving resources
      * @param updateNow Whether we should update NOW, or respect bandwidth policies
+     * @return true if an update successfully started, false otherwise.
      */
-    public static void update(final Context context, final boolean updateNow) {
+    public static boolean tryUpdate(final Context context, final boolean updateNow) {
         // TODO: loop through all clients instead of only doing the default one.
         final TreeSet<String> uris = new TreeSet<String>();
         final Cursor cursor = MetadataDbHelper.queryClientIds(context);
-        if (null == cursor) return;
+        if (null == cursor) return false;
         try {
-            if (!cursor.moveToFirst()) return;
+            if (!cursor.moveToFirst()) return false;
             do {
                 final String clientId = cursor.getString(0);
                 final String metadataUri =
@@ -192,6 +193,7 @@ public final class UpdateHandler {
         } finally {
             cursor.close();
         }
+        boolean started = false;
         for (final String metadataUri : uris) {
             if (!TextUtils.isEmpty(metadataUri)) {
                 // If the metadata URI is empty, that means we should never update it at all.
@@ -200,8 +202,10 @@ public final class UpdateHandler {
                 // is a bug and it happens anyway, doing nothing is the right thing to do.
                 // For more information, {@see DictionaryProvider#insert(Uri, ContentValues)}.
                 updateClientsWithMetadataUri(context, updateNow, metadataUri);
+                started = true;
             }
         }
+        return started;
     }
 
     /**
