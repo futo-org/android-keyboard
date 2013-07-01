@@ -192,6 +192,40 @@ public final class WordComposer {
         return mCursorPositionWithinWord != mCodePointSize;
     }
 
+    /**
+     * When the cursor is moved by the user, we need to update its position.
+     * If it falls inside the currently composing word, we don't reset the composition, and
+     * only update the cursor position.
+     *
+     * @param expectedMoveAmount How many java chars to move the cursor. Negative values move
+     * the cursor backward, positive values move the cursor forward.
+     * @return true if the cursor is still inside the composing word, false otherwise.
+     */
+    public boolean moveCursorByAndReturnIfInsideComposingWord(final int expectedMoveAmount) {
+        int actualMoveAmountWithinWord = 0;
+        int cursorPos = mCursorPositionWithinWord;
+        if (expectedMoveAmount >= 0) {
+            // Moving the cursor forward for the expected amount or until the end of the word has
+            // been reached, whichever comes first.
+            while (actualMoveAmountWithinWord < expectedMoveAmount && cursorPos < mCodePointSize) {
+                actualMoveAmountWithinWord += Character.charCount(mPrimaryKeyCodes[cursorPos]);
+                ++cursorPos;
+            }
+        } else {
+            // Moving the cursor backward for the expected amount or until the start of the word
+            // has been reached, whichever comes first.
+            while (actualMoveAmountWithinWord > expectedMoveAmount && cursorPos > 0) {
+                --cursorPos;
+                actualMoveAmountWithinWord -= Character.charCount(mPrimaryKeyCodes[cursorPos]);
+            }
+        }
+        // If the actual and expected amounts differ, we crossed the start or the end of the word
+        // so the result would not be inside the composing word.
+        if (actualMoveAmountWithinWord != expectedMoveAmount) return false;
+        mCursorPositionWithinWord = cursorPos;
+        return true;
+    }
+
     public void setBatchInputPointers(final InputPointers batchPointers) {
         mInputPointers.set(batchPointers);
         mIsBatchMode = true;
