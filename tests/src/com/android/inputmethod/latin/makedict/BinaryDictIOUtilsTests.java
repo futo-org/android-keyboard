@@ -44,9 +44,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOUtilsTests.class.getSimpleName();
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
             new FormatSpec.FormatOptions(3, true);
-    private static final int MAX_UNIGRAMS = 1500;
 
     private static final ArrayList<String> sWords = CollectionUtils.newArrayList();
+    public static final int DEFAULT_MAX_UNIGRAMS = 1500;
+    private final int mMaxUnigrams;
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -57,15 +58,17 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     };
 
     public BinaryDictIOUtilsTests() {
-        this(System.currentTimeMillis());
+        // 1500 is the default max unigrams
+        this(System.currentTimeMillis(), DEFAULT_MAX_UNIGRAMS);
     }
 
-    public BinaryDictIOUtilsTests(final long seed) {
+    public BinaryDictIOUtilsTests(final long seed, final int maxUnigrams) {
         super();
-        Log.d(TAG, "Seed for test is " + seed);
+        Log.d(TAG, "Seed for test is " + seed + ", maxUnigrams is " + maxUnigrams);
+        mMaxUnigrams = maxUnigrams;
         final Random random = new Random(seed);
         sWords.clear();
-        for (int i = 0; i < MAX_UNIGRAMS; ++i) {
+        for (int i = 0; i < maxUnigrams; ++i) {
             sWords.add(generateWord(random.nextInt()));
         }
     }
@@ -395,6 +398,6 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         Log.d(TAG, "max = " + ((double)maxTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "min = " + ((double)minTimeToInsert/1000000) + " ms.");
-        Log.d(TAG, "avg = " + ((double)sum/MAX_UNIGRAMS/1000000) + " ms.");
+        Log.d(TAG, "avg = " + ((double)sum/mMaxUnigrams/1000000) + " ms.");
     }
 }

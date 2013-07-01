@@ -19,33 +19,80 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtilsTests;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest;
 import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 /**
  * Dicttool command implementing self-tests.
  */
 public class Test extends Dicttool.Command {
     public static final String COMMAND = "test";
+    private long mSeed = System.currentTimeMillis();
+    private int mMaxUnigrams = BinaryDictIOUtilsTests.DEFAULT_MAX_UNIGRAMS;
+
+    private static final Class<?>[] sClassesToTest = {
+        BinaryDictOffdeviceUtilsTests.class,
+        FusionDictionaryTest.class,
+        BinaryDictInputOutputTest.class,
+        BinaryDictIOUtilsTests.class
+    };
+    private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
+    private ArrayList<String> mUsedTestMethods = new ArrayList<String>();
 
     public Test() {
+        for (final Class<?> c : sClassesToTest) {
+            for (final Method m : c.getDeclaredMethods()) {
+                if (m.getName().startsWith("test") && Void.TYPE == m.getReturnType()
+                        && 0 == m.getParameterTypes().length) {
+                    mAllTestMethods.add(m);
+                }
+            }
+        }
     }
 
     @Override
     public String getHelp() {
-        return "test";
+        final StringBuilder s = new StringBuilder("test [-s seed] [-m maxUnigrams] [testName...]\n"
+                + "If seed is not specified, the current time is used.\nTest list is:\n");
+        for (final Method m : mAllTestMethods) {
+            s.append("  ");
+            s.append(m.getName());
+            s.append("\n");
+        }
+        return s.toString();
     }
 
     @Override
-    public void run() throws IOException, UnsupportedFormatException {
-        test();
+    public void run() throws IllegalAccessException, InstantiationException,
+            InvocationTargetException {
+        int i = 0;
+        while (i < mArgs.length) {
+            final String arg = mArgs[i++];
+            if ("-s".equals(arg)) {
+                mSeed = Long.parseLong(mArgs[i++]);
+            } else if ("-m".equals(arg)) {
+                mMaxUnigrams = Integer.parseInt(mArgs[i++]);
+            } else {
+                mUsedTestMethods.add(arg);
+            }
+        }
+        runChosenTests();
     }
 
-    private void test() throws IOException, UnsupportedFormatException {
-        new BinaryDictOffdeviceUtilsTests().testGetRawDictWorks();
-        new FusionDictionaryTest().testFusion();
-        new BinaryDictInputOutputTest().testFlattenNodes();
-        new BinaryDictIOUtilsTests().testRandomWords();
+    private void runChosenTests() throws IllegalAccessException, InstantiationException,
+            InvocationTargetException {
+        for (final Method m : mAllTestMethods) {
+            final Class<?> declaringClass = m.getDeclaringClass();
+            if (!mUsedTestMethods.isEmpty() && !mUsedTestMethods.contains(m.getName())) continue;
+            final Object instance;
+            if (BinaryDictIOUtilsTests.class == declaringClass) {
+                instance = new BinaryDictIOUtilsTests(mSeed, mMaxUnigrams);
+            } else {
+                instance = declaringClass.newInstance();
+            }
+            m.invoke(instance);
+        }
     }
 }
