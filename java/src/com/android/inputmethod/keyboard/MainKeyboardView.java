@@ -57,10 +57,8 @@ import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
 import com.android.inputmethod.keyboard.internal.TouchScreenRegulator;
-import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.DebugSettings;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
@@ -240,11 +238,15 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 break;
             case MSG_REPEAT_KEY:
                 final Key currentKey = tracker.getKey();
-                if (currentKey != null && currentKey.mCode == msg.arg1) {
-                    tracker.onRepeatKey(currentKey);
-                    AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
-                            currentKey.mCode, keyboardView);
+                final int code = msg.arg1;
+                if (currentKey != null && currentKey.mCode == code) {
                     startKeyRepeatTimer(tracker, mKeyRepeatInterval);
+                    startTypingStateTimer(currentKey);
+                    final KeyboardActionListener listener =
+                            keyboardView.getKeyboardActionListener();
+                    listener.onPressKey(code, true /* isSinglePointer */);
+                    listener.onCodeInput(code,
+                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
                 }
                 break;
             case MSG_LONGPRESS_KEY:
@@ -564,6 +566,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 altCodeKeyWhileTypingFadeoutAnimatorResId, this);
         mAltCodeKeyWhileTypingFadeinAnimator = loadObjectAnimator(
                 altCodeKeyWhileTypingFadeinAnimatorResId, this);
+
+        mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
     }
 
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
@@ -977,37 +981,26 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_onLongPress();
         }
-        final int code = key.mCode;
+        final KeyboardActionListener listener = mKeyboardActionListener;
         if (key.hasNoPanelAutoMoreKey()) {
-            final int embeddedCode = key.mMoreKeys[0].mCode;
+            final int moreKeyCode = key.mMoreKeys[0].mCode;
             tracker.onLongPressed();
-            invokeCodeInput(embeddedCode);
-            invokeReleaseKey(code);
-            AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, this);
+            listener.onPressKey(moreKeyCode, true /* isSinglePointer */);
+            listener.onCodeInput(moreKeyCode,
+                    Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            listener.onReleaseKey(moreKeyCode, false /* withSliding */);
             return;
         }
+        final int code = key.mCode;
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
-            if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
+            if (listener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
-                invokeReleaseKey(code);
+                listener.onReleaseKey(code, false /* withSliding */);
                 return;
             }
         }
         openMoreKeysPanel(key, tracker);
-    }
-
-    private boolean invokeCustomRequest(final int requestCode) {
-        return mKeyboardActionListener.onCustomRequest(requestCode);
-    }
-
-    private void invokeCodeInput(final int code) {
-        mKeyboardActionListener.onCodeInput(
-                code, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-    }
-
-    private void invokeReleaseKey(final int code) {
-        mKeyboardActionListener.onReleaseKey(code, false);
     }
 
     private void openMoreKeysPanel(final Key key, final PointerTracker tracker) {
