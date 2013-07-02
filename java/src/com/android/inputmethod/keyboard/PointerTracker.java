@@ -175,7 +175,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     private DrawingProxy mDrawingProxy;
     private TimerProxy mTimerProxy;
     private KeyDetector mKeyDetector;
-    private KeyboardActionListener mListener = KeyboardActionListener.Adapter.EMPTY_LISTENER;
+    private KeyboardActionListener mListener = KeyboardActionListener.EMPTY_LISTENER;
 
     private Keyboard mKeyboard;
     private int mPhantonSuddenMoveThreshold;
@@ -1263,13 +1263,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!key.isRepeatable()) return;
         // Don't start key repeat when we are in sliding input mode.
         if (mIsInSlidingKeyInput) return;
-        onRepeatKey(key);
-        mTimerProxy.startKeyRepeatTimer(this);
-    }
-
-    public void onRepeatKey(final Key key) {
         detectAndSendKey(key, key.mX, key.mY, SystemClock.uptimeMillis());
-        mTimerProxy.startTypingStateTimer(key);
+        mTimerProxy.startKeyRepeatTimer(this);
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(final int x, final int y, final long eventTime,

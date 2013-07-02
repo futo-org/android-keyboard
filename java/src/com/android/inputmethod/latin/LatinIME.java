@@ -1360,14 +1360,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         showSubtypeSelectorAndSettings();
     }
 
-    // Virtual codes representing custom requests.  These are used in onCustomRequest() below.
-    public static final int CODE_SHOW_INPUT_METHOD_PICKER = 1;
-
     @Override
     public boolean onCustomRequest(final int requestCode) {
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
-        case CODE_SHOW_INPUT_METHOD_PICKER:
+        case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
             if (mRichImm.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 mRichImm.getInputMethodManager().showInputMethodPicker();
                 return true;
@@ -2678,15 +2675,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
-    // key is depressed; release matching call is onReleaseKey below.
+    // Callback of the {@link KeyboardActionListener}. This is called when a key is depressed;
+    // release matching call is {@link #onReleaseKey(int,boolean)} below.
     @Override
     public void onPressKey(final int primaryCode, final boolean isSinglePointer) {
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer);
+        final MainKeyboardView mKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final boolean noFeedback = (mKeyboardView != null && mKeyboardView.isInSlidingKeyInput())
+                || (primaryCode == Constants.CODE_DELETE && !mConnection.canDeleteCharacters());
+        if (!noFeedback) {
+            AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
+                    primaryCode, mKeyboardView);
+        }
     }
 
-    // Callback by PointerTracker through the KeyboardActionListener. This is called when a key
-    // is released; press matching call is onPressKey above.
+    // Callback of the {@link KeyboardActionListener}. This is called when a key is released;
+    // press matching call is {@link #onPressKey(int,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);

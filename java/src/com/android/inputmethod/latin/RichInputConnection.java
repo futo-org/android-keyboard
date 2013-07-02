@@ -191,6 +191,10 @@ public final class RichInputConnection {
         return mIC.getSelectedText(flags);
     }
 
+    public boolean canDeleteCharacters() {
+        return mCurrentCursorPosition > 0;
+    }
+
     /**
      * Gets the caps modes we should be in after this specific string.
      *

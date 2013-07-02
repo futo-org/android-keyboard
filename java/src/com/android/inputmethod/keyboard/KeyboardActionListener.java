@@ -20,7 +20,6 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 
 public interface KeyboardActionListener {
-
     /**
      * Called when the user presses a key. This is sent before the {@link #onCodeInput} is called.
      * For keys that repeat, this is only called once.
@@ -99,9 +98,9 @@ public interface KeyboardActionListener {
      */
     public boolean onCustomRequest(int requestCode);
 
-    public static class Adapter implements KeyboardActionListener {
-        public static final Adapter EMPTY_LISTENER = new Adapter();
+    public static final KeyboardActionListener EMPTY_LISTENER = new Adapter();
 
+    public static class Adapter implements KeyboardActionListener {
         @Override
         public void onPressKey(int primaryCode, boolean isSinglePointer) {}
         @Override
