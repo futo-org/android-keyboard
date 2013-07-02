@@ -76,12 +76,13 @@ class TerminalAttributes {
               mNodeFlags(nodeFlags), mShortcutListSizePos(shortcutPos) {}
 
     inline ShortcutIterator getShortcutIterator() const {
-        // The size of the shortcuts is stored here so that the whole shortcut chunk can be
-        // skipped quickly, so we ignore it.
         int shortcutPos = mShortcutListSizePos;
-        BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
-                mBinaryDictionaryInfo, &shortcutPos);
         const bool hasShortcutList = 0 != (mNodeFlags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS);
+        if (hasShortcutList) {
+            BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
+                    mBinaryDictionaryInfo, &shortcutPos);
+        }
+        // shortcutPos is never used if hasShortcutList is false.
         return ShortcutIterator(mBinaryDictionaryInfo, shortcutPos, hasShortcutList);
     }
 
