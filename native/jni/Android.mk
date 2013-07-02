@@ -79,8 +79,9 @@ LATIN_IME_CORE_SRC_FILES := \
         typing_traversal.cpp \
         typing_weighting.cpp) \
     $(addprefix utils/, \
+        autocorrection_threshold_utils.cpp \
         char_utils.cpp \
-        autocorrection_threshold_utils.cpp)
+        log_utils.cpp)
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
