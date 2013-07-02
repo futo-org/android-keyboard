@@ -81,9 +81,6 @@ public final class KeyboardState {
     private boolean mPrevSymbolsKeyboardWasShifted;
     private int mRecapitalizeMode;
 
-    // For handling long press.
-    private boolean mLongPressShiftLockFired;
-
     // For handling double tap.
     private boolean mIsInAlphabetUnshiftedFromShifted;
     private boolean mIsInDoubleTapShiftKey;
@@ -325,10 +322,11 @@ public final class KeyboardState {
         }
         if (code == Constants.CODE_SHIFT) {
             onPressShift();
+        } else if (code == Constants.CODE_CAPSLOCK) {
+            // Nothing to do here. See {@link #onReleaseKey(int,boolean)}.
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onPressSymbol();
         } else {
-            mLongPressShiftLockFired = false;
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
             // It is required to reset the auto caps state when all of the following conditions
@@ -356,6 +354,8 @@ public final class KeyboardState {
         }
         if (code == Constants.CODE_SHIFT) {
             onReleaseShift(withSliding);
+        } else if (code == Constants.CODE_CAPSLOCK) {
+            setShiftLocked(!mAlphabetShiftState.isShiftLocked());
         } else if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             onReleaseSymbol(withSliding);
         }
@@ -437,7 +437,6 @@ public final class KeyboardState {
     }
 
     private void onPressShift() {
-        mLongPressShiftLockFired = false;
         // If we are recapitalizing, we don't do any of the normal processing, including
         // importantly the double tap timer.
         if (RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE != mRecapitalizeMode) {
@@ -499,8 +498,6 @@ public final class KeyboardState {
                 // Double tap shift key has been handled in {@link #onPressShift}, so that just
                 // ignore this release shift key here.
                 mIsInDoubleTapShiftKey = false;
-            } else if (mLongPressShiftLockFired) {
-                setShiftLocked(!mAlphabetShiftState.isShiftLocked());
             } else if (mShiftKeyState.isChording()) {
                 if (mAlphabetShiftState.isShiftLockShifted()) {
                     // After chording input while shift locked state.
@@ -608,12 +605,6 @@ public final class KeyboardState {
                 mPrevSymbolsKeyboardWasShifted = false;
             }
             break;
-        }
-
-        if (code == Constants.CODE_CAPSLOCK) {
-            // Changing shift lock state will be handled at {@link #onPressShift()} when the shift
-            // key is released.
-            mLongPressShiftLockFired = true;
         }
 
         // If the code is a letter, update keyboard shift state.

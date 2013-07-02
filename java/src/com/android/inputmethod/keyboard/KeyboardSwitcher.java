@@ -31,7 +31,6 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
-import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -210,7 +209,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer) {
-        hapticAndAudioFeedback(code);
         mState.onPressKey(code, isSinglePointer, mLatinIME.getCurrentAutoCapsState());
     }
 
@@ -297,13 +295,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         return (keyboardView != null)
                 ? keyboardView.getTimerProxy().isInDoubleTapShiftKeyTimeout() : false;
-    }
-
-    private void hapticAndAudioFeedback(final int code) {
-        if (mKeyboardView == null || mKeyboardView.isInSlidingKeyInput()) {
-            return;
-        }
-        AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, mKeyboardView);
     }
 
     /**

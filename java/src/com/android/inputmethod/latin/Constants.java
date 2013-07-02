@@ -149,6 +149,13 @@ public final class Constants {
     }
 
     /**
+     * Custom request code used in
+     * {@link com.android.inputmethod.keyboard.KeyboardActionListener#onCustomRequest(int)}.
+     */
+    // The code to show input method picker.
+    public static final int CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER = 1;
+
+    /**
      * Some common keys code. Must be positive.
      */
     public static final int CODE_ENTER = '\n';
