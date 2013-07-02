@@ -17,9 +17,6 @@
 #ifndef LATINIME_LOG_UTILS_H
 #define LATINIME_LOG_UTILS_H
 
-#include <cstdio>
-#include <stdarg.h>
-
 #include "defines.h"
 #include "jni.h"
 
@@ -29,31 +26,9 @@ class LogUtils {
  public:
     static void logToJava(JNIEnv *const env, const char *const format, ...)
 #ifdef __GNUC__
-            __attribute__ ((format (printf, 2, 3)))
+        __attribute__ ((format (printf, 2, 3)))
 #endif // __GNUC__
-            {
-        static const char *TAG = "LatinIME:LogUtils";
-        const jclass androidUtilLogClass = env->FindClass("android/util/Log");
-        const jmethodID logDotIMethodId = env->GetStaticMethodID(androidUtilLogClass, "i",
-                "(Ljava/lang/String;Ljava/lang/String;)I");
-        const jstring javaTag = env->NewStringUTF(TAG);
-
-        va_list argList;
-        va_start(argList, format);
-        // Get the necessary size. Add 1 for the 0 terminator.
-        const int size = vsnprintf(0, 0, format, argList) + 1;
-        va_end(argList);
-        char cString[size];
-        va_start(argList, format);
-        vsnprintf(cString, size, format, argList);
-        va_end(argList);
-
-        jstring javaString = env->NewStringUTF(cString);
-        env->CallStaticIntMethod(androidUtilLogClass, logDotIMethodId, javaTag, javaString);
-        env->DeleteLocalRef(javaString);
-        env->DeleteLocalRef(javaTag);
-        env->DeleteLocalRef(androidUtilLogClass);
-    }
+        ;
 
  private:
     DISALLOW_COPY_AND_ASSIGN(LogUtils);

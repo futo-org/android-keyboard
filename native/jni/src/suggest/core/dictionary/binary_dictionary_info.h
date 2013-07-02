@@ -30,7 +30,7 @@ namespace latinime {
 
 class BinaryDictionaryInfo {
  public:
-    BinaryDictionaryInfo(JNIEnv *env, const uint8_t *const dictBuf,
+     AK_FORCE_INLINE BinaryDictionaryInfo(JNIEnv *env, const uint8_t *const dictBuf,
             const int dictSize, const int mmapFd, const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
