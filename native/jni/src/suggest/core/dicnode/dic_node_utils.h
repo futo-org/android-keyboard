@@ -18,7 +18,6 @@
 #define LATINIME_DIC_NODE_UTILS_H
 
 #include <stdint.h>
-#include <vector>
 
 #include "defines.h"
 
@@ -26,8 +25,8 @@ namespace latinime {
 
 class BinaryDictionaryInfo;
 class DicNode;
+class DicNodeProximityFilter;
 class DicNodeVector;
-class ProximityInfo;
 class ProximityInfoState;
 class MultiBigramMap;
 
@@ -44,18 +43,11 @@ class DicNodeUtils {
             const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes);
     static float getBigramNodeImprobability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const DicNode *const node, MultiBigramMap *const multiBigramMap);
-    static bool isDicNodeFilteredOut(const int nodeCodePoint, const ProximityInfo *const pInfo,
-            const std::vector<int> *const codePointsFilter);
     // TODO: Move to private
     static void getProximityChildDicNodes(DicNode *dicNode,
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
             DicNodeVector *childDicNodes);
-
-    // TODO: Move to proximity info
-    static bool isProximityChar(ProximityType type) {
-        return type == MATCH_CHAR || type == PROXIMITY_CHAR || type == ADDITIONAL_PROXIMITY_CHAR;
-    }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodeUtils);
@@ -64,22 +56,14 @@ class DicNodeUtils {
 
     static int getBigramNodeProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const DicNode *const node, MultiBigramMap *multiBigramMap);
-    static void createAndGetPassingChildNode(DicNode *dicNode, const ProximityInfoState *pInfoState,
-            const int pointIndex, const bool exactOnly, DicNodeVector *childDicNodes);
+    static void createAndGetPassingChildNode(DicNode *dicNode,
+            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
     static void createAndGetAllLeavingChildNodes(DicNode *dicNode,
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const ProximityInfoState *pInfoState, const int pointIndex, const bool exactOnly,
-            const std::vector<int> *const codePointsFilter,
-            const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
+            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
     static int createAndGetLeavingChildNode(DicNode *dicNode, int pos,
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const ProximityInfoState *pInfoState, const int pointIndex,
-            const bool exactOnly, const std::vector<int> *const codePointsFilter,
-            const ProximityInfo *const pInfo, DicNodeVector *childDicNodes);
-
-    // TODO: Move to proximity info
-    static bool isMatchedNodeCodePoint(const ProximityInfoState *pInfoState, const int pointIndex,
-            const bool exactOnly, const int nodeCodePoint);
+            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_UTILS_H
