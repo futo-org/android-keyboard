@@ -16,10 +16,12 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.BinaryDictIOTests;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtilsTests;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest;
 import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,7 +38,8 @@ public class Test extends Dicttool.Command {
         BinaryDictOffdeviceUtilsTests.class,
         FusionDictionaryTest.class,
         BinaryDictInputOutputTest.class,
-        BinaryDictIOUtilsTests.class
+        BinaryDictIOUtilsTests.class,
+        BinaryDictIOTests.class
     };
     private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
     private ArrayList<String> mUsedTestMethods = new ArrayList<String>();
@@ -86,12 +89,19 @@ public class Test extends Dicttool.Command {
         for (final Method m : mAllTestMethods) {
             final Class<?> declaringClass = m.getDeclaringClass();
             if (!mUsedTestMethods.isEmpty() && !mUsedTestMethods.contains(m.getName())) continue;
-            final Object instance;
-            if (BinaryDictIOUtilsTests.class == declaringClass) {
-                instance = new BinaryDictIOUtilsTests(mSeed, mMaxUnigrams);
-            } else {
-                instance = declaringClass.newInstance();
+            // Some of the test classes expose a two-argument constructor, taking a long as a
+            // seed for Random, and an int for a vocabulary size to test the dictionary with. They
+            // correspond respectively to the -s and -m numerical arguments to this command, which
+            // are stored in mSeed and mMaxUnigrams. If the two-arguments constructor is present,
+            // then invoke it; otherwise, invoke the default constructor.
+            Constructor<?> twoArgsConstructor = null;
+            try {
+                twoArgsConstructor = declaringClass.getDeclaredConstructor(Long.TYPE, Integer.TYPE);
+            } catch (NoSuchMethodException e) {
+                // No constructor with two args
             }
+            final Object instance = null == twoArgsConstructor ? declaringClass.newInstance()
+                    : twoArgsConstructor.newInstance(mSeed, mMaxUnigrams);
             m.invoke(instance);
         }
     }
