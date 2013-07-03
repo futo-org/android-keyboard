@@ -227,9 +227,14 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             ++outputWordIndex;
         }
 
-        const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
-        outputWordIndex = ShortcutUtils::outputShortcuts(&terminalAttributes, outputWordIndex,
-                finalScore, outputCodePoints, frequencies, outputTypes, sameAsTyped);
+        if (!terminalDicNode->hasMultipleWords()) {
+            // Shortcut is not supported for multiple words suggestions.
+            // TODO: Check shortcuts during traversal for multiple words suggestions.
+            const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
+            outputWordIndex = ShortcutUtils::outputShortcuts(&terminalAttributes, outputWordIndex,
+                    finalScore, outputCodePoints, frequencies, outputTypes, sameAsTyped);
+
+        }
         DicNode::managedDelete(terminalDicNode);
     }
 
