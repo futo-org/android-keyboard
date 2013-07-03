@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.HashMap;
 
