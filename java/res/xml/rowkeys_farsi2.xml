@@ -25,11 +25,9 @@
     <Key
         latin:keyLabel="&#x0634;"
         latin:keyLabelFlags="fontNormal" />
-    <!-- U+0633: "س" ARABIC LETTER SEEN
-         U+0636: "ض" ARABIC LETTER DAD -->
+    <!-- U+0633: "س" ARABIC LETTER SEEN -->
     <Key
         latin:keyLabel="&#x0633;"
-        latin:moreKeys="&#x0636;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+06CC: "ی" ARABIC LETTER FARSI YEH
          U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
@@ -59,11 +57,10 @@
         latin:moreKeys="&#x0621;,&#x0622;,&#x0623;,&#x0671;,&#x0625;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+062A: "ت" ARABIC LETTER TEH
-         U+062B: "ﺙ" ARABIC LETTER THEH
          U+0629: "ة": ARABIC LETTER TEH MARBUTA -->
     <Key
         latin:keyLabel="&#x062A;"
-        latin:moreKeys="&#x062B;,&#x0629;"
+        latin:moreKeys="&#x0629;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0646: "ن" ARABIC LETTER NOON -->
     <Key
@@ -78,5 +75,9 @@
     <Key
         latin:keyLabel="&#x06A9;"
         latin:moreKeys="&#x0643;"
+        latin:keyLabelFlags="fontNormal" />
+    <!-- U+06AF: "گ" ARABIC LETTER GAF -->
+    <Key
+        latin:keyLabel="&#x06AF;"
         latin:keyLabelFlags="fontNormal" />
 </merge>
