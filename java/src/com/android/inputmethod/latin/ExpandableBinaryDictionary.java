@@ -35,7 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
@@ -151,14 +151,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @Override
     public void close() {
         // Ensure that no other threads are accessing the local binary dictionary.
-        mLocalDictionaryController.lock();
+        mLocalDictionaryController.writeLock().lock();
         try {
             if (mBinaryDictionary != null) {
                 mBinaryDictionary.close();
                 mBinaryDictionary = null;
             }
         } finally {
-            mLocalDictionaryController.unlock();
+            mLocalDictionaryController.writeLock().unlock();
         }
     }
 
@@ -205,14 +205,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords) {
         asyncReloadDictionaryIfRequired();
-        if (mLocalDictionaryController.tryLock()) {
+        if (mLocalDictionaryController.readLock().tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
                     return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
                             blockOffensiveWords);
                 }
             } finally {
-                mLocalDictionaryController.unlock();
+                mLocalDictionaryController.readLock().unlock();
             }
         }
         return null;
@@ -225,11 +225,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected boolean isValidWordInner(final String word) {
-        if (mLocalDictionaryController.tryLock()) {
+        if (mLocalDictionaryController.readLock().tryLock()) {
             try {
                 return isValidWordLocked(word);
             } finally {
-                mLocalDictionaryController.unlock();
+                mLocalDictionaryController.readLock().unlock();
             }
         }
         return false;
@@ -246,11 +246,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected boolean isValidBigramInner(final String word1, final String word2) {
-        if (mLocalDictionaryController.tryLock()) {
+        if (mLocalDictionaryController.readLock().tryLock()) {
             try {
                 return isValidBigramLocked(word1, word2);
             } finally {
-                mLocalDictionaryController.unlock();
+                mLocalDictionaryController.readLock().unlock();
             }
         }
         return false;
@@ -293,9 +293,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             // Ensure all threads accessing the current dictionary have finished before swapping in
             // the new one.
             final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;
-            mLocalDictionaryController.lock();
-            mBinaryDictionary = newBinaryDictionary;
-            mLocalDictionaryController.unlock();
+            mLocalDictionaryController.writeLock().lock();
+            try {
+                mBinaryDictionary = newBinaryDictionary;
+            } finally {
+                mLocalDictionaryController.writeLock().unlock();
+            }
             oldBinaryDictionary.close();
         } else {
             mBinaryDictionary = newBinaryDictionary;
@@ -390,7 +393,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private final void syncReloadDictionaryInternal() {
         // Ensure that only one thread attempts to read or write to the shared binary dictionary
         // file at the same time.
-        mSharedDictionaryController.lock();
+        mSharedDictionaryController.writeLock().lock();
         try {
             final long time = SystemClock.uptimeMillis();
             final boolean dictionaryFileExists = dictionaryFileExists();
@@ -424,7 +427,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             }
             mLocalDictionaryController.mLastUpdateTime = time;
         } finally {
-            mSharedDictionaryController.unlock();
+            mSharedDictionaryController.writeLock().unlock();
         }
     }
 
@@ -449,7 +452,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * dictionary is out of date. Can be shared across multiple dictionary instances that access the
      * same filename.
      */
-    private static class DictionaryController extends ReentrantLock {
+    private static class DictionaryController extends ReentrantReadWriteLock {
         private volatile long mLastUpdateTime = 0;
         private volatile long mLastUpdateRequestTime = 0;
 
