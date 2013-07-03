@@ -26,10 +26,10 @@ namespace latinime {
 
 const int BinaryDictionaryHeaderReadingUtils::MAX_OPTION_KEY_LENGTH = 256;
 
-const int BinaryDictionaryHeaderReadingUtils::VERSION_2_MAGIC_NUMBER_SIZE = 4;
-const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_VERSION_SIZE = 2;
-const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_FLAG_SIZE = 2;
-const int BinaryDictionaryHeaderReadingUtils::VERSION_2_DICTIONARY_HEADER_SIZE_SIZE = 4;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_MAGIC_NUMBER_SIZE = 4;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_DICTIONARY_VERSION_SIZE = 2;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_FLAG_SIZE = 2;
+const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_SIZE_FIELD_SIZE = 4;
 
 const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
         BinaryDictionaryHeaderReadingUtils::NO_FLAGS = 0;
@@ -45,13 +45,13 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 
 /* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(
         const BinaryDictionaryInfo *const binaryDictionaryInfo) {
-    switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormatUtils::VERSION_2:
+    switch (getHeaderVersion(binaryDictionaryInfo->getFormat())) {
+        case HEADER_VERSION_2:
             // See the format of the header in the comment in
             // BinaryDictionaryFormatUtils::detectFormatVersion()
             return ByteArrayUtils::readUint32(binaryDictionaryInfo->getDictBuf(),
-                    VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE
-                            + VERSION_2_DICTIONARY_FLAG_SIZE);
+                    VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
+                            + VERSION_2_HEADER_FLAG_SIZE);
         default:
             return S_INT_MAX;
     }
@@ -60,10 +60,10 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 /* static */ BinaryDictionaryHeaderReadingUtils::DictionaryFlags
         BinaryDictionaryHeaderReadingUtils::getFlags(
                 const BinaryDictionaryInfo *const binaryDictionaryInfo) {
-    switch (binaryDictionaryInfo->getFormat()) {
-        case BinaryDictionaryFormatUtils::VERSION_2:
+    switch (getHeaderVersion(binaryDictionaryInfo->getFormat())) {
+        case HEADER_VERSION_2:
             return ByteArrayUtils::readUint16(binaryDictionaryInfo->getDictBuf(),
-                    VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE);
+                    VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE);
         default:
             return NO_FLAGS;
     }
@@ -73,11 +73,15 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 /* static */ bool BinaryDictionaryHeaderReadingUtils::readHeaderValue(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const char *const key, int *outValue, const int outValueSize) {
-    if (outValueSize <= 0 || !hasHeaderAttributes(binaryDictionaryInfo->getFormat())) {
+    if (outValueSize <= 0) {
         return false;
     }
     const int headerSize = getHeaderSize(binaryDictionaryInfo);
     int pos = getHeaderOptionsPosition(binaryDictionaryInfo->getFormat());
+    if (pos == NOT_A_DICT_POS) {
+        // The header doesn't have header options.
+        return false;
+    }
     while (pos < headerSize) {
         if(ByteArrayUtils::compareStringInBufferWithCharArray(
                 binaryDictionaryInfo->getDictBuf(), key, headerSize - pos, &pos) == 0) {
