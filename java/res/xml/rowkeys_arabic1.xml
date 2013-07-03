@@ -35,74 +35,78 @@
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2,&#x0662;"
         latin:keyLabelFlags="fontNormal" />
+    <!-- U+062B: "ث" ARABIC LETTER THEH
+         U+0663: "٣" ARABIC-INDIC DIGIT THREE -->
+    <Key
+        latin:keyLabel="&#x062B;"
+        latin:keyHintLabel="3"
+        latin:additionalMoreKeys="3,&#x0663;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0642: "ق" ARABIC LETTER QAF
          U+06A8: "ڨ" ARABIC LETTER QAF WITH THREE DOTS ABOVE
-         U+0663: "٣" ARABIC-INDIC DIGIT THREE -->
+         U+0664: "٤" ARABIC-INDIC DIGIT FOUR -->
     <!-- TODO: DroidSansArabic lacks the glyph of U+06A8 ARABIC LETTER QAF WITH THREE DOTS ABOVE -->
     <Key
         latin:keyLabel="&#x0642;"
-        latin:keyHintLabel="3"
-        latin:additionalMoreKeys="3,&#x0663;"
+        latin:keyHintLabel="4"
+        latin:additionalMoreKeys="4,&#x0664;"
         latin:moreKeys="&#x06A8;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0641: "ف" ARABIC LETTER FEH
          U+06A4: "ڤ" ARABIC LETTER VEH
          U+06A2: "ڢ" ARABIC LETTER FEH WITH DOT MOVED BELOW
          U+06A5: "ڥ" ARABIC LETTER FEH WITH THREE DOTS BELOW
-         U+0664: "٤" ARABIC-INDIC DIGIT FOUR -->
+         U+0665: "٥" ARABIC-INDIC DIGIT FIVE -->
     <!-- TODO: DroidSansArabic lacks the glyph of U+06A2 ARABIC LETTER FEH WITH DOT MOVED BELOW -->
     <!-- TODO: DroidSansArabic lacks the glyph of U+06A5 ARABIC LETTER FEH WITH THREE DOTS BELOW -->
     <Key
         latin:keyLabel="&#x0641;"
-        latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4,&#x0664;"
+        latin:keyHintLabel="5"
+        latin:additionalMoreKeys="5,&#x0665;"
         latin:moreKeys="&#x06A4;,&#x06A2;,&#x06A5;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+063A: "غ" ARABIC LETTER GHAIN
-         U+0665: "٥" ARABIC-INDIC DIGIT FIVE -->
-    <Key
-        latin:keyLabel="&#x063A;"
-        latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5,&#x0665;"
-        latin:keyLabelFlags="fontNormal" />
-    <!-- U+0639: "ع" ARABIC LETTER AIN
          U+0666: "٦" ARABIC-INDIC DIGIT SIX -->
     <Key
-        latin:keyLabel="&#x0639;"
+        latin:keyLabel="&#x063A;"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6,&#x0666;"
+        latin:keyLabelFlags="fontNormal" />
+    <!-- U+0639: "ع" ARABIC LETTER AIN
+         U+0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
+    <Key
+        latin:keyLabel="&#x0639;"
+        latin:keyHintLabel="7"
+        latin:additionalMoreKeys="7,&#x0667;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0647: "ه" ARABIC LETTER HEH
          U+FEEB: "ﻫ" ARABIC LETTER HEH INITIAL FORM
          U+0647 U+200D: ARABIC LETTER HEH + ZERO WIDTH JOINER
-         U+0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
+         U+0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
     <Key
         latin:keyLabel="&#x0647;"
-        latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7,&#x0667;"
+        latin:keyHintLabel="8"
+        latin:additionalMoreKeys="8,&#x0668;"
         latin:moreKeys="&#xFEEB;|&#x0647;&#x200D;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+062E: "خ" ARABIC LETTER KHAH
-         U+0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
-    <Key
-        latin:keyLabel="&#x062E;"
-        latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8,&#x0668;"
-        latin:keyLabelFlags="fontNormal" />
-    <!-- U+062D: "ح" ARABIC LETTER HAH
          U+0669: "٩" ARABIC-INDIC DIGIT NINE -->
     <Key
-        latin:keyLabel="&#x062D;"
+        latin:keyLabel="&#x062E;"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9,&#x0669;"
         latin:keyLabelFlags="fontNormal" />
-    <!-- U+062C: "ج" ARABIC LETTER JEEM
-         U+0686: "چ" ARABIC LETTER TCHEH
+    <!-- U+062D: "ح" ARABIC LETTER HAH
          U+0660: "٠" ARABIC-INDIC DIGIT ZERO -->
     <Key
-        latin:keyLabel="&#x062C;"
+        latin:keyLabel="&#x062D;"
         latin:keyHintLabel="0"
         latin:additionalMoreKeys="0,&#x0660;"
+        latin:keyLabelFlags="fontNormal" />
+    <!-- U+062C: "ج" ARABIC LETTER JEEM
+         U+0686: "چ" ARABIC LETTER TCHEH -->
+    <Key
+        latin:keyLabel="&#x062C;"
         latin:moreKeys="&#x0686;"
         latin:keyLabelFlags="fontNormal" />
 </merge>

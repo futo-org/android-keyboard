@@ -68,11 +68,9 @@
         latin:keyLabel="&#x0627;"
         latin:moreKeys="&#x0621;,&#x0671;,&#x0623;,&#x0625;,&#x0622;"
         latin:keyLabelFlags="fontNormal" />
-    <!-- U+062A: "ت" ARABIC LETTER TEH
-         U+062B: "ﺙ" ARABIC LETTER THEH -->
+    <!-- U+062A: "ت" ARABIC LETTER TEH -->
     <Key
         latin:keyLabel="&#x062A;"
-        latin:moreKeys="&#x062B;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0646: "ن" ARABIC LETTER NOON -->
     <Key
@@ -88,5 +86,9 @@
     <Key
         latin:keyLabel="&#x0643;"
         latin:moreKeys="&#x06AF;,&#x06A9;"
+        latin:keyLabelFlags="fontNormal" />
+    <!-- U+0637: "ط" ARABIC LETTER TAH -->
+    <Key
+        latin:keyLabel="&#x0637;"
         latin:keyLabelFlags="fontNormal" />
 </merge>
