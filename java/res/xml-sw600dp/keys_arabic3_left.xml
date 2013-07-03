@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2013, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,29 +21,12 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <include
-        latin:keyboardLayout="@xml/key_styles_common" />
-    <Row
-        latin:keyWidth="9.091%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic1" />
-    </Row>
-    <Row
-        latin:keyWidth="9.091%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic2" />
-    </Row>
-    <Row
-        latin:keyWidth="9.091%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic3" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
-    </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+    <!-- U+0630: "ذ" ARABIC LETTER THAL -->
+    <Key
+        latin:keyLabel="&#x0630;"
+        latin:keyLabelFlags="fontNormal" />
+    <!-- U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE -->
+    <Key
+        latin:keyLabel="&#x0626;"
+        latin:keyLabelFlags="fontNormal" />
 </merge>
