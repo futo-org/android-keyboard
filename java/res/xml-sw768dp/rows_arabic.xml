@@ -54,7 +54,7 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic3"
-            latin:keyXPos="13.829%p" />
+            latin:keyXPos="6.602%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
