@@ -51,7 +51,7 @@ import java.util.Set;
 @LargeTest
 public class BinaryDictIOTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOTests.class.getSimpleName();
-    private static final int MAX_UNIGRAMS = 100;
+    private static final int DEFAULT_MAX_UNIGRAMS = 100;
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
@@ -73,13 +73,15 @@ public class BinaryDictIOTests extends AndroidTestCase {
             new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
 
     public BinaryDictIOTests() {
-        super();
+        this(System.currentTimeMillis(), DEFAULT_MAX_UNIGRAMS);
+    }
 
-        final long time = System.currentTimeMillis();
-        Log.e(TAG, "Testing dictionary: seed is " + time);
-        final Random random = new Random(time);
+    public BinaryDictIOTests(final long seed, final int maxUnigrams) {
+        super();
+        Log.e(TAG, "Testing dictionary: seed is " + seed);
+        final Random random = new Random(seed);
         sWords.clear();
-        generateWords(MAX_UNIGRAMS, random);
+        generateWords(maxUnigrams, random);
 
         for (int i = 0; i < sWords.size(); ++i) {
             sChainBigrams.put(i, new ArrayList<Integer>());
