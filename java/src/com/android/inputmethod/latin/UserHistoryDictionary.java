@@ -320,7 +320,11 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
                     mUserHistoryDictionary.mBigramListLock.unlock();
                 }
             } else if (mUserHistoryDictionary.mBigramListLock.tryLock()) {
-                doWriteTaskLocked();
+                try {
+                    doWriteTaskLocked();
+                } finally {
+                    mUserHistoryDictionary.mBigramListLock.unlock();
+                }
             }
             return null;
         }
