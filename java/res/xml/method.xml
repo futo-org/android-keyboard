@@ -21,9 +21,10 @@
 <!-- for the Input Method Manager. -->
 
 <!-- Supported subtypes
-    keyboard_locale: script_name/keyboard_layout_set[:keyboard_locale]
+    keyboard_locale: script_name/keyboard_layout_set
     af: Afrikaans/qwerty
     ar: Arabic/arabic
+    az: Azerbaijani/qwerty
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
@@ -115,6 +116,13 @@
             android:imeSubtypeLocale="ar"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x2a362219"
+            android:imeSubtypeLocale="az"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
