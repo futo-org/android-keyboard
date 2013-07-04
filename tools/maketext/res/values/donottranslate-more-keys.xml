@@ -49,11 +49,14 @@
     <string name="keylabel_for_east_slavic_row2_11"></string>
     <string name="keylabel_for_east_slavic_row3_5"></string>
     <string name="more_keys_for_cyrillic_u"></string>
+    <string name="more_keys_for_cyrillic_ka"></string>
     <string name="more_keys_for_cyrillic_en"></string>
     <string name="more_keys_for_cyrillic_ghe"></string>
     <string name="more_keys_for_east_slavic_row2_1"></string>
+    <string name="more_keys_for_cyrillic_a"></string>
     <string name="more_keys_for_cyrillic_o"></string>
     <string name="more_keys_for_cyrillic_soft_sign"></string>
+    <string name="more_keys_for_east_slavic_row2_11"></string>
     <string name="keylabel_for_south_slavic_row1_6"></string>
     <string name="keylabel_for_south_slavic_row2_11"></string>
     <string name="keylabel_for_south_slavic_row3_1"></string>
