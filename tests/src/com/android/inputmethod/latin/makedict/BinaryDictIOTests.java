@@ -151,11 +151,20 @@ public class BinaryDictIOTests extends AndroidTestCase {
      * Generates a random word.
      */
     private String generateWord(final Random random, final int[] codePointSet) {
-        StringBuilder builder = new StringBuilder("a");
-        int count = random.nextInt() % 30; // Arbitrarily 30 chars max
-        while (count > 0) {
+        StringBuilder builder = new StringBuilder();
+        // 8 * 4 = 32 chars max, but we do it the following way so as to bias the random toward
+        // longer words. This should be closer to natural language, and more importantly, it will
+        // exercise the algorithms in dicttool much more.
+        final int count = 1 + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5)
+                + (Math.abs(random.nextInt()) % 5);
+        while (builder.length() < count) {
             builder.appendCodePoint(codePointSet[Math.abs(random.nextInt()) % codePointSet.length]);
-            --count;
         }
         return builder.toString();
     }
