@@ -41,7 +41,8 @@
     <Key
         latin:keyLabel="&#x043A;"
         latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4" />
+        latin:additionalMoreKeys="4"
+        latin:moreKeys="!text/more_keys_for_cyrillic_ka" />
     <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
     <Key
         latin:keyLabel="&#x0435;"

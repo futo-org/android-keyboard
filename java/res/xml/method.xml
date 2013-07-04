@@ -51,6 +51,7 @@
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
+    kk: Kazakh/east_slavic
     ky: Kyrgyz/east_slavic
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
@@ -293,6 +294,13 @@
             android:imeSubtypeLocale="ka"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=georgian"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x2d73d2f6"
+            android:imeSubtypeLocale="kk"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
