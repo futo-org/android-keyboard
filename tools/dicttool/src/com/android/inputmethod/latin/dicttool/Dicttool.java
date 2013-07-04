@@ -72,15 +72,21 @@ public class Dicttool {
         return command;
     }
 
-    private void execute(final String[] arguments) {
+    /**
+     * Executes the specified command with the specified arguments.
+     * @param arguments the arguments passed to dicttool.
+     * @return 0 for success, an error code otherwise (always 1 at the moment)
+     */
+    private int execute(final String[] arguments) {
         final Command command = getCommand(arguments);
         try {
             command.run();
+            return 0;
         } catch (Exception e) {
             System.out.println("Exception while processing command "
                     + command.getClass().getSimpleName() + " : " + e);
             e.printStackTrace();
-            return;
+            return 1;
         }
     }
 
@@ -89,6 +95,7 @@ public class Dicttool {
             help();
             return;
         }
-        new Dicttool().execute(arguments);
+        // Exit with the success/error code from #execute() as status.
+        System.exit(new Dicttool().execute(arguments));
     }
 }
