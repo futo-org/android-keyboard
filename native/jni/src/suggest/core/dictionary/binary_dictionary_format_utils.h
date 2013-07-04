@@ -33,9 +33,9 @@ namespace latinime {
  */
 class BinaryDictionaryFormatUtils {
  public:
-    // TODO: Support version 3 format.
     enum FORMAT_VERSION {
-        VERSION_2 = 1,
+        VERSION_2,
+        VERSION_3,
         UNKNOWN_VERSION
     };
 
@@ -45,8 +45,8 @@ class BinaryDictionaryFormatUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormatUtils);
 
     static const int DICTIONARY_MINIMUM_SIZE;
-    static const uint32_t FORMAT_VERSION_2_MAGIC_NUMBER;
-    static const int FORMAT_VERSION_2_MINIMUM_SIZE;
+    static const uint32_t HEADER_VERSION_2_MAGIC_NUMBER;
+    static const int HEADER_VERSION_2_MINIMUM_SIZE;
 };
 } // namespace latinime
 #endif /* LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H */
