@@ -85,9 +85,9 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
     if (!traverseSession->getProximityInfoState(0)->isUsed()) {
         return;
     }
-    if (TRAVERSAL->allowPartialCommit()) {
-        commitPoint = 0;
-    }
+
+    // Never auto partial commit for now.
+    commitPoint = 0;
 
     if (traverseSession->getInputSize() > MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE
             && traverseSession->isContinuousSuggestionPossible()) {
@@ -151,6 +151,17 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
     int maxScore = S_INT_MIN;
     int bestExactMatchedNodeTerminalIndex = -1;
     int bestExactMatchedNodeOutputWordIndex = -1;
+    // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
+    // a long multiple words suggestion.
+    // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
+    // traverseSession->isPartiallyCommited() always returns false because we never auto partial
+    // commit for now.
+    const bool forceCommitMultiWords = (terminalSize > 0) ?
+            TRAVERSAL->autoCorrectsToMultiWordSuggestionIfTop()
+                    && (traverseSession->isPartiallyCommited()
+                            || (traverseSession->getInputSize()
+                                    >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
+                                            && terminals[0].hasMultipleWords())) : false;
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
             ++terminalIndex) {
@@ -180,22 +191,16 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
 
         // Increase output score of top typing suggestion to ensure autocorrection.
         // TODO: Better integration with java side autocorrection logic.
-        // Force autocorrection for obvious long multi-word suggestions.
-        const bool isForceCommitMultiWords = TRAVERSAL->allowPartialCommit()
-                && (traverseSession->isPartiallyCommited()
-                        || (traverseSession->getInputSize() >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
-                                && terminalDicNode->hasMultipleWords()));
-
         const int finalScore = SCORING->calculateFinalScore(
                 compoundDistance, traverseSession->getInputSize(),
-                isForceCommitMultiWords || (isValidWord && SCORING->doesAutoCorrectValidWord()));
+                (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
+                        || (isValidWord && SCORING->doesAutoCorrectValidWord()));
         maxScore = max(maxScore, finalScore);
 
-        if (TRAVERSAL->allowPartialCommit()) {
-            // Index for top typing suggestion should be 0.
-            if (isValidWord && outputWordIndex == 0) {
-                terminalDicNode->outputSpacePositionsResult(spaceIndices);
-            }
+        // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
+        // Index for top typing suggestion should be 0.
+        if (isValidWord && outputWordIndex == 0) {
+            terminalDicNode->outputSpacePositionsResult(spaceIndices);
         }
 
         // Don't output invalid words. However, we still need to submit their shortcuts if any.

@@ -137,7 +137,7 @@ class TypingTraversal : public Traversal {
         return ScoringParams::MAX_SPATIAL_DISTANCE;
     }
 
-    AK_FORCE_INLINE bool allowPartialCommit() const {
+    AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
         return true;
     }
 
