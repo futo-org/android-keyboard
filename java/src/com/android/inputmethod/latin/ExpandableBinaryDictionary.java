@@ -22,17 +22,9 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -76,8 +68,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private BinaryDictionary mBinaryDictionary;
 
-    /** The expandable fusion dictionary used to generate the binary dictionary. */
-    private FusionDictionary mFusionDictionary;
+    /** The in-memory dictionary used to generate the binary dictionary. */
+    private AbstractDictionaryWriter mDictionaryWriter;
 
     /**
      * The name of this dictionary, used as the filename for storing the binary dictionary. Multiple
@@ -91,11 +83,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
-
-    // TODO: Regenerate version 3 binary dictionary.
-    private static final int BINARY_DICT_VERSION = 2;
-    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(BINARY_DICT_VERSION);
 
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
@@ -138,7 +125,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mContext = context;
         mBinaryDictionary = null;
         mSharedDictionaryController = getSharedDictionaryController(filename);
-        clearFusionDictionary();
+        mDictionaryWriter = new DictionaryWriter(context, dictType);
     }
 
     protected static String getFilenameWithLocale(final String name, final String localeStr) {
@@ -157,47 +144,51 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 mBinaryDictionary.close();
                 mBinaryDictionary = null;
             }
+            mDictionaryWriter.close();
         } finally {
             mLocalDictionaryController.writeLock().unlock();
         }
     }
 
     /**
-     * Clears the fusion dictionary on the Java side. Note: Does not modify the binary dictionary on
-     * the native side.
+     * Adds a word unigram to the dictionary. Used for loading a dictionary.
      */
-    public void clearFusionDictionary() {
-        final HashMap<String, String> attributes = CollectionUtils.newHashMap();
-        mFusionDictionary = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(attributes, false, false));
+    protected void addWord(final String word, final String shortcutTarget,
+            final int frequency, final boolean isNotAWord) {
+        mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
     }
 
     /**
-     * Adds a word unigram to the fusion dictionary. Call updateBinaryDictionary when all changes
-     * are done to update the binary dictionary.
+     * Sets a word bigram in the dictionary. Used for loading a dictionary.
      */
-    // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
-    // considering performance regression.
-    protected void addWord(final String word, final String shortcutTarget, final int frequency,
-            final boolean isNotAWord) {
-        if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null, isNotAWord);
-        } else {
-            // TODO: Do this in the subclass, with this class taking an arraylist.
-            final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
-            shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
-            mFusionDictionary.add(word, frequency, shortcutTargets, isNotAWord);
+    protected void setBigram(final String prevWord, final String word, final int frequency) {
+        mDictionaryWriter.addBigramWords(prevWord, word, frequency, true /* isValid */);
+    }
+
+    /**
+     * Dynamically adds a word unigram to the dictionary.
+     */
+    protected void addWordDynamically(final String word, final String shortcutTarget,
+            final int frequency, final boolean isNotAWord) {
+        mLocalDictionaryController.writeLock().lock();
+        try {
+            mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
+        } finally {
+            mLocalDictionaryController.writeLock().unlock();
         }
     }
 
     /**
-     * Sets a word bigram in the fusion dictionary. Call updateBinaryDictionary when all changes are
-     * done to update the binary dictionary.
+     * Dynamically sets a word bigram in the dictionary.
      */
-    // TODO: Create "cache dictionary" to cache fresh bigrams for frequently updated dictionaries,
-    // considering performance regression.
-    protected void setBigram(final String prevWord, final String word, final int frequency) {
-        mFusionDictionary.setBigram(prevWord, word, frequency);
+    protected void setBigramDynamically(final String prevWord, final String word,
+            final int frequency) {
+        mLocalDictionaryController.writeLock().lock();
+        try {
+            mDictionaryWriter.addBigramWords(prevWord, word, frequency, true /* isValid */);
+        } finally {
+            mLocalDictionaryController.writeLock().unlock();
+        }
     }
 
     @Override
@@ -207,9 +198,23 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         asyncReloadDictionaryIfRequired();
         if (mLocalDictionaryController.readLock().tryLock()) {
             try {
+                final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
+                        mDictionaryWriter.getSuggestions(composer, prevWord, proximityInfo,
+                                blockOffensiveWords);
                 if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
-                            blockOffensiveWords);
+                    final ArrayList<SuggestedWordInfo> binarySuggestion =
+                            mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
+                                    blockOffensiveWords);
+                    if (inMemDictSuggestion == null) {
+                        return binarySuggestion;
+                    } else if (binarySuggestion == null) {
+                        return inMemDictSuggestion;
+                    } else {
+                        binarySuggestion.addAll(binarySuggestion);
+                        return binarySuggestion;
+                    }
+                } else {
+                    return inMemDictSuggestion;
                 }
             } finally {
                 mLocalDictionaryController.readLock().unlock();
@@ -240,22 +245,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return mBinaryDictionary.isValidWord(word);
     }
 
-    protected boolean isValidBigram(final String word1, final String word2) {
-        if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidBigram(word1, word2);
-    }
-
-    protected boolean isValidBigramInner(final String word1, final String word2) {
-        if (mLocalDictionaryController.readLock().tryLock()) {
-            try {
-                return isValidBigramLocked(word1, word2);
-            } finally {
-                mLocalDictionaryController.readLock().unlock();
-            }
-        }
-        return false;
-    }
-
     protected boolean isValidBigramLocked(final String word1, final String word2) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidBigram(word1, word2);
@@ -274,7 +263,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Loads the current binary dictionary from internal storage. Assumes the dictionary file
      * exists.
      */
-    protected void loadBinaryDictionary() {
+    private void loadBinaryDictionary() {
         if (DEBUG) {
             Log.d(TAG, "Loading binary dictionary: " + mFilename + " request="
                     + mSharedDictionaryController.mLastUpdateRequestTime + " update="
@@ -306,6 +295,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
+     * Abstract method for checking if it is required to reload the dictionary before writing
+     * a binary dictionary.
+     */
+    abstract protected boolean needsToReloadBeforeWriting();
+
+    /**
      * Generates and writes a new binary dictionary based on the contents of the fusion dictionary.
      */
     private void generateBinaryDictionary() {
@@ -314,33 +309,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mSharedDictionaryController.mLastUpdateRequestTime + " update="
                     + mSharedDictionaryController.mLastUpdateTime);
         }
-
-        loadDictionaryAsync();
-
-        final String tempFileName = mFilename + ".temp";
-        final File file = new File(mContext.getFilesDir(), mFilename);
-        final File tempFile = new File(mContext.getFilesDir(), tempFileName);
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(tempFile);
-            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, FORMAT_OPTIONS);
-            out.flush();
-            out.close();
-            tempFile.renameTo(file);
-            clearFusionDictionary();
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file", e);
-        } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format", e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
+        if (needsToReloadBeforeWriting()) {
+            mDictionaryWriter.clear();
+            loadDictionaryAsync();
         }
+        mDictionaryWriter.write(mFilename);
     }
 
     /**

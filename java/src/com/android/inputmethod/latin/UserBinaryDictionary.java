@@ -240,7 +240,6 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     private void addWords(final Cursor cursor) {
         final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-        clearFusionDictionary();
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
@@ -265,6 +264,11 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     @Override
     protected boolean hasContentChanged() {
+        return true;
+    }
+
+    @Override
+    protected boolean needsToReloadBeforeWriting() {
         return true;
     }
 }

@@ -109,7 +109,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     @Override
     public void loadDictionaryAsync() {
-        clearFusionDictionary();
         loadDeviceAccountsEmailAddresses();
         loadDictionaryAsyncForUri(ContactsContract.Profile.CONTENT_URI);
         // TODO: Switch this URL to the newer ContactsContract too
@@ -233,6 +232,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             }
         }
         return end;
+    }
+
+    @Override
+    protected boolean needsToReloadBeforeWriting() {
+        return true;
     }
 
     @Override
