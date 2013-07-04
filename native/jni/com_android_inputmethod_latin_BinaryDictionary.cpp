@@ -201,7 +201,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
 static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, jlong dict,
         jintArray word) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
-    if (!dictionary) return 0;
+    if (!dictionary) return NOT_A_PROBABILITY;
     const jsize wordLength = env->GetArrayLength(word);
     int codePoints[wordLength];
     env->GetIntArrayRegion(word, 0, wordLength, codePoints);
