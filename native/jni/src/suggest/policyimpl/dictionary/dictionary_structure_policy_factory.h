@@ -32,6 +32,9 @@ class DictionaryStructurePolicyFactory {
         switch (dictionaryFormat) {
             case BinaryDictionaryFormatUtils::VERSION_2:
                 return PatriciaTriePolicy::getInstance();
+            case BinaryDictionaryFormatUtils::VERSION_3:
+                // TODO: support version 3 dictionaries.
+                return 0;
             default:
                 ASSERT(false);
                 return 0;

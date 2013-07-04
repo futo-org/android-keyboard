@@ -31,9 +31,9 @@ const int BinaryDictionaryFormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
 // The versions of Latin IME that only handle format version 1 only test for the magic
 // number, so we had to change it so that version 2 files would be rejected by older
 // implementations. On this occasion, we made the magic number 32 bits long.
-const uint32_t BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+const uint32_t BinaryDictionaryFormatUtils::HEADER_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
-const int BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
+const int BinaryDictionaryFormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
 
 /* static */ BinaryDictionaryFormatUtils::FORMAT_VERSION
         BinaryDictionaryFormatUtils::detectFormatVersion(const uint8_t *const dict,
@@ -46,25 +46,28 @@ const int BinaryDictionaryFormatUtils::FORMAT_VERSION_2_MINIMUM_SIZE = 12;
     }
     const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
     switch (magicNumber) {
-    case FORMAT_VERSION_2_MAGIC_NUMBER:
-        // Version 2 dictionaries are at least 12 bytes long.
-        // If this dictionary has the version 2 magic number but is less than 12 bytes long,
-        // then it's an unknown format and we need to avoid confidently reading the next bytes.
-        if (dictSize < FORMAT_VERSION_2_MINIMUM_SIZE) {
+        case HEADER_VERSION_2_MAGIC_NUMBER:
+            // Version 2 header are at least 12 bytes long.
+            // If this header has the version 2 magic number but is less than 12 bytes long,
+            // then it's an unknown format and we need to avoid confidently reading the next bytes.
+            if (dictSize < HEADER_VERSION_2_MINIMUM_SIZE) {
+                return UNKNOWN_VERSION;
+            }
+            // Version 2 header is as follows:
+            // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
+            // Version number (2 bytes)
+            // Options (2 bytes)
+            // Header size (4 bytes) : integer, big endian
+            if (ByteArrayUtils::readUint16(dict, 4) == 2) {
+                return VERSION_2;
+            } else if (ByteArrayUtils::readUint16(dict, 4) == 3) {
+                // TODO: Support version 3 dictionary.
+                return UNKNOWN_VERSION;
+            } else {
+                return UNKNOWN_VERSION;
+            }
+        default:
             return UNKNOWN_VERSION;
-        }
-        // Format 2 header is as follows:
-        // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
-        // Version number (2 bytes) 0x00 0x02
-        // Options (2 bytes)
-        // Header size (4 bytes) : integer, big endian
-        if (ByteArrayUtils::readUint16(dict, 4) == 2) {
-            return VERSION_2;
-        } else {
-            return UNKNOWN_VERSION;
-        }
-    default:
-        return UNKNOWN_VERSION;
     }
 }
 

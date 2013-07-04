@@ -48,27 +48,15 @@ class BinaryDictionaryHeaderReadingUtils {
         return (flags & FRENCH_LIGATURE_PROCESSING_FLAG) != 0;
     }
 
-    static AK_FORCE_INLINE bool hasHeaderAttributes(
-            const BinaryDictionaryFormatUtils::FORMAT_VERSION format) {
-        // Only format 2 and above have header attributes as {key,value} string pairs.
-        switch (format) {
-        case BinaryDictionaryFormatUtils::VERSION_2:
-            return  true;
-            break;
-        default:
-            return false;
-        }
-    }
-
     static AK_FORCE_INLINE int getHeaderOptionsPosition(
-            const BinaryDictionaryFormatUtils::FORMAT_VERSION format) {
-        switch (format) {
-        case BinaryDictionaryFormatUtils::VERSION_2:
-            return VERSION_2_MAGIC_NUMBER_SIZE + VERSION_2_DICTIONARY_VERSION_SIZE
-                    + VERSION_2_DICTIONARY_FLAG_SIZE + VERSION_2_DICTIONARY_HEADER_SIZE_SIZE;
+            const BinaryDictionaryFormatUtils::FORMAT_VERSION dictionaryFormat) {
+        switch (getHeaderVersion(dictionaryFormat)) {
+        case HEADER_VERSION_2:
+            return VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
+                    + VERSION_2_HEADER_FLAG_SIZE + VERSION_2_HEADER_SIZE_FIELD_SIZE;
             break;
         default:
-            return 0;
+            return NOT_A_DICT_POS;
         }
     }
 
@@ -82,10 +70,15 @@ class BinaryDictionaryHeaderReadingUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReadingUtils);
 
-    static const int VERSION_2_MAGIC_NUMBER_SIZE;
-    static const int VERSION_2_DICTIONARY_VERSION_SIZE;
-    static const int VERSION_2_DICTIONARY_FLAG_SIZE;
-    static const int VERSION_2_DICTIONARY_HEADER_SIZE_SIZE;
+    enum HEADER_VERSION {
+        HEADER_VERSION_2,
+        UNKNOWN_HEADER_VERSION
+    };
+
+    static const int VERSION_2_HEADER_MAGIC_NUMBER_SIZE;
+    static const int VERSION_2_HEADER_DICTIONARY_VERSION_SIZE;
+    static const int VERSION_2_HEADER_FLAG_SIZE;
+    static const int VERSION_2_HEADER_SIZE_FIELD_SIZE;
 
     static const DictionaryFlags NO_FLAGS;
     // Flags for special processing
@@ -95,6 +88,18 @@ class BinaryDictionaryHeaderReadingUtils {
     static const DictionaryFlags SUPPORTS_DYNAMIC_UPDATE_FLAG;
     static const DictionaryFlags FRENCH_LIGATURE_PROCESSING_FLAG;
     static const DictionaryFlags CONTAINS_BIGRAMS_FLAG;
+
+    static HEADER_VERSION getHeaderVersion(
+            const BinaryDictionaryFormatUtils::FORMAT_VERSION formatVersion) {
+        switch(formatVersion) {
+            case BinaryDictionaryFormatUtils::VERSION_2:
+                // Fall through
+            case BinaryDictionaryFormatUtils::VERSION_3:
+                return HEADER_VERSION_2;
+            default:
+                return UNKNOWN_HEADER_VERSION;
+        }
+    }
 };
 }
 #endif /* LATINIME_DICTIONARY_HEADER_READING_UTILS_H */
