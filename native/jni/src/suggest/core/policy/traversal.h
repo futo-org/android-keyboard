@@ -45,7 +45,7 @@ class Traversal {
             const DicNode *const dicNode) const = 0;
     virtual bool needsToTraverseAllUserInput() const = 0;
     virtual float getMaxSpatialDistance() const = 0;
-    virtual bool allowPartialCommit() const = 0;
+    virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
     virtual int getDefaultExpandDicNodeSize() const = 0;
     virtual int getMaxCacheSize() const = 0;
     virtual bool isPossibleOmissionChildNode(const DicTraverseSession *const traverseSession,
