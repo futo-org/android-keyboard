@@ -52,6 +52,7 @@ import java.util.Set;
 public class BinaryDictIOTests extends AndroidTestCase {
     private static final String TAG = BinaryDictIOTests.class.getSimpleName();
     private static final int DEFAULT_MAX_UNIGRAMS = 100;
+    private static final int DEFAULT_CODE_POINT_SET_SIZE = 50;
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
@@ -81,7 +82,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
         sWords.clear();
-        generateWords(maxUnigrams, random);
+        final int[] codePointSet = generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE, random);
+        generateWords(maxUnigrams, random, codePointSet);
 
         for (int i = 0; i < sWords.size(); ++i) {
             sChainBigrams.put(i, new ArrayList<Integer>());
@@ -94,6 +96,23 @@ public class BinaryDictIOTests extends AndroidTestCase {
         for (int i = 1; i < sWords.size(); ++i) {
             sStarBigrams.get(0).add(i);
         }
+    }
+
+    private int[] generateCodePointSet(final int codePointSetSize, final Random random) {
+        final int[] codePointSet = new int[codePointSetSize];
+        for (int i = codePointSet.length - 1; i >= 0; ) {
+            final int r = Math.abs(random.nextInt());
+            if (r < 0) continue;
+            // Don't insert 0~0x20, but insert any other code point.
+            // Code points are in the range 0~0x10FFFF.
+            final int candidateCodePoint = (int)(0x20 + r % (Character.MAX_CODE_POINT - 0x20));
+            // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
+            if (candidateCodePoint >= Character.MIN_SURROGATE
+                    && candidateCodePoint <= Character.MAX_SURROGATE) continue;
+            codePointSet[i] = candidateCodePoint;
+            --i;
+        }
+        return codePointSet;
     }
 
     // Utilities for test
@@ -131,28 +150,20 @@ public class BinaryDictIOTests extends AndroidTestCase {
     /**
      * Generates a random word.
      */
-    private String generateWord(final Random random) {
+    private String generateWord(final Random random, final int[] codePointSet) {
         StringBuilder builder = new StringBuilder("a");
         int count = random.nextInt() % 30; // Arbitrarily 30 chars max
         while (count > 0) {
-            final long r = Math.abs(random.nextInt());
-            if (r < 0) continue;
-            // Don't insert 0~0x20, but insert any other code point.
-            // Code points are in the range 0~0x10FFFF.
-            final int candidateCodePoint = (int)(0x20 + r % (Character.MAX_CODE_POINT - 0x20));
-            // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
-            if (candidateCodePoint >= Character.MIN_SURROGATE
-                    && candidateCodePoint <= Character.MAX_SURROGATE) continue;
-            builder.appendCodePoint(candidateCodePoint);
+            builder.appendCodePoint(codePointSet[Math.abs(random.nextInt()) % codePointSet.length]);
             --count;
         }
         return builder.toString();
     }
 
-    private void generateWords(final int number, final Random random) {
+    private void generateWords(final int number, final Random random, final int[] codePointSet) {
         final Set<String> wordSet = CollectionUtils.newHashSet();
         while (wordSet.size() < number) {
-            wordSet.add(generateWord(random));
+            wordSet.add(generateWord(random, codePointSet));
         }
         sWords.addAll(wordSet);
     }
@@ -560,8 +571,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random((int)System.currentTimeMillis());
+        final int[] codePointSet = generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE, random);
         for (int i = 0; i < 1000; ++i) {
-            final String word = generateWord(random);
+            final String word = generateWord(random, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
             runGetTerminalPosition(buffer, word, i, false);
         }
