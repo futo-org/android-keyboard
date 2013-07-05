@@ -22,7 +22,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service that handles background tasks for the dictionary provider.
@@ -77,19 +77,19 @@ public final class DictionaryService extends Service {
      * How often, in milliseconds, we want to update the metadata. This is a
      * floor value; actually, it may happen several hours later, or even more.
      */
-    private static final long UPDATE_FREQUENCY = 4 * DateUtils.DAY_IN_MILLIS;
+    private static final long UPDATE_FREQUENCY = TimeUnit.DAYS.toMillis(4);
 
     /**
      * We are waked around midnight, local time. We want to wake between midnight and 6 am,
      * roughly. So use a random time between 0 and this delay.
      */
-    private static final int MAX_ALARM_DELAY = 6 * ((int)AlarmManager.INTERVAL_HOUR);
+    private static final int MAX_ALARM_DELAY = (int)TimeUnit.HOURS.toMillis(6);
 
     /**
      * How long we consider a "very long time". If no update took place in this time,
      * the content provider will trigger an update in the background.
      */
-    private static final long VERY_LONG_TIME = 14 * DateUtils.DAY_IN_MILLIS;
+    private static final long VERY_LONG_TIME = TimeUnit.DAYS.toMillis(14);
 
     /**
      * The last seen start Id. This must be stored because we must only call stopSelfResult() with

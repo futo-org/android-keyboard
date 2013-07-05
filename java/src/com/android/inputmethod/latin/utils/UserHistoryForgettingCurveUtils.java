@@ -16,8 +16,9 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.text.format.DateUtils;
 import android.util.Log;
+
+import java.util.concurrent.TimeUnit;
 
 public final class UserHistoryForgettingCurveUtils {
     private static final String TAG = UserHistoryForgettingCurveUtils.class.getSimpleName();
@@ -27,8 +28,8 @@ public final class UserHistoryForgettingCurveUtils {
     private static final int FC_LEVEL_MAX = 3;
     /* package */ static final int ELAPSED_TIME_MAX = 15;
     private static final int ELAPSED_TIME_INTERVAL_HOURS = 6;
-    private static final long ELAPSED_TIME_INTERVAL_MILLIS = ELAPSED_TIME_INTERVAL_HOURS
-            * DateUtils.HOUR_IN_MILLIS;
+    private static final long ELAPSED_TIME_INTERVAL_MILLIS =
+            TimeUnit.HOURS.toMillis(ELAPSED_TIME_INTERVAL_HOURS);
     private static final int HALF_LIFE_HOURS = 48;
     private static final int MAX_PUSH_ELAPSED = (FC_LEVEL_MAX + 1) * (ELAPSED_TIME_MAX + 1);
 

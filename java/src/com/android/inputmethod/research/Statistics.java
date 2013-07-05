@@ -21,6 +21,8 @@ import android.util.Log;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.util.concurrent.TimeUnit;
+
 public class Statistics {
     private static final String TAG = Statistics.class.getSimpleName();
     private static final boolean DEBUG = false
@@ -102,8 +104,8 @@ public class Statistics {
 
     // To account for the interruptions when the user's attention is directed elsewhere, times
     // longer than MIN_TYPING_INTERMISSION are not counted when estimating this statistic.
-    public static final int MIN_TYPING_INTERMISSION = 2 * 1000;  // in milliseconds
-    public static final int MIN_DELETION_INTERMISSION = 10 * 1000;  // in milliseconds
+    public static final long MIN_TYPING_INTERMISSION = TimeUnit.SECONDS.toMillis(2);
+    public static final long MIN_DELETION_INTERMISSION = TimeUnit.SECONDS.toMillis(10);
 
     // The last time that a tap was performed
     private long mLastTapTime;

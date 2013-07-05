@@ -34,7 +34,6 @@ public final class UploaderService extends IntentService {
     public static final long RUN_INTERVAL = AlarmManager.INTERVAL_HOUR;
     public static final String EXTRA_UPLOAD_UNCONDITIONALLY = UploaderService.class.getName()
             + ".extra.UPLOAD_UNCONDITIONALLY";
-    protected static final int TIMEOUT_IN_MS = 1000 * 4;
 
     public UploaderService() {
         super("Research Uploader Service");
