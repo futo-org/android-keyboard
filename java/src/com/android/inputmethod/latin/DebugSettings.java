@@ -25,7 +25,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.latin.utils.Utils;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 
 public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -118,7 +118,7 @@ public final class DebugSettings extends PreferenceFragment
         }
         boolean isDebugMode = mDebugMode.isChecked();
         final String version = getResources().getString(
-                R.string.version_text, Utils.getVersionName(getActivity()));
+                R.string.version_text, ApplicationUtils.getVersionName(getActivity()));
         if (!isDebugMode) {
             mDebugMode.setTitle(version);
             mDebugMode.setSummary("");

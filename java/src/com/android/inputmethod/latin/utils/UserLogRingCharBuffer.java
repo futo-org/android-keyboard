@@ -20,7 +20,6 @@ import android.inputmethodservice.InputMethodService;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Settings;
-import com.android.inputmethod.latin.utils.Utils.UsabilityStudyLogUtils;
 
 public final class UserLogRingCharBuffer {
     public /* for test */ static final int BUFSIZE = 20;

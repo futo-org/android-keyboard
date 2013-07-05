@@ -28,8 +28,8 @@ import android.util.Log;
 
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
-import com.android.inputmethod.latin.utils.Utils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -144,7 +144,7 @@ public final class ActionBatch {
             // DownloadManager also stupidly cuts the extension to replace with its own that it
             // gets from the content-type. We need to circumvent this.
             final String disambiguator = "#" + System.currentTimeMillis()
-                    + Utils.getVersionName(context) + ".dict";
+                    + ApplicationUtils.getVersionName(context) + ".dict";
             final Uri uri = Uri.parse(mWordList.mRemoteFilename + disambiguator);
             final Request request = new Request(uri);
 

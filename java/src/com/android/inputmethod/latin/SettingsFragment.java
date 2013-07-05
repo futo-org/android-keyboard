@@ -42,8 +42,8 @@ import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
 import com.android.inputmethod.latin.utils.AdditionalFeaturesSettingUtils;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
-import com.android.inputmethod.latin.utils.Utils;
 import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
@@ -90,7 +90,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
             preferenceScreen.setTitle(
-                    Utils.getAcitivityTitleResId(getActivity(), SettingsActivity.class));
+                    ApplicationUtils.getAcitivityTitleResId(getActivity(), SettingsActivity.class));
         }
 
         final Resources res = getResources();
