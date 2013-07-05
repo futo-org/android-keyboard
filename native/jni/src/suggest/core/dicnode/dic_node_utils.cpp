@@ -78,6 +78,7 @@ namespace latinime {
     const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
     const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
     const bool hasShortcuts = (0 != (BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS & flags));
+    const bool isBlacklistedOrNotAWord = BinaryFormat::hasBlacklistedOrNotAWordFlag(flags);
 
     int codePoint = BinaryFormat::getCodePointAndForwardPointer(
             binaryDictionaryInfo->getDictRoot(), &pos);
@@ -111,8 +112,9 @@ namespace latinime {
     if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
         return siblingPos;
     }
-    childDicNodes->pushLeavingChild(dicNode, nextPos, flags, childrenPos, attributesPos,
-            probability, isTerminal, hasChildren, mergedNodeCodePointCount, mergedNodeCodePoints);
+    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, attributesPos,
+            probability, isTerminal, hasChildren, isBlacklistedOrNotAWord,
+            mergedNodeCodePointCount, mergedNodeCodePoints);
     return siblingPos;
 }
 
