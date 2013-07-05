@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.latin.utils;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.SparseArray;
-
-import com.android.inputmethod.latin.utils.CollectionUtils;
 
 public final class TypefaceUtils {
     private TypefaceUtils() {
