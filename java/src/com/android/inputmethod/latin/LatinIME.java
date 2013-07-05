@@ -76,19 +76,19 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
+import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.PositionalInfoForUserDictPendingAddition;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
-import com.android.inputmethod.latin.utils.Utils;
-import com.android.inputmethod.latin.utils.Utils.Stats;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -1551,7 +1551,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (SPACE_STATE_PHANTOM == spaceState) {
                 if (mSettings.isInternal()) {
                     if (mWordComposer.isComposingWord() && mWordComposer.isBatchMode()) {
-                        Stats.onAutoCorrection(
+                        LatinImeLoggerUtils.onAutoCorrection(
                                 "", mWordComposer.getTypedWord(), " ", mWordComposer);
                     }
                 }
@@ -1612,7 +1612,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isComposingWord()) {
             if (mSettings.isInternal()) {
                 if (mWordComposer.isBatchMode()) {
-                    Stats.onAutoCorrection("", mWordComposer.getTypedWord(), " ", mWordComposer);
+                    LatinImeLoggerUtils.onAutoCorrection(
+                            "", mWordComposer.getTypedWord(), " ", mWordComposer);
                 }
             }
             final int wordComposerSize = mWordComposer.size();
@@ -1860,7 +1861,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             if (mLastComposedWord.canRevertCommit()) {
                 if (mSettings.isInternal()) {
-                    Stats.onAutoCorrectionCancellation();
+                    LatinImeLoggerUtils.onAutoCorrectionCancellation();
                 }
                 revertCommit();
                 return;
@@ -2031,7 +2032,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mHandler.postUpdateSuggestionStrip();
         if (mSettings.isInternal()) {
-            Utils.Stats.onNonSeparator((char)primaryCode, x, y);
+            LatinImeLoggerUtils.onNonSeparator((char)primaryCode, x, y);
         }
     }
 
@@ -2136,7 +2137,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             setPunctuationSuggestions();
         }
         if (mSettings.isInternal()) {
-            Utils.Stats.onSeparator((char)primaryCode, x, y);
+            LatinImeLoggerUtils.onSeparator((char)primaryCode, x, y);
         }
 
         mKeyboardSwitcher.updateShiftState();
@@ -2325,7 +2326,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "is empty? Impossible! I must commit suicide.");
             }
             if (mSettings.isInternal()) {
-                Stats.onAutoCorrection(typedWord, autoCorrection, separatorString, mWordComposer);
+                LatinImeLoggerUtils.onAutoCorrection(
+                        typedWord, autoCorrection, separatorString, mWordComposer);
             }
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 final SuggestedWords suggestedWords = mSuggestedWords;
@@ -2429,7 +2431,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         && !AutoCorrection.isValidWord(mSuggest, suggestion, true);
 
         if (mSettings.isInternal()) {
-            Stats.onSeparator((char)Constants.CODE_SPACE,
+            LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
@@ -2633,7 +2635,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
         if (mSettings.isInternal()) {
-            Stats.onSeparator(mLastComposedWord.mSeparatorString,
+            LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -2787,7 +2789,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final CharSequence[] items = new CharSequence[] {
                 // TODO: Should use new string "Select active input modes".
                 getString(R.string.language_selection_title),
-                getString(Utils.getAcitivityTitleResId(this, SettingsActivity.class)),
+                getString(ApplicationUtils.getAcitivityTitleResId(this, SettingsActivity.class)),
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override

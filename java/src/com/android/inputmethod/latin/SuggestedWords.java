@@ -75,6 +75,21 @@ public final class SuggestedWords {
         return mSuggestedWordInfoList.get(index);
     }
 
+    public String getDebugString(final int pos) {
+        if (!LatinImeLogger.sDBG) {
+            return null;
+        }
+        final SuggestedWordInfo wordInfo = getInfo(pos);
+        if (wordInfo == null) {
+            return null;
+        }
+        final String debugString = wordInfo.getDebugString();
+        if (TextUtils.isEmpty(debugString)) {
+            return null;
+        }
+        return debugString;
+    }
+
     public boolean willAutoCorrect() {
         return mWillAutoCorrect;
     }

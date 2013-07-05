@@ -51,7 +51,6 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.ResourceUtils;
-import com.android.inputmethod.latin.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -446,7 +445,7 @@ final class SuggestionStripLayoutHelper {
             wordView.setTextColor(getSuggestionTextColor(positionInStrip, suggestedWords));
             if (SuggestionStripView.DBG) {
                 mDebugInfoViews.get(positionInStrip).setText(
-                        Utils.getDebugInfo(suggestedWords, indexInSuggestedWords));
+                        suggestedWords.getDebugString(indexInSuggestedWords));
             }
         }
     }

@@ -31,7 +31,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.Utils;
 
 public final class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
@@ -207,7 +206,7 @@ public final class MoreSuggestions extends Keyboard {
                 final int y = params.getY(index);
                 final int width = params.getWidth(index);
                 final String word = mSuggestedWords.getWord(index);
-                final String info = Utils.getDebugInfo(mSuggestedWords, index);
+                final String info = mSuggestedWords.getDebugString(index);
                 final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, KeyboardIconsSet.ICON_UNDEFINED, indexInMoreSuggestions,
