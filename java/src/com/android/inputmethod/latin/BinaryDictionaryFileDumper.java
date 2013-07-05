@@ -308,6 +308,7 @@ public final class BinaryDictionaryFileDumper {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
                 BinaryDictionaryGetter.removeFilesWithIdExcept(context, wordlistId, finalFile);
+                Log.e(TAG, "Successfully copied file for wordlist ID " + wordlistId);
                 // Success! Close files (through the finally{} clause) and return.
                 return;
             } catch (Exception e) {
