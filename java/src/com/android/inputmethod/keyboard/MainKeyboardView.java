@@ -70,7 +70,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.StringUtils;
-import com.android.inputmethod.latin.utils.Utils.UsabilityStudyLogUtils;
+import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.Locale;

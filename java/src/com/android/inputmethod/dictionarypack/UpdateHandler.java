@@ -38,8 +38,8 @@ import android.util.Log;
 import com.android.inputmethod.compat.ConnectivityManagerCompatUtils;
 import com.android.inputmethod.compat.DownloadManagerCompatUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
-import com.android.inputmethod.latin.utils.Utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -222,7 +222,7 @@ public final class UpdateHandler {
         // DownloadManager also stupidly cuts the extension to replace with its own that it
         // gets from the content-type. We need to circumvent this.
         final String disambiguator = "#" + System.currentTimeMillis()
-                + Utils.getVersionName(context) + ".json";
+                + ApplicationUtils.getVersionName(context) + ".json";
         final Request metadataRequest = new Request(Uri.parse(metadataUri + disambiguator));
         DebugLogUtils.l("Request =", metadataRequest);
 

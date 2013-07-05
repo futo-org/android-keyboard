@@ -21,7 +21,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.Utils;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
 
 /**
  * Preference screen.
@@ -39,7 +39,7 @@ public final class SpellCheckerSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.spell_checker_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         if (preferenceScreen != null) {
-            preferenceScreen.setTitle(Utils.getAcitivityTitleResId(
+            preferenceScreen.setTitle(ApplicationUtils.getAcitivityTitleResId(
                     getActivity(), SpellCheckerSettingsActivity.class));
         }
     }
