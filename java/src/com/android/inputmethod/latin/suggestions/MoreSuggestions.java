@@ -24,13 +24,13 @@ import android.graphics.drawable.Drawable;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.keyboard.TypefaceUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 public final class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;

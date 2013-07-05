@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.latin.utils;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +27,8 @@ public final class ViewLayoutUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static MarginLayoutParams newLayoutParam(ViewGroup placer, int width, int height) {
+    public static MarginLayoutParams newLayoutParam(final ViewGroup placer, final int width,
+            final int height) {
         if (placer instanceof FrameLayout) {
             return new FrameLayout.LayoutParams(width, height);
         } else if (placer instanceof RelativeLayout) {
@@ -40,7 +41,8 @@ public final class ViewLayoutUtils {
         }
     }
 
-    public static void placeViewAt(View view, int x, int y, int w, int h) {
+    public static void placeViewAt(final View view, final int x, final int y, final int w,
+            final int h) {
         final ViewGroup.LayoutParams lp = view.getLayoutParams();
         if (lp instanceof MarginLayoutParams) {
             final MarginLayoutParams marginLayoutParams = (MarginLayoutParams)lp;
