@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 
@@ -32,24 +31,25 @@ namespace latinime {
 class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
-            : mPos(0), mFlags(0), mChildrenPos(0), mAttributesPos(0), mProbability(0),
-              mNodeCodePoint(0), mDepth(0), mLeavingDepth(0), mIsTerminal(false),
-              mHasChildren(false) {}
+            : mPos(0), mChildrenPos(0), mAttributesPos(0), mProbability(0),
+              mNodeCodePoint(0), mIsTerminal(false), mHasChildren(false),
+              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
 
     virtual ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
-    void init(const int pos, const uint8_t flags, const int childrenPos, const int attributesPos,
+    void init(const int pos, const int childrenPos, const int attributesPos,
             const int nodeCodePoint, const int probability, const bool isTerminal,
-            const bool hasChildren, const uint16_t depth, const uint16_t leavingDepth) {
+            const bool hasChildren, const bool isBlacklistedOrNotAWord,
+            const uint16_t depth, const uint16_t leavingDepth) {
         mPos = pos;
-        mFlags = flags;
         mChildrenPos = childrenPos;
         mAttributesPos = attributesPos;
         mNodeCodePoint = nodeCodePoint;
         mProbability = probability;
         mIsTerminal = isTerminal;
         mHasChildren = hasChildren;
+        mIsBlacklistedOrNotAWord = isBlacklistedOrNotAWord;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
     }
@@ -57,13 +57,13 @@ class DicNodeProperties {
     // Init for copy
     void init(const DicNodeProperties *const nodeProp) {
         mPos = nodeProp->mPos;
-        mFlags = nodeProp->mFlags;
         mChildrenPos = nodeProp->mChildrenPos;
         mAttributesPos = nodeProp->mAttributesPos;
         mNodeCodePoint = nodeProp->mNodeCodePoint;
         mProbability = nodeProp->mProbability;
         mIsTerminal = nodeProp->mIsTerminal;
         mHasChildren = nodeProp->mHasChildren;
+        mIsBlacklistedOrNotAWord = nodeProp->mIsBlacklistedOrNotAWord;
         mDepth = nodeProp->mDepth;
         mLeavingDepth = nodeProp->mLeavingDepth;
     }
@@ -71,23 +71,19 @@ class DicNodeProperties {
     // Init as passing child
     void init(const DicNodeProperties *const nodeProp, const int codePoint) {
         mPos = nodeProp->mPos;
-        mFlags = nodeProp->mFlags;
         mChildrenPos = nodeProp->mChildrenPos;
         mAttributesPos = nodeProp->mAttributesPos;
         mNodeCodePoint = codePoint; // Overwrite the node char of a passing child
         mProbability = nodeProp->mProbability;
         mIsTerminal = nodeProp->mIsTerminal;
         mHasChildren = nodeProp->mHasChildren;
+        mIsBlacklistedOrNotAWord = nodeProp->mIsBlacklistedOrNotAWord;
         mDepth = nodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = nodeProp->mLeavingDepth;
     }
 
     int getPos() const {
         return mPos;
-    }
-
-    uint8_t getFlags() const {
-        return mFlags;
     }
 
     int getChildrenPos() const {
@@ -123,8 +119,8 @@ class DicNodeProperties {
         return mHasChildren || mDepth != mLeavingDepth;
     }
 
-    bool hasBlacklistedOrNotAWordFlag() const {
-        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mFlags);
+    bool isBlacklistedOrNotAWord() const {
+        return mIsBlacklistedOrNotAWord;
     }
 
  private:
@@ -132,15 +128,15 @@ class DicNodeProperties {
     // Use a default copy constructor and an assign operator because shallow copies are ok
     // for this class
     int mPos;
-    uint8_t mFlags;
     int mChildrenPos;
     int mAttributesPos;
     int mProbability;
     int mNodeCodePoint;
-    uint16_t mDepth;
-    uint16_t mLeavingDepth;
     bool mIsTerminal;
     bool mHasChildren;
+    bool mIsBlacklistedOrNotAWord;
+    uint16_t mDepth;
+    uint16_t mLeavingDepth;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PROPERTIES_H

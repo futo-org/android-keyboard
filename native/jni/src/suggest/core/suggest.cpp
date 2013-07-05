@@ -173,8 +173,6 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 terminalIndex, doubleLetterTerminalIndex, doubleLetterLevel);
         const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
                 + doubleLetterCost;
-        const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
-                terminalDicNode->getFlags(), terminalDicNode->getAttributesPos());
         const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
         const bool isExactMatch = terminalDicNode->isExactMatch();
         const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
@@ -187,7 +185,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 | (isSafeExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
 
         // Entries that are blacklisted or do not represent a word should not be output.
-        const bool isValidWord = !terminalAttributes.isBlacklistedOrNotAWord();
+        const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
 
         // Increase output score of top typing suggestion to ensure autocorrection.
         // TODO: Better integration with java side autocorrection logic.
@@ -233,6 +231,8 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         }
 
         if (!terminalDicNode->hasMultipleWords()) {
+            const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
+                    terminalDicNode->getAttributesPos());
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);

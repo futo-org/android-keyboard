@@ -21,7 +21,6 @@
 
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
-#include "suggest/core/dictionary/binary_format.h"
 
 namespace latinime {
 
@@ -71,13 +70,12 @@ class TerminalAttributes {
     };
 
     TerminalAttributes(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const uint8_t nodeFlags, const int shortcutPos)
-            : mBinaryDictionaryInfo(binaryDictionaryInfo),
-              mNodeFlags(nodeFlags), mShortcutListSizePos(shortcutPos) {}
+            const int shortcutPos)
+            : mBinaryDictionaryInfo(binaryDictionaryInfo), mShortcutListSizePos(shortcutPos) {}
 
     inline ShortcutIterator getShortcutIterator() const {
         int shortcutPos = mShortcutListSizePos;
-        const bool hasShortcutList = 0 != (mNodeFlags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS);
+        const bool hasShortcutList = shortcutPos != NOT_A_DICT_POS;
         if (hasShortcutList) {
             BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
                     mBinaryDictionaryInfo, &shortcutPos);
@@ -86,14 +84,9 @@ class TerminalAttributes {
         return ShortcutIterator(mBinaryDictionaryInfo, shortcutPos, hasShortcutList);
     }
 
-    bool isBlacklistedOrNotAWord() const {
-        return BinaryFormat::hasBlacklistedOrNotAWordFlag(mNodeFlags);
-    }
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
-    const uint8_t mNodeFlags;
     const int mShortcutListSizePos;
 };
 } // namespace latinime
