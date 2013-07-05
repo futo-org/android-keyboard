@@ -20,7 +20,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.AssetFileAddress;
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class encapsulates the logic for the Latin-IME side of dictionary information management.
@@ -74,8 +74,8 @@ public class DictionaryInfoUtils {
             values.put(LOCALE_COLUMN, mLocale.toString());
             values.put(DESCRIPTION_COLUMN, mDescription);
             values.put(LOCAL_FILENAME_COLUMN, mFileAddress.mFilename);
-            values.put(DATE_COLUMN,
-                    new File(mFileAddress.mFilename).lastModified() / DateUtils.SECOND_IN_MILLIS);
+            values.put(DATE_COLUMN, TimeUnit.MILLISECONDS.toSeconds(
+                    new File(mFileAddress.mFilename).lastModified()));
             values.put(FILESIZE_COLUMN, mFileAddress.mLength);
             values.put(VERSION_COLUMN, mVersion);
             return values;

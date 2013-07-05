@@ -55,7 +55,7 @@ public class ResearchLog {
     private static final String TAG = ResearchLog.class.getSimpleName();
     private static final boolean DEBUG = false
             && ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS_DEBUG;
-    private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
+    private static final long FLUSH_DELAY_IN_MS = TimeUnit.SECONDS.toMillis(5);
 
     /* package */ final ScheduledExecutorService mExecutor;
     /* package */ final File mFile;
