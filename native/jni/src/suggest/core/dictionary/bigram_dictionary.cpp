@@ -123,9 +123,10 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
     for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
             bigramsIt.hasNext(); /* no-op */) {
         bigramsIt.next();
-        const int length = BinaryFormat::getWordAtAddress(
-                mBinaryDictionaryInfo->getDictRoot(), bigramsIt.getBigramPos(),
-                MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
+        const int length = mBinaryDictionaryInfo->getStructurePolicy()->
+                getCodePointsAndProbabilityAndReturnCodePointCount(
+                        mBinaryDictionaryInfo, bigramsIt.getBigramPos(), MAX_WORD_LENGTH,
+                        bigramBuffer, &unigramProbability);
 
         // inputSize == 0 means we are trying to find bigram predictions.
         if (inputSize < 1 || checkFirstCharacter(bigramBuffer, inputCodePoints)) {
@@ -153,18 +154,8 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
     if (NOT_VALID_WORD == pos) return 0;
-    const uint8_t *const root = mBinaryDictionaryInfo->getDictRoot();
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
-    if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
-        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
-    } else {
-        pos = BinaryFormat::skipOtherCharacters(root, pos);
-    }
-    pos = BinaryFormat::skipProbability(flags, pos);
-    pos = BinaryFormat::skipChildrenPosition(flags, pos);
-    pos = BinaryFormat::skipShortcuts(root, flags, pos);
-    return pos;
+    return BinaryFormat::getBigramListPositionForWordPosition(
+            mBinaryDictionaryInfo->getDictRoot(), pos);
 }
 
 bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) const {

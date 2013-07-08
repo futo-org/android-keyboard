@@ -71,8 +71,9 @@ class BinaryFormat {
     static bool hasChildrenInFlags(const uint8_t flags);
     static int getTerminalPosition(const uint8_t *const root, const int *const inWord,
             const int length, const bool forceLowerCaseSearch);
-    static int getWordAtAddress(const uint8_t *const root, const int address, const int maxDepth,
-            int *outWord, int *outUnigramProbability);
+    static int getCodePointsAndProbabilityAndReturnCodePointCount(
+            const uint8_t *const root, const int nodePos, const int maxCodePointCount,
+            int *outCodePoints, int *outUnigramProbability);
     static int getBigramListPositionForWordPosition(const uint8_t *const root, int position);
 
  private:
@@ -342,8 +343,9 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
  * outUnigramProbability: a pointer to an int to write the probability into.
  * Return value : the length of the word, of 0 if the word was not found.
  */
-AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, const int address,
-        const int maxDepth, int *outWord, int *outUnigramProbability) {
+AK_FORCE_INLINE int BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointCount(
+        const uint8_t *const root, const int nodePos,
+        const int maxCodePointCount, int *outCodePoints, int *outUnigramProbability) {
     int pos = 0;
     int wordPos = 0;
 
@@ -353,7 +355,7 @@ AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, co
     // The only reason we count nodes is because we want to reduce the probability of infinite
     // looping in case there is a bug. Since we know there is an upper bound to the depth we are
     // supposed to traverse, it does not hurt to count iterations.
-    for (int loopCount = maxDepth; loopCount > 0; --loopCount) {
+    for (int loopCount = maxCodePointCount; loopCount > 0; --loopCount) {
         int lastCandidateGroupPos = 0;
         // Let's loop through char groups in this node searching for either the terminal
         // or one of its ascendants.
@@ -362,17 +364,17 @@ AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, co
             const int startPos = pos;
             const uint8_t flags = getFlagsAndForwardPointer(root, &pos);
             const int character = getCodePointAndForwardPointer(root, &pos);
-            if (address == startPos) {
+            if (nodePos == startPos) {
                 // We found the address. Copy the rest of the word in the buffer and return
                 // the length.
-                outWord[wordPos] = character;
+                outCodePoints[wordPos] = character;
                 if (FLAG_HAS_MULTIPLE_CHARS & flags) {
                     int nextChar = getCodePointAndForwardPointer(root, &pos);
                     // We count chars in order to avoid infinite loops if the file is broken or
                     // if there is some other bug
-                    int charCount = maxDepth;
+                    int charCount = maxCodePointCount;
                     while (NOT_A_CODE_POINT != nextChar && --charCount > 0) {
-                        outWord[++wordPos] = nextChar;
+                        outCodePoints[++wordPos] = nextChar;
                         nextChar = getCodePointAndForwardPointer(root, &pos);
                     }
                 }
@@ -399,7 +401,7 @@ AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, co
             if (hasChildren) {
                 // Here comes the tricky part. First, read the children position.
                 const int childrenPos = readChildrenPosition(root, flags, pos);
-                if (childrenPos > address) {
+                if (childrenPos > nodePos) {
                     // If the children pos is greater than address, it means the previous chargroup,
                     // which address is stored in lastCandidateGroupPos, was the right one.
                     found = true;
@@ -429,12 +431,12 @@ AK_FORCE_INLINE int BinaryFormat::getWordAtAddress(const uint8_t *const root, co
                     const int lastChar =
                             getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
                     // We copy all the characters in this group to the buffer
-                    outWord[wordPos] = lastChar;
+                    outCodePoints[wordPos] = lastChar;
                     if (FLAG_HAS_MULTIPLE_CHARS & lastFlags) {
                         int nextChar = getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
-                        int charCount = maxDepth;
+                        int charCount = maxCodePointCount;
                         while (-1 != nextChar && --charCount > 0) {
-                            outWord[++wordPos] = nextChar;
+                            outCodePoints[++wordPos] = nextChar;
                             nextChar = getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
                         }
                     }

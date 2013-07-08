@@ -18,10 +18,8 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/dictionary.h"
 
 namespace latinime {
@@ -29,23 +27,22 @@ namespace latinime {
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
-    mMultiWordCostMultiplier = mDictionary->getBinaryDictionaryInfo()
-            ->getHeader()->getMultiWordCostMultiplier();
+    const BinaryDictionaryInfo *const binaryDictionaryInfo =
+            mDictionary->getBinaryDictionaryInfo();
+    mMultiWordCostMultiplier = binaryDictionaryInfo->getHeader()->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWord) {
         mPrevWordPos = NOT_VALID_WORD;
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
-    mPrevWordPos = BinaryFormat::getTerminalPosition(
-            dictionary->getBinaryDictionaryInfo()->getDictRoot(), prevWord,
-            prevWordLength, false /* forceLowerCaseSearch */);
+    mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+            binaryDictionaryInfo, prevWord, prevWordLength, false /* forceLowerCaseSearch */);
     if (mPrevWordPos == NOT_VALID_WORD) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
-        mPrevWordPos = BinaryFormat::getTerminalPosition(
-                dictionary->getBinaryDictionaryInfo()->getDictRoot(), prevWord,
-                prevWordLength, true /* forceLowerCaseSearch */);
+        mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+                binaryDictionaryInfo, prevWord, prevWordLength, true /* forceLowerCaseSearch */);
     }
 }
 
