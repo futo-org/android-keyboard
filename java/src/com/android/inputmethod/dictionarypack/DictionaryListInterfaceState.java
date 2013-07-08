@@ -80,4 +80,8 @@ public class DictionaryListInterfaceState {
         mViewCache.add(view);
         return view;
     }
+
+    public void removeFromCache(final View view) {
+        mViewCache.remove(view);
+    }
 }

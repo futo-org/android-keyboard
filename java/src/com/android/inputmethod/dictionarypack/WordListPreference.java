@@ -224,7 +224,7 @@ public final class WordListPreference extends Preference {
                 (ButtonSwitcher)view.findViewById(R.id.wordlist_button_switcher);
         // We need to clear the state of the button switcher, because we reuse views; if we didn't
         // reset it would animate from whatever its old state was.
-        buttonSwitcher.reset();
+        buttonSwitcher.reset(mInterfaceState);
         if (mInterfaceState.isOpen(mWordlistId)) {
             // The button is open.
             final int previousStatus = mInterfaceState.getStatus(mWordlistId);
