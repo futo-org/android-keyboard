@@ -196,7 +196,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords) {
         asyncReloadDictionaryIfRequired();
-        if (mLocalDictionaryController.readLock().tryLock()) {
+        // Write lock because getSuggestions in native updates session status.
+        if (mLocalDictionaryController.writeLock().tryLock()) {
             try {
                 final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
                         mDictionaryWriter.getSuggestions(composer, prevWord, proximityInfo,
@@ -217,7 +218,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     return inMemDictSuggestion;
                 }
             } finally {
-                mLocalDictionaryController.readLock().unlock();
+                mLocalDictionaryController.writeLock().unlock();
             }
         }
         return null;
