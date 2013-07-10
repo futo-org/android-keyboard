@@ -559,9 +559,6 @@ public final class BinaryDictInputOutput {
             } else if (null != group.mChildren) {
                 final int offsetBasePoint = groupSize + node.mCachedAddress + size;
                 final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
-                // assign my address to children's parent address
-                group.mChildren.mCachedParentAddress = group.mCachedAddress
-                        - group.mChildren.mCachedAddress;
                 if (formatOptions.mSupportsDynamicUpdate) {
                     groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
                 } else {
@@ -621,6 +618,26 @@ public final class BinaryDictInputOutput {
     }
 
     /**
+     * Compute the cached parent addresses after all has been updated.
+     *
+     * The parent addresses are used by some binary formats at write-to-disk time. Not all formats
+     * need them. In particular, version 2 does not need them, and version 3 does.
+     *
+     * @param flatNodes the flat array of nodes to fill in
+     */
+    private static void computeParentAddresses(final ArrayList<Node> flatNodes) {
+        for (final Node node : flatNodes) {
+            for (CharGroup group : node.mData) {
+                if (null != group.mChildren) {
+                    // assign my address to children's parent address
+                    group.mChildren.mCachedParentAddress = group.mCachedAddress
+                            - group.mChildren.mCachedAddress;
+                }
+            }
+        }
+    }
+
+    /**
      * Compute the addresses and sizes of an ordered node array.
      *
      * This method takes a node array and will update its cached address and size values
@@ -660,6 +677,9 @@ public final class BinaryDictInputOutput {
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
 
+        if (formatOptions.mSupportsDynamicUpdate) {
+            computeParentAddresses(flatNodes);
+        }
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
         MakedictLog.i("Compression complete in " + passes + " passes.");
         MakedictLog.i("After address compression : "
