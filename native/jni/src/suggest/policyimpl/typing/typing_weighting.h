@@ -169,12 +169,7 @@ class TypingWeighting : public Weighting {
 
     float getTerminalLanguageCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, const float dicNodeLanguageImprobability) const {
-        // We promote exact matches here to prevent them from being pruned. The final score of
-        // exact match nodes might be demoted later in Suggest::outputSuggestions if there are
-        // multiple exact matches.
-        const float languageImprobability = (dicNode->isExactMatch()) ?
-                0.0f : dicNodeLanguageImprobability;
-        return languageImprobability * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
+        return dicNodeLanguageImprobability * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 
     AK_FORCE_INLINE bool needsToNormalizeCompoundDistance() const {
