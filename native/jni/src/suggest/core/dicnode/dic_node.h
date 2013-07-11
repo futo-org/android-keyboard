@@ -504,6 +504,12 @@ class DicNode {
         if (!right->isUsed()) {
             return false;
         }
+        // Promote exact matches to prevent them from being pruned.
+        const bool leftExactMatch = isExactMatch();
+        const bool rightExactMatch = right->isExactMatch();
+        if (leftExactMatch != rightExactMatch) {
+            return leftExactMatch;
+        }
         const float diff =
                 right->getNormalizedCompoundDistance() - getNormalizedCompoundDistance();
         static const float MIN_DIFF = 0.000001f;
