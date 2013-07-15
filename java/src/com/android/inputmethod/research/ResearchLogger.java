@@ -1760,7 +1760,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void suddenJumpingTouchEventHandler_onTouchEvent(final MotionEvent me) {
         if (me != null) {
             getInstance().enqueueEvent(LOGSTATEMENT_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT,
-                    me.toString());
+                    MotionEvent.obtain(me));
         }
     }
 
