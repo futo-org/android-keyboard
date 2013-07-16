@@ -292,7 +292,7 @@ static inline void prof_out(void) {
 // of the binary dictionary where a {key,value} string pair scheme is used.
 #define LARGEST_INT_DIGIT_COUNT 11
 
-#define NOT_VALID_WORD (-99)
+#define NOT_A_VALID_WORD_POS (-99)
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
 #define NOT_A_COORDINATE (-1)

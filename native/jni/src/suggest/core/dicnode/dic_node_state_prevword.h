@@ -29,7 +29,7 @@ class DicNodeStatePrevWord {
  public:
     AK_FORCE_INLINE DicNodeStatePrevWord()
             : mPrevWordCount(0), mPrevWordLength(0), mPrevWordStart(0), mPrevWordProbability(0),
-              mPrevWordNodePos(0) {
+              mPrevWordNodePos(NOT_A_VALID_WORD_POS) {
         memset(mPrevWord, 0, sizeof(mPrevWord));
         memset(mPrevSpacePositions, 0, sizeof(mPrevSpacePositions));
     }
@@ -41,7 +41,7 @@ class DicNodeStatePrevWord {
         mPrevWordCount = 0;
         mPrevWordStart = 0;
         mPrevWordProbability = -1;
-        mPrevWordNodePos = NOT_VALID_WORD;
+        mPrevWordNodePos = NOT_A_VALID_WORD_POS;
         memset(mPrevSpacePositions, 0, sizeof(mPrevSpacePositions));
     }
 
