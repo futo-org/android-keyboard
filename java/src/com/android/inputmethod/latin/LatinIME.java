@@ -2677,22 +2677,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    private void hapticAndAudioFeedback(final int code, final boolean isRepeatKey) {
+        final MainKeyboardView keyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (keyboardView != null && keyboardView.isInSlidingKeyInput()) {
+            // No need to feedback while sliding input.
+            return;
+        }
+        if (isRepeatKey && code == Constants.CODE_DELETE && !mConnection.canDeleteCharacters()) {
+            // No need to feedback when repeating delete key will have no effect.
+            return;
+        }
+        AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(code, keyboardView);
+    }
+
     // Callback of the {@link KeyboardActionListener}. This is called when a key is depressed;
     // release matching call is {@link #onReleaseKey(int,boolean)} below.
     @Override
-    public void onPressKey(final int primaryCode, final boolean isSinglePointer) {
+    public void onPressKey(final int primaryCode, final boolean isRepeatKey,
+            final boolean isSinglePointer) {
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer);
-        final MainKeyboardView mKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        final boolean noFeedback = (mKeyboardView != null && mKeyboardView.isInSlidingKeyInput())
-                || (primaryCode == Constants.CODE_DELETE && !mConnection.canDeleteCharacters());
-        if (!noFeedback) {
-            AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
-                    primaryCode, mKeyboardView);
-        }
+        hapticAndAudioFeedback(primaryCode, isRepeatKey);
     }
 
     // Callback of the {@link KeyboardActionListener}. This is called when a key is released;
-    // press matching call is {@link #onPressKey(int,boolean)} above.
+    // press matching call is {@link #onPressKey(int,boolean,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
