@@ -68,7 +68,8 @@
             latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyLabel="z"
-            latin:moreKeys="!text/more_keys_for_z" />
+            latin:keyLabelFlags="hasPopupHint"
+            latin:moreKeys="!text/more_keys_for_punctuation,!text/more_keys_for_z" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
