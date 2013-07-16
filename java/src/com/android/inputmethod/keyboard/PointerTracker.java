@@ -456,7 +456,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             return false;
         }
         if (key.isEnabled()) {
-            mListener.onPressKey(key.mCode, getActivePointerTrackerCount() == 1);
+            mListener.onPressKey(key.mCode, false /* isRepeatKey */,
+                    getActivePointerTrackerCount() == 1);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
             mTimerProxy.startTypingStateTimer(key);
