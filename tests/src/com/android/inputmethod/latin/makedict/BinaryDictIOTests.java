@@ -206,6 +206,14 @@ public class BinaryDictIOTests extends AndroidTestCase {
         }
     }
 
+//    The following is useful to dump the dictionary into a textual file, but it can't compile
+//    on-device, so it's commented out.
+//    private void dumpToCombinedFileForDebug(final FusionDictionary dict, final String filename)
+//            throws IOException {
+//        com.android.inputmethod.latin.dicttool.CombinedInputOutput.writeDictionaryCombined(
+//                new java.io.FileWriter(new File(filename)), dict);
+//    }
+
     private long timeWritingDictToFile(final File file, final FusionDictionary dict,
             final FormatSpec.FormatOptions formatOptions) {
 
@@ -215,6 +223,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final FileOutputStream out = new FileOutputStream(file);
 
             now = System.currentTimeMillis();
+            // If you need to dump the dict to a textual file, uncomment the line below and the
+            // function above
+            // dumpToCombinedFileForDebug(file, "/tmp/foo");
             BinaryDictInputOutput.writeDictionaryBinary(out, dict, formatOptions);
             diff = System.currentTimeMillis() - now;
 
