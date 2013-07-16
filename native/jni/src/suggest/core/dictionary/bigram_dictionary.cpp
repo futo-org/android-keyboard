@@ -153,7 +153,7 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     if (0 >= prevWordLength) return 0;
     int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
-    if (NOT_VALID_WORD == pos) return 0;
+    if (NOT_A_VALID_WORD_POS == pos) return 0;
     return BinaryFormat::getBigramListPositionForWordPosition(
             mBinaryDictionaryInfo->getDictRoot(), pos);
 }
@@ -181,7 +181,7 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
     if (0 == pos) return false;
     int nextWordPos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, word1, length1, false /* forceLowerCaseSearch */);
-    if (NOT_VALID_WORD == nextWordPos) return false;
+    if (NOT_A_VALID_WORD_POS == nextWordPos) return false;
 
     for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
             bigramsIt.hasNext(); /* no-op */) {
