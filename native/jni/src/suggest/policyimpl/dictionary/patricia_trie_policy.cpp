@@ -33,11 +33,13 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
     // TODO: Move children creating methods form DicNodeUtils.
 }
 
-void PatriciaTriePolicy::getWordAtPosition(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const int terminalNodePos, const int maxDepth, int *const outWord,
+int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const int nodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    BinaryFormat::getWordAtAddress(binaryDictionaryInfo->getDictRoot(), terminalNodePos,
-            maxDepth, outWord, outUnigramProbability);
+    return BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointCount(
+            binaryDictionaryInfo->getDictRoot(), nodePos,
+            maxCodePointCount, outCodePoints, outUnigramProbability);
 }
 
 int PatriciaTriePolicy::getTerminalNodePositionOfWord(

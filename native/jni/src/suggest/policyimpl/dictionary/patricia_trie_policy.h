@@ -36,8 +36,9 @@ class PatriciaTriePolicy : public DictionaryStructurePolicy {
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
 
-    void getWordAtPosition(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int terminalNodePos, const int maxDepth, int *const outWord,
+    int getCodePointsAndProbabilityAndReturnCodePointCount(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
     int getTerminalNodePositionOfWord(
