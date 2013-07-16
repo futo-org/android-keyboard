@@ -216,11 +216,40 @@ public final class BinaryDictionary extends Dictionary {
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
     // calls when checking for changes in an entire dictionary.
-    public boolean isValidBigram(final String word1, final String word2) {
-        if (TextUtils.isEmpty(word1) || TextUtils.isEmpty(word2)) return false;
+    public boolean isValidBigram(final String word0, final String word1) {
+        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) return false;
+        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
-        final int[] codePoints2 = StringUtils.toCodePointArray(word2);
-        return isValidBigramNative(mNativeDict, codePoints1, codePoints2);
+        return isValidBigramNative(mNativeDict, codePoints0, codePoints1);
+    }
+
+    // Add a unigram entry to binary dictionary in native code.
+    public void addUnigramWord(final String word, final int probability) {
+        if (TextUtils.isEmpty(word)) {
+            return;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
+        addUnigramWordNative(mNativeDict, codePoints, probability);
+    }
+
+    // Add a bigram entry to binary dictionary in native code.
+    public void addBigramWords(final String word0, final String word1, final int probability) {
+        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
+            return;
+        }
+        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability);
+    }
+
+    // Remove a bigram entry form binary dictionary in native code.
+    public void removeBigramWords(final String word0, final String word1) {
+        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
+            return;
+        }
+        final int[] codePoints0 = StringUtils.toCodePointArray(word0);
+        final int[] codePoints1 = StringUtils.toCodePointArray(word1);
+        removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
     }
 
     @Override
