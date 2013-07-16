@@ -47,6 +47,7 @@ public class ButtonSwitcher extends FrameLayout {
     private Button mInstallButton;
     private Button mCancelButton;
     private Button mDeleteButton;
+    private DictionaryListInterfaceState mInterfaceState;
     private OnClickListener mOnClickListener;
 
     public ButtonSwitcher(Context context, AttributeSet attrs) {
@@ -57,9 +58,10 @@ public class ButtonSwitcher extends FrameLayout {
         super(context, attrs, defStyle);
     }
 
-    public void reset() {
+    public void reset(final DictionaryListInterfaceState interfaceState) {
         mStatus = NOT_INITIALIZED;
         mAnimateToStatus = NOT_INITIALIZED;
+        mInterfaceState = interfaceState;
     }
 
     @Override
@@ -153,6 +155,7 @@ public class ButtonSwitcher extends FrameLayout {
     private ViewPropertyAnimator animateButton(final View button, final int direction) {
         final float outerX = getWidth();
         final float innerX = button.getX() - button.getTranslationX();
+        mInterfaceState.removeFromCache((View)getParent());
         if (ANIMATION_IN == direction) {
             button.setClickable(true);
             return button.animate().translationX(0);
