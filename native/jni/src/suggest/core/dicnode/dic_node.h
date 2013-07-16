@@ -112,7 +112,7 @@ class DicNode {
         mIsUsed = true;
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(
-                NOT_A_DICT_POS, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
+                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
                 NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
                 false /* isTerminal */, true /* hasChildren */,
                 false /* isBlacklistedOrNotAWord */, 0 /* depth */, 0 /* terminalDepth */);
@@ -125,7 +125,7 @@ class DicNode {
         mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(
-                NOT_A_DICT_POS, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
+                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
                 NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
                 false /* isTerminal */, true /* hasChildren */,
                 false /* isBlacklistedOrNotAWord */,  0 /* depth */, 0 /* terminalDepth */);
@@ -231,7 +231,7 @@ class DicNode {
     }
 
     bool isFirstWord() const {
-        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos() == NOT_VALID_WORD;
+        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos() == NOT_A_VALID_WORD_POS;
     }
 
     bool isCompletion(const int inputSize) const {

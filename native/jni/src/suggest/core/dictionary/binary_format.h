@@ -255,7 +255,7 @@ inline bool BinaryFormat::hasChildrenInFlags(const uint8_t flags) {
 }
 
 // This function gets the byte position of the last chargroup of the exact matching word in the
-// dictionary. If no match is found, it returns NOT_VALID_WORD.
+// dictionary. If no match is found, it returns NOT_A_VALID_WORD_POS.
 AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
         const int *const inWord, const int length, const bool forceLowerCaseSearch) {
     int pos = 0;
@@ -264,22 +264,22 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
     while (true) {
         // If we already traversed the tree further than the word is long, there means
         // there was no match (or we would have found it).
-        if (wordPos >= length) return NOT_VALID_WORD;
+        if (wordPos >= length) return NOT_A_VALID_WORD_POS;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
         const int wChar = forceLowerCaseSearch
                 ? CharUtils::toLowerCase(inWord[wordPos]) : inWord[wordPos];
         while (true) {
             // If there are no more character groups in this node, it means we could not
             // find a matching character for this depth, therefore there is no match.
-            if (0 >= charGroupCount) return NOT_VALID_WORD;
+            if (0 >= charGroupCount) return NOT_A_VALID_WORD_POS;
             const int charGroupPos = pos;
             const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
             int character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
             if (character == wChar) {
                 // This is the correct node. Only one character group may start with the same
                 // char within a node, so either we found our match in this node, or there is
-                // no match and we can return NOT_VALID_WORD. So we will check all the characters
-                // in this character group indeed does match.
+                // no match and we can return NOT_A_VALID_WORD_POS. So we will check all the
+                // characters in this character group indeed does match.
                 if (FLAG_HAS_MULTIPLE_CHARS & flags) {
                     character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
                     while (NOT_A_CODE_POINT != character) {
@@ -288,8 +288,8 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
                         // character that does not match, as explained above, it means the word is
                         // not in the dictionary (by virtue of this chargroup being the only one to
                         // match the word on the first character, but not matching the whole word).
-                        if (wordPos >= length) return NOT_VALID_WORD;
-                        if (inWord[wordPos] != character) return NOT_VALID_WORD;
+                        if (wordPos >= length) return NOT_A_VALID_WORD_POS;
+                        if (inWord[wordPos] != character) return NOT_A_VALID_WORD_POS;
                         character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
                     }
                 }
@@ -305,7 +305,7 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
                     pos = BinaryFormat::skipProbability(FLAG_IS_TERMINAL, pos);
                 }
                 if (FLAG_GROUP_ADDRESS_TYPE_NOADDRESS == (MASK_GROUP_ADDRESS_TYPE & flags)) {
-                    return NOT_VALID_WORD;
+                    return NOT_A_VALID_WORD_POS;
                 }
                 // We have children and we are still shorter than the word we are searching for, so
                 // we need to traverse children. Put the pointer on the children position, and
@@ -474,7 +474,7 @@ AK_FORCE_INLINE int BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointC
 
 AK_FORCE_INLINE int BinaryFormat::getBigramListPositionForWordPosition(
         const uint8_t *const root, int position) {
-    if (NOT_VALID_WORD == position) return 0;
+    if (NOT_A_VALID_WORD_POS == position) return 0;
     const uint8_t flags = getFlagsAndForwardPointer(root, &position);
     if (!(flags & FLAG_HAS_BIGRAMS)) return 0;
     if (flags & FLAG_HAS_MULTIPLE_CHARS) {

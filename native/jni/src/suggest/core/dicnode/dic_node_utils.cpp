@@ -179,8 +179,9 @@ namespace latinime {
     const int unigramProbability = node->getProbability();
     const int wordPos = node->getPos();
     const int prevWordPos = node->getPrevWordPos();
-    if (NOT_VALID_WORD == wordPos || NOT_VALID_WORD == prevWordPos) {
-        // Note: Normally wordPos comes from the dictionary and should never equal NOT_VALID_WORD.
+    if (NOT_A_VALID_WORD_POS == wordPos || NOT_A_VALID_WORD_POS == prevWordPos) {
+        // Note: Normally wordPos comes from the dictionary and should never equal
+        // NOT_A_VALID_WORD_POS.
         return ProbabilityUtils::backoff(unigramProbability);
     }
     if (multiBigramMap) {

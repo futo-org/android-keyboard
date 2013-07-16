@@ -89,7 +89,7 @@ int Dictionary::getProbability(const int *word, int length) const {
             mBinaryDictionaryInfo.getStructurePolicy();
     int pos = structurePolicy->getTerminalNodePositionOfWord(&mBinaryDictionaryInfo, word, length,
             false /* forceLowerCaseSearch */);
-    if (NOT_VALID_WORD == pos) {
+    if (NOT_A_VALID_WORD_POS == pos) {
         return NOT_A_PROBABILITY;
     }
     return structurePolicy->getUnigramProbability(&mBinaryDictionaryInfo, pos);
