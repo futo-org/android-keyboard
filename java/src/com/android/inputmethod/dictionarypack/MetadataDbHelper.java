@@ -199,6 +199,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             final ContentValues defaultMetadataValues = new ContentValues();
             defaultMetadataValues.put(CLIENT_CLIENT_ID_COLUMN, "");
             defaultMetadataValues.put(CLIENT_METADATA_URI_COLUMN, defaultMetadataUri);
+            defaultMetadataValues.put(CLIENT_PENDINGID_COLUMN, UpdateHandler.NOT_AN_ID);
             db.insert(CLIENT_TABLE_NAME, null, defaultMetadataValues);
         }
     }
@@ -358,21 +359,21 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get the metadata download ID for a client ID.
+     * Get the metadata download ID for a metadata URI.
      *
-     * This will retrieve the download ID for the metadata file associated with a client ID.
-     * If there is no metadata download in progress for this client, it will return NOT_AN_ID.
+     * This will retrieve the download ID for the metadata file that has the passed URI.
+     * If this URI is not being downloaded right now, it will return NOT_AN_ID.
      *
      * @param context a context instance to open the database on
-     * @param clientId the client ID to retrieve the metadata download ID of
+     * @param uri the URI to retrieve the metadata download ID of
      * @return the metadata download ID, or NOT_AN_ID if no download is in progress
      */
-    public static long getMetadataDownloadIdForClient(final Context context,
-            final String clientId) {
+    public static long getMetadataDownloadIdForURI(final Context context,
+            final String uri) {
         SQLiteDatabase defaultDb = getDb(context, null);
         final Cursor cursor = defaultDb.query(CLIENT_TABLE_NAME,
                 new String[] { CLIENT_PENDINGID_COLUMN },
-                CLIENT_CLIENT_ID_COLUMN + " = ?", new String[] { clientId },
+                CLIENT_METADATA_URI_COLUMN + " = ?", new String[] { uri },
                 null, null, null, null);
         try {
             if (!cursor.moveToFirst()) return UpdateHandler.NOT_AN_ID;
@@ -782,6 +783,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                     " but the values " + "contain a different ID : ", valuesClientId);
             return;
         }
+        // Default value for a pending ID is NOT_AN_ID
+        values.put(CLIENT_PENDINGID_COLUMN, UpdateHandler.NOT_AN_ID);
         final SQLiteDatabase defaultDb = getDb(context, "");
         if (-1 == defaultDb.insert(CLIENT_TABLE_NAME, null, values)) {
             defaultDb.update(CLIENT_TABLE_NAME, values,

@@ -272,23 +272,22 @@ public final class UpdateHandler {
     }
 
     /**
-     * Cancels a pending update, if there is one.
+     * Cancels downloading a file, if there is one for this URI.
      *
-     * If none, this is a no-op.
+     * If we are not currently downloading the file at this URI, this is a no-op.
      *
      * @param context the context to open the database on
-     * @param clientId the id of the client
+     * @param metadataUri the URI to cancel
      * @param manager an instance of DownloadManager
      */
     private static void cancelUpdateWithDownloadManager(final Context context,
-            final String clientId, final DownloadManager manager) {
+            final String metadataUri, final DownloadManager manager) {
         synchronized (sSharedIdProtector) {
             final long metadataDownloadId =
-                    MetadataDbHelper.getMetadataDownloadIdForClient(context, clientId);
+                    MetadataDbHelper.getMetadataDownloadIdForURI(context, metadataUri);
             if (NOT_AN_ID == metadataDownloadId) return;
             manager.remove(metadataDownloadId);
-            writeMetadataDownloadId(context,
-                    MetadataDbHelper.getMetadataUriAsString(context, clientId), NOT_AN_ID);
+            writeMetadataDownloadId(context, metadataUri, NOT_AN_ID);
         }
         // Consider a cancellation as a failure. As such, inform listeners that the download
         // has failed.
@@ -298,10 +297,10 @@ public final class UpdateHandler {
     }
 
     /**
-     * Cancels a pending update, if there is one.
+     * Cancels a pending update for this client, if there is one.
      *
-     * If there is none, this is a no-op. This is a helper method that gets the
-     * download manager service.
+     * If we are not currently updating metadata for this client, this is a no-op. This is a helper
+     * method that gets the download manager service and the metadata URI for this client.
      *
      * @param context the context, to get an instance of DownloadManager
      * @param clientId the ID of the client we want to cancel the update of
@@ -309,7 +308,8 @@ public final class UpdateHandler {
     public static void cancelUpdate(final Context context, final String clientId) {
         final DownloadManager manager =
                     (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        if (null != manager) cancelUpdateWithDownloadManager(context, clientId, manager);
+        final String metadataUri = MetadataDbHelper.getMetadataUriAsString(context, clientId);
+        if (null != manager) cancelUpdateWithDownloadManager(context, metadataUri, manager);
     }
 
     /**
@@ -773,7 +773,7 @@ public final class UpdateHandler {
                     // We may come here if there is a new word list that we can't handle.
                     Log.i(TAG, "Can't handle word list with id '" + id + "' because it has format"
                             + " version " + metadataInfo.mFormatVersion + " and the maximum version"
-                            + "we can handle is " + MAXIMUM_SUPPORTED_FORMAT_VERSION);
+                            + " we can handle is " + MAXIMUM_SUPPORTED_FORMAT_VERSION);
                 }
                 continue;
             } else if (null == currentInfo) {
