@@ -26,9 +26,10 @@ public interface KeyboardActionListener {
      *
      * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid key,
      *            the value will be zero.
+     * @param isRepeatKey true if pressing has occurred while key repeat input.
      * @param isSinglePointer true if pressing has occurred while no other key is being pressed.
      */
-    public void onPressKey(int primaryCode, boolean isSinglePointer);
+    public void onPressKey(int primaryCode, boolean isRepeatKey, boolean isSinglePointer);
 
     /**
      * Called when the user releases a key. This is sent after the {@link #onCodeInput} is called.
@@ -102,7 +103,7 @@ public interface KeyboardActionListener {
 
     public static class Adapter implements KeyboardActionListener {
         @Override
-        public void onPressKey(int primaryCode, boolean isSinglePointer) {}
+        public void onPressKey(int primaryCode, boolean isRepeatKey, boolean isSinglePointer) {}
         @Override
         public void onReleaseKey(int primaryCode, boolean withSliding) {}
         @Override

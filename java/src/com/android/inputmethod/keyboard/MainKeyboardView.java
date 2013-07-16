@@ -246,7 +246,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                     startTypingStateTimer(currentKey);
                     final KeyboardActionListener listener =
                             keyboardView.getKeyboardActionListener();
-                    listener.onPressKey(code, true /* isSinglePointer */);
+                    listener.onPressKey(code, true /* isRepeatKey */, true /* isSinglePointer */);
                     listener.onCodeInput(code,
                             Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
                 }
@@ -987,7 +987,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key.hasNoPanelAutoMoreKey()) {
             final int moreKeyCode = key.mMoreKeys[0].mCode;
             tracker.onLongPressed();
-            listener.onPressKey(moreKeyCode, true /* isSinglePointer */);
+            listener.onPressKey(moreKeyCode, false /* isRepeatKey */, true /* isSinglePointer */);
             listener.onCodeInput(moreKeyCode,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
             listener.onReleaseKey(moreKeyCode, false /* withSliding */);
