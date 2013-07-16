@@ -50,8 +50,9 @@ class DictionaryStructurePolicy {
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const = 0;
 
-    virtual void getWordAtPosition(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int terminalNodePos, const int maxDepth, int *const outWord,
+    virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int nodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
     virtual int getTerminalNodePositionOfWord(
