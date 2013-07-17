@@ -17,7 +17,6 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 BUILD_TOP := ../../../../..
-FRAMEWORK_TOP := $(BUILD_TOP)/frameworks/base/core/java
 LATINIME_DIR := $(BUILD_TOP)/packages/inputmethods/LatinIME
 LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_DIR)/java/src/com/android/inputmethod
 LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
@@ -28,9 +27,6 @@ DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_DIR)/tests/src/com/android/inputmethod/latin/makedict/
 
 USED_TARGETTED_UTILS := \
-        $(FRAMEWORK_TOP)/android/util/ContainerHelpers.java \
-        $(FRAMEWORK_TOP)/android/util/SparseArray.java \
-        $(FRAMEWORK_TOP)/com/android/internal/util/ArrayUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java
 
