@@ -21,7 +21,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -67,7 +66,6 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
@@ -487,11 +485,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final boolean hasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         mHasDistinctMultitouch = hasDistinctMultitouch && !forceNonDistinctMultitouch;
-        final Resources res = getResources();
-        final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-                ResourceUtils.getDeviceOverrideValue(
-                        res, R.array.phantom_sudden_move_event_device_list));
-        PointerTracker.init(needsPhantomSuddenMoveEventHack);
+        PointerTracker.init(getResources());
         mPreviewPlacerView = new PreviewPlacerView(context, attrs);
 
         final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(

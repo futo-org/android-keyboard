@@ -16,8 +16,10 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -34,6 +36,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
@@ -164,8 +167,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // Move this threshold to resource.
     // TODO: Device specific parameter would be better for device specific hack?
     private static final float PHANTOM_SUDDEN_MOVE_THRESHOLD = 0.25f; // in keyWidth
-    // This hack might be device specific.
-    private static final boolean sNeedsProximateBogusDownMoveUpEventHack = true;
+    // This hack is applied to certain classes of tablets.
+    // See {@link #needsProximateBogusDownMoveUpEventHack(Resources)}.
+    private static boolean sNeedsProximateBogusDownMoveUpEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
     private static final PointerTrackerQueue sPointerTrackerQueue = new PointerTrackerQueue();
@@ -334,8 +338,34 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     private final GestureStrokeWithPreviewPoints mGestureStrokeWithPreviewPoints;
 
-    public static void init(final boolean needsPhantomSuddenMoveEventHack) {
-        sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
+    private static final int SMALL_TABLET_SMALLEST_WIDTH = 600; // dp
+    private static final int LARGE_TABLET_SMALLEST_WIDTH = 768; // dp
+
+    private static boolean needsProximateBogusDownMoveUpEventHack(final Resources res) {
+        // The proximate bogus down move up event hack is needed for a device such like,
+        // 1) is large tablet, or 2) is small tablet and the screen density is less than hdpi.
+        // Though it seems odd to use screen density as criteria of the quality of the touch
+        // screen, the small table that has a less density screen than hdpi most likely has been
+        // made with the touch screen that needs the hack.
+        final int sw = res.getConfiguration().smallestScreenWidthDp;
+        final boolean isLargeTablet = (sw >= LARGE_TABLET_SMALLEST_WIDTH);
+        final boolean isSmallTablet =
+                (sw >= SMALL_TABLET_SMALLEST_WIDTH && sw < LARGE_TABLET_SMALLEST_WIDTH);
+        final int densityDpi = res.getDisplayMetrics().densityDpi;
+        final boolean hasLowDensityScreen = (densityDpi < DisplayMetrics.DENSITY_HIGH);
+        final boolean needsTheHack = isLargeTablet || (isSmallTablet && hasLowDensityScreen);
+        if (DEBUG_MODE) {
+            Log.d(TAG, "needsProximateBogusDownMoveUpEventHack=" + needsTheHack
+                    + " smallestScreenWidthDp=" + sw + " densityDpi=" + densityDpi);
+        }
+        return needsTheHack;
+    }
+
+    public static void init(final Resources res) {
+        sNeedsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
+                ResourceUtils.getDeviceOverrideValue(
+                        res, R.array.phantom_sudden_move_event_device_list));
+        sNeedsProximateBogusDownMoveUpEventHack = needsProximateBogusDownMoveUpEventHack(res);
         sParams = PointerTrackerParams.DEFAULT;
         sGestureStrokeParams = GestureStrokeParams.DEFAULT;
         sGesturePreviewParams = GestureStrokePreviewParams.DEFAULT;
