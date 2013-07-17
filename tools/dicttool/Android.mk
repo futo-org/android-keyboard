@@ -28,6 +28,7 @@ DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_DIR)/tests/src/com/android/inputmethod/latin/makedict/
 
 USED_TARGETTED_UTILS := \
+        $(FRAMEWORK_TOP)/android/util/ContainerHelpers.java \
         $(FRAMEWORK_TOP)/android/util/SparseArray.java \
         $(FRAMEWORK_TOP)/com/android/internal/util/ArrayUtils.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java \
