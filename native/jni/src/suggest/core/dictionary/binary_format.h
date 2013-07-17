@@ -73,8 +73,11 @@ class BinaryFormat {
             const int length, const bool forceLowerCaseSearch);
     static int getCodePointsAndProbabilityAndReturnCodePointCount(
             const uint8_t *const root, const int nodePos, const int maxCodePointCount,
-            int *outCodePoints, int *outUnigramProbability);
-    static int getBigramListPositionForWordPosition(const uint8_t *const root, int position);
+            int *const outCodePoints, int *const outUnigramProbability);
+    static int getBigramListPositionForWordPosition(const uint8_t *const root,
+            const int nodePosition);
+    static int getShortcutListPositionForWordPosition(const uint8_t *const root,
+            const int nodePosition);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
@@ -344,8 +347,8 @@ AK_FORCE_INLINE int BinaryFormat::getTerminalPosition(const uint8_t *const root,
  * Return value : the length of the word, of 0 if the word was not found.
  */
 AK_FORCE_INLINE int BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const uint8_t *const root, const int nodePos,
-        const int maxCodePointCount, int *outCodePoints, int *outUnigramProbability) {
+        const uint8_t *const root, const int nodePos, const int maxCodePointCount,
+        int *const outCodePoints, int *const outUnigramProbability) {
     int pos = 0;
     int wordPos = 0;
 
@@ -473,10 +476,11 @@ AK_FORCE_INLINE int BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointC
 }
 
 AK_FORCE_INLINE int BinaryFormat::getBigramListPositionForWordPosition(
-        const uint8_t *const root, int position) {
-    if (NOT_A_VALID_WORD_POS == position) return 0;
+        const uint8_t *const root, const int nodePosition) {
+    if (NOT_A_VALID_WORD_POS == nodePosition) return NOT_A_DICT_POS;
+    int position = nodePosition;
     const uint8_t flags = getFlagsAndForwardPointer(root, &position);
-    if (!(flags & FLAG_HAS_BIGRAMS)) return 0;
+    if (!(flags & FLAG_HAS_BIGRAMS)) return NOT_A_DICT_POS;
     if (flags & FLAG_HAS_MULTIPLE_CHARS) {
         position = skipOtherCharacters(root, position);
     } else {
@@ -485,6 +489,22 @@ AK_FORCE_INLINE int BinaryFormat::getBigramListPositionForWordPosition(
     position = skipProbability(flags, position);
     position = skipChildrenPosition(flags, position);
     position = skipShortcuts(root, flags, position);
+    return position;
+}
+
+AK_FORCE_INLINE int BinaryFormat::getShortcutListPositionForWordPosition(
+        const uint8_t *const root, const int nodePosition) {
+    if (NOT_A_VALID_WORD_POS == nodePosition) return NOT_A_DICT_POS;
+    int position = nodePosition;
+    const uint8_t flags = getFlagsAndForwardPointer(root, &position);
+    if (!(flags & FLAG_HAS_SHORTCUT_TARGETS)) return NOT_A_DICT_POS;
+    if (flags & FLAG_HAS_MULTIPLE_CHARS) {
+        position = skipOtherCharacters(root, position);
+    } else {
+        getCodePointAndForwardPointer(root, &position);
+    }
+    position = skipProbability(flags, position);
+    position = skipChildrenPosition(flags, position);
     return position;
 }
 

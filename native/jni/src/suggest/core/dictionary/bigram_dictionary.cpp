@@ -109,13 +109,13 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
-    if (0 == pos) {
+    if (NOT_A_DICT_POS == pos) {
         // If no bigrams for this exact word, search again in lower case.
         pos = getBigramListPositionForWord(prevWord, prevWordLength,
                 true /* forceLowerCaseSearch */);
     }
     // If still no bigrams, we really don't have them!
-    if (0 == pos) return 0;
+    if (NOT_A_DICT_POS == pos) return 0;
 
     int bigramCount = 0;
     int unigramProbability = 0;
@@ -154,8 +154,8 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
     if (NOT_A_VALID_WORD_POS == pos) return 0;
-    return BinaryFormat::getBigramListPositionForWordPosition(
-            mBinaryDictionaryInfo->getDictRoot(), pos);
+    return mBinaryDictionaryInfo->getStructurePolicy()->getBigramsPositionOfNode(
+            mBinaryDictionaryInfo, pos);
 }
 
 bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) const {
@@ -178,7 +178,7 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
         int length1) const {
     int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
-    if (0 == pos) return false;
+    if (NOT_A_DICT_POS == pos) return false;
     int nextWordPos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, word1, length1, false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == nextWordPos) return false;

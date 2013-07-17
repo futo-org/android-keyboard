@@ -22,8 +22,8 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/bloom_filter.h"
+#include "suggest/core/dictionary/probability_utils.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -67,11 +67,8 @@ class MultiBigramMap {
         ~BigramMap() {}
 
         void init(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) {
-            const int bigramsListPos = BinaryFormat::getBigramListPositionForWordPosition(
-                    binaryDictionaryInfo->getDictRoot(), nodePos);
-            if (0 == bigramsListPos) {
-                return;
-            }
+            const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
+                    getBigramsPositionOfNode(binaryDictionaryInfo, nodePos);
             for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
                     bigramsIt.hasNext(); /* no-op */) {
                 bigramsIt.next();
@@ -110,11 +107,8 @@ class MultiBigramMap {
     AK_FORCE_INLINE int readBigramProbabilityFromBinaryDictionary(
             const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos,
             const int nextWordPosition, const int unigramProbability) {
-        const int bigramsListPos = BinaryFormat::getBigramListPositionForWordPosition(
-                binaryDictionaryInfo->getDictRoot(), nodePos);
-        if (0 == bigramsListPos) {
-            return ProbabilityUtils::backoff(unigramProbability);
-        }
+        const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
+                getBigramsPositionOfNode(binaryDictionaryInfo, nodePos);
         for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
                 bigramsIt.hasNext(); /* no-op */) {
             bigramsIt.next();
