@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.Arrays;
 
@@ -36,8 +37,16 @@ public final class WordComposer {
     public static final int CAPS_MODE_AUTO_SHIFTED = 0x5;
     public static final int CAPS_MODE_AUTO_SHIFT_LOCKED = 0x7;
 
+    // An array of code points representing the characters typed so far.
+    // The array is limited to MAX_WORD_LENGTH code points, but mTypedWord extends past that
+    // and mCodePointSize can go past that. If mCodePointSize is greater than MAX_WORD_LENGTH,
+    // this just does not contain the associated code points past MAX_WORD_LENGTH.
     private int[] mPrimaryKeyCodes;
     private final InputPointers mInputPointers = new InputPointers(MAX_WORD_LENGTH);
+    // This is the typed word, as a StringBuilder. This has the same contents as mPrimaryKeyCodes
+    // but under a StringBuilder representation for ease of use, depending on what is more useful
+    // at any given time. However this is not limited in size, while mPrimaryKeyCodes is limited
+    // to MAX_WORD_LENGTH code points.
     private final StringBuilder mTypedWord;
     private String mAutoCorrection;
     private boolean mIsResumed;
@@ -55,6 +64,10 @@ public final class WordComposer {
     private int mDigitsCount;
     private int mCapitalizedMode;
     private int mTrailingSingleQuotesCount;
+    // This is the number of code points entered so far. This is not limited to MAX_WORD_LENGTH.
+    // In general, this contains the size of mPrimaryKeyCodes, except when this is greater than
+    // MAX_WORD_LENGTH in which case mPrimaryKeyCodes only contain the first MAX_WORD_LENGTH
+    // code points.
     private int mCodePointSize;
     private int mCursorPositionWithinWord;
 
@@ -204,11 +217,20 @@ public final class WordComposer {
     public boolean moveCursorByAndReturnIfInsideComposingWord(final int expectedMoveAmount) {
         int actualMoveAmountWithinWord = 0;
         int cursorPos = mCursorPositionWithinWord;
+        final int[] codePoints;
+        if (mCodePointSize >= MAX_WORD_LENGTH) {
+            // If we have more than MAX_WORD_LENGTH characters, we don't have everything inside
+            // mPrimaryKeyCodes. This should be rare enough that we can afford to just compute
+            // the array on the fly when this happens.
+            codePoints = StringUtils.toCodePointArray(mTypedWord.toString());
+        } else {
+            codePoints = mPrimaryKeyCodes;
+        }
         if (expectedMoveAmount >= 0) {
             // Moving the cursor forward for the expected amount or until the end of the word has
             // been reached, whichever comes first.
             while (actualMoveAmountWithinWord < expectedMoveAmount && cursorPos < mCodePointSize) {
-                actualMoveAmountWithinWord += Character.charCount(mPrimaryKeyCodes[cursorPos]);
+                actualMoveAmountWithinWord += Character.charCount(codePoints[cursorPos]);
                 ++cursorPos;
             }
         } else {
@@ -216,7 +238,7 @@ public final class WordComposer {
             // has been reached, whichever comes first.
             while (actualMoveAmountWithinWord > expectedMoveAmount && cursorPos > 0) {
                 --cursorPos;
-                actualMoveAmountWithinWord -= Character.charCount(mPrimaryKeyCodes[cursorPos]);
+                actualMoveAmountWithinWord -= Character.charCount(codePoints[cursorPos]);
             }
         }
         // If the actual and expected amounts differ, we crossed the start or the end of the word
