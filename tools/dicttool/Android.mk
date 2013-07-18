@@ -27,7 +27,7 @@ DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
         $(LATINIME_DIR)/tests/src/com/android/inputmethod/latin/makedict/
 
 USED_TARGETTED_UTILS := \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/ByteArrayWrapper.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayWrapper.java \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SOURCE_DIRECTORY))
