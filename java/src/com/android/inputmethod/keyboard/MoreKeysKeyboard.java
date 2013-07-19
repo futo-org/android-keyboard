@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
@@ -76,10 +75,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 final boolean isFixedColumnOrder, final int dividerWidth) {
             mIsFixedOrder = isFixedColumnOrder;
             if (parentKeyboardWidth / keyWidth < Math.min(numKeys, maxColumns)) {
-                throw new IllegalArgumentException(
-                        "Keyboard is too small to hold more keys keyboard: "
-                                + parentKeyboardWidth + " " + keyWidth + " "
-                                + numKeys + " " + maxColumns);
+                throw new IllegalArgumentException("Keyboard is too small to hold more keys: "
+                        + parentKeyboardWidth + " " + keyWidth + " " + numKeys + " " + maxColumns);
             }
             mDefaultKeyWidth = keyWidth;
             mDefaultRowHeight = rowHeight;
@@ -299,8 +296,12 @@ public final class MoreKeysKeyboard extends Keyboard {
                 width = keyPreviewDrawParams.mPreviewVisibleWidth;
                 height = keyPreviewDrawParams.mPreviewVisibleHeight + mParams.mVerticalGap;
             } else {
-                width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth,
-                        context.getResources());
+                final float padding = context.getResources().getDimension(
+                        R.dimen.more_keys_keyboard_key_horizontal_padding)
+                        + (parentKey.hasLabelsInMoreKeys()
+                                ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
+                width = getMaxKeyWidth(parentKey, mParams.mDefaultKeyWidth, padding,
+                        parentKeyboardView.newLabelPaint(parentKey));
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
             final int dividerWidth;
@@ -313,16 +314,12 @@ public final class MoreKeysKeyboard extends Keyboard {
             }
             mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
                     width, height, parentKey.mX + parentKey.mWidth / 2,
-                    parentKeyboardView.getMeasuredWidth(), parentKey.isFixedColumnOrderMoreKeys(),
+                    parentKeyboard.mId.mWidth, parentKey.isFixedColumnOrderMoreKeys(),
                     dividerWidth);
         }
 
-        private static int getMaxKeyWidth(final KeyboardView view, final Key parentKey,
-                final int minKeyWidth, final Resources res) {
-            final float padding =
-                    res.getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
-                    + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0.0f);
-            final Paint paint = view.newLabelPaint(parentKey);
+        private static int getMaxKeyWidth(final Key parentKey, final int minKeyWidth,
+                final float padding, final Paint paint) {
             int maxWidth = minKeyWidth;
             for (final MoreKeySpec spec : parentKey.mMoreKeys) {
                 final String label = spec.mLabel;
