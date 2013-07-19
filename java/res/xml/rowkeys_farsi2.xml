@@ -47,14 +47,14 @@
         latin:keyLabel="&#x0644;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0627: "ا" ARABIC LETTER ALEF
+         U+0671: "ٱ" ARABIC LETTER ALEF WASLA
          U+0621: "ء" ARABIC LETTER HAMZA
          U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE
          U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
-         U+0671: "ٱ" ARABIC LETTER ALEF WASLA
          U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW -->
     <Key
         latin:keyLabel="&#x0627;"
-        latin:moreKeys="&#x0621;,&#x0622;,&#x0623;,&#x0671;,&#x0625;"
+        latin:moreKeys="!fixedColumnOrder!5,&#x0671;,&#x0621;,&#x0622;,&#x0623;,&#x0625;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+062A: "ت" ARABIC LETTER TEH
          U+0629: "ة": ARABIC LETTER TEH MARBUTA -->
