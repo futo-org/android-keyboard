@@ -21,11 +21,11 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.ByteArrayWrapper;
 import com.android.inputmethod.latin.UserHistoryDictionaryBigramList;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 

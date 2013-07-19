@@ -45,10 +45,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
@@ -279,7 +279,7 @@ final class SuggestionStripLayoutHelper {
             // If we auto-correct, then the autocorrection is in slot 0 and the typed word
             // is in slot 1.
             if (positionInStrip == mCenterPositionInStrip
-                    && AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(
+                    && AutoCorrectionUtils.shouldBlockAutoCorrectionBySafetyNet(
                             suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION),
                             suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD))) {
                 return 0xFFFF0000;

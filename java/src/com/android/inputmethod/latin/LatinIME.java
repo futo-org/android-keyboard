@@ -77,6 +77,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
+import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CompletionInfoUtils;
@@ -2428,7 +2429,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
                         && mSuggest != null
                         // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !AutoCorrection.isValidWord(mSuggest, suggestion, true);
+                        && !AutoCorrectionUtils.isValidWord(mSuggest, suggestion, true);
 
         if (mSettings.isInternal()) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
@@ -2496,7 +2497,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
         // We don't add words with 0-frequency (assuming they would be profanity etc.).
-        final int maxFreq = AutoCorrection.getMaxFrequency(
+        final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
                 suggest.getUnigramDictionaries(), suggestion);
         if (maxFreq == 0) return null;
         userHistoryDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
