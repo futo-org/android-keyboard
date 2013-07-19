@@ -59,14 +59,14 @@
         latin:moreKeys="&#xFEFB;|&#x0644;&#x0627;,&#xFEF7;|&#x0644;&#x0623;,&#xFEF9;|&#x0644;&#x0625;,&#xFEF5;|&#x0644;&#x0622;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+0627: "ا" ARABIC LETTER ALEF
+         U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE
          U+0621: "ء" ARABIC LETTER HAMZA
-         U+0671: "ٱ" ARABIC LETTER ALEF WASLA
          U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
          U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
-         U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
+         U+0671: "ٱ" ARABIC LETTER ALEF WASLA -->
     <Key
         latin:keyLabel="&#x0627;"
-        latin:moreKeys="&#x0621;,&#x0671;,&#x0623;,&#x0625;,&#x0622;"
+        latin:moreKeys="!fixedColumnOrder!5,&#x0622;,&#x0621;,&#x0623;,&#x0625;,&#x0671;"
         latin:keyLabelFlags="fontNormal" />
     <!-- U+062A: "ت" ARABIC LETTER TEH -->
     <Key
