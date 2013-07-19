@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import android.text.TextUtils;
@@ -23,12 +27,12 @@ import android.util.Log;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class AutoCorrection {
+public final class AutoCorrectionUtils {
     private static final boolean DBG = LatinImeLogger.sDBG;
-    private static final String TAG = AutoCorrection.class.getSimpleName();
+    private static final String TAG = AutoCorrectionUtils.class.getSimpleName();
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 
-    private AutoCorrection() {
+    private AutoCorrectionUtils() {
         // Purely static class: can't instantiate.
     }
 
