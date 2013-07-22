@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.settings;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 
@@ -44,6 +44,10 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.android.inputmethod.latin.AdditionalSubtype;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 

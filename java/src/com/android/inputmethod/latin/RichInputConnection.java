@@ -27,6 +27,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.StringUtils;

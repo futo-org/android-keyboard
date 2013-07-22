@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.settings;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,6 +25,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.R;
 
 public final class SeekBarDialogPreference extends DialogPreference
         implements SeekBar.OnSeekBarChangeListener {

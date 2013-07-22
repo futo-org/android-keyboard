@@ -31,6 +31,7 @@ import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils.DictionaryInfo;
+import com.android.inputmethod.latin.utils.FileTransforms;
 import com.android.inputmethod.latin.utils.MetadataFileUriGetter;
 
 import java.io.BufferedInputStream;

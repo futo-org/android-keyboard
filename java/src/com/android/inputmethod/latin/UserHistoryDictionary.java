@@ -25,6 +25,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;

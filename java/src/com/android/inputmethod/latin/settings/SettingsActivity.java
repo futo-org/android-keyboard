@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.settings;
 
 import android.content.Intent;
 import android.preference.PreferenceActivity;

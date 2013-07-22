@@ -167,17 +167,17 @@
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />
-            <com.android.inputmethod.latin.SeekBarDialogPreference
+            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
                 android:key="pref_key_longpress_timeout"
                 android:title="@string/prefs_key_longpress_timeout_settings"
                 latin:minValue="@integer/config_min_longpress_timeout"
                 latin:maxValue="@integer/config_max_longpress_timeout"
                 latin:stepValue="@integer/config_longpress_timeout_step" />
-            <com.android.inputmethod.latin.SeekBarDialogPreference
+            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
                 android:key="pref_vibration_duration_settings"
                 android:title="@string/prefs_keypress_vibration_duration_settings"
                 latin:maxValue="@integer/config_max_vibration_duration" />
-            <com.android.inputmethod.latin.SeekBarDialogPreference
+            <com.android.inputmethod.latin.settings.SeekBarDialogPreference
                 android:key="pref_keypress_sound_volume"
                 android:title="@string/prefs_keypress_sound_volume_settings"
                 latin:maxValue="100" /> <!-- percent -->
