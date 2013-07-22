@@ -28,7 +28,7 @@ class BinaryDictionaryBigramsIterator {
     BinaryDictionaryBigramsIterator(
             const BinaryDictionaryInfo *const binaryDictionaryInfo, const int pos)
             : mBinaryDictionaryInfo(binaryDictionaryInfo), mPos(pos), mBigramFlags(0),
-              mBigramPos(0), mHasNext(true) {}
+              mBigramPos(NOT_A_DICT_POS), mHasNext(pos != NOT_A_DICT_POS) {}
 
     AK_FORCE_INLINE bool hasNext() const {
         return mHasNext;

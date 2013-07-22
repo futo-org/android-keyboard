@@ -77,7 +77,6 @@ namespace latinime {
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
     const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
-    const bool hasShortcuts = (0 != (BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS & flags));
     const bool isBlacklistedOrNotAWord = BinaryFormat::hasBlacklistedOrNotAWordFlag(flags);
 
     int codePoint = BinaryFormat::getCodePointAndForwardPointer(
@@ -104,17 +103,14 @@ namespace latinime {
     pos = BinaryFormat::skipProbability(flags, pos);
     int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
             binaryDictionaryInfo->getDictRoot(), flags, pos) : NOT_A_DICT_POS;
-    const int attributesPos =
-            hasShortcuts ? BinaryFormat::skipChildrenPosition(flags, pos) : NOT_A_DICT_POS;
     const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
             binaryDictionaryInfo->getDictRoot(), flags, pos);
 
     if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
         return siblingPos;
     }
-    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, attributesPos,
-            probability, isTerminal, hasChildren, isBlacklistedOrNotAWord,
-            mergedNodeCodePointCount, mergedNodeCodePoints);
+    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, probability, isTerminal,
+            hasChildren, isBlacklistedOrNotAWord, mergedNodeCodePointCount, mergedNodeCodePoints);
     return siblingPos;
 }
 

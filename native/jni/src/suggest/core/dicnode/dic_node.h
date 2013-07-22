@@ -112,10 +112,10 @@ class DicNode {
         mIsUsed = true;
         mIsCachedForNextSuggestion = false;
         mDicNodeProperties.init(
-                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
-                NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
-                false /* isTerminal */, true /* hasChildren */,
-                false /* isBlacklistedOrNotAWord */, 0 /* depth */, 0 /* terminalDepth */);
+                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_CODE_POINT /* nodeCodePoint */,
+                NOT_A_PROBABILITY /* probability */, false /* isTerminal */,
+                true /* hasChildren */, false /* isBlacklistedOrNotAWord */, 0 /* depth */,
+                0 /* terminalDepth */);
         mDicNodeState.init(prevWordNodePos);
         PROF_NODE_RESET(mProfiler);
     }
@@ -125,10 +125,10 @@ class DicNode {
         mIsUsed = true;
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         mDicNodeProperties.init(
-                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_DICT_POS /* attributesPos */,
-                NOT_A_CODE_POINT /* nodeCodePoint */, NOT_A_PROBABILITY /* probability */,
-                false /* isTerminal */, true /* hasChildren */,
-                false /* isBlacklistedOrNotAWord */,  0 /* depth */, 0 /* terminalDepth */);
+                NOT_A_VALID_WORD_POS /* pos */, rootGroupPos, NOT_A_CODE_POINT /* nodeCodePoint */,
+                NOT_A_PROBABILITY /* probability */, false /* isTerminal */,
+                true /* hasChildren */, false /* isBlacklistedOrNotAWord */,  0 /* depth */,
+                0 /* terminalDepth */);
         // TODO: Move to dicNodeState?
         mDicNodeState.mDicNodeStateOutput.init(); // reset for next word
         mDicNodeState.mDicNodeStateInput.init(
@@ -157,18 +157,16 @@ class DicNode {
         PROF_NODE_COPY(&parentNode->mProfiler, mProfiler);
     }
 
-    void initAsChild(DicNode *dicNode, const int pos, const int childrenPos,
-            const int attributesPos, const int probability, const bool isTerminal,
-            const bool hasChildren, const bool isBlacklistedOrNotAWord,
+    void initAsChild(DicNode *dicNode, const int pos, const int childrenPos, const int probability,
+            const bool isTerminal, const bool hasChildren, const bool isBlacklistedOrNotAWord,
             const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         mIsUsed = true;
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
-        mDicNodeProperties.init(pos, childrenPos, attributesPos, mergedNodeCodePoints[0],
-                probability, isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth,
-                newLeavingDepth);
+        mDicNodeProperties.init(pos, childrenPos, mergedNodeCodePoints[0], probability,
+                isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth, newLeavingDepth);
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -465,10 +463,6 @@ class DicNode {
 
     bool isBlacklistedOrNotAWord() const {
         return mDicNodeProperties.isBlacklistedOrNotAWord();
-    }
-
-    int getAttributesPos() const {
-        return mDicNodeProperties.getAttributesPos();
     }
 
     inline uint16_t getNodeCodePointCount() const {

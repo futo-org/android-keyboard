@@ -62,6 +62,12 @@ class DictionaryStructurePolicy {
     virtual int getUnigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int nodePos) const = 0;
 
+    virtual int getShortcutPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int nodePos) const = 0;
+
+    virtual int getBigramsPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int nodePos) const = 0;
+
  protected:
     DictionaryStructurePolicy() {}
     virtual ~DictionaryStructurePolicy() {}

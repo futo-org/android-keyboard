@@ -210,14 +210,16 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         }
 
         if (!terminalDicNode->hasMultipleWords()) {
+            const BinaryDictionaryInfo *const binaryDictionaryInfo =
+                    traverseSession->getBinaryDictionaryInfo();
             const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
-                    terminalDicNode->getAttributesPos());
+                    binaryDictionaryInfo->getStructurePolicy()->getShortcutPositionOfNode(
+                            binaryDictionaryInfo, terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
             outputWordIndex = ShortcutUtils::outputShortcuts(&terminalAttributes, outputWordIndex,
                     finalScore, outputCodePoints, frequencies, outputTypes, sameAsTyped);
-
         }
         DicNode::managedDelete(terminalDicNode);
     }
