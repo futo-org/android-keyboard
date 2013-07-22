@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.settings.SettingsValues;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Vibrator;

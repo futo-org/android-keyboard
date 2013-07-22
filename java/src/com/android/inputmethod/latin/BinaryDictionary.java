@@ -21,7 +21,8 @@ import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.AdditionalFeaturesSettingUtils;
+import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
+import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.StringUtils;

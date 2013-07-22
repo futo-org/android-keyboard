@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +25,9 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.debug.ExternalDictionaryGetterForDebug;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 
 public final class DebugSettings extends PreferenceFragment

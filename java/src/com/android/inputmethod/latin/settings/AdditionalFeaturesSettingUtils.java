@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.utils;
+package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.android.inputmethod.latin.Settings;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 /**
