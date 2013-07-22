@@ -31,20 +31,17 @@ namespace latinime {
 class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
-            : mPos(0), mChildrenPos(0), mAttributesPos(0), mProbability(0),
-              mNodeCodePoint(0), mIsTerminal(false), mHasChildren(false),
-              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
+            : mPos(0), mChildrenPos(0), mProbability(0), mNodeCodePoint(0), mIsTerminal(false),
+              mHasChildren(false), mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
 
     virtual ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
-    void init(const int pos, const int childrenPos, const int attributesPos,
-            const int nodeCodePoint, const int probability, const bool isTerminal,
-            const bool hasChildren, const bool isBlacklistedOrNotAWord,
+    void init(const int pos, const int childrenPos, const int nodeCodePoint, const int probability,
+            const bool isTerminal, const bool hasChildren, const bool isBlacklistedOrNotAWord,
             const uint16_t depth, const uint16_t leavingDepth) {
         mPos = pos;
         mChildrenPos = childrenPos;
-        mAttributesPos = attributesPos;
         mNodeCodePoint = nodeCodePoint;
         mProbability = probability;
         mIsTerminal = isTerminal;
@@ -58,7 +55,6 @@ class DicNodeProperties {
     void init(const DicNodeProperties *const nodeProp) {
         mPos = nodeProp->mPos;
         mChildrenPos = nodeProp->mChildrenPos;
-        mAttributesPos = nodeProp->mAttributesPos;
         mNodeCodePoint = nodeProp->mNodeCodePoint;
         mProbability = nodeProp->mProbability;
         mIsTerminal = nodeProp->mIsTerminal;
@@ -72,7 +68,6 @@ class DicNodeProperties {
     void init(const DicNodeProperties *const nodeProp, const int codePoint) {
         mPos = nodeProp->mPos;
         mChildrenPos = nodeProp->mChildrenPos;
-        mAttributesPos = nodeProp->mAttributesPos;
         mNodeCodePoint = codePoint; // Overwrite the node char of a passing child
         mProbability = nodeProp->mProbability;
         mIsTerminal = nodeProp->mIsTerminal;
@@ -88,10 +83,6 @@ class DicNodeProperties {
 
     int getChildrenPos() const {
         return mChildrenPos;
-    }
-
-    int getAttributesPos() const {
-        return mAttributesPos;
     }
 
     int getProbability() const {
@@ -129,7 +120,6 @@ class DicNodeProperties {
     // for this class
     int mPos;
     int mChildrenPos;
-    int mAttributesPos;
     int mProbability;
     int mNodeCodePoint;
     bool mIsTerminal;

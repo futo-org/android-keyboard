@@ -48,6 +48,12 @@ class PatriciaTriePolicy : public DictionaryStructurePolicy {
     int getUnigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int nodePos) const;
 
+    int getShortcutPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int nodePos) const;
+
+    int getBigramsPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const int nodePos) const;
+
  private:
     DISALLOW_COPY_AND_ASSIGN(PatriciaTriePolicy);
     static const PatriciaTriePolicy sInstance;

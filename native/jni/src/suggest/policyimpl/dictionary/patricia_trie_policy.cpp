@@ -69,4 +69,18 @@ int PatriciaTriePolicy::getUnigramProbability(
     return BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
 }
 
+int PatriciaTriePolicy::getShortcutPositionOfNode(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const int nodePos) const {
+    return BinaryFormat::getShortcutListPositionForWordPosition(
+            binaryDictionaryInfo->getDictRoot(), nodePos);
+}
+
+int PatriciaTriePolicy::getBigramsPositionOfNode(
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const int nodePos) const {
+    return BinaryFormat::getBigramListPositionForWordPosition(
+            binaryDictionaryInfo->getDictRoot(), nodePos);
+}
+
 } // namespace latinime
