@@ -213,14 +213,18 @@ class DicNode {
         return mDicNodeState.mDicNodeStateOutput.getCodePointAt(getNodeCodePointCount());
     }
 
-    bool isImpossibleBigramWord() const {
+    // Check if the current word and the previous word can be considered as a valid multiple word
+    // suggestion.
+    bool isValidMultipleWordSuggestion() const {
         if (isBlacklistedOrNotAWord()) {
-            return true;
+            return false;
         }
+        // Treat suggestion as invalid if the current and the previous word are single character
+        // words.
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
                 - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
         const int currentWordLen = getNodeCodePointCount();
-        return (prevWordLen == 1 && currentWordLen == 1);
+        return (prevWordLen != 1 || currentWordLen != 1);
     }
 
     bool isFirstCharUppercase() const {

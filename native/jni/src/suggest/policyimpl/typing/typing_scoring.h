@@ -55,10 +55,10 @@ class TypingScoring : public Scoring {
             const int inputSize, const bool forceCommit) const {
         const float maxDistance = ScoringParams::DISTANCE_WEIGHT_LANGUAGE
                 + static_cast<float>(inputSize) * ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
-        return static_cast<int>((ScoringParams::TYPING_BASE_OUTPUT_SCORE
-                - (compoundDistance / maxDistance)
-                + (forceCommit ? ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD : 0.0f))
-                        * SUGGEST_INTERFACE_OUTPUT_SCALE);
+        const float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE
+                - compoundDistance / maxDistance
+                + (forceCommit ? ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD : 0.0f);
+        return static_cast<int>(score * SUGGEST_INTERFACE_OUTPUT_SCALE);
     }
 
     AK_FORCE_INLINE float getDoubleLetterDemotionDistanceCost(const int terminalIndex,
