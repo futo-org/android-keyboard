@@ -123,7 +123,7 @@
             <Key
                 latin:keyLabel="&#x0926;"
                 latin:keyHintLabel="9"
-                latin:additionalMoreKeys="9"
+                latin:additionalMoreKeys="&#x096F;,9"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+091C: "ज" DEVANAGARI LETTER JA
                  U+091C/U+0952: "ज॒" DEVANAGARI LETTER JA/DEVANAGARI STRESS SIGN ANUDATTA
