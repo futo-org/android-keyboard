@@ -28,7 +28,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.inputmethod.compat.IntentCompatUtils;
-import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.settings.Settings;
 
 /**
  * This class detects the {@link Intent#ACTION_MY_PACKAGE_REPLACED} broadcast intent when this IME

@@ -36,10 +36,10 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.Settings;
-import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();

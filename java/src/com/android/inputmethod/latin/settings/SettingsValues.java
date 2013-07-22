@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.settings;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -23,8 +23,13 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.InputAttributes;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.utils.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.StringUtils;

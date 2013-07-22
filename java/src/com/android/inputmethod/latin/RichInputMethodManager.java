@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.Collections;

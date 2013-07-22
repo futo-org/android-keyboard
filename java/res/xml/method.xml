@@ -87,7 +87,7 @@
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-        android:settingsActivity="com.android.inputmethod.latin.SettingsActivity"
+        android:settingsActivity="com.android.inputmethod.latin.settings.SettingsActivity"
         android:isDefault="@bool/im_is_default">
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_en_US"

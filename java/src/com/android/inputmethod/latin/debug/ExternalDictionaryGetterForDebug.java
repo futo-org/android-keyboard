@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.debug;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,6 +23,9 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
+import com.android.inputmethod.latin.BinaryDictionaryFileDumper;
+import com.android.inputmethod.latin.BinaryDictionaryGetter;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;

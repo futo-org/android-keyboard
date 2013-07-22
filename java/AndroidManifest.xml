@@ -51,7 +51,8 @@
             <intent-filter>
                 <action android:name="android.service.textservice.SpellCheckerService" />
             </intent-filter>
-            <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
+            <meta-data android:name="android.view.textservice.scs"
+                    android:resource="@xml/spellchecker" />
         </service>
 
         <activity android:name=".setup.SetupActivity"
@@ -81,21 +82,23 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings"
-                  android:uiOptions="splitActionBarWhenNarrow">
+        <activity android:name=".settings.SettingsActivity"
+                android:label="@string/english_ime_settings"
+                android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsActivity"
+        <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-        <activity android:name="DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
+        <activity android:name=".settings.DebugSettingsActivity"
+                android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -114,15 +117,15 @@
         </receiver>
 
         <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
-                  android:grantUriPermissions="true"
-                  android:exported="false"
-                  android:authorities="@string/authority"
-                  android:multiprocess="false"
-                  android:label="@string/dictionary_provider_name">
+                android:grantUriPermissions="true"
+                android:exported="false"
+                android:authorities="@string/authority"
+                android:multiprocess="false"
+                android:label="@string/dictionary_provider_name">
         </provider>
 
         <service android:name="com.android.inputmethod.dictionarypack.DictionaryService"
-                 android:label="@string/dictionary_service_name">
+                android:label="@string/dictionary_service_name">
         </service>
 
         <receiver android:name="com.android.inputmethod.dictionarypack.EventHandler">
@@ -134,17 +137,17 @@
         </receiver>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
-                  android:label="@string/dictionary_settings_title"
-                  android:theme="@android:style/Theme.Holo"
-                  android:uiOptions="splitActionBarWhenNarrow">
+                android:label="@string/dictionary_settings_title"
+                android:theme="@android:style/Theme.Holo"
+                android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
         <activity android:name="com.android.inputmethod.dictionarypack.DownloadOverMeteredDialog"
-                  android:label="@string/dictionary_install_over_metered_network_prompt"
-                  android:theme="@android:style/Theme.Holo">
+                android:label="@string/dictionary_install_over_metered_network_prompt"
+                android:theme="@android:style/Theme.Holo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
