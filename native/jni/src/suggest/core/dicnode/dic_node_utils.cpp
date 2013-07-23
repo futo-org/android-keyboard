@@ -159,7 +159,7 @@ namespace latinime {
 /* static */ float DicNodeUtils::getBigramNodeImprobability(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const DicNode *const node, MultiBigramMap *multiBigramMap) {
-    if (node->isImpossibleBigramWord()) {
+    if (node->hasMultipleWords() && !node->isValidMultipleWordSuggestion()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
     const int probability = getBigramNodeProbability(binaryDictionaryInfo, node, multiBigramMap);
