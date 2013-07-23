@@ -51,9 +51,10 @@ public class KeySpecParserSplitTests extends InstrumentationTestCase {
         }.runInLocale(targetContext.getResources(), TEST_LOCALE);
         final String[] testResourceNames = getAllResourceIdNames(
                 com.android.inputmethod.latin.tests.R.string.class);
-        mTextsSet.loadStringResourcesInternal(instrumentation.getContext(),
-                testResourceNames,
-                com.android.inputmethod.latin.tests.R.string.empty_string);
+        mTextsSet.loadStringResourcesInternal(instrumentation.getContext(), testResourceNames,
+                // This dummy raw resource is needed to be able to load string resources from a test
+                // APK successfully.
+                com.android.inputmethod.latin.tests.R.raw.dummy_resource_for_testing);
     }
 
     private static String[] getAllResourceIdNames(final Class<?> resourceIdClass) {
