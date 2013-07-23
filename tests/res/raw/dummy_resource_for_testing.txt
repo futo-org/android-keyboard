@@ -1,0 +1,3 @@
+/* This dummy raw resource is needed to be able to load string resources from a test APK
+ * successfully. (See {@link KeySpecParserSplitTests#setUp()}.
+ */
