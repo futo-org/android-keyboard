@@ -120,8 +120,8 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
     int bigramCount = 0;
     int unigramProbability = 0;
     int bigramBuffer[MAX_WORD_LENGTH];
-    for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
-            bigramsIt.hasNext(); /* no-op */) {
+    BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
+    while (bigramsIt.hasNext()) {
         bigramsIt.next();
         const int length = mBinaryDictionaryInfo->getStructurePolicy()->
                 getCodePointsAndProbabilityAndReturnCodePointCount(
@@ -147,13 +147,13 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
 }
 
 // Returns a pointer to the start of the bigram list.
-// If the word is not found or has no bigrams, this function returns 0.
+// If the word is not found or has no bigrams, this function returns NOT_A_DICT_POS.
 int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
         const bool forceLowerCaseSearch) const {
-    if (0 >= prevWordLength) return 0;
+    if (0 >= prevWordLength) return NOT_A_DICT_POS;
     int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
             mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
-    if (NOT_A_VALID_WORD_POS == pos) return 0;
+    if (NOT_A_VALID_WORD_POS == pos) return NOT_A_DICT_POS;
     return mBinaryDictionaryInfo->getStructurePolicy()->getBigramsPositionOfNode(
             mBinaryDictionaryInfo, pos);
 }
@@ -183,8 +183,8 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
             mBinaryDictionaryInfo, word1, length1, false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == nextWordPos) return false;
 
-    for (BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
-            bigramsIt.hasNext(); /* no-op */) {
+    BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);
+    while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == nextWordPos) {
             return true;
