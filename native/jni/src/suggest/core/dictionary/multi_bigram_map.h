@@ -69,8 +69,8 @@ class MultiBigramMap {
         void init(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) {
             const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
                     getBigramsPositionOfNode(binaryDictionaryInfo, nodePos);
-            for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
-                    bigramsIt.hasNext(); /* no-op */) {
+            BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+            while (bigramsIt.hasNext()) {
                 bigramsIt.next();
                 mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
                 mBloomFilter.setInFilter(bigramsIt.getBigramPos());
@@ -109,8 +109,8 @@ class MultiBigramMap {
             const int nextWordPosition, const int unigramProbability) {
         const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
                 getBigramsPositionOfNode(binaryDictionaryInfo, nodePos);
-        for (BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
-                bigramsIt.hasNext(); /* no-op */) {
+        BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+        while (bigramsIt.hasNext()) {
             bigramsIt.next();
             if (bigramsIt.getBigramPos() == nextWordPosition) {
                 return ProbabilityUtils::computeProbabilityForBigram(
