@@ -221,9 +221,11 @@ public final class SubtypeLocale {
         return getSubtypeDisplayNameInternal(subtype, displayLocale);
     }
 
-    public static String getSubtypeDisplayName(final InputMethodSubtype subtype) {
-        final Locale displayLocale = getDisplayLocaleOfSubtypeLocale(subtype.getLocale());
-        return getSubtypeDisplayNameInternal(subtype, displayLocale);
+    public static String getSubtypeNameForLogging(final InputMethodSubtype subtype) {
+        if (subtype == null) {
+            return "<null subtype>";
+        }
+        return getSubtypeLocale(subtype) + "/" + getKeyboardLayoutSetName(subtype);
     }
 
     private static String getSubtypeDisplayNameInternal(final InputMethodSubtype subtype,
@@ -287,5 +289,47 @@ public final class SubtypeLocale {
             return QWERTY;
         }
         return keyboardLayoutSet;
+    }
+
+    // InputMethodSubtype's display name for spacebar text in its locale.
+    //        isAdditionalSubtype (T=true, F=false)
+    // locale layout  | Short  Middle      Full
+    // ------ ------- - ---- --------- ----------------------
+    //  en_US qwerty  F  En  English   English (US)           exception
+    //  en_GB qwerty  F  En  English   English (UK)           exception
+    //  es_US spanish F  Es  Español   Español (EE.UU.)       exception
+    //  fr    azerty  F  Fr  Français  Français
+    //  fr_CA qwerty  F  Fr  Français  Français (Canada)
+    //  de    qwertz  F  De  Deutsch   Deutsch
+    //  zz    qwerty  F      QWERTY    QWERTY
+    //  fr    qwertz  T  Fr  Français  Français
+    //  de    qwerty  T  De  Deutsch   Deutsch
+    //  en_US azerty  T  En  English   English (US)
+    //  zz    azerty  T      AZERTY    AZERTY
+
+    // Get InputMethodSubtype's full display name in its locale.
+    public static String getFullDisplayName(final InputMethodSubtype subtype) {
+        if (isNoLanguage(subtype)) {
+            return getKeyboardLayoutSetDisplayName(subtype);
+        }
+        return getSubtypeLocaleDisplayName(subtype.getLocale());
+    }
+
+    // Get InputMethodSubtype's middle display name in its locale.
+    public static String getMiddleDisplayName(final InputMethodSubtype subtype) {
+        if (isNoLanguage(subtype)) {
+            return getKeyboardLayoutSetDisplayName(subtype);
+        }
+        final Locale locale = getSubtypeLocale(subtype);
+        return getSubtypeLocaleDisplayName(locale.getLanguage());
+    }
+
+    // Get InputMethodSubtype's short display name in its locale.
+    public static String getShortDisplayName(final InputMethodSubtype subtype) {
+        if (isNoLanguage(subtype)) {
+            return "";
+        }
+        final Locale locale = getSubtypeLocale(subtype);
+        return StringUtils.capitalizeFirstCodePoint(locale.getLanguage(), locale);
     }
 }
