@@ -134,7 +134,7 @@ public final class RichInputMethodManager {
         final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
         if (currentIndex == INDEX_NOT_FOUND) {
             Log.w(TAG, "Can't find current subtype in enabled subtypes: subtype="
-                    + SubtypeLocale.getSubtypeDisplayName(currentSubtype));
+                    + SubtypeLocale.getSubtypeNameForLogging(currentSubtype));
             return false;
         }
         final int nextIndex = (currentIndex + 1) % enabledSubtypes.size();

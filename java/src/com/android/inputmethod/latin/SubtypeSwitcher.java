@@ -153,7 +153,7 @@ public final class SubtypeSwitcher {
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
         if (DBG) {
-            Log.w(TAG, "onSubtypeChanged: " + SubtypeLocale.getSubtypeDisplayName(newSubtype));
+            Log.w(TAG, "onSubtypeChanged: " + SubtypeLocale.getSubtypeNameForLogging(newSubtype));
         }
 
         final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
