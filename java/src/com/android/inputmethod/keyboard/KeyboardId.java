@@ -25,8 +25,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -76,7 +76,7 @@ public final class KeyboardId {
 
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
-        mLocale = SubtypeLocale.getSubtypeLocale(mSubtype);
+        mLocale = SubtypeLocaleUtils.getSubtypeLocale(mSubtype);
         mOrientation = params.mOrientation;
         mWidth = params.mKeyboardWidth;
         mHeight = params.mKeyboardHeight;

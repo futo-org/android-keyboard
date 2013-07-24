@@ -30,10 +30,10 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -285,7 +285,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 }
             };
             // Null means the current system locale.
-            final Locale locale = SubtypeLocale.isNoLanguage(params.mId.mSubtype)
+            final Locale locale = SubtypeLocaleUtils.isNoLanguage(params.mId.mSubtype)
                     ? null : params.mId.mLocale;
             job.runInLocale(mResources, locale);
 

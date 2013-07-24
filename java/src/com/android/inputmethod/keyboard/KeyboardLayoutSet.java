@@ -41,15 +41,15 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeysCache;
-import com.android.inputmethod.latin.AdditionalSubtype;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -288,7 +288,7 @@ public final class KeyboardLayoutSet {
                     : subtype;
             mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
-                    + SubtypeLocale.getKeyboardLayoutSetName(keyboardSubtype);
+                    + SubtypeLocaleUtils.getKeyboardLayoutSetName(keyboardSubtype);
             return this;
         }
 
@@ -445,7 +445,7 @@ public final class KeyboardLayoutSet {
     public static KeyboardLayoutSet createKeyboardSetForSpellChecker(final Context context,
             final String locale, final String layout) {
         final InputMethodSubtype subtype =
-                AdditionalSubtype.createAdditionalSubtype(locale, layout, null);
+                AdditionalSubtypeUtils.createAdditionalSubtype(locale, layout, null);
         return createKeyboardSet(context, subtype, SPELLCHECKER_DUMMY_KEYBOARD_WIDTH,
                 SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false /* testCasesHaveTouchCoordinates */,
                 true /* isSpellChecker */);

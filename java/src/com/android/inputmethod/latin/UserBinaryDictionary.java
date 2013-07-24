@@ -29,6 +29,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -76,7 +77,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             final boolean alsoUseMoreRestrictiveLocales) {
         super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
-        if (SubtypeLocale.NO_LANGUAGE.equals(locale)) {
+        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(locale)) {
             // If we don't have a locale, insert into the "all locales" user dictionary.
             mLocale = USER_DICTIONARY_ALL_LANGUAGES;
         } else {

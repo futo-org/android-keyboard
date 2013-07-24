@@ -59,7 +59,6 @@ import com.android.inputmethod.keyboard.internal.TouchScreenRegulator;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.DebugSettings;
@@ -67,6 +66,7 @@ import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 import com.android.inputmethod.latin.utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
@@ -1342,17 +1342,17 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private static String layoutLanguageOnSpacebar(final Paint paint,
             final InputMethodSubtype subtype, final int width) {
         // Choose appropriate language name to fit into the width.
-        final String fullText = SubtypeLocale.getFullDisplayName(subtype);
+        final String fullText = SubtypeLocaleUtils.getFullDisplayName(subtype);
         if (fitsTextIntoWidth(width, fullText, paint)) {
             return fullText;
         }
 
-        final String middleText = SubtypeLocale.getMiddleDisplayName(subtype);
+        final String middleText = SubtypeLocaleUtils.getMiddleDisplayName(subtype);
         if (fitsTextIntoWidth(width, middleText, paint)) {
             return middleText;
         }
 
-        final String shortText = SubtypeLocale.getShortDisplayName(subtype);
+        final String shortText = SubtypeLocaleUtils.getShortDisplayName(subtype);
         if (fitsTextIntoWidth(width, shortText, paint)) {
             return shortText;
         }
