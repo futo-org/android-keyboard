@@ -81,8 +81,11 @@ class TypingWeighting : public Weighting {
 
         const bool isFirstChar = pointIndex == 0;
         const bool isProximity = isProximityDicNode(traverseSession, dicNode);
-        float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_PROXIMITY_COST
+        float cost = isProximity ? (isFirstChar ? ScoringParams::FIRST_CHAR_PROXIMITY_COST
                 : ScoringParams::PROXIMITY_COST) : 0.0f;
+        if (isProximity && dicNode->getProximityCorrectionCount() == 0) {
+            cost += ScoringParams::FIRST_PROXIMITY_COST;
+        }
         if (dicNode->getNodeCodePointCount() == 2) {
             // At the second character of the current word, we check if the first char is uppercase
             // and the word is a second or later word of a multiple word suggestion. We demote it
