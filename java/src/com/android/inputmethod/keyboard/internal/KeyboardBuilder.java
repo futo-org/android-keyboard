@@ -30,8 +30,8 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
@@ -279,7 +279,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mTextsSet.setLanguage(language);
             final RunInLocale<Void> job = new RunInLocale<Void>() {
                 @Override
-                protected Void job(Resources res) {
+                protected Void job(final Resources res) {
                     params.mTextsSet.loadStringResources(mContext);
                     return null;
                 }
