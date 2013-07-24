@@ -36,6 +36,7 @@ class ScoringParams {
     // TODO: explore optimization of gesture parameters.
     static const float DISTANCE_WEIGHT_LENGTH;
     static const float PROXIMITY_COST;
+    static const float FIRST_CHAR_PROXIMITY_COST;
     static const float FIRST_PROXIMITY_COST;
     static const float OMISSION_COST;
     static const float OMISSION_COST_SAME_CHAR;

@@ -328,12 +328,12 @@ class DicNode {
         return mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() > 0;
     }
 
-    float getProximityCorrectionCount() const {
-        return static_cast<float>(mDicNodeState.mDicNodeStateScoring.getProximityCorrectionCount());
+    int getProximityCorrectionCount() const {
+        return mDicNodeState.mDicNodeStateScoring.getProximityCorrectionCount();
     }
 
-    float getEditCorrectionCount() const {
-        return static_cast<float>(mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount());
+    int getEditCorrectionCount() const {
+        return mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount();
     }
 
     // Used to prune nodes
