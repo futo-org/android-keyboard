@@ -384,13 +384,12 @@ public final class BinaryDictInputOutput {
 
     /**
      * Compute the maximum size of a node, assuming 3-byte addresses for everything, and caches
-     * it in the 'actualSize' member of the node, then returns it.
+     * it in the 'actualSize' member of the node.
      *
      * @param node the node to compute the maximum size of.
      * @param options file format options.
-     * @return the size of the node.
      */
-    private static int calculateNodeMaximumSize(final Node node, final FormatOptions options) {
+    private static void calculateNodeMaximumSize(final Node node, final FormatOptions options) {
         int size = getGroupCountSize(node);
         for (CharGroup g : node.mData) {
             final int groupSize = getCharGroupMaximumSize(g, options);
@@ -401,7 +400,6 @@ public final class BinaryDictInputOutput {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         node.mCachedSize = size;
-        return size;
     }
 
     /**
@@ -591,22 +589,48 @@ public final class BinaryDictInputOutput {
     }
 
     /**
-     * Computes the byte size of a list of nodes and updates each node cached position.
+     * Initializes the cached addresses of nodes from their size.
      *
      * @param flatNodes the array of nodes.
      * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
-    // TODO: rename this method when all it does is fill back the cached addresses before update
-    // with cached addresses after update.
-    private static int stackNodes(final ArrayList<Node> flatNodes,
+    private static int initializeNodesCachedAddresses(final ArrayList<Node> flatNodes,
+            final FormatOptions formatOptions) {
+        int nodeOffset = 0;
+        for (final Node n : flatNodes) {
+            n.mCachedAddressBeforeUpdate = nodeOffset;
+            int groupCountSize = getGroupCountSize(n);
+            int groupOffset = 0;
+            for (final CharGroup g : n.mData) {
+                g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
+                groupOffset += g.mCachedSize;
+            }
+            final int nodeSize = groupCountSize + groupOffset
+                    + (formatOptions.mSupportsDynamicUpdate
+                            ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
+            nodeOffset += n.mCachedSize;
+        }
+        return nodeOffset;
+    }
+
+    /**
+     * Updates the cached addresses of nodes after recomputing their new positions.
+     *
+     * @param flatNodes the array of nodes.
+     * @param formatOptions file format options.
+     * @return the byte size of the entire stack.
+     */
+    private static int updateNodeCachedAddresses(final ArrayList<Node> flatNodes,
             final FormatOptions formatOptions) {
         int nodeOffset = 0;
         for (final Node n : flatNodes) {
             n.mCachedAddressBeforeUpdate = n.mCachedAddressAfterUpdate;
             int groupCountSize = getGroupCountSize(n);
             int groupOffset = 0;
-            for (CharGroup g : n.mData) {
+            for (final CharGroup g : n.mData) {
+                // TODO: just copy cached address after update into cached address before update
+                // when the two fields are separated.
                 g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
                 groupOffset += g.mCachedSize;
             }
@@ -614,6 +638,7 @@ public final class BinaryDictInputOutput {
                     + (formatOptions.mSupportsDynamicUpdate
                             ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
             if (nodeSize != n.mCachedSize) {
+                // TODO: remove this test when the addresses are separated
                 throw new RuntimeException("Bug : Stored and computed node size differ");
             }
             if (nodeOffset != n.mCachedAddressAfterUpdate) {
@@ -665,12 +690,8 @@ public final class BinaryDictInputOutput {
     private static ArrayList<Node> computeAddresses(final FusionDictionary dict,
             final ArrayList<Node> flatNodes, final FormatOptions formatOptions) {
         // First get the worst possible sizes and offsets
-        int offset = 0;
-        for (final Node n : flatNodes) {
-            n.mCachedAddressAfterUpdate = offset;
-            offset += calculateNodeMaximumSize(n, formatOptions);
-        }
-        offset = stackNodes(flatNodes, formatOptions);
+        for (final Node n : flatNodes) calculateNodeMaximumSize(n, formatOptions);
+        final int offset = initializeNodesCachedAddresses(flatNodes, formatOptions);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -689,7 +710,7 @@ public final class BinaryDictInputOutput {
                 nodeStartOffset += newNodeSize;
                 changesDone |= changed;
             }
-            stackNodes(flatNodes, formatOptions);
+            updateNodeCachedAddresses(flatNodes, formatOptions);
             ++passes;
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
