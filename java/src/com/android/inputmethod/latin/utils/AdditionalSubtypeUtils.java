@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
@@ -25,15 +25,14 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 
-public final class AdditionalSubtype {
+public final class AdditionalSubtypeUtils {
     private static final InputMethodSubtype[] EMPTY_SUBTYPE_ARRAY = new InputMethodSubtype[0];
 
-    private AdditionalSubtype() {
+    private AdditionalSubtypeUtils() {
         // This utility class is not publicly instantiable.
     }
 
@@ -49,8 +48,8 @@ public final class AdditionalSubtype {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String layoutDisplayNameExtraValue;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                && SubtypeLocale.isExceptionalLocale(localeString)) {
-            final String layoutDisplayName = SubtypeLocale.getKeyboardLayoutSetDisplayName(
+                && SubtypeLocaleUtils.isExceptionalLocale(localeString)) {
+            final String layoutDisplayName = SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(
                     keyboardLayoutSetName);
             layoutDisplayNameExtraValue = StringUtils.appendToCommaSplittableTextIfNotExists(
                     UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME + "=" + layoutDisplayName, extraValue);
@@ -60,7 +59,7 @@ public final class AdditionalSubtype {
         final String additionalSubtypeExtraValue =
                 StringUtils.appendToCommaSplittableTextIfNotExists(
                         IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
-        final int nameId = SubtypeLocale.getSubtypeNameId(localeString, keyboardLayoutSetName);
+        final int nameId = SubtypeLocaleUtils.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
                 layoutExtraValue + "," + additionalSubtypeExtraValue, false, false);
@@ -68,7 +67,7 @@ public final class AdditionalSubtype {
 
     public static String getPrefSubtype(final InputMethodSubtype subtype) {
         final String localeString = subtype.getLocale();
-        final String keyboardLayoutSetName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
+        final String keyboardLayoutSetName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String extraValue = StringUtils.removeFromCommaSplittableTextIfExists(
                 layoutExtraValue, StringUtils.removeFromCommaSplittableTextIfExists(
@@ -99,7 +98,7 @@ public final class AdditionalSubtype {
                 CollectionUtils.newArrayList(prefSubtypeArray.length);
         for (final String prefSubtype : prefSubtypeArray) {
             final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtype);
-            if (subtype.getNameResId() == SubtypeLocale.UNKNOWN_KEYBOARD_LAYOUT) {
+            if (subtype.getNameResId() == SubtypeLocaleUtils.UNKNOWN_KEYBOARD_LAYOUT) {
                 // Skip unknown keyboard layout subtype. This may happen when predefined keyboard
                 // layout has been removed.
                 continue;

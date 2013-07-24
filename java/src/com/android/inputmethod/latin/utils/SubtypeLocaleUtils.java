@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.utils;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
@@ -25,17 +25,15 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.DebugLogUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
-import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
 
-public final class SubtypeLocale {
-    static final String TAG = SubtypeLocale.class.getSimpleName();
+public final class SubtypeLocaleUtils {
+    static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
     // This class must be located in the same package as LatinIME.java.
     private static final String RESOURCE_PACKAGE_NAME =
             DictionaryFactory.class.getPackage().getName();
@@ -73,7 +71,7 @@ public final class SubtypeLocale {
     private static final HashMap<String, String> sLocaleAndExtraValueToKeyboardLayoutSetMap =
             CollectionUtils.newHashMap();
 
-    private SubtypeLocale() {
+    private SubtypeLocaleUtils() {
         // Intentional empty constructor for utility class.
     }
 

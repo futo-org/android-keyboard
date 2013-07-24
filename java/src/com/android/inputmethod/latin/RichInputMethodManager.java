@@ -29,7 +29,9 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,11 +86,11 @@ public final class RichInputMethodManager {
         mInputMethodInfoOfThisIme = getInputMethodInfoOfThisIme(context);
 
         // Initialize additional subtypes.
-        SubtypeLocale.init(context);
+        SubtypeLocaleUtils.init(context);
         final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
                 prefs, context.getResources());
         final InputMethodSubtype[] additionalSubtypes =
-                AdditionalSubtype.createAdditionalSubtypesArray(prefAdditionalSubtypes);
+                AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);
         setAdditionalInputMethodSubtypes(additionalSubtypes);
     }
 
@@ -134,7 +136,7 @@ public final class RichInputMethodManager {
         final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
         if (currentIndex == INDEX_NOT_FOUND) {
             Log.w(TAG, "Can't find current subtype in enabled subtypes: subtype="
-                    + SubtypeLocale.getSubtypeNameForLogging(currentSubtype));
+                    + SubtypeLocaleUtils.getSubtypeNameForLogging(currentSubtype));
             return false;
         }
         final int nextIndex = (currentIndex + 1) % enabledSubtypes.size();
@@ -342,7 +344,7 @@ public final class RichInputMethodManager {
         final int count = myImi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
-            final String layoutName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
+            final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
             if (localeString.equals(subtype.getLocale())
                     && keyboardLayoutSetName.equals(layoutName)) {
                 return subtype;
