@@ -46,7 +46,13 @@ public final class FusionDictionary implements Iterable<Word> {
         ArrayList<CharGroup> mData;
         // To help with binary generation
         int mCachedSize = Integer.MIN_VALUE;
-        int mCachedAddress = Integer.MIN_VALUE;
+        // mCachedAddressBefore/AfterUpdate are helpers for binary dictionary generation. They
+        // always hold the same value except between dictionary address compression, during which
+        // the update process needs to know about both values at the same time. Updating will
+        // update the AfterUpdate value, and the code will move them to BeforeUpdate before
+        // the next update pass.
+        int mCachedAddressBeforeUpdate = Integer.MIN_VALUE;
+        int mCachedAddressAfterUpdate = Integer.MIN_VALUE;
         int mCachedParentAddress = 0;
 
         public Node() {

@@ -384,12 +384,13 @@ public final class BinaryDictInputOutput {
 
     /**
      * Compute the maximum size of a node, assuming 3-byte addresses for everything, and caches
-     * it in the 'actualSize' member of the node.
+     * it in the 'actualSize' member of the node, then returns it.
      *
      * @param node the node to compute the maximum size of.
      * @param options file format options.
+     * @return the size of the node.
      */
-    private static void setNodeMaximumSize(final Node node, final FormatOptions options) {
+    private static int calculateNodeMaximumSize(final Node node, final FormatOptions options) {
         int size = getGroupCountSize(node);
         for (CharGroup g : node.mData) {
             final int groupSize = getCharGroupMaximumSize(g, options);
@@ -400,6 +401,7 @@ public final class BinaryDictInputOutput {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
         node.mCachedSize = size;
+        return size;
     }
 
     /**
@@ -548,17 +550,17 @@ public final class BinaryDictInputOutput {
         boolean changed = false;
         int size = getGroupCountSize(node);
         for (CharGroup group : node.mData) {
-            if (group.mCachedAddress != node.mCachedAddress + size) {
+            if (group.mCachedAddress != node.mCachedAddressBeforeUpdate + size) {
                 changed = true;
-                group.mCachedAddress = node.mCachedAddress + size;
+                group.mCachedAddress = node.mCachedAddressBeforeUpdate + size;
             }
             int groupSize = getGroupHeaderSize(group, formatOptions);
             if (group.isTerminal()) groupSize += FormatSpec.GROUP_FREQUENCY_SIZE;
             if (null == group.mChildren && formatOptions.mSupportsDynamicUpdate) {
                 groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
             } else if (null != group.mChildren) {
-                final int offsetBasePoint = groupSize + node.mCachedAddress + size;
-                final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
+                final int offsetBasePoint = groupSize + node.mCachedAddressBeforeUpdate + size;
+                final int offset = group.mChildren.mCachedAddressBeforeUpdate - offsetBasePoint;
                 if (formatOptions.mSupportsDynamicUpdate) {
                     groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
                 } else {
@@ -568,7 +570,7 @@ public final class BinaryDictInputOutput {
             groupSize += getShortcutListSize(group.mShortcutTargets);
             if (null != group.mBigrams) {
                 for (WeightedString bigram : group.mBigrams) {
-                    final int offsetBasePoint = groupSize + node.mCachedAddress + size
+                    final int offsetBasePoint = groupSize + node.mCachedAddressBeforeUpdate + size
                             + FormatSpec.GROUP_FLAGS_SIZE;
                     final int addressOfBigram = findAddressOfWord(dict, bigram.mWord);
                     final int offset = addressOfBigram - offsetBasePoint;
@@ -595,11 +597,13 @@ public final class BinaryDictInputOutput {
      * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
+    // TODO: rename this method when all it does is fill back the cached addresses before update
+    // with cached addresses after update.
     private static int stackNodes(final ArrayList<Node> flatNodes,
             final FormatOptions formatOptions) {
         int nodeOffset = 0;
-        for (Node n : flatNodes) {
-            n.mCachedAddress = nodeOffset;
+        for (final Node n : flatNodes) {
+            n.mCachedAddressBeforeUpdate = n.mCachedAddressAfterUpdate;
             int groupCountSize = getGroupCountSize(n);
             int groupOffset = 0;
             for (CharGroup g : n.mData) {
@@ -611,6 +615,10 @@ public final class BinaryDictInputOutput {
                             ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
             if (nodeSize != n.mCachedSize) {
                 throw new RuntimeException("Bug : Stored and computed node size differ");
+            }
+            if (nodeOffset != n.mCachedAddressAfterUpdate) {
+                // TODO: remove this test when the code is well tested
+                throw new RuntimeException("Bug : Stored and computed node address differ");
             }
             nodeOffset += n.mCachedSize;
         }
@@ -627,11 +635,13 @@ public final class BinaryDictInputOutput {
      */
     private static void computeParentAddresses(final ArrayList<Node> flatNodes) {
         for (final Node node : flatNodes) {
-            for (CharGroup group : node.mData) {
+            for (final CharGroup group : node.mData) {
                 if (null != group.mChildren) {
-                    // assign my address to children's parent address
+                    // Assign my address to children's parent address
+                    // Here BeforeUpdate and AfterUpdate addresses have the same value, so it
+                    // does not matter which we use.
                     group.mChildren.mCachedParentAddress = group.mCachedAddress
-                            - group.mChildren.mCachedAddress;
+                            - group.mChildren.mCachedAddressAfterUpdate;
                 }
             }
         }
@@ -654,9 +664,13 @@ public final class BinaryDictInputOutput {
      */
     private static ArrayList<Node> computeAddresses(final FusionDictionary dict,
             final ArrayList<Node> flatNodes, final FormatOptions formatOptions) {
-        // First get the worst sizes and offsets
-        for (Node n : flatNodes) setNodeMaximumSize(n, formatOptions);
-        final int offset = stackNodes(flatNodes, formatOptions);
+        // First get the worst possible sizes and offsets
+        int offset = 0;
+        for (final Node n : flatNodes) {
+            n.mCachedAddressAfterUpdate = offset;
+            offset += calculateNodeMaximumSize(n, formatOptions);
+        }
+        offset = stackNodes(flatNodes, formatOptions);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -665,11 +679,14 @@ public final class BinaryDictInputOutput {
         boolean changesDone = false;
         do {
             changesDone = false;
-            for (Node n : flatNodes) {
+            int nodeStartOffset = 0;
+            for (final Node n : flatNodes) {
+                n.mCachedAddressAfterUpdate = nodeStartOffset;
                 final int oldNodeSize = n.mCachedSize;
                 final boolean changed = computeActualNodeSize(n, dict, formatOptions);
                 final int newNodeSize = n.mCachedSize;
                 if (oldNodeSize < newNodeSize) throw new RuntimeException("Increased size ?!");
+                nodeStartOffset += newNodeSize;
                 changesDone |= changed;
             }
             stackNodes(flatNodes, formatOptions);
@@ -683,7 +700,7 @@ public final class BinaryDictInputOutput {
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
         MakedictLog.i("Compression complete in " + passes + " passes.");
         MakedictLog.i("After address compression : "
-                + (lastNode.mCachedAddress + lastNode.mCachedSize));
+                + (lastNode.mCachedAddressAfterUpdate + lastNode.mCachedSize));
 
         return flatNodes;
     }
@@ -701,10 +718,12 @@ public final class BinaryDictInputOutput {
     private static void checkFlatNodeArray(final ArrayList<Node> array) {
         int offset = 0;
         int index = 0;
-        for (Node n : array) {
-            if (n.mCachedAddress != offset) {
+        for (final Node n : array) {
+            // BeforeUpdate and AfterUpdate addresses are the same here, so it does not matter
+            // which we use.
+            if (n.mCachedAddressAfterUpdate != offset) {
                 throw new RuntimeException("Wrong address for node " + index
-                        + " : expected " + offset + ", got " + n.mCachedAddress);
+                        + " : expected " + offset + ", got " + n.mCachedAddressAfterUpdate);
             }
             ++index;
             offset += n.mCachedSize;
@@ -946,7 +965,7 @@ public final class BinaryDictInputOutput {
     private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
             final Node node, final FormatOptions formatOptions) {
         // TODO: Make the code in common with BinaryDictIOUtils#writeCharGroup
-        int index = node.mCachedAddress;
+        int index = node.mCachedAddressAfterUpdate;
 
         final int groupCount = node.mData.size();
         final int countSize = getGroupCountSize(node);
@@ -977,7 +996,7 @@ public final class BinaryDictInputOutput {
             if (group.mFrequency >= 0) groupAddress += FormatSpec.GROUP_FREQUENCY_SIZE;
             final int childrenOffset = null == group.mChildren
                     ? FormatSpec.NO_CHILDREN_ADDRESS
-                            : group.mChildren.mCachedAddress - groupAddress;
+                            : group.mChildren.mCachedAddressAfterUpdate - groupAddress;
             byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset, formatOptions);
             buffer[index++] = flags;
 
@@ -985,7 +1004,7 @@ public final class BinaryDictInputOutput {
                 index = writeParentAddress(buffer, index, parentAddress, formatOptions);
             } else {
                 index = writeParentAddress(buffer, index,
-                        parentAddress + (node.mCachedAddress - group.mCachedAddress),
+                        parentAddress + (node.mCachedAddressAfterUpdate - group.mCachedAddress),
                         formatOptions);
             }
 
@@ -1055,9 +1074,9 @@ public final class BinaryDictInputOutput {
                     = FormatSpec.NO_FORWARD_LINK_ADDRESS;
             index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        if (index != node.mCachedAddress + node.mCachedSize) throw new RuntimeException(
+        if (index != node.mCachedAddressAfterUpdate + node.mCachedSize) throw new RuntimeException(
                 "Not the same size : written "
-                + (index - node.mCachedAddress) + " bytes out of a node that should have "
+                + (index - node.mCachedAddressAfterUpdate) + " bytes from a node that should have "
                 + node.mCachedSize + " bytes");
         return index;
     }
@@ -1077,25 +1096,27 @@ public final class BinaryDictInputOutput {
         int charGroups = 0;
         int maxGroups = 0;
         int maxRuns = 0;
-        for (Node n : nodes) {
+        for (final Node n : nodes) {
             if (maxGroups < n.mData.size()) maxGroups = n.mData.size();
-            for (CharGroup cg : n.mData) {
+            for (final CharGroup cg : n.mData) {
                 ++charGroups;
                 if (cg.mChars.length > maxRuns) maxRuns = cg.mChars.length;
                 if (cg.mFrequency >= 0) {
-                    if (n.mCachedAddress < firstTerminalAddress)
-                        firstTerminalAddress = n.mCachedAddress;
-                    if (n.mCachedAddress > lastTerminalAddress)
-                        lastTerminalAddress = n.mCachedAddress;
+                    if (n.mCachedAddressAfterUpdate < firstTerminalAddress)
+                        firstTerminalAddress = n.mCachedAddressAfterUpdate;
+                    if (n.mCachedAddressAfterUpdate > lastTerminalAddress)
+                        lastTerminalAddress = n.mCachedAddressAfterUpdate;
                 }
             }
-            if (n.mCachedAddress + n.mCachedSize > size) size = n.mCachedAddress + n.mCachedSize;
+            if (n.mCachedAddressAfterUpdate + n.mCachedSize > size) {
+                size = n.mCachedAddressAfterUpdate + n.mCachedSize;
+            }
         }
         final int[] groupCounts = new int[maxGroups + 1];
         final int[] runCounts = new int[maxRuns + 1];
-        for (Node n : nodes) {
+        for (final Node n : nodes) {
             ++groupCounts[n.mData.size()];
-            for (CharGroup cg : n.mData) {
+            for (final CharGroup cg : n.mData) {
                 ++runCounts[cg.mChars.length];
             }
         }
@@ -1205,7 +1226,7 @@ public final class BinaryDictInputOutput {
 
         // Create a buffer that matches the final dictionary size.
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
-        final int bufferSize = lastNode.mCachedAddress + lastNode.mCachedSize;
+        final int bufferSize = lastNode.mCachedAddressAfterUpdate + lastNode.mCachedSize;
         final byte[] buffer = new byte[bufferSize];
         int index = 0;
 
@@ -1584,8 +1605,9 @@ public final class BinaryDictInputOutput {
                 buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
 
         final Node node = new Node(nodeContents);
-        node.mCachedAddress = nodeOrigin;
-        reverseNodeMap.put(node.mCachedAddress, node);
+        node.mCachedAddressBeforeUpdate = nodeOrigin;
+        node.mCachedAddressAfterUpdate = nodeOrigin;
+        reverseNodeMap.put(node.mCachedAddressAfterUpdate, node);
         return node;
     }
 
