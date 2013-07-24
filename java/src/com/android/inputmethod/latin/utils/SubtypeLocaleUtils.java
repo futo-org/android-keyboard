@@ -27,7 +27,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 
 import java.util.HashMap;
 import java.util.Locale;

@@ -23,7 +23,7 @@ import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

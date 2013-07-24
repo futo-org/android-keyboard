@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -162,40 +160,6 @@ public final class LocaleUtils {
      */
     public static boolean isMatch(int level) {
         return LOCALE_MATCH <= level;
-    }
-
-    static final Object sLockForRunInLocale = new Object();
-
-    // TODO: Make this an external class
-    public abstract static class RunInLocale<T> {
-        protected abstract T job(Resources res);
-
-        /**
-         * Execute {@link #job(Resources)} method in specified system locale exclusively.
-         *
-         * @param res the resources to use. Pass current resources.
-         * @param newLocale the locale to change to
-         * @return the value returned from {@link #job(Resources)}.
-         */
-        public T runInLocale(final Resources res, final Locale newLocale) {
-            synchronized (sLockForRunInLocale) {
-                final Configuration conf = res.getConfiguration();
-                final Locale oldLocale = conf.locale;
-                final boolean needsChange = (newLocale != null && !newLocale.equals(oldLocale));
-                try {
-                    if (needsChange) {
-                        conf.locale = newLocale;
-                        res.updateConfiguration(conf, null);
-                    }
-                    return job(res);
-                } finally {
-                    if (needsChange) {
-                        conf.locale = oldLocale;
-                        res.updateConfiguration(conf, null);
-                    }
-                }
-            }
-        }
     }
 
     private static final HashMap<String, Locale> sLocaleCache = CollectionUtils.newHashMap();
