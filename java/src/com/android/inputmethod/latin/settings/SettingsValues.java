@@ -32,6 +32,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import java.util.Arrays;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
- * using {@link com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale}.
+ * using {@link com.android.inputmethod.latin.utils.RunInLocale}.
  */
 public final class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();

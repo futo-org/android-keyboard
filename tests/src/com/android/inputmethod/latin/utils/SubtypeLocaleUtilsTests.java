@@ -24,7 +24,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
-import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -138,7 +137,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     public void testPredefinedSubtypesInEnglishSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
-            protected Void job(Resources res) {
+            protected Void job(final Resources res) {
                 assertEquals("en_US", "English (US)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(EN_US));
                 assertEquals("en_GB", "English (UK)",
@@ -162,7 +161,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     public void testAdditionalSubtypesInEnglishSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
-            protected Void job(Resources res) {
+            protected Void job(final Resources res) {
                 assertEquals("fr qwertz",    "French (QWERTZ)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_QWERTZ));
                 assertEquals("de qwerty",    "German (QWERTY)",
@@ -202,7 +201,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     public void testPredefinedSubtypesInFrenchSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
-            protected Void job(Resources res) {
+            protected Void job(final Resources res) {
                 assertEquals("en_US", "Anglais (États-Unis)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(EN_US));
                 assertEquals("en_GB", "Anglais (Royaume-Uni)",
@@ -226,7 +225,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     public void testAdditionalSubtypesInFrenchSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
-            protected Void job(Resources res) {
+            protected Void job(final Resources res) {
                 assertEquals("fr qwertz",    "Français (QWERTZ)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_QWERTZ));
                 assertEquals("de qwerty",    "Allemand (QWERTY)",
@@ -310,7 +309,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     private final RunInLocale<Void> testsPredefinedSubtypesForSpacebar = new RunInLocale<Void>() {
         @Override
-        protected Void job(Resources res) {
+        protected Void job(final Resources res) {
             assertEquals("en_US", "English (US)", SubtypeLocaleUtils.getFullDisplayName(EN_US));
             assertEquals("en_GB", "English (UK)", SubtypeLocaleUtils.getFullDisplayName(EN_GB));
             assertEquals("es_US", "Español (EE.UU.)",
@@ -342,7 +341,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
 
     private final RunInLocale<Void> testsAdditionalSubtypesForSpacebar = new RunInLocale<Void>() {
         @Override
-        protected Void job(Resources res) {
+        protected Void job(final Resources res) {
             assertEquals("fr qwertz",    "Français",
                     SubtypeLocaleUtils.getFullDisplayName(FR_QWERTZ));
             assertEquals("de qwerty",    "Deutsch",
