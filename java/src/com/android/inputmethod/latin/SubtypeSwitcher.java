@@ -33,6 +33,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +83,7 @@ public final class SubtypeSwitcher {
     }
 
     public static void init(final Context context) {
-        SubtypeLocale.init(context);
+        SubtypeLocaleUtils.init(context);
         RichInputMethodManager.init(context);
         sInstance.initialize(context);
     }
@@ -153,10 +154,11 @@ public final class SubtypeSwitcher {
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
         if (DBG) {
-            Log.w(TAG, "onSubtypeChanged: " + SubtypeLocale.getSubtypeNameForLogging(newSubtype));
+            Log.w(TAG, "onSubtypeChanged: "
+                    + SubtypeLocaleUtils.getSubtypeNameForLogging(newSubtype));
         }
 
-        final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
+        final Locale newLocale = SubtypeLocaleUtils.getSubtypeLocale(newSubtype);
         final Locale systemLocale = mResources.getConfiguration().locale;
         final boolean sameLocale = systemLocale.equals(newLocale);
         final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
@@ -232,7 +234,7 @@ public final class SubtypeSwitcher {
     //////////////////////////////////
 
     public boolean needsToDisplayLanguage(final Locale keyboardLocale) {
-        if (keyboardLocale.toString().equals(SubtypeLocale.NO_LANGUAGE)) {
+        if (keyboardLocale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
             return true;
         }
         if (!keyboardLocale.equals(getCurrentSubtypeLocale())) {
@@ -249,7 +251,7 @@ public final class SubtypeSwitcher {
 
     public Locale getCurrentSubtypeLocale() {
         if (null != sForcedLocaleForTesting) return sForcedLocaleForTesting;
-        return SubtypeLocale.getSubtypeLocale(getCurrentSubtype());
+        return SubtypeLocaleUtils.getSubtypeLocale(getCurrentSubtype());
     }
 
     public InputMethodSubtype getCurrentSubtype() {
@@ -259,7 +261,7 @@ public final class SubtypeSwitcher {
     public InputMethodSubtype getNoLanguageSubtype() {
         if (mNoLanguageSubtype == null) {
             mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                    SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
+                    SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
         }
         if (mNoLanguageSubtype != null) {
             return mNoLanguageSubtype;

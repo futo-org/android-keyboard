@@ -37,17 +37,17 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsActivity;
-import com.android.inputmethod.latin.AdditionalSubtype;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.setup.LauncherIconVisibilityManager;
 import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
 import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
@@ -104,7 +104,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         // singleton and utility classes may not have been initialized.  We have to call
         // initialization method of these classes here. See {@link LatinIME#onCreate()}.
         SubtypeSwitcher.init(context);
-        SubtypeLocale.init(context);
+        SubtypeLocaleUtils.init(context);
         AudioAndHapticFeedbackManager.init(context);
 
         mVoicePreference = (ListPreference) findPreference(Settings.PREF_VOICE_MODE);
@@ -314,11 +314,11 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final Resources res = getResources();
         final String prefSubtype = Settings.readPrefAdditionalSubtypes(prefs, res);
         final InputMethodSubtype[] subtypes =
-                AdditionalSubtype.createAdditionalSubtypesArray(prefSubtype);
+                AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefSubtype);
         final StringBuilder styles = new StringBuilder();
         for (final InputMethodSubtype subtype : subtypes) {
             if (styles.length() > 0) styles.append(", ");
-            styles.append(SubtypeLocale.getSubtypeDisplayNameInSystemLocale(subtype));
+            styles.append(SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype));
         }
         customInputStyles.setSummary(styles);
     }

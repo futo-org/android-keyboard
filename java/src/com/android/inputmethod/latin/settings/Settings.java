@@ -24,9 +24,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
-import com.android.inputmethod.latin.AdditionalSubtype;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -241,7 +241,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,
             final Resources res) {
-        final String predefinedPrefSubtypes = AdditionalSubtype.createPrefSubtypes(
+        final String predefinedPrefSubtypes = AdditionalSubtypeUtils.createPrefSubtypes(
                 res.getStringArray(R.array.predefined_subtypes));
         return prefs.getString(PREF_CUSTOM_INPUT_STYLES, predefinedPrefSubtypes);
     }
