@@ -57,23 +57,36 @@ public class UserDictionaryAddWordFragment extends Fragment
     private boolean mIsDeleting = false;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        // Keep the instance so that we remember mContents when configuration changes (eg rotation)
+        setRetainInstance(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedState) {
         mRootView = inflater.inflate(R.layout.user_dictionary_add_word_fullscreen, null);
         mIsDeleting = false;
+        // If we have a non-null mContents object, it's the old value before a configuration
+        // change (eg rotation) so we need to use its values. Otherwise, read from the arguments.
         if (null == mContents) {
             mContents = new UserDictionaryAddWordContents(mRootView, getArguments());
+        } else {
+            // We create a new mContents object to account for the new situation : a word has
+            // been added to the user dictionary when we started rotating, and we are now editing
+            // it. That means in particular if the word undergoes any change, the old version should
+            // be updated, so the mContents object needs to switch to EDIT mode if it was in
+            // INSERT mode.
+            mContents = new UserDictionaryAddWordContents(mRootView,
+                    mContents /* oldInstanceToBeEdited */);
         }
         return mRootView;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         final MenuItem actionItemAdd = menu.add(0, OPTIONS_MENU_ADD, 0,
                 R.string.user_dict_settings_add_menu_title).setIcon(R.drawable.ic_menu_add);
         actionItemAdd.setShowAsAction(
