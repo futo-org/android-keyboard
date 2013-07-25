@@ -1032,8 +1032,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
         locatePreviewPlacerView();
-        if (isShowingMoreKeysPanel()) {
-            onDismissMoreKeysPanel();
+        // TODO: Remove this check
+        if (panel.isShowingInParent()) {
+            panel.dismissMoreKeysPanel();
         }
         mPreviewPlacerView.addView(panel.getContainerView());
         mMoreKeysPanel = panel;
@@ -1045,12 +1046,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     @Override
-    public void onCancelMoreKeysPanel() {
+    public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {
         PointerTracker.dismissAllMoreKeysPanels();
     }
 
     @Override
-    public void onDismissMoreKeysPanel() {
+    public void onDismissMoreKeysPanel(final MoreKeysPanel panel) {
         dimEntireKeyboard(false /* dimmed */);
         if (isShowingMoreKeysPanel()) {
             mPreviewPlacerView.removeView(mMoreKeysPanel.getContainerView());
@@ -1213,7 +1214,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public void closing() {
         dismissAllKeyPreviews();
         cancelAllMessages();
-        onDismissMoreKeysPanel();
+        PointerTracker.dismissAllMoreKeysPanels();
         mMoreKeysKeyboardCache.clear();
     }
 

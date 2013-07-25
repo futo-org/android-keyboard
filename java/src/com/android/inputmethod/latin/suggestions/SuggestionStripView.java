@@ -181,8 +181,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final MoreKeysPanel.Controller mMoreSuggestionsController =
             new MoreKeysPanel.Controller() {
         @Override
-        public void onDismissMoreKeysPanel() {
-            mMainKeyboardView.onDismissMoreKeysPanel();
+        public void onDismissMoreKeysPanel(final MoreKeysPanel panel) {
+            mMainKeyboardView.onDismissMoreKeysPanel(panel);
         }
 
         @Override
@@ -191,7 +191,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         @Override
-        public void onCancelMoreKeysPanel() {
+        public void onCancelMoreKeysPanel(final MoreKeysPanel panel) {
             mMoreSuggestionsView.dismissMoreKeysPanel();
         }
     };
