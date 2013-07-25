@@ -1206,15 +1206,18 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 eventTag + eventTime + "," + id + "," + x + "," + y + "," + size + "," + pressure);
     }
 
-    public void cancelAllMessages() {
+    public void cancelAllOngoingEvents() {
         mKeyTimerHandler.cancelAllMessages();
         mDrawingHandler.cancelAllMessages();
+        dismissAllKeyPreviews();
+        dismissGestureFloatingPreviewText();
+        dismissSlidingKeyInputPreview();
+        PointerTracker.dismissAllMoreKeysPanels();
+        PointerTracker.cancelAllPointerTrackers();
     }
 
     public void closing() {
-        dismissAllKeyPreviews();
-        cancelAllMessages();
-        PointerTracker.dismissAllMoreKeysPanels();
+        cancelAllOngoingEvents();
         mMoreKeysKeyboardCache.clear();
     }
 
