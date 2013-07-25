@@ -207,7 +207,7 @@ public final class PointerTrackerQueue {
         }
     }
 
-    public void cancelAllPointerTracker() {
+    public void cancelAllPointerTrackers() {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
                 Log.d(TAG, "cancelAllPointerTracker: " + this);

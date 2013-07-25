@@ -886,7 +886,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.onFinishInputView();
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
-            mainKeyboardView.cancelAllMessages();
+            mainKeyboardView.cancelAllOngoingEvents();
         }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
