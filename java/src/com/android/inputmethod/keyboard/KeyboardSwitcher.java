@@ -29,7 +29,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
-import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
@@ -274,8 +273,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void startDoubleTapShiftKeyTimer() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
-            final TimerProxy timer = keyboardView.getTimerProxy();
-            timer.startDoubleTapShiftKeyTimer();
+            keyboardView.getTimerProxy().startDoubleTapShiftKeyTimer();
         }
     }
 
@@ -284,8 +282,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void cancelDoubleTapShiftKeyTimer() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
-            final TimerProxy timer = keyboardView.getTimerProxy();
-            timer.cancelDoubleTapShiftKeyTimer();
+            keyboardView.getTimerProxy().cancelDoubleTapShiftKeyTimer();
         }
     }
 
@@ -293,8 +290,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public boolean isInDoubleTapShiftKeyTimeout() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
-        return (keyboardView != null)
-                ? keyboardView.getTimerProxy().isInDoubleTapShiftKeyTimeout() : false;
+        return keyboardView != null && keyboardView.getTimerProxy().isInDoubleTapShiftKeyTimeout();
     }
 
     /**
