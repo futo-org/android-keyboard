@@ -413,6 +413,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         return sPointerTrackerQueue.isAnyInSlidingKeyInput();
     }
 
+    public static void cancelAllPointerTrackers() {
+        sPointerTrackerQueue.cancelAllPointerTrackers();
+    }
+
     public static void setKeyboardActionListener(final KeyboardActionListener listener) {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
@@ -833,7 +837,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void cancelBatchInput() {
-        sPointerTrackerQueue.cancelAllPointerTracker();
+        cancelAllPointerTrackers();
         mIsDetectingGesture = false;
         if (!sInGesture) {
             return;
@@ -1273,7 +1277,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         cancelBatchInput();
-        sPointerTrackerQueue.cancelAllPointerTracker();
+        cancelAllPointerTrackers();
         sPointerTrackerQueue.releaseAllPointers(eventTime);
         onCancelEventInternal();
     }
