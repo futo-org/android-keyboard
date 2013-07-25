@@ -775,8 +775,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private static final int STATE_RIGHT = 2;
     private static final int STATE_NORMAL = 0;
     private static final int STATE_HAS_MOREKEYS = 1;
-    private static final int[] KEY_PREVIEW_BACKGROUND_DEFAULT_STATE =
-            KEY_PREVIEW_BACKGROUND_STATE_TABLE[STATE_MIDDLE][STATE_NORMAL];
 
     @Override
     public void showKeyPreview(final PointerTracker tracker) {
