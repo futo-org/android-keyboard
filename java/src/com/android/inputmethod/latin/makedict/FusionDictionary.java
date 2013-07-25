@@ -111,9 +111,15 @@ public final class FusionDictionary implements Iterable<Word> {
         Node mChildren;
         boolean mIsNotAWord; // Only a shortcut
         boolean mIsBlacklistEntry;
-        // The two following members to help with binary generation
-        int mCachedSize;
-        int mCachedAddress;
+        // mCachedSize and mCachedAddressBefore/AfterUpdate are helpers for binary dictionary
+        // generation. Before and After always hold the same value except during dictionary
+        // address compression, where the update process needs to know about both values at the
+        // same time. Updating will update the AfterUpdate value, and the code will move them
+        // to BeforeUpdate before the next update pass.
+        // The update process does not need two versions of mCachedSize.
+        int mCachedSize; // The size, in bytes, of this char group.
+        int mCachedAddressBeforeUpdate; // The address of this char group (before update)
+        int mCachedAddressAfterUpdate; // The address of this char group (after update)
 
         public CharGroup(final int[] chars, final ArrayList<WeightedString> shortcutTargets,
                 final ArrayList<WeightedString> bigrams, final int frequency,

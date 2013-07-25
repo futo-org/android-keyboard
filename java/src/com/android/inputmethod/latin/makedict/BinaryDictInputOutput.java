@@ -518,14 +518,56 @@ public final class BinaryDictInputOutput {
     }
 
     /**
-     * Finds the absolute address of a word in the dictionary.
+     * Get the offset from a position inside a current node to a target node, during update.
      *
-     * @param dict the dictionary in which to search.
-     * @param word the word we are searching for.
-     * @return the word address. If it is not found, an exception is thrown.
+     * If the current node is before the target node, the target node has not been updated yet,
+     * so we should return the offset from the old position of the current node to the old position
+     * of the target node. If on the other hand the target is before the current node, it already
+     * has been updated, so we should return the offset from the new position in the current node
+     * to the new position in the target node.
+     * @param currentNode the node containing the CharGroup where the offset will be written
+     * @param offsetFromStartOfCurrentNode the offset, in bytes, from the start of currentNode
+     * @param targetNode the target node to get the offset to
+     * @return the offset to the target node
      */
-    private static int findAddressOfWord(final FusionDictionary dict, final String word) {
-        return FusionDictionary.findWordInTree(dict.mRoot, word).mCachedAddress;
+    private static int getOffsetToTargetNodeDuringUpdate(final Node currentNode,
+            final int offsetFromStartOfCurrentNode, final Node targetNode) {
+        final boolean isTargetBeforeCurrent = (targetNode.mCachedAddressBeforeUpdate
+                < currentNode.mCachedAddressBeforeUpdate);
+        if (isTargetBeforeCurrent) {
+            return targetNode.mCachedAddressAfterUpdate
+                    - (currentNode.mCachedAddressAfterUpdate + offsetFromStartOfCurrentNode);
+        } else {
+            return targetNode.mCachedAddressBeforeUpdate
+                    - (currentNode.mCachedAddressBeforeUpdate + offsetFromStartOfCurrentNode);
+        }
+    }
+
+    /**
+     * Get the offset from a position inside a current node to a target CharGroup, during update.
+     * @param currentNode the node containing the CharGroup where the offset will be written
+     * @param offsetFromStartOfCurrentNode the offset, in bytes, from the start of currentNode
+     * @param targetCharGroup the target CharGroup to get the offset to
+     * @return the offset to the target CharGroup
+     */
+    // TODO: is there any way to factorize this method with the one above?
+    private static int getOffsetToTargetCharGroupDuringUpdate(final Node currentNode,
+            final int offsetFromStartOfCurrentNode, final CharGroup targetCharGroup) {
+        final int oldOffsetBasePoint = currentNode.mCachedAddressBeforeUpdate
+                + offsetFromStartOfCurrentNode;
+        final boolean isTargetBeforeCurrent = (targetCharGroup.mCachedAddressBeforeUpdate
+                < oldOffsetBasePoint);
+        // If the target is before the current node, then its address has already been updated.
+        // We can use the AfterUpdate member, and compare it to our own member after update.
+        // Otherwise, the AfterUpdate member is not updated yet, so we need to use the BeforeUpdate
+        // member, and of course we have to compare this to our own address before update.
+        if (isTargetBeforeCurrent) {
+            final int newOffsetBasePoint = currentNode.mCachedAddressAfterUpdate
+                    + offsetFromStartOfCurrentNode;
+            return targetCharGroup.mCachedAddressAfterUpdate - newOffsetBasePoint;
+        } else {
+            return targetCharGroup.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
+        }
     }
 
     /**
@@ -548,30 +590,28 @@ public final class BinaryDictInputOutput {
         boolean changed = false;
         int size = getGroupCountSize(node);
         for (CharGroup group : node.mData) {
-            if (group.mCachedAddress != node.mCachedAddressBeforeUpdate + size) {
+            group.mCachedAddressAfterUpdate = node.mCachedAddressAfterUpdate + size;
+            if (group.mCachedAddressAfterUpdate != group.mCachedAddressBeforeUpdate) {
                 changed = true;
-                group.mCachedAddress = node.mCachedAddressBeforeUpdate + size;
             }
             int groupSize = getGroupHeaderSize(group, formatOptions);
             if (group.isTerminal()) groupSize += FormatSpec.GROUP_FREQUENCY_SIZE;
             if (null == group.mChildren && formatOptions.mSupportsDynamicUpdate) {
                 groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
             } else if (null != group.mChildren) {
-                final int offsetBasePoint = groupSize + node.mCachedAddressBeforeUpdate + size;
-                final int offset = group.mChildren.mCachedAddressBeforeUpdate - offsetBasePoint;
                 if (formatOptions.mSupportsDynamicUpdate) {
                     groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
                 } else {
-                    groupSize += getByteSize(offset);
+                    groupSize += getByteSize(getOffsetToTargetNodeDuringUpdate(node,
+                            groupSize + size, group.mChildren));
                 }
             }
             groupSize += getShortcutListSize(group.mShortcutTargets);
             if (null != group.mBigrams) {
                 for (WeightedString bigram : group.mBigrams) {
-                    final int offsetBasePoint = groupSize + node.mCachedAddressBeforeUpdate + size
-                            + FormatSpec.GROUP_FLAGS_SIZE;
-                    final int addressOfBigram = findAddressOfWord(dict, bigram.mWord);
-                    final int offset = addressOfBigram - offsetBasePoint;
+                    final int offset = getOffsetToTargetCharGroupDuringUpdate(node,
+                            groupSize + size + FormatSpec.GROUP_FLAGS_SIZE,
+                            FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord));
                     groupSize += getByteSize(offset) + FormatSpec.GROUP_FLAGS_SIZE;
                 }
             }
@@ -603,7 +643,8 @@ public final class BinaryDictInputOutput {
             int groupCountSize = getGroupCountSize(n);
             int groupOffset = 0;
             for (final CharGroup g : n.mData) {
-                g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
+                g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate =
+                        groupCountSize + nodeOffset + groupOffset;
                 groupOffset += g.mCachedSize;
             }
             final int nodeSize = groupCountSize + groupOffset
@@ -618,36 +659,14 @@ public final class BinaryDictInputOutput {
      * Updates the cached addresses of nodes after recomputing their new positions.
      *
      * @param flatNodes the array of nodes.
-     * @param formatOptions file format options.
-     * @return the byte size of the entire stack.
      */
-    private static int updateNodeCachedAddresses(final ArrayList<Node> flatNodes,
-            final FormatOptions formatOptions) {
-        int nodeOffset = 0;
+    private static void updateNodeCachedAddresses(final ArrayList<Node> flatNodes) {
         for (final Node n : flatNodes) {
             n.mCachedAddressBeforeUpdate = n.mCachedAddressAfterUpdate;
-            int groupCountSize = getGroupCountSize(n);
-            int groupOffset = 0;
             for (final CharGroup g : n.mData) {
-                // TODO: just copy cached address after update into cached address before update
-                // when the two fields are separated.
-                g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
-                groupOffset += g.mCachedSize;
+                g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate;
             }
-            final int nodeSize = groupCountSize + groupOffset
-                    + (formatOptions.mSupportsDynamicUpdate
-                            ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
-            if (nodeSize != n.mCachedSize) {
-                // TODO: remove this test when the addresses are separated
-                throw new RuntimeException("Bug : Stored and computed node size differ");
-            }
-            if (nodeOffset != n.mCachedAddressAfterUpdate) {
-                // TODO: remove this test when the code is well tested
-                throw new RuntimeException("Bug : Stored and computed node address differ");
-            }
-            nodeOffset += n.mCachedSize;
         }
-        return nodeOffset;
     }
 
     /**
@@ -665,7 +684,7 @@ public final class BinaryDictInputOutput {
                     // Assign my address to children's parent address
                     // Here BeforeUpdate and AfterUpdate addresses have the same value, so it
                     // does not matter which we use.
-                    group.mChildren.mCachedParentAddress = group.mCachedAddress
+                    group.mChildren.mCachedParentAddress = group.mCachedAddressAfterUpdate
                             - group.mChildren.mCachedAddressAfterUpdate;
                 }
             }
@@ -710,7 +729,7 @@ public final class BinaryDictInputOutput {
                 nodeStartOffset += newNodeSize;
                 changesDone |= changed;
             }
-            updateNodeCachedAddresses(flatNodes, formatOptions);
+            updateNodeCachedAddresses(flatNodes);
             ++passes;
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
@@ -1003,10 +1022,11 @@ public final class BinaryDictInputOutput {
         }
         int groupAddress = index;
         for (int i = 0; i < groupCount; ++i) {
-            CharGroup group = node.mData.get(i);
-            if (index != group.mCachedAddress) throw new RuntimeException("Bug: write index is not "
-                    + "the same as the cached address of the group : "
-                    + index + " <> " + group.mCachedAddress);
+            final CharGroup group = node.mData.get(i);
+            if (index != group.mCachedAddressAfterUpdate) {
+                throw new RuntimeException("Bug: write index is not the same as the cached address "
+                        + "of the group : " + index + " <> " + group.mCachedAddressAfterUpdate);
+            }
             groupAddress += getGroupHeaderSize(group, formatOptions);
             // Sanity checks.
             if (DBG && group.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
@@ -1018,14 +1038,14 @@ public final class BinaryDictInputOutput {
             final int childrenOffset = null == group.mChildren
                     ? FormatSpec.NO_CHILDREN_ADDRESS
                             : group.mChildren.mCachedAddressAfterUpdate - groupAddress;
-            byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset, formatOptions);
-            buffer[index++] = flags;
+            buffer[index++] =
+                    makeCharGroupFlags(group, groupAddress, childrenOffset, formatOptions);
 
             if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
                 index = writeParentAddress(buffer, index, parentAddress, formatOptions);
             } else {
-                index = writeParentAddress(buffer, index,
-                        parentAddress + (node.mCachedAddressAfterUpdate - group.mCachedAddress),
+                index = writeParentAddress(buffer, index, parentAddress
+                        + (node.mCachedAddressAfterUpdate - group.mCachedAddressAfterUpdate),
                         formatOptions);
             }
 
@@ -1076,7 +1096,7 @@ public final class BinaryDictInputOutput {
                     final WeightedString bigram = bigramIterator.next();
                     final CharGroup target =
                             FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord);
-                    final int addressOfBigram = target.mCachedAddress;
+                    final int addressOfBigram = target.mCachedAddressAfterUpdate;
                     final int unigramFrequencyForThisWord = target.mFrequency;
                     ++groupAddress;
                     final int offset = addressOfBigram - groupAddress;
