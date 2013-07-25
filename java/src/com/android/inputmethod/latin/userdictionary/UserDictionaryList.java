@@ -107,13 +107,19 @@ public class UserDictionaryList extends PreferenceFragment {
     protected void createUserDictSettings(PreferenceGroup userDictGroup) {
         final Activity activity = getActivity();
         userDictGroup.removeAll();
-        final TreeSet<String> localeList =
+        final TreeSet<String> localeSet =
                 UserDictionaryList.getUserDictionaryLocalesSet(activity);
 
-        if (localeList.isEmpty()) {
+        if (localeSet.size() > 1) {
+            // Have an "All languages" entry in the languages list if there are two or more active
+            // languages
+            localeSet.add("");
+        }
+
+        if (localeSet.isEmpty()) {
             userDictGroup.addPreference(createUserDictionaryPreference(null, activity));
         } else {
-            for (String locale : localeList) {
+            for (String locale : localeSet) {
                 userDictGroup.addPreference(createUserDictionaryPreference(locale, activity));
             }
         }
