@@ -34,7 +34,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     protected final KeyDetector mKeyDetector;
-    private Controller mController;
+    private Controller mController = EMPTY_CONTROLLER;
     protected KeyboardActionListener mListener;
     private int mOriginX;
     private int mOriginY;
@@ -173,9 +173,11 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     @Override
-    public boolean dismissMoreKeysPanel() {
-        if (mController == null) return false;
-        return mController.onDismissMoreKeysPanel();
+    public void dismissMoreKeysPanel() {
+        if (!isShowingInParent()) {
+            return;
+        }
+        mController.onDismissMoreKeysPanel();
     }
 
     @Override
