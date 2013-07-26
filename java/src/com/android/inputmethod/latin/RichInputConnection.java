@@ -571,12 +571,13 @@ public final class RichInputConnection {
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
-        final CharSequence before = getTextBeforeCursor(1, 0);
-        final CharSequence after = getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(before) && !settingsValues.isWordSeparator(before.charAt(0))
-                && !settingsValues.isWordConnector(before.charAt(0))) {
+        final int codePointBeforeCursor = getCodePointBeforeCursor();
+        if (Constants.NOT_A_CODE != codePointBeforeCursor
+                && !settingsValues.isWordSeparator(codePointBeforeCursor)
+                && !settingsValues.isWordConnector(codePointBeforeCursor)) {
             return true;
         }
+        final CharSequence after = getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(after) && !settingsValues.isWordSeparator(after.charAt(0))
                 && !settingsValues.isWordConnector(after.charAt(0))) {
             return true;
@@ -586,9 +587,8 @@ public final class RichInputConnection {
 
     public void removeTrailingSpace() {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
-        final CharSequence lastOne = getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Constants.CODE_SPACE) {
+        final int codePointBeforeCursor = getCodePointBeforeCursor();
+        if (Constants.CODE_SPACE == codePointBeforeCursor) {
             deleteSurroundingText(1, 0);
         }
     }
