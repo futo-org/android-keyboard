@@ -381,6 +381,7 @@ typedef enum {
     CT_TRANSPOSITION,
     CT_COMPLETION,
     CT_TERMINAL,
+    CT_TERMINAL_INSERTION,
     // Create new word with space omission
     CT_NEW_WORD_SPACE_OMITTION,
     // Create new word with space substitution

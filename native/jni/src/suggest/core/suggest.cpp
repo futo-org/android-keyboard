@@ -365,17 +365,17 @@ void Suggest::processTerminalDicNode(
     if (!dicNode->isTerminalWordNode()) {
         return;
     }
-    if (TRAVERSAL->needsToTraverseAllUserInput()
-            && dicNode->getInputIndex(0) < traverseSession->getInputSize()) {
-        return;
-    }
-
     if (dicNode->shouldBeFilterdBySafetyNetForBigram()) {
         return;
     }
     // Create a non-cached node here.
     DicNode terminalDicNode;
     DicNodeUtils::initByCopy(dicNode, &terminalDicNode);
+    if (TRAVERSAL->needsToTraverseAllUserInput()
+            && dicNode->getInputIndex(0) < traverseSession->getInputSize()) {
+        Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, 0,
+                &terminalDicNode, traverseSession->getMultiBigramMap());
+    }
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL, traverseSession, 0,
             &terminalDicNode, traverseSession->getMultiBigramMap());
     traverseSession->getDicTraverseCache()->copyPushTerminal(&terminalDicNode);
