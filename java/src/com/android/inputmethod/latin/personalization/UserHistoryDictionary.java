@@ -27,12 +27,11 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.ByteArrayWrapper;
-import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
@@ -44,9 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -88,28 +85,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     // Should always be false except when we use this class for test
     @UsedForTesting boolean isTest = false;
 
-    private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
-            sLangDictCache = CollectionUtils.newConcurrentHashMap();
-
-    public static synchronized UserHistoryDictionary getInstance(
-            final Context context, final String locale, final SharedPreferences sp) {
-        if (sLangDictCache.containsKey(locale)) {
-            final SoftReference<UserHistoryDictionary> ref = sLangDictCache.get(locale);
-            final UserHistoryDictionary dict = ref == null ? null : ref.get();
-            if (dict != null) {
-                if (PROFILE_SAVE_RESTORE) {
-                    Log.w(TAG, "Use cached UserHistoryDictionary for " + locale);
-                }
-                return dict;
-            }
-        }
-        final UserHistoryDictionary dict =
-                new UserHistoryDictionary(context, locale, sp);
-        sLangDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
-        return dict;
-    }
-
-    private UserHistoryDictionary(final Context context, final String locale,
+    /* package */ UserHistoryDictionary(final Context context, final String locale,
             final SharedPreferences sp) {
         super(context, Dictionary.TYPE_USER_HISTORY);
         mLocale = locale;

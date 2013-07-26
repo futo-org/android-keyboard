@@ -75,6 +75,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -563,7 +564,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(oldContactsDictionary);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserHistoryDictionary = UserHistoryDictionary.getInstance(this, localeStr, prefs);
+        mUserHistoryDictionary =
+                PersonalizationDictionaryHelper.getUserHistoryDictionary(this, localeStr, prefs);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
     }
 
