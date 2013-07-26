@@ -246,22 +246,35 @@ public final class RichInputConnection {
                 mCommittedTextBeforeComposingText.length());
     }
 
-    public CharSequence getTextBeforeCursor(final int i, final int j) {
-        // TODO: use mCommittedTextBeforeComposingText if possible to improve performance
+    public CharSequence getTextBeforeCursor(final int n, final int flags) {
+        final int cachedLength =
+                mCommittedTextBeforeComposingText.length() + mComposingText.length();
+        // If we have enough characters to satisfy the request, or if we have all characters in
+        // the text field, then we can return the cached version right away.
+        if (cachedLength >= n || cachedLength >= mCurrentCursorPosition) {
+            final StringBuilder s = new StringBuilder(mCommittedTextBeforeComposingText);
+            s.append(mComposingText);
+            if (s.length() > n) {
+                s.delete(0, s.length() - n);
+            }
+            return s;
+        }
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) return mIC.getTextBeforeCursor(i, j);
+        if (null != mIC) {
+            return mIC.getTextBeforeCursor(n, flags);
+        }
         return null;
     }
 
-    public CharSequence getTextAfterCursor(final int i, final int j) {
+    public CharSequence getTextAfterCursor(final int n, final int flags) {
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) return mIC.getTextAfterCursor(i, j);
+        if (null != mIC) return mIC.getTextAfterCursor(n, flags);
         return null;
     }
 
-    public void deleteSurroundingText(final int i, final int j) {
+    public void deleteSurroundingText(final int beforeLength, final int afterLength) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
-        final int remainingChars = mComposingText.length() - i;
+        final int remainingChars = mComposingText.length() - beforeLength;
         if (remainingChars >= 0) {
             mComposingText.setLength(remainingChars);
         } else {
@@ -271,15 +284,15 @@ public final class RichInputConnection {
                     + remainingChars, 0);
             mCommittedTextBeforeComposingText.setLength(len);
         }
-        if (mCurrentCursorPosition > i) {
-            mCurrentCursorPosition -= i;
+        if (mCurrentCursorPosition > beforeLength) {
+            mCurrentCursorPosition -= beforeLength;
         } else {
             mCurrentCursorPosition = 0;
         }
         if (null != mIC) {
-            mIC.deleteSurroundingText(i, j);
+            mIC.deleteSurroundingText(beforeLength, afterLength);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.richInputConnection_deleteSurroundingText(i, j);
+                ResearchLogger.richInputConnection_deleteSurroundingText(beforeLength, afterLength);
             }
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
@@ -362,7 +375,7 @@ public final class RichInputConnection {
         }
     }
 
-    public void setComposingText(final CharSequence text, final int i) {
+    public void setComposingText(final CharSequence text, final int newCursorPosition) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCurrentCursorPosition += text.length() - mComposingText.length();
@@ -370,24 +383,24 @@ public final class RichInputConnection {
         mComposingText.append(text);
         // TODO: support values of i != 1. At this time, this is never called with i != 1.
         if (null != mIC) {
-            mIC.setComposingText(text, i);
+            mIC.setComposingText(text, newCursorPosition);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.richInputConnection_setComposingText(text, i);
+                ResearchLogger.richInputConnection_setComposingText(text, newCursorPosition);
             }
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public void setSelection(final int from, final int to) {
+    public void setSelection(final int start, final int end) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         if (null != mIC) {
-            mIC.setSelection(from, to);
+            mIC.setSelection(start, end);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.richInputConnection_setSelection(from, to);
+                ResearchLogger.richInputConnection_setSelection(start, end);
             }
         }
-        mCurrentCursorPosition = from;
+        mCurrentCursorPosition = start;
         mCommittedTextBeforeComposingText.setLength(0);
         mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
     }
@@ -425,7 +438,7 @@ public final class RichInputConnection {
     public String getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
-        final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        final CharSequence prev = getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         if (DEBUG_PREVIOUS_TEXT && null != prev) {
             final int checkLength = LOOKBACK_CHARACTER_NUM - 1;
             final String reference = prev.length() <= checkLength ? prev.toString()
@@ -630,7 +643,7 @@ public final class RichInputConnection {
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
         final String periodSpace = ". ";
-        if (!periodSpace.equals(textBeforeCursor)) {
+        if (!TextUtils.equals(periodSpace, textBeforeCursor)) {
             // Theoretically we should not be coming here if there isn't ". " before the
             // cursor, but the application may be changing the text while we are typing, so
             // anything goes. We should not crash.
