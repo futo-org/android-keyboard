@@ -103,7 +103,8 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
         }
     } else {
         // Restart recognition at the root.
-        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(), MAX_RESULTS);
+        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),
+                MAX_RESULTS);
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getBinaryDictionaryInfo(),

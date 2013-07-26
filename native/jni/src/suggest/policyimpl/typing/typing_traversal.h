@@ -151,8 +151,9 @@ class TypingTraversal : public Traversal {
                 dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
-    AK_FORCE_INLINE int getMaxCacheSize() const {
-        return ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
+    AK_FORCE_INLINE int getMaxCacheSize(const int inputSize) const {
+        return (inputSize <= 1) ? ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT
+                : ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
     }
 
     AK_FORCE_INLINE bool isPossibleOmissionChildNode(
