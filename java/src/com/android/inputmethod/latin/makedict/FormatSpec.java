@@ -167,7 +167,7 @@ public final class FormatSpec {
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
-    static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
     static final int PARENT_ADDRESS_SIZE = 3;
     static final int FORWARD_LINK_ADDRESS_SIZE = 3;

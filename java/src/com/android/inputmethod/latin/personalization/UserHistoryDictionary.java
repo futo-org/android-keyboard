@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,6 +23,11 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.ExpandableDictionary;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.settings.Settings;
@@ -152,8 +157,8 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
      * The second word may not be null (a NullPointerException would be thrown).
      */
     public int addToUserHistory(final String word1, final String word2, final boolean isValid) {
-        if (word2.length() >= Constants.Dictionary.MAX_WORD_LENGTH ||
-                (word1 != null && word1.length() >= Constants.Dictionary.MAX_WORD_LENGTH)) {
+        if (word2.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (word1 != null && word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return -1;
         }
         if (mBigramListLock.tryLock()) {
@@ -244,8 +249,8 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
 
             @Override
             public void setBigram(final String word1, final String word2, final int frequency) {
-                if (word1.length() < Constants.Dictionary.MAX_WORD_LENGTH
-                        && word2.length() < Constants.Dictionary.MAX_WORD_LENGTH) {
+                if (word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
+                        && word2.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
                     profTotal++;
                     if (DBG_SAVE_RESTORE) {
                         Log.d(TAG, "load bigram: " + word1 + "," + word2 + "," + frequency);
@@ -404,7 +409,8 @@ public final class UserHistoryDictionary extends ExpandableDictionary {
     }
 
     @UsedForTesting
-    void forceAddWordForTest(final String word1, final String word2, final boolean isValid) {
+    /* package for test */ void forceAddWordForTest(
+            final String word1, final String word2, final boolean isValid) {
         mBigramListLock.lock();
         try {
             addToUserHistory(word1, word2, isValid);

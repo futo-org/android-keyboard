@@ -181,7 +181,7 @@ public final class BinaryDictIOUtils {
         final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
-        for (int depth = 0; depth < Constants.Dictionary.MAX_WORD_LENGTH; ++depth) {
+        for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
@@ -746,7 +746,7 @@ public final class BinaryDictIOUtils {
         final int[] codePoints = FusionDictionary.getCodePoints(word);
         final int wordLen = codePoints.length;
 
-        for (int depth = 0; depth < Constants.Dictionary.MAX_WORD_LENGTH; ++depth) {
+        for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) break;
             nodeOriginAddress = buffer.position();
             int nodeParentAddress = -1;

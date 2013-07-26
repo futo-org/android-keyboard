@@ -126,21 +126,16 @@ public final class Constants {
         }
     }
 
-    public static final class Dictionary {
-        // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
-        public static final int MAX_WORD_LENGTH = 48;
-
-        private Dictionary() {
-             // This utility class is no publicly instantiable.
-        }
-    }
-
     public static final int NOT_A_CODE = -1;
 
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
     public static final int SPELL_CHECKER_COORDINATE = -3;
     public static final int EXTERNAL_KEYBOARD_COORDINATE = -4;
+
+
+    // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
+    public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
 
     public static boolean isValidCoordinate(final int coordinate) {
         // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},

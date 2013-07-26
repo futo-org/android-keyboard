@@ -26,7 +26,7 @@ import java.util.Arrays;
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public final class WordComposer {
-    private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     public static final int CAPS_MODE_OFF = 0;

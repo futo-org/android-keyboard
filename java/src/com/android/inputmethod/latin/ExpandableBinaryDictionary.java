@@ -48,7 +48,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * The maximum length of a word in this dictionary.
      */
-    protected static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
     /**
      * A static map of locks, each of which controls access to a single binary dictionary file. They
