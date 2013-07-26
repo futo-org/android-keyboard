@@ -34,6 +34,7 @@ const float ScoringParams::OMISSION_COST = 0.458f;
 const float ScoringParams::OMISSION_COST_SAME_CHAR = 0.491f;
 const float ScoringParams::OMISSION_COST_FIRST_CHAR = 0.582f;
 const float ScoringParams::INSERTION_COST = 0.730f;
+const float ScoringParams::TERMINAL_INSERTION_COST = 0.93f;
 const float ScoringParams::INSERTION_COST_SAME_CHAR = 0.586f;
 const float ScoringParams::INSERTION_COST_PROXIMITY_CHAR = 0.70f;
 const float ScoringParams::INSERTION_COST_FIRST_CHAR = 0.623f;

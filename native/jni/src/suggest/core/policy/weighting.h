@@ -67,6 +67,10 @@ class Weighting {
             const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode) const = 0;
 
+    virtual float getTerminalInsertionCost(
+            const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
+
     virtual float getTerminalLanguageCost(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode,
             float dicNodeLanguageImprobability) const = 0;
