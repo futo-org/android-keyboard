@@ -38,7 +38,7 @@ public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
-    private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+    private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
     // Must be equal to MAX_RESULTS in native/jni/src/defines.h
     private static final int MAX_RESULTS = 18;
 

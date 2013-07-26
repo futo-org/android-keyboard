@@ -49,7 +49,7 @@ public final class LastComposedWord {
     public final String mPrevWord;
     public final int mCapitalizedMode;
     public final InputPointers mInputPointers =
-            new InputPointers(Constants.Dictionary.MAX_WORD_LENGTH);
+            new InputPointers(Constants.DICTIONARY_MAX_WORD_LENGTH);
 
     private boolean mActive;
 

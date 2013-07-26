@@ -51,7 +51,7 @@ public final class RichInputConnection {
     private static final boolean DEBUG_PREVIOUS_TEXT = false;
     private static final boolean DEBUG_BATCH_NESTING = false;
     // Provision for a long word pair and a separator
-    private static final int LOOKBACK_CHARACTER_NUM = Constants.Dictionary.MAX_WORD_LENGTH * 2 + 1;
+    private static final int LOOKBACK_CHARACTER_NUM = Constants.DICTIONARY_MAX_WORD_LENGTH * 2 + 1;
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
     private static final int INVALID_CURSOR_POSITION = -1;
 

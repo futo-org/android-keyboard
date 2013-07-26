@@ -462,7 +462,7 @@ public final class FusionDictionary implements Iterable<Word> {
             final ArrayList<WeightedString> shortcutTargets,
             final boolean isNotAWord, final boolean isBlacklistEntry) {
         assert(frequency >= 0 && frequency <= 255);
-        if (word.length >= Constants.Dictionary.MAX_WORD_LENGTH) {
+        if (word.length >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
             MakedictLog.w("Ignoring a word that is too long: word.length = " + word.length);
             return;
         }
