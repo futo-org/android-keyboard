@@ -29,6 +29,7 @@ class ScoringParams {
     static const int THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED;
     static const float AUTOCORRECT_OUTPUT_THRESHOLD;
     static const int MAX_CACHE_DIC_NODE_SIZE;
+    static const int MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT;
     static const int THRESHOLD_SHORT_WORD_LENGTH;
 
     // Numerically optimized parameters (currently for tap typing only).
