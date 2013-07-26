@@ -53,7 +53,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Locally gathers stats about the words user types and various other signals like auto-correction
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
-public final class UserHistoryDictionary extends ExpandableDictionary {
+public class UserHistoryDictionary extends ExpandableDictionary {
     private static final String TAG = UserHistoryDictionary.class.getSimpleName();
     private static final String NAME = UserHistoryDictionary.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
