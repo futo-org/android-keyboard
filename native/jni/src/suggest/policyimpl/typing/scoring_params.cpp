@@ -24,6 +24,7 @@ const int ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED = 120;
 const float ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD = 1.0f;
 // TODO: Unlimit max cache dic node size
 const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE = 170;
+const int ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT = 310;
 const int ScoringParams::THRESHOLD_SHORT_WORD_LENGTH = 4;
 
 const float ScoringParams::DISTANCE_WEIGHT_LENGTH = 0.132f;

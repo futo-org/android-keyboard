@@ -24,7 +24,8 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_release_listener.h"
 
-#define MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY 200
+// The biggest value among MAX_CACHE_DIC_NODE_SIZE, MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT, ...
+#define MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY 310
 
 namespace latinime {
 

@@ -47,7 +47,7 @@ class Traversal {
     virtual float getMaxSpatialDistance() const = 0;
     virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
     virtual int getDefaultExpandDicNodeSize() const = 0;
-    virtual int getMaxCacheSize() const = 0;
+    virtual int getMaxCacheSize(const int inputSize) const = 0;
     virtual bool isPossibleOmissionChildNode(const DicTraverseSession *const traverseSession,
             const DicNode *const parentDicNode, const DicNode *const dicNode) const = 0;
     virtual bool isGoodToTraverseNextWord(const DicNode *const dicNode) const = 0;
