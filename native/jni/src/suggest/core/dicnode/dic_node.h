@@ -157,9 +157,10 @@ class DicNode {
         PROF_NODE_COPY(&parentNode->mProfiler, mProfiler);
     }
 
-    void initAsChild(DicNode *dicNode, const int pos, const int childrenPos, const int probability,
-            const bool isTerminal, const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
+    void initAsChild(const DicNode *const dicNode, const int pos, const int childrenPos,
+            const int probability, const bool isTerminal, const bool hasChildren,
+            const bool isBlacklistedOrNotAWord, const uint16_t mergedNodeCodePointCount,
+            const int *const mergedNodeCodePoints) {
         mIsUsed = true;
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;

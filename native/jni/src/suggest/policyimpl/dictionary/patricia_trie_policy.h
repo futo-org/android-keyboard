@@ -60,6 +60,10 @@ class PatriciaTriePolicy : public DictionaryStructurePolicy {
 
     PatriciaTriePolicy() {}
     ~PatriciaTriePolicy() {}
+
+    int createAndGetLeavingChildNode(const DicNode *const dicNode, int pos,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
 };
 } // namespace latinime
 #endif // LATINIME_PATRICIA_TRIE_POLICY_H
