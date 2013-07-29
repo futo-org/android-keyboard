@@ -90,8 +90,9 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             final String locale = "testRandomWords";
             final String fileName = "UserHistoryDictionary." + locale + ".dict";
             dictFile = new File(getContext().getFilesDir(), fileName);
-            final UserHistoryDictionary dict = UserHistoryDictionary.getInstance(getContext(),
-                    locale, mPrefs);
+            final UserHistoryDictionary dict =
+                    PersonalizationDictionaryHelper.getUserHistoryDictionary(
+                            getContext(), locale, mPrefs);
             dict.isTest = true;
 
             addToDict(dict, words);
@@ -141,8 +142,9 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             for (int i = 0; i < numberOfLanguageSwitching; i++) {
                 final int index = i % numberOfLanguages;
                 // Switch languages to locales[index].
-                final UserHistoryDictionary dict = UserHistoryDictionary.getInstance(getContext(),
-                        locales[index], mPrefs);
+                final UserHistoryDictionary dict =
+                        PersonalizationDictionaryHelper.getUserHistoryDictionary(
+                                getContext(), locales[index], mPrefs);
                 final List<String> words = generateWords(
                         numberOfWordsIntertedForEachLanguageSwitch, random);
                 // Add random words to the user history dictionary.
