@@ -22,7 +22,6 @@
 #include "suggest/core/dicnode/dic_node_proximity_filter.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/policy/dictionary_structure_policy.h"
@@ -67,68 +66,6 @@ namespace latinime {
     }
 }
 
-/* static */ int DicNodeUtils::createAndGetLeavingChildNode(DicNode *dicNode, int pos,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const DicNodeProximityFilter *const childrenFilter,
-        DicNodeVector *childDicNodes) {
-    int nextPos = pos;
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &pos);
-    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
-    const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
-    const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
-    const bool isBlacklistedOrNotAWord = BinaryFormat::hasBlacklistedOrNotAWordFlag(flags);
-
-    int codePoint = BinaryFormat::getCodePointAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &pos);
-    ASSERT(NOT_A_CODE_POINT != codePoint);
-    // TODO: optimize this
-    int mergedNodeCodePoints[MAX_WORD_LENGTH];
-    uint16_t mergedNodeCodePointCount = 0;
-    mergedNodeCodePoints[mergedNodeCodePointCount++] = codePoint;
-
-    do {
-        const int nextCodePoint = hasMultipleChars
-                ? BinaryFormat::getCodePointAndForwardPointer(
-                        binaryDictionaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
-        const bool isLastChar = (NOT_A_CODE_POINT == nextCodePoint);
-        if (!isLastChar) {
-            mergedNodeCodePoints[mergedNodeCodePointCount++] = nextCodePoint;
-        }
-        codePoint = nextCodePoint;
-    } while (NOT_A_CODE_POINT != codePoint);
-
-    const int probability = isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(
-            binaryDictionaryInfo->getDictRoot(), pos) : NOT_A_PROBABILITY;
-    pos = BinaryFormat::skipProbability(flags, pos);
-    int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
-            binaryDictionaryInfo->getDictRoot(), flags, pos) : NOT_A_DICT_POS;
-    const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
-            binaryDictionaryInfo->getDictRoot(), flags, pos);
-
-    if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
-        return siblingPos;
-    }
-    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, probability, isTerminal,
-            hasChildren, isBlacklistedOrNotAWord, mergedNodeCodePointCount, mergedNodeCodePoints);
-    return siblingPos;
-}
-
-/* static */ void DicNodeUtils::createAndGetAllLeavingChildNodes(DicNode *dicNode,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes) {
-    if (!dicNode->hasChildren()) {
-        return;
-    }
-    int nextPos = dicNode->getChildrenPos();
-    const int childCount = BinaryFormat::getGroupCountAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &nextPos);
-    for (int i = 0; i < childCount; i++) {
-        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
-                childrenFilter, childDicNodes);
-    }
-}
-
 /* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
         const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes) {
     getProximityChildDicNodes(dicNode, binaryDictionaryInfo, 0, 0, false, childDicNodes);
@@ -145,8 +82,8 @@ namespace latinime {
     if (!dicNode->isLeavingNode()) {
         DicNodeUtils::createAndGetPassingChildNode(dicNode, &childrenFilter, childDicNodes);
     } else {
-        DicNodeUtils::createAndGetAllLeavingChildNodes(
-                dicNode, binaryDictionaryInfo, &childrenFilter, childDicNodes);
+        binaryDictionaryInfo->getStructurePolicy()->createAndGetAllChildNodes(dicNode,
+                binaryDictionaryInfo, &childrenFilter, childDicNodes);
     }
 }
 
