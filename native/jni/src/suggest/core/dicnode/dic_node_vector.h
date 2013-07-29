@@ -62,7 +62,7 @@ class DicNodeVector {
         mDicNodes.back().initAsPassingChild(dicNode);
     }
 
-    void pushLeavingChild(DicNode *dicNode, const int pos, const int childrenPos,
+    void pushLeavingChild(const DicNode *const dicNode, const int pos, const int childrenPos,
             const int probability, const bool isTerminal, const bool hasChildren,
             const bool isBlacklistedOrNotAWord, const uint16_t mergedNodeCodePointCount,
             const int *const mergedNodeCodePoints) {

@@ -30,7 +30,16 @@ const PatriciaTriePolicy PatriciaTriePolicy::sInstance;
 void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const {
-    // TODO: Move children creating methods form DicNodeUtils.
+    if (!dicNode->hasChildren()) {
+        return;
+    }
+    int nextPos = dicNode->getChildrenPos();
+    const int childCount = BinaryFormat::getGroupCountAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &nextPos);
+    for (int i = 0; i < childCount; i++) {
+        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
+                nodeFilter, childDicNodes);
+    }
 }
 
 int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
@@ -81,6 +90,52 @@ int PatriciaTriePolicy::getBigramsPositionOfNode(
         const int nodePos) const {
     return BinaryFormat::getBigramListPositionForWordPosition(
             binaryDictionaryInfo->getDictRoot(), nodePos);
+}
+
+int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode, int pos,
+        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const NodeFilter *const childrenFilter, DicNodeVector *childDicNodes) const {
+    const int nextPos = pos;
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &pos);
+    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
+    const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
+    const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
+    const bool isBlacklistedOrNotAWord = BinaryFormat::hasBlacklistedOrNotAWordFlag(flags);
+
+    int codePoint = BinaryFormat::getCodePointAndForwardPointer(
+            binaryDictionaryInfo->getDictRoot(), &pos);
+    ASSERT(NOT_A_CODE_POINT != codePoint);
+    // TODO: optimize this
+    int mergedNodeCodePoints[MAX_WORD_LENGTH];
+    uint16_t mergedNodeCodePointCount = 0;
+    mergedNodeCodePoints[mergedNodeCodePointCount++] = codePoint;
+
+    do {
+        const int nextCodePoint = hasMultipleChars
+                ? BinaryFormat::getCodePointAndForwardPointer(
+                        binaryDictionaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
+        const bool isLastChar = (NOT_A_CODE_POINT == nextCodePoint);
+        if (!isLastChar) {
+            mergedNodeCodePoints[mergedNodeCodePointCount++] = nextCodePoint;
+        }
+        codePoint = nextCodePoint;
+    } while (NOT_A_CODE_POINT != codePoint);
+
+    const int probability = isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(
+            binaryDictionaryInfo->getDictRoot(), pos) : NOT_A_PROBABILITY;
+    pos = BinaryFormat::skipProbability(flags, pos);
+    int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
+            binaryDictionaryInfo->getDictRoot(), flags, pos) : NOT_A_DICT_POS;
+    const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
+            binaryDictionaryInfo->getDictRoot(), flags, pos);
+
+    if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
+        return siblingPos;
+    }
+    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, probability, isTerminal,
+            hasChildren, isBlacklistedOrNotAWord, mergedNodeCodePointCount, mergedNodeCodePoints);
+    return siblingPos;
 }
 
 } // namespace latinime

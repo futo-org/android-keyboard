@@ -58,12 +58,6 @@ class DicNodeUtils {
             const DicNode *const node, MultiBigramMap *multiBigramMap);
     static void createAndGetPassingChildNode(DicNode *dicNode,
             const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
-    static void createAndGetAllLeavingChildNodes(DicNode *dicNode,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
-    static int createAndGetLeavingChildNode(DicNode *dicNode, int pos,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_UTILS_H
