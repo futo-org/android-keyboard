@@ -21,6 +21,8 @@
 
 namespace latinime {
 
+class DicNode;
+
 class DicNodeReleaseListener {
  public:
     DicNodeReleaseListener() {}
