@@ -155,7 +155,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestionStripView mSuggestionStripView;
     // Never null
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
-    @UsedForTesting Suggest mSuggest;
+    private Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
     private AppWorkaroundsUtils mAppWorkAroundsUtils = new AppWorkaroundsUtils();
 
@@ -2243,7 +2243,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private SuggestedWords getSuggestedWords(final int sessionId) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-        if (keyboard == null || mSuggest == null) {
+        final Suggest suggest = mSuggest;
+        if (keyboard == null || suggest == null) {
             return SuggestedWords.EMPTY;
         }
         // Get the word on which we should search the bigrams. If we are composing a word, it's
@@ -2253,7 +2254,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String prevWord =
                 mConnection.getNthPreviousWord(mSettings.getCurrent().mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
-        return mSuggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
+        return suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
                 mSettings.getBlockPotentiallyOffensive(),
                 mSettings.getCurrent().mCorrectionEnabled, sessionId);
     }
@@ -2855,6 +2856,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     /* package for test */ String getFirstSuggestedWord() {
         return mSuggestedWords.size() > 0 ? mSuggestedWords.getWord(0) : null;
+    }
+
+    // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
+    @UsedForTesting
+    /* package for test */ boolean isCurrentlyWaitingForMainDictionary() {
+        return mSuggest.isCurrentlyWaitingForMainDictionary();
+    }
+
+    // DO NOT USE THIS for any other purpose than testing. This is information private to LatinIME.
+    @UsedForTesting
+    /* package for test */ boolean hasMainDictionary() {
+        return mSuggest.hasMainDictionary();
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
