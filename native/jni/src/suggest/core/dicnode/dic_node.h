@@ -18,10 +18,10 @@
 #define LATINIME_DIC_NODE_H
 
 #include "defines.h"
-#include "suggest/core/dicnode/dic_node_state.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
-#include "suggest/core/dicnode/dic_node_properties.h"
 #include "suggest/core/dicnode/dic_node_release_listener.h"
+#include "suggest/core/dicnode/internal/dic_node_state.h"
+#include "suggest/core/dicnode/internal/dic_node_properties.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "utils/char_utils.h"
 
