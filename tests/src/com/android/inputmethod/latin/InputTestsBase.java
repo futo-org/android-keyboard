@@ -225,7 +225,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void waitForDictionaryToBeLoaded() {
         int remainingAttempts = 300;
-        while (remainingAttempts > 0 && mLatinIME.mSuggest.isCurrentlyWaitingForMainDictionary()) {
+        while (remainingAttempts > 0 && mLatinIME.isCurrentlyWaitingForMainDictionary()) {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -234,7 +234,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 --remainingAttempts;
             }
         }
-        if (!mLatinIME.mSuggest.hasMainDictionary()) {
+        if (!mLatinIME.hasMainDictionary()) {
             throw new RuntimeException("Can't initialize the main dictionary");
         }
     }
