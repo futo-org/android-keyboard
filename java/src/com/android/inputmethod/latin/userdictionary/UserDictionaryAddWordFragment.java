@@ -60,6 +60,7 @@ public class UserDictionaryAddWordFragment extends Fragment
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().getActionBar().setTitle(R.string.edit_personal_dictionary);
         // Keep the instance so that we remember mContents when configuration changes (eg rotation)
         setRetainInstance(true);
     }
@@ -82,6 +83,8 @@ public class UserDictionaryAddWordFragment extends Fragment
             mContents = new UserDictionaryAddWordContents(mRootView,
                     mContents /* oldInstanceToBeEdited */);
         }
+        getActivity().getActionBar().setSubtitle(UserDictionarySettingsUtils.getLocaleDisplayName(
+                getActivity(), mContents.getCurrentUserDictionaryLocale()));
         return mRootView;
     }
 
