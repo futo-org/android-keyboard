@@ -539,35 +539,32 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final String localeStr = subtypeLocale.toString();
 
-        final ContactsBinaryDictionary oldContactsDictionary;
-        if (mSuggest != null) {
-            oldContactsDictionary = mSuggest.getContactsDictionary();
-            mSuggest.close();
-        } else {
-            oldContactsDictionary = null;
-        }
-        mSuggest = new Suggest(this /* Context */, subtypeLocale,
+        final Suggest newSuggest = new Suggest(this /* Context */, subtypeLocale,
                 this /* SuggestInitializationListener */);
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mCorrectionEnabled) {
-            mSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
+            newSuggest.setAutoCorrectionThreshold(settingsValues.mAutoCorrectionThreshold);
         }
 
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.getInstance().initSuggest(mSuggest);
+            ResearchLogger.getInstance().initSuggest(newSuggest);
         }
 
         mUserDictionary = new UserBinaryDictionary(this, localeStr);
         mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
-        mSuggest.setUserDictionary(mUserDictionary);
-
-        resetContactsDictionary(oldContactsDictionary);
+        newSuggest.setUserDictionary(mUserDictionary);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         mUserHistoryPredictionDictionary = PersonalizationDictionaryHelper
                 .getUserHistoryPredictionDictionary(this, localeStr, prefs);
-        mSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
+        newSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
+
+        final Suggest oldSuggest = mSuggest;
+        resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null);
+        mSuggest = newSuggest;
+        if (oldSuggest != null) oldSuggest.close();
     }
 
     /**
@@ -579,8 +576,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * @param oldContactsDictionary an optional dictionary to use, or null
      */
     private void resetContactsDictionary(final ContactsBinaryDictionary oldContactsDictionary) {
+        final Suggest suggest = mSuggest;
         final boolean shouldSetDictionary =
-                (null != mSuggest && mSettings.getCurrent().mUseContactsDict);
+                (null != suggest && mSettings.getCurrent().mUseContactsDict);
 
         final ContactsBinaryDictionary dictionaryToUse;
         if (!shouldSetDictionary) {
@@ -607,8 +605,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        if (null != mSuggest) {
-            mSuggest.setContactsDictionary(dictionaryToUse);
+        if (null != suggest) {
+            suggest.setContactsDictionary(dictionaryToUse);
         }
     }
 
@@ -620,8 +618,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
-        if (mSuggest != null) {
-            mSuggest.close();
+        final Suggest suggest = mSuggest;
+        if (suggest != null) {
+            suggest.close();
             mSuggest = null;
         }
         mSettings.onDestroy();
@@ -795,7 +794,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Note: the following does a round-trip IPC on the main thread: be careful
         final Locale currentLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        if (null != mSuggest && null != currentLocale && !currentLocale.equals(mSuggest.mLocale)) {
+        final Suggest suggest = mSuggest;
+        if (null != suggest && null != currentLocale && !currentLocale.equals(suggest.mLocale)) {
             initSuggest();
         }
         if (mSuggestionStripView != null) {
@@ -813,8 +813,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             loadSettings();
             currentSettingsValues = mSettings.getCurrent();
 
-            if (mSuggest != null && currentSettingsValues.mCorrectionEnabled) {
-                mSuggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
+            if (suggest != null && currentSettingsValues.mCorrectionEnabled) {
+                suggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
             }
 
             switcher.loadKeyboard(editorInfo, currentSettingsValues);
@@ -2447,12 +2447,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // AND it's in none of our current dictionaries (main, user or otherwise).
         // Please note that if mSuggest is null, it means that everything is off: suggestion
         // and correction, so we shouldn't try to show the hint
+        final Suggest suggest = mSuggest;
         final boolean showingAddToDictionaryHint =
                 (SuggestedWordInfo.KIND_TYPED == suggestionInfo.mKind
                         || SuggestedWordInfo.KIND_OOV_CORRECTION == suggestionInfo.mKind)
-                        && mSuggest != null
+                        && suggest != null
                         // If the suggestion is not in the dictionary, the hint should be shown.
-                        && !AutoCorrectionUtils.isValidWord(mSuggest, suggestion, true);
+                        && !AutoCorrectionUtils.isValidWord(suggest, suggestion, true);
 
         if (currentSettings.mIsInternal) {
             LatinImeLoggerUtils.onSeparator((char)Constants.CODE_SPACE,
@@ -2498,7 +2499,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private String addToUserHistoryDictionary(final String suggestion) {
         if (TextUtils.isEmpty(suggestion)) return null;
-        if (mSuggest == null) return null;
+        final Suggest suggest = mSuggest;
+        if (suggest == null) return null;
 
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
@@ -2506,13 +2508,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (!currentSettings.mCorrectionEnabled) return null;
 
-        final Suggest suggest = mSuggest;
         final UserHistoryPredictionDictionary userHistoryDictionary =
                 mUserHistoryPredictionDictionary;
-        if (suggest == null || userHistoryDictionary == null) {
-            // Avoid concurrent issue
-            return null;
-        }
+        if (userHistoryDictionary == null) return null;
+
         final String prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators, 2);
         final String secondWord;
         if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
