@@ -19,6 +19,7 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
 
 namespace latinime {
@@ -33,8 +34,7 @@ class DictionaryStructurePolicyFactory {
             case BinaryDictionaryFormatUtils::VERSION_2:
                 return PatriciaTriePolicy::getInstance();
             case BinaryDictionaryFormatUtils::VERSION_3:
-                // TODO: support version 3 dictionaries.
-                return 0;
+                return DynamicPatriciaTriePolicy::getInstance();
             default:
                 ASSERT(false);
                 return 0;
