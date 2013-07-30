@@ -714,7 +714,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
-        final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        // If we are starting input in a different text field from before, we'll have to reload
+        // settings, so currentSettingsValues can't be final.
+        SettingsValues currentSettingsValues = mSettings.getCurrent();
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
@@ -808,7 +810,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
-            // TODO: Need to update currentSettingsValues after loadSettings()
+            currentSettingsValues = mSettings.getCurrent();
+
             if (mSuggest != null && currentSettingsValues.mCorrectionEnabled) {
                 mSuggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
             }
