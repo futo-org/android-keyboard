@@ -150,7 +150,9 @@ public class UserDictionarySettings extends ListFragment {
         listView.setEmptyView(emptyView);
 
         setHasOptionsMenu(true);
-
+        // Show the language as a subtitle of the action bar
+        getActivity().getActionBar().setSubtitle(
+                UserDictionarySettingsUtils.getLocaleDisplayName(getActivity(), mLocale));
     }
 
     @SuppressWarnings("deprecation")
