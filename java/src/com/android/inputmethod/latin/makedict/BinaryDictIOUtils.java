@@ -982,6 +982,7 @@ public final class BinaryDictIOUtils {
         return null;
     }
 
+    private static final int HEADER_READING_BUFFER_SIZE = 16384;
     /**
      * Convenience method to read the header of a binary file.
      *
@@ -991,7 +992,6 @@ public final class BinaryDictIOUtils {
      * @param offset The offset in the file where to start reading the data.
      * @param length The length of the data file.
      */
-    private static final int HEADER_READING_BUFFER_SIZE = 16384;
     public static FileHeader getDictionaryFileHeader(
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {

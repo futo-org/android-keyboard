@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 /**
  * Utility methods for parsing and serializing Comma-Separated Values. The public APIs of this
- * utility class are {@link #split(String)}, {@link #split(int,String)}, {@link #join(String)},
+ * utility class are {@link #split(String)}, {@link #split(int,String)}, {@link #join(String...)},
  * {@link #join(int,String...)}, and {@link #join(int,int[],String...)}.
  *
  * This class implements CSV parsing and serializing methods conforming to RFC 4180 with an

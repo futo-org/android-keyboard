@@ -54,7 +54,6 @@ public final class DictionaryProvider extends ContentProvider {
     private static final String QUERY_PARAMETER_MAY_PROMPT_USER = "mayPrompt";
     private static final String QUERY_PARAMETER_TRUE = "true";
     private static final String QUERY_PARAMETER_DELETE_RESULT = "result";
-    private static final String QUERY_PARAMETER_SUCCESS = "success";
     private static final String QUERY_PARAMETER_FAILURE = "failure";
     public static final String QUERY_PARAMETER_PROTOCOL_VERSION = "protocol";
     private static final int NO_MATCH = 0;

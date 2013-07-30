@@ -180,7 +180,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private ResearchLogDirectory mResearchLogDirectory;
     private SplashScreen mSplashScreen;
 
-    private Intent mUploadIntent;
     private Intent mUploadNowIntent;
 
     /* package for test */ LogUnit mCurrentLogUnit = new LogUnit();
@@ -233,7 +232,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         resetLogBuffers();
 
         // Initialize external services
-        mUploadIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent = new Intent(mLatinIME, UploaderService.class);
         mUploadNowIntent.putExtra(UploaderService.EXTRA_UPLOAD_UNCONDITIONALLY, true);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
@@ -317,12 +315,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, true);
         ResearchSettings.writeHasSeenSplash(mPrefs, true);
         restart();
-    }
-
-    private void setLoggingAllowed(final boolean enableLogging) {
-        if (mPrefs == null) return;
-        sIsLogging = enableLogging;
-        ResearchSettings.writeResearchLoggerEnabledFlag(mPrefs, enableLogging);
     }
 
     private void checkForEmptyEditor() {
@@ -1261,10 +1253,23 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY =
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
                     "suggestion", "x", "y", "isBatchMode", "score", "kind", "sourceDict");
+    /**
+     * Log a call to LatinIME.pickSuggestionManually().
+     *
+     * @param replacedWord the typed word that this manual suggestion replaces. May not be null.
+     * @param index the index in the suggestion strip
+     * @param suggestion the committed suggestion. May not be null.
+     * @param isBatchMode whether this was input in batch mode, aka gesture.
+     * @param score the internal score of the suggestion, as output by the dictionary
+     * @param kind the kind of suggestion, as one of the SuggestedWordInfo#KIND_* constants
+     * @param sourceDict the source origin of this word, as one of the Dictionary#TYPE_* constants.
+     */
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, final String suggestion, final boolean isBatchMode,
             final int score, final int kind, final String sourceDict) {
         final ResearchLogger researchLogger = getInstance();
+        // Note : suggestion can't be null here, because it's only called in a place where it
+        // can't be null.
         if (!replacedWord.equals(suggestion.toString())) {
             // The user chose something other than what was already there.
             researchLogger.setCurrentLogUnitContainsUserDeletions();
@@ -1273,7 +1278,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final String scrubbedWord = scrubDigitsFromString(suggestion);
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY,
                 scrubDigitsFromString(replacedWord), index,
-                suggestion == null ? null : scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
+                scrubbedWord, Constants.SUGGESTION_STRIP_COORDINATE,
                 Constants.SUGGESTION_STRIP_COORDINATE, isBatchMode, score, kind, sourceDict);
         researchLogger.commitCurrentLogUnitAsWord(scrubbedWord, Long.MAX_VALUE, isBatchMode);
         researchLogger.mStatistics.recordManualSuggestion(SystemClock.uptimeMillis());

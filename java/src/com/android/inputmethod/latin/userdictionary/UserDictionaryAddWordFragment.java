@@ -103,7 +103,7 @@ public class UserDictionaryAddWordFragment extends Fragment
     /**
      * Callback for the framework when a menu option is pressed.
      *
-     * @param MenuItem the item that was pressed
+     * @param item the item that was pressed
      * @return false to allow normal menu processing to proceed, true to consume it here
      */
     @Override

@@ -32,8 +32,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public final class SuggestionSpanUtils {
-    private static final String TAG = SuggestionSpanUtils.class.getSimpleName();
-
     // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
     // in API level 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1).
     public static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
@@ -60,7 +58,7 @@ public final class SuggestionSpanUtils {
         }
         final Spannable spannable = new SpannableString(text);
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
-                new String[] {} /* suggestions */, (int)OBJ_FLAG_AUTO_CORRECTION,
+                new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION,
                 SuggestionSpanPickedNotificationReceiver.class);
         spannable.setSpan(suggestionSpan, 0, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
