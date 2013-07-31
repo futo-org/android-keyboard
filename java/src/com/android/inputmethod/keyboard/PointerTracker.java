@@ -478,6 +478,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mPointerId = id;
         mGestureStrokeWithPreviewPoints = new GestureStrokeWithPreviewPoints(
                 id, sGestureStrokeParams, sGesturePreviewParams);
+        setKeyEventHandler(handler);
+    }
+
+    private void setKeyEventHandler(final KeyEventHandler handler) {
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
@@ -891,10 +895,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (DEBUG_EVENT) {
             printTouchEvent("onDownEvent:", x, y, eventTime);
         }
-        mDrawingProxy = handler.getDrawingProxy();
-        mTimerProxy = handler.getTimerProxy();
-        setKeyboardActionListener(handler.getKeyboardActionListener());
-        setKeyDetectorInner(handler.getKeyDetector());
+        setKeyEventHandler(handler);
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mUpTime;
         if (deltaT < sParams.mTouchNoiseThresholdTime) {
