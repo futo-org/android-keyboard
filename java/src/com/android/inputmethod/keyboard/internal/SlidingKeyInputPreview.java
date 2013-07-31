@@ -32,7 +32,7 @@ import com.android.inputmethod.latin.utils.CoordinateUtils;
 public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
     private final float mPreviewBodyRadius;
 
-    private boolean mShowSlidingKeyInputPreview;
+    private boolean mShowsSlidingKeyInputPreview;
     private final int[] mPreviewFrom = CoordinateUtils.newInstance();
     private final int[] mPreviewTo = CoordinateUtils.newInstance();
 
@@ -62,7 +62,7 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
     }
 
     public void dismissSlidingKeyInputPreview() {
-        mShowSlidingKeyInputPreview = false;
+        mShowsSlidingKeyInputPreview = false;
         getDrawingView().invalidate();
     }
 
@@ -72,7 +72,7 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
      */
     @Override
     public void drawPreview(final Canvas canvas) {
-        if (!isPreviewEnabled() || !mShowSlidingKeyInputPreview) {
+        if (!isPreviewEnabled() || !mShowsSlidingKeyInputPreview) {
             return;
         }
 
@@ -90,13 +90,9 @@ public final class SlidingKeyInputPreview extends AbstractDrawingPreview {
      */
     @Override
     public void setPreviewPosition(final PointerTracker tracker) {
-        if (!tracker.isInSlidingKeyInputFromModifier()) {
-            mShowSlidingKeyInputPreview = false;
-            return;
-        }
         tracker.getDownCoordinates(mPreviewFrom);
         tracker.getLastCoordinates(mPreviewTo);
-        mShowSlidingKeyInputPreview = true;
+        mShowsSlidingKeyInputPreview = true;
         getDrawingView().invalidate();
     }
 }

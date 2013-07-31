@@ -115,9 +115,7 @@ public class GestureFloatingPreviewText extends AbstractDrawingPreview {
 
     @Override
     public void setPreviewPosition(final PointerTracker tracker) {
-        final boolean needsToUpdateLastPointer =
-                tracker.isOldestTrackerInQueue() && isPreviewEnabled();
-        if (!needsToUpdateLastPointer) {
+        if (!isPreviewEnabled()) {
             return;
         }
         tracker.getLastCoordinates(mLastPointerCoords);

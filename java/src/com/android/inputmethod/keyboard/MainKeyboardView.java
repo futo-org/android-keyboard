@@ -62,7 +62,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.DebugSettings;
-import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
@@ -203,7 +202,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
 
         private final int mKeyRepeatStartTimeout;
         private final int mKeyRepeatInterval;
-        private final int mLongPressShiftLockTimeout;
         private final int mIgnoreAltCodeKeyTimeout;
         private final int mGestureRecognitionUpdateTime;
 
@@ -215,8 +213,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                     R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
             mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_keyRepeatInterval, 0);
-            mLongPressShiftLockTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_longPressShiftLockTimeout, 0);
             mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
             mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
@@ -280,31 +276,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         @Override
-        public void startLongPressTimer(final PointerTracker tracker) {
+        public void startLongPressTimer(final PointerTracker tracker, final int delay) {
             cancelLongPressTimer();
-            if (tracker == null) {
-                return;
-            }
-            final Key key = tracker.getKey();
-            final int delay;
-            switch (key.mCode) {
-            case Constants.CODE_SHIFT:
-                delay = mLongPressShiftLockTimeout;
-                break;
-            default:
-                final int longpressTimeout =
-                        Settings.getInstance().getCurrent().mKeyLongpressTimeout;
-                if (tracker.isInSlidingKeyInputFromModifier()) {
-                    // We use longer timeout for sliding finger input started from the modifier key.
-                    delay = longpressTimeout * 3;
-                } else {
-                    delay = longpressTimeout;
-                }
-                break;
-            }
-            if (delay > 0) {
-                sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
-            }
+            if (delay <= 0) return;
+            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
         }
 
         @Override
@@ -901,9 +876,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     @Override
-    public void showGestureTrail(final PointerTracker tracker) {
+    public void showGestureTrail(final PointerTracker tracker,
+            final boolean showsFloatingPreviewText) {
         locatePreviewPlacerView();
-        mGestureFloatingPreviewText.setPreviewPosition(tracker);
+        if (showsFloatingPreviewText) {
+            mGestureFloatingPreviewText.setPreviewPosition(tracker);
+        }
         mGestureTrailsPreview.setPreviewPosition(tracker);
     }
 
