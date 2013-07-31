@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 
@@ -107,6 +108,43 @@ public final class UsabilityStudyLogUtils {
         }
         UsabilityStudyLogUtils.getInstance().write(inputChar + "\t" + x + "\t" + y);
         LatinImeLogger.onPrintAllUsabilityStudyLogs();
+    }
+
+    public static void writeMotionEvent(final MotionEvent me) {
+        final int action = me.getActionMasked();
+        final long eventTime = me.getEventTime();
+        final int pointerCount = me.getPointerCount();
+        for (int index = 0; index < pointerCount; index++) {
+            final int id = me.getPointerId(index);
+            final int x = (int)me.getX(index);
+            final int y = (int)me.getY(index);
+            final float size = me.getSize(index);
+            final float pressure = me.getPressure(index);
+
+            final String eventTag;
+            switch (action) {
+            case MotionEvent.ACTION_UP:
+                eventTag = "[Up]";
+                break;
+            case MotionEvent.ACTION_DOWN:
+                eventTag = "[Down]";
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                eventTag = "[PointerUp]";
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                eventTag = "[PointerDown]";
+                break;
+            case MotionEvent.ACTION_MOVE:
+                eventTag = "[Move]";
+                break;
+            default:
+                eventTag = "[Action" + action + "]";
+                break;
+            }
+            getInstance().write(eventTag + eventTime + "," + id + "," + x + "," + y + "," + size
+                    + "," + pressure);
+        }
     }
 
     public void write(final String log) {
