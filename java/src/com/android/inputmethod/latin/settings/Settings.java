@@ -93,7 +93,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     private Resources mRes;
     private SharedPreferences mPrefs;
-    private Locale mCurrentLocale;
     private SettingsValues mSettingsValues;
 
     private static final Settings sInstance = new Settings();
@@ -128,16 +127,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
             return;
         }
-        loadSettings(mCurrentLocale, mSettingsValues.mInputAttributes);
+        loadSettings(mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
     }
 
     public void loadSettings(final Locale locale, final InputAttributes inputAttributes) {
-        mCurrentLocale = locale;
         final SharedPreferences prefs = mPrefs;
         final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
             @Override
             protected SettingsValues job(final Resources res) {
-                return new SettingsValues(prefs, res, inputAttributes);
+                return new SettingsValues(prefs, locale, res, inputAttributes);
             }
         };
         mSettingsValues = job.runInLocale(mRes, locale);
@@ -158,10 +156,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public boolean isWordSeparator(final int code) {
         return mSettingsValues.isWordSeparator(code);
-    }
-
-    public Locale getCurrentLocale() {
-        return mCurrentLocale;
     }
 
     public boolean getBlockPotentiallyOffensive() {
