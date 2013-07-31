@@ -56,11 +56,14 @@ public final class RichInputConnection {
     private static final int INVALID_CURSOR_POSITION = -1;
 
     /**
-     * This variable contains the value LatinIME thinks the cursor position should be at now.
-     * This is a few steps in advance of what the TextView thinks it is, because TextView will
-     * only know after the IPC calls gets through.
+     * This variable contains an expected value for the cursor position. This is where the
+     * cursor may end up after all the keyboard-triggered updates have passed. We keep this to
+     * compare it to the actual cursor position to guess whether the move was caused by a
+     * keyboard command or not.
+     * It's not really the cursor position: the cursor may not be there yet, and it's also expected 
+     * there be cases where it never actually comes to be there.
      */
-    private int mCurrentCursorPosition = INVALID_CURSOR_POSITION; // in chars, not code points
+    private int mExpectedCursorPosition = INVALID_CURSOR_POSITION; // in chars, not code points
     /**
      * This contains the committed text immediately preceding the cursor and the composing
      * text if any. It is refreshed when the cursor moves by calling upon the TextView.
@@ -101,16 +104,16 @@ public final class RichInputConnection {
         final String reference = (beforeCursor.length() <= actualLength) ? beforeCursor.toString()
                 : beforeCursor.subSequence(beforeCursor.length() - actualLength,
                         beforeCursor.length()).toString();
-        if (et.selectionStart != mCurrentCursorPosition
+        if (et.selectionStart != mExpectedCursorPosition
                 || !(reference.equals(internal.toString()))) {
-            final String context = "Expected cursor position = " + mCurrentCursorPosition
+            final String context = "Expected cursor position = " + mExpectedCursorPosition
                     + "\nActual cursor position = " + et.selectionStart
                     + "\nExpected text = " + internal.length() + " " + internal
                     + "\nActual text = " + reference.length() + " " + reference;
             ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
         } else {
             Log.e(TAG, DebugLogUtils.getStackTrace(2));
-            Log.e(TAG, "Exp <> Actual : " + mCurrentCursorPosition + " <> " + et.selectionStart);
+            Log.e(TAG, "Exp <> Actual : " + mExpectedCursorPosition + " <> " + et.selectionStart);
         }
     }
 
@@ -141,7 +144,7 @@ public final class RichInputConnection {
 
     public void resetCachesUponCursorMove(final int newCursorPosition,
             final boolean shouldFinishComposition) {
-        mCurrentCursorPosition = newCursorPosition;
+        mExpectedCursorPosition = newCursorPosition;
         mComposingText.setLength(0);
         mCommittedTextBeforeComposingText.setLength(0);
         final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
@@ -166,7 +169,7 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(mComposingText);
-        mCurrentCursorPosition += mComposingText.length();
+        mExpectedCursorPosition += mComposingText.length();
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.finishComposingText();
@@ -180,7 +183,7 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
-        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mExpectedCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitText(text, i);
@@ -193,7 +196,7 @@ public final class RichInputConnection {
     }
 
     public boolean canDeleteCharacters() {
-        return mCurrentCursorPosition > 0;
+        return mExpectedCursorPosition > 0;
     }
 
     /**
@@ -230,7 +233,7 @@ public final class RichInputConnection {
         // heavy pressing of delete, for example DEFAULT_TEXT_CACHE_SIZE - 5 times or so.
         // getCapsMode should be updated to be able to return a "not enough info" result so that
         // we can get more context only when needed.
-        if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mCurrentCursorPosition) {
+        if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mExpectedCursorPosition) {
             mCommittedTextBeforeComposingText.append(
                     getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
         }
@@ -251,7 +254,7 @@ public final class RichInputConnection {
                 mCommittedTextBeforeComposingText.length() + mComposingText.length();
         // If we have enough characters to satisfy the request, or if we have all characters in
         // the text field, then we can return the cached version right away.
-        if (cachedLength >= n || cachedLength >= mCurrentCursorPosition) {
+        if (cachedLength >= n || cachedLength >= mExpectedCursorPosition) {
             final StringBuilder s = new StringBuilder(mCommittedTextBeforeComposingText);
             s.append(mComposingText);
             if (s.length() > n) {
@@ -284,10 +287,10 @@ public final class RichInputConnection {
                     + remainingChars, 0);
             mCommittedTextBeforeComposingText.setLength(len);
         }
-        if (mCurrentCursorPosition > beforeLength) {
-            mCurrentCursorPosition -= beforeLength;
+        if (mExpectedCursorPosition > beforeLength) {
+            mExpectedCursorPosition -= beforeLength;
         } else {
-            mCurrentCursorPosition = 0;
+            mExpectedCursorPosition = 0;
         }
         if (null != mIC) {
             mIC.deleteSurroundingText(beforeLength, afterLength);
@@ -321,7 +324,7 @@ public final class RichInputConnection {
             switch (keyEvent.getKeyCode()) {
             case KeyEvent.KEYCODE_ENTER:
                 mCommittedTextBeforeComposingText.append("\n");
-                mCurrentCursorPosition += 1;
+                mExpectedCursorPosition += 1;
                 break;
             case KeyEvent.KEYCODE_DEL:
                 if (0 == mComposingText.length()) {
@@ -333,18 +336,18 @@ public final class RichInputConnection {
                 } else {
                     mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
                 }
-                if (mCurrentCursorPosition > 0) mCurrentCursorPosition -= 1;
+                if (mExpectedCursorPosition > 0) mExpectedCursorPosition -= 1;
                 break;
             case KeyEvent.KEYCODE_UNKNOWN:
                 if (null != keyEvent.getCharacters()) {
                     mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
-                    mCurrentCursorPosition += keyEvent.getCharacters().length();
+                    mExpectedCursorPosition += keyEvent.getCharacters().length();
                 }
                 break;
             default:
                 final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
                 mCommittedTextBeforeComposingText.append(text);
-                mCurrentCursorPosition += text.length();
+                mExpectedCursorPosition += text.length();
                 break;
             }
         }
@@ -378,7 +381,7 @@ public final class RichInputConnection {
     public void setComposingText(final CharSequence text, final int newCursorPosition) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
-        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mExpectedCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
         mComposingText.append(text);
         // TODO: support values of i != 1. At this time, this is never called with i != 1.
@@ -400,7 +403,7 @@ public final class RichInputConnection {
                 ResearchLogger.richInputConnection_setSelection(start, end);
             }
         }
-        mCurrentCursorPosition = start;
+        mExpectedCursorPosition = start;
         mCommittedTextBeforeComposingText.setLength(0);
         mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
     }
@@ -423,7 +426,7 @@ public final class RichInputConnection {
         // text should never be null, but just in case, it's better to insert nothing than to crash
         if (null == text) text = "";
         mCommittedTextBeforeComposingText.append(text);
-        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mExpectedCursorPosition += text.length() - mComposingText.length();
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitCompletion(completionInfo);
@@ -705,14 +708,14 @@ public final class RichInputConnection {
      */
     public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart) {
         // If this is an update that arrives at our expected position, it's a belated update.
-        if (newSelStart == mCurrentCursorPosition) return true;
+        if (newSelStart == mExpectedCursorPosition) return true;
         // If this is an update that moves the cursor from our expected position, it must be
         // an explicit move.
-        if (oldSelStart == mCurrentCursorPosition) return false;
+        if (oldSelStart == mExpectedCursorPosition) return false;
         // The following returns true if newSelStart is between oldSelStart and
         // mCurrentCursorPosition. We assume that if the updated position is between the old
         // position and the expected position, then it must be a belated update.
-        return (newSelStart - oldSelStart) * (mCurrentCursorPosition - newSelStart) >= 0;
+        return (newSelStart - oldSelStart) * (mExpectedCursorPosition - newSelStart) >= 0;
     }
 
     /**
