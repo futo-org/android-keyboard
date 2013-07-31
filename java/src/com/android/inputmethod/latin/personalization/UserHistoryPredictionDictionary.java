@@ -16,6 +16,18 @@
 
 package com.android.inputmethod.latin.personalization;
 
-public interface PersonalizationDictionaryUpdateListener {
-    // TODO: Implement
+import com.android.inputmethod.latin.Dictionary;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+/**
+ * Locally gathers stats about the words user types and various other signals like auto-correction
+ * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
+ */
+public class UserHistoryPredictionDictionary extends PersonalizationPredictionDictionary {
+    /* package */ UserHistoryPredictionDictionary(final Context context, final String locale,
+            final SharedPreferences sp) {
+        super(context, locale, sp, Dictionary.TYPE_USER_HISTORY);
+    }
 }
