@@ -26,8 +26,16 @@ import android.content.SharedPreferences;
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
 public class UserHistoryPredictionDictionary extends PersonalizationPredictionDictionary {
+    private static final String TAG = UserHistoryPredictionDictionary.class.getSimpleName();
+    private static final String NAME = UserHistoryPredictionDictionary.class.getSimpleName();
+
     /* package */ UserHistoryPredictionDictionary(final Context context, final String locale,
             final SharedPreferences sp) {
         super(context, locale, sp, Dictionary.TYPE_USER_HISTORY);
+    }
+
+    @Override
+    protected String getDictionaryFileName() {
+        return NAME + "." + getLocale() + ".dict";
     }
 }
