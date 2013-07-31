@@ -117,9 +117,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         PointerTracker.DrawingProxy, MoreKeysPanel.Controller {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
-    // TODO: Kill process when the usability study mode was changed.
-    private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
-
     /** Listener for {@link KeyboardActionListener}. */
     private KeyboardActionListener mKeyboardActionListener;
 
@@ -1069,8 +1066,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int y = (int)me.getY(index);
 
         // TODO: This might be moved to the tracker.processMotionEvent() call below.
-        if (ENABLE_USABILITY_STUDY_LOG && action != MotionEvent.ACTION_MOVE) {
-            writeUsabilityStudyLog(me, action, eventTime, index, id, x, y);
+        if (LatinImeLogger.sUsabilityStudy) {
+            UsabilityStudyLogUtils.writeMotionEvent(me);
         }
         // TODO: This should be moved to the tracker.processMotionEvent() call below.
         // Currently the same "move" event is being logged twice.
@@ -1131,15 +1128,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 final int px = (int)me.getX(i);
                 final int py = (int)me.getY(i);
                 tracker.onMoveEvent(px, py, eventTime, me);
-                if (ENABLE_USABILITY_STUDY_LOG) {
-                    writeUsabilityStudyLog(me, action, eventTime, i, pointerId, px, py);
-                }
-                // TODO: This seems to be no longer necessary, and confusing because it leads to
-                // duplicate MotionEvents being recorded.
-                // if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                //     ResearchLogger.mainKeyboardView_processMotionEvent(
-                //             me, action, eventTime, i, pointerId, px, py);
-                // }
             }
         } else {
             final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
@@ -1147,35 +1135,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         return true;
-    }
-
-    private static void writeUsabilityStudyLog(final MotionEvent me, final int action,
-            final long eventTime, final int index, final int id, final int x, final int y) {
-        final String eventTag;
-        switch (action) {
-        case MotionEvent.ACTION_UP:
-            eventTag = "[Up]";
-            break;
-        case MotionEvent.ACTION_DOWN:
-            eventTag = "[Down]";
-            break;
-        case MotionEvent.ACTION_POINTER_UP:
-            eventTag = "[PointerUp]";
-            break;
-        case MotionEvent.ACTION_POINTER_DOWN:
-            eventTag = "[PointerDown]";
-            break;
-        case MotionEvent.ACTION_MOVE:
-            eventTag = "[Move]";
-            break;
-        default:
-            eventTag = "[Action" + action + "]";
-            break;
-        }
-        final float size = me.getSize(index);
-        final float pressure = me.getPressure(index);
-        UsabilityStudyLogUtils.getInstance().write(
-                eventTag + eventTime + "," + id + "," + x + "," + y + "," + size + "," + pressure);
     }
 
     public void cancelAllOngoingEvents() {
