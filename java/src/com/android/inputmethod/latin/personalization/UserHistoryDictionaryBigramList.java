@@ -53,7 +53,7 @@ public final class UserHistoryDictionaryBigramList {
      * Called when loaded from the SQL DB.
      */
     public void addBigram(String word1, String word2, byte fcValue) {
-        if (UserHistoryDictionary.DBG_SAVE_RESTORE) {
+        if (UserHistoryPredictionDictionary.DBG_SAVE_RESTORE) {
             Log.d(TAG, "--- add bigram: " + word1 + ", " + word2 + ", " + fcValue);
         }
         final HashMap<String, Byte> map;
@@ -73,7 +73,7 @@ public final class UserHistoryDictionaryBigramList {
      * Called when inserted to the SQL DB.
      */
     public void updateBigram(String word1, String word2, byte fcValue) {
-        if (UserHistoryDictionary.DBG_SAVE_RESTORE) {
+        if (UserHistoryPredictionDictionary.DBG_SAVE_RESTORE) {
             Log.d(TAG, "--- update bigram: " + word1 + ", " + word2 + ", " + fcValue);
         }
         final HashMap<String, Byte> map;

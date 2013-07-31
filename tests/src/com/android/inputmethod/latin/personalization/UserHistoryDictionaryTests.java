@@ -70,7 +70,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         return new ArrayList<String>(wordSet);
     }
 
-    private void addToDict(final UserHistoryDictionary dict, final List<String> words) {
+    private void addToDict(final UserHistoryPredictionDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
             dict.forceAddWordForTest(prevWord, word, true);
@@ -90,8 +90,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             final String locale = "testRandomWords";
             final String fileName = "UserHistoryDictionary." + locale + ".dict";
             dictFile = new File(getContext().getFilesDir(), fileName);
-            final UserHistoryDictionary dict =
-                    PersonalizationDictionaryHelper.getUserHistoryDictionary(
+            final UserHistoryPredictionDictionary dict =
+                    PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(
                             getContext(), locale, mPrefs);
             dict.isTest = true;
 
@@ -142,8 +142,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             for (int i = 0; i < numberOfLanguageSwitching; i++) {
                 final int index = i % numberOfLanguages;
                 // Switch languages to locales[index].
-                final UserHistoryDictionary dict =
-                        PersonalizationDictionaryHelper.getUserHistoryDictionary(
+                final UserHistoryPredictionDictionary dict =
+                        PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(
                                 getContext(), locales[index], mPrefs);
                 final List<String> words = generateWords(
                         numberOfWordsIntertedForEachLanguageSwitch, random);
