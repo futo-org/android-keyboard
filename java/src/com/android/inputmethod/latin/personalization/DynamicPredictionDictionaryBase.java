@@ -46,14 +46,14 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This class is a dictionary for the personalized prediction language model implemented in Java.
+ * This class is a base class of a dictionary for the personalized prediction language model.
  */
-public abstract class PersonalizationPredictionDictionary extends ExpandableDictionary {
+public abstract class DynamicPredictionDictionaryBase extends ExpandableDictionary {
     public static void registerUpdateListener(PersonalizationDictionaryUpdateListener listener) {
         // TODO: Implement
     }
 
-    private static final String TAG = PersonalizationPredictionDictionary.class.getSimpleName();
+    private static final String TAG = DynamicPredictionDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
     private static final boolean DBG_STRESS_TEST = false;
     private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
@@ -78,7 +78,7 @@ public abstract class PersonalizationPredictionDictionary extends ExpandableDict
     // Should always be false except when we use this class for test
     @UsedForTesting boolean isTest = false;
 
-    /* package */ PersonalizationPredictionDictionary(final Context context, final String locale,
+    /* package */ DynamicPredictionDictionaryBase(final Context context, final String locale,
             final SharedPreferences sp, final String dictionaryType) {
         super(context, dictionaryType);
         mLocale = locale;
@@ -279,16 +279,16 @@ public abstract class PersonalizationPredictionDictionary extends ExpandableDict
         private final UserHistoryDictionaryBigramList mBigramList;
         private final boolean mAddLevel0Bigrams;
         private final String mLocale;
-        private final PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
+        private final DynamicPredictionDictionaryBase mDynamicPredictionDictionary;
         private final SharedPreferences mPrefs;
         private final Context mContext;
 
         public UpdateBinaryTask(final UserHistoryDictionaryBigramList pendingWrites,
-                final String locale, final PersonalizationPredictionDictionary dict,
+                final String locale, final DynamicPredictionDictionaryBase dict,
                 final SharedPreferences prefs, final Context context) {
             mBigramList = pendingWrites;
             mLocale = locale;
-            mPersonalizationPredictionDictionary = dict;
+            mDynamicPredictionDictionary = dict;
             mPrefs = prefs;
             mContext = context;
             mAddLevel0Bigrams = mBigramList.size() <= MAX_HISTORY_BIGRAMS;
@@ -296,19 +296,19 @@ public abstract class PersonalizationPredictionDictionary extends ExpandableDict
 
         @Override
         protected Void doInBackground(final Void... v) {
-            if (mPersonalizationPredictionDictionary.isTest) {
+            if (mDynamicPredictionDictionary.isTest) {
                 // If isTest == true, wait until the lock is released.
-                mPersonalizationPredictionDictionary.mBigramListLock.lock();
+                mDynamicPredictionDictionary.mBigramListLock.lock();
                 try {
                     doWriteTaskLocked();
                 } finally {
-                    mPersonalizationPredictionDictionary.mBigramListLock.unlock();
+                    mDynamicPredictionDictionary.mBigramListLock.unlock();
                 }
-            } else if (mPersonalizationPredictionDictionary.mBigramListLock.tryLock()) {
+            } else if (mDynamicPredictionDictionary.mBigramListLock.tryLock()) {
                 try {
                     doWriteTaskLocked();
                 } finally {
-                    mPersonalizationPredictionDictionary.mBigramListLock.unlock();
+                    mDynamicPredictionDictionary.mBigramListLock.unlock();
                 }
             }
             return null;
@@ -327,7 +327,7 @@ public abstract class PersonalizationPredictionDictionary extends ExpandableDict
 
             final long now = PROFILE_SAVE_RESTORE ? System.currentTimeMillis() : 0;
             final String fileName =
-                    mPersonalizationPredictionDictionary.getDictionaryFileName();
+                    mDynamicPredictionDictionary.getDictionaryFileName();
             final File file = new File(mContext.getFilesDir(), fileName);
             FileOutputStream out = null;
 
@@ -364,7 +364,7 @@ public abstract class PersonalizationPredictionDictionary extends ExpandableDict
                 final byte prevFc = mBigramList.getBigrams(word1).get(word2);
             } else { // bigram
                 final NextWord nw =
-                        mPersonalizationPredictionDictionary.getBigramWord(word1, word2);
+                        mDynamicPredictionDictionary.getBigramWord(word1, word2);
                 if (nw != null) {
                     final ForgettingCurveParams fcp = nw.getFcParams();
                     final byte prevFc = mBigramList.getBigrams(word1).get(word2);
