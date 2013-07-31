@@ -50,8 +50,6 @@ import java.util.concurrent.TimeUnit;
  *     to access, and mark the current state as such.
  */
 public final class DictionaryService extends Service {
-    private static final String TAG = DictionaryService.class.getName();
-
     /**
      * The package name, to use in the intent actions.
      */

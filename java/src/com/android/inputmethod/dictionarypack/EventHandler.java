@@ -21,8 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 
 public final class EventHandler extends BroadcastReceiver {
-    private static final String TAG = EventHandler.class.getName();
-
     /**
      * Receives a intent broadcast.
      *

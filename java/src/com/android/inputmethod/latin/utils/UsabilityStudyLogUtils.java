@@ -191,7 +191,7 @@ public final class UsabilityStudyLogUtils {
                     Log.w(USABILITY_TAG, e2);
                     return;
                 }
-                if (destFile == null || !destFile.exists()) {
+                if (!destFile.exists()) {
                     Log.w(USABILITY_TAG, "Dest file doesn't exist.");
                     return;
                 }

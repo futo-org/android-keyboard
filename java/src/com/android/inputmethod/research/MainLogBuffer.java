@@ -119,9 +119,9 @@ public abstract class MainLogBuffer extends FixedLogBuffer {
      *
      * @param logUnits a LogUnit list to check for publishability
      * @param nGramSize the smallest n-gram acceptable to be published.  if
-     * {@link ResearchLogger.IS_LOGGING_EVERYTHING} is true, then publish if there are more than
+     * {@link ResearchLogger#IS_LOGGING_EVERYTHING} is true, then publish if there are more than
      * {@code minNGramSize} words in the logUnits, otherwise wait.  if {@link
-     * ResearchLogger.IS_LOGGING_EVERYTHING} is false, then ensure that there are exactly nGramSize
+     * ResearchLogger#IS_LOGGING_EVERYTHING} is false, then ensure that there are exactly nGramSize
      * words in the LogUnits.
      *
      * @return one of the {@code PUBLISHABILITY_*} result codes defined in this class.
