@@ -371,8 +371,7 @@ public final class KeyboardTextsSet {
         /* 112 */ "w",
         /* 113 */ "y",
         /* 114 */ "x",
-        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
-        /* 115 */ "\u00F1",
+        /* 115 */ EMPTY,
         /* 116 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
         /* 117 */ "!icon/settings_key|!code/key_settings",
         /* 118 */ "!icon/shortcut_key|!code/key_shortcut",
@@ -728,9 +727,28 @@ public final class KeyboardTextsSet {
         /* 8~ */
         null, null, null, null, null, null,
         /* ~13 */
-        // U+0140: "ŀ" LATIN SMALL LETTER L WITH MIDDLE DOT
+        // U+00B7: "·" MIDDLE DOT
         // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
-        /* 14 */ "\u0140,\u0142",
+        /* 14 */ "l\u00B7l,\u0142",
+        /* 15~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null,
+        /* ~49 */
+        // U+00B7: "·" MIDDLE DOT
+        /* 50 */ "!fixedColumnOrder!9,\u00B7,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(,)",
+        /* 51~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
+        /* ~104 */
+        /* 105 */ "?,\u00B7",
+        /* 106~ */
+        null, null, null, null, null, null, null, null, null,
+        /* ~114 */
+        // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+        /* 115 */ "\u00E7",
     };
 
     /* Language cs: Czech */
@@ -1203,6 +1221,11 @@ public final class KeyboardTextsSet {
         /* 106 */ "\"",
         /* 107 */ "\'",
         /* 108 */ "\'",
+        /* 109~ */
+        null, null, null, null, null, null,
+        /* ~114 */
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        /* 115 */ "\u00F1",
     };
 
     /* Language et: Estonian */
