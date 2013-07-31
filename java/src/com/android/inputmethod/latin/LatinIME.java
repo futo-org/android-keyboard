@@ -76,7 +76,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
-import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
+import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
@@ -169,7 +169,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
-    private UserHistoryDictionary mUserHistoryDictionary;
+    private UserHistoryPredictionDictionary mUserHistoryPredictionDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -565,9 +565,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(oldContactsDictionary);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserHistoryDictionary =
-                PersonalizationDictionaryHelper.getUserHistoryDictionary(this, localeStr, prefs);
-        mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
+        mUserHistoryPredictionDictionary = PersonalizationDictionaryHelper
+                .getUserHistoryPredictionDictionary(this, localeStr, prefs);
+        mSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
     }
 
     /**
@@ -2507,7 +2507,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!currentSettings.mCorrectionEnabled) return null;
 
         final Suggest suggest = mSuggest;
-        final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
+        final UserHistoryPredictionDictionary userHistoryDictionary =
+                mUserHistoryPredictionDictionary;
         if (suggest == null || userHistoryDictionary == null) {
             // Avoid concurrent issue
             return null;
@@ -2657,7 +2658,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
-            mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
+            mUserHistoryPredictionDictionary.cancelAddingUserHistory(previousWord, committedWord);
         }
         mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
         if (mSettings.isInternal()) {

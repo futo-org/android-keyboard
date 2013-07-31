@@ -29,15 +29,16 @@ public class PersonalizationDictionaryHelper {
     private static final String TAG = PersonalizationDictionaryHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
+    private static final ConcurrentHashMap<String, SoftReference<UserHistoryPredictionDictionary>>
             sLangDictCache = CollectionUtils.newConcurrentHashMap();
 
-    public static UserHistoryDictionary getUserHistoryDictionary(
+    public static UserHistoryPredictionDictionary getUserHistoryPredictionDictionary(
             final Context context, final String locale, final SharedPreferences sp) {
         synchronized (sLangDictCache) {
             if (sLangDictCache.containsKey(locale)) {
-                final SoftReference<UserHistoryDictionary> ref = sLangDictCache.get(locale);
-                final UserHistoryDictionary dict = ref == null ? null : ref.get();
+                final SoftReference<UserHistoryPredictionDictionary> ref =
+                        sLangDictCache.get(locale);
+                final UserHistoryPredictionDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
                         Log.w(TAG, "Use cached UserHistoryDictionary for " + locale);
@@ -45,8 +46,9 @@ public class PersonalizationDictionaryHelper {
                     return dict;
                 }
             }
-            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale, sp);
-            sLangDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
+            final UserHistoryPredictionDictionary dict =
+                    new UserHistoryPredictionDictionary(context, locale, sp);
+            sLangDictCache.put(locale, new SoftReference<UserHistoryPredictionDictionary>(dict));
             return dict;
         }
     }
