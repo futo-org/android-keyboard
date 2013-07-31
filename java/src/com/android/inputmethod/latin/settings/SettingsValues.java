@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
@@ -75,6 +76,7 @@ public final class SettingsValues {
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
     public final int mKeyLongpressTimeout;
+    public final Locale mLocale;
 
     // From the input box
     public final InputAttributes mInputAttributes;
@@ -97,8 +99,9 @@ public final class SettingsValues {
     // Debug settings
     public final boolean mIsInternal;
 
-    public SettingsValues(final SharedPreferences prefs, final Resources res,
+    public SettingsValues(final SharedPreferences prefs, final Locale locale, final Resources res,
             final InputAttributes inputAttributes) {
+        mLocale = locale;
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mSymbolsPrecededBySpace =
