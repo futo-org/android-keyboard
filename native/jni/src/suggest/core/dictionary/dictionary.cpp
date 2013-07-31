@@ -24,7 +24,6 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
-#include "suggest/core/dictionary/binary_format.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
