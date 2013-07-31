@@ -38,5 +38,5 @@
         latin:keyLabel="n"
         latin:moreKeys="!text/more_keys_for_n" />
     <include
-        latin:keyboardLayout="@xml/key_azerty_quote" />
+        latin:keyboardLayout="@xml/key_azerty3_right" />
 </merge>
