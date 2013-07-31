@@ -55,7 +55,6 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
-import com.android.inputmethod.keyboard.internal.TouchScreenRegulator;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -115,8 +114,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#MainKeyboardView_suppressKeyPreviewAfterBatchInputDuration
  */
 public final class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
-        PointerTracker.DrawingProxy, MoreKeysPanel.Controller,
-        TouchScreenRegulator.ProcessMotionEvent {
+        PointerTracker.DrawingProxy, MoreKeysPanel.Controller {
     private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     // TODO: Kill process when the usability study mode was changed.
@@ -182,8 +180,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     // Gesture floating preview text
     // TODO: Make this parameter customizable by user via settings.
     private int mGestureFloatingPreviewTextLingerTimeout;
-
-    private final TouchScreenRegulator mTouchScreenRegulator;
 
     private KeyDetector mKeyDetector;
     private final boolean mHasDistinctMultitouch;
@@ -450,8 +446,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public MainKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
-        mTouchScreenRegulator = new TouchScreenRegulator(context, this);
-
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
@@ -628,7 +622,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         PointerTracker.setKeyDetector(mKeyDetector);
-        mTouchScreenRegulator.setKeyboardGeometry(keyboard.mOccupiedWidth);
         mMoreKeysKeyboardCache.clear();
 
         mSpaceKey = keyboard.getKey(Constants.CODE_SPACE);
@@ -1050,10 +1043,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (getKeyboard() == null) {
             return false;
         }
-        return mTouchScreenRegulator.onTouchEvent(me);
+        // TODO: Add multi-touch to single-touch event converter for non-distinct multi-touch
+        // device.
+        return processMotionEvent(me);
     }
 
-    @Override
     public boolean processMotionEvent(final MotionEvent me) {
         final boolean nonDistinctMultitouch = !mHasDistinctMultitouch;
         final int action = me.getActionMasked();
