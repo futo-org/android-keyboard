@@ -625,7 +625,8 @@ public final class KeyboardTextsSet {
 
     /* Language az: Azerbaijani */
     private static final String[] LANGUAGE_az = {
-        /* 0 */ null,
+        // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+        /* 0 */ "\u00E2",
         // U+0259: "ə" LATIN SMALL LETTER SCHWA
         /* 1 */ "\u0259",
         // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
