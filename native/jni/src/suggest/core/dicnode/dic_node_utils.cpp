@@ -150,7 +150,7 @@ namespace latinime {
         }
         actualLength1 = i + 1;
     }
-    actualLength1 = min(actualLength1, MAX_WORD_LENGTH - actualLength0 - 1);
+    actualLength1 = min(actualLength1, MAX_WORD_LENGTH - actualLength0);
     memcpy(&dest[actualLength0], src1, actualLength1 * sizeof(dest[0]));
     return actualLength0 + actualLength1;
 }
