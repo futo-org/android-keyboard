@@ -77,11 +77,10 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
     }
 }
 
-int Dictionary::getBigrams(const int *word, int length, int *inputCodePoints, int inputSize,
-        int *outWords, int *frequencies, int *outputTypes) const {
+int Dictionary::getBigrams(const int *word, int length, int *outWords, int *frequencies,
+        int *outputTypes) const {
     if (length <= 0) return 0;
-    return mBigramDictionary->getPredictions(word, length, inputCodePoints, inputSize, outWords,
-            frequencies, outputTypes);
+    return mBigramDictionary->getPredictions(word, length, outWords, frequencies, outputTypes);
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
