@@ -29,8 +29,8 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
  *
  * The input events are {@link #onLoadKeyboard()}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int,boolean,int)}, {@link #onReleaseKey(int,boolean)},
- * {@link #onCodeInput(int,int)}, {@link #onFinishSlidingInput()}, {@link #onCancelInput()},
- * {@link #onUpdateShiftState(int,int)}.
+ * {@link #onCodeInput(int,int)}, {@link #onFinishSlidingInput()},
+ * {@link #onUpdateShiftState(int,int)}, {@link #onResetKeyboardStateToAlphabet()}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */

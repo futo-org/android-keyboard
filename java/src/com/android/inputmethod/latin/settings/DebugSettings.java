@@ -32,7 +32,6 @@ import com.android.inputmethod.latin.utils.ApplicationUtils;
 
 public final class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = DebugSettings.class.getSimpleName();
 
     public static final String PREF_DEBUG_MODE = "debug_mode";
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";

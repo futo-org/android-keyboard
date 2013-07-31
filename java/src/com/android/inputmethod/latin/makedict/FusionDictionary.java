@@ -34,6 +34,8 @@ import java.util.LinkedList;
 public final class FusionDictionary implements Iterable<Word> {
     private static final boolean DBG = MakedictLog.DBG;
 
+    private static int CHARACTER_NOT_FOUND_INDEX = -1;
+
     /**
      * A node of the dictionary, containing several CharGroups.
      *
@@ -473,7 +475,7 @@ public final class FusionDictionary implements Iterable<Word> {
         CharGroup currentGroup = null;
         int differentCharIndex = 0; // Set by the loop to the index of the char that differs
         int nodeIndex = findIndexOfChar(mRoot, word[charIndex]);
-        while (CHARACTER_NOT_FOUND != nodeIndex) {
+        while (CHARACTER_NOT_FOUND_INDEX != nodeIndex) {
             currentGroup = currentNode.mData.get(nodeIndex);
             differentCharIndex = compareArrays(currentGroup.mChars, word, charIndex);
             if (ARRAYS_ARE_EQUAL != differentCharIndex
@@ -485,7 +487,7 @@ public final class FusionDictionary implements Iterable<Word> {
             nodeIndex = findIndexOfChar(currentNode, word[charIndex]);
         }
 
-        if (-1 == nodeIndex) {
+        if (CHARACTER_NOT_FOUND_INDEX == nodeIndex) {
             // No node at this point to accept the word. Create one.
             final int insertionIndex = findInsertionIndex(currentNode, word[charIndex]);
             final CharGroup newGroup = new CharGroup(
@@ -612,20 +614,18 @@ public final class FusionDictionary implements Iterable<Word> {
         return result >= 0 ? result : -result - 1;
     }
 
-    private static int CHARACTER_NOT_FOUND = -1;
-
     /**
      * Find the index of a char in a node, if it exists.
      *
      * @param node the node to search in.
      * @param character the character to search for.
-     * @return the position of the character if it's there, or CHARACTER_NOT_FOUND = -1 else.
+     * @return the position of the character if it's there, or CHARACTER_NOT_FOUND_INDEX = -1 else.
      */
     private static int findIndexOfChar(final Node node, int character) {
         final int insertionIndex = findInsertionIndex(node, character);
-        if (node.mData.size() <= insertionIndex) return CHARACTER_NOT_FOUND;
+        if (node.mData.size() <= insertionIndex) return CHARACTER_NOT_FOUND_INDEX;
         return character == node.mData.get(insertionIndex).mChars[0] ? insertionIndex
-                : CHARACTER_NOT_FOUND;
+                : CHARACTER_NOT_FOUND_INDEX;
     }
 
     /**
@@ -640,7 +640,7 @@ public final class FusionDictionary implements Iterable<Word> {
         CharGroup currentGroup;
         do {
             int indexOfGroup = findIndexOfChar(node, codePoints[index]);
-            if (CHARACTER_NOT_FOUND == indexOfGroup) return null;
+            if (CHARACTER_NOT_FOUND_INDEX == indexOfGroup) return null;
             currentGroup = node.mData.get(indexOfGroup);
 
             if (codePoints.length - index < currentGroup.mChars.length) return null;

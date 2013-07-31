@@ -62,7 +62,7 @@ public class SmoothingUtils {
             for (int j = 0; j < COEFF_COUNT; ++j) {
                 final int pow = i + j;
                 for (int k = 0; k < N; ++k) {
-                    m0[i][j] += (float) Math.pow((double) xs[k], pow);
+                    m0[i][j] += (float) Math.pow(xs[k], pow);
                 }
             }
         }

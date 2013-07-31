@@ -315,16 +315,6 @@ public class MotionEventReader {
         return pointerCoords;
     }
 
-    /**
-     * Tests that {@code x} is uninitialized.
-     *
-     * Assumes that {@code x} will never be given a valid value less than 0, and that
-     * UNINITIALIZED_FLOAT is less than 0.0f.
-     */
-    private boolean isUninitializedFloat(final float x) {
-        return x < 0.0f;
-    }
-
     private void addMotionEventData(final ReplayData replayData, final int actionType,
             final long time, final PointerProperties[] pointerProperties,
             final PointerCoords[] pointerCoords) {

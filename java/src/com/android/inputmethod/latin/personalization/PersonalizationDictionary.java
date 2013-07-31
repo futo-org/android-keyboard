@@ -17,29 +17,44 @@
 package com.android.inputmethod.latin.personalization;
 
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.ExpandableDictionary;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 /**
- * This class is a dictionary for the personalized prediction language model implemented in Java.
+ * This class is a dictionary for the personalized language model that uses binary dictionary.
  */
-public class PersonalizationPredictionDicitonary extends ExpandableDictionary {
+public class PersonalizationDictionary extends ExpandableBinaryDictionary {
+    private static final String NAME = "personalization";
+
     public static void registerUpdateListener(PersonalizationDictionaryUpdateListener listener) {
         // TODO: Implement
     }
 
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
-    private final SharedPreferences mPrefs;
 
     // Singleton
-    private PersonalizationPredictionDicitonary(final Context context, final String locale,
-            final SharedPreferences sp) {
-        super(context, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA);
+    private PersonalizationDictionary(final Context context, final String locale) {
+        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION);
         mLocale = locale;
-        mPrefs = sp;
+    }
+
+    @Override
+    protected void loadDictionaryAsync() {
+        // TODO: Implement
+    }
+
+    @Override
+    protected boolean hasContentChanged() {
+        // TODO: Implement
+        return false;
+    }
+
+    @Override
+    protected boolean needsToReloadBeforeWriting() {
+        // TODO: Implement
+        return false;
     }
 
     // TODO: Implement

@@ -30,7 +30,6 @@ import java.util.Arrays;
 public class MatrixUtils {
     private static final String TAG = MatrixUtils.class.getSimpleName();
     public static class MatrixOperationFailedException extends Exception {
-        private static final String TAG = MatrixOperationFailedException.class.getSimpleName();
         private static final long serialVersionUID = 4384485606788583829L;
 
         public MatrixOperationFailedException(String msg) {
