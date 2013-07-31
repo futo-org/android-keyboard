@@ -104,7 +104,12 @@ public final class GestureTrailsPreview extends AbstractDrawingPreview {
         freeOffscreenBuffer();
     }
 
+    public void deallocateMemory() {
+        freeOffscreenBuffer();
+    }
+
     private void freeOffscreenBuffer() {
+        mOffscreenCanvas.setBitmap(null);
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;

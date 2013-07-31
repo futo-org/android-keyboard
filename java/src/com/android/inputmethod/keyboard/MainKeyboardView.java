@@ -1370,4 +1370,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             drawIcon(canvas, mSpaceIcon, x, y, iconWidth, iconHeight);
         }
     }
+
+    public void deallocateMemory() {
+        mGestureTrailsPreview.deallocateMemory();
+    }
 }
