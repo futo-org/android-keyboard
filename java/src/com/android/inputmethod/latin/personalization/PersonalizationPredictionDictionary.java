@@ -48,17 +48,15 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * This class is a dictionary for the personalized prediction language model implemented in Java.
  */
-public class PersonalizationPredictionDictionary extends ExpandableDictionary {
+public abstract class PersonalizationPredictionDictionary extends ExpandableDictionary {
     public static void registerUpdateListener(PersonalizationDictionaryUpdateListener listener) {
         // TODO: Implement
     }
 
     private static final String TAG = PersonalizationPredictionDictionary.class.getSimpleName();
-    private static final String NAME = PersonalizationPredictionDictionary.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
-    public static final boolean DBG_STRESS_TEST = false;
-    public static final boolean DBG_ALWAYS_WRITE = false;
-    public static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
+    private static final boolean DBG_STRESS_TEST = false;
+    private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
 
     private static final FormatOptions VERSION3 = new FormatOptions(3,
             true /* supportsDynamicUpdate */);
@@ -67,14 +65,7 @@ public class PersonalizationPredictionDictionary extends ExpandableDictionary {
     private static final int FREQUENCY_FOR_TYPED = 2;
 
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
-    public static final int MAX_HISTORY_BIGRAMS = 10000;
-
-    /**
-     * When it hits maximum bigram pair, it will delete until you are left with
-     * only (sMaxHistoryBigrams - sDeleteHistoryBigrams) pairs.
-     * Do not keep this number small to avoid deleting too often.
-     */
-    public static final int DELETE_HISTORY_BIGRAMS = 1000;
+    private static final int MAX_HISTORY_BIGRAMS = 10000;
 
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
@@ -186,7 +177,7 @@ public class PersonalizationPredictionDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public void loadDictionaryAsync() {
+    public final void loadDictionaryAsync() {
         // This must be run on non-main thread
         mBigramListLock.lock();
         try {
@@ -196,48 +187,47 @@ public class PersonalizationPredictionDictionary extends ExpandableDictionary {
         }
     }
 
-    private int profTotal;
-
     private void loadDictionaryAsyncLocked() {
+        final int[] profTotalCount = { 0 };
+        final String locale = getLocale();
         if (DBG_STRESS_TEST) {
             try {
-                Log.w(TAG, "Start stress in loading: " + mLocale);
+                Log.w(TAG, "Start stress in loading: " + locale);
                 Thread.sleep(15000);
                 Log.w(TAG, "End stress in loading");
             } catch (InterruptedException e) {
             }
         }
-        final long last = Settings.readLastUserHistoryWriteTime(mPrefs, mLocale);
+        final long last = Settings.readLastUserHistoryWriteTime(mPrefs, locale);
         final boolean initializing = last == 0;
         final long now = System.currentTimeMillis();
-        profTotal = 0;
-        final String fileName = NAME + "." + mLocale + ".dict";
+        final String fileName = getDictionaryFileName();
         final ExpandableDictionary dictionary = this;
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
             public void setUnigram(final String word, final String shortcutTarget,
                     final int frequency) {
-                profTotal++;
                 if (DBG_SAVE_RESTORE) {
                     Log.d(TAG, "load unigram: " + word + "," + frequency);
                 }
                 dictionary.addWord(word, shortcutTarget, frequency);
-                mBigramList.addBigram(null, word, (byte)frequency);
+                ++profTotalCount[0];
+                addToBigramListLocked(null, word, (byte)frequency);
             }
 
             @Override
             public void setBigram(final String word1, final String word2, final int frequency) {
                 if (word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
                         && word2.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
-                    profTotal++;
                     if (DBG_SAVE_RESTORE) {
                         Log.d(TAG, "load bigram: " + word1 + "," + word2 + "," + frequency);
                     }
+                    ++profTotalCount[0];
                     dictionary.setBigramAndGetFrequency(
                             word1, word2, initializing ? new ForgettingCurveParams(true)
                             : new ForgettingCurveParams(frequency, now, last));
                 }
-                mBigramList.addBigram(word1, word2, (byte)frequency);
+                addToBigramListLocked(word1, word2, (byte)frequency);
             }
         };
 
@@ -266,9 +256,19 @@ public class PersonalizationPredictionDictionary extends ExpandableDictionary {
             if (PROFILE_SAVE_RESTORE) {
                 final long diff = System.currentTimeMillis() - now;
                 Log.d(TAG, "PROF: Load UserHistoryDictionary: "
-                        + mLocale + ", " + diff + "ms. load " + profTotal + "entries.");
+                        + locale + ", " + diff + "ms. load " + profTotalCount[0] + "entries.");
             }
         }
+    }
+
+    protected abstract String getDictionaryFileName();
+
+    protected String getLocale() {
+        return mLocale;
+    }
+
+    private void addToBigramListLocked(String word0, String word1, byte fcValue) {
+        mBigramList.addBigram(word0, word1, fcValue);
     }
 
     /**
@@ -326,7 +326,8 @@ public class PersonalizationPredictionDictionary extends ExpandableDictionary {
             }
 
             final long now = PROFILE_SAVE_RESTORE ? System.currentTimeMillis() : 0;
-            final String fileName = NAME + "." + mLocale + ".dict";
+            final String fileName =
+                    mPersonalizationPredictionDictionary.getDictionaryFileName();
             final File file = new File(mContext.getFilesDir(), fileName);
             FileOutputStream out = null;
 
