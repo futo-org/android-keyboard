@@ -33,7 +33,7 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
 
     static AK_FORCE_INLINE TerminalAttributeFlags getFlagsAndForwardPointer(
             const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
-        return ByteArrayUtils::readUint8andAdvancePosition(
+        return ByteArrayUtils::readUint8AndAdvancePosition(
                 binaryDictionaryInfo->getDictRoot(), pos);
     }
 
@@ -66,7 +66,7 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     static AK_FORCE_INLINE int getShortcutListSizeAndForwardPointer(
             const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
         // readUint16andAdvancePosition() returns an offset *including* the uint16 field itself.
-        return ByteArrayUtils::readUint16andAdvancePosition(
+        return ByteArrayUtils::readUint16AndAdvancePosition(
                 binaryDictionaryInfo->getDictRoot(), pos) - SHORTCUT_LIST_SIZE_FIELD_SIZE;
     }
 

@@ -21,7 +21,9 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 #include "suggest/policyimpl/dictionary/binary_format.h"
+#include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
 namespace latinime {
 
@@ -34,7 +36,7 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         return;
     }
     int nextPos = dicNode->getChildrenPos();
-    const int childCount = BinaryFormat::getGroupCountAndForwardPointer(
+    const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
             binaryDictionaryInfo->getDictRoot(), &nextPos);
     for (int i = 0; i < childCount; i++) {
         nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
@@ -60,82 +62,108 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(
 
 int PatriciaTriePolicy::getUnigramProbability(
         const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) const {
-    const uint8_t *const root = binaryDictionaryInfo->getDictRoot();
+    if (nodePos == NOT_A_VALID_WORD_POS) {
+        return NOT_A_PROBABILITY;
+    }
+    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (flags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD)) {
+    const PatriciaTrieReadingUtils::NodeFlags flags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+    if (!PatriciaTrieReadingUtils::isTerminal(flags)) {
+        return NOT_A_PROBABILITY;
+    }
+    if (PatriciaTrieReadingUtils::isNotAWord(flags)
+            || PatriciaTrieReadingUtils::isBlacklisted(flags)) {
         // If this is not a word, or if it's a blacklisted entry, it should behave as
         // having no probability outside of the suggestion process (where it should be used
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
-    if (hasMultipleChars) {
-        pos = BinaryFormat::skipOtherCharacters(root, pos);
-    } else {
-        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
-    }
-    return BinaryFormat::readProbabilityWithoutMovingPointer(root, pos);
+    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
+    return PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
 }
 
 int PatriciaTriePolicy::getShortcutPositionOfNode(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int nodePos) const {
-    return BinaryFormat::getShortcutListPositionForWordPosition(
-            binaryDictionaryInfo->getDictRoot(), nodePos);
+    if (nodePos == NOT_A_VALID_WORD_POS) {
+        return NOT_A_DICT_POS;
+    }
+    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
+    int pos = nodePos;
+    const PatriciaTrieReadingUtils::NodeFlags flags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+    if (!PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
+        return NOT_A_DICT_POS;
+    }
+    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
+    if (PatriciaTrieReadingUtils::isTerminal(flags)) {
+        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+    }
+    if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
+        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(dictRoot, flags, &pos);
+    }
+    return pos;
 }
 
 int PatriciaTriePolicy::getBigramsPositionOfNode(
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int nodePos) const {
-    return BinaryFormat::getBigramListPositionForWordPosition(
-            binaryDictionaryInfo->getDictRoot(), nodePos);
+    if (nodePos == NOT_A_VALID_WORD_POS) {
+        return NOT_A_DICT_POS;
+    }
+    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
+    int pos = nodePos;
+    const PatriciaTrieReadingUtils::NodeFlags flags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+    if (!PatriciaTrieReadingUtils::hasBigrams(flags)) {
+        return NOT_A_DICT_POS;
+    }
+    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
+    if (PatriciaTrieReadingUtils::isTerminal(flags)) {
+        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+    }
+    if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
+        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(dictRoot, flags, &pos);
+    }
+    if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
+        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(binaryDictionaryInfo, &pos);
+    }
+    return pos;
 }
 
-int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode, int pos,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
+        const int nodePos, const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const NodeFilter *const childrenFilter, DicNodeVector *childDicNodes) const {
-    const int nextPos = pos;
-    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &pos);
-    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
-    const bool isTerminal = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
-    const bool hasChildren = BinaryFormat::hasChildrenInFlags(flags);
-    const bool isBlacklistedOrNotAWord = BinaryFormat::hasBlacklistedOrNotAWordFlag(flags);
-
-    int codePoint = BinaryFormat::getCodePointAndForwardPointer(
-            binaryDictionaryInfo->getDictRoot(), &pos);
-    ASSERT(NOT_A_CODE_POINT != codePoint);
-    // TODO: optimize this
+    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
+    int pos = nodePos;
+    const PatriciaTrieReadingUtils::NodeFlags flags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
-    uint16_t mergedNodeCodePointCount = 0;
-    mergedNodeCodePoints[mergedNodeCodePointCount++] = codePoint;
-
-    do {
-        const int nextCodePoint = hasMultipleChars
-                ? BinaryFormat::getCodePointAndForwardPointer(
-                        binaryDictionaryInfo->getDictRoot(), &pos) : NOT_A_CODE_POINT;
-        const bool isLastChar = (NOT_A_CODE_POINT == nextCodePoint);
-        if (!isLastChar) {
-            mergedNodeCodePoints[mergedNodeCodePointCount++] = nextCodePoint;
-        }
-        codePoint = nextCodePoint;
-    } while (NOT_A_CODE_POINT != codePoint);
-
-    const int probability = isTerminal ? BinaryFormat::readProbabilityWithoutMovingPointer(
-            binaryDictionaryInfo->getDictRoot(), pos) : NOT_A_PROBABILITY;
-    pos = BinaryFormat::skipProbability(flags, pos);
-    int childrenPos = hasChildren ? BinaryFormat::readChildrenPosition(
-            binaryDictionaryInfo->getDictRoot(), flags, pos) : NOT_A_DICT_POS;
-    const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(
-            binaryDictionaryInfo->getDictRoot(), flags, pos);
-
-    if (childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
-        return siblingPos;
+    const int mergedNodeCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
+            dictRoot, flags, MAX_WORD_LENGTH, mergedNodeCodePoints, &pos);
+    const int probability = (PatriciaTrieReadingUtils::isTerminal(flags))?
+            PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos)
+                    : NOT_A_PROBABILITY;
+    const int childrenPos = PatriciaTrieReadingUtils::hasChildrenInFlags(flags) ?
+            PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
+                    dictRoot, flags, &pos) : NOT_A_DICT_POS;
+    if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
+        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(binaryDictionaryInfo, &pos);
     }
-    childDicNodes->pushLeavingChild(dicNode, nextPos, childrenPos, probability, isTerminal,
-            hasChildren, isBlacklistedOrNotAWord, mergedNodeCodePointCount, mergedNodeCodePoints);
-    return siblingPos;
+    if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
+        BinaryDictionaryTerminalAttributesReadingUtils::skipExistingBigrams(
+                binaryDictionaryInfo, &pos);
+    }
+    if (!childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
+        childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,
+                PatriciaTrieReadingUtils::isTerminal(flags),
+                PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
+                PatriciaTrieReadingUtils::isBlacklisted(flags) ||
+                        PatriciaTrieReadingUtils::isNotAWord(flags),
+                mergedNodeCodePointCount, mergedNodeCodePoints);
+    }
+    return pos;
 }
 
 } // namespace latinime
