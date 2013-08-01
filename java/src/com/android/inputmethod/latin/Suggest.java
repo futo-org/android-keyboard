@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
@@ -172,6 +173,12 @@ public final class Suggest {
             final UserHistoryPredictionDictionary userHistoryPredictionDictionary) {
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER_HISTORY,
                 userHistoryPredictionDictionary);
+    }
+
+    public void setPersonalizationPredictionDictionary(
+            final PersonalizationPredictionDictionary personalizationPredictionDictionary) {
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
+                personalizationPredictionDictionary);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
