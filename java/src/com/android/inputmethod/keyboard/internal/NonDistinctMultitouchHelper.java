@@ -29,56 +29,67 @@ public final class NonDistinctMultitouchHelper {
 
     private int mOldPointerCount = 1;
     private Key mOldKey;
+    private int[] mLastCoords = CoordinateUtils.newInstance();
 
     public void processMotionEvent(final MotionEvent me, final KeyEventHandler keyEventHandler) {
         final int pointerCount = me.getPointerCount();
         final int oldPointerCount = mOldPointerCount;
         mOldPointerCount = pointerCount;
-        // Ignore continuous multitouch events because we can't trust the coordinates in mulitouch
-        // events.
+        // Ignore continuous multi-touch events because we can't trust the coordinates
+        // in multi-touch events.
         if (pointerCount > 1 && oldPointerCount > 1) {
             return;
         }
 
+        // Use only main (id=0) pointer tracker.
+        final PointerTracker mainTracker = PointerTracker.getPointerTracker(0, keyEventHandler);
         final int action = me.getActionMasked();
         final int index = me.getActionIndex();
         final long eventTime = me.getEventTime();
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-        // Use only main (id=0) pointer tracker.
-        final PointerTracker mainTracker = PointerTracker.getPointerTracker(0, keyEventHandler);
+        final long downTime = me.getDownTime();
 
-        // In single touch.
+        // In single-touch.
         if (oldPointerCount == 1 && pointerCount == 1) {
-            mainTracker.processMotionEvent(action, x, y, eventTime, keyEventHandler);
+            if (me.getPointerId(index) == mainTracker.mPointerId) {
+                mainTracker.processMotionEvent(me, keyEventHandler);
+                return;
+            }
+            // Inject a copied event.
+            injectMotionEvent(action, me.getX(index), me.getY(index), downTime, eventTime,
+                    mainTracker, keyEventHandler);
             return;
         }
 
         // Single-touch to multi-touch transition.
         if (oldPointerCount == 1 && pointerCount == 2) {
-            // Send an up event for the last pointer, be cause we can't trust the corrdinates of
-            // this multitouch event.
-            final int[] lastCoords = CoordinateUtils.newInstance();
-            mainTracker.getLastCoordinates(lastCoords);
-            mOldKey = mainTracker.getKeyOn(
-                    CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords));
-            // TODO: Stop calling PointerTracker.onUpEvent directly.
-            mainTracker.onUpEvent(
-                    CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords), eventTime);
+            // Send an up event for the last pointer, be cause we can't trust the coordinates of
+            // this multi-touch event.
+            mainTracker.getLastCoordinates(mLastCoords);
+            final int x = CoordinateUtils.x(mLastCoords);
+            final int y = CoordinateUtils.y(mLastCoords);
+            mOldKey = mainTracker.getKeyOn(x, y);
+            // Inject an artifact up event for the old key.
+            injectMotionEvent(MotionEvent.ACTION_UP, x, y, downTime, eventTime,
+                    mainTracker, keyEventHandler);
             return;
         }
 
-        // Multi-touch to single touch transition.
+        // Multi-touch to single-touch transition.
         if (oldPointerCount == 2 && pointerCount == 1) {
-            // Send a down event for the latest pointer if the key is different from the
-            // previous key.
+            // Send a down event for the latest pointer if the key is different from the previous
+            // key.
+            final int x = (int)me.getX(index);
+            final int y = (int)me.getY(index);
             final Key newKey = mainTracker.getKeyOn(x, y);
             if (mOldKey != newKey) {
-                // TODO: Stop calling PointerTracker.onDownEvent directly.
-                mainTracker.onDownEvent(x, y, eventTime, keyEventHandler);
+                // Inject an artifact down event for the new key.
+                // An artifact up event for the new key will usually be injected as a single-touch.
+                injectMotionEvent(MotionEvent.ACTION_DOWN, x, y, downTime, eventTime,
+                        mainTracker, keyEventHandler);
                 if (action == MotionEvent.ACTION_UP) {
-                    // TODO: Stop calling PointerTracker.onUpEvent directly.
-                    mainTracker.onUpEvent(x, y, eventTime);
+                    // Inject an artifact up event for the new key also.
+                    injectMotionEvent(MotionEvent.ACTION_UP, x, y, downTime, eventTime,
+                            mainTracker, keyEventHandler);
                 }
             }
             return;
@@ -86,5 +97,17 @@ public final class NonDistinctMultitouchHelper {
 
         Log.w(TAG, "Unknown touch panel behavior: pointer count is "
                 + pointerCount + " (previously " + oldPointerCount + ")");
+    }
+
+    private static void injectMotionEvent(final int action, final float x, final float y,
+            final long downTime, final long eventTime, final PointerTracker tracker,
+            final KeyEventHandler handler) {
+        final MotionEvent me = MotionEvent.obtain(
+                downTime, eventTime, action, x, y, 0 /* metaState */);
+        try {
+            tracker.processMotionEvent(me, handler);
+        } finally {
+            me.recycle();
+        }
     }
 }

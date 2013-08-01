@@ -1055,26 +1055,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             ResearchLogger.mainKeyboardView_processMotionEvent(me);
         }
 
-        final int action = me.getActionMasked();
-        final long eventTime = me.getEventTime();
-        if (action == MotionEvent.ACTION_MOVE) {
-            final int pointerCount = me.getPointerCount();
-            for (int index = 0; index < pointerCount; index++) {
-                final int id = me.getPointerId(index);
-                final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-                final int x = (int)me.getX(index);
-                final int y = (int)me.getY(index);
-                tracker.onMoveEvent(x, y, eventTime, me);
-            }
-        } else {
-            final int index = me.getActionIndex();
-            final int id = me.getPointerId(index);
-            final int x = (int)me.getX(index);
-            final int y = (int)me.getY(index);
-            final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-            tracker.processMotionEvent(action, x, y, eventTime, this);
-        }
-
+        final int index = me.getActionIndex();
+        final int id = me.getPointerId(index);
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
+        tracker.processMotionEvent(me, this);
         return true;
     }
 
