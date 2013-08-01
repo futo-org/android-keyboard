@@ -72,7 +72,8 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
         dynamic_patricia_trie_policy.cpp \
-        patricia_trie_policy.cpp) \
+        patricia_trie_policy.cpp \
+        patricia_trie_reading_utils.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \

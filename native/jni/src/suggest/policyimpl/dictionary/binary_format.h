@@ -56,7 +56,6 @@ class BinaryFormat {
     // Mask and flags for attribute address type selection.
     static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
 
-    static bool hasBlacklistedOrNotAWordFlag(const int flags);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t *const dict, int *pos);
     static int getCodePointAndForwardPointer(const uint8_t *const dict, int *pos);
@@ -74,10 +73,6 @@ class BinaryFormat {
     static int getCodePointsAndProbabilityAndReturnCodePointCount(
             const uint8_t *const root, const int nodePos, const int maxCodePointCount,
             int *const outCodePoints, int *const outUnigramProbability);
-    static int getBigramListPositionForWordPosition(const uint8_t *const root,
-            const int nodePosition);
-    static int getShortcutListPositionForWordPosition(const uint8_t *const root,
-            const int nodePosition);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
@@ -98,10 +93,6 @@ class BinaryFormat {
     static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
-
-inline bool BinaryFormat::hasBlacklistedOrNotAWordFlag(const int flags) {
-    return (flags & (FLAG_IS_BLACKLISTED | FLAG_IS_NOT_A_WORD)) != 0;
-}
 
 AK_FORCE_INLINE int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t *const dict,
         int *pos) {
@@ -473,39 +464,6 @@ AK_FORCE_INLINE int BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointC
     // If we have looked through all the chargroups and found no match, the address is
     // not the address of a terminal in this dictionary.
     return 0;
-}
-
-AK_FORCE_INLINE int BinaryFormat::getBigramListPositionForWordPosition(
-        const uint8_t *const root, const int nodePosition) {
-    if (NOT_A_VALID_WORD_POS == nodePosition) return NOT_A_DICT_POS;
-    int position = nodePosition;
-    const uint8_t flags = getFlagsAndForwardPointer(root, &position);
-    if (!(flags & FLAG_HAS_BIGRAMS)) return NOT_A_DICT_POS;
-    if (flags & FLAG_HAS_MULTIPLE_CHARS) {
-        position = skipOtherCharacters(root, position);
-    } else {
-        getCodePointAndForwardPointer(root, &position);
-    }
-    position = skipProbability(flags, position);
-    position = skipChildrenPosition(flags, position);
-    position = skipShortcuts(root, flags, position);
-    return position;
-}
-
-AK_FORCE_INLINE int BinaryFormat::getShortcutListPositionForWordPosition(
-        const uint8_t *const root, const int nodePosition) {
-    if (NOT_A_VALID_WORD_POS == nodePosition) return NOT_A_DICT_POS;
-    int position = nodePosition;
-    const uint8_t flags = getFlagsAndForwardPointer(root, &position);
-    if (!(flags & FLAG_HAS_SHORTCUT_TARGETS)) return NOT_A_DICT_POS;
-    if (flags & FLAG_HAS_MULTIPLE_CHARS) {
-        position = skipOtherCharacters(root, position);
-    } else {
-        getCodePointAndForwardPointer(root, &position);
-    }
-    position = skipProbability(flags, position);
-    position = skipChildrenPosition(flags, position);
-    return position;
 }
 
 } // namespace latinime

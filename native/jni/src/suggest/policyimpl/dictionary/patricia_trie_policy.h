@@ -61,7 +61,7 @@ class PatriciaTriePolicy : public DictionaryStructurePolicy {
     PatriciaTriePolicy() {}
     ~PatriciaTriePolicy() {}
 
-    int createAndGetLeavingChildNode(const DicNode *const dicNode, int pos,
+    int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
             const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
 };
