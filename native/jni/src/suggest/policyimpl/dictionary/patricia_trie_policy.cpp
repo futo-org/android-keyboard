@@ -21,7 +21,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_format.h"
+#include "suggest/policyimpl/dictionary/binary_format.h"
 
 namespace latinime {
 
