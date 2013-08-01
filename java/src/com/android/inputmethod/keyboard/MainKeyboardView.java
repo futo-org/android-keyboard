@@ -1007,6 +1007,18 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
+    public void startDoubleTapShiftKeyTimer() {
+        mKeyTimerHandler.startDoubleTapShiftKeyTimer();
+    }
+
+    public void cancelDoubleTapShiftKeyTimer() {
+        mKeyTimerHandler.cancelDoubleTapShiftKeyTimer();
+    }
+
+    public boolean isInDoubleTapShiftKeyTimeout() {
+        return mKeyTimerHandler.isInDoubleTapShiftKeyTimeout();
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
