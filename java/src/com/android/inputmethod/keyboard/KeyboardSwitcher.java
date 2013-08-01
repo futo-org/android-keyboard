@@ -273,7 +273,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void startDoubleTapShiftKeyTimer() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
-            keyboardView.getTimerProxy().startDoubleTapShiftKeyTimer();
+            keyboardView.startDoubleTapShiftKeyTimer();
         }
     }
 
@@ -282,7 +282,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void cancelDoubleTapShiftKeyTimer() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
-            keyboardView.getTimerProxy().cancelDoubleTapShiftKeyTimer();
+            keyboardView.cancelDoubleTapShiftKeyTimer();
         }
     }
 
@@ -290,7 +290,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public boolean isInDoubleTapShiftKeyTimeout() {
         final MainKeyboardView keyboardView = getMainKeyboardView();
-        return keyboardView != null && keyboardView.getTimerProxy().isInDoubleTapShiftKeyTimeout();
+        return keyboardView != null && keyboardView.isInDoubleTapShiftKeyTimeout();
     }
 
     /**
