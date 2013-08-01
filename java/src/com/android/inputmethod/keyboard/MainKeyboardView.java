@@ -193,8 +193,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         private static final int MSG_DOUBLE_TAP_SHIFT_KEY = 3;
         private static final int MSG_UPDATE_BATCH_INPUT = 4;
 
-        private final int mKeyRepeatStartTimeout;
-        private final int mKeyRepeatInterval;
         private final int mIgnoreAltCodeKeyTimeout;
         private final int mGestureRecognitionUpdateTime;
 
@@ -202,10 +200,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 final TypedArray mainKeyboardViewAttr) {
             super(outerInstance);
 
-            mKeyRepeatStartTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
-            mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_keyRepeatInterval, 0);
             mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
                     R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
             mGestureRecognitionUpdateTime = mainKeyboardViewAttr.getInt(
@@ -224,17 +218,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 startWhileTypingFadeinAnimation(keyboardView);
                 break;
             case MSG_REPEAT_KEY:
-                final Key currentKey = tracker.getKey();
-                final int code = msg.arg1;
-                if (currentKey != null && currentKey.mCode == code) {
-                    startKeyRepeatTimer(tracker, mKeyRepeatInterval);
-                    startTypingStateTimer(currentKey);
-                    final KeyboardActionListener listener =
-                            keyboardView.getKeyboardActionListener();
-                    listener.onPressKey(code, true /* isRepeatKey */, true /* isSinglePointer */);
-                    listener.onCodeInput(code,
-                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-                }
+                tracker.onKeyRepeat(msg.arg1);
                 break;
             case MSG_LONGPRESS_KEY:
                 keyboardView.onLongPress(tracker);
@@ -246,17 +230,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             }
         }
 
-        private void startKeyRepeatTimer(final PointerTracker tracker, final long delay) {
+        @Override
+        public void startKeyRepeatTimer(final PointerTracker tracker, final int delay) {
             final Key key = tracker.getKey();
-            if (key == null) {
+            if (key == null || delay == 0) {
                 return;
             }
             sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
-        }
-
-        @Override
-        public void startKeyRepeatTimer(final PointerTracker tracker) {
-            startKeyRepeatTimer(tracker, mKeyRepeatStartTimeout);
         }
 
         public void cancelKeyRepeatTimer() {
