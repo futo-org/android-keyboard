@@ -53,6 +53,7 @@ import com.android.inputmethod.keyboard.internal.GestureFloatingPreviewText;
 import com.android.inputmethod.keyboard.internal.GestureTrailsPreview;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
+import com.android.inputmethod.keyboard.internal.NonDistinctMultitouchHelper;
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.SlidingKeyInputPreview;
 import com.android.inputmethod.latin.Constants;
@@ -179,9 +180,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private int mGestureFloatingPreviewTextLingerTimeout;
 
     private KeyDetector mKeyDetector;
-    private final boolean mHasDistinctMultitouch;
-    private int mOldPointerCount = 1;
-    private Key mOldKey;
+    private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
     private final KeyTimerHandler mKeyTimerHandler;
 
@@ -423,13 +422,16 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     public MainKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
+        PointerTracker.init(getResources());
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
         final boolean hasDistinctMultitouch = context.getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
-        mHasDistinctMultitouch = hasDistinctMultitouch && !forceNonDistinctMultitouch;
-        PointerTracker.init(getResources());
+                .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT)
+                && !forceNonDistinctMultitouch;
+        mNonDistinctMultitouchHelper = hasDistinctMultitouch ? null
+                : new NonDistinctMultitouchHelper();
+
         mPreviewPlacerView = new PreviewPlacerView(context, attrs);
 
         final TypedArray mainKeyboardViewAttr = context.obtainStyledAttributes(
@@ -1032,25 +1034,21 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (getKeyboard() == null) {
             return false;
         }
-        // TODO: Add multi-touch to single-touch event converter for non-distinct multi-touch
-        // device.
+        if (mNonDistinctMultitouchHelper != null) {
+            if (me.getPointerCount() > 1 && mKeyTimerHandler.isInKeyRepeat()) {
+                // Key repeating timer will be canceled if 2 or more keys are in action.
+                mKeyTimerHandler.cancelKeyRepeatTimer();
+            }
+            // Non distinct multitouch screen support
+            mNonDistinctMultitouchHelper.processMotionEvent(me, this);
+            return true;
+        }
         return processMotionEvent(me);
     }
 
     public boolean processMotionEvent(final MotionEvent me) {
-        final boolean nonDistinctMultitouch = !mHasDistinctMultitouch;
         final int action = me.getActionMasked();
         final int pointerCount = me.getPointerCount();
-        final int oldPointerCount = mOldPointerCount;
-        mOldPointerCount = pointerCount;
-
-        // TODO: cleanup this code into a multi-touch to single-touch event converter class?
-        // If the device does not have distinct multi-touch support panel, ignore all multi-touch
-        // events except a transition from/to single-touch.
-        if (nonDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
-            return true;
-        }
-
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
@@ -1066,50 +1064,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.mainKeyboardView_processMotionEvent(
                     me, action, eventTime, index, id, x, y);
-        }
-
-        if (mKeyTimerHandler.isInKeyRepeat()) {
-            final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-            // Key repeating timer will be canceled if 2 or more keys are in action, and current
-            // event (UP or DOWN) is non-modifier key.
-            if (pointerCount > 1 && !tracker.isModifier()) {
-                mKeyTimerHandler.cancelKeyRepeatTimer();
-            }
-            // Up event will pass through.
-        }
-
-        // TODO: cleanup this code into a multi-touch to single-touch event converter class?
-        // Translate mutli-touch event to single-touch events on the device that has no distinct
-        // multi-touch panel.
-        if (nonDistinctMultitouch) {
-            // Use only main (id=0) pointer tracker.
-            final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);
-            if (pointerCount == 1 && oldPointerCount == 2) {
-                // Multi-touch to single touch transition.
-                // Send a down event for the latest pointer if the key is different from the
-                // previous key.
-                final Key newKey = tracker.getKeyOn(x, y);
-                if (mOldKey != newKey) {
-                    tracker.onDownEvent(x, y, eventTime, this);
-                    if (action == MotionEvent.ACTION_UP) {
-                        tracker.onUpEvent(x, y, eventTime);
-                    }
-                }
-            } else if (pointerCount == 2 && oldPointerCount == 1) {
-                // Single-touch to multi-touch transition.
-                // Send an up event for the last pointer.
-                final int[] lastCoords = CoordinateUtils.newInstance();
-                mOldKey = tracker.getKeyOn(
-                        CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords));
-                tracker.onUpEvent(
-                        CoordinateUtils.x(lastCoords), CoordinateUtils.y(lastCoords), eventTime);
-            } else if (pointerCount == 1 && oldPointerCount == 1) {
-                tracker.processMotionEvent(action, x, y, eventTime, this);
-            } else {
-                Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
-                        + " (old " + oldPointerCount + ")");
-            }
-            return true;
         }
 
         if (action == MotionEvent.ACTION_MOVE) {
