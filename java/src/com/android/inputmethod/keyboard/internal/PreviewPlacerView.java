@@ -37,7 +37,10 @@ public final class PreviewPlacerView extends RelativeLayout {
     public PreviewPlacerView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
+    }
 
+    public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
+        if (!enabled) return;
         final Paint layerPaint = new Paint();
         layerPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
         setLayerType(LAYER_TYPE_HARDWARE, layerPaint);

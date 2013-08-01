@@ -314,10 +314,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 R.layout.input_view, null);
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
-        if (isHardwareAcceleratedDrawingEnabled) {
-            mKeyboardView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            // TODO: Should use LAYER_TYPE_SOFTWARE when hardware acceleration is off?
-        }
+        mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
 
         // This always needs to be set since the accessibility state can

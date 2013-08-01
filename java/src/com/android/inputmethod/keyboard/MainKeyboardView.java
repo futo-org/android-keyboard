@@ -512,6 +512,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
     }
 
+    @Override
+    public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
+        super.setHardwareAcceleratedDrawingEnabled(enabled);
+        mPreviewPlacerView.setHardwareAcceleratedDrawingEnabled(enabled);
+    }
+
     private ObjectAnimator loadObjectAnimator(final int resId, final Object target) {
         if (resId == 0) {
             // TODO: Stop returning null.
