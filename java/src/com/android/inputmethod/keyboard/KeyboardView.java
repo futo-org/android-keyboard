@@ -605,4 +605,8 @@ public class KeyboardView extends View {
         super.onDetachedFromWindow();
         freeOffscreenBuffer();
     }
+
+    public void deallocateMemory() {
+        freeOffscreenBuffer();
+    }
 }
