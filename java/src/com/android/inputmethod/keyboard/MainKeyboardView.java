@@ -1047,35 +1047,30 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     public boolean processMotionEvent(final MotionEvent me) {
-        final int action = me.getActionMasked();
-        final int pointerCount = me.getPointerCount();
-        final long eventTime = me.getEventTime();
-        final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-
-        // TODO: This might be moved to the tracker.processMotionEvent() call below.
         if (LatinImeLogger.sUsabilityStudy) {
             UsabilityStudyLogUtils.writeMotionEvent(me);
         }
-        // TODO: This should be moved to the tracker.processMotionEvent() call below.
         // Currently the same "move" event is being logged twice.
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.mainKeyboardView_processMotionEvent(
-                    me, action, eventTime, index, id, x, y);
+            ResearchLogger.mainKeyboardView_processMotionEvent(me);
         }
 
+        final int action = me.getActionMasked();
+        final long eventTime = me.getEventTime();
         if (action == MotionEvent.ACTION_MOVE) {
-            for (int i = 0; i < pointerCount; i++) {
-                final int pointerId = me.getPointerId(i);
-                final PointerTracker tracker = PointerTracker.getPointerTracker(
-                        pointerId, this);
-                final int px = (int)me.getX(i);
-                final int py = (int)me.getY(i);
-                tracker.onMoveEvent(px, py, eventTime, me);
+            final int pointerCount = me.getPointerCount();
+            for (int index = 0; index < pointerCount; index++) {
+                final int id = me.getPointerId(index);
+                final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
+                final int x = (int)me.getX(index);
+                final int y = (int)me.getY(index);
+                tracker.onMoveEvent(x, y, eventTime, me);
             }
         } else {
+            final int index = me.getActionIndex();
+            final int id = me.getPointerId(index);
+            final int x = (int)me.getX(index);
+            final int y = (int)me.getY(index);
             final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
             tracker.processMotionEvent(action, x, y, eventTime, this);
         }

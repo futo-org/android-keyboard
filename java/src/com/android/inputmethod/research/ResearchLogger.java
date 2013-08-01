@@ -1066,22 +1066,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT =
             new LogStatement("MotionEvent", true, false, "action",
                     LogStatement.KEY_IS_LOGGING_RELATED, "motionEvent");
-    public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
-            final long eventTime, final int index, final int id, final int x, final int y) {
-        if (me != null) {
-            final String actionString = LoggingUtils.getMotionEventActionTypeString(action);
-            final ResearchLogger researchLogger = getInstance();
-            researchLogger.enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
-                    actionString, false /* IS_LOGGING_RELATED */, MotionEvent.obtain(me));
-            if (action == MotionEvent.ACTION_DOWN) {
-                // Subtract 1 from eventTime so the down event is included in the later
-                // LogUnit, not the earlier (the test is for inequality).
-                researchLogger.setSavedDownEventTime(eventTime - 1);
-            }
-            // Refresh the timer in case we are capturing user feedback.
-            if (researchLogger.isMakingUserRecording()) {
-                researchLogger.resetRecordingTimer();
-            }
+    public static void mainKeyboardView_processMotionEvent(final MotionEvent me) {
+        if (me == null) {
+            return;
+        }
+        final int action = me.getActionMasked();
+        final long eventTime = me.getEventTime();
+        final String actionString = LoggingUtils.getMotionEventActionTypeString(action);
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.enqueueEvent(LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT,
+                actionString, false /* IS_LOGGING_RELATED */, MotionEvent.obtain(me));
+        if (action == MotionEvent.ACTION_DOWN) {
+            // Subtract 1 from eventTime so the down event is included in the later
+            // LogUnit, not the earlier (the test is for inequality).
+            researchLogger.setSavedDownEventTime(eventTime - 1);
+        }
+        // Refresh the timer in case we are capturing user feedback.
+        if (researchLogger.isMakingUserRecording()) {
+            researchLogger.resetRecordingTimer();
         }
     }
 
