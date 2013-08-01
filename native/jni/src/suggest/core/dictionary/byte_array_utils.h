@@ -50,39 +50,39 @@ class ByteArrayUtils {
         return buffer[pos];
     }
 
-    static AK_FORCE_INLINE uint32_t readUint32andAdvancePosition(
+    static AK_FORCE_INLINE uint32_t readUint32AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint32_t value = readUint32(buffer, *pos);
         *pos += 4;
         return value;
     }
 
-    static AK_FORCE_INLINE int readSint24andAdvancePosition(
+    static AK_FORCE_INLINE int readSint24AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint8_t value = readUint8(buffer, *pos);
         if (value < 0x80) {
-            return readUint24andAdvancePosition(buffer, pos);
+            return readUint24AndAdvancePosition(buffer, pos);
         } else {
             (*pos)++;
-            return -(((value & 0x7F) << 16) ^ readUint16andAdvancePosition(buffer, pos));
+            return -(((value & 0x7F) << 16) ^ readUint16AndAdvancePosition(buffer, pos));
         }
     }
 
-    static AK_FORCE_INLINE uint32_t readUint24andAdvancePosition(
+    static AK_FORCE_INLINE uint32_t readUint24AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint32_t value = readUint24(buffer, *pos);
         *pos += 3;
         return value;
     }
 
-    static AK_FORCE_INLINE uint16_t readUint16andAdvancePosition(
+    static AK_FORCE_INLINE uint16_t readUint16AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint16_t value = readUint16(buffer, *pos);
         *pos += 2;
         return value;
     }
 
-    static AK_FORCE_INLINE uint8_t readUint8andAdvancePosition(
+    static AK_FORCE_INLINE uint8_t readUint8AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         return buffer[(*pos)++];
     }
@@ -113,7 +113,7 @@ class ByteArrayUtils {
                 *pos += 1;
                 return NOT_A_CODE_POINT;
             } else {
-                return readUint24andAdvancePosition(buffer, pos);
+                return readUint24AndAdvancePosition(buffer, pos);
             }
         } else {
             *pos += 1;

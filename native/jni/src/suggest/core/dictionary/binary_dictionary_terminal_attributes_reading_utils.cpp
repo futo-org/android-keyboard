@@ -44,15 +44,15 @@ const int TaUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
     const int origin = *pos;
     switch (MASK_ATTRIBUTE_ADDRESS_TYPE & flags) {
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-            offset = ByteArrayUtils::readUint8andAdvancePosition(
+            offset = ByteArrayUtils::readUint8AndAdvancePosition(
                     binaryDictionaryInfo->getDictRoot(), pos);
             break;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-            offset = ByteArrayUtils::readUint16andAdvancePosition(
+            offset = ByteArrayUtils::readUint16AndAdvancePosition(
                     binaryDictionaryInfo->getDictRoot(), pos);
             break;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-            offset = ByteArrayUtils::readUint24andAdvancePosition(
+            offset = ByteArrayUtils::readUint24AndAdvancePosition(
                     binaryDictionaryInfo->getDictRoot(), pos);
             break;
     }
