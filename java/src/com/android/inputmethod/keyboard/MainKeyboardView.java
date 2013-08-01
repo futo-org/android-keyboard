@@ -1322,7 +1322,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
+    @Override
     public void deallocateMemory() {
+        super.deallocateMemory();
         mGestureTrailsPreview.deallocateMemory();
     }
 }
