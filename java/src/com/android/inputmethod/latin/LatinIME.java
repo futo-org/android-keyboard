@@ -76,6 +76,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
+import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
@@ -170,6 +171,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
     private UserHistoryPredictionDictionary mUserHistoryPredictionDictionary;
+    private PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -560,6 +562,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserHistoryPredictionDictionary = PersonalizationDictionaryHelper
                 .getUserHistoryPredictionDictionary(this, localeStr, prefs);
         newSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
+        mPersonalizationPredictionDictionary = PersonalizationDictionaryHelper
+                .getPersonalizationPredictionDictionary(this, localeStr, prefs);
+        newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
 
         final Suggest oldSuggest = mSuggest;
         resetContactsDictionary(null != oldSuggest ? oldSuggest.getContactsDictionary() : null);
@@ -2509,9 +2514,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (!currentSettings.mCorrectionEnabled) return null;
 
-        final UserHistoryPredictionDictionary userHistoryDictionary =
+        final UserHistoryPredictionDictionary userHistoryPredictionDictionary =
                 mUserHistoryPredictionDictionary;
-        if (userHistoryDictionary == null) return null;
+        if (userHistoryPredictionDictionary == null) return null;
 
         final String prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators, 2);
         final String secondWord;
@@ -2525,7 +2530,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
                 suggest.getUnigramDictionaries(), suggestion);
         if (maxFreq == 0) return null;
-        userHistoryDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
+        userHistoryPredictionDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
         return prevWord;
     }
 
