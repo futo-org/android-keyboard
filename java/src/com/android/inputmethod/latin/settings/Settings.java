@@ -27,12 +27,14 @@ import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.locks.ReentrantLock;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
@@ -94,6 +96,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private Resources mRes;
     private SharedPreferences mPrefs;
     private SettingsValues mSettingsValues;
+    private final ReentrantLock mSettingsValuesLock = new ReentrantLock();
 
     private static final Settings sInstance = new Settings();
 
@@ -121,24 +124,34 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        if (mSettingsValues == null) {
-            // TODO: Introduce a static function to register this class and ensure that
-            // loadSettings must be called before "onSharedPreferenceChanged" is called.
-            Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
-            return;
+        mSettingsValuesLock.lock();
+        try {
+            if (mSettingsValues == null) {
+                // TODO: Introduce a static function to register this class and ensure that
+                // loadSettings must be called before "onSharedPreferenceChanged" is called.
+                Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
+                return;
+            }
+            loadSettings(mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
+        } finally {
+            mSettingsValuesLock.unlock();
         }
-        loadSettings(mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
     }
 
     public void loadSettings(final Locale locale, final InputAttributes inputAttributes) {
-        final SharedPreferences prefs = mPrefs;
-        final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
-            @Override
-            protected SettingsValues job(final Resources res) {
-                return new SettingsValues(prefs, locale, res, inputAttributes);
-            }
-        };
-        mSettingsValues = job.runInLocale(mRes, locale);
+        mSettingsValuesLock.lock();
+        try {
+            final SharedPreferences prefs = mPrefs;
+            final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
+                @Override
+                protected SettingsValues job(final Resources res) {
+                    return new SettingsValues(prefs, locale, res, inputAttributes);
+                }
+            };
+            mSettingsValues = job.runInLocale(mRes, locale);
+        } finally {
+            mSettingsValuesLock.unlock();
+        }
     }
 
     // TODO: Remove this method and add proxy method to SettingsValues.
