@@ -17,13 +17,16 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -55,20 +58,21 @@ public final class Suggest {
     // Close to -2**31
     private static final int SUPPRESS_SUGGEST_THRESHOLD = -2000000000;
 
+    public static final int MAX_SUGGESTIONS = 18;
+
     public interface SuggestInitializationListener {
         public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
     }
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private Dictionary mMainDictionary;
-    private ContactsBinaryDictionary mContactsDict;
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             CollectionUtils.newConcurrentHashMap();
+    private HashSet<String> mOnlyDictionarySetForDebug = null;
+    private Dictionary mMainDictionary;
+    private ContactsBinaryDictionary mContactsDict;
     @UsedForTesting
     private boolean mIsCurrentlyWaitingForMainDictionary = false;
-
-    public static final int MAX_SUGGESTIONS = 18;
 
     private float mAutoCorrectionThreshold;
 
@@ -79,6 +83,13 @@ public final class Suggest {
             final SuggestInitializationListener listener) {
         initAsynchronously(context, locale, listener);
         mLocale = locale;
+        // initialize a debug flag for the personalization
+        if (Settings.readUseOnlyPersonalizationDictionaryForDebug(
+                PreferenceManager.getDefaultSharedPreferences(context))) {
+            mOnlyDictionarySetForDebug = new HashSet<String>();
+            mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION);
+            mOnlyDictionarySetForDebug.add(Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA);
+        }
     }
 
     @UsedForTesting
@@ -87,12 +98,20 @@ public final class Suggest {
                 false /* useFullEditDistance */, locale);
         mLocale = locale;
         mMainDictionary = mainDict;
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_MAIN, mainDict);
     }
 
     private void initAsynchronously(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
         resetMainDict(context, locale, listener);
+    }
+
+    private void addOrReplaceDictionaryInternal(final String key, final Dictionary dict) {
+        if (mOnlyDictionarySetForDebug != null && mOnlyDictionarySetForDebug.contains(key)) {
+            Log.w(TAG, "Ignore add " + key + " dictionary for debug.");
+            return;
+        }
+        addOrReplaceDictionary(mDictionaries, key, dict);
     }
 
     private static void addOrReplaceDictionary(
@@ -118,7 +137,7 @@ public final class Suggest {
             public void run() {
                 final DictionaryCollection newMainDict =
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, newMainDict);
+                addOrReplaceDictionaryInternal(Dictionary.TYPE_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
                 if (listener != null) {
                     listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
@@ -156,7 +175,7 @@ public final class Suggest {
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
     public void setUserDictionary(final UserBinaryDictionary userDictionary) {
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER, userDictionary);
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER, userDictionary);
     }
 
     /**
@@ -166,18 +185,18 @@ public final class Suggest {
      */
     public void setContactsDictionary(final ContactsBinaryDictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_CONTACTS, contactsDictionary);
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
     public void setUserHistoryPredictionDictionary(
             final UserHistoryPredictionDictionary userHistoryPredictionDictionary) {
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER_HISTORY,
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY,
                 userHistoryPredictionDictionary);
     }
 
     public void setPersonalizationPredictionDictionary(
             final PersonalizationPredictionDictionary personalizationPredictionDictionary) {
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
                 personalizationPredictionDictionary);
     }
 
