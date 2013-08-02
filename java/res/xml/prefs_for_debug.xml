@@ -51,6 +51,12 @@
             android:persistent="true"
             android:defaultValue="false" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="use_only_personalization_dictionary"
+        android:persistent="true"
+        android:title="@string/prefs_use_only_personalization_dictionary_for_debug" />
+
     <PreferenceScreen
         android:key="read_external_dictionary"
         android:title="@string/prefs_read_external_dictionary" />

@@ -37,6 +37,8 @@ public final class DebugSettings extends PreferenceFragment
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     public static final String PREF_STATISTICS_LOGGING = "enable_logging";
+    public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
+            "use_only_personalization_dictionary_for_debug";
     private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
     private static final boolean SHOW_STATISTICS_LOGGING = false;
 
@@ -66,7 +68,7 @@ public final class DebugSettings extends PreferenceFragment
             }
         }
 
-        PreferenceScreen readExternalDictionary =
+        final PreferenceScreen readExternalDictionary =
                 (PreferenceScreen) findPreference(PREF_READ_EXTERNAL_DICTIONARY);
         if (null != readExternalDictionary) {
             readExternalDictionary.setOnPreferenceClickListener(
@@ -110,6 +112,8 @@ public final class DebugSettings extends PreferenceFragment
             }
         } else if (key.equals(PREF_FORCE_NON_DISTINCT_MULTITOUCH)
                 || key.equals(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT)) {
+            mServiceNeedsRestart = true;
+        } else if (key.equals(PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG)) {
             mServiceNeedsRestart = true;
         }
     }
