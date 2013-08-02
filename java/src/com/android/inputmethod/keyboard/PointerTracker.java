@@ -870,8 +870,23 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mListener.onCancelBatchInput();
     }
 
-    public void processMotionEvent(final int action, final int x, final int y, final long eventTime,
-            final KeyEventHandler handler) {
+    public void processMotionEvent(final MotionEvent me, final KeyEventHandler handler) {
+        final int action = me.getActionMasked();
+        final long eventTime = me.getEventTime();
+        if (action == MotionEvent.ACTION_MOVE) {
+            final int pointerCount = me.getPointerCount();
+            for (int index = 0; index < pointerCount; index++) {
+                final int id = me.getPointerId(index);
+                final PointerTracker tracker = getPointerTracker(id, handler);
+                final int x = (int)me.getX(index);
+                final int y = (int)me.getY(index);
+                tracker.onMoveEvent(x, y, eventTime, me);
+            }
+            return;
+        }
+        final int index = me.getActionIndex();
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
         switch (action) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
@@ -881,16 +896,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         case MotionEvent.ACTION_POINTER_UP:
             onUpEvent(x, y, eventTime);
             break;
-        case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime, null);
-            break;
         case MotionEvent.ACTION_CANCEL:
             onCancelEvent(x, y, eventTime);
             break;
         }
     }
 
-    public void onDownEvent(final int x, final int y, final long eventTime,
+    private void onDownEvent(final int x, final int y, final long eventTime,
             final KeyEventHandler handler) {
         if (DEBUG_EVENT) {
             printTouchEvent("onDownEvent:", x, y, eventTime);
@@ -1005,7 +1017,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    public void onMoveEvent(final int x, final int y, final long eventTime, final MotionEvent me) {
+    private void onMoveEvent(final int x, final int y, final long eventTime, final MotionEvent me) {
         if (DEBUG_MOVE_EVENT) {
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         }
@@ -1193,7 +1205,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    public void onUpEvent(final int x, final int y, final long eventTime) {
+    private void onUpEvent(final int x, final int y, final long eventTime) {
         if (DEBUG_EVENT) {
             printTouchEvent("onUpEvent  :", x, y, eventTime);
         }
@@ -1293,7 +1305,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         sPointerTrackerQueue.remove(this);
     }
 
-    public void onCancelEvent(final int x, final int y, final long eventTime) {
+    private void onCancelEvent(final int x, final int y, final long eventTime) {
         if (DEBUG_EVENT) {
             printTouchEvent("onCancelEvt:", x, y, eventTime);
         }
