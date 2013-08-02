@@ -380,20 +380,83 @@
          This should be identical to subtype_serbian_latin aside from the trailing (%s).
     <string name="subtype_with_layout_sr-Latn">Serbian (Latin) (<xliff:g id="layout">%s</xliff:g>)</string>
     -->
-    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language">No language</string>
-    <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
-    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_qwertz">No language (QWERTZ)</string>
-    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_azerty">No language (AZERTY)</string>
-    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_dvorak">No language (Dvorak)</string>
-    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_colemak">No language (Colemak)</string>
-    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_pcqwerty">No language (PC)</string>
+    <!-- This string is displayed in a language list that allows to choose a language for
+suggestions in a software keyboard. This setting won't give suggestions in any particular
+language, hence "No language".
+As for the "alphabet" mention, it refers specifically to the Latin alphabet, as opposed to
+Cyrillic, Arabic, Hebrew or other scripts. This keyboard offers no suggestions, but it will
+be a QWERTY, or AZERTY, or any other disposition that only offers Latin characters, so
+you wouldn't be able to type, say, Arabic on it. Please translate it in a way that "alphabet"
+would be understood to mean specifically the Latin alphabet, rather than any other
+alphabet. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language">No language (Alphabet)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the QWERTY
+disposition rather than other common dispositions for Latin languages. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_qwerty">Alphabet (QWERTY)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the QWERTZ
+disposition rather than other common dispositions for Latin languages. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_qwertz">Alphabet (QWERTZ)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the AZERTY
+disposition rather than other common dispositions for Latin languages. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_azerty">Alphabet (AZERTY)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the Dvorak
+disposition rather than other common dispositions for Latin languages. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_dvorak">Alphabet (Dvorak)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the Colemak
+disposition rather than other common dispositions for Latin languages. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_colemak">Alphabet (Colemak)</string>
+    <!-- This string is displayed in the description for a keyboard type. It refers specifically to
+the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
+When the device is configured to use a language using a script other than the Latin alphabet, the
+user still needs a keyboard that can input Latin characters for passwords or login names for
+example, and a way to switch to this Latin alphabet keyboard. This string is the description for
+this keyboard, so users of other scripts should understand when they read this that it represents a
+keyboard that is meant for them to be able to enter Latin characters as opposed to the script they
+are used to. This keyboard does not provide a dictionary, and it is not tied to any specific
+language among those that use the Latin alphabet. This keyboard is laid out in the QWERTY PC
+disposition that offers additional keys, but smaller keys compared to other common dispositions for
+mobile devices. [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_pcqwerty">Alphabet (PC)</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>

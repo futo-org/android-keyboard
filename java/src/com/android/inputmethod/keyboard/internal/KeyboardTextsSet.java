@@ -3151,7 +3151,7 @@ public final class KeyboardTextsSet {
         /* 7 */ "\u00E7",
     };
 
-    /* Language zz: No language */
+    /* Language zz: Alphabet */
     private static final String[] LANGUAGE_zz = {
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
@@ -3324,7 +3324,7 @@ public final class KeyboardTextsSet {
         "uk", LANGUAGE_uk, /* Ukrainian */
         "vi", LANGUAGE_vi, /* Vietnamese */
         "zu", LANGUAGE_zu, /* Zulu */
-        "zz", LANGUAGE_zz, /* No language */
+        "zz", LANGUAGE_zz, /* Alphabet */
     };
 
     static {
