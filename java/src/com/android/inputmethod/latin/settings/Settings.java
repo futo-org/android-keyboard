@@ -324,4 +324,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static boolean isInternal(final SharedPreferences prefs) {
         return prefs.getBoolean(Settings.PREF_KEY_IS_INTERNAL, false);
     }
+
+    public static boolean readUseOnlyPersonalizationDictionaryForDebug(
+            final SharedPreferences prefs) {
+        return prefs.getBoolean(
+                DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
+    }
 }
