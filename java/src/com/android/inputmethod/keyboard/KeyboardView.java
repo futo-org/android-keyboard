@@ -157,7 +157,7 @@ public class KeyboardView extends View {
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
         if (!enabled) return;
         // TODO: Should use LAYER_TYPE_SOFTWARE when hardware acceleration is off?
-        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     /**
