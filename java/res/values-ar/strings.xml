@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"تؤدي المسافة والترقيم إلى تصحيح الكلمات المكتوبة بشكل غير صحيح"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"إيقاف"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"معتدل"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"حاد"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"شديد الصرامة"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"حاد"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"شديد الصرامة"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"اقتراحات الكلمات التالية"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"استخدام الكلمة السابقة في تقديم الاقتراحات"</string>
     <string name="gesture_input" msgid="826951152254563827">"تمكين الكتابة بالإيماءة"</string>

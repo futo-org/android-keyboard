@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"스페이스바와 문장부호 키를 사용하면 오타가 자동으로 교정됩니다."</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"사용 안함"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"약"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"중"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"강"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"중"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"강"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"다음 단어 추천"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"추천할 때 이전 단어를 사용"</string>
     <string name="gesture_input" msgid="826951152254563827">"제스처 타이핑 사용"</string>

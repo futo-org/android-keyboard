@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spasiebalk en leestekens korrigeer outomaties woorde wat verkeerd gespel is"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Af"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Matig"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressief"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Baie aggressief"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Aggressief"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Baie aggressief"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Stel volgende woord voor"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Gebruik die vorige woord om voorstelle te maak"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktiveer gebaar-tik"</string>

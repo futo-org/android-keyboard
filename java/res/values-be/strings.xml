@@ -65,8 +65,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Прабелы і пунктуацыйныя знакі дазваляюць аўтаматычна выпраўляць памылкова ўведзеныя словы"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Адключаны"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Сціплы"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агрэсіўны"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Вельмі агрэсіўны"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Агрэсіўны"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Вельмі агрэсіўны"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Падказкi для наступнага слова"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Выкарыстоўваць папярэдняе слова, каб атрымлiваць падказкi"</string>
     <string name="gesture_input" msgid="826951152254563827">"Уключыць набор жэстамі"</string>

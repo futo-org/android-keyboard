@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Mellomromstast og skilletegn retter automat. feilstavede ord"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderat"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Omfattende"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veldig aggressiv"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Omfattende"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Veldig aggressiv"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Forslag til neste ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Bruk forrige ord til å lage forslag"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktiver ordføring"</string>

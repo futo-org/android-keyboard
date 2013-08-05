@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"誤入力をスペースまたは句読点キーで修正する"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"強"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"最も強い"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"強"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"最も強い"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"次の入力候補"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"前の単語に基づいて入力候補を表示します"</string>
     <string name="gesture_input" msgid="826951152254563827">"ジェスチャー入力を有効にする"</string>
