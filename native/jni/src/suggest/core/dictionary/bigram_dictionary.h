@@ -27,8 +27,8 @@ class BigramDictionary {
  public:
     BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo);
 
-    int getPredictions(const int *word, int length, int *inputCodePoints, int inputSize,
-            int *outWords, int *frequencies, int *outputTypes) const;
+    int getPredictions(const int *word, int length, int *outBigramCodePoints,
+            int *outBigramProbability, int *outputTypes) const;
     bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
 
@@ -37,13 +37,10 @@ class BigramDictionary {
 
     void addWordBigram(int *word, int length, int probability, int *bigramProbability,
             int *bigramCodePoints, int *outputTypes) const;
-    bool checkFirstCharacter(int *word, int *inputCodePoints) const;
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
 
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
-    // TODO: Re-implement proximity correction for bigram correction
-    static const int MAX_ALTERNATIVES = 1;
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_DICTIONARY_H

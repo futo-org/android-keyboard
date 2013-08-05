@@ -186,7 +186,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
                 scores, spaceIndices, outputTypes);
     } else {
         count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
-                inputCodePoints, inputSize, outputCodePoints, scores, outputTypes);
+                outputCodePoints, scores, outputTypes);
     }
 
     // Copy back the output values
