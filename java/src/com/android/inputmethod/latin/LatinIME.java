@@ -1639,7 +1639,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             final int wordComposerSize = mWordComposer.size();
             // Since isComposingWord() is true, the size is at least 1.
-            final int lastChar = mWordComposer.getCodeBeforeCursor();
             if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
                 // If we are in the middle of a recorrection, we need to commit the recorrection
                 // first so that we can insert the batch input at the current cursor position.
