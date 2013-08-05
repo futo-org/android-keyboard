@@ -36,5 +36,6 @@
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo</item>
         <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo</item>
+        <item name="iconEmojiKey">@drawable/ic_emoji_light</item>
     </style>
 </resources>

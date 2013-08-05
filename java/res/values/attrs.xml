@@ -217,6 +217,7 @@
         <attr name="iconLanguageSwitchKey" format="reference" />
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
+        <attr name="iconEmojiKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">

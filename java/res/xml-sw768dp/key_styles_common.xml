@@ -110,6 +110,11 @@
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="!code/key_space" />
     <key-style
+        latin:styleName="emojiKeyStyle"
+        latin:code="!code/key_emoji"
+        latin:keyIcon="!icon/emoji_key"
+        latin:keyActionFlags="noKeyPreview" />
+    <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
         latin:keyIcon="!icon/settings_key"
