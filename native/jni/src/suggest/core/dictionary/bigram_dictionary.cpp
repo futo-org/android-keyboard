@@ -87,21 +87,14 @@ void BigramDictionary::addWordBigram(int *word, int length, int probability, int
 /* Parameters :
  * prevWord: the word before, the one for which we need to look up bigrams.
  * prevWordLength: its length.
- * inputCodePoints: what user typed, in the same format as for UnigramDictionary::getSuggestions.
- * inputSize: the size of the codes array.
- * bigramCodePoints: an array for output, at the same format as outwords for getSuggestions.
- * bigramProbability: an array to output frequencies.
+ * outBigramCodePoints: an array for output, at the same format as outwords for getSuggestions.
+ * outBigramProbability: an array to output frequencies.
  * outputTypes: an array to output types.
  * This method returns the number of bigrams this word has, for backward compatibility.
- * Note: this is not the number of bigrams output in the array, which is the number of
- * bigrams this word has WHOSE first letter also matches the letter the user typed.
- * TODO: this may not be a sensible thing to do. It makes sense when the bigrams are
- * used to match the first letter of the second word, but once the user has typed more
- * and the bigrams are used to boost unigram result scores, it makes little sense to
- * reduce their scope to the ones that match the first letter.
  */
-int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, int *inputCodePoints,
-        int inputSize, int *bigramCodePoints, int *bigramProbability, int *outputTypes) const {
+int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLength,
+        int *const outBigramCodePoints, int *const outBigramProbability,
+        int *const outputTypes) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
@@ -126,21 +119,16 @@ int BigramDictionary::getPredictions(const int *prevWord, int prevWordLength, in
                 getCodePointsAndProbabilityAndReturnCodePointCount(
                         mBinaryDictionaryInfo, bigramsIt.getBigramPos(), MAX_WORD_LENGTH,
                         bigramBuffer, &unigramProbability);
-
-        // inputSize == 0 means we are trying to find bigram predictions.
-        if (inputSize < 1 || checkFirstCharacter(bigramBuffer, inputCodePoints)) {
-            const int bigramProbabilityTemp = bigramsIt.getProbability();
-            // Due to space constraints, the probability for bigrams is approximate - the lower the
-            // unigram probability, the worse the precision. The theoritical maximum error in
-            // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
-            // in very bad cases. This means that sometimes, we'll see some bigrams interverted
-            // here, but it can't get too bad.
-            const int probability = ProbabilityUtils::computeProbabilityForBigram(
-                    unigramProbability, bigramProbabilityTemp);
-            addWordBigram(bigramBuffer, length, probability, bigramProbability, bigramCodePoints,
-                    outputTypes);
-            ++bigramCount;
-        }
+        // Due to space constraints, the probability for bigrams is approximate - the lower the
+        // unigram probability, the worse the precision. The theoritical maximum error in
+        // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
+        // in very bad cases. This means that sometimes, we'll see some bigrams interverted
+        // here, but it can't get too bad.
+        const int probability = ProbabilityUtils::computeProbabilityForBigram(
+                unigramProbability, bigramsIt.getProbability());
+        addWordBigram(bigramBuffer, length, probability, outBigramProbability, outBigramCodePoints,
+                outputTypes);
+        ++bigramCount;
     }
     return min(bigramCount, MAX_RESULTS);
 }
@@ -155,22 +143,6 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     if (NOT_A_VALID_WORD_POS == pos) return NOT_A_DICT_POS;
     return mBinaryDictionaryInfo->getStructurePolicy()->getBigramsPositionOfNode(
             mBinaryDictionaryInfo, pos);
-}
-
-bool BigramDictionary::checkFirstCharacter(int *word, int *inputCodePoints) const {
-    // Checks whether this word starts with same character or neighboring characters of
-    // what user typed.
-
-    int maxAlt = MAX_ALTERNATIVES;
-    const int firstBaseLowerCodePoint = CharUtils::toBaseLowerCase(*word);
-    while (maxAlt > 0) {
-        if (CharUtils::toBaseLowerCase(*inputCodePoints) == firstBaseLowerCodePoint) {
-            return true;
-        }
-        inputCodePoints++;
-        maxAlt--;
-    }
-    return false;
 }
 
 bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *word1,

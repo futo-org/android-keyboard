@@ -62,8 +62,8 @@ class Dictionary {
             const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
             int *spaceIndices, int *outputTypes) const;
 
-    int getBigrams(const int *word, int length, int *inputCodePoints, int inputSize, int *outWords,
-            int *frequencies, int *outputTypes) const;
+    int getBigrams(const int *word, int length, int *outWords, int *frequencies,
+            int *outputTypes) const;
 
     int getProbability(const int *word, int length) const;
 
