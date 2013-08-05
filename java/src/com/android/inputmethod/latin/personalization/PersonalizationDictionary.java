@@ -27,7 +27,7 @@ import android.content.Context;
 public class PersonalizationDictionary extends ExpandableBinaryDictionary {
     private static final String NAME = "personalization";
 
-    public static void registerUpdateListener(PersonalizationDictionaryUpdateListener listener) {
+    public static void registerUpdateListener(PersonalizationDictionaryUpdateSession listener) {
         // TODO: Implement
     }
 

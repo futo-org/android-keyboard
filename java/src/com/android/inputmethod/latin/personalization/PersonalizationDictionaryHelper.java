@@ -20,6 +20,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.lang.ref.SoftReference;
@@ -56,6 +57,16 @@ public class PersonalizationDictionaryHelper {
                     locale, new SoftReference<UserHistoryPredictionDictionary>(dict));
             return dict;
         }
+    }
+
+    public static void
+            registerPersonalizationDictionaryUpdateSession(final Context context,
+                    final PersonalizationDictionaryUpdateSession session) {
+        final PersonalizationPredictionDictionary dictionary =
+                getPersonalizationPredictionDictionary(context,
+                        context.getResources().getConfiguration().locale.toString(),
+                        PreferenceManager.getDefaultSharedPreferences(context));
+        dictionary.registerUpdateSession(session);
     }
 
     public static PersonalizationPredictionDictionary getPersonalizationPredictionDictionary(

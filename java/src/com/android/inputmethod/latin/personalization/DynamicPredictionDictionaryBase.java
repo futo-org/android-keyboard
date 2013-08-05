@@ -31,6 +31,7 @@ import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.ByteArrayWrapper;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
@@ -49,9 +50,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * This class is a base class of a dictionary for the personalized prediction language model.
  */
 public abstract class DynamicPredictionDictionaryBase extends ExpandableDictionary {
-    public static void registerUpdateListener(PersonalizationDictionaryUpdateListener listener) {
-        // TODO: Implement
-    }
 
     private static final String TAG = DynamicPredictionDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
@@ -74,6 +72,9 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
             new UserHistoryDictionaryBigramList();
     private final ReentrantLock mBigramListLock = new ReentrantLock();
     private final SharedPreferences mPrefs;
+
+    private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
+            CollectionUtils.newArrayList();
 
     // Should always be false except when we use this class for test
     @UsedForTesting boolean isTest = false;
@@ -118,14 +119,15 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
     }
 
     /**
-     * Pair will be added to the user history dictionary.
+     * Pair will be added to the personalization prediction dictionary.
      *
      * The first word may be null. That means we don't know the context, in other words,
      * it's only a unigram. The first word may also be an empty string : this means start
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public int addToUserHistory(final String word1, final String word2, final boolean isValid) {
+    public int addToPersonalizationPredictionDictionary(
+            final String word1, final String word2, final boolean isValid) {
         if (word2.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (word1 != null && word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return -1;
@@ -393,9 +395,14 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
             final String word1, final String word2, final boolean isValid) {
         mBigramListLock.lock();
         try {
-            addToUserHistory(word1, word2, isValid);
+            addToPersonalizationPredictionDictionary(word1, word2, isValid);
         } finally {
             mBigramListLock.unlock();
         }
+    }
+
+    public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        session.setDictionary(this);
+        mSessions.add(session);
     }
 }
