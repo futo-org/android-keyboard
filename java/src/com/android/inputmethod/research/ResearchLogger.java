@@ -132,6 +132,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // FEEDBACK_WORD_BUFFER_SIZE should add 1 because it must also hold the feedback LogUnit itself.
     public static final int FEEDBACK_WORD_BUFFER_SIZE = (Integer.MAX_VALUE - 1) + 1;
 
+    // The special output text to invoke a research feedback dialog.
+    public static final String RESEARCH_KEY_OUTPUT_TEXT = ".research.";
+
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
@@ -402,6 +405,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void onResearchKeySelected(final LatinIME latinIME) {
+        mCurrentLogUnit.removeResearchButtonInvocation();
         if (mInFeedbackDialog) {
             Toast.makeText(latinIME, R.string.research_please_exit_feedback_form,
                     Toast.LENGTH_LONG).show();
@@ -1506,14 +1510,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     Constants.printableCode(scrubDigitFromCodePoint(code)),
                     outputText == null ? null : scrubDigitsFromString(outputText.toString()),
                     x, y, ignoreModifierKey, altersCode, key.isEnabled());
-            if (code == Constants.CODE_RESEARCH) {
-                researchLogger.suppressResearchKeyMotionData();
-            }
         }
-    }
-
-    private void suppressResearchKeyMotionData() {
-        mCurrentLogUnit.removeResearchButtonInvocation();
     }
 
     /**
