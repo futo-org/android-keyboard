@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Blanksteg/skiljetecken rättar felstavning"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Måttlig"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressiv"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Mycket aggressivt"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Aggressiv"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Mycket aggressivt"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Föreslå nästa ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Ge förslag utifrån föregående ord"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktivera svepskrivning"</string>

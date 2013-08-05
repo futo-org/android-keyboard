@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y las teclas de puntuación insertan automáticamente la palabra corregida"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresivo"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Total"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Muy agresivo"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Suger. de próxima palabra"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Usar la palabra anterior para hacer sugerencias"</string>
     <string name="gesture_input" msgid="826951152254563827">"Activar escritura gestual"</string>

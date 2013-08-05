@@ -128,9 +128,9 @@
     <!-- Option to suggest auto correction suggestions modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_modest">Modest</string>
     <!-- Option to suggest auto correction suggestions aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
-    <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
+    <string name="auto_correction_threshold_mode_aggressive">Aggressive</string>
     <!-- Option to suggest auto correction suggestions very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
-    <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
+    <string name="auto_correction_threshold_mode_very_aggressive">Very aggressive</string>
 
     <!-- Option to enable using next word suggestions. After the user types a space, with this option on, the keyboard will try to predict the next word. -->
     <string name="bigram_prediction">Next-word suggestions</string>
