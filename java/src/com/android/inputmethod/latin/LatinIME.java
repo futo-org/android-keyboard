@@ -1512,11 +1512,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         case Constants.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();
             break;
-        case Constants.CODE_RESEARCH:
-            if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                ResearchLogger.getInstance().onResearchKeySelected(this);
-            }
-            break;
         case Constants.CODE_ENTER:
             final EditorInfo editorInfo = getCurrentInputEditorInfo();
             final int imeOptionsActionId =
@@ -1608,6 +1603,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             resetComposingState(true /* alsoResetLastComposedWord */);
         }
         mHandler.postUpdateSuggestionStrip();
+        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
+                && ResearchLogger.RESEARCH_KEY_OUTPUT_TEXT.equals(rawText)) {
+            ResearchLogger.getInstance().onResearchKeySelected(this);
+            return;
+        }
         final String text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             promotePhantomSpace();
