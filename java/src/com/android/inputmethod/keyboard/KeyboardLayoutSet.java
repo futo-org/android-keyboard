@@ -178,42 +178,43 @@ public final class KeyboardLayoutSet {
 
     private Keyboard getKeyboard(final ElementParams elementParams, final KeyboardId id) {
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
-        Keyboard keyboard = (ref == null) ? null : ref.get();
-        if (keyboard == null) {
-            final KeyboardBuilder<KeyboardParams> builder =
-                    new KeyboardBuilder<KeyboardParams>(mContext, new KeyboardParams());
-            if (id.isAlphabetKeyboard()) {
-                builder.setAutoGenerate(sKeysCache);
-            }
-            final int keyboardXmlId = elementParams.mKeyboardXmlId;
-            builder.load(keyboardXmlId, id);
-            if (mParams.mDisableTouchPositionCorrectionDataForTest) {
-                builder.disableTouchPositionCorrectionDataForTest();
-            }
-            builder.setProximityCharsCorrectionEnabled(
-                    elementParams.mProximityCharsCorrectionEnabled);
-            keyboard = builder.build();
-            sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
-            if ((id.mElementId == KeyboardId.ELEMENT_ALPHABET
-                    || id.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED)
-                    && !mParams.mIsSpellChecker) {
-                // We only forcibly cache the primary, "ALPHABET", layouts.
-                for (int i = sForcibleKeyboardCache.length - 1; i >= 1; --i) {
-                    sForcibleKeyboardCache[i] = sForcibleKeyboardCache[i - 1];
-                }
-                sForcibleKeyboardCache[0] = keyboard;
-                if (DEBUG_CACHE) {
-                    Log.d(TAG, "forcing caching of keyboard with id=" + id);
-                }
-            }
+        final Keyboard cachedKeyboard = (ref == null) ? null : ref.get();
+        if (cachedKeyboard != null) {
             if (DEBUG_CACHE) {
-                Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
-                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+                Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
             }
-        } else if (DEBUG_CACHE) {
-            Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
+            return cachedKeyboard;
         }
 
+        final KeyboardBuilder<KeyboardParams> builder =
+                new KeyboardBuilder<KeyboardParams>(mContext, new KeyboardParams());
+        if (id.isAlphabetKeyboard()) {
+            builder.setAutoGenerate(sKeysCache);
+        }
+        final int keyboardXmlId = elementParams.mKeyboardXmlId;
+        builder.load(keyboardXmlId, id);
+        if (mParams.mDisableTouchPositionCorrectionDataForTest) {
+            builder.disableTouchPositionCorrectionDataForTest();
+        }
+        builder.setProximityCharsCorrectionEnabled(elementParams.mProximityCharsCorrectionEnabled);
+        final Keyboard keyboard = builder.build();
+        sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
+        if ((id.mElementId == KeyboardId.ELEMENT_ALPHABET
+                || id.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED)
+                && !mParams.mIsSpellChecker) {
+            // We only forcibly cache the primary, "ALPHABET", layouts.
+            for (int i = sForcibleKeyboardCache.length - 1; i >= 1; --i) {
+                sForcibleKeyboardCache[i] = sForcibleKeyboardCache[i - 1];
+            }
+            sForcibleKeyboardCache[0] = keyboard;
+            if (DEBUG_CACHE) {
+                Log.d(TAG, "forcing caching of keyboard with id=" + id);
+            }
+        }
+        if (DEBUG_CACHE) {
+            Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
+                    + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+        }
         return keyboard;
     }
 
