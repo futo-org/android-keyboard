@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 public final class InputView extends LinearLayout {
-    private View mSuggestionStripContainer;
+    private View mSuggestionStripView;
     private View mKeyboardView;
     private int mKeyboardTopPadding;
 
@@ -43,13 +43,13 @@ public final class InputView extends LinearLayout {
 
     @Override
     protected void onFinishInflate() {
-        mSuggestionStripContainer = findViewById(R.id.suggestions_container);
+        mSuggestionStripView = findViewById(R.id.suggestion_strip_view);
         mKeyboardView = findViewById(R.id.keyboard_view);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
-        if (mSuggestionStripContainer.getVisibility() == VISIBLE
+        if (mSuggestionStripView.getVisibility() == VISIBLE
                 && mKeyboardView.getVisibility() == VISIBLE
                 && forwardTouchEvent(me)) {
             return true;
@@ -97,7 +97,7 @@ public final class InputView extends LinearLayout {
         }
 
         final Rect receivingRect = mEventReceivingRect;
-        mSuggestionStripContainer.getGlobalVisibleRect(receivingRect);
+        mSuggestionStripView.getGlobalVisibleRect(receivingRect);
         final int translatedX = x - receivingRect.left;
         final int translatedY;
         if (y < forwardingLimitY) {
@@ -107,7 +107,7 @@ public final class InputView extends LinearLayout {
             translatedY = y - receivingRect.top;
         }
         me.setLocation(translatedX, translatedY);
-        mSuggestionStripContainer.dispatchTouchEvent(me);
+        mSuggestionStripView.dispatchTouchEvent(me);
         return true;
     }
 }

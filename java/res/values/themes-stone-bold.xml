@@ -22,7 +22,6 @@
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.Stone</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.Stone</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
-        <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle</item>
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
