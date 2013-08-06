@@ -293,7 +293,7 @@ public final class KeyboardLayoutSet {
         }
 
         public Builder setIsSpellChecker(final boolean isSpellChecker) {
-            mParams.mIsSpellChecker = true;
+            mParams.mIsSpellChecker = isSpellChecker;
             return this;
         }
 
