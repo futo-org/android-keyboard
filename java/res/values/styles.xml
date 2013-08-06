@@ -145,13 +145,10 @@
     <style name="MoreKeysKeyboardPanelStyle">
         <item name="android:background">@drawable/keyboard_popup_panel_background</item>
     </style>
-    <style name="SuggestionsStripBackgroundStyle">
-        <item name="android:background">@drawable/keyboard_suggest_strip</item>
-    </style>
     <style
         name="SuggestionStripViewStyle"
-        parent="SuggestionsStripBackgroundStyle"
     >
+        <item name="android:background">@drawable/keyboard_suggest_strip</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/highlight_color_default</item>
         <item name="colorTypedWord">@color/typed_word_color_default</item>
@@ -380,13 +377,10 @@
     <style name="MoreKeysKeyboardPanelStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
-    <style name="SuggestionsStripBackgroundStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
-    </style>
     <style
         name="SuggestionStripViewStyle.IceCreamSandwich"
-        parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
     >
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/highlight_color_ics</item>
         <item name="colorTypedWord">@color/highlight_color_ics</item>
