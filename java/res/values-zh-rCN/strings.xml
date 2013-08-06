@@ -26,7 +26,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼写检查工具会使用您的联系人列表中的条目"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按键振动"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键音效"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"按键时显示所输字符"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"按键时弹出显示字符"</string>
     <string name="general_category" msgid="1859088467017573195">"常规"</string>
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"滑行输入"</string>
@@ -64,8 +64,10 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"按空格键和标点可自动更正错别字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"小改"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"大改"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"改动极大"</string>
+    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
+    <skip />
     <string name="bigram_prediction" msgid="1084449187723948550">"后续字词建议"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根据上一个字词提供建议"</string>
     <string name="gesture_input" msgid="826951152254563827">"启用滑行输入"</string>
