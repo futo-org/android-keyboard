@@ -1510,6 +1510,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         case Constants.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();
             break;
+        case Constants.CODE_EMOJI:
+            // TODO: Implement emoji keyboard switch.
+            break;
         case Constants.CODE_ENTER:
             final EditorInfo editorInfo = getCurrentInputEditorInfo();
             final int imeOptionsActionId =
