@@ -152,7 +152,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
-    private View mSuggestionsContainer;
     private SuggestionStripView mSuggestionStripView;
     // Never null
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
@@ -667,7 +666,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mExtractArea = getWindow().getWindow().getDecorView()
                 .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
-        mSuggestionsContainer = view.findViewById(R.id.suggestions_container);
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (mSuggestionStripView != null)
             mSuggestionStripView.setListener(this, view);
@@ -1111,17 +1109,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void setSuggestionStripShownInternal(final boolean shown,
             final boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
-        if (onEvaluateInputViewShown() && mSuggestionsContainer != null) {
+        if (onEvaluateInputViewShown() && mSuggestionStripView != null) {
             final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
             final boolean inputViewShown = (mainKeyboardView != null)
                     ? mainKeyboardView.isShown() : false;
             final boolean shouldShowSuggestions = shown
                     && (needsInputViewShown ? inputViewShown : true);
             if (isFullscreenMode()) {
-                mSuggestionsContainer.setVisibility(
+                mSuggestionStripView.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.GONE);
             } else {
-                mSuggestionsContainer.setVisibility(
+                mSuggestionStripView.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.INVISIBLE);
             }
         }
@@ -1142,7 +1140,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return 0;
         }
         final int keyboardHeight = mainKeyboardView.getHeight();
-        final int suggestionsHeight = mSuggestionsContainer.getHeight();
+        final int suggestionsHeight = mSuggestionStripView.getHeight();
         final int displayHeight = getResources().getDisplayMetrics().heightPixels;
         final Rect rect = new Rect();
         mKeyPreviewBackingView.getWindowVisibleDisplayFrame(rect);
@@ -1160,7 +1158,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView == null || mSuggestionsContainer == null) {
+        if (mainKeyboardView == null || mSuggestionStripView == null) {
             return;
         }
         final int adjustedBackingHeight = getAdjustedBackingViewHeight();
@@ -1170,13 +1168,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // be considered.
         // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
         final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
-        final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
-                : mSuggestionsContainer.getHeight();
+        final int suggestionsHeight = (mSuggestionStripView.getVisibility() == View.GONE) ? 0
+                : mSuggestionStripView.getHeight();
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int visibleTopY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (mainKeyboardView.isShown()) {
-            if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
+            if (mSuggestionStripView.getVisibility() == View.VISIBLE) {
                 visibleTopY -= suggestionsHeight;
             }
             final int touchY = mainKeyboardView.isShowingMoreKeysPanel() ? 0 : visibleTopY;

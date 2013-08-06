@@ -28,7 +28,6 @@
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
         <attr name="moreKeysKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
-        <attr name="suggestionsStripBackgroundStyle" format="reference" />
         <attr name="suggestionStripViewStyle" format="reference" />
         <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
