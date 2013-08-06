@@ -42,7 +42,7 @@ public class MoreKeysResources {
     private static final String EMPTY_STRING_VAR = "EMPTY";
 
     private static final String NO_LANGUAGE_CODE = "zz";
-    private static final String NO_LANGUAGE_DISPLAY_NAME = "No language";
+    private static final String NO_LANGUAGE_DISPLAY_NAME = "Alphabet";
 
     private final JarFile mJar;
     // Language to string resources map.

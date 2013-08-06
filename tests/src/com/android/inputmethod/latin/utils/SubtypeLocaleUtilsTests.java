@@ -126,13 +126,13 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  fr    azerty  F  French
     //  fr_CA qwerty  F  French (Canada)
     //  de    qwertz  F  German
-    //  zz    qwerty  F  No language (QWERTY)
+    //  zz    qwerty  F  Alphabet (QWERTY)
     //  fr    qwertz  T  French (QWERTZ)
     //  de    qwerty  T  German (QWERTY)
     //  en_US azerty  T  English (US) (AZERTY)   exception
     //  en_UK dvorak  T  English (UK) (Dvorak)   exception
     //  es_US colemak T  Spanish (US) (Colemak)  exception
-    //  zz    pc      T  No language (PC)
+    //  zz    pc      T  Alphabet (PC)
 
     public void testPredefinedSubtypesInEnglishSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
@@ -150,7 +150,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CA));
                 assertEquals("de   ", "German",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
-                assertEquals("zz   ", "No language (QWERTY)",
+                assertEquals("zz   ", "Alphabet (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
             }
@@ -172,7 +172,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(EN_UK_DVORAK));
                 assertEquals("es_US colemak","Spanish (US) (Colemak)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ES_US_COLEMAK));
-                assertEquals("zz azerty",    "No language (PC)",
+                assertEquals("zz pc",    "Alphabet (PC)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ_PC));
                 return null;
             }
@@ -196,7 +196,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  en_US azerty  T  Anglais (États-Unis) (AZERTY)   exception
     //  en_UK dvorak  T  Anglais (Royaume-Uni) (Dvorak)   exception
     //  es_US colemak T  Espagnol (États-Unis) (Colemak)  exception
-    //  zz    pc      T  Aucune langue (PC)
+    //  zz    pc      T  Alphabet (PC)
 
     public void testPredefinedSubtypesInFrenchSystemLocale() {
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
@@ -214,7 +214,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CA));
                 assertEquals("de   ", "Allemand",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
-                assertEquals("zz   ", "Aucune langue (QWERTY)",
+                assertEquals("zz   ", "Alphabet (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
             }
@@ -236,7 +236,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(EN_UK_DVORAK));
                 assertEquals("es_US colemak","Espagnol (États-Unis) (Colemak)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ES_US_COLEMAK));
-                assertEquals("zz azerty",    "Aucune langue (PC)",
+                assertEquals("zz pc",    "Alphabet (PC)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ_PC));
                 return null;
             }
