@@ -33,7 +33,6 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -42,10 +41,8 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
-import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.XmlParseUtils;
 
@@ -71,8 +68,6 @@ public final class KeyboardLayoutSet {
     private static final String TAG_ELEMENT = "Element";
 
     private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
-    private static final int SPELLCHECKER_DUMMY_KEYBOARD_WIDTH = 480;
-    private static final int SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT = 368;
 
     private final Context mContext;
     private final Params mParams;
@@ -406,42 +401,5 @@ public final class KeyboardLayoutSet {
                 return KeyboardId.MODE_TEXT;
             }
         }
-    }
-
-    public static KeyboardLayoutSet createKeyboardSetForSpellChecker(final Context context,
-            final String locale, final String layout) {
-        final InputMethodSubtype subtype =
-                AdditionalSubtypeUtils.createAdditionalSubtype(locale, layout, null);
-        return createKeyboardSet(context, subtype, SPELLCHECKER_DUMMY_KEYBOARD_WIDTH,
-                SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT, false /* testCasesHaveTouchCoordinates */,
-                true /* isSpellChecker */);
-    }
-
-    @UsedForTesting
-    public static KeyboardLayoutSet createKeyboardSetForTest(final Context context,
-            final InputMethodSubtype subtype, final int orientation,
-            final boolean testCasesHaveTouchCoordinates) {
-        final Resources res = context.getResources();
-        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
-        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
-        return createKeyboardSet(context, subtype, keyboardWidth, keyboardHeight,
-                testCasesHaveTouchCoordinates, false /* isSpellChecker */);
-    }
-
-    private static KeyboardLayoutSet createKeyboardSet(final Context context,
-            final InputMethodSubtype subtype, final int keyboardWidth, final int keyboardHeight,
-            final boolean testCasesHaveTouchCoordinates, final boolean isSpellChecker) {
-        final EditorInfo editorInfo = new EditorInfo();
-        editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
-        final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
-                context, editorInfo);
-        builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
-        builder.setSubtype(subtype);
-        builder.setIsSpellChecker(isSpellChecker);
-        if (!testCasesHaveTouchCoordinates) {
-            // For spell checker and tests
-            builder.disableTouchPositionCorrectionData();
-        }
-        return builder.build();
     }
 }
