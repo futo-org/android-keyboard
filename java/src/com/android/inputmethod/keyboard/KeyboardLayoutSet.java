@@ -23,13 +23,10 @@ import static com.android.inputmethod.latin.Constants.ImeOption.NO_SETTINGS_KEY;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.InputType;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.Xml;
@@ -75,7 +72,7 @@ public final class KeyboardLayoutSet {
 
     private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
     private static final int SPELLCHECKER_DUMMY_KEYBOARD_WIDTH = 480;
-    private static final int SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT = 800;
+    private static final int SPELLCHECKER_DUMMY_KEYBOARD_HEIGHT = 368;
 
     private final Context mContext;
     private final Params mParams;
@@ -240,36 +237,10 @@ public final class KeyboardLayoutSet {
                     mPackageName, NO_SETTINGS_KEY, mEditorInfo);
         }
 
-        public Builder setScreenGeometry(final int widthPixels, final int heightPixels) {
-            setDefaultKeyboardSize(widthPixels, heightPixels);
+        public Builder setKeyboardGeometry(final int keyboardWidth, final int keyboardHeight) {
+            mParams.mKeyboardWidth = keyboardWidth;
+            mParams.mKeyboardHeight = keyboardHeight;
             return this;
-        }
-
-        private void setDefaultKeyboardSize(final int widthPixels, final int heightPixels) {
-            final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
-                    mResources, R.array.keyboard_heights);
-            final float keyboardHeight;
-            if (TextUtils.isEmpty(keyboardHeightString)) {
-                keyboardHeight = mResources.getDimension(R.dimen.keyboardHeight);
-            } else {
-                keyboardHeight = Float.parseFloat(keyboardHeightString)
-                        * mResources.getDisplayMetrics().density;
-            }
-            final float maxKeyboardHeight = mResources.getFraction(
-                    R.fraction.maxKeyboardHeight, heightPixels, heightPixels);
-            float minKeyboardHeight = mResources.getFraction(
-                    R.fraction.minKeyboardHeight, heightPixels, heightPixels);
-            if (minKeyboardHeight < 0.0f) {
-                // Specified fraction was negative, so it should be calculated against display
-                // width.
-                minKeyboardHeight = -mResources.getFraction(
-                        R.fraction.minKeyboardHeight, widthPixels, widthPixels);
-            }
-            // Keyboard height will not exceed maxKeyboardHeight and will not be less than
-            // minKeyboardHeight.
-            mParams.mKeyboardHeight = (int)Math.max(
-                    Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
-            mParams.mKeyboardWidth = widthPixels;
         }
 
         public Builder setSubtype(final InputMethodSubtype subtype) {
@@ -450,31 +421,21 @@ public final class KeyboardLayoutSet {
     public static KeyboardLayoutSet createKeyboardSetForTest(final Context context,
             final InputMethodSubtype subtype, final int orientation,
             final boolean testCasesHaveTouchCoordinates) {
-        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        final int width;
-        final int height;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            width = Math.max(dm.widthPixels, dm.heightPixels);
-            height = Math.min(dm.widthPixels, dm.heightPixels);
-        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            width = Math.min(dm.widthPixels, dm.heightPixels);
-            height = Math.max(dm.widthPixels, dm.heightPixels);
-        } else {
-            throw new RuntimeException("Orientation should be ORIENTATION_LANDSCAPE or "
-                    + "ORIENTATION_PORTRAIT: orientation=" + orientation);
-        }
-        return createKeyboardSet(context, subtype, width, height, testCasesHaveTouchCoordinates,
-                false /* isSpellChecker */);
+        final Resources res = context.getResources();
+        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
+        return createKeyboardSet(context, subtype, keyboardWidth, keyboardHeight,
+                testCasesHaveTouchCoordinates, false /* isSpellChecker */);
     }
 
     private static KeyboardLayoutSet createKeyboardSet(final Context context,
-            final InputMethodSubtype subtype, final int width, final int height,
+            final InputMethodSubtype subtype, final int keyboardWidth, final int keyboardHeight,
             final boolean testCasesHaveTouchCoordinates, final boolean isSpellChecker) {
         final EditorInfo editorInfo = new EditorInfo();
         editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 context, editorInfo);
-        builder.setScreenGeometry(width, height);
+        builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(subtype);
         builder.setIsSpellChecker(isSpellChecker);
         if (!testCasesHaveTouchCoordinates) {
