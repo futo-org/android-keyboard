@@ -615,7 +615,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            ResearchLogger.mainKeyboardView_setKeyboard(keyboard);
+            final int orientation = getContext().getResources().getConfiguration().orientation;
+            ResearchLogger.mainKeyboardView_setKeyboard(keyboard, orientation);
         }
 
         // This always needs to be set since the accessibility state can
