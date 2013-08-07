@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
@@ -62,8 +62,45 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
         const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int nodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    // TODO: Implement.
-    return 0;
+    // This method traverses parent nodes from the terminal by following parent pointers; thus,
+    // node code points are stored in the buffer in the reverse order.
+    int reverseCodePoints[maxCodePointCount];
+    int mergedNodeCodePoints[maxCodePointCount];
+    int codePointCount = 0;
+
+    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    // First, read terminal node and get its probability.
+    nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nodePos, maxCodePointCount,
+            mergedNodeCodePoints);
+    // Store terminal node probability.
+    *outUnigramProbability = nodeReader.getProbability();
+    // Store terminal node code points to buffer in the reverse order.
+    for (int i = nodeReader.getCodePointCount() - 1; i >= 0; --i) {
+        reverseCodePoints[codePointCount++] = mergedNodeCodePoints[i];
+    }
+    // Then, follow parent pos toward the root node.
+    while (nodeReader.getParentPos() != getRootPosition()) {
+        // codePointCount must be incremented at least once in each iteration to ensure preventing
+        // infinite loop.
+        if (nodeReader.isDeleted() || codePointCount > maxCodePointCount
+                || nodeReader.getCodePointCount() <= 0) {
+            // The nodePos is not a valid terminal node position in the dictionary.
+            *outUnigramProbability = NOT_A_PROBABILITY;
+            return 0;
+        }
+        // Read parent node.
+        nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nodeReader.getParentPos(),
+                maxCodePointCount, mergedNodeCodePoints);
+        // Store node code points to buffer in the reverse order.
+        for (int i = nodeReader.getCodePointCount() - 1; i >= 0; --i) {
+            reverseCodePoints[codePointCount++] = mergedNodeCodePoints[i];
+        }
+    }
+    // Reverse the stored code points to output them.
+    for (int i = 0; i < codePointCount; ++i) {
+        outCodePoints[i] = reverseCodePoints[codePointCount - i - 1];
+    }
+    return codePointCount;
 }
 
 int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(
