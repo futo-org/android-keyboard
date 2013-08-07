@@ -2530,7 +2530,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
                 suggest.getUnigramDictionaries(), suggestion);
         if (maxFreq == 0) return null;
-        userHistoryPredictionDictionary.addToUserHistory(prevWord, secondWord, maxFreq > 0);
+        userHistoryPredictionDictionary
+                .addToPersonalizationPredictionDictionary(prevWord, secondWord, maxFreq > 0);
         return prevWord;
     }
 
