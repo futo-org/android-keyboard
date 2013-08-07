@@ -42,7 +42,7 @@ class DynamicPatriciaTrieNodeReader {
 
     // Reads node information from dictionary buffer and updates members with the information.
     AK_FORCE_INLINE void fetchNodeInfoFromBuffer(const int nodePos) {
-        fetchNodeInfoFromBufferAndGetNodeCodePoints(mNodePos , 0 /* maxCodePointCount */,
+        fetchNodeInfoFromBufferAndGetNodeCodePoints(nodePos , 0 /* maxCodePointCount */,
                 0 /* outCodePoints */);
     }
 
