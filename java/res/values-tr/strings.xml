@@ -64,8 +64,10 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Boşluk tuşu ve noktalama işaretleri yanlış yazılan kelimeleri otomatikman düzeltir"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Kapalı"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ölçülü"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Agresif"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Çok geniş ölçekte"</string>
+    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
+    <skip />
     <string name="bigram_prediction" msgid="1084449187723948550">"Sonraki kelime önerileri"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Önerilerde bulunurken önceki kelimeyi kullan"</string>
     <string name="gesture_input" msgid="826951152254563827">"Hareketle yazmayı etkinleştir"</string>
