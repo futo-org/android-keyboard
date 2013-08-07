@@ -1414,7 +1414,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     "navigatePrevious", "clobberSettingsKey", "passwordInput", "shortcutKeyEnabled",
                     "hasShortcutKey", "languageSwitchKeyEnabled", "isMultiLine", "tw", "th",
                     "keys");
-    public static void mainKeyboardView_setKeyboard(final Keyboard keyboard) {
+    public static void mainKeyboardView_setKeyboard(final Keyboard keyboard,
+            final int orientation) {
         final KeyboardId kid = keyboard.mId;
         final boolean isPasswordView = kid.passwordInput();
         final ResearchLogger researchLogger = getInstance();
@@ -1422,7 +1423,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD,
                 KeyboardId.elementIdToName(kid.mElementId),
                 kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                kid.mOrientation, kid.mWidth, KeyboardId.modeName(kid.mMode), kid.imeAction(),
+                orientation, kid.mWidth, KeyboardId.modeName(kid.mMode), kid.imeAction(),
                 kid.navigateNext(), kid.navigatePrevious(), kid.mClobberSettingsKey,
                 isPasswordView, kid.mShortcutKeyEnabled, kid.mHasShortcutKey,
                 kid.mLanguageSwitchKeyEnabled, kid.isMultiLine(), keyboard.mOccupiedWidth,
