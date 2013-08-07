@@ -64,8 +64,10 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Preslednica in ločila samodejno popravijo napačno vtipkane besede"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Izklopljeno"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Zmerno"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Strogo"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Zelo strogo"</string>
+    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
+    <skip />
     <string name="bigram_prediction" msgid="1084449187723948550">"Predlogi za naslednjo besedo"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Pri predlogu upoštevaj prejšnjo besedo"</string>
     <string name="gesture_input" msgid="826951152254563827">"Omogoči vnos besedila s potezo"</string>
