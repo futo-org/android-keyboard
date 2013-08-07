@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -137,8 +137,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
-        final DisplayMetrics dm = res.getDisplayMetrics();
-        builder.setScreenGeometry(dm.widthPixels, dm.heightPixels);
+        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
+        builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),

@@ -20,10 +20,12 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,6 +215,35 @@ public final class ResourceUtils {
             }
         }
         return null;
+    }
+
+    public static int getDefaultKeyboardWidth(final Resources res) {
+        final DisplayMetrics dm = res.getDisplayMetrics();
+        return dm.widthPixels;
+    }
+
+    public static int getDefaultKeyboardHeight(final Resources res) {
+        final DisplayMetrics dm = res.getDisplayMetrics();
+        final String keyboardHeightString = getDeviceOverrideValue(res, R.array.keyboard_heights);
+        final float keyboardHeight;
+        if (TextUtils.isEmpty(keyboardHeightString)) {
+            keyboardHeight = res.getDimension(R.dimen.keyboardHeight);
+        } else {
+            keyboardHeight = Float.parseFloat(keyboardHeightString) * dm.density;
+        }
+        final float maxKeyboardHeight = res.getFraction(
+                R.fraction.maxKeyboardHeight, dm.heightPixels, dm.heightPixels);
+        float minKeyboardHeight = res.getFraction(
+                R.fraction.minKeyboardHeight, dm.heightPixels, dm.heightPixels);
+        if (minKeyboardHeight < 0.0f) {
+            // Specified fraction was negative, so it should be calculated against display
+            // width.
+            minKeyboardHeight = -res.getFraction(
+                    R.fraction.minKeyboardHeight, dm.widthPixels, dm.widthPixels);
+        }
+        // Keyboard height will not exceed maxKeyboardHeight and will not be less than
+        // minKeyboardHeight.
+        return (int)Math.max(Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
     }
 
     public static boolean isValidFraction(final float fraction) {

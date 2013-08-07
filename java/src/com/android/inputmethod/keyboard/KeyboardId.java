@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
-import android.content.res.Configuration;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
