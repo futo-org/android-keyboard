@@ -58,8 +58,6 @@ public final class KeyboardId {
 
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
-    // TODO: Remove this member. It is used only for logging purpose.
-    public final int mOrientation;
     public final int mWidth;
     public final int mHeight;
     public final int mMode;
@@ -77,7 +75,6 @@ public final class KeyboardId {
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
         mLocale = SubtypeLocaleUtils.getSubtypeLocale(mSubtype);
-        mOrientation = params.mOrientation;
         mWidth = params.mKeyboardWidth;
         mHeight = params.mKeyboardHeight;
         mMode = params.mMode;
@@ -101,7 +98,6 @@ public final class KeyboardId {
 
     private static int computeHashCode(final KeyboardId id) {
         return Arrays.hashCode(new Object[] {
-                id.mOrientation,
                 id.mElementId,
                 id.mMode,
                 id.mWidth,
@@ -123,8 +119,7 @@ public final class KeyboardId {
     private boolean equals(final KeyboardId other) {
         if (other == this)
             return true;
-        return other.mOrientation == mOrientation
-                && other.mElementId == mElementId
+        return other.mElementId == mElementId
                 && other.mMode == mMode
                 && other.mWidth == mWidth
                 && other.mHeight == mHeight
@@ -185,13 +180,10 @@ public final class KeyboardId {
 
     @Override
     public String toString() {
-        final String orientation = (mOrientation == Configuration.ORIENTATION_PORTRAIT)
-                ? "port" : "land";
-        return String.format(Locale.ROOT, "[%s %s:%s %s:%dx%d %s %s %s%s%s%s%s%s%s%s%s]",
+        return String.format(Locale.ROOT, "[%s %s:%s %dx%d %s %s %s%s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
-                mLocale,
-                mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                orientation, mWidth, mHeight,
+                mLocale, mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
+                mWidth, mHeight,
                 modeName(mMode),
                 imeAction(),
                 (navigateNext() ? "navigateNext" : ""),

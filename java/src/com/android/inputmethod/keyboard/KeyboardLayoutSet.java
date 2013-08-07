@@ -119,7 +119,6 @@ public final class KeyboardLayoutSet {
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
         boolean mIsSpellChecker;
-        int mOrientation;
         int mKeyboardWidth;
         int mKeyboardHeight;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
@@ -242,9 +241,6 @@ public final class KeyboardLayoutSet {
         }
 
         public Builder setScreenGeometry(final int widthPixels, final int heightPixels) {
-            final Params params = mParams;
-            params.mOrientation = (heightPixels > widthPixels)
-                    ? Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
             setDefaultKeyboardSize(widthPixels, heightPixels);
             return this;
         }
@@ -317,8 +313,6 @@ public final class KeyboardLayoutSet {
         }
 
         public KeyboardLayoutSet build() {
-            if (mParams.mOrientation == Configuration.ORIENTATION_UNDEFINED)
-                throw new RuntimeException("Screen geometry is not specified");
             if (mParams.mSubtype == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
             final String packageName = mResources.getResourcePackageName(
