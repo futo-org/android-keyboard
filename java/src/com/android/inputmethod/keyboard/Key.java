@@ -306,8 +306,15 @@ public class Key implements Comparable<Key> {
         }
         mActionFlags = actionFlags;
 
+        final int code = KeySpecParser.parseCode(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
+        } else if (code >= Character.MIN_SUPPLEMENTARY_CODE_POINT) {
+            // This is a workaround to have a key that has a supplementary code point in its label.
+            // Because we can put a string in resource neither as a XML entity of a supplementary
+            // code point nor as a surrogate pair.
+            mLabel = new StringBuilder().appendCodePoint(code).toString();
         } else {
             mLabel = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                     R.styleable.Keyboard_Key_keyLabel), needsToUpperCase, locale);
@@ -320,8 +327,6 @@ public class Key implements Comparable<Key> {
         }
         String outputText = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyOutputText), needsToUpperCase, locale);
-        final int code = KeySpecParser.parseCode(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
         if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
