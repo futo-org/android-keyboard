@@ -1210,49 +1210,38 @@ public final class BinaryDictInputOutput {
         ByteArrayOutputStream headerBuffer = new ByteArrayOutputStream(256);
 
         // The magic number in big-endian order.
-        if (version >= FormatSpec.FIRST_VERSION_WITH_HEADER_SIZE) {
-            // Magic number for version 2+.
-            headerBuffer.write((byte) (0xFF & (FormatSpec.VERSION_2_MAGIC_NUMBER >> 24)));
-            headerBuffer.write((byte) (0xFF & (FormatSpec.VERSION_2_MAGIC_NUMBER >> 16)));
-            headerBuffer.write((byte) (0xFF & (FormatSpec.VERSION_2_MAGIC_NUMBER >> 8)));
-            headerBuffer.write((byte) (0xFF & FormatSpec.VERSION_2_MAGIC_NUMBER));
-            // Dictionary version.
-            headerBuffer.write((byte) (0xFF & (version >> 8)));
-            headerBuffer.write((byte) (0xFF & version));
-        } else {
-            // Magic number for version 1.
-            headerBuffer.write((byte) (0xFF & (FormatSpec.VERSION_1_MAGIC_NUMBER >> 8)));
-            headerBuffer.write((byte) (0xFF & FormatSpec.VERSION_1_MAGIC_NUMBER));
-            // Dictionary version.
-            headerBuffer.write((byte) (0xFF & version));
-        }
+        // Magic number for all versions.
+        headerBuffer.write((byte) (0xFF & (FormatSpec.MAGIC_NUMBER >> 24)));
+        headerBuffer.write((byte) (0xFF & (FormatSpec.MAGIC_NUMBER >> 16)));
+        headerBuffer.write((byte) (0xFF & (FormatSpec.MAGIC_NUMBER >> 8)));
+        headerBuffer.write((byte) (0xFF & FormatSpec.MAGIC_NUMBER));
+        // Dictionary version.
+        headerBuffer.write((byte) (0xFF & (version >> 8)));
+        headerBuffer.write((byte) (0xFF & version));
+
         // Options flags
         final int options = makeOptionsValue(dict, formatOptions);
         headerBuffer.write((byte) (0xFF & (options >> 8)));
         headerBuffer.write((byte) (0xFF & options));
-        if (version >= FormatSpec.FIRST_VERSION_WITH_HEADER_SIZE) {
-            final int headerSizeOffset = headerBuffer.size();
-            // Placeholder to be written later with header size.
-            for (int i = 0; i < 4; ++i) {
-                headerBuffer.write(0);
-            }
-            // Write out the options.
-            for (final String key : dict.mOptions.mAttributes.keySet()) {
-                final String value = dict.mOptions.mAttributes.get(key);
-                CharEncoding.writeString(headerBuffer, key);
-                CharEncoding.writeString(headerBuffer, value);
-            }
-            final int size = headerBuffer.size();
-            final byte[] bytes = headerBuffer.toByteArray();
-            // Write out the header size.
-            bytes[headerSizeOffset] = (byte) (0xFF & (size >> 24));
-            bytes[headerSizeOffset + 1] = (byte) (0xFF & (size >> 16));
-            bytes[headerSizeOffset + 2] = (byte) (0xFF & (size >> 8));
-            bytes[headerSizeOffset + 3] = (byte) (0xFF & (size >> 0));
-            destination.write(bytes);
-        } else {
-            headerBuffer.writeTo(destination);
+        final int headerSizeOffset = headerBuffer.size();
+        // Placeholder to be written later with header size.
+        for (int i = 0; i < 4; ++i) {
+            headerBuffer.write(0);
         }
+        // Write out the options.
+        for (final String key : dict.mOptions.mAttributes.keySet()) {
+            final String value = dict.mOptions.mAttributes.get(key);
+            CharEncoding.writeString(headerBuffer, key);
+            CharEncoding.writeString(headerBuffer, value);
+        }
+        final int size = headerBuffer.size();
+        final byte[] bytes = headerBuffer.toByteArray();
+        // Write out the header size.
+        bytes[headerSizeOffset] = (byte) (0xFF & (size >> 24));
+        bytes[headerSizeOffset + 1] = (byte) (0xFF & (size >> 16));
+        bytes[headerSizeOffset + 2] = (byte) (0xFF & (size >> 8));
+        bytes[headerSizeOffset + 3] = (byte) (0xFF & (size >> 0));
+        destination.write(bytes);
 
         headerBuffer.close();
 
@@ -1658,10 +1647,8 @@ public final class BinaryDictInputOutput {
      */
     private static int getFormatVersion(final FusionDictionaryBufferInterface buffer)
             throws IOException {
-        final int magic_v1 = buffer.readUnsignedShort();
-        if (FormatSpec.VERSION_1_MAGIC_NUMBER == magic_v1) return buffer.readUnsignedByte();
-        final int magic_v2 = (magic_v1 << 16) + buffer.readUnsignedShort();
-        if (FormatSpec.VERSION_2_MAGIC_NUMBER == magic_v2) return buffer.readUnsignedShort();
+        final int magic = buffer.readInt();
+        if (FormatSpec.MAGIC_NUMBER == magic) return buffer.readUnsignedShort();
         return FormatSpec.NOT_A_VERSION_NUMBER;
     }
 
@@ -1695,13 +1682,9 @@ public final class BinaryDictInputOutput {
 
         final HashMap<String, String> attributes = new HashMap<String, String>();
         final int headerSize;
-        if (version < FormatSpec.FIRST_VERSION_WITH_HEADER_SIZE) {
-            headerSize = buffer.position();
-        } else {
-            headerSize = buffer.readInt();
-            populateOptions(buffer, headerSize, attributes);
-            buffer.position(headerSize);
-        }
+        headerSize = buffer.readInt();
+        populateOptions(buffer, headerSize, attributes);
+        buffer.position(headerSize);
 
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
