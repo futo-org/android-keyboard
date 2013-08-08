@@ -179,7 +179,7 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testCancelDoubleSpace() {
         final String STRING_TO_TYPE = "this  ";
-        final String EXPECTED_RESULT = "this  ";
+        final String EXPECTED_RESULT = "this ";
         type(STRING_TO_TYPE);
         type(Constants.CODE_DELETE);
         assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
