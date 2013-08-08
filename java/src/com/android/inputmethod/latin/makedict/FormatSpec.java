@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 
@@ -236,9 +237,12 @@ public final class FormatSpec {
     public static final class FormatOptions {
         public final int mVersion;
         public final boolean mSupportsDynamicUpdate;
+        @UsedForTesting
         public FormatOptions(final int version) {
             this(version, false);
         }
+
+        @UsedForTesting
         public FormatOptions(final int version, final boolean supportsDynamicUpdate) {
             mVersion = version;
             if (version < FIRST_VERSION_WITH_DYNAMIC_UPDATE && supportsDynamicUpdate) {
