@@ -1282,12 +1282,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    public void onShowMoreKeysPanel(final int translatedX, final int translatedY,
-                final MoreKeysPanel panel) {
+    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
         setReleasedKeyGraphics(mCurrentKey);
-        final long eventTime = SystemClock.uptimeMillis();
+        final int translatedX = panel.translateX(mLastX);
+        final int translatedY = panel.translateY(mLastY);
+        panel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
         mMoreKeysPanel = panel;
-        mMoreKeysPanel.onDownEvent(translatedX, translatedY, mPointerId, eventTime);
     }
 
     @Override
