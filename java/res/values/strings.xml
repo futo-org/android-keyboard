@@ -388,7 +388,7 @@ Cyrillic, Arabic, Hebrew or other scripts. This keyboard offers no suggestions, 
 be a QWERTY, or AZERTY, or any other disposition that only offers Latin characters, so
 you wouldn't be able to type, say, Arabic on it. Please translate it in a way that "alphabet"
 would be understood to mean specifically the Latin alphabet, rather than any other
-alphabet. [CHAR LIMIT=25] -->
+alphabet. [CHAR LIMIT=29] -->
     <string name="subtype_no_language">No language (Alphabet)</string>
     <!-- This string is displayed in the description for a keyboard type. It refers specifically to
 the Latin alphabet, as opposed to Cyrillic, Arabic, Hebrew or other scripts.
