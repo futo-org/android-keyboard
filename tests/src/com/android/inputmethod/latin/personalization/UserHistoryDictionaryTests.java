@@ -93,7 +93,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             final UserHistoryPredictionDictionary dict =
                     PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(
                             getContext(), locale, mPrefs);
-            dict.isTest = true;
+            dict.mIsTest = true;
 
             addToDict(dict, words);
 
