@@ -39,8 +39,7 @@ class DynamicPatriciaTrieReadingUtils {
 
     static AK_FORCE_INLINE int getParentPosAndAdvancePosition(const uint8_t *const buffer,
             int *const pos) {
-        const int base = *pos;
-        return base + ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+        return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
     }
 
     static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer,

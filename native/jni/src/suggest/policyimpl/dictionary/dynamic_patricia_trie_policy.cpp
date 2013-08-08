@@ -94,7 +94,7 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
         reverseCodePoints[codePointCount++] = mergedNodeCodePoints[i];
     }
     // Then, follow parent pos toward the root node.
-    while (nodeReader.getParentPos() != getRootPosition()) {
+    while (nodeReader.getParentPos() != NOT_A_DICT_POS) {
         // codePointCount must be incremented at least once in each iteration to ensure preventing
         // infinite loop.
         if (nodeReader.isDeleted() || codePointCount > maxCodePointCount

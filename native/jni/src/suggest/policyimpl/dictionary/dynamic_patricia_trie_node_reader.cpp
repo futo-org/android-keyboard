@@ -27,7 +27,9 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     const uint8_t *const dictRoot = mBinaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
     mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
-    mParentPos = DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictRoot, &pos);
+    const int parentPos =
+            DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictRoot, &pos);
+    mParentPos = (parentPos != 0) ? mNodePos + parentPos : NOT_A_DICT_POS;
     if (outCodePoints != 0) {
         mCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
                 dictRoot, mFlags, maxCodePointCount, outCodePoints, &pos);
