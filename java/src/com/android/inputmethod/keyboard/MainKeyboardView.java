@@ -974,9 +974,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
         final int pointY = key.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
         moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
-        final int translatedX = moreKeysPanel.translateX(CoordinateUtils.x(lastCoords));
-        final int translatedY = moreKeysPanel.translateY(CoordinateUtils.y(lastCoords));
-        tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
+        tracker.onShowMoreKeysPanel(moreKeysPanel);
     }
 
     public boolean isInSlidingKeyInput() {
