@@ -61,6 +61,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructurePolicy {
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTriePolicy);
     static const DynamicPatriciaTriePolicy sInstance;
+    static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
 
     DynamicPatriciaTriePolicy() {}
     ~DynamicPatriciaTriePolicy() {}
