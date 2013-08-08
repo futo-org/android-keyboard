@@ -654,9 +654,11 @@ public final class RichInputConnection {
                     + "\"" + periodSpace + "\" just before the cursor.");
             return false;
         }
+        // Double-space results in ". ". A backspace to cancel this should result in a single
+        // space in the text field, so we replace ". " with a single space.
         deleteSurroundingText(2, 0);
-        final String doubleSpace = "  ";
-        commitText(doubleSpace, 1);
+        final String singleSpace = " ";
+        commitText(singleSpace, 1);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.richInputConnection_revertDoubleSpacePeriod();
         }
