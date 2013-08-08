@@ -270,15 +270,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return super.dispatchTouchEvent(me);
         }
 
-        final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
         final int action = me.getAction();
-        final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
         final int x = (int)me.getX(index);
         final int y = (int)me.getY(index);
-        final int translatedX = moreKeysPanel.translateX(x);
-        final int translatedY = moreKeysPanel.translateY(y);
 
         if (mMoreSuggestionsMode == MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING) {
             if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
@@ -295,7 +290,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         // MORE_SUGGESTIONS_IN_SLIDING_MODE
-        mMoreSuggestionsView.processMotionEvent(action, translatedX, translatedY, id, eventTime);
+        me.setLocation(mMoreSuggestionsView.translateX(x), mMoreSuggestionsView.translateY(y));
+        mMoreSuggestionsView.onTouchEvent(me);
         return true;
     }
 

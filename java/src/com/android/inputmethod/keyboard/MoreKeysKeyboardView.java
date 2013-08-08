@@ -198,12 +198,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final int x = (int)me.getX(index);
         final int y = (int)me.getY(index);
         final int pointerId = me.getPointerId(index);
-        processMotionEvent(action, x, y, pointerId, eventTime);
-        return true;
-    }
-
-    public void processMotionEvent(final int action, final int x, final int y,
-            final int pointerId, final long eventTime) {
         switch (action) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
@@ -217,6 +211,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             onMoveEvent(x, y, pointerId, eventTime);
             break;
         }
+        return true;
     }
 
     @Override
