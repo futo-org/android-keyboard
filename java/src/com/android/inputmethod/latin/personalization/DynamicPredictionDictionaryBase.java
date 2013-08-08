@@ -77,7 +77,7 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
             CollectionUtils.newArrayList();
 
     // Should always be false except when we use this class for test
-    @UsedForTesting boolean isTest = false;
+    @UsedForTesting boolean mIsTest = false;
 
     /* package */ DynamicPredictionDictionaryBase(final Context context, final String locale,
             final SharedPreferences sp, final String dictionaryType) {
@@ -298,8 +298,8 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
 
         @Override
         protected Void doInBackground(final Void... v) {
-            if (mDynamicPredictionDictionary.isTest) {
-                // If isTest == true, wait until the lock is released.
+            if (mDynamicPredictionDictionary.mIsTest) {
+                // If mIsTest == true, wait until the lock is released.
                 mDynamicPredictionDictionary.mBigramListLock.lock();
                 try {
                     doWriteTaskLocked();
