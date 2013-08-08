@@ -61,8 +61,7 @@ const int BinaryDictionaryFormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
             if (ByteArrayUtils::readUint16(dict, 4) == 2) {
                 return VERSION_2;
             } else if (ByteArrayUtils::readUint16(dict, 4) == 3) {
-                // TODO: Support version 3 dictionary.
-                return UNKNOWN_VERSION;
+                return VERSION_3;
             } else {
                 return UNKNOWN_VERSION;
             }
