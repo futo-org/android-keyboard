@@ -37,10 +37,9 @@ import java.util.HashMap;
  * An in memory dictionary for memorizing entries and writing a binary dictionary.
  */
 public class DictionaryWriter extends AbstractDictionaryWriter {
-    // TODO: Regenerate version 3 binary dictionary.
-    private static final int BINARY_DICT_VERSION = 2;
+    private static final int BINARY_DICT_VERSION = 3;
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(BINARY_DICT_VERSION);
+            new FormatSpec.FormatOptions(BINARY_DICT_VERSION, true /* supportsDynamicUpdate */);
 
     private FusionDictionary mFusionDictionary;
 
