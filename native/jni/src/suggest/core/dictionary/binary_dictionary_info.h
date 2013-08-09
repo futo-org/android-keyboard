@@ -23,7 +23,7 @@
 #include "jni.h"
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
-#include "suggest/policyimpl/dictionary/dictionary_structure_policy_factory.h"
+#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/log_utils.h"
 
 namespace latinime {
@@ -37,9 +37,14 @@ class BinaryDictionaryInfo {
               mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
                       mDictBuf, mDictSize)),
               mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
-              mStructurePolicy(DictionaryStructurePolicyFactory::getDictionaryStructurePolicy(
-                      mDictionaryFormat)) {
+              // TODO: Remove.
+              mStructurePolicy(DictionaryStructureWithBufferPolicyFactory
+                      ::newDictionaryStructurePolicy(this)) {
         logDictionaryInfo(env);
+    }
+
+    ~BinaryDictionaryInfo() {
+        delete mStructurePolicy;
     }
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
@@ -66,6 +71,7 @@ class BinaryDictionaryInfo {
         return mDictionaryFormat;
     }
 
+    // TODO: Move to DictionaryStructurePolicy.
     AK_FORCE_INLINE const BinaryDictionaryHeader *getHeader() const {
         return &mDictionaryHeader;
     }
@@ -76,7 +82,8 @@ class BinaryDictionaryInfo {
         return mIsUpdatable && isUpdatableDictionaryFormat;
     }
 
-    AK_FORCE_INLINE const DictionaryStructurePolicy *getStructurePolicy() const {
+    // TODO: remove
+    AK_FORCE_INLINE const DictionaryStructureWithBufferPolicy *getStructurePolicy() const {
         return mStructurePolicy;
     }
 
@@ -89,9 +96,12 @@ class BinaryDictionaryInfo {
     const int mDictBufOffset;
     const bool mIsUpdatable;
     const BinaryDictionaryFormatUtils::FORMAT_VERSION mDictionaryFormat;
+    // TODO: Move BinaryDictionaryHeader to policyimpl and introduce dedicated API to the
+    // DictionaryStructurePolicy.
     const BinaryDictionaryHeader mDictionaryHeader;
     const uint8_t *const mDictRoot;
-    const DictionaryStructurePolicy *const mStructurePolicy;
+    // TODO: remove
+    const DictionaryStructureWithBufferPolicy *const mStructurePolicy;
 
     AK_FORCE_INLINE void logDictionaryInfo(JNIEnv *const env) const {
         const int BUFFER_SIZE = 16;

@@ -17,52 +17,53 @@
 #ifndef LATINIME_PATRICIA_TRIE_POLICY_H
 #define LATINIME_PATRICIA_TRIE_POLICY_H
 
+#include <stdint.h>
+
 #include "defines.h"
-#include "suggest/core/policy/dictionary_structure_policy.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
-class PatriciaTriePolicy : public DictionaryStructurePolicy {
+class BinaryDictionaryInfo;
+class DicNode;
+class DicNodeVector;
+
+class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    static AK_FORCE_INLINE const PatriciaTriePolicy *getInstance() {
-        return &sInstance;
-    }
+    PatriciaTriePolicy(const uint8_t *const dictRoot,
+            const BinaryDictionaryInfo *const binaryDictionaryInfo)
+            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo) {}
+
+    ~PatriciaTriePolicy() {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
     }
 
     void createAndGetAllChildNodes(const DicNode *const dicNode,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalNodePositionOfWord(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int *const inWord,
+    int getTerminalNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const;
 
-    int getUnigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const;
+    int getUnigramProbability(const int nodePos) const;
 
-    int getShortcutPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const;
+    int getShortcutPositionOfNode(const int nodePos) const;
 
-    int getBigramsPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const;
+    int getBigramsPositionOfNode(const int nodePos) const;
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(PatriciaTriePolicy);
-    static const PatriciaTriePolicy sInstance;
+    DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
-    PatriciaTriePolicy() {}
-    ~PatriciaTriePolicy() {}
+    const uint8_t *const mDictRoot;
+    // TODO: remove
+    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
 };
 } // namespace latinime

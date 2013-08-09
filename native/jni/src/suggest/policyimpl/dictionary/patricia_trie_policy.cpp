@@ -27,48 +27,39 @@
 
 namespace latinime {
 
-const PatriciaTriePolicy PatriciaTriePolicy::sInstance;
-
 void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
     int nextPos = dicNode->getChildrenPos();
     const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
-            binaryDictionaryInfo->getDictRoot(), &nextPos);
+            mDictRoot, &nextPos);
     for (int i = 0; i < childCount; i++) {
-        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, binaryDictionaryInfo,
-                nodeFilter, childDicNodes);
+        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, nodeFilter, childDicNodes);
     }
 }
 
 int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int nodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    return BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointCount(
-            binaryDictionaryInfo->getDictRoot(), nodePos,
+    return BinaryFormat::getCodePointsAndProbabilityAndReturnCodePointCount(mDictRoot, nodePos,
             maxCodePointCount, outCodePoints, outUnigramProbability);
 }
 
-int PatriciaTriePolicy::getTerminalNodePositionOfWord(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int *const inWord,
+int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    return BinaryFormat::getTerminalPosition(binaryDictionaryInfo->getDictRoot(), inWord,
+    return BinaryFormat::getTerminalPosition(mDictRoot, inWord,
             length, forceLowerCaseSearch);
 }
 
-int PatriciaTriePolicy::getUnigramProbability(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) const {
+int PatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_PROBABILITY;
     }
-    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::isTerminal(flags)) {
         return NOT_A_PROBABILITY;
     }
@@ -79,81 +70,74 @@ int PatriciaTriePolicy::getUnigramProbability(
         // for shortcuts).
         return NOT_A_PROBABILITY;
     }
-    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
-    return PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
+    return PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
 }
 
-int PatriciaTriePolicy::getShortcutPositionOfNode(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const int nodePos) const {
+int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
         return NOT_A_DICT_POS;
     }
-    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
+    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
     if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
     }
     if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(dictRoot, flags, &pos);
+        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &pos);
     }
     return pos;
 }
 
-int PatriciaTriePolicy::getBigramsPositionOfNode(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const int nodePos) const {
+int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::hasBigrams(flags)) {
         return NOT_A_DICT_POS;
     }
-    PatriciaTrieReadingUtils::skipCharacters(dictRoot, flags, MAX_WORD_LENGTH, &pos);
+    PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
     if (PatriciaTrieReadingUtils::isTerminal(flags)) {
-        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+        PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
     }
     if (PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(dictRoot, flags, &pos);
+        PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &pos);
     }
     if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(binaryDictionaryInfo, &pos);
+        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
     }
     return pos;
 }
 
 int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
-        const int nodePos, const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const NodeFilter *const childrenFilter, DicNodeVector *childDicNodes) const {
-    const uint8_t *const dictRoot = binaryDictionaryInfo->getDictRoot();
+        const int nodePos,  const NodeFilter *const childrenFilter,
+        DicNodeVector *childDicNodes) const {
     int pos = nodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
-            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
     const int mergedNodeCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-            dictRoot, flags, MAX_WORD_LENGTH, mergedNodeCodePoints, &pos);
+            mDictRoot, flags, MAX_WORD_LENGTH, mergedNodeCodePoints, &pos);
     const int probability = (PatriciaTrieReadingUtils::isTerminal(flags))?
-            PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos)
+            PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos)
                     : NOT_A_PROBABILITY;
     const int childrenPos = PatriciaTrieReadingUtils::hasChildrenInFlags(flags) ?
             PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                    dictRoot, flags, &pos) : NOT_A_DICT_POS;
+                    mDictRoot, flags, &pos) : NOT_A_DICT_POS;
     if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(binaryDictionaryInfo, &pos);
+        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
     }
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
         BinaryDictionaryTerminalAttributesReadingUtils::skipExistingBigrams(
-                binaryDictionaryInfo, &pos);
+                mBinaryDictionaryInfo, &pos);
     }
     if (!childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
         childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,
