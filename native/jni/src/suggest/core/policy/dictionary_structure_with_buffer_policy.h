@@ -21,7 +21,6 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class DicNode;
 class DicNodeVector;
 
@@ -29,7 +28,7 @@ class DicNodeVector;
  * This class abstracts structure of dictionaries.
  * Implement this policy to support additional dictionaries.
  */
-class DictionaryStructurePolicy {
+class DictionaryStructureWithBufferPolicy {
  public:
     // This provides a filtering method for filtering new node.
     class NodeFilter {
@@ -44,36 +43,31 @@ class DictionaryStructurePolicy {
         DISALLOW_COPY_AND_ASSIGN(NodeFilter);
     };
 
+    virtual ~DictionaryStructureWithBufferPolicy() {}
+
     virtual int getRootPosition() const = 0;
 
     virtual void createAndGetAllChildNodes(const DicNode *const dicNode,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
             const int nodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
-    virtual int getTerminalNodePositionOfWord(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int *const inWord,
+    virtual int getTerminalNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const = 0;
 
-    virtual int getUnigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const = 0;
+    virtual int getUnigramProbability(const int nodePos) const = 0;
 
-    virtual int getShortcutPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const = 0;
+    virtual int getShortcutPositionOfNode(const int nodePos) const = 0;
 
-    virtual int getBigramsPositionOfNode(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const int nodePos) const = 0;
+    virtual int getBigramsPositionOfNode(const int nodePos) const = 0;
 
  protected:
-    DictionaryStructurePolicy() {}
-    virtual ~DictionaryStructurePolicy() {}
+    DictionaryStructureWithBufferPolicy() {}
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(DictionaryStructurePolicy);
+    DISALLOW_COPY_AND_ASSIGN(DictionaryStructureWithBufferPolicy);
 };
 } // namespace latinime
 #endif /* LATINIME_DICTIONARY_STRUCTURE_POLICY_H */

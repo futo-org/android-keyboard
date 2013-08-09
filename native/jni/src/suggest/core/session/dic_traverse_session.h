@@ -75,7 +75,7 @@ class DicTraverseSession {
             const int maxPointerCount);
     void resetCache(const int nextActiveCacheSize, const int maxWords);
 
-    // TODO: Remove
+    // TODO: Use DictionaryStructurePolicy instead of BinaryDictionaryInfo.
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const;
 
     //--------------------

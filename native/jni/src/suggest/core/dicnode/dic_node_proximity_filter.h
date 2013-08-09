@@ -20,11 +20,11 @@
 #include "defines.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "suggest/core/layout/proximity_info_utils.h"
-#include "suggest/core/policy/dictionary_structure_policy.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
-class DicNodeProximityFilter : public DictionaryStructurePolicy::NodeFilter {
+class DicNodeProximityFilter : public DictionaryStructureWithBufferPolicy::NodeFilter {
  public:
     DicNodeProximityFilter(const ProximityInfoState *const pInfoState,
             const int pointIndex, const bool exactOnly)

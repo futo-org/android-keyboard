@@ -215,7 +215,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                     traverseSession->getBinaryDictionaryInfo();
             const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
                     binaryDictionaryInfo->getStructurePolicy()->getShortcutPositionOfNode(
-                            binaryDictionaryInfo, terminalDicNode->getPos()));
+                            terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
