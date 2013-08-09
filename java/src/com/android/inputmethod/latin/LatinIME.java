@@ -846,8 +846,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mainKeyboardView.setSlidingKeyInputPreviewEnabled(
                 currentSettingsValues.mSlidingKeyInputPreviewEnabled);
         mainKeyboardView.setGestureHandlingEnabledByUser(
-                currentSettingsValues.mGestureInputEnabled);
-        mainKeyboardView.setGesturePreviewMode(currentSettingsValues.mGesturePreviewTrailEnabled,
+                currentSettingsValues.mGestureInputEnabled,
+                currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
         // If we have a user dictionary addition in progress, we should check now if we should
