@@ -17,13 +17,17 @@
 #ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H
 #define LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H
 
+#include <stdint.h>
+
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/bigrams/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
 namespace latinime {
 
 class BinaryDictionaryInfo;
+class DictionaryBigramsStructurePolicy;
 
 /*
  * This class is used for helping to read nodes of dynamic patricia trie. This class handles moved
@@ -31,10 +35,11 @@ class BinaryDictionaryInfo;
  */
 class DynamicPatriciaTrieNodeReader {
  public:
-    explicit DynamicPatriciaTrieNodeReader(const BinaryDictionaryInfo *const binaryDictionaryInfo)
-            : mBinaryDictionaryInfo(binaryDictionaryInfo), mNodePos(NOT_A_VALID_WORD_POS),
-              mFlags(0), mParentPos(NOT_A_DICT_POS), mCodePointCount(0),
-              mProbability(NOT_A_PROBABILITY), mChildrenPos(NOT_A_DICT_POS),
+    DynamicPatriciaTrieNodeReader(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const DictionaryBigramsStructurePolicy *const bigramsPolicy)
+            : mBinaryDictionaryInfo(binaryDictionaryInfo), mBigramsPolicy(bigramsPolicy),
+              mNodePos(NOT_A_VALID_WORD_POS), mFlags(0), mParentPos(NOT_A_DICT_POS),
+              mCodePointCount(0), mProbability(NOT_A_PROBABILITY), mChildrenPos(NOT_A_DICT_POS),
               mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
               mSiblingPos(NOT_A_VALID_WORD_POS) {}
 
@@ -117,6 +122,7 @@ class DynamicPatriciaTrieNodeReader {
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeReader);
 
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
     int mNodePos;
     DynamicPatriciaTrieReadingUtils::NodeFlags mFlags;
     int mParentPos;

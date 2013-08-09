@@ -49,7 +49,7 @@ class TerminalAttributes {
                 bool *const outIsWhitelist) {
             const BinaryDictionaryTerminalAttributesReadingUtils::ShortcutFlags flags =
                     BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
-                            mBinaryDictionaryInfo, &mPos);
+                            mBinaryDictionaryInfo->getDictRoot(), &mPos);
             mHasNextShortcutTarget =
                     BinaryDictionaryTerminalAttributesReadingUtils::hasNext(flags);
             if (outIsWhitelist) {
