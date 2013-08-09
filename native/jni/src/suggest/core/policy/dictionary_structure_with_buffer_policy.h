@@ -23,6 +23,7 @@ namespace latinime {
 
 class DicNode;
 class DicNodeVector;
+class DictionaryBigramsStructurePolicy;
 
 /*
  * This class abstracts structure of dictionaries.
@@ -62,6 +63,8 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getShortcutPositionOfNode(const int nodePos) const = 0;
 
     virtual int getBigramsPositionOfNode(const int nodePos) const = 0;
+
+    virtual const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const = 0;
 
  protected:
     DictionaryStructureWithBufferPolicy() {}

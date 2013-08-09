@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/policyimpl/dictionary/bigrams/bigram_list_policy.h"
 
 namespace latinime {
 
@@ -32,7 +33,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     PatriciaTriePolicy(const uint8_t *const dictRoot,
             const BinaryDictionaryInfo *const binaryDictionaryInfo)
-            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo) {}
+            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo),
+              mBigramListPolicy(dictRoot) {}
 
     ~PatriciaTriePolicy() {}
 
@@ -56,12 +58,17 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getBigramsPositionOfNode(const int nodePos) const;
 
+    const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
+        return &mBigramListPolicy;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
     const uint8_t *const mDictRoot;
     // TODO: remove
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const BigramListPolicy mBigramListPolicy;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
