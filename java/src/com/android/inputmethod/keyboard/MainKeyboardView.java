@@ -838,10 +838,10 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mSlidingKeyInputPreview.dismissSlidingKeyInputPreview();
     }
 
-    public void setGesturePreviewMode(final boolean drawsGestureTrail,
-            final boolean drawsGestureFloatingPreviewText) {
-        mGestureFloatingPreviewText.setPreviewEnabled(drawsGestureFloatingPreviewText);
-        mGestureTrailsPreview.setPreviewEnabled(drawsGestureTrail);
+    private void setGesturePreviewMode(final boolean isGestureTrailEnabled,
+            final boolean isGestureFloatingPreviewTextEnabled) {
+        mGestureFloatingPreviewText.setPreviewEnabled(isGestureFloatingPreviewTextEnabled);
+        mGestureTrailsPreview.setPreviewEnabled(isGestureTrailEnabled);
     }
 
     public void showGestureFloatingPreviewText(final SuggestedWords suggestedWords) {
@@ -869,8 +869,12 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         PointerTracker.setMainDictionaryAvailability(mainDictionaryAvailable);
     }
 
-    public void setGestureHandlingEnabledByUser(final boolean gestureHandlingEnabledByUser) {
-        PointerTracker.setGestureHandlingEnabledByUser(gestureHandlingEnabledByUser);
+    public void setGestureHandlingEnabledByUser(final boolean isGestureHandlingEnabledByUser,
+            final boolean isGestureTrailEnabled,
+            final boolean isGestureFloatingPreviewTextEnabled) {
+        PointerTracker.setGestureHandlingEnabledByUser(isGestureHandlingEnabledByUser);
+        setGesturePreviewMode(isGestureHandlingEnabledByUser && isGestureTrailEnabled,
+                isGestureHandlingEnabledByUser && isGestureFloatingPreviewTextEnabled);
     }
 
     @Override
