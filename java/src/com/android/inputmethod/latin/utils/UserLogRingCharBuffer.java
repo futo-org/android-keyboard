@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.inputmethodservice.InputMethodService;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.settings.Settings;
 
 public final class UserLogRingCharBuffer {
@@ -63,6 +64,9 @@ public final class UserLogRingCharBuffer {
     public void push(final char c, final int x, final int y) {
         if (!mEnabled) {
             return;
+        }
+        if (LatinImeLogger.sUsabilityStudy) {
+            UsabilityStudyLogUtils.getInstance().writeChar(c, x, y);
         }
         mCharBuf[mEnd] = c;
         mXBuf[mEnd] = x;
