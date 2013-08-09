@@ -26,23 +26,21 @@
 
 namespace latinime {
 
-const DynamicPatriciaTriePolicy DynamicPatriciaTriePolicy::sInstance;
 // To avoid infinite loop caused by invalid or malicious forward links.
 const int DynamicPatriciaTriePolicy::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
     int nextPos = dicNode->getChildrenPos();
     int totalChildCount = 0;
     do {
         const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
-                binaryDictionaryInfo->getDictRoot(), &nextPos);
+                mDictRoot, &nextPos);
         totalChildCount += childCount;
         if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
             // Invalid dictionary.
@@ -64,13 +62,11 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
             }
             nextPos = nodeReader.getSiblingNodePos();
         }
-        nextPos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(
-                binaryDictionaryInfo->getDictRoot(), nextPos);
+        nextPos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(mDictRoot, nextPos);
     } while (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(nextPos));
 }
 
 int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
         const int nodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
@@ -83,7 +79,7 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
     int mergedNodeCodePoints[maxCodePointCount];
     int codePointCount = 0;
 
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     // First, read terminal node and get its probability.
     nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nodePos, maxCodePointCount,
             mergedNodeCodePoints);
@@ -118,8 +114,7 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
     return codePointCount;
 }
 
-int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int *const inWord,
+int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     int searchCodePoints[length];
     for (int i = 0; i < length; ++i) {
@@ -128,14 +123,14 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
     int currentLength = 0;
     int pos = getRootPosition();
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     while (currentLength <= length) {
         // When foundMatchedNode becomes true, currentLength is increased at least once.
         bool foundMatchedNode = false;
         int totalChildCount = 0;
         do {
             const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
-                    binaryDictionaryInfo->getDictRoot(), &pos);
+                    mDictRoot, &pos);
             totalChildCount += childCount;
             if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
                 // Invalid dictionary.
@@ -183,7 +178,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(
             // If the matched node is not found in the current node group, try to follow the
             // forward link.
             pos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(
-                    binaryDictionaryInfo->getDictRoot(), pos);
+                    mDictRoot, pos);
         } while (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(pos));
         if (!foundMatchedNode) {
             // Matched node is not found.
@@ -195,12 +190,11 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(
     return NOT_A_VALID_WORD_POS;
 }
 
-int DynamicPatriciaTriePolicy::getUnigramProbability(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) const {
+int DynamicPatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_PROBABILITY;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted() || nodeReader.isBlacklisted() || nodeReader.isNotAWord()) {
         return NOT_A_PROBABILITY;
@@ -208,13 +202,11 @@ int DynamicPatriciaTriePolicy::getUnigramProbability(
     return nodeReader.getProbability();
 }
 
-int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const int nodePos) const {
+int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted()) {
         return NOT_A_DICT_POS;
@@ -222,13 +214,11 @@ int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(
     return nodeReader.getShortcutPos();
 }
 
-int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
-        const int nodePos) const {
+int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(binaryDictionaryInfo);
+    DynamicPatriciaTrieNodeReader nodeReader(mBinaryDictionaryInfo);
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted()) {
         return NOT_A_DICT_POS;

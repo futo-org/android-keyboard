@@ -83,14 +83,14 @@ int Dictionary::getBigrams(const int *word, int length, int *outWords, int *freq
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    const DictionaryStructurePolicy *const structurePolicy =
+    const DictionaryStructureWithBufferPolicy *const structurePolicy =
             mBinaryDictionaryInfo.getStructurePolicy();
-    int pos = structurePolicy->getTerminalNodePositionOfWord(&mBinaryDictionaryInfo, word, length,
+    int pos = structurePolicy->getTerminalNodePositionOfWord(word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == pos) {
         return NOT_A_PROBABILITY;
     }
-    return structurePolicy->getUnigramProbability(&mBinaryDictionaryInfo, pos);
+    return structurePolicy->getUnigramProbability(pos);
 }
 
 bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {

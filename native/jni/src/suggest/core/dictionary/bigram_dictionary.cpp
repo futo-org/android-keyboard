@@ -116,9 +116,8 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         const int length = mBinaryDictionaryInfo->getStructurePolicy()->
-                getCodePointsAndProbabilityAndReturnCodePointCount(
-                        mBinaryDictionaryInfo, bigramsIt.getBigramPos(), MAX_WORD_LENGTH,
-                        bigramBuffer, &unigramProbability);
+                getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
+                        MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
         // Due to space constraints, the probability for bigrams is approximate - the lower the
         // unigram probability, the worse the precision. The theoritical maximum error in
         // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
@@ -139,10 +138,9 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
         const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return NOT_A_DICT_POS;
     int pos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
-            mBinaryDictionaryInfo, prevWord, prevWordLength, forceLowerCaseSearch);
+            prevWord, prevWordLength, forceLowerCaseSearch);
     if (NOT_A_VALID_WORD_POS == pos) return NOT_A_DICT_POS;
-    return mBinaryDictionaryInfo->getStructurePolicy()->getBigramsPositionOfNode(
-            mBinaryDictionaryInfo, pos);
+    return mBinaryDictionaryInfo->getStructurePolicy()->getBigramsPositionOfNode(pos);
 }
 
 bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *word1,
@@ -151,7 +149,7 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (NOT_A_DICT_POS == pos) return false;
     int nextWordPos = mBinaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
-            mBinaryDictionaryInfo, word1, length1, false /* forceLowerCaseSearch */);
+            word1, length1, false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == nextWordPos) return false;
 
     BinaryDictionaryBigramsIterator bigramsIt(mBinaryDictionaryInfo, pos);

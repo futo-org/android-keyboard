@@ -24,7 +24,7 @@
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/probability_utils.h"
-#include "suggest/core/policy/dictionary_structure_policy.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -83,7 +83,7 @@ namespace latinime {
         DicNodeUtils::createAndGetPassingChildNode(dicNode, &childrenFilter, childDicNodes);
     } else {
         binaryDictionaryInfo->getStructurePolicy()->createAndGetAllChildNodes(dicNode,
-                binaryDictionaryInfo, &childrenFilter, childDicNodes);
+                &childrenFilter, childDicNodes);
     }
 }
 

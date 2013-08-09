@@ -37,12 +37,12 @@ void DicTraverseSession::init(const Dictionary *const dictionary, const int *pre
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
     mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
-            binaryDictionaryInfo, prevWord, prevWordLength, false /* forceLowerCaseSearch */);
+            prevWord, prevWordLength, false /* forceLowerCaseSearch */);
     if (mPrevWordPos == NOT_A_VALID_WORD_POS) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
         mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
-                binaryDictionaryInfo, prevWord, prevWordLength, true /* forceLowerCaseSearch */);
+                prevWord, prevWordLength, true /* forceLowerCaseSearch */);
     }
 }
 
