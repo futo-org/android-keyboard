@@ -118,8 +118,8 @@ namespace latinime {
         return ProbabilityUtils::backoff(unigramProbability);
     }
     if (multiBigramMap) {
-        return multiBigramMap->getBigramProbability(
-                binaryDictionaryInfo, prevWordPos, wordPos, unigramProbability);
+        return multiBigramMap->getBigramProbability(binaryDictionaryInfo->getStructurePolicy(),
+                prevWordPos, wordPos, unigramProbability);
     }
     return ProbabilityUtils::backoff(unigramProbability);
 }

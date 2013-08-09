@@ -136,8 +136,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
         BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
     }
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipExistingBigrams(
-                mBinaryDictionaryInfo, &pos);
+        getBigramsStructurePolicy()->skipAllBigrams(&pos);
     }
     if (!childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
         childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,

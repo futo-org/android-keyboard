@@ -21,9 +21,9 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/bloom_filter.h"
 #include "suggest/core/dictionary/probability_utils.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -38,7 +38,7 @@ class MultiBigramMap {
 
     // Look up the bigram probability for the given word pair from the cached bigram maps.
     // Also caches the bigrams if there is space remaining and they have not been cached already.
-    int getBigramProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    int getBigramProbability(const DictionaryStructureWithBufferPolicy *const structurePolicy,
             const int wordPosition, const int nextWordPosition, const int unigramProbability) {
         hash_map_compat<int, BigramMap>::const_iterator mapPosition =
                 mBigramMaps.find(wordPosition);
@@ -46,12 +46,12 @@ class MultiBigramMap {
             return mapPosition->second.getBigramProbability(nextWordPosition, unigramProbability);
         }
         if (mBigramMaps.size() < MAX_CACHED_PREV_WORDS_IN_BIGRAM_MAP) {
-            addBigramsForWordPosition(binaryDictionaryInfo, wordPosition);
+            addBigramsForWordPosition(structurePolicy, wordPosition);
             return mBigramMaps[wordPosition].getBigramProbability(
                     nextWordPosition, unigramProbability);
         }
-        return readBigramProbabilityFromBinaryDictionary(binaryDictionaryInfo,
-                wordPosition, nextWordPosition, unigramProbability);
+        return readBigramProbabilityFromBinaryDictionary(structurePolicy, wordPosition,
+                nextWordPosition, unigramProbability);
     }
 
     void clear() {
@@ -66,10 +66,11 @@ class MultiBigramMap {
         BigramMap() : mBigramMap(DEFAULT_HASH_MAP_SIZE_FOR_EACH_BIGRAM_MAP), mBloomFilter() {}
         ~BigramMap() {}
 
-        void init(const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos) {
-            const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
-                    getBigramsPositionOfNode(nodePos);
-            BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+        void init(const DictionaryStructureWithBufferPolicy *const structurePolicy,
+                const int nodePos) {
+            const int bigramsListPos = structurePolicy->getBigramsPositionOfNode(nodePos);
+            BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
+                    bigramsListPos);
             while (bigramsIt.hasNext()) {
                 bigramsIt.next();
                 mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
@@ -100,16 +101,16 @@ class MultiBigramMap {
     };
 
     AK_FORCE_INLINE void addBigramsForWordPosition(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int position) {
-        mBigramMaps[position].init(binaryDictionaryInfo, position);
+            const DictionaryStructureWithBufferPolicy *const structurePolicy, const int position) {
+        mBigramMaps[position].init(structurePolicy, position);
     }
 
     AK_FORCE_INLINE int readBigramProbabilityFromBinaryDictionary(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int nodePos,
+            const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos,
             const int nextWordPosition, const int unigramProbability) {
-        const int bigramsListPos = binaryDictionaryInfo->getStructurePolicy()->
-                getBigramsPositionOfNode(nodePos);
-        BinaryDictionaryBigramsIterator bigramsIt(binaryDictionaryInfo, bigramsListPos);
+        const int bigramsListPos = structurePolicy->getBigramsPositionOfNode(nodePos);
+        BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
+                bigramsListPos);
         while (bigramsIt.hasNext()) {
             bigramsIt.next();
             if (bigramsIt.getBigramPos() == nextWordPosition) {

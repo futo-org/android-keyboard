@@ -18,6 +18,7 @@
 
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
+#include "suggest/policyimpl/dictionary/bigrams/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 
 namespace latinime {
@@ -56,8 +57,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     }
     if (PatriciaTrieReadingUtils::hasBigrams(mFlags)) {
         mBigramPos = pos;
-        BinaryDictionaryTerminalAttributesReadingUtils::skipExistingBigrams(
-                mBinaryDictionaryInfo, &pos);
+        mBigramsPolicy->skipAllBigrams(&pos);
     } else {
         mBigramPos = NOT_A_DICT_POS;
     }

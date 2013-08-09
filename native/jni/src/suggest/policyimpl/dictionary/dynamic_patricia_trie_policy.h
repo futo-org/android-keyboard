@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/policyimpl/dictionary/bigrams/bigram_list_policy.h"
 
 namespace latinime {
 
@@ -32,7 +33,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     DynamicPatriciaTriePolicy(const uint8_t *const dictRoot,
             const BinaryDictionaryInfo *const binaryDictionaryInfo)
-            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo) {}
+            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo),
+              mBigramListPolicy(dictRoot) {}
 
     ~DynamicPatriciaTriePolicy() {}
 
@@ -56,6 +58,10 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getBigramsPositionOfNode(const int nodePos) const;
 
+    const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
+        return &mBigramListPolicy;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
     static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
@@ -63,6 +69,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const uint8_t *const mDictRoot;
     // TODO: remove
     const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const BigramListPolicy mBigramListPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H

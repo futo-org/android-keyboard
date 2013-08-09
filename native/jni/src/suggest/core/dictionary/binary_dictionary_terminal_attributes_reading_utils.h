@@ -32,9 +32,8 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     typedef TerminalAttributeFlags ShortcutFlags;
 
     static AK_FORCE_INLINE TerminalAttributeFlags getFlagsAndForwardPointer(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
-        return ByteArrayUtils::readUint8AndAdvancePosition(
-                binaryDictionaryInfo->getDictRoot(), pos);
+            const uint8_t *const dictRoot, int *const pos) {
+        return ByteArrayUtils::readUint8AndAdvancePosition(dictRoot, pos);
     }
 
     static AK_FORCE_INLINE int getProbabilityFromFlags(const TerminalAttributeFlags flags) {
@@ -47,18 +46,17 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
 
     // Bigrams reading methods
     static AK_FORCE_INLINE void skipExistingBigrams(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
-        BigramFlags flags = getFlagsAndForwardPointer(binaryDictionaryInfo, pos);
+            const uint8_t *const dictRoot, int *const pos) {
+        BigramFlags flags = getFlagsAndForwardPointer(dictRoot, pos);
         while (hasNext(flags)) {
             *pos += attributeAddressSize(flags);
-            flags = getFlagsAndForwardPointer(binaryDictionaryInfo, pos);
+            flags = getFlagsAndForwardPointer(dictRoot, pos);
         }
         *pos += attributeAddressSize(flags);
     }
 
     static int getBigramAddressAndForwardPointer(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const BigramFlags flags,
-                    int *const pos);
+            const uint8_t *const dictRoot, const BigramFlags flags, int *const pos);
 
     // Shortcuts reading methods
     // This method returns the size of the shortcut list region excluding the shortcut list size

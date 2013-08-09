@@ -18,51 +18,41 @@
 #define LATINIME_BINARY_DICTIONARY_BIGRAMS_ITERATOR_H
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
+#include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 
 namespace latinime {
 
 class BinaryDictionaryBigramsIterator {
  public:
     BinaryDictionaryBigramsIterator(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int pos)
-            : mBinaryDictionaryInfo(binaryDictionaryInfo), mPos(pos), mBigramFlags(0),
-              mBigramPos(NOT_A_DICT_POS), mHasNext(pos != NOT_A_DICT_POS) {}
+            const DictionaryBigramsStructurePolicy *const bigramsStructurePolicy, const int pos)
+            : mBigramsStructurePolicy(bigramsStructurePolicy), mPos(pos),
+              mBigramPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
+              mHasNext(pos != NOT_A_DICT_POS) {}
 
     AK_FORCE_INLINE bool hasNext() const {
         return mHasNext;
     }
 
     AK_FORCE_INLINE void next() {
-        mBigramFlags = BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
-                mBinaryDictionaryInfo, &mPos);
-        mBigramPos =
-                BinaryDictionaryTerminalAttributesReadingUtils::getBigramAddressAndForwardPointer(
-                        mBinaryDictionaryInfo, mBigramFlags, &mPos);
-        mHasNext = BinaryDictionaryTerminalAttributesReadingUtils::hasNext(mBigramFlags);
+        mBigramsStructurePolicy->getNextBigram(&mBigramPos, &mProbability, &mHasNext, &mPos);
     }
 
     AK_FORCE_INLINE int getProbability() const {
-        return BinaryDictionaryTerminalAttributesReadingUtils::getProbabilityFromFlags(
-                mBigramFlags);
+        return mProbability;
     }
 
     AK_FORCE_INLINE int getBigramPos() const {
         return mBigramPos;
     }
 
-    AK_FORCE_INLINE int getFlags() const {
-        return mBigramFlags;
-    }
-
  private:
     DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryBigramsIterator);
 
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const DictionaryBigramsStructurePolicy *const mBigramsStructurePolicy;
     int mPos;
-    BinaryDictionaryTerminalAttributesReadingUtils::BigramFlags mBigramFlags;
     int mBigramPos;
+    int mProbability;
     bool mHasNext;
 };
 } // namespace latinime
