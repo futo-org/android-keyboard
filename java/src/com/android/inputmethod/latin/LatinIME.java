@@ -31,7 +31,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -51,7 +50,6 @@ import android.util.Printer;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
@@ -150,8 +148,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final Settings mSettings;
 
-    private View mExtractArea;
-    private View mKeyPreviewBackingView;
+    private View mInputView;
+    private int mInputViewMinHeight;
     private SuggestionStripView mSuggestionStripView;
     // Never null
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
@@ -660,17 +658,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
     }
 
+    private void setInputViewMinHeight(final int minHeight) {
+        if (mInputView != null && mInputViewMinHeight != minHeight) {
+            mInputView.setMinimumHeight(minHeight);
+            mInputViewMinHeight = minHeight;
+        }
+    }
+
     @Override
-    public void setInputView(final View view) {
-        super.setInputView(view);
-        mExtractArea = getWindow().getWindow().getDecorView()
-                .findViewById(android.R.id.extractArea);
-        mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
-        mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
-        if (mSuggestionStripView != null)
-            mSuggestionStripView.setListener(this, view);
+    public void setInputView(final View inputView) {
+        super.setInputView(inputView);
+        mInputView = inputView;
+        setInputViewMinHeight(0);
+        mSuggestionStripView = (SuggestionStripView)inputView.findViewById(
+                R.id.suggestion_strip_view);
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.setListener(this, inputView);
+        }
         if (LatinImeLogger.sVISUALDEBUG) {
-            mKeyPreviewBackingView.setBackgroundColor(0x10FF0000);
+            inputView.setBackgroundColor(0x10FF0000);
         }
     }
 
@@ -1122,36 +1128,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mSuggestionStripView.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.INVISIBLE);
             }
+            if (shouldShowSuggestions && mainKeyboardView != null) {
+                final int remainingHeight = getWindow().getWindow().getDecorView().getHeight()
+                        - mainKeyboardView.getHeight() - mSuggestionStripView.getHeight();
+                mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
+            }
         }
     }
 
     private void setSuggestionStripShown(final boolean shown) {
         setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
-    }
-
-    private int getAdjustedBackingViewHeight() {
-        final int currentHeight = mKeyPreviewBackingView.getHeight();
-        if (currentHeight > 0) {
-            return currentHeight;
-        }
-
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView == null) {
-            return 0;
-        }
-        final int keyboardHeight = mainKeyboardView.getHeight();
-        final int suggestionsHeight = mSuggestionStripView.getHeight();
-        final int displayHeight = getResources().getDisplayMetrics().heightPixels;
-        final Rect rect = new Rect();
-        mKeyPreviewBackingView.getWindowVisibleDisplayFrame(rect);
-        final int notificationBarHeight = rect.top;
-        final int remainingHeight = displayHeight - notificationBarHeight - suggestionsHeight
-                - keyboardHeight;
-
-        final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
-        params.height = mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
-        mKeyPreviewBackingView.setLayoutParams(params);
-        return params.height;
     }
 
     @Override
@@ -1161,32 +1147,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView == null || mSuggestionStripView == null) {
             return;
         }
-        final int adjustedBackingHeight = getAdjustedBackingViewHeight();
-        final boolean backingGone = (mKeyPreviewBackingView.getVisibility() == View.GONE);
-        final int backingHeight = backingGone ? 0 : adjustedBackingHeight;
-        // In fullscreen mode, the height of the extract area managed by InputMethodService should
-        // be considered.
-        // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
-        final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
-        final int suggestionsHeight = (mSuggestionStripView.getVisibility() == View.GONE) ? 0
-                : mSuggestionStripView.getHeight();
-        final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
-        int visibleTopY = extraHeight;
+        // This method is never called when in fullscreen mode.
+        // The contentTop is the top coordinate of the keyboard. The application behind will be
+        // resized/panned above this coordibnate to be able to show an input field.
+        final int contentTop = mInputView.getHeight() - mainKeyboardView.getHeight();
+        final int suggestionsHeight = (mSuggestionStripView.getVisibility() == View.VISIBLE)
+                ? mSuggestionStripView.getHeight() : 0;
+        // The visibleTop is the top coordinates of the visible part of this IME. The application
+        // behind will never be resized, but may be panned or scrolled.
+        final int visibleTop = mainKeyboardView.isShowingMoreKeysPanel() ? 0
+                : contentTop - suggestionsHeight;
+        outInsets.contentTopInsets = contentTop;
+        outInsets.visibleTopInsets = visibleTop;
         // Need to set touchable region only if input view is being shown
         if (mainKeyboardView.isShown()) {
-            if (mSuggestionStripView.getVisibility() == View.VISIBLE) {
-                visibleTopY -= suggestionsHeight;
-            }
-            final int touchY = mainKeyboardView.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchWidth = mainKeyboardView.getWidth();
-            final int touchHeight = mainKeyboardView.getHeight() + extraHeight
+            final int touchLeft = 0;
+            final int touchTop = visibleTop;
+            final int touchRight = touchLeft + mainKeyboardView.getWidth();
+            final int touchBottom = contentTop + mainKeyboardView.getHeight()
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
+            // The touch event on touchableRegion will be delivered to this IME.
+            outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(0, touchY, touchWidth, touchHeight);
         }
-        outInsets.contentTopInsets = visibleTopY;
-        outInsets.visibleTopInsets = visibleTopY;
     }
 
     @Override
@@ -1209,11 +1193,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void updateFullscreenMode() {
         super.updateFullscreenMode();
-
-        if (mKeyPreviewBackingView == null) return;
-        // In fullscreen mode, no need to have extra space to show the key preview.
-        // If not, we should have extra space above the keyboard to show the key preview.
-        mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
+        if (!isFullscreenMode()) {
+            // Expand the input view to cover entire display to be able to show key previews and
+            // more suggestions view that may be displayed above the keyboard.
+            setInputViewMinHeight(getResources().getDisplayMetrics().heightPixels);
+        }
     }
 
     // This will reset the whole input state to the starting state. It will clear
