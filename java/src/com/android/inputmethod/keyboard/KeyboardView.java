@@ -196,13 +196,14 @@ public class KeyboardView extends View {
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        if (mKeyboard != null) {
-            // The main keyboard expands to the display width.
-            final int height = mKeyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
-            setMeasuredDimension(widthMeasureSpec, height);
-        } else {
+        if (mKeyboard == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
         }
+        // The main keyboard expands to the entire this {@link KeyboardView}.
+        final int width = mKeyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
+        final int height = mKeyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
+        setMeasuredDimension(width, height);
     }
 
     @Override
