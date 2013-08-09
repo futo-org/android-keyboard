@@ -235,7 +235,7 @@ final public class BinaryDictionaryGetter {
                     new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
                             FileChannel.MapMode.READ_ONLY, 0, f.length()));
             final int magic = buffer.readInt();
-            if (magic != FormatSpec.VERSION_2_MAGIC_NUMBER) {
+            if (magic != FormatSpec.MAGIC_NUMBER) {
                 return false;
             }
             final int formatVersion = buffer.readInt();

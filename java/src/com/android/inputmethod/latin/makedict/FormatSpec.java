@@ -26,6 +26,40 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions
 public final class FormatSpec {
 
     /*
+     * File header layout is as follows:
+     *
+     * v |
+     * e | MAGIC_NUMBER + version of the file format, 2 bytes.
+     * r |
+     * sion
+     *
+     * o |
+     * p | not used                                4 bits
+     * t | has bigrams ?                           1 bit, 1 = yes, 0 = no : CONTAINS_BIGRAMS_FLAG
+     * i | FRENCH_LIGATURE_PROCESSING_FLAG
+     * o | supports dynamic updates ?              1 bit, 1 = yes, 0 = no : SUPPORTS_DYNAMIC_UPDATE
+     * n | GERMAN_UMLAUT_PROCESSING_FLAG
+     * f |
+     * lags
+     *
+     * h |
+     * e | size of the file header, 4bytes
+     * a |   including the size of the magic number, the option flags and the header size
+     * d |
+     * ersize
+     *
+     *   | attributes list
+     *
+     * attributes list is:
+     * <key>   = | string of characters at the char format described below, with the terminator used
+     *           | to signal the end of the string.
+     * <value> = | string of characters at the char format described below, with the terminator used
+     *           | to signal the end of the string.
+     * if the size of already read < headersize, goto key.
+     *
+     */
+
+    /*
      * Array of Node(FusionDictionary.Node) layout is as follows:
      *
      * g |
@@ -151,12 +185,10 @@ public final class FormatSpec {
      * if (FLAG_ATTRIBUTE_HAS_NEXT goto flags
      */
 
-    static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
-    public static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
-    static final int MINIMUM_SUPPORTED_VERSION = 1;
+    public static final int MAGIC_NUMBER = 0x9BC13AFE;
+    static final int MINIMUM_SUPPORTED_VERSION = 2;
     static final int MAXIMUM_SUPPORTED_VERSION = 3;
     static final int NOT_A_VERSION_NUMBER = -1;
-    static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
 
     // These options need to be the same numeric values as the one in the native reading code.
