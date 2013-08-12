@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Τα πλήκτρα διαστήματος και στίξης διορθ. αυτόμ. λάθος λέξεις"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Απενεργοποίηση"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Μέτρια"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Υψηλή"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Πολύ επιθετική"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Υψηλή λεπτομέρεια"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Πολύ υψηλή λεπτομέρεια"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Προτάσεις επόμενων λέξεων"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Χρήση της προηγούμενης λέξης για τη δημιουργία προτάσεων"</string>
     <string name="gesture_input" msgid="826951152254563827">"Ενεργ. πληκτρολ. με κινήσεις"</string>

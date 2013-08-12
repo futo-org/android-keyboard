@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar और विराम चिह्न गलत लिखे गए शब्‍दों को स्‍वचालित रूप से ठीक करते हैं"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"बंद"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"तीव्र"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"बहुत तीव्र"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"तेज़"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"बहुत तेज़"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"अगले शब्द के सुझाव"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"सुझाव बनाने में पिछले शब्द का उपयोग करें"</string>
     <string name="gesture_input" msgid="826951152254563827">"जेस्‍चर लिखना सक्षम करें"</string>

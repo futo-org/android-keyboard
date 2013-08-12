@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Клавишът за интервал и пунктуация авт. поправя сгрешени думи"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Изкл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Агресивно"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Много агресивно"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Агресивно"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Много агресивно"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Предложения за следващата дума"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Използване на предишната дума при даване на предложения"</string>
     <string name="gesture_input" msgid="826951152254563827">"Активиране на въвеждането чрез жест"</string>

@@ -64,8 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="3524029103734923819">"Активное"</string>
-    <string name="auto_correction_threshold_mode_very_aggressive" msgid="3386782235540547678">"Очень активно"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Активно"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Очень активно"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Подсказывать слова"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Предлагать подсказки на основе предыдущего слова"</string>
     <string name="gesture_input" msgid="826951152254563827">"Включить функцию"</string>
