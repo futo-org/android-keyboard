@@ -13,27 +13,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH := $(call my-dir)
+LATINIME_DICTTOOL_AOSP_LOCAL_PATH := $(call my-dir)
+LOCAL_PATH := $(LATINIME_DICTTOOL_AOSP_LOCAL_PATH)
+LATINIME_HOST_NATIVE_LIBNAME := liblatinime-aosp-dicttool-host
+include $(LOCAL_PATH)/NativeLib.mk
+
+######################################
+LOCAL_PATH := $(LATINIME_DICTTOOL_AOSP_LOCAL_PATH)
 include $(CLEAR_VARS)
 
-BUILD_TOP := ../../../../..
-LATINIME_DIR := $(BUILD_TOP)/packages/inputmethods/LatinIME
-LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_DIR)/java/src/com/android/inputmethod
-LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
+LATINIME_LOCAL_DIR := ../..
+LATINIME_BASE_SOURCE_DIRECTORY := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
 LATINIME_ANNOTATIONS_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/annotations
+LATINIME_CORE_SOURCE_DIRECTORY := $(LATINIME_BASE_SOURCE_DIRECTORY)/latin
 MAKEDICT_CORE_SOURCE_DIRECTORY := $(LATINIME_CORE_SOURCE_DIRECTORY)/makedict
-DICTTOOL_COMPAT_TESTS_DIRECTORY := compat
-DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
-        $(LATINIME_DIR)/tests/src/com/android/inputmethod/latin/makedict/
-
 USED_TARGETTED_UTILS := \
         $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/ByteArrayWrapper.java \
-        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/CollectionUtils.java \
+        $(LATINIME_CORE_SOURCE_DIRECTORY)/utils/JniUtils.java
+
+DICTTOOL_ONDEVICE_TESTS_DIRECTORY := \
+        $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin/makedict/
+DICTTOOL_COMPAT_TESTS_DIRECTORY := compat
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SOURCE_DIRECTORY))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_ANNOTATIONS_SRC_FILES := \
         $(call all-java-files-under, $(LATINIME_ANNOTATIONS_SOURCE_DIRECTORY))
+
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(LOCAL_ANNOTATIONS_SRC_FILES) \
@@ -44,9 +51,13 @@ LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(USED_TARGETTED_UTILS)
 
 LOCAL_JAVA_LIBRARIES := junit
-
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LATINIME_HOST_NATIVE_LIBNAME)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool_aosp
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk
+
+# Clear our private variables
+LATINIME_DICTTOOL_AOSP_LOCAL_PATH :=
+LATINIME_LOCAL_DIR :=

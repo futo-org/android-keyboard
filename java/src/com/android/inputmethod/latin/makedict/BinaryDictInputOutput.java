@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -47,6 +48,13 @@ import java.util.TreeMap;
 public final class BinaryDictInputOutput {
 
     private static final boolean DBG = MakedictLog.DBG;
+
+    static {
+        JniUtils.loadNativeLibrary();
+    }
+
+    // TODO: implement something sensical instead of just a phony method
+    private static native int doNothing();
 
     // Arbitrary limit to how much passes we consider address size compression should
     // terminate in. At the time of this writing, our largest dictionary completes
