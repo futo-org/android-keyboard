@@ -28,7 +28,6 @@ namespace latinime {
 class BinaryDictionaryTerminalAttributesReadingUtils {
  public:
     typedef uint8_t TerminalAttributeFlags;
-    typedef TerminalAttributeFlags BigramFlags;
     typedef TerminalAttributeFlags ShortcutFlags;
 
     static AK_FORCE_INLINE TerminalAttributeFlags getFlagsAndForwardPointer(
@@ -43,20 +42,6 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     static AK_FORCE_INLINE bool hasNext(const TerminalAttributeFlags flags) {
         return (flags & FLAG_ATTRIBUTE_HAS_NEXT) != 0;
     }
-
-    // Bigrams reading methods
-    static AK_FORCE_INLINE void skipExistingBigrams(
-            const uint8_t *const dictRoot, int *const pos) {
-        BigramFlags flags = getFlagsAndForwardPointer(dictRoot, pos);
-        while (hasNext(flags)) {
-            *pos += attributeAddressSize(flags);
-            flags = getFlagsAndForwardPointer(dictRoot, pos);
-        }
-        *pos += attributeAddressSize(flags);
-    }
-
-    static int getBigramAddressAndForwardPointer(
-            const uint8_t *const dictRoot, const BigramFlags flags, int *const pos);
 
     // Shortcuts reading methods
     // This method returns the size of the shortcut list region excluding the shortcut list size
