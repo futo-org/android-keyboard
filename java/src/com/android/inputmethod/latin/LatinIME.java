@@ -74,6 +74,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
 import com.android.inputmethod.latin.settings.Settings;
@@ -470,6 +471,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
+        PersonalizationDictionarySessionRegister.init(this);
 
         super.onCreate();
 
@@ -650,6 +652,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mOptionsDialog.dismiss();
             }
         }
+        PersonalizationDictionarySessionRegister.onConfigurationChanged(this, conf);
         super.onConfigurationChanged(conf);
     }
 

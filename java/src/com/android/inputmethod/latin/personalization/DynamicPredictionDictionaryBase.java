@@ -402,7 +402,11 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
     }
 
     public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
-        session.setDictionary(this);
+        session.setPredictionDictionary(mLocale, this);
         mSessions.add(session);
+    }
+
+    public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        mSessions.remove(session);
     }
 }
