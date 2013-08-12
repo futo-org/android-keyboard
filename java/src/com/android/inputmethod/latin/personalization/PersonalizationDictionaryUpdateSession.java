@@ -43,18 +43,36 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     // TODO: Use a dynamic binary dictionary instead
-    public WeakReference<DynamicPredictionDictionaryBase> mDictionary;
+    public WeakReference<DynamicPredictionDictionaryBase> mPredictionDictionary;
+    public String mLocale;
 
     public abstract void onDictionaryReady();
 
-    public void setDictionary(DynamicPredictionDictionaryBase dictionary) {
-        mDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
+    public void setPredictionDictionary(String locale, DynamicPredictionDictionaryBase dictionary) {
+        mPredictionDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
+        mLocale = locale;
+    }
+
+    protected DynamicPredictionDictionaryBase getPredictionDictionary() {
+        return mPredictionDictionary == null ? null : mPredictionDictionary.get();
+    }
+
+    private void unsetPredictionDictionary() {
+        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        if (dictionary == null) {
+            return;
+        }
+        dictionary.unRegisterUpdateSession(this);
+    }
+
+
+    public void closeSession() {
+        unsetPredictionDictionary();
     }
 
     public void addToPersonalizationDictionary(
             final ArrayList<PersonalizationLanguageModelParam> lmParams) {
-        final DynamicPredictionDictionaryBase dictionary = mDictionary == null
-                ? null : mDictionary.get();
+        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }
