@@ -36,27 +36,4 @@ const int TaUtils::SHORTCUT_LIST_SIZE_FIELD_SIZE = 2;
 // The numeric value of the shortcut probability that means 'whitelist'.
 const int TaUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
 
-/* static */ int TaUtils::getBigramAddressAndForwardPointer(
-        const uint8_t *const dictRoot, const TerminalAttributeFlags flags,
-        int *const pos) {
-    int offset = 0;
-    const int origin = *pos;
-    switch (MASK_ATTRIBUTE_ADDRESS_TYPE & flags) {
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-            offset = ByteArrayUtils::readUint8AndAdvancePosition(dictRoot, pos);
-            break;
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-            offset = ByteArrayUtils::readUint16AndAdvancePosition(dictRoot, pos);
-            break;
-        case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-            offset = ByteArrayUtils::readUint24AndAdvancePosition(dictRoot, pos);
-            break;
-    }
-    if (isOffsetNegative(flags)) {
-        return origin - offset;
-    } else {
-        return origin + offset;
-    }
-}
-
 } // namespace latinime

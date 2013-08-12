@@ -71,6 +71,7 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/policy/weighting.cpp \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
+        bigram/bigram_list_reading_utils.cpp \
         dictionary_structure_with_buffer_policy_factory.cpp \
         dynamic_patricia_trie_node_reader.cpp \
         dynamic_patricia_trie_policy.cpp \

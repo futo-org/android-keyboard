@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/bigrams/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
