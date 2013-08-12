@@ -21,8 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
-// TODO: Move bigrams reading methods to policyimpl.
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
+#include "suggest/policyimpl/dictionary/bigram/bigram_list_reading_utils.h"
 
 namespace latinime {
 
@@ -34,19 +33,16 @@ class BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
             int *const pos) const {
-        const BinaryDictionaryTerminalAttributesReadingUtils::BigramFlags flags =
-                BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
-                        mBigramsBuf, pos);
-        *outBigramPos =
-                BinaryDictionaryTerminalAttributesReadingUtils::getBigramAddressAndForwardPointer(
+        const BigramListReadingUtils::BigramFlags flags =
+                BigramListReadingUtils::getFlagsAndForwardPointer(mBigramsBuf, pos);
+        *outBigramPos = BigramListReadingUtils::getBigramAddressAndForwardPointer(
                         mBigramsBuf, flags, pos);
-        *outProbability =
-                BinaryDictionaryTerminalAttributesReadingUtils::getProbabilityFromFlags(flags);
-        *outHasNext = BinaryDictionaryTerminalAttributesReadingUtils::hasNext(flags);
+        *outProbability = BigramListReadingUtils::getProbabilityFromFlags(flags);
+        *outHasNext = BigramListReadingUtils::hasNext(flags);
     }
 
     void skipAllBigrams(int *const pos) const {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipExistingBigrams(mBigramsBuf, pos);
+        BigramListReadingUtils::skipExistingBigrams(mBigramsBuf, pos);
     }
 
  private:
