@@ -20,8 +20,6 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 #include "suggest/policyimpl/dictionary/binary_format.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
@@ -112,7 +110,7 @@ int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
         PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &pos);
     }
     if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
+        mShortcutListPolicy.skipAllShortcuts(&pos);;
     }
     return pos;
 }
@@ -133,7 +131,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
             PatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
                     mDictRoot, flags, &pos) : NOT_A_DICT_POS;
     if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
-        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
+        getShortcutsStructurePolicy()->skipAllShortcuts(&pos);
     }
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
         getBigramsStructurePolicy()->skipAllBigrams(&pos);

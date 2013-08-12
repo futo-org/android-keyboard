@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/byte_array_utils.h"
 
 namespace latinime {
@@ -47,16 +46,14 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     // This method returns the size of the shortcut list region excluding the shortcut list size
     // field at the beginning.
     static AK_FORCE_INLINE int getShortcutListSizeAndForwardPointer(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
+            const uint8_t *const dictRoot, int *const pos) {
         // readUint16andAdvancePosition() returns an offset *including* the uint16 field itself.
-        return ByteArrayUtils::readUint16AndAdvancePosition(
-                binaryDictionaryInfo->getDictRoot(), pos) - SHORTCUT_LIST_SIZE_FIELD_SIZE;
+        return ByteArrayUtils::readUint16AndAdvancePosition(dictRoot, pos)
+                - SHORTCUT_LIST_SIZE_FIELD_SIZE;
     }
 
-    static AK_FORCE_INLINE void skipShortcuts(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, int *const pos) {
-        const int shortcutListSize = getShortcutListSizeAndForwardPointer(
-                binaryDictionaryInfo, pos);
+    static AK_FORCE_INLINE void skipShortcuts(const uint8_t *const dictRoot, int *const pos) {
+        const int shortcutListSize = getShortcutListSizeAndForwardPointer(dictRoot, pos);
         *pos += shortcutListSize;
     }
 
@@ -65,10 +62,9 @@ class BinaryDictionaryTerminalAttributesReadingUtils {
     }
 
     static AK_FORCE_INLINE int readShortcutTarget(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const int maxLength,
-            int *const outWord, int *const pos) {
-        return ByteArrayUtils::readStringAndAdvancePosition(
-                binaryDictionaryInfo->getDictRoot(), maxLength, outWord, pos);
+            const uint8_t *const dictRoot, const int maxLength,  int *const outWord,
+            int *const pos) {
+        return ByteArrayUtils::readStringAndAdvancePosition(dictRoot, maxLength, outWord, pos);
     }
 
  private:

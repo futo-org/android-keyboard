@@ -22,19 +22,17 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class DicNode;
 class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const uint8_t *const dictRoot,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo)
-            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo),
-              mBigramListPolicy(dictRoot) {}
+    PatriciaTriePolicy(const uint8_t *const dictRoot)
+            : mDictRoot(dictRoot), mBigramListPolicy(dictRoot), mShortcutListPolicy(dictRoot) {}
 
     ~PatriciaTriePolicy() {}
 
@@ -62,13 +60,16 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mBigramListPolicy;
     }
 
+    const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
+        return &mShortcutListPolicy;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
     const uint8_t *const mDictRoot;
-    // TODO: remove
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
     const BigramListPolicy mBigramListPolicy;
+    const ShortcutListPolicy mShortcutListPolicy;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
             const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;

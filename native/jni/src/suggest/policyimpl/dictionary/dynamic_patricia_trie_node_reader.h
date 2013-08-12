@@ -25,8 +25,8 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class DictionaryBigramsStructurePolicy;
+class DictionaryShortcutsStructurePolicy;
 
 /*
  * This class is used for helping to read nodes of dynamic patricia trie. This class handles moved
@@ -34,13 +34,14 @@ class DictionaryBigramsStructurePolicy;
  */
 class DynamicPatriciaTrieNodeReader {
  public:
-    DynamicPatriciaTrieNodeReader(const BinaryDictionaryInfo *const binaryDictionaryInfo,
-            const DictionaryBigramsStructurePolicy *const bigramsPolicy)
-            : mBinaryDictionaryInfo(binaryDictionaryInfo), mBigramsPolicy(bigramsPolicy),
-              mNodePos(NOT_A_VALID_WORD_POS), mFlags(0), mParentPos(NOT_A_DICT_POS),
-              mCodePointCount(0), mProbability(NOT_A_PROBABILITY), mChildrenPos(NOT_A_DICT_POS),
-              mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
-              mSiblingPos(NOT_A_VALID_WORD_POS) {}
+    DynamicPatriciaTrieNodeReader(const uint8_t *const dictRoot,
+            const DictionaryBigramsStructurePolicy *const bigramsPolicy,
+            const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
+            : mDictRoot(dictRoot), mBigramsPolicy(bigramsPolicy),
+              mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS), mFlags(0),
+              mParentPos(NOT_A_DICT_POS), mCodePointCount(0), mProbability(NOT_A_PROBABILITY),
+              mChildrenPos(NOT_A_DICT_POS), mShortcutPos(NOT_A_DICT_POS),
+              mBigramPos(NOT_A_DICT_POS), mSiblingPos(NOT_A_VALID_WORD_POS) {}
 
     ~DynamicPatriciaTrieNodeReader() {}
 
@@ -120,8 +121,10 @@ class DynamicPatriciaTrieNodeReader {
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeReader);
 
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    // TODO: Consolidate mDictRoot.
+    const uint8_t *const mDictRoot;
     const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
+    const DictionaryShortcutsStructurePolicy *const mShortcutsPolicy;
     int mNodePos;
     DynamicPatriciaTrieReadingUtils::NodeFlags mFlags;
     int mParentPos;
