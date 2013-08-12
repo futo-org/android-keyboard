@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
+#include \
+    "suggest/policyimpl/dictionary/shortcut/binary_dictionary_terminal_attributes_reading_utils.h"
 
 #include "suggest/core/dictionary/byte_array_utils.h"
 
