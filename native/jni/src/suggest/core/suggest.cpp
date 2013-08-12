@@ -21,10 +21,10 @@
 #include "suggest/core/dicnode/dic_node_vector.h"
 // TODO: Use DictionaryStructurePolicy instead of BinaryDictionaryInfo.
 #include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/dictionary/shortcut_utils.h"
-#include "suggest/core/dictionary/terminal_attributes.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/policy/traversal.h"
@@ -214,13 +214,13 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         if (!terminalDicNode->hasMultipleWords()) {
             const DictionaryStructureWithBufferPolicy *const structurePolicy =
                     traverseSession->getBinaryDictionaryInfo()->getStructurePolicy();
-            const TerminalAttributes terminalAttributes(
+            BinaryDictionaryShortcutIterator shortcutIt(
                     structurePolicy->getShortcutsStructurePolicy(),
                     structurePolicy->getShortcutPositionOfNode(terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
-            outputWordIndex = ShortcutUtils::outputShortcuts(&terminalAttributes, outputWordIndex,
+            outputWordIndex = ShortcutUtils::outputShortcuts(&shortcutIt, outputWordIndex,
                     finalScore, outputCodePoints, frequencies, outputTypes, sameAsTyped);
         }
         DicNode::managedDelete(terminalDicNode);
