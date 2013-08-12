@@ -21,8 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
-#include \
-    "suggest/policyimpl/dictionary/shortcut/binary_dictionary_terminal_attributes_reading_utils.h"
+#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_reading_utils.h"
 
 namespace latinime {
 
