@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"کلید فاصله و علائم نگارشی به صورت خودکار کلماتی را که غلط تایپ شده‌اند تصحیح می‌کنند"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"خاموش"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"متوسط"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"شدید"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"بسیار شدید"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"پیشنهادات کلمه بعدی"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"استفاده از کلمه قبلی در ایجاد پیشنهادات"</string>
     <string name="gesture_input" msgid="826951152254563827">"فعال کردن تایپ حرکتی"</string>
@@ -149,13 +147,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"انگلیسی (ایالات متحده) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"اسپانیایی (آمریکا) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"زبانی موجود نیست"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"بدون زبان (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"هیچکدام از زبان‌ها (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"هیچکدام از زبان‌ها (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"هیچکدام از زبان‌ها (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"هیچکدام از زبان‌ها (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"هیچکدام از زبان‌ها (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"بدون زبان (حروف الفبا)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"حروف الفبا (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"حروف الفبا (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"حروف الفبا (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"حروف الفبا (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"حروف الفبا (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"حروف الفبا (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"سبک‌های ورودی سفارشی"</string>
     <string name="add_style" msgid="6163126614514489951">"افزودن سبک"</string>
     <string name="add" msgid="8299699805688017798">"افزودن"</string>

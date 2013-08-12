@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"誤入力をスペースまたは句読点キーで修正する"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"強"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"最も強い"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"次の入力候補"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"前の単語に基づいて入力候補を表示します"</string>
     <string name="gesture_input" msgid="826951152254563827">"ジェスチャー入力を有効にする"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"英語 (英国) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"英語 (米国) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"スペイン語 (米国) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"言語設定なし"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"言語設定なし (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"言語設定なし (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"言語設定なし (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"言語設定なし (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"言語設定なし (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"言語設定なし (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"言語なし（アルファベット）"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"アルファベット（QWERTY）"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"アルファベット（QWERTZ）"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"アルファベット（AZERTY）"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"アルファベット（Dvorak）"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"アルファベット（Colemak）"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"アルファベット（PC）"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"カスタム入力スタイル"</string>
     <string name="add_style" msgid="6163126614514489951">"スタイル追加"</string>
     <string name="add" msgid="8299699805688017798">"追加"</string>
