@@ -59,9 +59,8 @@ public class PersonalizationDictionaryHelper {
         }
     }
 
-    public static void
-            registerPersonalizationDictionaryUpdateSession(final Context context,
-                    final PersonalizationDictionaryUpdateSession session) {
+    public static void registerPersonalizationDictionaryUpdateSession(final Context context,
+            final PersonalizationDictionaryUpdateSession session) {
         final PersonalizationPredictionDictionary dictionary =
                 getPersonalizationPredictionDictionary(context,
                         context.getResources().getConfiguration().locale.toString(),
