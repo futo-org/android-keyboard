@@ -213,7 +213,6 @@ public final class KeyboardLayoutSet {
         private final Context mContext;
         private final String mPackageName;
         private final Resources mResources;
-        private final EditorInfo mEditorInfo;
 
         private final Params mParams = new Params();
 
@@ -223,13 +222,12 @@ public final class KeyboardLayoutSet {
             mContext = context;
             mPackageName = context.getPackageName();
             mResources = context.getResources();
-            mEditorInfo = editorInfo;
             final Params params = mParams;
 
             params.mMode = getKeyboardMode(editorInfo);
             params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_SETTINGS_KEY, mEditorInfo);
+                    mPackageName, NO_SETTINGS_KEY, params.mEditorInfo);
         }
 
         public Builder setKeyboardGeometry(final int keyboardWidth, final int keyboardHeight) {
@@ -242,7 +240,7 @@ public final class KeyboardLayoutSet {
             final boolean asciiCapable = subtype.containsExtraValueKey(ASCII_CAPABLE);
             @SuppressWarnings("deprecation")
             final boolean deprecatedForceAscii = InputAttributes.inPrivateImeOptions(
-                    mPackageName, FORCE_ASCII, mEditorInfo);
+                    mPackageName, FORCE_ASCII, mParams.mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
@@ -264,9 +262,9 @@ public final class KeyboardLayoutSet {
                 final boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
-                    null, NO_MICROPHONE_COMPAT, mEditorInfo);
+                    null, NO_MICROPHONE_COMPAT, mParams.mEditorInfo);
             final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_MICROPHONE, mEditorInfo)
+                    mPackageName, NO_MICROPHONE, mParams.mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;
