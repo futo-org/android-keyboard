@@ -58,12 +58,12 @@ public class Key implements Comparable<Key> {
     /**
      * The key code (unicode or custom code) that this key generates.
      */
-    public final int mCode;
+    private final int mCode;
 
     /** Label to display */
-    public final String mLabel;
+    private final String mLabel;
     /** Hint label to display on the key in conjunction with the label */
-    public final String mHintLabel;
+    private final String mHintLabel;
     /** Flags of the label */
     private final int mLabelFlags;
     private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
@@ -95,18 +95,18 @@ public class Key implements Comparable<Key> {
     private final int mIconId;
 
     /** Width of the key, not including the gap */
-    public final int mWidth;
+    private final int mWidth;
     /** Height of the key, not including the gap */
-    public final int mHeight;
+    private final int mHeight;
     /** X coordinate of the key in the keyboard layout */
-    public final int mX;
+    private final int mX;
     /** Y coordinate of the key in the keyboard layout */
-    public final int mY;
+    private final int mY;
     /** Hit bounding box of the key */
-    public final Rect mHitBox = new Rect();
+    private final Rect mHitBox = new Rect();
 
     /** More keys. It is guaranteed that this is null or an array of one or more elements */
-    public final MoreKeySpec[] mMoreKeys;
+    private final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
     private final int mMoreKeysColumnAndFlags;
     private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
@@ -121,7 +121,7 @@ public class Key implements Comparable<Key> {
     private static final String MORE_KEYS_NO_PANEL_AUTO_MORE_KEY = "!noPanelAutoMoreKey!";
 
     /** Background type that represents different key background visual than normal one. */
-    public final int mBackgroundType;
+    private final int mBackgroundType;
     public static final int BACKGROUND_TYPE_EMPTY = 0;
     public static final int BACKGROUND_TYPE_NORMAL = 1;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 2;
@@ -135,7 +135,7 @@ public class Key implements Comparable<Key> {
     private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
     private static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
 
-    public final KeyVisualAttributes mKeyVisualAttributes;
+    private final KeyVisualAttributes mKeyVisualAttributes;
 
     private final OptionalAttributes mOptionalAttributes;
 
@@ -151,7 +151,7 @@ public class Key implements Comparable<Key> {
         public final int mVisualInsetsLeft;
         public final int mVisualInsetsRight;
 
-        public OptionalAttributes(final String outputText, final int altCode,
+        private OptionalAttributes(final String outputText, final int altCode,
                 final int disabledIconId, final int previewIconId,
                 final int visualInsetsLeft, final int visualInsetsRight) {
             mOutputText = outputText;
@@ -160,6 +160,18 @@ public class Key implements Comparable<Key> {
             mPreviewIconId = previewIconId;
             mVisualInsetsLeft = visualInsetsLeft;
             mVisualInsetsRight = visualInsetsRight;
+        }
+
+        public static OptionalAttributes newInstance(final String outputText, final int altCode,
+                final int disabledIconId, final int previewIconId,
+                final int visualInsetsLeft, final int visualInsetsRight) {
+            if (outputText == null && altCode == CODE_UNSPECIFIED
+                    && disabledIconId == ICON_UNDEFINED && previewIconId == ICON_UNDEFINED
+                    && visualInsetsLeft == 0 && visualInsetsRight == 0) {
+                return null;
+            }
+            return new OptionalAttributes(outputText, altCode, disabledIconId, previewIconId,
+                    visualInsetsLeft, visualInsetsRight);
         }
     }
 
@@ -194,12 +206,9 @@ public class Key implements Comparable<Key> {
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;
-        if (outputText == null) {
-            mOptionalAttributes = null;
-        } else {
-            mOptionalAttributes = new OptionalAttributes(outputText, CODE_UNSPECIFIED,
-                    ICON_UNDEFINED, ICON_UNDEFINED, 0, 0);
-        }
+        mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED,
+                ICON_UNDEFINED, ICON_UNDEFINED,
+                0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
         mCode = code;
         mEnabled = (code != CODE_UNSPECIFIED);
         mIconId = iconId;
@@ -360,21 +369,43 @@ public class Key implements Comparable<Key> {
                 KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
                 needsToUpperCase, locale);
-        if (outputText == null && altCode == CODE_UNSPECIFIED
-                && disabledIconId == ICON_UNDEFINED && previewIconId == ICON_UNDEFINED
-                && visualInsetsLeft == 0 && visualInsetsRight == 0) {
-            mOptionalAttributes = null;
-        } else {
-            mOptionalAttributes = new OptionalAttributes(outputText, altCode,
-                    disabledIconId, previewIconId,
-                    visualInsetsLeft, visualInsetsRight);
-        }
+        mOptionalAttributes = OptionalAttributes.newInstance(outputText, altCode,
+                disabledIconId, previewIconId, visualInsetsLeft, visualInsetsRight);
         mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
         mHashCode = computeHashCode(this);
         if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
             Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
         }
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param key the original key.
+     */
+    protected Key(final Key key) {
+        // Final attributes.
+        mCode = key.mCode;
+        mLabel = key.mLabel;
+        mHintLabel = key.mHintLabel;
+        mLabelFlags = key.mLabelFlags;
+        mIconId = key.mIconId;
+        mWidth = key.mWidth;
+        mHeight = key.mHeight;
+        mX = key.mX;
+        mY = key.mY;
+        mHitBox.set(key.mHitBox);
+        mMoreKeys = key.mMoreKeys;
+        mMoreKeysColumnAndFlags = key.mMoreKeysColumnAndFlags;
+        mBackgroundType = key.mBackgroundType;
+        mActionFlags = key.mActionFlags;
+        mKeyVisualAttributes = key.mKeyVisualAttributes;
+        mOptionalAttributes = key.mOptionalAttributes;
+        mHashCode = key.mHashCode;
+        // Key state.
+        mPressed = key.mPressed;
+        mEnabled = key.mEnabled;
     }
 
     private static boolean needsToUpperCase(final int labelFlags, final int keyboardElementId) {
@@ -476,6 +507,22 @@ public class Key implements Comparable<Key> {
         }
     }
 
+    public int getCode() {
+        return mCode;
+    }
+
+    public String getLabel() {
+        return mLabel;
+    }
+
+    public String getHintLabel() {
+        return mHintLabel;
+    }
+
+    public MoreKeySpec[] getMoreKeys() {
+        return mMoreKeys;
+    }
+
     public void markAsLeftEdge(final KeyboardParams params) {
         mHitBox.left = params.mLeftPadding;
     }
@@ -520,6 +567,10 @@ public class Key implements Comparable<Key> {
         // We need not start long press timer on the key which has activated shifted letter.
         return (mActionFlags & ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
                 && (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0;
+    }
+
+    public KeyVisualAttributes getVisualAttributes() {
+        return mKeyVisualAttributes;
     }
 
     public final Typeface selectTypeface(final KeyDrawParams params) {
@@ -696,6 +747,22 @@ public class Key implements Comparable<Key> {
                 ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(mIconId);
     }
 
+    public int getWidth() {
+        return mWidth;
+    }
+
+    public int getHeight() {
+        return mHeight;
+    }
+
+    public int getX() {
+        return mX;
+    }
+
+    public int getY() {
+        return mY;
+    }
+
     public final int getDrawX() {
         final OptionalAttributes attrs = mOptionalAttributes;
         return (attrs == null) ? mX : mX + attrs.mVisualInsetsLeft;
@@ -731,6 +798,10 @@ public class Key implements Comparable<Key> {
 
     public void setEnabled(final boolean enabled) {
         mEnabled = enabled;
+    }
+
+    public Rect getHitBox() {
+        return mHitBox;
     }
 
     /**

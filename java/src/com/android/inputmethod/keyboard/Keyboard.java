@@ -131,7 +131,7 @@ public class Keyboard {
             }
 
             for (final Key key : mKeys) {
-                if (key.mCode == code) {
+                if (key.getCode() == code) {
                     mKeyCache.put(code, key);
                     return key;
                 }
@@ -148,7 +148,7 @@ public class Keyboard {
 
         for (final Key key : mKeys) {
             if (key == aKey) {
-                mKeyCache.put(key.mCode, key);
+                mKeyCache.put(key.getCode(), key);
                 return true;
             }
         }

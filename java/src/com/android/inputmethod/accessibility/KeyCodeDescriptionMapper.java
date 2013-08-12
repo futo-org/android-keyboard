@@ -97,7 +97,7 @@ public final class KeyCodeDescriptionMapper {
      */
     public String getDescriptionForKey(final Context context, final Keyboard keyboard,
             final Key key, final boolean shouldObscure) {
-        final int code = key.mCode;
+        final int code = key.getCode();
 
         if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             final String description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
@@ -116,8 +116,8 @@ public final class KeyCodeDescriptionMapper {
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
-        if (!TextUtils.isEmpty(key.mLabel)) {
-            final String label = key.mLabel.toString().trim();
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            final String label = key.getLabel().trim();
 
             // First, attempt to map the label to a pre-defined description.
             if (mKeyLabelMap.containsKey(label)) {
@@ -126,7 +126,7 @@ public final class KeyCodeDescriptionMapper {
         }
 
         // Just attempt to speak the description.
-        if (key.mCode != Constants.CODE_UNSPECIFIED) {
+        if (key.getCode() != Constants.CODE_UNSPECIFIED) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
         return null;
@@ -215,8 +215,8 @@ public final class KeyCodeDescriptionMapper {
         final int resId;
 
         // Always use the label, if available.
-        if (!TextUtils.isEmpty(key.mLabel)) {
-            return key.mLabel.toString().trim();
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            return key.getLabel().trim();
         }
 
         // Otherwise, use the action ID.
@@ -267,7 +267,7 @@ public final class KeyCodeDescriptionMapper {
      */
     private String getDescriptionForKeyCode(final Context context, final Keyboard keyboard,
             final Key key, final boolean shouldObscure) {
-        final int code = key.mCode;
+        final int code = key.getCode();
 
         // If the key description should be obscured, now is the time to do it.
         final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
@@ -280,8 +280,8 @@ public final class KeyCodeDescriptionMapper {
         if (isDefinedNonCtrl) {
             return Character.toString((char) code);
         }
-        if (!TextUtils.isEmpty(key.mLabel)) {
-            return key.mLabel;
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            return key.getLabel();
         }
         return context.getString(R.string.spoken_description_unknown, code);
     }
