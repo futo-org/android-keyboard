@@ -34,33 +34,29 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
 
     int getStartPos(const int pos) const {
         int listPos = pos;
-        BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
-                mShortcutsBuf, &listPos);
+        ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mShortcutsBuf, &listPos);
         return listPos;
     }
 
     void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
             int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
             int *const pos) const {
-        const BinaryDictionaryTerminalAttributesReadingUtils::ShortcutFlags flags =
-                BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
-                        mShortcutsBuf, pos);
+        const ShortcutListReadingUtils::ShortcutFlags flags =
+                ShortcutListReadingUtils::getFlagsAndForwardPointer(mShortcutsBuf, pos);
         if (outHasNext) {
-            *outHasNext = BinaryDictionaryTerminalAttributesReadingUtils::hasNext(flags);
+            *outHasNext = ShortcutListReadingUtils::hasNext(flags);
         }
         if (outIsWhitelist) {
-            *outIsWhitelist =
-                    BinaryDictionaryTerminalAttributesReadingUtils::isWhitelist(flags);
+            *outIsWhitelist = ShortcutListReadingUtils::isWhitelist(flags);
         }
         if (outCodePoint) {
-            *outCodePointCount =
-                    BinaryDictionaryTerminalAttributesReadingUtils::readShortcutTarget(
-                            mShortcutsBuf, maxCodePointCount, outCodePoint, pos);
+            *outCodePointCount = ShortcutListReadingUtils::readShortcutTarget(
+                        mShortcutsBuf, maxCodePointCount, outCodePoint, pos);
         }
     }
 
     void skipAllShortcuts(int *const pos) const {
-        const int shortcutListSize = BinaryDictionaryTerminalAttributesReadingUtils
+        const int shortcutListSize = ShortcutListReadingUtils
                 ::getShortcutListSizeAndForwardPointer(mShortcutsBuf, pos);
         *pos += shortcutListSize;
     }
