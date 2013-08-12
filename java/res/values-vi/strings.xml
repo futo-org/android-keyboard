@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Phím cách và dấu câu tự động sửa từ nhập sai"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Tắt"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Đơn giản"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Linh hoạt"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Rất linh hoạt"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Đề xuất từ tiếp theo"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Sử dụng từ trước đó khi đưa ra đề xuất"</string>
     <string name="gesture_input" msgid="826951152254563827">"Bật nhập bằng cử chỉ"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Tiếng Anh (Anh) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Tiếng Anh (Mỹ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Tiếng Tây Ban Nha (Mỹ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"Không có ngôn ngữ nào"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Không có ngôn ngữ (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"0 ngôn ngữ (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"0 ngôn ngữ (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"0 ngôn ngữ (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"0 ngôn ngữ (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"0 ngôn ngữ (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"Không ngôn ngữ nào (Bảng chữ cái)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Bảng chữ cái (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Bảng chữ cái (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Bảng chữ cái (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Bảng chữ cái (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Bảng chữ cái (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Bảng chữ cái (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Kiểu nhập tùy chỉnh"</string>
     <string name="add_style" msgid="6163126614514489951">"Thêm kiểu"</string>
     <string name="add" msgid="8299699805688017798">"Thêm"</string>
