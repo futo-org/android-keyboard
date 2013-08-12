@@ -21,7 +21,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -118,13 +118,13 @@ public final class UserHistoryDictIOUtils {
     /**
      * Reads dictionary from file.
      */
-    public static void readDictionaryBinary(final FusionDictionaryBufferInterface buffer,
+    public static void readDictionaryBinary(final BinaryDictReader reader,
             final OnAddWordListener dict) {
         final Map<Integer, String> unigrams = CollectionUtils.newTreeMap();
         final Map<Integer, Integer> frequencies = CollectionUtils.newTreeMap();
         final Map<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
         try {
-            BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, unigrams, frequencies,
+            BinaryDictIOUtils.readUnigramsAndBigramsBinary(reader, unigrams, frequencies,
                     bigrams);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while reading file", e);

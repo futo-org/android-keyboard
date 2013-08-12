@@ -145,21 +145,21 @@ public final class BinaryDictIOUtils {
      * Reads unigrams and bigrams from the binary file.
      * Doesn't make the memory representation of the dictionary.
      *
-     * @param buffer the buffer to read.
+     * @param reader the reader.
      * @param words the map to store the address as a key and the word as a value.
      * @param frequencies the map to store the address as a key and the frequency as a value.
      * @param bigrams the map to store the address as a key and the list of address as a value.
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    public static void readUnigramsAndBigramsBinary(final FusionDictionaryBufferInterface buffer,
+    public static void readUnigramsAndBigramsBinary(final BinaryDictReader reader,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
-        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams,
-                header.mFormatOptions);
+        final FileHeader header = BinaryDictInputOutput.readHeader(reader.getBuffer());
+        readUnigramsAndBigramsBinaryInner(reader.getBuffer(), header.mHeaderSize, words,
+                frequencies, bigrams, header.mFormatOptions);
     }
 
     /**
