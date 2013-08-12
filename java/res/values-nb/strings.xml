@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Mellomromstast og skilletegn retter automat. feilstavede ord"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderat"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Omfattende"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Veldig omfattende"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Forslag til neste ord"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Bruk forrige ord til å lage forslag"</string>
     <string name="gesture_input" msgid="826951152254563827">"Aktiver ordføring"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engelsk (Storbritannia) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engelsk (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Spansk (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"Ingen språk"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ingen språk (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Ingen språk (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Ingen språk (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Ingen språk (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Ingen språk (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Ingen språk (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"Ingen språk (alfabet)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabet (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabet (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Alfabet (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabet (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabet (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabet (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Egendefinerte inndata"</string>
     <string name="add_style" msgid="6163126614514489951">"Legg til stil"</string>
     <string name="add" msgid="8299699805688017798">"Legg til"</string>

@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"กดเว้นวรรคและเครื่องหมายจะแก้คำผิดอัตโนมัติ"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ปิด"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"ปานกลาง"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"เข้มงวด"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"เข้มงวดมาก"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"คำแนะนำสำหรับคำถัดไป"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"ใช้คำก่อนหน้าในการสร้างข้อเสนอแนะ"</string>
     <string name="gesture_input" msgid="826951152254563827">"เปิดการพิมพ์ด้วยท่าทางสัมผัส"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"อังกฤษ (สหราชอาณาจักร) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"อังกฤษ (สหรัฐอเมริกา) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"สเปน (สหรัฐอเมริกา) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"ไม่มีภาษา"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"ไม่มีภาษา (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"ไม่มีภาษา (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"ไม่มีภาษา (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"ไม่มีภาษา (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"ไม่มีภาษา (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"ไม่มีภาษา (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"ไม่มีภาษา (ตัวอักษรละติน)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ตัวอักษร (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ตัวอักษร (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"ตัวอักษร (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"ตัวอักษร (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ตัวอักษร (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ตัวอักษร (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"รูปแบบอินพุตกำหนดเอง"</string>
     <string name="add_style" msgid="6163126614514489951">"เพิ่มสไตล์"</string>
     <string name="add" msgid="8299699805688017798">"เพิ่ม"</string>

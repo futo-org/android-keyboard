@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"Preslednica in ločila samodejno popravijo napačno vtipkane besede"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Izklopljeno"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Zmerno"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresivno"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Zelo agresivno"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Predlogi za naslednjo besedo"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Pri predlogu upoštevaj prejšnjo besedo"</string>
     <string name="gesture_input" msgid="826951152254563827">"Omogoči vnos besedila s potezo"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Angleška (Zdr. kralj.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Angleška (ZDA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"španščina (ZDA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"Ni jezika"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ni jezika (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Ni jezika (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Ni jezika (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Ni jezika (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Ni jezika (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Ni jezika (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"Brez jezika (latinice)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Latinica (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Latinica (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"Latinica (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Latinica (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Latinica (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Latinica (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Slogi vnosa po meri"</string>
     <string name="add_style" msgid="6163126614514489951">"Dodaj slog"</string>
     <string name="add" msgid="8299699805688017798">"Dodaj"</string>
