@@ -19,6 +19,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
+// TODO: Use DictionaryStructurePolicy instead of BinaryDictionaryInfo.
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
@@ -211,11 +212,11 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         }
 
         if (!terminalDicNode->hasMultipleWords()) {
-            const BinaryDictionaryInfo *const binaryDictionaryInfo =
-                    traverseSession->getBinaryDictionaryInfo();
-            const TerminalAttributes terminalAttributes(traverseSession->getBinaryDictionaryInfo(),
-                    binaryDictionaryInfo->getStructurePolicy()->getShortcutPositionOfNode(
-                            terminalDicNode->getPos()));
+            const DictionaryStructureWithBufferPolicy *const structurePolicy =
+                    traverseSession->getBinaryDictionaryInfo()->getStructurePolicy();
+            const TerminalAttributes terminalAttributes(
+                    structurePolicy->getShortcutsStructurePolicy(),
+                    structurePolicy->getShortcutPositionOfNode(terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);

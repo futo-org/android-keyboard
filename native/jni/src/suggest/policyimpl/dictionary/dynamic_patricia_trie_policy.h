@@ -22,19 +22,17 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class DicNode;
 class DicNodeVector;
 
 class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    DynamicPatriciaTriePolicy(const uint8_t *const dictRoot,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo)
-            : mDictRoot(dictRoot), mBinaryDictionaryInfo(binaryDictionaryInfo),
-              mBigramListPolicy(dictRoot) {}
+    DynamicPatriciaTriePolicy(const uint8_t *const dictRoot)
+            : mDictRoot(dictRoot), mBigramListPolicy(dictRoot), mShortcutListPolicy(dictRoot) {}
 
     ~DynamicPatriciaTriePolicy() {}
 
@@ -62,14 +60,18 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mBigramListPolicy;
     }
 
+    const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const {
+        return &mShortcutListPolicy;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
     static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
 
+    // TODO: Consolidate mDictRoot.
     const uint8_t *const mDictRoot;
-    // TODO: remove
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
     const BigramListPolicy mBigramListPolicy;
+    const ShortcutListPolicy mShortcutListPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H

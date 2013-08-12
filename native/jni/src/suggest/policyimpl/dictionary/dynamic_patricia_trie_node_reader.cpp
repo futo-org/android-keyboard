@@ -16,42 +16,40 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 
-#include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 
 namespace latinime {
 
 void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos,
         const int maxCodePointCount, int *const outCodePoints) {
-    const uint8_t *const dictRoot = mBinaryDictionaryInfo->getDictRoot();
     int pos = nodePos;
-    mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictRoot, &pos);
+    mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     const int parentPos =
-            DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictRoot, &pos);
+            DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(mDictRoot, &pos);
     mParentPos = (parentPos != 0) ? mNodePos + parentPos : NOT_A_DICT_POS;
     if (outCodePoints != 0) {
         mCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-                dictRoot, mFlags, maxCodePointCount, outCodePoints, &pos);
+                mDictRoot, mFlags, maxCodePointCount, outCodePoints, &pos);
     } else {
         mCodePointCount = PatriciaTrieReadingUtils::skipCharacters(
-                dictRoot, mFlags, MAX_WORD_LENGTH, &pos);
+                mDictRoot, mFlags, MAX_WORD_LENGTH, &pos);
     }
     if (isTerminal()) {
-        mProbability = PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictRoot, &pos);
+        mProbability = PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
     } else {
         mProbability = NOT_A_PROBABILITY;
     }
     if (hasChildren()) {
         mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                dictRoot, mFlags, &pos);
+                mDictRoot, mFlags, &pos);
     } else {
         mChildrenPos = NOT_A_DICT_POS;
     }
     if (PatriciaTrieReadingUtils::hasShortcutTargets(mFlags)) {
         mShortcutPos = pos;
-        BinaryDictionaryTerminalAttributesReadingUtils::skipShortcuts(mBinaryDictionaryInfo, &pos);
+        mShortcutsPolicy->skipAllShortcuts(&pos);
     } else {
         mShortcutPos = NOT_A_DICT_POS;
     }

@@ -28,11 +28,9 @@ namespace latinime {
         const BinaryDictionaryInfo *const binaryDictionaryInfo) {
     switch (binaryDictionaryInfo->getFormat()) {
         case BinaryDictionaryFormatUtils::VERSION_2:
-            return new PatriciaTriePolicy(binaryDictionaryInfo->getDictRoot(),
-                    binaryDictionaryInfo);
+            return new PatriciaTriePolicy(binaryDictionaryInfo->getDictRoot());
         case BinaryDictionaryFormatUtils::VERSION_3:
-            return new DynamicPatriciaTriePolicy(binaryDictionaryInfo->getDictRoot(),
-                    binaryDictionaryInfo);
+            return new DynamicPatriciaTriePolicy(binaryDictionaryInfo->getDictRoot());
         default:
             ASSERT(false);
             return 0;

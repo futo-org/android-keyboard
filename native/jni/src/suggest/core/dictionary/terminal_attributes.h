@@ -19,8 +19,7 @@
 
 #include <stdint.h>
 
-#include "suggest/core/dictionary/binary_dictionary_info.h"
-#include "suggest/core/dictionary/binary_dictionary_terminal_attributes_reading_utils.h"
+#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 
 namespace latinime {
 
@@ -33,9 +32,9 @@ class TerminalAttributes {
  public:
     class ShortcutIterator {
      public:
-        ShortcutIterator(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        ShortcutIterator(const DictionaryShortcutsStructurePolicy *const shortcutStructurePolicy,
                 const int shortcutPos, const bool hasShortcutList)
-                : mBinaryDictionaryInfo(binaryDictionaryInfo), mPos(shortcutPos),
+                : mShortcutStructurePolicy(shortcutStructurePolicy), mPos(shortcutPos),
                   mHasNextShortcutTarget(hasShortcutList) {}
 
         inline bool hasNextShortcutTarget() const {
@@ -47,46 +46,34 @@ class TerminalAttributes {
         AK_FORCE_INLINE void nextShortcutTarget(
                 const int maxDepth, int *const outTarget, int *const outTargetLength,
                 bool *const outIsWhitelist) {
-            const BinaryDictionaryTerminalAttributesReadingUtils::ShortcutFlags flags =
-                    BinaryDictionaryTerminalAttributesReadingUtils::getFlagsAndForwardPointer(
-                            mBinaryDictionaryInfo->getDictRoot(), &mPos);
-            mHasNextShortcutTarget =
-                    BinaryDictionaryTerminalAttributesReadingUtils::hasNext(flags);
-            if (outIsWhitelist) {
-                *outIsWhitelist =
-                        BinaryDictionaryTerminalAttributesReadingUtils::isWhitelist(flags);
-            }
-            if (outTargetLength) {
-                *outTargetLength =
-                        BinaryDictionaryTerminalAttributesReadingUtils::readShortcutTarget(
-                                mBinaryDictionaryInfo, maxDepth, outTarget, &mPos);
-            }
+            mShortcutStructurePolicy->getNextShortcut(maxDepth, outTarget, outTargetLength,
+                    outIsWhitelist, &mHasNextShortcutTarget, &mPos);
         }
 
      private:
-        const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+        const DictionaryShortcutsStructurePolicy *const mShortcutStructurePolicy;
         int mPos;
         bool mHasNextShortcutTarget;
     };
 
-    TerminalAttributes(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    TerminalAttributes(const DictionaryShortcutsStructurePolicy *const shortcutStructurePolicy,
             const int shortcutPos)
-            : mBinaryDictionaryInfo(binaryDictionaryInfo), mShortcutListSizePos(shortcutPos) {}
+            : mShortcutStructurePolicy(shortcutStructurePolicy),
+              mShortcutListSizePos(shortcutPos) {}
 
     inline ShortcutIterator getShortcutIterator() const {
         int shortcutPos = mShortcutListSizePos;
         const bool hasShortcutList = shortcutPos != NOT_A_DICT_POS;
         if (hasShortcutList) {
-            BinaryDictionaryTerminalAttributesReadingUtils::getShortcutListSizeAndForwardPointer(
-                    mBinaryDictionaryInfo, &shortcutPos);
+            shortcutPos = mShortcutStructurePolicy->getStartPos(shortcutPos);
         }
         // shortcutPos is never used if hasShortcutList is false.
-        return ShortcutIterator(mBinaryDictionaryInfo, shortcutPos, hasShortcutList);
+        return ShortcutIterator(mShortcutStructurePolicy, shortcutPos, hasShortcutList);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const DictionaryShortcutsStructurePolicy *const mShortcutStructurePolicy;
     const int mShortcutListSizePos;
 };
 } // namespace latinime
