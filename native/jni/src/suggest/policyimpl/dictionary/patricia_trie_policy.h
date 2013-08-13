@@ -33,7 +33,7 @@ class DicNodeVector;
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     PatriciaTriePolicy(const uint8_t *const dictBuf)
-            : mHeader(dictBuf), mDictRoot(dictBuf + mHeader.getSize()),
+            : mHeaderPolicy(dictBuf), mDictRoot(dictBuf + mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
 
     ~PatriciaTriePolicy() {}
@@ -58,9 +58,8 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getBigramsPositionOfNode(const int nodePos) const;
 
-    // TODO: Remove and use policy to access header information.
-    const BinaryDictionaryHeader *getHeader() const {
-        return &mHeader;
+    const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
+        return &mHeaderPolicy;
     }
 
     const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
@@ -74,7 +73,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
-    const BinaryDictionaryHeader mHeader;
+    const HeaderPolicy mHeaderPolicy;
     const uint8_t *const mDictRoot;
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;

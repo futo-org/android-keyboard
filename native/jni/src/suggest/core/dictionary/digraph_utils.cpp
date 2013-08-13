@@ -19,7 +19,7 @@
 #include <cstdlib>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_header.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -35,8 +35,9 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
         { DIGRAPH_TYPE_GERMAN_UMLAUT, DIGRAPH_TYPE_FRENCH_LIGATURES };
 
 /* static */ bool DigraphUtils::hasDigraphForCodePoint(
-        const BinaryDictionaryHeader *const header, const int compositeGlyphCodePoint) {
-    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(header);
+        const DictionaryHeaderStructurePolicy *const headerPolicy,
+        const int compositeGlyphCodePoint) {
+    const DigraphUtils::DigraphType digraphType = getDigraphTypeForDictionary(headerPolicy);
     if (DigraphUtils::getDigraphForDigraphTypeAndCodePoint(digraphType, compositeGlyphCodePoint)) {
         return true;
     }
@@ -45,11 +46,11 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
 
 // Returns the digraph type associated with the given dictionary.
 /* static */ DigraphUtils::DigraphType DigraphUtils::getDigraphTypeForDictionary(
-        const BinaryDictionaryHeader *const header) {
-    if (header->requiresGermanUmlautProcessing()) {
+        const DictionaryHeaderStructurePolicy *const headerPolicy) {
+    if (headerPolicy->requiresGermanUmlautProcessing()) {
         return DIGRAPH_TYPE_GERMAN_UMLAUT;
     }
-    if (header->requiresFrenchLigatureProcessing()) {
+    if (headerPolicy->requiresFrenchLigatureProcessing()) {
         return DIGRAPH_TYPE_FRENCH_LIGATURES;
     }
     return DIGRAPH_TYPE_NONE;

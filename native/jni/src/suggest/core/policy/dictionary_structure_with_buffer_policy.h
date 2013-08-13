@@ -21,10 +21,10 @@
 
 namespace latinime {
 
-class BinaryDictionaryHeader;
 class DicNode;
 class DicNodeVector;
 class DictionaryBigramsStructurePolicy;
+class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 
 /*
@@ -66,8 +66,7 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual int getBigramsPositionOfNode(const int nodePos) const = 0;
 
-    // TODO: Use policy to access header information.
-    virtual const BinaryDictionaryHeader *getHeader() const = 0;
+    virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
 
     virtual const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const = 0;
 

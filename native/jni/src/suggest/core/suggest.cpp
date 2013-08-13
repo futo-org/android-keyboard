@@ -308,7 +308,8 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     continue;
                 }
                 if (DigraphUtils::hasDigraphForCodePoint(
-                        traverseSession->getDictionaryStructurePolicy()->getHeader(),
+                        traverseSession->getDictionaryStructurePolicy()
+                                ->getHeaderStructurePolicy(),
                         childDicNode->getNodeCodePoint())) {
                     correctionDicNode.initByCopy(childDicNode);
                     correctionDicNode.advanceDigraphIndex();

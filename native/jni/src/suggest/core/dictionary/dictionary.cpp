@@ -21,20 +21,21 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "jni.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
+#include "utils/log_utils.h"
 
 namespace latinime {
 
 Dictionary::Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd,
         int dictBufOffset, bool isUpdatable)
-        : mBinaryDictionaryInfo(env, static_cast<const uint8_t *>(dict), dictSize, mmapFd,
+        : mBinaryDictionaryInfo(static_cast<const uint8_t *>(dict), dictSize, mmapFd,
                 dictBufOffset, isUpdatable),
           mDictionaryStructureWithBufferPolicy(DictionaryStructureWithBufferPolicyFactory
                   ::newDictionaryStructureWithBufferPolicy(
@@ -42,6 +43,7 @@ Dictionary::Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd,
           mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
+    logDictionaryInfo(env);
 }
 
 Dictionary::~Dictionary() {
@@ -126,6 +128,35 @@ void Dictionary::removeBigramWords(const int *const word0, const int length0,
         return;
     }
     // TODO: Support dynamic update
+}
+
+void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
+    const int BUFFER_SIZE = 16;
+    int dictionaryIdCodePointBuffer[BUFFER_SIZE];
+    int versionStringCodePointBuffer[BUFFER_SIZE];
+    int dateStringCodePointBuffer[BUFFER_SIZE];
+    const DictionaryHeaderStructurePolicy *const headerPolicy =
+            getDictionaryStructurePolicy()->getHeaderStructurePolicy();
+    headerPolicy->readHeaderValueOrQuestionMark("dictionary", dictionaryIdCodePointBuffer,
+            BUFFER_SIZE);
+    headerPolicy->readHeaderValueOrQuestionMark("version", versionStringCodePointBuffer,
+            BUFFER_SIZE);
+    headerPolicy->readHeaderValueOrQuestionMark("date", dateStringCodePointBuffer, BUFFER_SIZE);
+
+    char dictionaryIdCharBuffer[BUFFER_SIZE];
+    char versionStringCharBuffer[BUFFER_SIZE];
+    char dateStringCharBuffer[BUFFER_SIZE];
+    intArrayToCharArray(dictionaryIdCodePointBuffer, BUFFER_SIZE,
+            dictionaryIdCharBuffer, BUFFER_SIZE);
+    intArrayToCharArray(versionStringCodePointBuffer, BUFFER_SIZE,
+            versionStringCharBuffer, BUFFER_SIZE);
+    intArrayToCharArray(dateStringCodePointBuffer, BUFFER_SIZE,
+            dateStringCharBuffer, BUFFER_SIZE);
+
+    LogUtils::logToJava(env,
+            "Dictionary info: dictionary = %s ; version = %s ; date = %s ; filesize = %i",
+            dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer,
+            mBinaryDictionaryInfo.getDictSize());
 }
 
 } // namespace latinime
