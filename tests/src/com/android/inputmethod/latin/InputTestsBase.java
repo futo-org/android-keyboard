@@ -204,17 +204,16 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         // view and only delegates to the parts of the code that care. So we don't include them here
         // to keep these tests as pinpoint as possible and avoid bringing it too many dependencies,
         // but keep them in mind if something breaks. Commenting them out as is should work.
-        //mLatinIME.onPressKey(codePoint);
-        for (final Key key : mKeyboard.mKeys) {
-            if (key.mCode == codePoint) {
-                final int x = key.mX + key.mWidth / 2;
-                final int y = key.mY + key.mHeight / 2;
-                mLatinIME.onCodeInput(codePoint, x, y);
-                return;
-            }
+        //mLatinIME.onPressKey(codePoint, 0 /* repeatCount */, true /* isSinglePointer */);
+        final Key key = mKeyboard.getKey(codePoint);
+        if (key != null) {
+            final int x = key.mX + key.mWidth / 2;
+            final int y = key.mY + key.mHeight / 2;
+            mLatinIME.onCodeInput(codePoint, x, y);
+            return;
         }
         mLatinIME.onCodeInput(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
-        //mLatinIME.onReleaseKey(codePoint, false);
+        //mLatinIME.onReleaseKey(codePoint, false /* withSliding */);
     }
 
     protected void type(final String stringToType) {
