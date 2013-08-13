@@ -519,7 +519,7 @@ public final class KeyboardTextsSet {
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
-        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(,)",
+        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(|),)|(",
         // U+2605: "★" BLACK STAR
         // U+066D: "٭" ARABIC FIVE POINTED STAR
         /* 54 */ "\u2605,\u066D",
@@ -1408,7 +1408,7 @@ public final class KeyboardTextsSet {
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
-        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(,)",
+        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\u060C,\u061F,@,&,\\%,+,\u061B,/,(|),)|(",
         // U+2605: "★" BLACK STAR
         // U+066D: "٭" ARABIC FIVE POINTED STAR
         /* 54 */ "\u2605,\u066D",
@@ -1900,8 +1900,9 @@ public final class KeyboardTextsSet {
         /* 48 */ "!text/single_laqm_raqm_rtl",
         /* 49 */ "!text/double_laqm_raqm_rtl",
         /* 50~ */
-        null, null, null, null,
-        /* ~53 */
+        null, null, null,
+        /* ~52 */
+        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(|),)|(",
         // U+2605: "★" BLACK STAR
         /* 54 */ "\u2605",
         /* 55 */ null,
