@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
@@ -69,11 +70,9 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
             assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
-        final FileInputStream inStream = new FileInputStream(decodeSpec.mFile);
-        final ByteBuffer buffer = inStream.getChannel().map(
-                FileChannel.MapMode.READ_ONLY, 0, decodeSpec.mFile.length());
-        final FusionDictionary resultDict = BinaryDictInputOutput.readDictionaryBinary(
-                new BinaryDictInputOutput.ByteBufferWrapper(buffer),
+        final BinaryDictReader reader = new BinaryDictReader(decodeSpec.mFile);
+        reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+        final FusionDictionary resultDict = BinaryDictInputOutput.readDictionaryBinary(reader,
                 null /* dict : an optional dictionary to add words to, or null */);
         assertEquals("Dictionary can't be read back correctly",
                 resultDict.findWordInTree(resultDict.mRoot, "foo").getFrequency(), TEST_FREQ);

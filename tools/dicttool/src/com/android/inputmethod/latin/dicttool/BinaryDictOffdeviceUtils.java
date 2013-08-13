@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
@@ -185,16 +186,15 @@ public final class BinaryDictOffdeviceUtils {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
                 } else {
-                    final FileInputStream inStream = new FileInputStream(decodedSpec.mFile);
-                    final ByteBuffer buffer = inStream.getChannel().map(
-                            FileChannel.MapMode.READ_ONLY, 0, decodedSpec.mFile.length());
+                    final BinaryDictReader reader = new BinaryDictReader(decodedSpec.mFile);
+                    reader.openBuffer(
+                            new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());
                         System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                     }
-                    return BinaryDictInputOutput.readDictionaryBinary(
-                            new BinaryDictInputOutput.ByteBufferWrapper(buffer), null);
+                    return BinaryDictInputOutput.readDictionaryBinary(reader, null);
                 }
             }
         } catch (IOException e) {

@@ -27,15 +27,13 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,31 +118,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
     /**
      * Makes new buffer according to BUFFER_TYPE.
      */
-    private FusionDictionaryBufferInterface getBuffer(final File file, final int bufferType) {
-        FileInputStream inStream = null;
-        try {
-            inStream = new FileInputStream(file);
-            if (bufferType == USE_BYTE_ARRAY) {
-                final byte[] array = new byte[(int)file.length()];
-                inStream.read(array);
-                return new ByteArrayWrapper(array);
-            } else if (bufferType == USE_BYTE_BUFFER){
-                final ByteBuffer buffer = inStream.getChannel().map(
-                        FileChannel.MapMode.READ_ONLY, 0, file.length());
-                return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while making buffer", e);
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException while closing stream", e);
-                }
-            }
+    private void getBuffer(final BinaryDictReader reader, final int bufferType)
+            throws FileNotFoundException, IOException {
+        if (bufferType == USE_BYTE_BUFFER) {
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+        } else if (bufferType == USE_BYTE_ARRAY) {
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
         }
-        return null;
     }
 
     /**
@@ -285,13 +265,14 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap,
             final int bufferType) {
         long now, diff = -1;
-        final FusionDictionaryBufferInterface buffer = getBuffer(file, bufferType);
-        assertNotNull(buffer);
+        final BinaryDictReader reader = new BinaryDictReader(file);
 
         FusionDictionary dict = null;
         try {
+            getBuffer(reader, bufferType);
+            assertNotNull(reader.getBuffer());
             now = System.currentTimeMillis();
-            dict = BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+            dict = BinaryDictInputOutput.readDictionaryBinary(reader, null);
             diff  = System.currentTimeMillis() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException while reading dictionary", e);
@@ -421,11 +402,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final Map<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
 
         long now = -1, diff = -1;
-        final FusionDictionaryBufferInterface buffer = getBuffer(file, bufferType);
-        assertNotNull("Can't get buffer.", buffer);
+        final BinaryDictReader reader = new BinaryDictReader(file);
         try {
+            getBuffer(reader, bufferType);
+            assertNotNull("Can't get buffer.", reader.getBuffer());
             now = System.currentTimeMillis();
-            BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, resultWords, resultFreqs,
+            BinaryDictIOUtils.readUnigramsAndBigramsBinary(reader, resultWords, resultFreqs,
                     resultBigrams);
             diff = System.currentTimeMillis() - now;
         } catch (IOException e) {
@@ -562,7 +544,16 @@ public class BinaryDictIOTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
+        final BinaryDictReader reader = new BinaryDictReader(file);
+        FusionDictionaryBufferInterface buffer = null;
+        try {
+            buffer = reader.openAndGetBuffer(
+                    new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+        } catch (IOException e) {
+            // ignore
+            Log.e(TAG, "IOException while opening the buffer", e);
+        }
+        assertNotNull("Can't get the buffer", buffer);
 
         try {
             // too long word
@@ -614,7 +605,16 @@ public class BinaryDictIOTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final FusionDictionaryBufferInterface buffer = getBuffer(file, USE_BYTE_ARRAY);
+        final BinaryDictReader reader = new BinaryDictReader(file);
+        FusionDictionaryBufferInterface buffer = null;
+        try {
+            buffer = reader.openAndGetBuffer(
+                    new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+        } catch (IOException e) {
+            // ignore
+            Log.e(TAG, "IOException while opening the buffer", e);
+        }
+        assertNotNull("Can't get the buffer", buffer);
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
