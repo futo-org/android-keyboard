@@ -36,7 +36,7 @@ class BinaryDictionaryInfo {
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
               mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
                       mDictBuf, mDictSize)),
-              mDictionaryHeader(this), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
+              mDictionaryHeader(dictBuf), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
               // TODO: Remove.
               mStructurePolicy(DictionaryStructureWithBufferPolicyFactory
                       ::newDictionaryStructurePolicy(this)) {

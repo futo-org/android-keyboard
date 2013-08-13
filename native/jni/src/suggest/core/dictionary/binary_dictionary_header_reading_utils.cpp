@@ -20,12 +20,11 @@
 #include <cstdlib>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/byte_array_utils.h"
 
 namespace latinime {
 
 const int BinaryDictionaryHeaderReadingUtils::MAX_OPTION_KEY_LENGTH = 256;
-
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_MAGIC_NUMBER_SIZE = 4;
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_DICTIONARY_VERSION_SIZE = 2;
 const int BinaryDictionaryHeaderReadingUtils::VERSION_2_HEADER_FLAG_SIZE = 2;
@@ -43,68 +42,54 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
         BinaryDictionaryHeaderReadingUtils::FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
 
-/* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo) {
-    switch (getHeaderVersion(binaryDictionaryInfo->getFormat())) {
-        case HEADER_VERSION_2:
-            // See the format of the header in the comment in
-            // BinaryDictionaryFormatUtils::detectFormatVersion()
-            return ByteArrayUtils::readUint32(binaryDictionaryInfo->getDictBuf(),
-                    VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
-                            + VERSION_2_HEADER_FLAG_SIZE);
-        default:
-            return S_INT_MAX;
-    }
+/* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(const uint8_t *const dictBuf) {
+    // See the format of the header in the comment in
+    // BinaryDictionaryFormatUtils::detectFormatVersion()
+    return ByteArrayUtils::readUint32(dictBuf,
+            VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
+                    + VERSION_2_HEADER_FLAG_SIZE);
 }
 
 /* static */ BinaryDictionaryHeaderReadingUtils::DictionaryFlags
-        BinaryDictionaryHeaderReadingUtils::getFlags(
-                const BinaryDictionaryInfo *const binaryDictionaryInfo) {
-    switch (getHeaderVersion(binaryDictionaryInfo->getFormat())) {
-        case HEADER_VERSION_2:
-            return ByteArrayUtils::readUint16(binaryDictionaryInfo->getDictBuf(),
-                    VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE);
-        default:
-            return NO_FLAGS;
-    }
+        BinaryDictionaryHeaderReadingUtils::getFlags(const uint8_t *const dictBuf) {
+    return ByteArrayUtils::readUint16(dictBuf, VERSION_2_HEADER_MAGIC_NUMBER_SIZE
+            + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE);
 }
 
 // Returns if the key is found or not and reads the found value into outValue.
-/* static */ bool BinaryDictionaryHeaderReadingUtils::readHeaderValue(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+/* static */ bool BinaryDictionaryHeaderReadingUtils::readHeaderValue(const uint8_t *const dictBuf,
         const char *const key, int *outValue, const int outValueSize) {
     if (outValueSize <= 0) {
         return false;
     }
-    const int headerSize = getHeaderSize(binaryDictionaryInfo);
-    int pos = getHeaderOptionsPosition(binaryDictionaryInfo->getFormat());
+    const int headerSize = getHeaderSize(dictBuf);
+    int pos = getHeaderOptionsPosition();
     if (pos == NOT_A_DICT_POS) {
         // The header doesn't have header options.
         return false;
     }
     while (pos < headerSize) {
         if(ByteArrayUtils::compareStringInBufferWithCharArray(
-                binaryDictionaryInfo->getDictBuf(), key, headerSize - pos, &pos) == 0) {
+                dictBuf, key, headerSize - pos, &pos) == 0) {
             // The key was found.
             const int length = ByteArrayUtils::readStringAndAdvancePosition(
-                    binaryDictionaryInfo->getDictBuf(), outValueSize, outValue, &pos);
+                    dictBuf, outValueSize, outValue, &pos);
             // Add a 0 terminator to the string.
             outValue[length < outValueSize ? length : outValueSize - 1] = '\0';
             return true;
         }
-        ByteArrayUtils::advancePositionToBehindString(
-                binaryDictionaryInfo->getDictBuf(), headerSize - pos, &pos);
+        ByteArrayUtils::advancePositionToBehindString(dictBuf, headerSize - pos, &pos);
     }
     // The key was not found.
     return false;
 }
 
 /* static */ int BinaryDictionaryHeaderReadingUtils::readHeaderValueInt(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, const char *const key) {
+        const uint8_t *const dictBuf, const char *const key) {
     const int bufferSize = LARGEST_INT_DIGIT_COUNT;
     int intBuffer[bufferSize];
     char charBuffer[bufferSize];
-    if (!readHeaderValue(binaryDictionaryInfo, key, intBuffer, bufferSize)) {
+    if (!readHeaderValue(dictBuf, key, intBuffer, bufferSize)) {
         return S_INT_MIN;
     }
     for (int i = 0; i < bufferSize; ++i) {

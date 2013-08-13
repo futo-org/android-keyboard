@@ -17,7 +17,6 @@
 #include "suggest/core/dictionary/binary_dictionary_header.h"
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 
 namespace latinime {
 
@@ -26,16 +25,15 @@ const char *const BinaryDictionaryHeader::MULTIPLE_WORDS_DEMOTION_RATE_KEY =
 const float BinaryDictionaryHeader::DEFAULT_MULTI_WORD_COST_MULTIPLIER = 1.0f;
 const float BinaryDictionaryHeader::MULTI_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 
-BinaryDictionaryHeader::BinaryDictionaryHeader(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo)
-        : mBinaryDictionaryInfo(binaryDictionaryInfo),
-          mDictionaryFlags(BinaryDictionaryHeaderReadingUtils::getFlags(binaryDictionaryInfo)),
-          mSize(BinaryDictionaryHeaderReadingUtils::getHeaderSize(binaryDictionaryInfo)),
+BinaryDictionaryHeader::BinaryDictionaryHeader(const uint8_t *const dictBuf)
+        : mDictBuf(dictBuf),
+          mDictionaryFlags(BinaryDictionaryHeaderReadingUtils::getFlags(mDictBuf)),
+          mSize(BinaryDictionaryHeaderReadingUtils::getHeaderSize(mDictBuf)),
           mMultiWordCostMultiplier(readMultiWordCostMultiplier()) {}
 
 float BinaryDictionaryHeader::readMultiWordCostMultiplier() const {
     const int headerValue = BinaryDictionaryHeaderReadingUtils::readHeaderValueInt(
-            mBinaryDictionaryInfo, MULTIPLE_WORDS_DEMOTION_RATE_KEY);
+            mDictBuf, MULTIPLE_WORDS_DEMOTION_RATE_KEY);
     if (headerValue == S_INT_MIN) {
         // not found
         return DEFAULT_MULTI_WORD_COST_MULTIPLIER;
