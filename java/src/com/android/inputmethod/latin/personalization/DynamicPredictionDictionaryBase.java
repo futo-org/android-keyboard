@@ -28,9 +28,9 @@ import com.android.inputmethod.latin.ExpandableDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
@@ -39,7 +39,6 @@ import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
 import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -234,27 +233,17 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
         };
 
         // Load the dictionary from binary file
-        FileInputStream inStream = null;
+        final BinaryDictReader reader = new BinaryDictReader(
+                new File(getContext().getFilesDir(), fileName));
         try {
-            final File file = new File(getContext().getFilesDir(), fileName);
-            final byte[] buffer = new byte[(int)file.length()];
-            inStream = new FileInputStream(file);
-            inStream.read(buffer);
-            UserHistoryDictIOUtils.readDictionaryBinary(
-                    new ByteArrayWrapper(buffer), listener);
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+            UserHistoryDictIOUtils.readDictionaryBinary(reader, listener);
         } catch (FileNotFoundException e) {
             // This is an expected condition: we don't have a user history dictionary for this
             // language yet. It will be created sometime later.
         } catch (IOException e) {
             Log.e(TAG, "IOException on opening a bytebuffer", e);
         } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
             if (PROFILE_SAVE_RESTORE) {
                 final long diff = System.currentTimeMillis() - now;
                 Log.d(TAG, "PROF: Load UserHistoryDictionary: "

@@ -66,6 +66,7 @@ public final class BinaryDictInputOutput {
         public void position(int newPosition);
         public void put(final byte b);
         public int limit();
+        @UsedForTesting
         public int capacity();
     }
 
@@ -1722,23 +1723,30 @@ public final class BinaryDictInputOutput {
      * FusionDictionary structure. The optional dict argument is an existing dictionary to
      * which words from the buffer should be added. If it is null, a new dictionary is created.
      *
-     * @param buffer the buffer to read.
+     * @param reader the reader.
      * @param dict an optional dictionary to add words to, or null.
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    public static FusionDictionary readDictionaryBinary(
-            final FusionDictionaryBufferInterface buffer, final FusionDictionary dict)
-                    throws IOException, UnsupportedFormatException {
+    public static FusionDictionary readDictionaryBinary(final BinaryDictReader reader,
+            final FusionDictionary dict) throws FileNotFoundException, IOException,
+            UnsupportedFormatException {
         // clear cache
         wordCache.clear();
 
+        // if the buffer has not been opened, open the buffer with bytebuffer.
+        if (reader.getBuffer() == null) reader.openBuffer(
+                new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+        if (reader.getBuffer() == null) {
+            MakedictLog.e("Cannot open the buffer");
+        }
+
         // Read header
-        final FileHeader header = readHeader(buffer);
+        final FileHeader header = readHeader(reader.getBuffer());
 
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final Node root = readNode(buffer, header.mHeaderSize, reverseNodeMapping,
+        final Node root = readNode(reader.getBuffer(), header.mHeaderSize, reverseNodeMapping,
                 reverseGroupMapping, header.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, header.mDictionaryOptions);

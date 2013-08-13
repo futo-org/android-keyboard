@@ -21,16 +21,15 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
-import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -147,27 +146,15 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {
-        FileInputStream inStream = null;
-
+        final BinaryDictReader reader = new BinaryDictReader(file);
         try {
-            inStream = new FileInputStream(file);
-            final byte[] buffer = new byte[(int)file.length()];
-            inStream.read(buffer);
-
-            UserHistoryDictIOUtils.readDictionaryBinary(new ByteArrayWrapper(buffer), listener);
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
         } catch (FileNotFoundException e) {
             Log.e(TAG, "file not found", e);
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
+        UserHistoryDictIOUtils.readDictionaryBinary(reader, listener);
     }
 
     public void testGenerateFusionDictionary() {
