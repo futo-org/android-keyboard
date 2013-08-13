@@ -20,21 +20,19 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
-
+// TODO:: Move header classes to policyimpl.
 class BinaryDictionaryHeaderReadingUtils {
  public:
     typedef uint16_t DictionaryFlags;
 
     static const int MAX_OPTION_KEY_LENGTH;
 
-    static int getHeaderSize(const BinaryDictionaryInfo *const binaryDictionaryInfo);
+    static int getHeaderSize(const uint8_t *const dictBuf);
 
-    static DictionaryFlags getFlags(const BinaryDictionaryInfo *const binaryDictionaryInfo);
+    static DictionaryFlags getFlags(const uint8_t *const dictBuf);
 
     static AK_FORCE_INLINE bool supportsDynamicUpdate(const DictionaryFlags flags) {
         return (flags & SUPPORTS_DYNAMIC_UPDATE_FLAG) != 0;
@@ -48,32 +46,18 @@ class BinaryDictionaryHeaderReadingUtils {
         return (flags & FRENCH_LIGATURE_PROCESSING_FLAG) != 0;
     }
 
-    static AK_FORCE_INLINE int getHeaderOptionsPosition(
-            const BinaryDictionaryFormatUtils::FORMAT_VERSION dictionaryFormat) {
-        switch (getHeaderVersion(dictionaryFormat)) {
-        case HEADER_VERSION_2:
-            return VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
-                    + VERSION_2_HEADER_FLAG_SIZE + VERSION_2_HEADER_SIZE_FIELD_SIZE;
-            break;
-        default:
-            return NOT_A_DICT_POS;
-        }
+    static AK_FORCE_INLINE int getHeaderOptionsPosition() {
+        return VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
+                + VERSION_2_HEADER_FLAG_SIZE + VERSION_2_HEADER_SIZE_FIELD_SIZE;
     }
 
-    static bool readHeaderValue(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    static bool readHeaderValue(const uint8_t *const dictBuf,
             const char *const key, int *outValue, const int outValueSize);
 
-    static int readHeaderValueInt(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, const char *const key);
+    static int readHeaderValueInt(const uint8_t *const dictBuf, const char *const key);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReadingUtils);
-
-    enum HEADER_VERSION {
-        HEADER_VERSION_2,
-        UNKNOWN_HEADER_VERSION
-    };
 
     static const int VERSION_2_HEADER_MAGIC_NUMBER_SIZE;
     static const int VERSION_2_HEADER_DICTIONARY_VERSION_SIZE;
@@ -88,18 +72,6 @@ class BinaryDictionaryHeaderReadingUtils {
     static const DictionaryFlags SUPPORTS_DYNAMIC_UPDATE_FLAG;
     static const DictionaryFlags FRENCH_LIGATURE_PROCESSING_FLAG;
     static const DictionaryFlags CONTAINS_BIGRAMS_FLAG;
-
-    static HEADER_VERSION getHeaderVersion(
-            const BinaryDictionaryFormatUtils::FORMAT_VERSION formatVersion) {
-        switch(formatVersion) {
-            case BinaryDictionaryFormatUtils::VERSION_2:
-                // Fall through
-            case BinaryDictionaryFormatUtils::VERSION_3:
-                return HEADER_VERSION_2;
-            default:
-                return UNKNOWN_HEADER_VERSION;
-        }
-    }
 };
 }
 #endif /* LATINIME_DICTIONARY_HEADER_READING_UTILS_H */
