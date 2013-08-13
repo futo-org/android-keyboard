@@ -19,7 +19,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES += $(call all-java-files-under,src)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_JAVA_RESOURCE_DIRS := res
-LOCAL_MODULE := maketext
+LOCAL_MODULE := make-keyboard-text
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk

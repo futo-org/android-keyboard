@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.maketext;
+package com.android.inputmethod.keyboard.tools;
 
 import java.io.Closeable;
 import java.io.File;
