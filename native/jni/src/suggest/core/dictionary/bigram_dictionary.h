@@ -21,11 +21,11 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
+class DictionaryStructureWithBufferPolicy;
 
 class BigramDictionary {
  public:
-    BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo);
+    BigramDictionary(const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy);
 
     int getPredictions(const int *word, int length, int *outBigramCodePoints,
             int *outBigramProbability, int *outputTypes) const;
@@ -40,7 +40,7 @@ class BigramDictionary {
     int getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
 
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const DictionaryStructureWithBufferPolicy *const mDictionaryStructurePolicy;
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_DICTIONARY_H

@@ -45,9 +45,8 @@ const BinaryDictionaryHeaderReadingUtils::DictionaryFlags
 /* static */ int BinaryDictionaryHeaderReadingUtils::getHeaderSize(const uint8_t *const dictBuf) {
     // See the format of the header in the comment in
     // BinaryDictionaryFormatUtils::detectFormatVersion()
-    return ByteArrayUtils::readUint32(dictBuf,
-            VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
-                    + VERSION_2_HEADER_FLAG_SIZE);
+    return ByteArrayUtils::readUint32(dictBuf, VERSION_2_HEADER_MAGIC_NUMBER_SIZE
+            + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE + VERSION_2_HEADER_FLAG_SIZE);
 }
 
 /* static */ BinaryDictionaryHeaderReadingUtils::DictionaryFlags

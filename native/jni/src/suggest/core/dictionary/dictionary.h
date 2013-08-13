@@ -26,6 +26,7 @@
 namespace latinime {
 
 class BigramDictionary;
+class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
 class ProximityInfo;
 class SuggestInterface;
@@ -77,8 +78,13 @@ class Dictionary {
     void removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
 
+    // TODO: Remove.
     const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
         return &mBinaryDictionaryInfo;
+    }
+
+    const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
+        return mDictionaryStructureWithBufferPolicy;
     }
 
     virtual ~Dictionary();
@@ -87,6 +93,7 @@ class Dictionary {
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
     const BinaryDictionaryInfo mBinaryDictionaryInfo;
+    DictionaryStructureWithBufferPolicy *const mDictionaryStructureWithBufferPolicy;
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
     SuggestInterface *mTypingSuggest;

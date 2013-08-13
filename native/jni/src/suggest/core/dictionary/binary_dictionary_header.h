@@ -24,8 +24,6 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
-
 /**
  * This class abstracts dictionary header structures and provide interface to access dictionary
  * header information.
