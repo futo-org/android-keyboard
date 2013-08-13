@@ -16,6 +16,8 @@
 
 #include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 
+#include "suggest/core/dictionary/byte_array_utils.h"
+
 namespace latinime {
 
 /**
@@ -27,7 +29,6 @@ const int BinaryDictionaryFormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
 /**
  * Format versions
  */
-
 // The versions of Latin IME that only handle format version 1 only test for the magic
 // number, so we had to change it so that version 2 files would be rejected by older
 // implementations. On this occasion, we made the magic number 32 bits long.

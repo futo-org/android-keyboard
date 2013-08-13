@@ -17,6 +17,8 @@
 #ifndef LATINIME_BINARY_DICTIONARY_HEADER_H
 #define LATINIME_BINARY_DICTIONARY_HEADER_H
 
+#include <stdint.h>
+
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_header_reading_utils.h"
 
@@ -28,9 +30,10 @@ class BinaryDictionaryInfo;
  * This class abstracts dictionary header structures and provide interface to access dictionary
  * header information.
  */
+// TODO:: Move header classes to policyimpl.
 class BinaryDictionaryHeader {
  public:
-    explicit BinaryDictionaryHeader(const BinaryDictionaryInfo *const binaryDictionaryInfo);
+    explicit BinaryDictionaryHeader(const uint8_t *const dictBuf);
 
     AK_FORCE_INLINE int getSize() const {
         return mSize;
@@ -60,7 +63,7 @@ class BinaryDictionaryHeader {
             outValue[0] = '\0';
             return;
         }
-        if (!BinaryDictionaryHeaderReadingUtils::readHeaderValue(mBinaryDictionaryInfo,
+        if (!BinaryDictionaryHeaderReadingUtils::readHeaderValue(mDictBuf,
                 key, outValue, outValueSize)) {
             outValue[0] = '?';
             outValue[1] = '\0';
@@ -74,7 +77,7 @@ class BinaryDictionaryHeader {
     static const float DEFAULT_MULTI_WORD_COST_MULTIPLIER;
     static const float MULTI_WORD_COST_MULTIPLIER_SCALE;
 
-    const BinaryDictionaryInfo *const mBinaryDictionaryInfo;
+    const uint8_t *const mDictBuf;
     const BinaryDictionaryHeaderReadingUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
     const float mMultiWordCostMultiplier;
