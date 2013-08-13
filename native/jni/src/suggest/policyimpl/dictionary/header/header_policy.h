@@ -21,11 +21,10 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/core/dictionary/binary_dictionary_header_reading_utils.h"
+#include "suggest/policyimpl/dictionary/header/header_reading_utils.h"
 
 namespace latinime {
 
-// TODO: Move to policyimpl.
 class HeaderPolicy : public DictionaryHeaderStructurePolicy {
  public:
     explicit HeaderPolicy(const uint8_t *const dictBuf)

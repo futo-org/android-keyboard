@@ -20,9 +20,9 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
 
 namespace latinime {

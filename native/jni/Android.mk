@@ -54,8 +54,6 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/core/dictionary/, \
         bigram_dictionary.cpp \
         binary_dictionary_format_utils.cpp \
-        binary_dictionary_header.cpp \
-        binary_dictionary_header_reading_utils.cpp \
         bloom_filter.cpp \
         byte_array_utils.cpp \
         dictionary.cpp \
@@ -71,6 +69,8 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
         bigram/bigram_list_reading_utils.cpp \
+        header/header_policy.cpp \
+        header/header_reading_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
         dictionary_structure_with_buffer_policy_factory.cpp \
         dynamic_patricia_trie_node_reader.cpp \
