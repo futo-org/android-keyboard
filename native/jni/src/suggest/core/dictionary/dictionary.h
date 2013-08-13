@@ -94,9 +94,9 @@ class Dictionary {
 
     const BinaryDictionaryInfo mBinaryDictionaryInfo;
     DictionaryStructureWithBufferPolicy *const mDictionaryStructureWithBufferPolicy;
-    const BigramDictionary *mBigramDictionary;
-    SuggestInterface *mGestureSuggest;
-    SuggestInterface *mTypingSuggest;
+    const BigramDictionary *const mBigramDictionary;
+    const SuggestInterface *const mGestureSuggest;
+    const SuggestInterface *const mTypingSuggest;
 
     void logDictionaryInfo(JNIEnv *const env) const;
 };

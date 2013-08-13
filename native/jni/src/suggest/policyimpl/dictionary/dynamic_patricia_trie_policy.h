@@ -70,6 +70,14 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
+    bool addUnigramWord(const int *const word, const int length, const int probability);
+
+    bool addBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1, const int probability);
+
+    bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
     static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
