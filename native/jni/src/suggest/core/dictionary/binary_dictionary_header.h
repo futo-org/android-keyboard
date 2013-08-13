@@ -14,39 +14,41 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_BINARY_DICTIONARY_HEADER_H
-#define LATINIME_BINARY_DICTIONARY_HEADER_H
+#ifndef LATINIME_HEADER_POLICY_H
+#define LATINIME_HEADER_POLICY_H
 
 #include <stdint.h>
 
 #include "defines.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/dictionary/binary_dictionary_header_reading_utils.h"
 
 namespace latinime {
 
-/**
- * This class abstracts dictionary header structures and provide interface to access dictionary
- * header information.
- */
-// TODO:: Move header classes to policyimpl.
-class BinaryDictionaryHeader {
+// TODO: Move to policyimpl.
+class HeaderPolicy : public DictionaryHeaderStructurePolicy {
  public:
-    explicit BinaryDictionaryHeader(const uint8_t *const dictBuf);
+    explicit HeaderPolicy(const uint8_t *const dictBuf)
+            : mDictBuf(dictBuf), mDictionaryFlags(HeaderReadingUtils::getFlags(dictBuf)),
+              mSize(HeaderReadingUtils::getHeaderSize(dictBuf)),
+              mMultiWordCostMultiplier(readMultiWordCostMultiplier()) {}
+
+    ~HeaderPolicy() {}
 
     AK_FORCE_INLINE int getSize() const {
         return mSize;
     }
 
     AK_FORCE_INLINE bool supportsDynamicUpdate() const {
-        return BinaryDictionaryHeaderReadingUtils::supportsDynamicUpdate(mDictionaryFlags);
+        return HeaderReadingUtils::supportsDynamicUpdate(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresGermanUmlautProcessing() const {
-        return BinaryDictionaryHeaderReadingUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
+        return HeaderReadingUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresFrenchLigatureProcessing() const {
-        return BinaryDictionaryHeaderReadingUtils::requiresFrenchLigatureProcessing(
+        return HeaderReadingUtils::requiresFrenchLigatureProcessing(
                 mDictionaryFlags);
     }
 
@@ -61,7 +63,7 @@ class BinaryDictionaryHeader {
             outValue[0] = '\0';
             return;
         }
-        if (!BinaryDictionaryHeaderReadingUtils::readHeaderValue(mDictBuf,
+        if (!HeaderReadingUtils::readHeaderValue(mDictBuf,
                 key, outValue, outValueSize)) {
             outValue[0] = '?';
             outValue[1] = '\0';
@@ -69,18 +71,19 @@ class BinaryDictionaryHeader {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(BinaryDictionaryHeader);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const float DEFAULT_MULTI_WORD_COST_MULTIPLIER;
     static const float MULTI_WORD_COST_MULTIPLIER_SCALE;
 
     const uint8_t *const mDictBuf;
-    const BinaryDictionaryHeaderReadingUtils::DictionaryFlags mDictionaryFlags;
+    const HeaderReadingUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
     const float mMultiWordCostMultiplier;
 
     float readMultiWordCostMultiplier() const;
 };
+
 } // namespace latinime
-#endif // LATINIME_BINARY_DICTIONARY_HEADER_H
+#endif /* LATINIME_HEADER_POLICY_H */

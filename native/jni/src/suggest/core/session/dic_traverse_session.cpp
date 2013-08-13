@@ -17,9 +17,8 @@
 #include "suggest/core/session/dic_traverse_session.h"
 
 #include "defines.h"
-#include "jni.h"
-#include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
@@ -27,7 +26,7 @@ namespace latinime {
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
-    mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeader()
+    mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeaderStructurePolicy()
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWord) {

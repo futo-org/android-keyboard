@@ -33,7 +33,7 @@ class DicNodeVector;
 class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     DynamicPatriciaTriePolicy(const uint8_t *const dictBuf)
-            : mHeader(dictBuf), mDictRoot(dictBuf + mHeader.getSize()),
+            : mHeaderPolicy(dictBuf), mDictRoot(dictBuf + mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
 
     ~DynamicPatriciaTriePolicy() {}
@@ -58,9 +58,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getBigramsPositionOfNode(const int nodePos) const;
 
-    // TODO: Remove and use policy to access header information.
-    const BinaryDictionaryHeader *getHeader() const {
-        return &mHeader;
+    const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
+        return &mHeaderPolicy;
     }
 
     const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
@@ -75,7 +74,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
     static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
 
-    const BinaryDictionaryHeader mHeader;
+    const HeaderPolicy mHeaderPolicy;
     // TODO: Consolidate mDictRoot.
     const uint8_t *const mDictRoot;
     const BigramListPolicy mBigramListPolicy;
