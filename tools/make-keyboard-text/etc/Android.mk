@@ -15,6 +15,6 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_PREBUILT_EXECUTABLES := maketext
+LOCAL_PREBUILT_EXECUTABLES := make-keyboard-text
 
 include $(BUILD_HOST_PREBUILT)

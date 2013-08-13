@@ -14,14 +14,14 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.maketext;
+package com.android.inputmethod.keyboard.tools;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.jar.JarFile;
 
-public class LabelText {
+public class MakeKeyboardText {
     static class Options {
         private static final String OPTION_JAVA = "-java";
 
@@ -31,7 +31,7 @@ public class LabelText {
             if (message != null) {
                 System.err.println(message);
             }
-            System.err.println("usage: makelabel " + OPTION_JAVA + " <java_output_dir>");
+            System.err.println("usage: make-keyboard-text " + OPTION_JAVA + " <java_output_dir>");
             System.exit(1);
         }
 
@@ -58,7 +58,7 @@ public class LabelText {
 
     public static void main(final String[] args) {
         final Options options = new Options(args);
-        final JarFile jar = JarUtils.getJarFile(LabelText.class);
+        final JarFile jar = JarUtils.getJarFile(MakeKeyboardText.class);
         final MoreKeysResources resources = new MoreKeysResources(jar);
         resources.writeToJava(options.mJava);
     }
