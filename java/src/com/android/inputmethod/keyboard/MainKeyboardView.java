@@ -217,7 +217,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 startWhileTypingFadeinAnimation(keyboardView);
                 break;
             case MSG_REPEAT_KEY:
-                tracker.onKeyRepeat(msg.arg1);
+                tracker.onKeyRepeat(msg.arg1 /* code */, msg.arg2 /* repeatCount */);
                 break;
             case MSG_LONGPRESS_KEY:
                 keyboardView.onLongPress(tracker);
@@ -230,12 +230,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
 
         @Override
-        public void startKeyRepeatTimer(final PointerTracker tracker, final int delay) {
+        public void startKeyRepeatTimer(final PointerTracker tracker, final int repeatCount,
+                final int delay) {
             final Key key = tracker.getKey();
             if (key == null || delay == 0) {
                 return;
             }
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
+            sendMessageDelayed(
+                    obtainMessage(MSG_REPEAT_KEY, key.mCode, repeatCount, tracker), delay);
         }
 
         public void cancelKeyRepeatTimer() {
@@ -938,7 +940,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key.hasNoPanelAutoMoreKey()) {
             final int moreKeyCode = key.mMoreKeys[0].mCode;
             tracker.onLongPressed();
-            listener.onPressKey(moreKeyCode, false /* isRepeatKey */, true /* isSinglePointer */);
+            listener.onPressKey(moreKeyCode, 0 /* repeatCount */, true /* isSinglePointer */);
             listener.onCodeInput(moreKeyCode,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
             listener.onReleaseKey(moreKeyCode, false /* withSliding */);
