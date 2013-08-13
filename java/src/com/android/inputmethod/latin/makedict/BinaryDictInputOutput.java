@@ -1683,12 +1683,13 @@ public final class BinaryDictInputOutput {
         final HashMap<String, String> attributes = new HashMap<String, String>();
         final int headerSize;
         headerSize = buffer.readInt();
-        populateOptions(buffer, headerSize, attributes);
-        buffer.position(headerSize);
 
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
+
+        populateOptions(buffer, headerSize, attributes);
+        buffer.position(headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
                 new FusionDictionary.DictionaryOptions(attributes,
