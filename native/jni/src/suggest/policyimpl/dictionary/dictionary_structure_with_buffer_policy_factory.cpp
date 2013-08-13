@@ -16,21 +16,23 @@
 
 #include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 
+#include <stdint.h>
+
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
+#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
 
 namespace latinime {
 
 /* static */ DictionaryStructureWithBufferPolicy *DictionaryStructureWithBufferPolicyFactory
-        ::newDictionaryStructurePolicy(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo) {
-    switch (binaryDictionaryInfo->getFormat()) {
+        ::newDictionaryStructureWithBufferPolicy(const uint8_t *const dictBuf,
+                const int dictSize) {
+    switch (BinaryDictionaryFormatUtils::detectFormatVersion(dictBuf, dictSize)) {
         case BinaryDictionaryFormatUtils::VERSION_2:
-            return new PatriciaTriePolicy(binaryDictionaryInfo->getDictRoot());
+            return new PatriciaTriePolicy(dictBuf);
         case BinaryDictionaryFormatUtils::VERSION_3:
-            return new DynamicPatriciaTriePolicy(binaryDictionaryInfo->getDictRoot());
+            return new DynamicPatriciaTriePolicy(dictBuf);
         default:
             ASSERT(false);
             return 0;

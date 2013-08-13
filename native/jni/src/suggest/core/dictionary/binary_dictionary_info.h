@@ -21,9 +21,7 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
-#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/log_utils.h"
 
 namespace latinime {
@@ -34,18 +32,11 @@ class BinaryDictionaryInfo {
             const int dictSize, const int mmapFd, const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
               mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
-              mDictionaryFormat(BinaryDictionaryFormatUtils::detectFormatVersion(
-                      mDictBuf, mDictSize)),
-              mDictionaryHeader(dictBuf), mDictRoot(mDictBuf + mDictionaryHeader.getSize()),
-              // TODO: Remove.
-              mStructurePolicy(DictionaryStructureWithBufferPolicyFactory
-                      ::newDictionaryStructurePolicy(this)) {
+              mDictionaryHeader(dictBuf) {
         logDictionaryInfo(env);
     }
 
-    ~BinaryDictionaryInfo() {
-        delete mStructurePolicy;
-    }
+    ~BinaryDictionaryInfo() {}
 
     AK_FORCE_INLINE const uint8_t *getDictBuf() const {
         return mDictBuf;
@@ -63,28 +54,10 @@ class BinaryDictionaryInfo {
         return mDictBufOffset;
     }
 
-    AK_FORCE_INLINE const uint8_t *getDictRoot() const {
-        return mDictRoot;
-    }
-
-    AK_FORCE_INLINE BinaryDictionaryFormatUtils::FORMAT_VERSION getFormat() const {
-        return mDictionaryFormat;
-    }
-
-    // TODO: Move to DictionaryStructurePolicy.
-    AK_FORCE_INLINE const BinaryDictionaryHeader *getHeader() const {
-        return &mDictionaryHeader;
-    }
-
     AK_FORCE_INLINE bool isDynamicallyUpdatable() const {
         // TODO: Support dynamic dictionary formats.
         const bool isUpdatableDictionaryFormat = false;
         return mIsUpdatable && isUpdatableDictionaryFormat;
-    }
-
-    // TODO: remove
-    AK_FORCE_INLINE const DictionaryStructureWithBufferPolicy *getStructurePolicy() const {
-        return mStructurePolicy;
     }
 
  private:
@@ -95,13 +68,9 @@ class BinaryDictionaryInfo {
     const int mMmapFd;
     const int mDictBufOffset;
     const bool mIsUpdatable;
-    const BinaryDictionaryFormatUtils::FORMAT_VERSION mDictionaryFormat;
     // TODO: Move BinaryDictionaryHeader to policyimpl and introduce dedicated API to the
-    // DictionaryStructurePolicy.
+    // DictionaryStructureWithBufferPolicy.
     const BinaryDictionaryHeader mDictionaryHeader;
-    const uint8_t *const mDictRoot;
-    // TODO: remove
-    const DictionaryStructureWithBufferPolicy *const mStructurePolicy;
 
     AK_FORCE_INLINE void logDictionaryInfo(JNIEnv *const env) const {
         const int BUFFER_SIZE = 16;

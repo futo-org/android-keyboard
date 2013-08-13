@@ -22,15 +22,16 @@
 
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/probability_utils.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
 
-BigramDictionary::BigramDictionary(const BinaryDictionaryInfo *const binaryDictionaryInfo)
-        : mBinaryDictionaryInfo(binaryDictionaryInfo) {
+BigramDictionary::BigramDictionary(
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy)
+        : mDictionaryStructurePolicy(dictionaryStructurePolicy) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
     }
@@ -112,12 +113,11 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
     int bigramCount = 0;
     int unigramProbability = 0;
     int bigramBuffer[MAX_WORD_LENGTH];
-    const DictionaryStructureWithBufferPolicy *const structurePolicy =
-            mBinaryDictionaryInfo->getStructurePolicy();
-    BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(), pos);
+    BinaryDictionaryBigramsIterator bigramsIt(
+            mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        const int length = structurePolicy->
+        const int length = mDictionaryStructurePolicy->
                 getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
                         MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
         // Due to space constraints, the probability for bigrams is approximate - the lower the
@@ -139,12 +139,10 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
 int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
         const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return NOT_A_DICT_POS;
-    const DictionaryStructureWithBufferPolicy *const structurePolicy =
-            mBinaryDictionaryInfo->getStructurePolicy();
-    int pos = structurePolicy->getTerminalNodePositionOfWord(prevWord, prevWordLength,
+    int pos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(prevWord, prevWordLength,
             forceLowerCaseSearch);
     if (NOT_A_VALID_WORD_POS == pos) return NOT_A_DICT_POS;
-    return structurePolicy->getBigramsPositionOfNode(pos);
+    return mDictionaryStructurePolicy->getBigramsPositionOfNode(pos);
 }
 
 bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *word1,
@@ -152,13 +150,12 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
     int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (NOT_A_DICT_POS == pos) return false;
-    const DictionaryStructureWithBufferPolicy *const structurePolicy =
-            mBinaryDictionaryInfo->getStructurePolicy();
-    int nextWordPos = structurePolicy->getTerminalNodePositionOfWord(word1, length1,
+    int nextWordPos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == nextWordPos) return false;
 
-    BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(), pos);
+    BinaryDictionaryBigramsIterator bigramsIt(
+            mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == nextWordPos) {

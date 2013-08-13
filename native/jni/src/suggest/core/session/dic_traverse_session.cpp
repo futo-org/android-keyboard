@@ -19,29 +19,28 @@
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/dictionary/binary_dictionary_header.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
-    const BinaryDictionaryInfo *const binaryDictionaryInfo =
-            mDictionary->getBinaryDictionaryInfo();
-    mMultiWordCostMultiplier = binaryDictionaryInfo->getHeader()->getMultiWordCostMultiplier();
+    mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeader()
+            ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWord) {
         mPrevWordPos = NOT_A_VALID_WORD_POS;
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
-    mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+    mPrevWordPos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(
             prevWord, prevWordLength, false /* forceLowerCaseSearch */);
     if (mPrevWordPos == NOT_A_VALID_WORD_POS) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
-        mPrevWordPos = binaryDictionaryInfo->getStructurePolicy()->getTerminalNodePositionOfWord(
+        mPrevWordPos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(
                 prevWord, prevWordLength, true /* forceLowerCaseSearch */);
     }
 }
@@ -56,8 +55,9 @@ void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,
             maxSpatialDistance, maxPointerCount);
 }
 
-const BinaryDictionaryInfo *DicTraverseSession::getBinaryDictionaryInfo() const {
-    return mDictionary->getBinaryDictionaryInfo();
+const DictionaryStructureWithBufferPolicy *DicTraverseSession::getDictionaryStructurePolicy()
+        const {
+    return mDictionary->getDictionaryStructurePolicy();
 }
 
 void DicTraverseSession::resetCache(const int nextActiveCacheSize, const int maxWords) {
