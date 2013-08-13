@@ -97,6 +97,8 @@ class Dictionary {
     const BigramDictionary *mBigramDictionary;
     SuggestInterface *mGestureSuggest;
     SuggestInterface *mTypingSuggest;
+
+    void logDictionaryInfo(JNIEnv *const env) const;
 };
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_H

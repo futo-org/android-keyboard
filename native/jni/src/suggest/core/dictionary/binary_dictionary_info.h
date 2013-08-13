@@ -20,21 +20,15 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "jni.h"
-#include "suggest/core/dictionary/binary_dictionary_header.h"
-#include "utils/log_utils.h"
 
 namespace latinime {
 
 class BinaryDictionaryInfo {
  public:
-     AK_FORCE_INLINE BinaryDictionaryInfo(JNIEnv *env, const uint8_t *const dictBuf,
+     AK_FORCE_INLINE BinaryDictionaryInfo(const uint8_t *const dictBuf,
             const int dictSize, const int mmapFd, const int dictBufOffset, const bool isUpdatable)
             : mDictBuf(dictBuf), mDictSize(dictSize), mMmapFd(mmapFd),
-              mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable),
-              mDictionaryHeader(dictBuf) {
-        logDictionaryInfo(env);
-    }
+              mDictBufOffset(dictBufOffset), mIsUpdatable(isUpdatable) {}
 
     ~BinaryDictionaryInfo() {}
 
@@ -68,36 +62,6 @@ class BinaryDictionaryInfo {
     const int mMmapFd;
     const int mDictBufOffset;
     const bool mIsUpdatable;
-    // TODO: Move BinaryDictionaryHeader to policyimpl and introduce dedicated API to the
-    // DictionaryStructureWithBufferPolicy.
-    const BinaryDictionaryHeader mDictionaryHeader;
-
-    AK_FORCE_INLINE void logDictionaryInfo(JNIEnv *const env) const {
-        const int BUFFER_SIZE = 16;
-        int dictionaryIdCodePointBuffer[BUFFER_SIZE];
-        int versionStringCodePointBuffer[BUFFER_SIZE];
-        int dateStringCodePointBuffer[BUFFER_SIZE];
-        mDictionaryHeader.readHeaderValueOrQuestionMark("dictionary",
-                dictionaryIdCodePointBuffer, BUFFER_SIZE);
-        mDictionaryHeader.readHeaderValueOrQuestionMark("version",
-                versionStringCodePointBuffer, BUFFER_SIZE);
-        mDictionaryHeader.readHeaderValueOrQuestionMark("date",
-                dateStringCodePointBuffer, BUFFER_SIZE);
-
-        char dictionaryIdCharBuffer[BUFFER_SIZE];
-        char versionStringCharBuffer[BUFFER_SIZE];
-        char dateStringCharBuffer[BUFFER_SIZE];
-        intArrayToCharArray(dictionaryIdCodePointBuffer, BUFFER_SIZE,
-                dictionaryIdCharBuffer, BUFFER_SIZE);
-        intArrayToCharArray(versionStringCodePointBuffer, BUFFER_SIZE,
-                versionStringCharBuffer, BUFFER_SIZE);
-        intArrayToCharArray(dateStringCodePointBuffer, BUFFER_SIZE,
-                dateStringCharBuffer, BUFFER_SIZE);
-
-        LogUtils::logToJava(env,
-                "Dictionary info: dictionary = %s ; version = %s ; date = %s ; filesize = %i",
-                dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer, mDictSize);
-    }
 };
 }
 #endif /* LATINIME_BINARY_DICTIONARY_INFO_H */

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DICTIONARY_HEADER_READING_UTILS_H
-#define LATINIME_DICTIONARY_HEADER_READING_UTILS_H
+#ifndef LATINIME_HEADER_READING_UTILS_H
+#define LATINIME_HEADER_READING_UTILS_H
 
 #include <stdint.h>
 
@@ -23,8 +23,8 @@
 
 namespace latinime {
 
-// TODO:: Move header classes to policyimpl.
-class BinaryDictionaryHeaderReadingUtils {
+// TODO: Move to policyimpl.
+class HeaderReadingUtils {
  public:
     typedef uint16_t DictionaryFlags;
 
@@ -47,8 +47,8 @@ class BinaryDictionaryHeaderReadingUtils {
     }
 
     static AK_FORCE_INLINE int getHeaderOptionsPosition() {
-        return VERSION_2_HEADER_MAGIC_NUMBER_SIZE + VERSION_2_HEADER_DICTIONARY_VERSION_SIZE
-                + VERSION_2_HEADER_FLAG_SIZE + VERSION_2_HEADER_SIZE_FIELD_SIZE;
+        return HEADER_MAGIC_NUMBER_SIZE + HEADER_DICTIONARY_VERSION_SIZE + HEADER_FLAG_SIZE
+                + HEADER_SIZE_FIELD_SIZE;
     }
 
     static bool readHeaderValue(const uint8_t *const dictBuf,
@@ -57,12 +57,12 @@ class BinaryDictionaryHeaderReadingUtils {
     static int readHeaderValueInt(const uint8_t *const dictBuf, const char *const key);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryHeaderReadingUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadingUtils);
 
-    static const int VERSION_2_HEADER_MAGIC_NUMBER_SIZE;
-    static const int VERSION_2_HEADER_DICTIONARY_VERSION_SIZE;
-    static const int VERSION_2_HEADER_FLAG_SIZE;
-    static const int VERSION_2_HEADER_SIZE_FIELD_SIZE;
+    static const int HEADER_MAGIC_NUMBER_SIZE;
+    static const int HEADER_DICTIONARY_VERSION_SIZE;
+    static const int HEADER_FLAG_SIZE;
+    static const int HEADER_SIZE_FIELD_SIZE;
 
     static const DictionaryFlags NO_FLAGS;
     // Flags for special processing
@@ -74,4 +74,4 @@ class BinaryDictionaryHeaderReadingUtils {
     static const DictionaryFlags CONTAINS_BIGRAMS_FLAG;
 };
 }
-#endif /* LATINIME_DICTIONARY_HEADER_READING_UTILS_H */
+#endif /* LATINIME_HEADER_READING_UTILS_H */
