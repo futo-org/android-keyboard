@@ -19,21 +19,20 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "suggest/core/dictionary/terminal_attributes.h"
+#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 
 namespace latinime {
 
 class ShortcutUtils {
  public:
-    static int outputShortcuts(const TerminalAttributes *const terminalAttributes,
+    static int outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,
             int outputWordIndex, const int finalScore, int *const outputCodePoints,
             int *const frequencies, int *const outputTypes, const bool sameAsTyped) {
-        TerminalAttributes::ShortcutIterator iterator = terminalAttributes->getShortcutIterator();
         int shortcutTarget[MAX_WORD_LENGTH];
-        while (iterator.hasNextShortcutTarget() && outputWordIndex < MAX_RESULTS) {
+        while (shortcutIt->hasNextShortcutTarget() && outputWordIndex < MAX_RESULTS) {
             bool isWhilelist;
             int shortcutTargetStringLength;
-            iterator.nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget,
+            shortcutIt->nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget,
                     &shortcutTargetStringLength, &isWhilelist);
             int shortcutScore;
             int kind;
