@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_header_reading_utils.h"
+#include "suggest/policyimpl/dictionary/header/header_reading_utils.h"
 
 #include <cctype>
 #include <cstdlib>

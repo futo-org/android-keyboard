@@ -23,7 +23,6 @@
 
 namespace latinime {
 
-// TODO: Move to policyimpl.
 class HeaderReadingUtils {
  public:
     typedef uint16_t DictionaryFlags;
