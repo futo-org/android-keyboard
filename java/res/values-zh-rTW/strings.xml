@@ -64,10 +64,8 @@
     <string name="auto_correction_summary" msgid="5625751551134658006">"按空白鍵或標點符號時，自動修正前面的錯字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"關閉"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"更正範圍小"</string>
-    <!-- no translation found for auto_correction_threshold_mode_aggressive (7319007299148899623) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_very_aggressive (1853309024129480416) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"大幅更正"</string>
+    <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"極大幅度更正"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"建議下一個字詞"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根據前一個字詞提供建議"</string>
     <string name="gesture_input" msgid="826951152254563827">"啟用手勢輸入"</string>
@@ -145,13 +143,13 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"英文 (英國) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"英文 (美國) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"西班牙文 (美國) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="141420857808801746">"無語言"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"無語言 (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"無語言 (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"無語言 (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"無語言 (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"無語言 (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"無語言 (PC)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"無語言 (字母)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"字母 (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"字母 (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"字母 (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"字母 (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"字母 (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"字母 (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"自訂輸入樣式"</string>
     <string name="add_style" msgid="6163126614514489951">"新增樣式"</string>
     <string name="add" msgid="8299699805688017798">"新增"</string>
