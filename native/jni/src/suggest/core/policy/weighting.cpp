@@ -148,7 +148,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_TERMINAL: {
         const float languageImprobability =
                 DicNodeUtils::getBigramNodeImprobability(
-                        traverseSession->getBinaryDictionaryInfo(), dicNode, multiBigramMap);
+                        traverseSession->getDictionaryStructurePolicy(), dicNode, multiBigramMap);
         return weighting->getTerminalLanguageCost(traverseSession, dicNode, languageImprobability);
     }
     case CT_TERMINAL_INSERTION:

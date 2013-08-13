@@ -19,13 +19,12 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-// TODO: Use DictionaryStructurePolicy instead of BinaryDictionaryInfo.
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/dictionary/shortcut_utils.h"
 #include "suggest/core/layout/proximity_info.h"
+#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/policy/weighting.h"
@@ -108,7 +107,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
                 MAX_RESULTS);
         // Create a new dic node here
         DicNode rootNode;
-        DicNodeUtils::initAsRoot(traverseSession->getBinaryDictionaryInfo(),
+        DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),
                 traverseSession->getPrevWordPos(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
@@ -212,11 +211,10 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
         }
 
         if (!terminalDicNode->hasMultipleWords()) {
-            const DictionaryStructureWithBufferPolicy *const structurePolicy =
-                    traverseSession->getBinaryDictionaryInfo()->getStructurePolicy();
             BinaryDictionaryShortcutIterator shortcutIt(
-                    structurePolicy->getShortcutsStructurePolicy(),
-                    structurePolicy->getShortcutPositionOfNode(terminalDicNode->getPos()));
+                    traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
+                    traverseSession->getDictionaryStructurePolicy()
+                            ->getShortcutPositionOfNode(terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
@@ -299,7 +297,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             }
 
             DicNodeUtils::getAllChildDicNodes(
-                    &dicNode, traverseSession->getBinaryDictionaryInfo(), &childDicNodes);
+                    &dicNode, traverseSession->getDictionaryStructurePolicy(), &childDicNodes);
 
             const int childDicNodesSize = childDicNodes.getSizeAndLock();
             for (int i = 0; i < childDicNodesSize; ++i) {
@@ -310,7 +308,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                     continue;
                 }
                 if (DigraphUtils::hasDigraphForCodePoint(
-                        traverseSession->getBinaryDictionaryInfo()->getHeader(),
+                        traverseSession->getDictionaryStructurePolicy()->getHeader(),
                         childDicNode->getNodeCodePoint())) {
                     correctionDicNode.initByCopy(childDicNode);
                     correctionDicNode.advanceDigraphIndex();
@@ -448,7 +446,7 @@ void Suggest::processDicNodeAsOmission(
         DicTraverseSession *traverseSession, DicNode *dicNode) const {
     DicNodeVector childDicNodes;
     DicNodeUtils::getAllChildDicNodes(
-            dicNode, traverseSession->getBinaryDictionaryInfo(), &childDicNodes);
+            dicNode, traverseSession->getDictionaryStructurePolicy(), &childDicNodes);
 
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
@@ -473,7 +471,8 @@ void Suggest::processDicNodeAsInsertion(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes;
-    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getBinaryDictionaryInfo(),
+    DicNodeUtils::getProximityChildDicNodes(dicNode,
+            traverseSession->getDictionaryStructurePolicy(),
             traverseSession->getProximityInfoState(0), pointIndex + 1, true, &childDicNodes);
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
@@ -491,14 +490,15 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes1;
-    DicNodeUtils::getProximityChildDicNodes(dicNode, traverseSession->getBinaryDictionaryInfo(),
+    DicNodeUtils::getProximityChildDicNodes(dicNode,
+            traverseSession->getDictionaryStructurePolicy(),
             traverseSession->getProximityInfoState(0), pointIndex + 1, false, &childDicNodes1);
     const int childSize1 = childDicNodes1.getSizeAndLock();
     for (int i = 0; i < childSize1; i++) {
         if (childDicNodes1[i]->hasChildren()) {
             DicNodeVector childDicNodes2;
             DicNodeUtils::getProximityChildDicNodes(
-                    childDicNodes1[i], traverseSession->getBinaryDictionaryInfo(),
+                    childDicNodes1[i], traverseSession->getDictionaryStructurePolicy(),
                     traverseSession->getProximityInfoState(0), pointIndex, false, &childDicNodes2);
             const int childSize2 = childDicNodes2.getSizeAndLock();
             for (int j = 0; j < childSize2; j++) {
@@ -539,7 +539,7 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
     // Create a non-cached node here.
     DicNode newDicNode;
     DicNodeUtils::initAsRootWithPreviousWord(
-            traverseSession->getBinaryDictionaryInfo(), dicNode, &newDicNode);
+            traverseSession->getDictionaryStructurePolicy(), dicNode, &newDicNode);
     const CorrectionType correctionType = spaceSubstitution ?
             CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
     Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,

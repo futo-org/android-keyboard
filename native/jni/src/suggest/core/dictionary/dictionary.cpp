@@ -18,7 +18,6 @@
 
 #include "suggest/core/dictionary/dictionary.h"
 
-#include <map> // TODO: remove
 #include <stdint.h>
 
 #include "defines.h"
@@ -27,6 +26,7 @@
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
+#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
 
@@ -36,7 +36,10 @@ Dictionary::Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd,
         int dictBufOffset, bool isUpdatable)
         : mBinaryDictionaryInfo(env, static_cast<const uint8_t *>(dict), dictSize, mmapFd,
                 dictBufOffset, isUpdatable),
-          mBigramDictionary(new BigramDictionary(&mBinaryDictionaryInfo)),
+          mDictionaryStructureWithBufferPolicy(DictionaryStructureWithBufferPolicyFactory
+                  ::newDictionaryStructureWithBufferPolicy(
+                          static_cast<const uint8_t *>(dict), dictSize)),
+          mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
 }
@@ -45,6 +48,7 @@ Dictionary::~Dictionary() {
     delete mBigramDictionary;
     delete mGestureSuggest;
     delete mTypingSuggest;
+    delete mDictionaryStructureWithBufferPolicy;
 }
 
 int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
@@ -83,14 +87,12 @@ int Dictionary::getBigrams(const int *word, int length, int *outWords, int *freq
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    const DictionaryStructureWithBufferPolicy *const structurePolicy =
-            mBinaryDictionaryInfo.getStructurePolicy();
-    int pos = structurePolicy->getTerminalNodePositionOfWord(word, length,
+    int pos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_A_VALID_WORD_POS == pos) {
         return NOT_A_PROBABILITY;
     }
-    return structurePolicy->getUnigramProbability(pos);
+    return getDictionaryStructurePolicy()->getUnigramProbability(pos);
 }
 
 bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {

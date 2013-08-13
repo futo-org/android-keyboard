@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "suggest/core/dictionary/binary_dictionary_header.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
@@ -31,8 +32,9 @@ class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const uint8_t *const dictRoot)
-            : mDictRoot(dictRoot), mBigramListPolicy(dictRoot), mShortcutListPolicy(dictRoot) {}
+    PatriciaTriePolicy(const uint8_t *const dictBuf)
+            : mHeader(dictBuf), mDictRoot(dictBuf + mHeader.getSize()),
+              mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
 
     ~PatriciaTriePolicy() {}
 
@@ -56,6 +58,11 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getBigramsPositionOfNode(const int nodePos) const;
 
+    // TODO: Remove and use policy to access header information.
+    const BinaryDictionaryHeader *getHeader() const {
+        return &mHeader;
+    }
+
     const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
         return &mBigramListPolicy;
     }
@@ -67,6 +74,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
+    const BinaryDictionaryHeader mHeader;
     const uint8_t *const mDictRoot;
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;

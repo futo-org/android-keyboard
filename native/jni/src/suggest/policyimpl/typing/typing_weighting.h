@@ -155,7 +155,8 @@ class TypingWeighting : public Weighting {
     float getNewWordBigramLanguageCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode,
             MultiBigramMap *const multiBigramMap) const {
-        return DicNodeUtils::getBigramNodeImprobability(traverseSession->getBinaryDictionaryInfo(),
+        return DicNodeUtils::getBigramNodeImprobability(
+                traverseSession->getDictionaryStructurePolicy(),
                 dicNode, multiBigramMap) * ScoringParams::DISTANCE_WEIGHT_LANGUAGE;
     }
 

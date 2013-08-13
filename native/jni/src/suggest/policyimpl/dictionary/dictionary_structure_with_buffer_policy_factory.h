@@ -17,18 +17,17 @@
 #ifndef LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 #define LATINIME_DICTIONARY_STRUCTURE_WITH_BUFFER_POLICY_FACTORY_H
 
-#include "defines.h"
+#include <stdint.h>
 
+#include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
-
 class DictionaryStructureWithBufferPolicyFactory {
  public:
-    static DictionaryStructureWithBufferPolicy *newDictionaryStructurePolicy(
-            const BinaryDictionaryInfo *const binaryDictionaryInfo);
+    static DictionaryStructureWithBufferPolicy *newDictionaryStructureWithBufferPolicy(
+            const uint8_t *const dictBuf, const int dictSize);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);

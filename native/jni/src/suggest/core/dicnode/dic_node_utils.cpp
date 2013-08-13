@@ -21,7 +21,6 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_proximity_filter.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
@@ -33,17 +32,17 @@ namespace latinime {
 // Node initialization utils //
 ///////////////////////////////
 
-/* static */ void DicNodeUtils::initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+/* static */ void DicNodeUtils::initAsRoot(
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const int prevWordNodePos, DicNode *const newRootNode) {
-    newRootNode->initAsRoot(binaryDictionaryInfo->getStructurePolicy()->getRootPosition(),
-            prevWordNodePos);
+    newRootNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordNodePos);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         DicNode *const prevWordLastNode, DicNode *const newRootNode) {
     newRootNode->initAsRootWithPreviousWord(
-            prevWordLastNode, binaryDictionaryInfo->getStructurePolicy()->getRootPosition());
+            prevWordLastNode, dictionaryStructurePolicy->getRootPosition());
 }
 
 /* static */ void DicNodeUtils::initByCopy(DicNode *srcNode, DicNode *destNode) {
@@ -67,12 +66,13 @@ namespace latinime {
 }
 
 /* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes) {
-    getProximityChildDicNodes(dicNode, binaryDictionaryInfo, 0, 0, false, childDicNodes);
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
+        DicNodeVector *childDicNodes) {
+    getProximityChildDicNodes(dicNode, dictionaryStructurePolicy, 0, 0, false, childDicNodes);
 }
 
 /* static */ void DicNodeUtils::getProximityChildDicNodes(DicNode *dicNode,
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
         DicNodeVector *childDicNodes) {
     if (dicNode->isTotalInputSizeExceedingLimit()) {
@@ -82,7 +82,7 @@ namespace latinime {
     if (!dicNode->isLeavingNode()) {
         DicNodeUtils::createAndGetPassingChildNode(dicNode, &childrenFilter, childDicNodes);
     } else {
-        binaryDictionaryInfo->getStructurePolicy()->createAndGetAllChildNodes(dicNode,
+        dictionaryStructurePolicy->createAndGetAllChildNodes(dicNode,
                 &childrenFilter, childDicNodes);
     }
 }
@@ -94,12 +94,13 @@ namespace latinime {
  * Computes the combined bigram / unigram cost for the given dicNode.
  */
 /* static */ float DicNodeUtils::getBigramNodeImprobability(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const DicNode *const node, MultiBigramMap *multiBigramMap) {
     if (node->hasMultipleWords() && !node->isValidMultipleWordSuggestion()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(binaryDictionaryInfo, node, multiBigramMap);
+    const int probability = getBigramNodeProbability(dictionaryStructurePolicy, node,
+            multiBigramMap);
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
     const float cost = static_cast<float>(MAX_PROBABILITY - probability)
             / static_cast<float>(MAX_PROBABILITY);
@@ -107,7 +108,7 @@ namespace latinime {
 }
 
 /* static */ int DicNodeUtils::getBigramNodeProbability(
-        const BinaryDictionaryInfo *const binaryDictionaryInfo,
+        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
         const DicNode *const node, MultiBigramMap *multiBigramMap) {
     const int unigramProbability = node->getProbability();
     const int wordPos = node->getPos();
@@ -118,8 +119,8 @@ namespace latinime {
         return ProbabilityUtils::backoff(unigramProbability);
     }
     if (multiBigramMap) {
-        return multiBigramMap->getBigramProbability(binaryDictionaryInfo->getStructurePolicy(),
-                prevWordPos, wordPos, unigramProbability);
+        return multiBigramMap->getBigramProbability(dictionaryStructurePolicy, prevWordPos,
+                wordPos, unigramProbability);
     }
     return ProbabilityUtils::backoff(unigramProbability);
 }

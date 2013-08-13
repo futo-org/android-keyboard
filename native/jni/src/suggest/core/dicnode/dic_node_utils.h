@@ -23,10 +23,10 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class DicNode;
 class DicNodeProximityFilter;
 class DicNodeVector;
+class DictionaryStructureWithBufferPolicy;
 class ProximityInfoState;
 class MultiBigramMap;
 
@@ -34,18 +34,22 @@ class DicNodeUtils {
  public:
     static int appendTwoWords(const int *src0, const int16_t length0, const int *src1,
             const int16_t length1, int *dest);
-    static void initAsRoot(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    static void initAsRoot(
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const int prevWordNodePos, DicNode *newRootNode);
-    static void initAsRootWithPreviousWord(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    static void initAsRootWithPreviousWord(
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             DicNode *prevWordLastNode, DicNode *newRootNode);
     static void initByCopy(DicNode *srcNode, DicNode *destNode);
     static void getAllChildDicNodes(DicNode *dicNode,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo, DicNodeVector *childDicNodes);
-    static float getBigramNodeImprobability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
+            DicNodeVector *childDicNodes);
+    static float getBigramNodeImprobability(
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const node, MultiBigramMap *const multiBigramMap);
     // TODO: Move to private
     static void getProximityChildDicNodes(DicNode *dicNode,
-            const BinaryDictionaryInfo *const binaryDictionaryInfo,
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
             DicNodeVector *childDicNodes);
 
@@ -54,7 +58,8 @@ class DicNodeUtils {
     // Max number of bigrams to look up
     static const int MAX_BIGRAMS_CONSIDERED_PER_CONTEXT = 500;
 
-    static int getBigramNodeProbability(const BinaryDictionaryInfo *const binaryDictionaryInfo,
+    static int getBigramNodeProbability(
+            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const node, MultiBigramMap *multiBigramMap);
     static void createAndGetPassingChildNode(DicNode *dicNode,
             const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);

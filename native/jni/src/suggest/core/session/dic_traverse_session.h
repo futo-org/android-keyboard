@@ -28,8 +28,8 @@
 
 namespace latinime {
 
-class BinaryDictionaryInfo;
 class Dictionary;
+class DictionaryStructureWithBufferPolicy;
 class ProximityInfo;
 class SuggestOptions;
 
@@ -75,8 +75,7 @@ class DicTraverseSession {
             const int maxPointerCount);
     void resetCache(const int nextActiveCacheSize, const int maxWords);
 
-    // TODO: Use DictionaryStructurePolicy instead of BinaryDictionaryInfo.
-    const BinaryDictionaryInfo *getBinaryDictionaryInfo() const;
+    const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const;
 
     //--------------------
     // getters and setters
