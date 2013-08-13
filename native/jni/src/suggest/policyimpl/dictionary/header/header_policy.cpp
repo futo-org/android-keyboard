@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_header.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 
 namespace latinime {
 
