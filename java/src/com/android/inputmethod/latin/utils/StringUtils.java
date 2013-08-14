@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.text.TextUtils;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.settings.SettingsValues;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -193,25 +194,53 @@ public final class StringUtils {
     }
 
     public static boolean isIdenticalAfterUpcase(final String text) {
-        final int len = text.length();
-        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+        final int length = text.length();
+        int i = 0;
+        while (i < length) {
             final int codePoint = text.codePointAt(i);
             if (Character.isLetter(codePoint) && !Character.isUpperCase(codePoint)) {
                 return false;
             }
+            i += Character.charCount(codePoint);
         }
         return true;
     }
 
     public static boolean isIdenticalAfterDowncase(final String text) {
-        final int len = text.length();
-        for (int i = 0; i < len; i = text.offsetByCodePoints(i, 1)) {
+        final int length = text.length();
+        int i = 0;
+        while (i < length) {
             final int codePoint = text.codePointAt(i);
             if (Character.isLetter(codePoint) && !Character.isLowerCase(codePoint)) {
                 return false;
             }
+            i += Character.charCount(codePoint);
         }
         return true;
+    }
+
+    public static boolean looksValidForDictionaryInsertion(final CharSequence text,
+            final SettingsValues settings) {
+        if (TextUtils.isEmpty(text)) return false;
+        final int length = text.length();
+        int i = 0;
+        int digitCount = 0;
+        while (i < length) {
+            final int codePoint = Character.codePointAt(text, i);
+            final int charCount = Character.charCount(codePoint);
+            i += charCount;
+            if (Character.isDigit(codePoint)) {
+                // Count digits: see below
+                digitCount += charCount;
+                continue;
+            }
+            if (!settings.isWordCodePoint(codePoint)) return false;
+        }
+        // We reject strings entirely comprised of digits to avoid using PIN codes or credit
+        // card numbers. It would come in handy for word prediction though; a good example is
+        // when writing one's address where the street number is usually quite discriminative,
+        // as well as the postal code.
+        return digitCount < length;
     }
 
     public static boolean isIdenticalAfterCapitalizeEachWord(final String text,
