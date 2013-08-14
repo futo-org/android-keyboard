@@ -57,10 +57,10 @@ public final class AudioAndHapticFeedbackManager {
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
-    public void hapticAndAudioFeedback(final int primaryCode,
+    public void performHapticAndAudioFeedback(final int code,
             final View viewToPerformHapticFeedbackOn) {
-        vibrateInternal(viewToPerformHapticFeedbackOn);
-        playKeyClick(primaryCode);
+        performHapticFeedback(viewToPerformHapticFeedbackOn);
+        performAudioFeedback(code);
     }
 
     public boolean hasVibrator() {
@@ -81,14 +81,14 @@ public final class AudioAndHapticFeedbackManager {
         return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
     }
 
-    private void playKeyClick(final int primaryCode) {
+    public void performAudioFeedback(final int code) {
         // if mAudioManager is null, we can't play a sound anyway, so return
         if (mAudioManager == null) {
             return;
         }
         if (mSoundOn) {
             final int sound;
-            switch (primaryCode) {
+            switch (code) {
             case Constants.CODE_DELETE:
                 sound = AudioManager.FX_KEYPRESS_DELETE;
                 break;
@@ -106,7 +106,7 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
-    private void vibrateInternal(final View viewToPerformHapticFeedbackOn) {
+    public void performHapticFeedback(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
