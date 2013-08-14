@@ -70,7 +70,17 @@ public abstract class PersonalizationDictionaryUpdateSession {
         unsetPredictionDictionary();
     }
 
-    public void addToPersonalizationDictionary(
+    public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
+            int frequency) {
+        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        if (dictionary == null) {
+            return;
+        }
+        dictionary.addToPersonalizationPredictionDictionary(word0, word1, isValid);
+    }
+
+    // Bulk import
+    public void addBigramsToPersonalizationDictionary(
             final ArrayList<PersonalizationLanguageModelParam> lmParams) {
         final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
