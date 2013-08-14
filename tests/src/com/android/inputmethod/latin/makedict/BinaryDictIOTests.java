@@ -619,13 +619,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
                     BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
-            BinaryDictIOUtils.deleteWord(buffer, sWords.get(0));
+            DynamicBinaryDictIOUtils.deleteWord(buffer, sWords.get(0));
             assertEquals(FormatSpec.NOT_VALID_WORD,
                     BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
 
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
                     BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
-            BinaryDictIOUtils.deleteWord(buffer, sWords.get(5));
+            DynamicBinaryDictIOUtils.deleteWord(buffer, sWords.get(5));
             assertEquals(FormatSpec.NOT_VALID_WORD,
                     BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
         } catch (IOException e) {

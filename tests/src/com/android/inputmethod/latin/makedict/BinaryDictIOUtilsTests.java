@@ -197,8 +197,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
             }
             final long now = System.nanoTime();
-            BinaryDictIOUtils.insertWord(buffer, outStream, word, frequency, bigrams, shortcuts,
-                    false, false);
+            DynamicBinaryDictIOUtils.insertWord(buffer, outStream, word, frequency, bigrams,
+                    shortcuts, false, false);
             amountOfTime = System.nanoTime() - now;
             outStream.flush();
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
@@ -232,7 +232,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             raFile = new RandomAccessFile(file, "rw");
             buffer = new ByteBufferWrapper(raFile.getChannel().map(
                     FileChannel.MapMode.READ_WRITE, 0, file.length()));
-            BinaryDictIOUtils.deleteWord(buffer, word);
+            DynamicBinaryDictIOUtils.deleteWord(buffer, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         } finally {
