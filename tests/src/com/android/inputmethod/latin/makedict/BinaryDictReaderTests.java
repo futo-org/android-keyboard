@@ -18,8 +18,12 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.BinaryDictReader.FusionDictionaryBufferFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictReader.
+        FusionDictionaryBufferFromByteArrayFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictReader.
+        FusionDictionaryBufferFromByteBufferFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictReader.
+        FusionDictionaryBufferFromWritableByteBufferFactory;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -94,6 +98,11 @@ public class BinaryDictReaderTests extends AndroidTestCase {
                 new FusionDictionaryBufferFromByteArrayFactory());
     }
 
+    public void testOpenBufferWithWritableByteBuffer() {
+        runTestOpenBuffer("testOpenBufferWithWritableByteBuffer",
+                new FusionDictionaryBufferFromWritableByteBufferFactory());
+    }
+
     @SuppressWarnings("null")
     public void runTestGetBuffer(final String testName,
             final FusionDictionaryBufferFactory factory) {
@@ -134,5 +143,10 @@ public class BinaryDictReaderTests extends AndroidTestCase {
     public void testGetBufferWithByteArray() {
         runTestGetBuffer("testGetBufferWithByteArray",
                 new FusionDictionaryBufferFromByteArrayFactory());
+    }
+
+    public void testGetBufferWithWritableByteBuffer() {
+        runTestGetBuffer("testGetBufferWithWritableByteBuffer",
+                new FusionDictionaryBufferFromWritableByteBufferFactory());
     }
 }
