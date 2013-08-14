@@ -107,7 +107,7 @@ public final class Suggest {
     }
 
     private void addOrReplaceDictionaryInternal(final String key, final Dictionary dict) {
-        if (mOnlyDictionarySetForDebug != null && mOnlyDictionarySetForDebug.contains(key)) {
+        if (mOnlyDictionarySetForDebug != null && !mOnlyDictionarySetForDebug.contains(key)) {
             Log.w(TAG, "Ignore add " + key + " dictionary for debug.");
             return;
         }
