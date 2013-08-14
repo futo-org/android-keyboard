@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputAttributes;
@@ -170,6 +171,55 @@ public final class SettingsValues {
         mIsInternal = Settings.isInternal(prefs);
     }
 
+    // Only for tests
+    private SettingsValues(final Locale locale) {
+        // TODO: locale is saved, but not used yet. May have to change this if tests require.
+        mLocale = locale;
+        mDelayUpdateOldSuggestions = 0;
+        mSymbolsPrecededBySpace = new int[] { '(', '[', '{', '&' };
+        Arrays.sort(mSymbolsPrecededBySpace);
+        mSymbolsFollowedBySpace = new int[] { '.', ',', ';', ':', '!', '?', ')', ']', '}', '&' };
+        Arrays.sort(mSymbolsFollowedBySpace);
+        mWordConnectors = new int[] { '\'', '-' };
+        Arrays.sort(mWordConnectors);
+        final String[] suggestPuncsSpec = new String[] { "!", "?", ",", ":", ";" };
+        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
+        mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
+        mHintToSaveText = "Touch again to save";
+        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
+        mAutoCap = true;
+        mVibrateOn = true;
+        mSoundOn = true;
+        mKeyPreviewPopupOn = true;
+        mSlidingKeyInputPreviewEnabled = true;
+        mVoiceMode = "0";
+        mIncludesOtherImesInLanguageSwitchList = false;
+        mShowsLanguageSwitchKey = true;
+        mUseContactsDict = true;
+        mUseDoubleSpacePeriod = true;
+        mBlockPotentiallyOffensive = true;
+        mAutoCorrectEnabled = true;
+        mBigramPredictionEnabled = true;
+        mKeyLongpressTimeout = 300;
+        mKeypressVibrationDuration = 5;
+        mKeypressSoundVolume = 1;
+        mKeyPreviewPopupDismissDelay = 70;
+        mAutoCorrectionThreshold = 1;
+        mVoiceKeyEnabled = true;
+        mVoiceKeyOnMain = true;
+        mGestureInputEnabled = true;
+        mGestureTrailEnabled = true;
+        mGestureFloatingPreviewTextEnabled = true;
+        mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
+        mSuggestionVisibility = 0;
+        mIsInternal = false;
+    }
+
+    @UsedForTesting
+    public static SettingsValues makeDummySettingsValuesForTest(final Locale locale) {
+        return new SettingsValues(locale);
+    }
+
     public boolean isApplicationSpecifiedCompletionsOn() {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
@@ -192,6 +242,10 @@ public final class SettingsValues {
 
     public boolean isWordConnector(final int code) {
         return Arrays.binarySearch(mWordConnectors, code) >= 0;
+    }
+
+    public boolean isWordCodePoint(final int code) {
+        return Character.isLetter(code) || isWordConnector(code);
     }
 
     public boolean isUsuallyPrecededBySpace(final int code) {
