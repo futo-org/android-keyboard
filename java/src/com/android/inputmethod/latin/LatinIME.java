@@ -1861,6 +1861,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             mHandler.postUpdateSuggestionStrip();
+            if (!mWordComposer.isComposingWord()) {
+                // If we just removed the last character, auto-caps mode may have changed so we
+                // need to re-evaluate.
+                mKeyboardSwitcher.updateShiftState();
+            }
         } else {
             final SettingsValues currentSettings = mSettings.getCurrent();
             if (mLastComposedWord.canRevertCommit()) {
@@ -1948,6 +1953,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord();
             }
+            // We just removed a character. We need to update the auto-caps state.
+            mKeyboardSwitcher.updateShiftState();
         }
     }
 
