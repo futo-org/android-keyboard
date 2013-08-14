@@ -16,7 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_reading_utils.h"
 
-#include "suggest/core/dictionary/byte_array_utils.h"
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 

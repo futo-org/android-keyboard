@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H
-#define LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H
+#ifndef LATINIME_FORMAT_UTILS_H
+#define LATINIME_FORMAT_UTILS_H
 
 #include <stdint.h>
 
@@ -25,12 +25,8 @@ namespace latinime {
 
 /**
  * Methods to handle binary dictionary format version.
- *
- * Currently, we have a file with a similar name, binary_format.h. binary_format.h contains binary
- * reading methods and utility methods for various purposes.
- * On the other hand, this file deals with only about dictionary format version.
  */
-class BinaryDictionaryFormatUtils {
+class FormatUtils {
  public:
     enum FORMAT_VERSION {
         VERSION_2,
@@ -41,11 +37,11 @@ class BinaryDictionaryFormatUtils {
     static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryDictionaryFormatUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(FormatUtils);
 
     static const int DICTIONARY_MINIMUM_SIZE;
     static const uint32_t HEADER_VERSION_2_MAGIC_NUMBER;
     static const int HEADER_VERSION_2_MINIMUM_SIZE;
 };
 } // namespace latinime
-#endif /* LATINIME_BINARY_DICTIONARY_FORMAT_UTILS_H */
+#endif /* LATINIME_FORMAT_UTILS_H */

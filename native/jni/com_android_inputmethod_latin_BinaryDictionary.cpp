@@ -27,10 +27,10 @@
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/suggest_options.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 
 namespace latinime {
@@ -87,8 +87,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         return 0;
     }
     Dictionary *dictionary = 0;
-    if (BinaryDictionaryFormatUtils::UNKNOWN_VERSION
-            == BinaryDictionaryFormatUtils::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
+    if (FormatUtils::UNKNOWN_VERSION
+            == FormatUtils::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
                     static_cast<int>(dictSize))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
         releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);

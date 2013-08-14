@@ -19,19 +19,19 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
 
 /* static */ DictionaryStructureWithBufferPolicy *DictionaryStructureWithBufferPolicyFactory
         ::newDictionaryStructureWithBufferPolicy(const uint8_t *const dictBuf,
                 const int dictSize) {
-    switch (BinaryDictionaryFormatUtils::detectFormatVersion(dictBuf, dictSize)) {
-        case BinaryDictionaryFormatUtils::VERSION_2:
+    switch (FormatUtils::detectFormatVersion(dictBuf, dictSize)) {
+        case FormatUtils::VERSION_2:
             return new PatriciaTriePolicy(dictBuf);
-        case BinaryDictionaryFormatUtils::VERSION_3:
+        case FormatUtils::VERSION_3:
             return new DynamicPatriciaTriePolicy(dictBuf);
         default:
             ASSERT(false);

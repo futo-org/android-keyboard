@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/binary_dictionary_format_utils.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
-#include "suggest/core/dictionary/byte_array_utils.h"
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
@@ -24,21 +24,19 @@ namespace latinime {
  * Dictionary size
  */
 // Any file smaller than this is not a dictionary.
-const int BinaryDictionaryFormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
+const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
 
 /**
  * Format versions
  */
-// The versions of Latin IME that only handle format version 1 only test for the magic
-// number, so we had to change it so that version 2 files would be rejected by older
-// implementations. On this occasion, we made the magic number 32 bits long.
-const uint32_t BinaryDictionaryFormatUtils::HEADER_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+// 32 bit magic number is stored at the beginning of the dictionary header to reject unsupported
+// or obsolete dictionary formats.
+const uint32_t FormatUtils::HEADER_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
-const int BinaryDictionaryFormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
+const int FormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
 
-/* static */ BinaryDictionaryFormatUtils::FORMAT_VERSION
-        BinaryDictionaryFormatUtils::detectFormatVersion(const uint8_t *const dict,
-                const int dictSize) {
+/* static */ FormatUtils::FORMAT_VERSION FormatUtils::detectFormatVersion(
+        const uint8_t *const dict, const int dictSize) {
     // The magic number is stored big-endian.
     // If the dictionary is less than 4 bytes, we can't even read the magic number, so we don't
     // understand this format.
