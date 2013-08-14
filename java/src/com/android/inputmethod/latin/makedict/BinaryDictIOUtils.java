@@ -24,13 +24,13 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -141,20 +141,20 @@ public final class BinaryDictIOUtils {
      * Reads unigrams and bigrams from the binary file.
      * Doesn't store a full memory representation of the dictionary.
      *
-     * @param reader the reader.
+     * @param dictReader the dict reader.
      * @param words the map to store the address as a key and the word as a value.
      * @param frequencies the map to store the address as a key and the frequency as a value.
      * @param bigrams the map to store the address as a key and the list of address as a value.
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
-    public static void readUnigramsAndBigramsBinary(final BinaryDictReader reader,
+    public static void readUnigramsAndBigramsBinary(final BinaryDictReader dictReader,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = BinaryDictDecoder.readHeader(reader.getBuffer());
-        readUnigramsAndBigramsBinaryInner(reader.getBuffer(), header.mHeaderSize, words,
+        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
+        readUnigramsAndBigramsBinaryInner(dictReader.getBuffer(), header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
 
@@ -162,20 +162,20 @@ public final class BinaryDictIOUtils {
      * Gets the address of the last CharGroup of the exact matching word in the dictionary.
      * If no match is found, returns NOT_VALID_WORD.
      *
-     * @param reader the reader.
+     * @param dictReader the dict reader.
      * @param word the word we search for.
      * @return the address of the terminal node.
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    public static int getTerminalPosition(final BinaryDictReader reader,
+    public static int getTerminalPosition(final BinaryDictReader dictReader,
             final String word) throws IOException, UnsupportedFormatException {
-        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         if (buffer.position() != 0) buffer.position(0);
 
-        final FileHeader header = BinaryDictDecoder.readHeader(buffer);
+        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
@@ -510,20 +510,20 @@ public final class BinaryDictIOUtils {
     /**
      * Find a word using the BinaryDictReader.
      *
-     * @param reader the reader
+     * @param dictReader the dict reader
      * @param word the word searched
      * @return the found group
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictReader reader,
+    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictReader dictReader,
             final String word) throws IOException, UnsupportedFormatException {
-        int position = getTerminalPosition(reader, word);
-        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
+        int position = getTerminalPosition(dictReader, word);
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         if (position != FormatSpec.NOT_VALID_WORD) {
             buffer.position(0);
-            final FileHeader header = BinaryDictDecoder.readHeader(buffer);
+            final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
             buffer.position(position);
             return BinaryDictDecoder.readCharGroup(buffer, position, header.mFormatOptions);
         }
@@ -544,16 +544,21 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final FileInputStream inStream = new FileInputStream(file);
-        try {
-            inStream.read(buffer);
-            final BinaryDictDecoder.ByteBufferWrapper wrapper =
-                    new BinaryDictDecoder.ByteBufferWrapper(inStream.getChannel().map(
-                            FileChannel.MapMode.READ_ONLY, offset, length));
-            return BinaryDictDecoder.readHeader(wrapper);
-        } finally {
-            inStream.close();
-        }
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
+        dictReader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFactory() {
+            @Override
+            public FusionDictionaryBufferInterface getFusionDictionaryBuffer(File file)
+                    throws FileNotFoundException, IOException {
+                final FileInputStream inStream = new FileInputStream(file);
+                try {
+                    inStream.read(buffer);
+                    return new ByteArrayWrapper(buffer);
+                } finally {
+                    inStream.close();
+                }
+            }
+        });
+        return BinaryDictDecoder.readHeader(dictReader);
     }
 
     public static FileHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
