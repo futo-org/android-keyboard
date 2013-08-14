@@ -263,6 +263,13 @@ public final class FormatSpec {
     static final int NOT_VALID_WORD = -99;
     static final int SIGNED_CHILDREN_ADDRESS_SIZE = 3;
 
+    static final int UINT8_MAX = 0xFF;
+    static final int UINT16_MAX = 0xFFFF;
+    static final int UINT24_MAX = 0xFFFFFF;
+    static final int SINT24_MAX = 0x7FFFFF;
+    static final int MSB8 = 0x80;
+    static final int MSB24 = 0x800000;
+
     /**
      * Options about file format.
      */

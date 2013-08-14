@@ -449,10 +449,6 @@ public final class BinaryDictInputOutput {
         }
     }
 
-    private static final int UINT8_MAX = 0xFF;
-    private static final int UINT16_MAX = 0xFFFF;
-    private static final int UINT24_MAX = 0xFFFFFF;
-
     /**
      * Compute the size, in bytes, that an address will occupy.
      *
@@ -464,21 +460,17 @@ public final class BinaryDictInputOutput {
      * @return the byte size.
      */
     static int getByteSize(final int address) {
-        assert(address <= UINT24_MAX);
+        assert(address <= FormatSpec.UINT24_MAX);
         if (!hasChildrenAddress(address)) {
             return 0;
-        } else if (Math.abs(address) <= UINT8_MAX) {
+        } else if (Math.abs(address) <= FormatSpec.UINT8_MAX) {
             return 1;
-        } else if (Math.abs(address) <= UINT16_MAX) {
+        } else if (Math.abs(address) <= FormatSpec.UINT16_MAX) {
             return 2;
         } else {
             return 3;
         }
     }
-
-    private static final int SINT24_MAX = 0x7FFFFF;
-    private static final int MSB8 = 0x80;
-    private static final int MSB24 = 0x800000;
 
     // End utility methods.
 
@@ -814,7 +806,8 @@ public final class BinaryDictInputOutput {
             buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
         } else {
             final int absAddress = Math.abs(address);
-            buffer[index++] = (byte)((address < 0 ? MSB8 : 0) | (0xFF & (absAddress >> 16)));
+            buffer[index++] =
+                    (byte)((address < 0 ? FormatSpec.MSB8 : 0) | (0xFF & (absAddress >> 16)));
             buffer[index++] = (byte)(0xFF & (absAddress >> 8));
             buffer[index++] = (byte)(0xFF & absAddress);
         }
@@ -978,8 +971,8 @@ public final class BinaryDictInputOutput {
                 buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
             } else {
                 final int absAddress = Math.abs(address);
-                assert(absAddress <= SINT24_MAX);
-                buffer[index] = (byte)((address < 0 ? MSB8 : 0)
+                assert(absAddress <= FormatSpec.SINT24_MAX);
+                buffer[index] = (byte)((address < 0 ? FormatSpec.MSB8 : 0)
                         | ((absAddress >> 16) & 0xFF));
                 buffer[index + 1] = (byte)((absAddress >> 8) & 0xFF);
                 buffer[index + 2] = (byte)(absAddress & 0xFF);
@@ -1300,8 +1293,8 @@ public final class BinaryDictInputOutput {
         if (options.mSupportsDynamicUpdate) {
             final int address = buffer.readUnsignedInt24();
             if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
-            if ((address & MSB24) != 0) {
-                return -(address & SINT24_MAX);
+            if ((address & FormatSpec.MSB24) != 0) {
+                return -(address & FormatSpec.SINT24_MAX);
             } else {
                 return address;
             }
@@ -1324,8 +1317,8 @@ public final class BinaryDictInputOutput {
             final FormatOptions formatOptions) {
         if (supportsDynamicUpdate(formatOptions)) {
             final int parentAddress = buffer.readUnsignedInt24();
-            final int sign = ((parentAddress & MSB24) != 0) ? -1 : 1;
-            return sign * (parentAddress & SINT24_MAX);
+            final int sign = ((parentAddress & FormatSpec.MSB24) != 0) ? -1 : 1;
+            return sign * (parentAddress & FormatSpec.SINT24_MAX);
         } else {
             return FormatSpec.NO_PARENT_ADDRESS;
         }
