@@ -345,4 +345,14 @@ public final class StringUtils {
         // Otherwise, it doesn't look like an URL.
         return false;
     }
+
+    public static boolean isEmptyStringOrWhiteSpaces(String s) {
+        final int N = codePointCount(s);
+        for (int i = 0; i < N; ++i) {
+            if (!Character.isWhitespace(s.codePointAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
