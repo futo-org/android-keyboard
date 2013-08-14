@@ -26,7 +26,7 @@
 namespace latinime {
 
 void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
-        const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const {
+        DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
@@ -34,7 +34,7 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
     const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
             mDictRoot, &nextPos);
     for (int i = 0; i < childCount; i++) {
-        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, nodeFilter, childDicNodes);
+        nextPos = createAndGetLeavingChildNode(dicNode, nextPos, childDicNodes);
     }
 }
 
@@ -116,8 +116,7 @@ int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
 }
 
 int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
-        const int nodePos,  const NodeFilter *const childrenFilter,
-        DicNodeVector *childDicNodes) const {
+        const int nodePos, DicNodeVector *childDicNodes) const {
     int pos = nodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
@@ -136,14 +135,12 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
         getBigramsStructurePolicy()->skipAllBigrams(&pos);
     }
-    if (!childrenFilter->isFilteredOut(mergedNodeCodePoints[0])) {
-        childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,
-                PatriciaTrieReadingUtils::isTerminal(flags),
-                PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
-                PatriciaTrieReadingUtils::isBlacklisted(flags) ||
-                        PatriciaTrieReadingUtils::isNotAWord(flags),
-                mergedNodeCodePointCount, mergedNodeCodePoints);
-    }
+    childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,
+            PatriciaTrieReadingUtils::isTerminal(flags),
+            PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
+            PatriciaTrieReadingUtils::isBlacklisted(flags) ||
+                    PatriciaTrieReadingUtils::isNotAWord(flags),
+            mergedNodeCodePointCount, mergedNodeCodePoints);
     return pos;
 }
 

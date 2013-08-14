@@ -33,25 +33,12 @@ class DictionaryShortcutsStructurePolicy;
  */
 class DictionaryStructureWithBufferPolicy {
  public:
-    // This provides a filtering method for filtering new node.
-    class NodeFilter {
-     public:
-        virtual bool isFilteredOut(const int codePoint) const = 0;
-
-     protected:
-        NodeFilter() {}
-        virtual ~NodeFilter() {}
-
-     private:
-        DISALLOW_COPY_AND_ASSIGN(NodeFilter);
-    };
-
     virtual ~DictionaryStructureWithBufferPolicy() {}
 
     virtual int getRootPosition() const = 0;
 
     virtual void createAndGetAllChildNodes(const DicNode *const dicNode,
-            const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const = 0;
+            DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int nodePos, const int maxCodePointCount, int *const outCodePoints,

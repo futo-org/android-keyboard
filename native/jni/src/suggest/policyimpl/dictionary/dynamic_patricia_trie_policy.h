@@ -43,7 +43,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     void createAndGetAllChildNodes(const DicNode *const dicNode,
-            const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
+            DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
