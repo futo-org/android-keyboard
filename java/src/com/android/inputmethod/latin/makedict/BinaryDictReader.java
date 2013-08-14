@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictInputUtils.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public class BinaryDictReader {
                 }
             }
             if (buffer != null) {
-                return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
+                return new BinaryDictInputUtils.ByteBufferWrapper(buffer);
             }
             return null;
         }
@@ -103,7 +103,7 @@ public class BinaryDictReader {
                 }
             }
             if (buffer != null) {
-                return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
+                return new BinaryDictInputUtils.ByteBufferWrapper(buffer);
             }
             return null;
         }
