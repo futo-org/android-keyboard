@@ -39,8 +39,6 @@ import java.util.Stack;
 
 public final class BinaryDictIOUtils {
     private static final boolean DBG = false;
-    private static final int MSB24 = 0x800000;
-    private static final int SINT24_MAX = 0x7FFFFF;
     private static final int MAX_JUMPS = 10000;
 
     private BinaryDictIOUtils() {
@@ -921,8 +919,8 @@ public final class BinaryDictIOUtils {
             // reached the end of the array.
             final int linkAddressPosition = buffer.position();
             int nextLink = buffer.readUnsignedInt24();
-            if ((nextLink & MSB24) != 0) {
-                nextLink = -(nextLink & SINT24_MAX);
+            if ((nextLink & FormatSpec.MSB24) != 0) {
+                nextLink = -(nextLink & FormatSpec.SINT24_MAX);
             }
             if (nextLink == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                 /*
