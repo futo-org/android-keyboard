@@ -2555,8 +2555,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mWordComposer.setComposingWord(typedWord, mKeyboardSwitcher.getKeyboard());
-        // TODO: this is in chars but the callee expects code points!
-        mWordComposer.setCursorPositionWithinWord(numberOfCharsInWordBeforeCursor);
+        mWordComposer.setCursorPositionWithinWord(
+                typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
         mConnection.setComposingRegion(
                 mLastSelectionStart - numberOfCharsInWordBeforeCursor,
                 mLastSelectionEnd + range.getNumberOfCharsInWordAfterCursor());
