@@ -1355,10 +1355,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private static boolean isAlphabet(final int code) {
-        return Character.isLetter(code);
-    }
-
     private void onSettingsKeyPressed() {
         if (isShowingOptionDialog()) return;
         showSubtypeSelectorAndSettings();
@@ -2001,8 +1997,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
         // dozen milliseconds. Avoid calling it as much as possible, since we are on the UI
         // thread here.
-        if (!isComposingWord && (isAlphabet(primaryCode)
-                || currentSettings.isWordConnector(primaryCode))
+        if (!isComposingWord && currentSettings.isWordCodePoint(primaryCode)
                 && currentSettings.isSuggestionsRequested(mDisplayOrientation) &&
                 !mConnection.isCursorTouchingWord(currentSettings)) {
             // Reset entirely the composing state anyway, then start composing a new word unless

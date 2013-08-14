@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.latin.settings.SettingsValues;
+
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -181,6 +183,18 @@ public class StringUtilsTests extends AndroidTestCase {
         assertFalse(StringUtils.isIdenticalAfterDowncase("  PI26LIE"));
         assertTrue(StringUtils.isIdenticalAfterUpcase(""));
         assertTrue(StringUtils.isIdenticalAfterDowncase(""));
+    }
+
+    public void testLooksValidForDictionaryInsertion() {
+        final SettingsValues settings =
+                SettingsValues.makeDummySettingsValuesForTest(Locale.ENGLISH);
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("aochaueo", settings));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("", settings));
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("ao-ch'aueo", settings));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("2908743256", settings));
+        assertTrue(StringUtils.looksValidForDictionaryInsertion("31aochaueo", settings));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("akeo  raeoch oerch .", settings));
+        assertFalse(StringUtils.looksValidForDictionaryInsertion("!!!", settings));
     }
 
     private static void checkCapitalize(final String src, final String dst, final String separators,
