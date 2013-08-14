@@ -240,11 +240,12 @@
         <attr name="maxMoreKeysColumn" format="integer" />
         <attr name="backgroundType" format="enum">
             <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
-            <enum name="normal" value="0" />
-            <enum name="functional" value="1" />
-            <enum name="action" value="2" />
-            <enum name="stickyOff" value="3" />
-            <enum name="stickyOn" value="4" />
+            <enum name="empty" value="0" />
+            <enum name="normal" value="1" />
+            <enum name="functional" value="2" />
+            <enum name="action" value="3" />
+            <enum name="stickyOff" value="4" />
+            <enum name="stickyOn" value="5" />
         </attr>
         <!-- The key action flags. -->
         <attr name="keyActionFlags" format="integer">
