@@ -21,8 +21,9 @@ import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.ByteBufferWrapper;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictReader.
+        FusionDictionaryBufferFromWritableByteBufferFactory;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -33,8 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -137,12 +136,12 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private int getWordPosition(final File file, final String word) {
         int position = FormatSpec.NOT_VALID_WORD;
+        final BinaryDictReader reader = new BinaryDictReader(file);
         FileInputStream inStream = null;
         try {
             inStream = new FileInputStream(file);
-            final FusionDictionaryBufferInterface buffer = new ByteBufferWrapper(
-                    inStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length()));
-            position = BinaryDictIOUtils.getTerminalPosition(buffer, word);
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+            position = BinaryDictIOUtils.getTerminalPosition(reader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         } finally {
@@ -158,23 +157,13 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private CharGroupInfo findWordFromFile(final File file, final String word) {
-        FileInputStream inStream = null;
+        final BinaryDictReader reader = new BinaryDictReader(file);
         CharGroupInfo info = null;
         try {
-            inStream = new FileInputStream(file);
-            final FusionDictionaryBufferInterface buffer = new ByteBufferWrapper(
-                    inStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length()));
-            info = BinaryDictIOUtils.findWordFromBuffer(buffer, word);
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+            info = BinaryDictIOUtils.findWordByBinaryDictReader(reader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
         return info;
     }
@@ -183,42 +172,33 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
             final ArrayList<WeightedString> shortcuts) {
-        RandomAccessFile raFile = null;
+        final BinaryDictReader reader = new BinaryDictReader(file);
         BufferedOutputStream outStream = null;
-        FusionDictionaryBufferInterface buffer = null;
         long amountOfTime = -1;
         try {
-            raFile = new RandomAccessFile(file, "rw");
-            buffer = new ByteBufferWrapper(raFile.getChannel().map(
-                    FileChannel.MapMode.READ_WRITE, 0, file.length()));
+            reader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
             outStream = new BufferedOutputStream(new FileOutputStream(file, true));
 
             if (!exist) {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
             }
             final long now = System.nanoTime();
-            DynamicBinaryDictIOUtils.insertWord(buffer, outStream, word, frequency, bigrams,
+            DynamicBinaryDictIOUtils.insertWord(reader, outStream, word, frequency, bigrams,
                     shortcuts, false, false);
             amountOfTime = System.nanoTime() - now;
             outStream.flush();
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
             outStream.close();
-            raFile.close();
         } catch (IOException e) {
+            Log.e(TAG, "Raised an IOException while inserting a word", e);
         } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "Raised an UnsupportedFormatException error while inserting a word", e);
         } finally {
             if (outStream != null) {
                 try {
                     outStream.close();
                 } catch (IOException e) {
-                    // do nothing
-                }
-            }
-            if (raFile != null) {
-                try {
-                    raFile.close();
-                } catch (IOException e) {
-                    // do nothing
+                    Log.e(TAG, "Failed to close the output stream", e);
                 }
             }
         }
@@ -226,45 +206,28 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void deleteWord(final File file, final String word) {
-        RandomAccessFile raFile = null;
-        FusionDictionaryBufferInterface buffer = null;
+        final BinaryDictReader reader = new BinaryDictReader(file);
         try {
-            raFile = new RandomAccessFile(file, "rw");
-            buffer = new ByteBufferWrapper(raFile.getChannel().map(
-                    FileChannel.MapMode.READ_WRITE, 0, file.length()));
-            DynamicBinaryDictIOUtils.deleteWord(buffer, word);
+            reader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
+            DynamicBinaryDictIOUtils.deleteWord(reader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
-        } finally {
-            if (raFile != null) {
-                try {
-                    raFile.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
     }
 
     private void checkReverseLookup(final File file, final String word, final int position) {
-        FileInputStream inStream = null;
+        final BinaryDictReader reader = new BinaryDictReader(file);
         try {
-            inStream = new FileInputStream(file);
-            final FusionDictionaryBufferInterface buffer = new ByteBufferWrapper(
-                    inStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length()));
+            final FusionDictionaryBufferInterface buffer = reader.openAndGetBuffer(
+                    new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
             final FileHeader header = BinaryDictDecoder.readHeader(buffer);
-            assertEquals(word, BinaryDictDecoder.getWordAtAddress(buffer, header.mHeaderSize,
-                    position - header.mHeaderSize, header.mFormatOptions).mWord);
+            assertEquals(word,
+                    BinaryDictDecoder.getWordAtAddress(reader.getBuffer(), header.mHeaderSize,
+                            position - header.mHeaderSize, header.mFormatOptions).mWord);
         } catch (IOException e) {
+            Log.e(TAG, "Raised an IOException while looking up a word", e);
         } catch (UnsupportedFormatException e) {
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+            Log.e(TAG, "Raised an UnsupportedFormatException error while looking up a word", e);
         }
     }
 
