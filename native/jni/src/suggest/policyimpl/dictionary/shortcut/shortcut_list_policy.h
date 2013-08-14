@@ -33,6 +33,9 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     ~ShortcutListPolicy() {}
 
     int getStartPos(const int pos) const {
+        if (pos == NOT_A_DICT_POS) {
+            return NOT_A_DICT_POS;
+        }
         int listPos = pos;
         ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(mShortcutsBuf, &listPos);
         return listPos;
