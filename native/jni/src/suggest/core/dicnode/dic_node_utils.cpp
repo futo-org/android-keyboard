@@ -19,7 +19,6 @@
 #include <cstring>
 
 #include "suggest/core/dicnode/dic_node.h"
-#include "suggest/core/dicnode/dic_node_proximity_filter.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/dictionary/probability_utils.h"
@@ -52,38 +51,16 @@ namespace latinime {
 ///////////////////////////////////
 // Traverse node expansion utils //
 ///////////////////////////////////
-
-/* static */ void DicNodeUtils::createAndGetPassingChildNode(DicNode *dicNode,
-        const DicNodeProximityFilter *const childrenFilter,
-        DicNodeVector *childDicNodes) {
-    // Passing multiple chars node. No need to traverse child
-    const int codePoint = dicNode->getNodeTypedCodePoint();
-    const int baseLowerCaseCodePoint = CharUtils::toBaseLowerCase(codePoint);
-    if (!childrenFilter->isFilteredOut(codePoint)
-            || CharUtils::isIntentionalOmissionCodePoint(baseLowerCaseCodePoint)) {
-        childDicNodes->pushPassingChild(dicNode);
-    }
-}
-
 /* static */ void DicNodeUtils::getAllChildDicNodes(DicNode *dicNode,
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        DicNodeVector *childDicNodes) {
-    getProximityChildDicNodes(dicNode, dictionaryStructurePolicy, 0, 0, false, childDicNodes);
-}
-
-/* static */ void DicNodeUtils::getProximityChildDicNodes(DicNode *dicNode,
-        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
         DicNodeVector *childDicNodes) {
     if (dicNode->isTotalInputSizeExceedingLimit()) {
         return;
     }
-    const DicNodeProximityFilter childrenFilter(pInfoState, pointIndex, exactOnly);
     if (!dicNode->isLeavingNode()) {
-        DicNodeUtils::createAndGetPassingChildNode(dicNode, &childrenFilter, childDicNodes);
+        childDicNodes->pushPassingChild(dicNode);
     } else {
-        dictionaryStructurePolicy->createAndGetAllChildNodes(dicNode,
-                &childrenFilter, childDicNodes);
+        dictionaryStructurePolicy->createAndGetAllChildNodes(dicNode, childDicNodes);
     }
 }
 

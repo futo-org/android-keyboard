@@ -43,7 +43,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     void createAndGetAllChildNodes(const DicNode *const dicNode,
-            const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
+            DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
@@ -79,7 +79,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const ShortcutListPolicy mShortcutListPolicy;
 
     int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
-            const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const;
+            DicNodeVector *const childDicNodes) const;
 };
 } // namespace latinime
 #endif // LATINIME_PATRICIA_TRIE_POLICY_H

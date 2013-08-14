@@ -456,7 +456,6 @@ void Suggest::processDicNodeAsOmission(
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_OMISSION, traverseSession,
                 dicNode, childDicNode, 0 /* multiBigramMap */);
         weightChildNode(traverseSession, childDicNode);
-
         if (!TRAVERSAL->isPossibleOmissionChildNode(traverseSession, dicNode, childDicNode)) {
             continue;
         }
@@ -472,11 +471,14 @@ void Suggest::processDicNodeAsInsertion(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes;
-    DicNodeUtils::getProximityChildDicNodes(dicNode,
-            traverseSession->getDictionaryStructurePolicy(),
-            traverseSession->getProximityInfoState(0), pointIndex + 1, true, &childDicNodes);
+    DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getDictionaryStructurePolicy(),
+            &childDicNodes);
     const int size = childDicNodes.getSizeAndLock();
     for (int i = 0; i < size; i++) {
+        if (traverseSession->getProximityInfoState(0)->getPrimaryCodePointAt(pointIndex + 1)
+                != childDicNodes[i]->getNodeCodePoint()) {
+            continue;
+        }
         DicNode *const childDicNode = childDicNodes[i];
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_INSERTION, traverseSession,
                 dicNode, childDicNode, 0 /* multiBigramMap */);
@@ -491,19 +493,29 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes1;
-    DicNodeUtils::getProximityChildDicNodes(dicNode,
-            traverseSession->getDictionaryStructurePolicy(),
-            traverseSession->getProximityInfoState(0), pointIndex + 1, false, &childDicNodes1);
+    DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getDictionaryStructurePolicy(),
+            &childDicNodes1);
     const int childSize1 = childDicNodes1.getSizeAndLock();
     for (int i = 0; i < childSize1; i++) {
+        const ProximityType matchedId1 = traverseSession->getProximityInfoState(0)
+                ->getProximityType(pointIndex + 1, childDicNodes1[i]->getNodeCodePoint(),
+                        true /* checkProximityChars */);
+        if (!ProximityInfoUtils::isMatchOrProximityChar(matchedId1)) {
+            continue;
+        }
         if (childDicNodes1[i]->hasChildren()) {
             DicNodeVector childDicNodes2;
-            DicNodeUtils::getProximityChildDicNodes(
-                    childDicNodes1[i], traverseSession->getDictionaryStructurePolicy(),
-                    traverseSession->getProximityInfoState(0), pointIndex, false, &childDicNodes2);
+            DicNodeUtils::getAllChildDicNodes(childDicNodes1[i],
+                    traverseSession->getDictionaryStructurePolicy(), &childDicNodes2);
             const int childSize2 = childDicNodes2.getSizeAndLock();
             for (int j = 0; j < childSize2; j++) {
                 DicNode *const childDicNode2 = childDicNodes2[j];
+                const ProximityType matchedId2 = traverseSession->getProximityInfoState(0)
+                        ->getProximityType(pointIndex, childDicNode2->getNodeCodePoint(),
+                                true /* checkProximityChars */);
+                if (!ProximityInfoUtils::isMatchOrProximityChar(matchedId2)) {
+                    continue;
+                }
                 Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TRANSPOSITION,
                         traverseSession, childDicNodes1[i], childDicNode2, 0 /* multiBigramMap */);
                 processExpandedDicNode(traverseSession, childDicNode2);

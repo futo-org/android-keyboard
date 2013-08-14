@@ -29,7 +29,7 @@ namespace latinime {
 const int DynamicPatriciaTriePolicy::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
-        const NodeFilter *const nodeFilter, DicNodeVector *const childDicNodes) const {
+        DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
@@ -52,8 +52,8 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
         for (int i = 0; i < childCount; i++) {
             nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nextPos, MAX_WORD_LENGTH,
                     mergedNodeCodePoints);
-            if (!nodeReader.isDeleted() && !nodeFilter->isFilteredOut(mergedNodeCodePoints[0])) {
-                // Push child node when the node is not deleted and not filtered out.
+            if (!nodeReader.isDeleted()) {
+                // Push child node when the node is not a deleted node.
                 childDicNodes->pushLeavingChild(dicNode, nodeReader.getNodePos(),
                         nodeReader.getChildrenPos(), nodeReader.getProbability(),
                         nodeReader.isTerminal(), nodeReader.hasChildren(),

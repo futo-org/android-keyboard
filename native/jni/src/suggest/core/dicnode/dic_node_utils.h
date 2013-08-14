@@ -24,10 +24,8 @@
 namespace latinime {
 
 class DicNode;
-class DicNodeProximityFilter;
 class DicNodeVector;
 class DictionaryStructureWithBufferPolicy;
-class ProximityInfoState;
 class MultiBigramMap;
 
 class DicNodeUtils {
@@ -47,11 +45,6 @@ class DicNodeUtils {
     static float getBigramNodeImprobability(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const node, MultiBigramMap *const multiBigramMap);
-    // TODO: Move to private
-    static void getProximityChildDicNodes(DicNode *dicNode,
-            const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-            const ProximityInfoState *pInfoState, const int pointIndex, bool exactOnly,
-            DicNodeVector *childDicNodes);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicNodeUtils);
@@ -61,8 +54,6 @@ class DicNodeUtils {
     static int getBigramNodeProbability(
             const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
             const DicNode *const node, MultiBigramMap *multiBigramMap);
-    static void createAndGetPassingChildNode(DicNode *dicNode,
-            const DicNodeProximityFilter *const childrenFilter, DicNodeVector *childDicNodes);
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_UTILS_H
