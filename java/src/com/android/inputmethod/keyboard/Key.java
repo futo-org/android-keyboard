@@ -122,11 +122,12 @@ public class Key implements Comparable<Key> {
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
-    public static final int BACKGROUND_TYPE_NORMAL = 0;
-    public static final int BACKGROUND_TYPE_FUNCTIONAL = 1;
-    public static final int BACKGROUND_TYPE_ACTION = 2;
-    public static final int BACKGROUND_TYPE_STICKY_OFF = 3;
-    public static final int BACKGROUND_TYPE_STICKY_ON = 4;
+    public static final int BACKGROUND_TYPE_EMPTY = 0;
+    public static final int BACKGROUND_TYPE_NORMAL = 1;
+    public static final int BACKGROUND_TYPE_FUNCTIONAL = 2;
+    public static final int BACKGROUND_TYPE_ACTION = 3;
+    public static final int BACKGROUND_TYPE_STICKY_OFF = 4;
+    public static final int BACKGROUND_TYPE_STICKY_ON = 5;
 
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
@@ -175,7 +176,7 @@ public class Key implements Comparable<Key> {
     public Key(final KeyboardParams params, final MoreKeySpec moreKeySpec, final int x, final int y,
             final int width, final int height, final int labelFlags) {
         this(params, moreKeySpec.mLabel, null, moreKeySpec.mIconId, moreKeySpec.mCode,
-                moreKeySpec.mOutputText, x, y, width, height, labelFlags);
+                moreKeySpec.mOutputText, x, y, width, height, labelFlags, BACKGROUND_TYPE_NORMAL);
     }
 
     /**
@@ -183,12 +184,12 @@ public class Key implements Comparable<Key> {
      */
     public Key(final KeyboardParams params, final String label, final String hintLabel,
             final int iconId, final int code, final String outputText, final int x, final int y,
-            final int width, final int height, final int labelFlags) {
+            final int width, final int height, final int labelFlags, final int backgroundType) {
         mHeight = height - params.mVerticalGap;
         mWidth = width - params.mHorizontalGap;
         mHintLabel = hintLabel;
         mLabelFlags = labelFlags;
-        mBackgroundType = BACKGROUND_TYPE_NORMAL;
+        mBackgroundType = backgroundType;
         mActionFlags = 0;
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
@@ -465,6 +466,7 @@ public class Key implements Comparable<Key> {
 
     private static String backgroundName(final int backgroundType) {
         switch (backgroundType) {
+        case BACKGROUND_TYPE_EMPTY: return "empty";
         case BACKGROUND_TYPE_NORMAL: return "normal";
         case BACKGROUND_TYPE_FUNCTIONAL: return "functional";
         case BACKGROUND_TYPE_ACTION: return "action";
@@ -788,6 +790,10 @@ public class Key implements Comparable<Key> {
         android.R.attr.state_pressed
     };
 
+    private final static int[] KEY_STATE_EMPTY = {
+        android.R.attr.state_empty
+    };
+
     // functional normal state (with properties)
     private static final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
             android.R.attr.state_single
@@ -825,6 +831,8 @@ public class Key implements Comparable<Key> {
             return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
         case BACKGROUND_TYPE_STICKY_ON:
             return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
+        case BACKGROUND_TYPE_EMPTY:
+            return mPressed ? KEY_STATE_PRESSED : KEY_STATE_EMPTY;
         default: /* BACKGROUND_TYPE_NORMAL */
             return mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
         }
@@ -842,7 +850,7 @@ public class Key implements Comparable<Key> {
         protected Spacer(final KeyboardParams params, final int x, final int y, final int width,
                 final int height) {
             super(params, null, null, ICON_UNDEFINED, CODE_UNSPECIFIED,
-                    null, x, y, width, height, 0);
+                    null, x, y, width, height, 0, BACKGROUND_TYPE_EMPTY);
         }
     }
 }

@@ -210,7 +210,8 @@ public final class MoreSuggestions extends Keyboard {
                 final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, KeyboardIconsSet.ICON_UNDEFINED, indexInMoreSuggestions,
-                        null, x, y, width, params.mDefaultRowHeight, 0);
+                        null /* outputText */, x, y, width, params.mDefaultRowHeight,
+                        0 /* labelFlags */, Key.BACKGROUND_TYPE_NORMAL);
                 params.markAsEdgeKey(key, index);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(index);
