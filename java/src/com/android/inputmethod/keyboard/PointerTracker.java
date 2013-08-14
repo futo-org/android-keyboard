@@ -64,7 +64,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
         /**
          * Get KeyboardActionListener object that is used to register key code and so on.
-         * @return the KeyboardActionListner for this PointerTracker
+         * @return the KeyboardActionListner for this PointerTracke
          */
         public KeyboardActionListener getKeyboardActionListener();
 
@@ -94,7 +94,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     public interface TimerProxy {
         public void startTypingStateTimer(Key typedKey);
         public boolean isTypingState();
-        public void startKeyRepeatTimer(PointerTracker tracker, int delay);
+        public void startKeyRepeatTimer(PointerTracker tracker, int repeatCount, int delay);
         public void startLongPressTimer(PointerTracker tracker, int delay);
         public void cancelLongPressTimer();
         public void startDoubleTapShiftKeyTimer();
@@ -111,7 +111,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             @Override
             public boolean isTypingState() { return false; }
             @Override
-            public void startKeyRepeatTimer(PointerTracker tracker, int delay) {}
+            public void startKeyRepeatTimer(PointerTracker tracker, int repeatCount, int delay) {}
             @Override
             public void startLongPressTimer(PointerTracker tracker, int delay) {}
             @Override
@@ -490,7 +490,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(final Key key,
-            final boolean isRepeatKey) {
+            final int repeatCount) {
         // While gesture input is going on, this method should be a no-operation. But when gesture
         // input has been canceled, <code>sInGesture</code> and <code>mIsDetectingGesture</code>
         // are set to false. To keep this method is a no-operation,
@@ -504,13 +504,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
                     KeyDetector.printableCode(key),
                     ignoreModifierKey ? " ignoreModifier" : "",
                     key.isEnabled() ? "" : " disabled",
-                    isRepeatKey ? " repeat" : ""));
+                    repeatCount > 0 ? " repeatCount=" + repeatCount : ""));
         }
         if (ignoreModifierKey) {
             return false;
         }
         if (key.isEnabled()) {
-            mListener.onPressKey(key.mCode, isRepeatKey, getActivePointerTrackerCount() == 1);
+            mListener.onPressKey(key.mCode, repeatCount, getActivePointerTrackerCount() == 1);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
             mTimerProxy.startTypingStateTimer(key);
@@ -967,7 +967,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             // This onPress call may have changed keyboard layout. Those cases are detected at
             // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
-            if (callListenerOnPressAndCheckKeyboardLayoutChange(key, false /* isRepeatKey */)) {
+            if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
                 key = onDownKey(x, y, eventTime);
             }
 
@@ -1057,7 +1057,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // at {@link #setKeyboard}. In those cases, we should update key according
         // to the new keyboard layout.
         Key key = newKey;
-        if (callListenerOnPressAndCheckKeyboardLayoutChange(key, false /* isRepeatKey */)) {
+        if (callListenerOnPressAndCheckKeyboardLayoutChange(key, 0 /* repeatCount */)) {
             key = onMoveKey(x, y);
         }
         onMoveToNewKey(key, x, y);
@@ -1413,16 +1413,18 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         // Don't start key repeat when we are in sliding input mode.
         if (mIsInSlidingKeyInput) return;
         detectAndSendKey(key, key.mX, key.mY, SystemClock.uptimeMillis());
-        mTimerProxy.startKeyRepeatTimer(this, sParams.mKeyRepeatStartTimeout);
+        final int startRepeatCount = 1;
+        mTimerProxy.startKeyRepeatTimer(this, startRepeatCount, sParams.mKeyRepeatStartTimeout);
     }
 
-    public void onKeyRepeat(final int code) {
+    public void onKeyRepeat(final int code, final int repeatCount) {
         final Key key = getKey();
         if (key == null || key.mCode != code) {
             return;
         }
-        mTimerProxy.startKeyRepeatTimer(this, sParams.mKeyRepeatInterval);
-        callListenerOnPressAndCheckKeyboardLayoutChange(key, true /* isRepeatKey */);
+        final int nextRepeatCount = repeatCount + 1;
+        mTimerProxy.startKeyRepeatTimer(this, nextRepeatCount, sParams.mKeyRepeatInterval);
+        callListenerOnPressAndCheckKeyboardLayoutChange(key, repeatCount);
         callListenerOnCodeInput(key, code, mKeyX, mKeyY, SystemClock.uptimeMillis());
     }
 

@@ -198,7 +198,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     @Override
     public boolean onLongClick(final View view) {
-        AudioAndHapticFeedbackManager.getInstance().hapticAndAudioFeedback(
+        AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
                 Constants.NOT_A_CODE, this);
         return showMoreSuggestions();
     }
