@@ -1848,24 +1848,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
-            final int length = mWordComposer.size();
-            if (length > 0) {
-                if (mWordComposer.isBatchMode()) {
-                    if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                        final String word = mWordComposer.getTypedWord();
-                        ResearchLogger.latinIME_handleBackspace_batch(word, 1);
-                    }
-                    final String rejectedSuggestion = mWordComposer.getTypedWord();
-                    mWordComposer.reset();
-                    mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
-                } else {
-                    mWordComposer.deleteLast();
+            if (mWordComposer.isBatchMode()) {
+                if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                    final String word = mWordComposer.getTypedWord();
+                    ResearchLogger.latinIME_handleBackspace_batch(word, 1);
                 }
-                mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-                mHandler.postUpdateSuggestionStrip();
+                final String rejectedSuggestion = mWordComposer.getTypedWord();
+                mWordComposer.reset();
+                mWordComposer.setRejectedBatchModeSuggestion(rejectedSuggestion);
             } else {
-                mConnection.deleteSurroundingText(1, 0);
+                mWordComposer.deleteLast();
             }
+            mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            mHandler.postUpdateSuggestionStrip();
         } else {
             final SettingsValues currentSettings = mSettings.getCurrent();
             if (mLastComposedWord.canRevertCommit()) {
@@ -1879,8 +1874,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // Cancel multi-character input: remove the text we just entered.
                 // This is triggered on backspace after a key that inputs multiple characters,
                 // like the smiley key or the .com key.
-                final int length = mEnteredText.length();
-                mConnection.deleteSurroundingText(length, 0);
+                mConnection.deleteSurroundingText(mEnteredText.length(), 0);
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                     ResearchLogger.latinIME_handleBackspace_cancelTextInput(mEnteredText);
                 }
