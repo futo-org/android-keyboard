@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
@@ -219,6 +220,7 @@ public final class StringUtils {
         return true;
     }
 
+    @UsedForTesting
     public static boolean looksValidForDictionaryInsertion(final CharSequence text,
             final SettingsValues settings) {
         if (TextUtils.isEmpty(text)) return false;
