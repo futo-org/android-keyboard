@@ -1923,6 +1923,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
+                final int lengthToDelete = Character.isSupplementaryCodePoint(
+                        mConnection.getCodePointBeforeCursor()) ? 2 : 1;
                 if (mAppWorkAroundsUtils.isBeforeJellyBean()) {
                     // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
                     // a hardware keyboard event on pressing enter or delete. This is bad for many
@@ -1930,15 +1932,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // relying on this behavior so we continue to support it for older apps.
                     sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
                 } else {
-                    mConnection.deleteSurroundingText(1, 0);
+                    mConnection.deleteSurroundingText(lengthToDelete, 0);
                 }
                 if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                    ResearchLogger.latinIME_handleBackspace(1, true /* shouldUncommitLogUnit */);
+                    ResearchLogger.latinIME_handleBackspace(lengthToDelete,
+                            true /* shouldUncommitLogUnit */);
                 }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    mConnection.deleteSurroundingText(1, 0);
+                    final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
+                            mConnection.getCodePointBeforeCursor()) ? 2 : 1;
+                    mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
                     if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                        ResearchLogger.latinIME_handleBackspace(1,
+                        ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
                                 true /* shouldUncommitLogUnit */);
                     }
                 }
@@ -2731,17 +2736,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case Constants.CODE_SWITCH_ALPHA_SYMBOL:
                 AccessibleKeyboardViewProxy.getInstance().notifySymbolsState();
                 break;
-            }
-        }
-
-        if (Constants.CODE_DELETE == primaryCode) {
-            // This is a stopgap solution to avoid leaving a high surrogate alone in a text view.
-            // In the future, we need to deprecate deteleSurroundingText() and have a surrogate
-            // pair-friendly way of deleting characters in InputConnection.
-            // TODO: use getCodePointBeforeCursor instead to improve performance
-            final CharSequence lastChar = mConnection.getTextBeforeCursor(1, 0);
-            if (!TextUtils.isEmpty(lastChar) && Character.isHighSurrogate(lastChar.charAt(0))) {
-                mConnection.deleteSurroundingText(1, 0);
             }
         }
     }
