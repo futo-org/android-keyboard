@@ -87,7 +87,7 @@ public final class BinaryDictIOUtils {
 
             if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
                 p.mNumOfCharGroup = BinaryDictInputOutput.readCharGroupCount(buffer);
-                p.mAddress += BinaryDictInputOutput.getGroupCountSize(p.mNumOfCharGroup);
+                p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
                 p.mPosition = 0;
             }
             if (p.mNumOfCharGroup == 0) {
@@ -101,9 +101,9 @@ public final class BinaryDictIOUtils {
             }
             p.mPosition++;
 
-            final boolean isMovedGroup = BinaryDictInputOutput.isMovedGroup(info.mFlags,
+            final boolean isMovedGroup = isMovedGroup(info.mFlags,
                     formatOptions);
-            final boolean isDeletedGroup = BinaryDictInputOutput.isDeletedGroup(info.mFlags,
+            final boolean isDeletedGroup = isDeletedGroup(info.mFlags,
                     formatOptions);
             if (!isMovedGroup && !isDeletedGroup
                     && info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) {// found word
@@ -130,7 +130,7 @@ public final class BinaryDictIOUtils {
                 p.mAddress = buffer.position();
             }
 
-            if (!isMovedGroup && BinaryDictInputOutput.hasChildrenAddress(info.mChildrenAddress)) {
+            if (!isMovedGroup && hasChildrenAddress(info.mChildrenAddress)) {
                 Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
                 stack.push(childrenPos);
             }
@@ -187,12 +187,10 @@ public final class BinaryDictIOUtils {
                     final int charGroupPos = buffer.position();
                     final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
                             buffer.position(), header.mFormatOptions);
-                    final boolean isMovedGroup =
-                            BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
-                                    header.mFormatOptions);
-                    final boolean isDeletedGroup =
-                            BinaryDictInputOutput.isDeletedGroup(currentInfo.mFlags,
-                                    header.mFormatOptions);
+                    final boolean isMovedGroup = isMovedGroup(currentInfo.mFlags,
+                            header.mFormatOptions);
+                    final boolean isDeletedGroup = isDeletedGroup(currentInfo.mFlags,
+                            header.mFormatOptions);
                     if (isMovedGroup) continue;
                     boolean same = true;
                     for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
@@ -490,8 +488,8 @@ public final class BinaryDictIOUtils {
      */
     static int writeNode(final OutputStream destination, final CharGroupInfo[] infos)
             throws IOException {
-        int size = BinaryDictInputOutput.getGroupCountSize(infos.length);
-        switch (BinaryDictInputOutput.getGroupCountSize(infos.length)) {
+        int size = getGroupCountSize(infos.length);
+        switch (getGroupCountSize(infos.length)) {
             case 1:
                 destination.write((byte)infos.length);
                 break;
@@ -564,6 +562,54 @@ public final class BinaryDictIOUtils {
             return null;
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    /**
+     * Helper method to hide the actual value of the no children address.
+     */
+    public static boolean hasChildrenAddress(final int address) {
+        return FormatSpec.NO_CHILDREN_ADDRESS != address;
+    }
+
+    /**
+     * Helper method to check whether the group is moved.
+     */
+    public static boolean isMovedGroup(final int flags, final FormatOptions options) {
+        return options.mSupportsDynamicUpdate
+                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
+    }
+
+    /**
+     * Helper method to check whether the dictionary can be updated dynamically.
+     */
+    public static boolean supportsDynamicUpdate(final FormatOptions options) {
+        return options.mVersion >= FormatSpec.FIRST_VERSION_WITH_DYNAMIC_UPDATE
+                && options.mSupportsDynamicUpdate;
+    }
+
+    /**
+     * Helper method to check whether the group is deleted.
+     */
+    public static boolean isDeletedGroup(final int flags, final FormatOptions formatOptions) {
+        return formatOptions.mSupportsDynamicUpdate
+                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
+    }
+
+    /**
+     * Compute the binary size of the group count
+     * @param count the group count
+     * @return the size of the group count, either 1 or 2 bytes.
+     */
+    public static int getGroupCountSize(final int count) {
+        if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
+            return 1;
+        } else if (FormatSpec.MAX_CHARGROUPS_IN_A_NODE >= count) {
+            return 2;
+        } else {
+            throw new RuntimeException("Can't have more than "
+                    + FormatSpec.MAX_CHARGROUPS_IN_A_NODE + " groups in a node (found " + count
+                    + ")");
         }
     }
 }

@@ -85,7 +85,7 @@ public final class DynamicBinaryDictIOUtils {
             throw new RuntimeException("this file format does not support parent addresses");
         }
         final int flags = buffer.readUnsignedByte();
-        if (BinaryDictInputOutput.isMovedGroup(flags, formatOptions)) {
+        if (BinaryDictIOUtils.isMovedGroup(flags, formatOptions)) {
             // if the group is moved, the parent address is stored in the destination group.
             // We are guaranteed to process the destination group later, so there is no need to
             // update anything here.
@@ -286,7 +286,7 @@ public final class DynamicBinaryDictIOUtils {
                 address = buffer.position();
                 final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
                         buffer.position(), header.mFormatOptions);
-                final boolean isMovedGroup = BinaryDictInputOutput.isMovedGroup(currentInfo.mFlags,
+                final boolean isMovedGroup = BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags,
                         header.mFormatOptions);
                 if (isMovedGroup) continue;
                 nodeParentAddress = (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS)
