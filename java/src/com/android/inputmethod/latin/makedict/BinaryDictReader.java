@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -79,6 +80,32 @@ public class BinaryDictReader {
                     inStream.close();
                 }
             }
+        }
+    }
+
+    /**
+     * Creates FusionDictionaryBuffer from a RandomAccessFile.
+     */
+    @UsedForTesting
+    public static final class FusionDictionaryBufferFromWritableByteBufferFactory
+            implements FusionDictionaryBufferFactory {
+        @Override
+        public FusionDictionaryBufferInterface getFusionDictionaryBuffer(final File file)
+                throws FileNotFoundException, IOException {
+            RandomAccessFile raFile = null;
+            ByteBuffer buffer = null;
+            try {
+                raFile = new RandomAccessFile(file, "rw");
+                buffer = raFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, file.length());
+            } finally {
+                if (raFile != null) {
+                    raFile.close();
+                }
+            }
+            if (buffer != null) {
+                return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
+            }
+            return null;
         }
     }
 
