@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/core/dictionary/byte_array_utils.h"
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
