@@ -41,7 +41,7 @@ class ProbabilityUtils {
         // the unigram probability to be the median value of the 17th step from the top. A value of
         // 0 for the bigram probability represents the middle of the 16th step from the top,
         // while a value of 15 represents the middle of the top step.
-        // See makedict.BinaryDictInputOutput for details.
+        // See makedict.BinaryDictInputUtils for details.
         const float stepSize = static_cast<float>(MAX_PROBABILITY - unigramProbability)
                 / (1.5f + MAX_BIGRAM_ENCODED_PROBABILITY);
         return unigramProbability

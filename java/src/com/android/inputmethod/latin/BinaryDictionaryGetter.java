@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictInputUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
@@ -231,8 +231,8 @@ final public class BinaryDictionaryGetter {
         try {
             // Read the version of the file
             inStream = new FileInputStream(f);
-            final BinaryDictInputOutput.ByteBufferWrapper buffer =
-                    new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
+            final BinaryDictInputUtils.ByteBufferWrapper buffer =
+                    new BinaryDictInputUtils.ByteBufferWrapper(inStream.getChannel().map(
                             FileChannel.MapMode.READ_ONLY, 0, f.length()));
             final int magic = buffer.readInt();
             if (magic != FormatSpec.MAGIC_NUMBER) {
@@ -241,7 +241,7 @@ final public class BinaryDictionaryGetter {
             final int formatVersion = buffer.readInt();
             final int headerSize = buffer.readInt();
             final HashMap<String, String> options = CollectionUtils.newHashMap();
-            BinaryDictInputOutput.populateOptions(buffer, headerSize, options);
+            BinaryDictInputUtils.populateOptions(buffer, headerSize, options);
 
             final String version = options.get(VERSION_KEY);
             if (null == version) {

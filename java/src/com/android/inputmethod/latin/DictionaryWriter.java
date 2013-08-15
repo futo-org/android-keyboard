@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictOutputUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -87,7 +87,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     @Override
     protected void writeBinaryDictionary(final FileOutputStream out)
             throws IOException, UnsupportedFormatException {
-        BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, FORMAT_OPTIONS);
+        BinaryDictOutputUtils.writeDictionaryBinary(out, mFusionDictionary, FORMAT_OPTIONS);
     }
 
     @Override
