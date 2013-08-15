@@ -69,4 +69,4 @@ else
 fi
 
 # might need more memory, e.g. -Xmx128M
-exec java -ea -classpath "$libpath":"$jarpath" "$classname" "$@"
+exec java -ea -classpath "$libpath":"$jarpath" -Djava.library.path="$libdir" "$classname" "$@"
