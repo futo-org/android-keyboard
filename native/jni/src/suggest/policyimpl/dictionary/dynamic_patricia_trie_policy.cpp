@@ -231,4 +231,22 @@ int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const
     return nodeReader.getBigramsPos();
 }
 
+bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
+        const int probability) {
+    // TODO: Implement.
+    return false;
+}
+
+bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
+        const int *const word1, const int length1, const int probability) {
+    // TODO: Implement.
+    return false;
+}
+
+bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
+        const int *const word1, const int length1) {
+    // TODO: Implement.
+    return false;
+}
+
 } // namespace latinime

@@ -107,7 +107,7 @@ void Dictionary::addUnigramWord(const int *const word, const int length, const i
         AKLOGI("Warning: Dictionary::addUnigramWord() is called for non-updatable dictionary.");
         return;
     }
-    // TODO: Support dynamic update
+    mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, probability);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
@@ -117,7 +117,8 @@ void Dictionary::addBigramWords(const int *const word0, const int length0, const
         AKLOGI("Warning: Dictionary::addBigramWords() is called for non-updatable dictionary.");
         return;
     }
-    // TODO: Support dynamic update
+    mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, word1, length1,
+            probability);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,
@@ -127,7 +128,7 @@ void Dictionary::removeBigramWords(const int *const word0, const int length0,
         AKLOGI("Warning: Dictionary::removeBigramWords() is called for non-updatable dictionary.");
         return;
     }
-    // TODO: Support dynamic update
+    mDictionaryStructureWithBufferPolicy->removeBigramWords(word0, length0, word1, length1);
 }
 
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {

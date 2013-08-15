@@ -59,6 +59,18 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual const DictionaryShortcutsStructurePolicy *getShortcutsStructurePolicy() const = 0;
 
+    // Returns whether the update was success or not.
+    virtual bool addUnigramWord(const int *const word, const int length,
+            const int probability) = 0;
+
+    // Returns whether the update was success or not.
+    virtual bool addBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1, const int probability) = 0;
+
+    // Returns whether the update was success or not.
+    virtual bool removeBigramWords(const int *const word0, const int length0,
+            const int *const word1, const int length1) = 0;
+
  protected:
     DictionaryStructureWithBufferPolicy() {}
 
