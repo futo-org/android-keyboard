@@ -85,7 +85,7 @@ public class KeyboardParams {
     public void onAddKey(final Key newKey) {
         final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
         final boolean isSpacer = key.isSpacer();
-        if (isSpacer && key.mWidth == 0) {
+        if (isSpacer && key.getWidth() == 0) {
             // Ignore zero width {@link Spacer}.
             return;
         }
@@ -94,7 +94,7 @@ public class KeyboardParams {
             return;
         }
         updateHistogram(key);
-        if (key.mCode == Constants.CODE_SHIFT) {
+        if (key.getCode() == Constants.CODE_SHIFT) {
             mShiftKeys.add(key);
         }
         if (key.altCodeWhileTyping()) {
@@ -125,14 +125,14 @@ public class KeyboardParams {
     }
 
     private void updateHistogram(final Key key) {
-        final int height = key.mHeight + mVerticalGap;
+        final int height = key.getHeight() + mVerticalGap;
         final int heightCount = updateHistogramCounter(mHeightHistogram, height);
         if (heightCount > mMaxHeightCount) {
             mMaxHeightCount = heightCount;
             mMostCommonKeyHeight = height;
         }
 
-        final int width = key.mWidth + mHorizontalGap;
+        final int width = key.getWidth() + mHorizontalGap;
         final int widthCount = updateHistogramCounter(mWidthHistogram, width);
         if (widthCount > mMaxWidthCount) {
             mMaxWidthCount = widthCount;

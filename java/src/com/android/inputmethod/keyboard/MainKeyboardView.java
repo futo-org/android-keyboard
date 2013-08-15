@@ -237,7 +237,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 return;
             }
             sendMessageDelayed(
-                    obtainMessage(MSG_REPEAT_KEY, key.mCode, repeatCount, tracker), delay);
+                    obtainMessage(MSG_REPEAT_KEY, key.getCode(), repeatCount, tracker), delay);
         }
 
         public void cancelKeyRepeatTimer() {
@@ -298,7 +298,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             final MainKeyboardView keyboardView = getOuterInstance();
 
             // When user hits the space or the enter key, just cancel the while-typing timer.
-            final int typedCode = typedKey.mCode;
+            final int typedCode = typedKey.getCode();
             if (typedCode == Constants.CODE_SPACE || typedCode == Constants.CODE_ENTER) {
                 if (isTyping) {
                     startWhileTypingFadeinAnimation(keyboardView);
@@ -807,11 +807,11 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         // The key preview is placed vertically above the top edge of the parent key with an
         // arbitrary offset.
-        final int previewY = key.mY - previewHeight + mKeyPreviewOffset
+        final int previewY = key.getY() - previewHeight + mKeyPreviewOffset
                 + CoordinateUtils.y(mOriginCoords);
 
         if (background != null) {
-            final int hasMoreKeys = (key.mMoreKeys != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
+            final int hasMoreKeys = (key.getMoreKeys() != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
             background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
             background.setAlpha(PREVIEW_ALPHA);
         }
@@ -903,7 +903,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private MoreKeysPanel onCreateMoreKeysPanel(final Key key, final Context context) {
-        if (key.mMoreKeys == null) {
+        if (key.getMoreKeys() == null) {
             return null;
         }
         Keyboard moreKeysKeyboard = mMoreKeysKeyboardCache.get(key);
@@ -938,7 +938,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
         final KeyboardActionListener listener = mKeyboardActionListener;
         if (key.hasNoPanelAutoMoreKey()) {
-            final int moreKeyCode = key.mMoreKeys[0].mCode;
+            final int moreKeyCode = key.getMoreKeys()[0].mCode;
             tracker.onLongPressed();
             listener.onPressKey(moreKeyCode, 0 /* repeatCount */, true /* isSinglePointer */);
             listener.onCodeInput(moreKeyCode,
@@ -946,7 +946,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
             listener.onReleaseKey(moreKeyCode, false /* withSliding */);
             return;
         }
-        final int code = key.mCode;
+        final int code = key.getCode();
         if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
             if (listener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
@@ -972,13 +972,13 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         // keys keyboard is placed at the touch point of the parent key.
         final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint && !keyPreviewEnabled)
                 ? CoordinateUtils.x(lastCoords)
-                : key.mX + key.mWidth / 2;
+                : key.getX() + key.getWidth() / 2;
         // The more keys keyboard is usually vertically aligned with the top edge of the parent key
         // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
         // aligned with the bottom edge of the visible part of the key preview.
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY = key.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
+        final int pointY = key.getY() + mKeyPreviewDrawParams.mPreviewVisibleOffset;
         moreKeysPanel.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         tracker.onShowMoreKeysPanel(moreKeysPanel);
     }
@@ -1174,13 +1174,14 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
-        if (key.mCode == Constants.CODE_SPACE) {
+        final int code = key.getCode();
+        if (code == Constants.CODE_SPACE) {
             drawSpacebar(key, canvas, paint);
             // Whether space key needs to show the "..." popup hint for special purposes
             if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
-        } else if (key.mCode == Constants.CODE_LANGUAGE_SWITCH) {
+        } else if (code == Constants.CODE_LANGUAGE_SWITCH) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
             drawKeyPopupHint(key, canvas, paint, params);
         } else {
@@ -1228,8 +1229,8 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     }
 
     private void drawSpacebar(final Key key, final Canvas canvas, final Paint paint) {
-        final int width = key.mWidth;
-        final int height = key.mHeight;
+        final int width = key.getWidth();
+        final int height = key.getHeight();
 
         // If input language are explicitly selected.
         if (mNeedsToDisplayLanguage) {

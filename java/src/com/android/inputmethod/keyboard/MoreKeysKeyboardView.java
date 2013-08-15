@@ -127,7 +127,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     public void onUpEvent(final int x, final int y, final int pointerId, final long eventTime) {
         if (mCurrentKey != null && mActivePointerId == pointerId) {
             updateReleaseKeyGraphics(mCurrentKey);
-            onCodeInput(mCurrentKey.mCode, x, y);
+            onCodeInput(mCurrentKey.getCode(), x, y);
             mCurrentKey = null;
         }
     }

@@ -96,7 +96,7 @@ public class ProximityInfo {
 
     private static boolean needsProximityInfo(final Key key) {
         // Don't include special keys into ProximityInfo.
-        return key.mCode >= Constants.CODE_SPACE;
+        return key.getCode() >= Constants.CODE_SPACE;
     }
 
     private static int getProximityInfoKeysCount(final Key[] keys) {
@@ -122,7 +122,7 @@ public class ProximityInfo {
                 if (!needsProximityInfo(neighborKey)) {
                     continue;
                 }
-                proximityCharsArray[infoIndex] = neighborKey.mCode;
+                proximityCharsArray[infoIndex] = neighborKey.getCode();
                 infoIndex++;
             }
         }
@@ -159,11 +159,11 @@ public class ProximityInfo {
             if (!needsProximityInfo(key)) {
                 continue;
             }
-            keyXCoordinates[infoIndex] = key.mX;
-            keyYCoordinates[infoIndex] = key.mY;
-            keyWidths[infoIndex] = key.mWidth;
-            keyHeights[infoIndex] = key.mHeight;
-            keyCharCodes[infoIndex] = key.mCode;
+            keyXCoordinates[infoIndex] = key.getX();
+            keyYCoordinates[infoIndex] = key.getY();
+            keyWidths[infoIndex] = key.getWidth();
+            keyHeights[infoIndex] = key.getHeight();
+            keyCharCodes[infoIndex] = key.getCode();
             infoIndex++;
         }
 
@@ -183,7 +183,7 @@ public class ProximityInfo {
                 if (!needsProximityInfo(key)) {
                     continue;
                 }
-                final Rect hitBox = key.mHitBox;
+                final Rect hitBox = key.getHitBox();
                 sweetSpotCenterXs[infoIndex] = hitBox.exactCenterX();
                 sweetSpotCenterYs[infoIndex] = hitBox.exactCenterY();
                 sweetSpotRadii[infoIndex] = defaultRadius;
@@ -204,7 +204,7 @@ public class ProximityInfo {
                             "  [%2d] row=%d x/y/r=%7.2f/%7.2f/%5.2f %s code=%s", infoIndex, row,
                             sweetSpotCenterXs[infoIndex], sweetSpotCenterYs[infoIndex],
                             sweetSpotRadii[infoIndex], (row < rows ? "correct" : "default"),
-                            Constants.printableCode(key.mCode)));
+                            Constants.printableCode(key.getCode())));
                 }
                 infoIndex++;
             }
@@ -322,19 +322,21 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
   have to align this on the center of the key. Hence, we don't need a separate value for
   bottomPixelWithinThreshold and call this yEnd right away.
 */
-            final int topPixelWithinThreshold = key.mY - threshold;
+            final int keyX = key.getX();
+            final int keyY = key.getY();
+            final int topPixelWithinThreshold = keyY - threshold;
             final int yDeltaToGrid = topPixelWithinThreshold % mCellHeight;
             final int yMiddleOfTopCell = topPixelWithinThreshold - yDeltaToGrid + halfCellHeight;
             final int yStart = Math.max(halfCellHeight,
                     yMiddleOfTopCell + (yDeltaToGrid <= halfCellHeight ? 0 : mCellHeight));
-            final int yEnd = Math.min(fullGridHeight, key.mY + key.mHeight + threshold);
+            final int yEnd = Math.min(fullGridHeight, keyY + key.getHeight() + threshold);
 
-            final int leftPixelWithinThreshold = key.mX - threshold;
+            final int leftPixelWithinThreshold = keyX - threshold;
             final int xDeltaToGrid = leftPixelWithinThreshold % mCellWidth;
             final int xMiddleOfLeftCell = leftPixelWithinThreshold - xDeltaToGrid + halfCellWidth;
             final int xStart = Math.max(halfCellWidth,
                     xMiddleOfLeftCell + (xDeltaToGrid <= halfCellWidth ? 0 : mCellWidth));
-            final int xEnd = Math.min(fullGridWidth, key.mX + key.mWidth + threshold);
+            final int xEnd = Math.min(fullGridWidth, keyX + key.getWidth() + threshold);
 
             int baseIndexOfCurrentRow = (yStart / mCellHeight) * mGridWidth + (xStart / mCellWidth);
             for (int centerY = yStart; centerY <= yEnd; centerY += mCellHeight) {
@@ -372,7 +374,7 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
             if (index >= destLength) {
                 break;
             }
-            final int code = key.mCode;
+            final int code = key.getCode();
             if (code <= Constants.CODE_SPACE) {
                 break;
             }

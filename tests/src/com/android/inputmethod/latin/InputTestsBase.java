@@ -207,8 +207,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         //mLatinIME.onPressKey(codePoint, 0 /* repeatCount */, true /* isSinglePointer */);
         final Key key = mKeyboard.getKey(codePoint);
         if (key != null) {
-            final int x = key.mX + key.mWidth / 2;
-            final int y = key.mY + key.mHeight / 2;
+            final int x = key.getX() + key.getWidth() / 2;
+            final int y = key.getY() + key.getHeight() / 2;
             mLatinIME.onCodeInput(codePoint, x, y);
             return;
         }
