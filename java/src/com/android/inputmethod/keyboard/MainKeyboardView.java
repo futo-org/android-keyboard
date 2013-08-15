@@ -638,7 +638,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         mKeyPreviewLingerTimeout = delay;
     }
 
-
     private void locatePreviewPlacerView() {
         if (mPreviewPlacerView.getParent() != null) {
             return;

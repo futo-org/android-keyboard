@@ -111,22 +111,21 @@ public final class KeyboardRow {
     }
 
     public float getKeyX(final TypedArray keyAttr) {
-        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
-            final float keyXPos = keyAttr.getFraction(R.styleable.Keyboard_Key_keyXPos,
-                    mParams.mBaseWidth, mParams.mBaseWidth, 0);
-            if (keyXPos < 0) {
-                // If keyXPos is negative, the actual x-coordinate will be
-                // keyboardWidth + keyXPos.
-                // keyXPos shouldn't be less than mCurrentX because drawable area for this
-                // key starts at mCurrentX. Or, this key will overlaps the adjacent key on
-                // its left hand side.
-                final int keyboardRightEdge = mParams.mOccupiedWidth - mParams.mRightPadding;
-                return Math.max(keyXPos + keyboardRightEdge, mCurrentX);
-            } else {
-                return keyXPos + mParams.mLeftPadding;
-            }
+        if (keyAttr == null || !keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
+            return mCurrentX;
         }
-        return mCurrentX;
+        final float keyXPos = keyAttr.getFraction(R.styleable.Keyboard_Key_keyXPos,
+                mParams.mBaseWidth, mParams.mBaseWidth, 0);
+        if (keyXPos >= 0) {
+            return keyXPos + mParams.mLeftPadding;
+        }
+        // If keyXPos is negative, the actual x-coordinate will be
+        // keyboardWidth + keyXPos.
+        // keyXPos shouldn't be less than mCurrentX because drawable area for this
+        // key starts at mCurrentX. Or, this key will overlaps the adjacent key on
+        // its left hand side.
+        final int keyboardRightEdge = mParams.mOccupiedWidth - mParams.mRightPadding;
+        return Math.max(keyXPos + keyboardRightEdge, mCurrentX);
     }
 
     public float getKeyWidth(final TypedArray keyAttr) {
@@ -134,6 +133,9 @@ public final class KeyboardRow {
     }
 
     public float getKeyWidth(final TypedArray keyAttr, final float keyXPos) {
+        if (keyAttr == null) {
+            return mDefaultKeyWidth;
+        }
         final int widthType = ResourceUtils.getEnumValue(keyAttr,
                 R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
         switch (widthType) {
