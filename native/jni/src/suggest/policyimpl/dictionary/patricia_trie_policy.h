@@ -24,7 +24,6 @@
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
-#include "suggest/policyimpl/dictionary/utils/mmaped_buffer.h"
 
 namespace latinime {
 
@@ -33,14 +32,11 @@ class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const MmapedBuffer *const buffer)
-            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer()),
-              mDictRoot(mBuffer->getBuffer() + mHeaderPolicy.getSize()),
+    PatriciaTriePolicy(const uint8_t *const dictBuf)
+            : mHeaderPolicy(dictBuf), mDictRoot(dictBuf + mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
 
-    ~PatriciaTriePolicy() {
-        delete mBuffer;
-    }
+    ~PatriciaTriePolicy() {}
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -75,29 +71,25 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     bool addUnigramWord(const int *const word, const int length, const int probability) {
-        // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
+        // This dictionary format is not updatable.
         return false;
     }
 
     bool addBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1, const int probability) {
-        // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
+        // This dictionary format is not updatable.
         return false;
     }
 
     bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1) {
-        // This method should not be called for non-updatable dictionary.
-        AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
+        // This dictionary format is not updatable.
         return false;
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
-    const MmapedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
     const uint8_t *const mDictRoot;
     const BigramListPolicy mBigramListPolicy;

@@ -233,30 +233,18 @@ int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const
 
 bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
         const int probability) {
-    if (!mBuffer->isUpdatable()) {
-        AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
-        return false;
-    }
     // TODO: Implement.
     return false;
 }
 
 bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1, const int probability) {
-    if (!mBuffer->isUpdatable()) {
-        AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
-        return false;
-    }
     // TODO: Implement.
     return false;
 }
 
 bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
-    if (!mBuffer->isUpdatable()) {
-        AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
-        return false;
-    }
     // TODO: Implement.
     return false;
 }
