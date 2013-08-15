@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
@@ -99,7 +99,7 @@ public final class BinaryDictOffdeviceUtils {
         // over and over, ending in a stack overflow. Hence we limit the depth at which we try
         // decoding the file.
         if (depth > MAX_DECODE_DEPTH) return null;
-        if (BinaryDictInputOutput.isBinaryDictionary(src)) {
+        if (BinaryDictDecoder.isBinaryDictionary(src)) {
             spec.mFile = src;
             return spec;
         }
@@ -194,7 +194,7 @@ public final class BinaryDictOffdeviceUtils {
                         System.out.println("Packaging : " + decodedSpec.describeChain());
                         System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                     }
-                    return BinaryDictInputOutput.readDictionaryBinary(reader, null);
+                    return BinaryDictDecoder.readDictionaryBinary(reader, null);
                 }
             }
         } catch (IOException e) {

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 
 /**
  * This class provides an implementation for the FusionDictionary buffer interface that is backed

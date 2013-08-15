@@ -18,8 +18,8 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.CharEncoding;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
@@ -86,7 +86,7 @@ public final class BinaryDictIOUtils {
             if (index != p.mLength) index = p.mLength;
 
             if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
-                p.mNumOfCharGroup = BinaryDictInputOutput.readCharGroupCount(buffer);
+                p.mNumOfCharGroup = BinaryDictDecoder.readCharGroupCount(buffer);
                 p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
                 p.mPosition = 0;
             }
@@ -94,7 +94,7 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            CharGroupInfo info = BinaryDictInputOutput.readCharGroup(buffer,
+            CharGroupInfo info = BinaryDictDecoder.readCharGroup(buffer,
                     p.mAddress - headerSize, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
@@ -153,7 +153,7 @@ public final class BinaryDictIOUtils {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = BinaryDictInputOutput.readHeader(reader.getBuffer());
+        final FileHeader header = BinaryDictDecoder.readHeader(reader.getBuffer());
         readUnigramsAndBigramsBinaryInner(reader.getBuffer(), header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
@@ -174,18 +174,18 @@ public final class BinaryDictIOUtils {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         if (buffer.position() != 0) buffer.position(0);
 
-        final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+        final FileHeader header = BinaryDictDecoder.readHeader(buffer);
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
-                final int charGroupCount = BinaryDictInputOutput.readCharGroupCount(buffer);
+                final int charGroupCount = BinaryDictDecoder.readCharGroupCount(buffer);
                 boolean foundNextCharGroup = false;
                 for (int i = 0; i < charGroupCount; ++i) {
                     final int charGroupPos = buffer.position();
-                    final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
+                    final CharGroupInfo currentInfo = BinaryDictDecoder.readCharGroup(buffer,
                             buffer.position(), header.mFormatOptions);
                     final boolean isMovedGroup = isMovedGroup(currentInfo.mFlags,
                             header.mFormatOptions);
@@ -271,7 +271,7 @@ public final class BinaryDictIOUtils {
      */
     private static int writeVariableAddress(final OutputStream destination, final int value)
             throws IOException {
-        switch (BinaryDictInputOutput.getByteSize(value)) {
+        switch (BinaryDictEncoder.getByteSize(value)) {
         case 1:
             destination.write((byte)value);
             break;
@@ -285,15 +285,15 @@ public final class BinaryDictIOUtils {
             destination.write((byte)(0xFF & value));
             break;
         }
-        return BinaryDictInputOutput.getByteSize(value);
+        return BinaryDictEncoder.getByteSize(value);
     }
 
     static void skipCharGroup(final FusionDictionaryBufferInterface buffer,
             final FormatOptions formatOptions) {
         final int flags = buffer.readUnsignedByte();
-        BinaryDictInputOutput.readParentAddress(buffer, formatOptions);
+        BinaryDictDecoder.readParentAddress(buffer, formatOptions);
         skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        BinaryDictInputOutput.readChildrenAddress(buffer, flags, formatOptions);
+        BinaryDictDecoder.readChildrenAddress(buffer, flags, formatOptions);
         if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
         if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
             final int shortcutsSize = buffer.readUnsignedShort();
@@ -411,14 +411,14 @@ public final class BinaryDictIOUtils {
 
         if (info.mShortcutTargets != null && info.mShortcutTargets.size() > 0) {
             final int shortcutListSize =
-                    BinaryDictInputOutput.getShortcutListSize(info.mShortcutTargets);
+                    BinaryDictEncoder.getShortcutListSize(info.mShortcutTargets);
             destination.write((byte)(shortcutListSize >> 8));
             destination.write((byte)(shortcutListSize & 0xFF));
             size += 2;
             final Iterator<WeightedString> shortcutIterator = info.mShortcutTargets.iterator();
             while (shortcutIterator.hasNext()) {
                 final WeightedString target = shortcutIterator.next();
-                destination.write((byte)BinaryDictInputOutput.makeShortcutFlags(
+                destination.write((byte)BinaryDictEncoder.makeShortcutFlags(
                         shortcutIterator.hasNext(), target.mFrequency));
                 size++;
                 size += writeString(destination, target.mWord);
@@ -427,7 +427,7 @@ public final class BinaryDictIOUtils {
 
         if (info.mBigrams != null) {
             // TODO: Consolidate this code with the code that computes the size of the bigram list
-            //        in BinaryDictionaryInputOutput#computeActualNodeSize
+            //        in BinaryDictEncoder#computeActualNodeSize
             for (int i = 0; i < info.mBigrams.size(); ++i) {
 
                 final int bigramFrequency = info.mBigrams.get(i).mFrequency;
@@ -437,7 +437,7 @@ public final class BinaryDictIOUtils {
                 final int bigramOffset = info.mBigrams.get(i).mAddress - (info.mOriginalAddress
                         + size);
                 bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0;
-                switch (BinaryDictInputOutput.getByteSize(bigramOffset)) {
+                switch (BinaryDictEncoder.getByteSize(bigramOffset)) {
                 case 1:
                     bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
                     break;
@@ -461,18 +461,18 @@ public final class BinaryDictIOUtils {
      */
     static int computeGroupSize(final CharGroupInfo info, final FormatOptions formatOptions) {
         int size = FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                + BinaryDictInputOutput.getGroupCharactersSize(info.mCharacters)
-                + BinaryDictInputOutput.getChildrenAddressSize(info.mFlags, formatOptions);
+                + BinaryDictEncoder.getGroupCharactersSize(info.mCharacters)
+                + getChildrenAddressSize(info.mFlags, formatOptions);
         if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
             size += FormatSpec.GROUP_FREQUENCY_SIZE;
         }
         if (info.mShortcutTargets != null && !info.mShortcutTargets.isEmpty()) {
-            size += BinaryDictInputOutput.getShortcutListSize(info.mShortcutTargets);
+            size += BinaryDictEncoder.getShortcutListSize(info.mShortcutTargets);
         }
         if (info.mBigrams != null) {
             for (final PendingAttribute attr : info.mBigrams) {
                 size += FormatSpec.GROUP_FLAGS_SIZE;
-                size += BinaryDictInputOutput.getByteSize(attr.mAddress);
+                size += BinaryDictEncoder.getByteSize(attr.mAddress);
             }
         }
         return size;
@@ -520,9 +520,9 @@ public final class BinaryDictIOUtils {
         int position = getTerminalPosition(buffer, word);
         if (position != FormatSpec.NOT_VALID_WORD) {
             buffer.position(0);
-            final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+            final FileHeader header = BinaryDictDecoder.readHeader(buffer);
             buffer.position(position);
-            return BinaryDictInputOutput.readCharGroup(buffer, position, header.mFormatOptions);
+            return BinaryDictDecoder.readCharGroup(buffer, position, header.mFormatOptions);
         }
         return null;
     }
@@ -544,10 +544,10 @@ public final class BinaryDictIOUtils {
         final FileInputStream inStream = new FileInputStream(file);
         try {
             inStream.read(buffer);
-            final BinaryDictInputOutput.ByteBufferWrapper wrapper =
-                    new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
+            final BinaryDictDecoder.ByteBufferWrapper wrapper =
+                    new BinaryDictDecoder.ByteBufferWrapper(inStream.getChannel().map(
                             FileChannel.MapMode.READ_ONLY, offset, length));
-            return BinaryDictInputOutput.readHeader(wrapper);
+            return BinaryDictDecoder.readHeader(wrapper);
         } finally {
             inStream.close();
         }
@@ -610,6 +610,22 @@ public final class BinaryDictIOUtils {
             throw new RuntimeException("Can't have more than "
                     + FormatSpec.MAX_CHARGROUPS_IN_A_NODE + " groups in a node (found " + count
                     + ")");
+        }
+    }
+
+    static int getChildrenAddressSize(final int optionFlags,
+            final FormatOptions formatOptions) {
+        if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+        switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+                return 1;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+                return 2;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+                return 3;
+            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+            default:
+                return 0;
         }
     }
 }

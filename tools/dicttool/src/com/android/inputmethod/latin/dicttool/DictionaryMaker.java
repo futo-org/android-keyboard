@@ -16,7 +16,8 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
+import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
 import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -177,7 +178,7 @@ public class DictionaryMaker {
                                 inputUnigramXml = filename;
                             } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
                                 inputCombined = filename;
-                            } else if (BinaryDictInputOutput.isBinaryDictionary(filename)) {
+                            } else if (BinaryDictDecoder.isBinaryDictionary(filename)) {
                                 inputBinary = filename;
                             } else {
                                 throw new IllegalArgumentException(
@@ -199,7 +200,7 @@ public class DictionaryMaker {
                     }
                 } else {
                     if (null == inputBinary && null == inputUnigramXml) {
-                        if (BinaryDictInputOutput.isBinaryDictionary(arg)) {
+                        if (BinaryDictDecoder.isBinaryDictionary(arg)) {
                             inputBinary = arg;
                         } else if (CombinedInputOutput.isCombinedDictionary(arg)) {
                             inputCombined = arg;
@@ -269,7 +270,7 @@ public class DictionaryMaker {
         final File file = new File(binaryFilename);
         final BinaryDictReader reader = new BinaryDictReader(file);
         reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-        return BinaryDictInputOutput.readDictionaryBinary(reader, null);
+        return BinaryDictDecoder.readDictionaryBinary(reader, null);
     }
 
     /**
@@ -358,7 +359,7 @@ public class DictionaryMaker {
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
         final FormatSpec.FormatOptions formatOptions = new FormatSpec.FormatOptions(version);
-        BinaryDictInputOutput.writeDictionaryBinary(new FileOutputStream(outputFilename), dict,
+        BinaryDictEncoder.writeDictionaryBinary(new FileOutputStream(outputFilename), dict,
                 formatOptions);
     }
 
