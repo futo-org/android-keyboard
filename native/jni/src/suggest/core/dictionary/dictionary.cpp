@@ -23,19 +23,23 @@
 #include "defines.h"
 #include "suggest/core/dictionary/bigram_dictionary.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
+#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
 #include "utils/log_utils.h"
 
 namespace latinime {
 
-Dictionary::Dictionary(JNIEnv *env,
-        DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPolicy)
-        : mDictionaryStructureWithBufferPolicy(dictionaryStructureWithBufferPolicy),
+Dictionary::Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd,
+        int dictBufOffset, bool isUpdatable)
+        : mBinaryDictionaryInfo(static_cast<const uint8_t *>(dict), dictSize, mmapFd,
+                dictBufOffset, isUpdatable),
+          mDictionaryStructureWithBufferPolicy(DictionaryStructureWithBufferPolicyFactory
+                  ::newDictionaryStructureWithBufferPolicy(
+                          static_cast<const uint8_t *>(dict), dictSize)),
           mBigramDictionary(new BigramDictionary(mDictionaryStructureWithBufferPolicy)),
           mGestureSuggest(new Suggest(GestureSuggestPolicyFactory::getGestureSuggestPolicy())),
           mTypingSuggest(new Suggest(TypingSuggestPolicyFactory::getTypingSuggestPolicy())) {
@@ -98,17 +102,32 @@ bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, 
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::addUnigramWord() is called for non-updatable dictionary.");
+        return;
+    }
     mDictionaryStructureWithBufferPolicy->addUnigramWord(word, length, probability);
 }
 
 void Dictionary::addBigramWords(const int *const word0, const int length0, const int *const word1,
         const int length1, const int probability) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::addBigramWords() is called for non-updatable dictionary.");
+        return;
+    }
     mDictionaryStructureWithBufferPolicy->addBigramWords(word0, length0, word1, length1,
             probability);
 }
 
 void Dictionary::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
+    if (!mBinaryDictionaryInfo.isDynamicallyUpdatable()) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: Dictionary::removeBigramWords() is called for non-updatable dictionary.");
+        return;
+    }
     mDictionaryStructureWithBufferPolicy->removeBigramWords(word0, length0, word1, length1);
 }
 
@@ -136,8 +155,9 @@ void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
             dateStringCharBuffer, BUFFER_SIZE);
 
     LogUtils::logToJava(env,
-            "Dictionary info: dictionary = %s ; version = %s ; date = %s",
-            dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer);
+            "Dictionary info: dictionary = %s ; version = %s ; date = %s ; filesize = %i",
+            dictionaryIdCharBuffer, versionStringCharBuffer, dateStringCharBuffer,
+            mBinaryDictionaryInfo.getDictSize());
 }
 
 } // namespace latinime
