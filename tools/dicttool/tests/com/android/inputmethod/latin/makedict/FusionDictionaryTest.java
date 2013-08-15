@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Unit tests for BinaryDictInputOutput.
+ * Unit tests for FusionDictionary.
  */
 public class FusionDictionaryTest extends TestCase {
     private static final ArrayList<String> sWords = new ArrayList<String>();

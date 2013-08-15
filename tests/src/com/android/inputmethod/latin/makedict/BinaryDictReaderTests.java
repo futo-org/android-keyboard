@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.BinaryDictReader.FusionDictionaryBufferFactory;
 import com.android.inputmethod.latin.makedict.BinaryDictReader.
         FusionDictionaryBufferFromByteArrayFactory;

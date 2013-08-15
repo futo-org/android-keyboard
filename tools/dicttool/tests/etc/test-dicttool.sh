@@ -24,5 +24,5 @@ fi
 find out -name "dicttool_aosp*" -exec rm -rf {} \; > /dev/null 2>&1
 mmm -j8 external/junit
 DICTTOOL_UNITTEST=true mmm -j8 packages/inputmethods/LatinIME/tools/dicttool
-java -classpath ${ANDROID_HOST_OUT}/framework/junit.jar:${ANDROID_HOST_OUT}/framework/dicttool_aosp.jar junit.textui.TestRunner com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest
+java -classpath ${ANDROID_HOST_OUT}/framework/junit.jar:${ANDROID_HOST_OUT}/framework/dicttool_aosp.jar junit.textui.TestRunner com.android.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests
 java -classpath ${ANDROID_HOST_OUT}/framework/junit.jar:${ANDROID_HOST_OUT}/framework/dicttool_aosp.jar junit.textui.TestRunner com.android.inputmethod.latin.dicttool.BinaryDictOffdeviceUtilsTests
