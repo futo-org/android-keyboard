@@ -34,7 +34,7 @@ const int HeaderReadingUtils::HEADER_SIZE_FIELD_SIZE = 4;
 const HeaderReadingUtils::DictionaryFlags
         HeaderReadingUtils::NO_FLAGS = 0;
 // Flags for special processing
-// Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
+// Those *must* match the flags in makedict (FormatSpec#*_PROCESSING_FLAG) or
 // something very bad (like, the apocalypse) will happen. Please update both at the same time.
 const HeaderReadingUtils::DictionaryFlags
         HeaderReadingUtils::GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
