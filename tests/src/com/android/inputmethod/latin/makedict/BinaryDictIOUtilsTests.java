@@ -21,8 +21,8 @@ import android.test.MoreAsserts;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputUtils.ByteBufferWrapper;
-import com.android.inputmethod.latin.makedict.BinaryDictInputUtils.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.ByteBufferWrapper;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -114,10 +114,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static void printNode(final FusionDictionaryBufferInterface buffer,
             final FormatSpec.FormatOptions formatOptions) {
         Log.d(TAG, "Node at " + buffer.position());
-        final int count = BinaryDictInputUtils.readCharGroupCount(buffer);
+        final int count = BinaryDictInputOutput.readCharGroupCount(buffer);
         Log.d(TAG, "    charGroupCount = " + count);
         for (int i = 0; i < count; ++i) {
-            final CharGroupInfo currentInfo = BinaryDictInputUtils.readCharGroup(buffer,
+            final CharGroupInfo currentInfo = BinaryDictInputOutput.readCharGroup(buffer,
                     buffer.position(), formatOptions);
             printCharGroup(currentInfo);
         }
@@ -129,7 +129,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private static void printBinaryFile(final FusionDictionaryBufferInterface buffer)
             throws IOException, UnsupportedFormatException {
-        FileHeader header = BinaryDictInputUtils.readHeader(buffer);
+        FileHeader header = BinaryDictInputOutput.readHeader(buffer);
         while (buffer.position() < buffer.limit()) {
             printNode(buffer, header.mFormatOptions);
         }
@@ -252,8 +252,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             inStream = new FileInputStream(file);
             final FusionDictionaryBufferInterface buffer = new ByteBufferWrapper(
                     inStream.getChannel().map(FileChannel.MapMode.READ_ONLY, 0, file.length()));
-            final FileHeader header = BinaryDictInputUtils.readHeader(buffer);
-            assertEquals(word, BinaryDictInputUtils.getWordAtAddress(buffer, header.mHeaderSize,
+            final FileHeader header = BinaryDictInputOutput.readHeader(buffer);
+            assertEquals(word, BinaryDictInputOutput.getWordAtAddress(buffer, header.mHeaderSize,
                     position - header.mHeaderSize, header.mFormatOptions).mWord);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -283,7 +283,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictOutputUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictInputOutput.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -335,7 +335,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictOutputUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictInputOutput.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -372,7 +372,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictOutputUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictInputOutput.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             assertTrue(false);
