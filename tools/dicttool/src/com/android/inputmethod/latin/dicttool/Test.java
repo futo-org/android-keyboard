@@ -37,9 +37,9 @@ public class Test extends Dicttool.Command {
     private static final Class<?>[] sClassesToTest = {
         BinaryDictOffdeviceUtilsTests.class,
         FusionDictionaryTest.class,
-        BinaryDictDecoderEncoderTests.class
+        BinaryDictDecoderEncoderTests.class,
         BinaryDictEncoderFlattenTreeTests.class,
-        BinaryDictIOUtilsTests.class,
+        BinaryDictIOUtilsTests.class
     };
     private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
     private ArrayList<String> mUsedTestMethods = new ArrayList<String>();
