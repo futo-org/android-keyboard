@@ -53,6 +53,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
     PROF_OPEN;
     PROF_START(66);
+    // TODO: Move dictionary buffer handling to policyimpl.
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
     if (sourceDirUtf8Length <= 0) {
         AKLOGE("DICT: Can't get sourceDir string");

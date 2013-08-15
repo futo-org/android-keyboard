@@ -70,6 +70,23 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return &mShortcutListPolicy;
     }
 
+    bool addUnigramWord(const int *const word, const int length, const int probability) {
+        // This dictionary format is not updatable.
+        return false;
+    }
+
+    bool addBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1, const int probability) {
+        // This dictionary format is not updatable.
+        return false;
+    }
+
+    bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
+            const int length1) {
+        // This dictionary format is not updatable.
+        return false;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
