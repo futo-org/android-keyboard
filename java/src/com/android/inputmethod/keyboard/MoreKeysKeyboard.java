@@ -276,6 +276,7 @@ public final class MoreKeysKeyboard extends Keyboard {
             mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
             mParentKey = parentKey;
 
+            final MoreKeySpec[] moreKeys = parentKey.getMoreKeys();
             final int width, height;
             // {@link KeyPreviewDrawParams#mPreviewVisibleWidth} should have been set at
             // {@link MainKeyboardView#showKeyPreview(PointerTracker}, though there may be
@@ -283,7 +284,7 @@ public final class MoreKeysKeyboard extends Keyboard {
             // zero-division error at
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
             final boolean singleMoreKeyWithPreview = parentKeyboardView.isKeyPreviewPopupEnabled()
-                    && !parentKey.noKeyPreview() && parentKey.mMoreKeys.length == 1
+                    && !parentKey.noKeyPreview() && moreKeys.length == 1
                     && keyPreviewDrawParams.mPreviewVisibleWidth > 0;
             if (singleMoreKeyWithPreview) {
                 // Use pre-computed width and height if this more keys keyboard has only one key to
@@ -312,8 +313,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                 mDivider = null;
                 dividerWidth = 0;
             }
-            mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
-                    width, height, parentKey.mX + parentKey.mWidth / 2,
+            mParams.setParameters(moreKeys.length, parentKey.getMoreKeysColumn(),
+                    width, height, parentKey.getX() + parentKey.getWidth() / 2,
                     parentKeyboard.mId.mWidth, parentKey.isFixedColumnOrderMoreKeys(),
                     dividerWidth);
         }
@@ -321,7 +322,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         private static int getMaxKeyWidth(final Key parentKey, final int minKeyWidth,
                 final float padding, final Paint paint) {
             int maxWidth = minKeyWidth;
-            for (final MoreKeySpec spec : parentKey.mMoreKeys) {
+            for (final MoreKeySpec spec : parentKey.getMoreKeys()) {
                 final String label = spec.mLabel;
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
@@ -336,7 +337,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
             final int moreKeyFlags = mParentKey.getMoreKeyLabelFlags();
-            final MoreKeySpec[] moreKeys = mParentKey.mMoreKeys;
+            final MoreKeySpec[] moreKeys = mParentKey.getMoreKeys();
             for (int n = 0; n < moreKeys.length; n++) {
                 final MoreKeySpec moreKeySpec = moreKeys[n];
                 final int row = n / params.mNumColumns;

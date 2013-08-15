@@ -75,12 +75,12 @@ import java.util.Map;
 
     private static void writeJson(final Key key, final JsonWriter jsonWriter) throws IOException {
         jsonWriter.beginObject();
-        jsonWriter.name("code").value(key.mCode);
+        jsonWriter.name("code").value(key.getCode());
         jsonWriter.name("altCode").value(key.getAltCode());
-        jsonWriter.name("x").value(key.mX);
-        jsonWriter.name("y").value(key.mY);
-        jsonWriter.name("w").value(key.mWidth);
-        jsonWriter.name("h").value(key.mHeight);
+        jsonWriter.name("x").value(key.getX());
+        jsonWriter.name("y").value(key.getY());
+        jsonWriter.name("w").value(key.getWidth());
+        jsonWriter.name("h").value(key.getHeight());
         jsonWriter.endObject();
     }
 

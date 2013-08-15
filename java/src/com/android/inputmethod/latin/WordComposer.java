@@ -272,8 +272,8 @@ public final class WordComposer {
         final int x, y;
         final Key key;
         if (keyboard != null && (key = keyboard.getKey(codePoint)) != null) {
-            x = key.mX + key.mWidth / 2;
-            y = key.mY + key.mHeight / 2;
+            x = key.getX() + key.getWidth() / 2;
+            y = key.getY() + key.getHeight() / 2;
         } else {
             x = Constants.NOT_A_COORDINATE;
             y = Constants.NOT_A_COORDINATE;

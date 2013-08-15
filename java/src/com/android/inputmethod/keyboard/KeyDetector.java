@@ -108,8 +108,9 @@ public class KeyDetector {
             if (distance > minDistance) {
                 continue;
             }
-            // To take care of hitbox overlaps, we compare mCode here too.
-            if (primaryKey == null || distance < minDistance || key.mCode > primaryKey.mCode) {
+            // To take care of hitbox overlaps, we compare key's code here too.
+            if (primaryKey == null || distance < minDistance
+                    || key.getCode() > primaryKey.getCode()) {
                 minDistance = distance;
                 primaryKey = key;
             }
@@ -118,7 +119,7 @@ public class KeyDetector {
     }
 
     public static String printableCode(Key key) {
-        return key != null ? Constants.printableCode(key.mCode) : "none";
+        return key != null ? Constants.printableCode(key.getCode()) : "none";
     }
 
     public static String printableCodes(int[] codes) {
