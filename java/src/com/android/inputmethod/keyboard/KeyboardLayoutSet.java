@@ -162,7 +162,8 @@ public final class KeyboardLayoutSet {
         final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
         try {
             return getKeyboard(elementParams, id);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
+            Log.e(TAG, "Can't create keyboard: " + id, e);
             throw new KeyboardLayoutSetException(e, id);
         }
     }
