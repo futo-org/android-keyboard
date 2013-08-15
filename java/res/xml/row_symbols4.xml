@@ -46,8 +46,9 @@
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space" />
-        <Key
-            latin:keyStyle="punctuationKeyStyle" />
+        <include
+            latin:keyboardLayout="@xml/key_symbols_period"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

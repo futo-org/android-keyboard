@@ -88,8 +88,7 @@
          U+2666: "♦" BLACK DIAMOND SUIT
          U+2663: "♣" BLACK CLUB SUIT -->
     <string name="more_keys_for_bullet">&#x266A;,&#x2665;,&#x2660;,&#x2666;,&#x2663;</string>
-    <!-- U+00B1: "±" PLUS-MINUS SIGN -->
-    <string name="more_keys_for_plus">&#x00B1;</string>
+    <string name="more_keys_for_plus"></string>
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!3,&lt;,{,[</string>

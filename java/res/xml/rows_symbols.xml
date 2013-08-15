@@ -23,8 +23,6 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
-    <include
-        latin:keyboardLayout="@xml/key_styles_currency" />
     <Row
         latin:keyWidth="10%p"
     >
@@ -40,11 +38,8 @@
     <Row
         latin:keyWidth="10%p"
     >
-        <Key
-            latin:keyStyle="toMoreSymbolKeyStyle"
-            latin:keyWidth="15%p"
-            latin:visualInsetsRight="1%p" />
         <include
+            latin:keyXPos="5%p"
             latin:keyboardLayout="@xml/rowkeys_symbols3" />
         <Key
             latin:keyStyle="deleteKeyStyle"

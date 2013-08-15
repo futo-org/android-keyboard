@@ -46,6 +46,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setSymbolsKeyboard();
+        // TODO: Remove this method and related stuff.
         public void setSymbolsShiftedKeyboard();
 
         /**
@@ -70,6 +71,7 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_SYMBOL_BEGIN = 1;
     private static final int SWITCH_STATE_SYMBOL = 2;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
+    // TODO: Remove this constant and related stuff.
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
     private int mSwitchState = SWITCH_STATE_ALPHA;
