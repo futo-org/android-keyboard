@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictIOTests;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderEncoderTests;
+import com.android.inputmethod.latin.makedict.BinaryDictEncoderFlattenTreeTests;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtilsTests;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutputTest;
 import com.android.inputmethod.latin.makedict.FusionDictionaryTest;
 
 import java.lang.reflect.Constructor;
@@ -37,9 +37,9 @@ public class Test extends Dicttool.Command {
     private static final Class<?>[] sClassesToTest = {
         BinaryDictOffdeviceUtilsTests.class,
         FusionDictionaryTest.class,
-        BinaryDictInputOutputTest.class,
+        BinaryDictDecoderEncoderTests.class
+        BinaryDictEncoderFlattenTreeTests.class,
         BinaryDictIOUtilsTests.class,
-        BinaryDictIOTests.class
     };
     private ArrayList<Method> mAllTestMethods = new ArrayList<Method>();
     private ArrayList<String> mUsedTestMethods = new ArrayList<String>();

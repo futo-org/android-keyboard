@@ -22,7 +22,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -44,11 +44,11 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * Unit tests for BinaryDictInputOutput
+ * Unit tests for BinaryDictDecoder and BinaryDictEncoder.
  */
 @LargeTest
-public class BinaryDictIOTests extends AndroidTestCase {
-    private static final String TAG = BinaryDictIOTests.class.getSimpleName();
+public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
+    private static final String TAG = BinaryDictDecoderEncoderTests.class.getSimpleName();
     private static final int DEFAULT_MAX_UNIGRAMS = 100;
     private static final int DEFAULT_CODE_POINT_SET_SIZE = 50;
     private static final int UNIGRAM_FREQ = 10;
@@ -71,11 +71,11 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
             new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
 
-    public BinaryDictIOTests() {
+    public BinaryDictDecoderEncoderTests() {
         this(System.currentTimeMillis(), DEFAULT_MAX_UNIGRAMS);
     }
 
-    public BinaryDictIOTests(final long seed, final int maxUnigrams) {
+    public BinaryDictDecoderEncoderTests(final long seed, final int maxUnigrams) {
         super();
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
@@ -206,7 +206,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             // If you need to dump the dict to a textual file, uncomment the line below and the
             // function above
             // dumpToCombinedFileForDebug(file, "/tmp/foo");
-            BinaryDictInputOutput.writeDictionaryBinary(out, dict, formatOptions);
+            BinaryDictEncoder.writeDictionaryBinary(out, dict, formatOptions);
             diff = System.currentTimeMillis() - now;
 
             out.flush();
@@ -272,7 +272,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             getBuffer(reader, bufferType);
             assertNotNull(reader.getBuffer());
             now = System.currentTimeMillis();
-            dict = BinaryDictInputOutput.readDictionaryBinary(reader, null);
+            dict = BinaryDictDecoder.readDictionaryBinary(reader, null);
             diff  = System.currentTimeMillis() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException while reading dictionary", e);
@@ -383,7 +383,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 }
                 actBigrams.get(word1).add(word2);
 
-                final int bigramFreq = BinaryDictInputOutput.reconstructBigramFrequency(
+                final int bigramFreq = BinaryDictDecoder.reconstructBigramFrequency(
                         unigramFreq, attr.mFrequency);
                 assertTrue(Math.abs(bigramFreq - BIGRAM_FREQ) < TOLERANCE_OF_BIGRAM_FREQ);
             }
@@ -497,14 +497,14 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         FileHeader header = null;
         try {
-            header = BinaryDictInputOutput.readHeader(buffer);
+            header = BinaryDictDecoder.readHeader(buffer);
         } catch (IOException e) {
             return null;
         } catch (UnsupportedFormatException e) {
             return null;
         }
         if (header == null) return null;
-        return BinaryDictInputOutput.getWordAtAddress(buffer, header.mHeaderSize,
+        return BinaryDictDecoder.getWordAtAddress(buffer, header.mHeaderSize,
                 address - header.mHeaderSize, header.mFormatOptions).mWord;
     }
 
