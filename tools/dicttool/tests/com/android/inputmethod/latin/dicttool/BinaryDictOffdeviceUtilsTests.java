@@ -16,7 +16,8 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictInputUtils;
+import com.android.inputmethod.latin.makedict.BinaryDictOutputUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -61,7 +62,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                         Compress.getCompressedStream(
                                 new BufferedOutputStream(new FileOutputStream(dst)))));
 
-        BinaryDictInputOutput.writeDictionaryBinary(out, dict, new FormatOptions(2, false));
+        BinaryDictOutputUtils.writeDictionaryBinary(out, dict, new FormatOptions(2, false));
 
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
@@ -72,7 +73,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
         final BinaryDictReader reader = new BinaryDictReader(decodeSpec.mFile);
         reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-        final FusionDictionary resultDict = BinaryDictInputOutput.readDictionaryBinary(reader,
+        final FusionDictionary resultDict = BinaryDictInputUtils.readDictionaryBinary(reader,
                 null /* dict : an optional dictionary to add words to, or null */);
         assertEquals("Dictionary can't be read back correctly",
                 resultDict.findWordInTree(resultDict.mRoot, "foo").getFrequency(), TEST_FREQ);
