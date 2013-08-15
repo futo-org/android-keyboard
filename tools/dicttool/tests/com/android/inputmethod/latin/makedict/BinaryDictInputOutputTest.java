@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Unit tests for BinaryDictInputUtils and BinaryDictOutputUtils.
+ * Unit tests for BinaryDictInputOutput.
  */
 public class BinaryDictInputOutputTest extends TestCase {
     // Test the flattened array contains the expected number of nodes, and
@@ -39,7 +39,7 @@ public class BinaryDictInputOutputTest extends TestCase {
         dict.add("ftb", 1, null, false /* isNotAWord */);
         dict.add("bar", 1, null, false /* isNotAWord */);
         dict.add("fool", 1, null, false /* isNotAWord */);
-        final ArrayList<Node> result = BinaryDictOutputUtils.flattenTree(dict.mRoot);
+        final ArrayList<Node> result = BinaryDictInputOutput.flattenTree(dict.mRoot);
         assertEquals(4, result.size());
         while (!result.isEmpty()) {
             final Node n = result.remove(0);

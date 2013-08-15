@@ -20,8 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictInputUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictOutputUtils;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -63,7 +62,7 @@ public final class UserHistoryDictIOUtils {
             final FormatOptions formatOptions) {
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
         try {
-            BinaryDictOutputUtils.writeDictionaryBinary(destination, fusionDict, formatOptions);
+            BinaryDictInputOutput.writeDictionaryBinary(destination, fusionDict, formatOptions);
             Log.d(TAG, "end writing");
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);
@@ -157,7 +156,7 @@ public final class UserHistoryDictIOUtils {
                         continue;
                     }
                     to.setBigram(word1, word2,
-                            BinaryDictInputUtils.reconstructBigramFrequency(unigramFrequency,
+                            BinaryDictInputOutput.reconstructBigramFrequency(unigramFrequency,
                                     attr.mFrequency));
                 }
             }
