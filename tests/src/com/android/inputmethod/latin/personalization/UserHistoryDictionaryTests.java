@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Unit tests for UserHistoryDictionary
@@ -42,6 +43,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
     };
+
+    private static final int MIN_USER_HISTORY_DICTIONARY_FILE_SIZE = 1000;
 
     @Override
     public void setUp() {
@@ -78,43 +81,42 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    private void addAndWriteRandomWords(final String locale, final int numberOfWords,
+            final Random random) {
+        final List<String> words = generateWords(numberOfWords, random);
+        final UserHistoryPredictionDictionary dict =
+                PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(getContext(),
+                        locale, mPrefs);
+        // Add random words to the user history dictionary.
+        addToDict(dict, words);
+        // write to file.
+        dict.close();
+    }
+
     public void testRandomWords() {
         File dictFile = null;
+        Log.d(TAG, "This test can be used for profiling.");
+        Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
+        final String locale = "testRandomWords" + System.currentTimeMillis();
+        final int numberOfWords = 1000;
+        final Random random = new Random(123456);
+
         try {
-            Log.d(TAG, "This test can be used for profiling.");
-            Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
-            final int numberOfWords = 1000;
-            final Random random = new Random(123456);
-            List<String> words = generateWords(numberOfWords, random);
-
-            final String locale = "testRandomWords";
-            final String fileName = "UserHistoryDictionary." + locale + ".dict";
-            dictFile = new File(getContext().getFilesDir(), fileName);
-            final UserHistoryPredictionDictionary dict =
-                    PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(
-                            getContext(), locale, mPrefs);
-            dict.mIsTest = true;
-
-            addToDict(dict, words);
-
-            try {
-                Log.d(TAG, "waiting for adding the word ...");
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Log.d(TAG, "InterruptedException: " + e);
-            }
-
-            // write to file
-            dict.close();
-
+            addAndWriteRandomWords(locale, numberOfWords, random);
+        } finally {
             try {
                 Log.d(TAG, "waiting for writing ...");
-                Thread.sleep(5000);
+                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 Log.d(TAG, "InterruptedException: " + e);
             }
-        } finally {
+
+            final String fileName = UserHistoryPredictionDictionary.NAME + "." + locale + ".dict";
+            dictFile = new File(getContext().getFilesDir(), fileName);
+
             if (dictFile != null) {
+                assertTrue(dictFile.exists());
+                assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
                 dictFile.delete();
             }
         }
@@ -122,49 +124,46 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
 
     public void testStressTestForSwitchingLanguagesAndAddingWords() {
         final int numberOfLanguages = 2;
-        final int numberOfLanguageSwitching = 100;
-        final int numberOfWordsIntertedForEachLanguageSwitch = 100;
+        final int numberOfLanguageSwitching = 80;
+        final int numberOfWordsInsertedForEachLanguageSwitch = 100;
 
         final File dictFiles[] = new File[numberOfLanguages];
         try {
             final Random random = new Random(123456);
 
-            // Create locales for this test.
-            String locales[] = new String[numberOfLanguages];
+            // Create filename suffixes for this test.
+            String testFilenameSuffixes[] = new String[numberOfLanguages];
             for (int i = 0; i < numberOfLanguages; i++) {
-                locales[i] = "testSwitchingLanguages" + i;
-                final String fileName = "UserHistoryDictionary." + locales[i] + ".dict";
+                testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
+                final String fileName = "UserHistoryDictionary." + testFilenameSuffixes[i]
+                        + ".dict";
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
             }
 
-            final long now = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
 
             for (int i = 0; i < numberOfLanguageSwitching; i++) {
                 final int index = i % numberOfLanguages;
-                // Switch languages to locales[index].
-                final UserHistoryPredictionDictionary dict =
-                        PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(
-                                getContext(), locales[index], mPrefs);
-                final List<String> words = generateWords(
-                        numberOfWordsIntertedForEachLanguageSwitch, random);
-                // Add random words to the user history dictionary.
-                addToDict(dict, words);
-                // write to file
-                dict.close();
+                // Switch languages to testFilenameSuffixes[index].
+                addAndWriteRandomWords(testFilenameSuffixes[index],
+                        numberOfWordsInsertedForEachLanguageSwitch, random);
             }
 
             final long end = System.currentTimeMillis();
             Log.d(TAG, "testStressTestForSwitchingLanguageAndAddingWords took "
-                    + (end - now) + " ms");
+                    + (end - start) + " ms");
+        } finally {
+            Log.d(TAG, "waiting for writing ...");
             try {
                 Log.d(TAG, "waiting for writing ...");
-                Thread.sleep(5000);
+                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 Log.d(TAG, "InterruptedException: " + e);
             }
-        } finally {
             for (final File file : dictFiles) {
                 if (file != null) {
+                    assertTrue(file.exists());
+                    assertTrue(file.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
                     file.delete();
                 }
             }
