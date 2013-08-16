@@ -121,7 +121,8 @@ public class Diff extends Dicttool.Command {
     private static void diffWords(final FusionDictionary dict0, final FusionDictionary dict1) {
         boolean hasDifferences = false;
         for (final Word word0 : dict0) {
-            final CharGroup word1 = FusionDictionary.findWordInTree(dict1.mRoot, word0.mWord);
+            final CharGroup word1 = FusionDictionary.findWordInTree(dict1.mRootNodeArray,
+                    word0.mWord);
             if (null == word1) {
                 // This word is not in dict1
                 System.out.println("Deleted: " + word0.mWord + " " + word0.mFrequency);
@@ -150,7 +151,8 @@ public class Diff extends Dicttool.Command {
             }
         }
         for (final Word word1 : dict1) {
-            final CharGroup word0 = FusionDictionary.findWordInTree(dict0.mRoot, word1.mWord);
+            final CharGroup word0 = FusionDictionary.findWordInTree(dict0.mRootNodeArray,
+                    word1.mWord);
             if (null == word0) {
                 // This word is not in dict0
                 System.out.println("Added: " + word1.mWord + " " + word1.mFrequency);

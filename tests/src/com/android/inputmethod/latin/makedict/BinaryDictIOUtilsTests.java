@@ -24,7 +24,7 @@ import android.util.Log;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder.ByteBufferWrapper;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -277,7 +277,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
 
         // set an initial dictionary.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
         dict.add("abcd", 10, null, false);
 
@@ -328,7 +328,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
 
         // set an initial dictionary.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
         dict.add("abcd", 10, null, false);
         dict.add("efgh", 15, null, false);
@@ -365,7 +365,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         assertNotNull(file);
 
         // set an initial dictionary.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
                         false));
         dict.add("initial", 10, null, false);
