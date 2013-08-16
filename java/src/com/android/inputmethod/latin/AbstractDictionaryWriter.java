@@ -42,8 +42,10 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
     abstract public void addUnigramWord(final String word, final String shortcutTarget,
             final int frequency, final boolean isNotAWord);
 
+    // TODO: Remove lastModifiedTime after making binary dictionary support forgetting curve.
     abstract public void addBigramWords(final String word0, final String word1,
-            final int frequency, final boolean isValid);
+            final int frequency, final boolean isValid,
+            final long lastModifiedTime);
 
     abstract public void removeBigramWords(final String word0, final String word1);
 

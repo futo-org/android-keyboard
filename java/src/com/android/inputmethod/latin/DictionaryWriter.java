@@ -75,7 +75,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
 
     @Override
     public void addBigramWords(final String word0, final String word1, final int frequency,
-            final boolean isValid) {
+            final boolean isValid, final long lastModifiedTime) {
         mFusionDictionary.setBigram(word0, word1, frequency);
     }
 
