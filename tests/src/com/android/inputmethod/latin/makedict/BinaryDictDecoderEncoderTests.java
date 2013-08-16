@@ -493,8 +493,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     // Tests for getTerminalPosition
-    private String getWordFromBinary(final FusionDictionaryBufferInterface buffer,
-            final int address) {
+    private String getWordFromBinary(final BinaryDictReader reader, final int address) {
+        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
         if (buffer.position() != 0) buffer.position(0);
 
         FileHeader header = null;
@@ -510,14 +510,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 address - header.mHeaderSize, header.mFormatOptions).mWord;
     }
 
-    private long runGetTerminalPosition(final FusionDictionaryBufferInterface buffer,
-            final String word, int index, boolean contained) {
+    private long runGetTerminalPosition(final BinaryDictReader reader, final String word, int index,
+            boolean contained) {
         final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
         long diff = -1;
         int position = -1;
         try {
             final long now = System.nanoTime();
-            position = BinaryDictIOUtils.getTerminalPosition(buffer, word);
+            position = BinaryDictIOUtils.getTerminalPosition(reader, word);
             diff = System.nanoTime() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException while getTerminalPosition", e);
@@ -526,7 +526,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
 
         assertEquals(FormatSpec.NOT_VALID_WORD != position, contained);
-        if (contained) assertEquals(getWordFromBinary(buffer, position), word);
+        if (contained) assertEquals(getWordFromBinary(reader, position), word);
         return diff;
     }
 
@@ -547,29 +547,27 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
         final BinaryDictReader reader = new BinaryDictReader(file);
-        FusionDictionaryBufferInterface buffer = null;
         try {
-            buffer = reader.openAndGetBuffer(
-                    new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertNotNull("Can't get the buffer", buffer);
+        assertNotNull("Can't get the buffer", reader.getBuffer());
 
         try {
             // too long word
             final String longWord = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, longWord));
+                    BinaryDictIOUtils.getTerminalPosition(reader, longWord));
 
             // null
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, null));
+                    BinaryDictIOUtils.getTerminalPosition(reader, null));
 
             // empty string
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, ""));
+                    BinaryDictIOUtils.getTerminalPosition(reader, ""));
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
@@ -577,7 +575,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // Test a word that is contained within the dictionary.
         long sum = 0;
         for (int i = 0; i < sWords.size(); ++i) {
-            final long time = runGetTerminalPosition(buffer, sWords.get(i), i, true);
+            final long time = runGetTerminalPosition(reader, sWords.get(i), i, true);
             sum += time == -1 ? 0 : time;
         }
         Log.d(TAG, "per a search : " + (((double)sum) / sWords.size() / 1000000));
@@ -588,7 +586,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 0; i < 1000; ++i) {
             final String word = generateWord(random, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
-            runGetTerminalPosition(buffer, word, i, false);
+            runGetTerminalPosition(reader, word, i, false);
         }
     }
 
@@ -608,28 +606,27 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
         final BinaryDictReader reader = new BinaryDictReader(file);
-        FusionDictionaryBufferInterface buffer = null;
         try {
-            buffer = reader.openAndGetBuffer(
+            reader.openBuffer(
                     new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertNotNull("Can't get the buffer", buffer);
+        assertNotNull("Can't get the buffer", reader.getBuffer());
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
-            DynamicBinaryDictIOUtils.deleteWord(buffer, sWords.get(0));
+                    BinaryDictIOUtils.getTerminalPosition(reader, sWords.get(0)));
+            DynamicBinaryDictIOUtils.deleteWord(reader, sWords.get(0));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(0)));
+                    BinaryDictIOUtils.getTerminalPosition(reader, sWords.get(0)));
 
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
-            DynamicBinaryDictIOUtils.deleteWord(buffer, sWords.get(5));
+                    BinaryDictIOUtils.getTerminalPosition(reader, sWords.get(5)));
+            DynamicBinaryDictIOUtils.deleteWord(reader, sWords.get(5));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(buffer, sWords.get(5)));
+                    BinaryDictIOUtils.getTerminalPosition(reader, sWords.get(5)));
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }

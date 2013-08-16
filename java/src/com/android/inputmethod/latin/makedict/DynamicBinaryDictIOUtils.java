@@ -49,17 +49,18 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Delete the word from the binary file.
      *
-     * @param buffer the buffer to write.
+     * @param reader the reader.
      * @param word the word we delete
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static void deleteWord(final FusionDictionaryBufferInterface buffer,
-            final String word) throws IOException, UnsupportedFormatException {
+    public static void deleteWord(final BinaryDictReader reader, final String word)
+            throws IOException, UnsupportedFormatException {
+        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
         buffer.position(0);
         final FileHeader header = BinaryDictDecoder.readHeader(buffer);
-        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(buffer, word);
+        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(reader, word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
         buffer.position(wordPosition);
@@ -235,7 +236,7 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Insert a word into a binary dictionary.
      *
-     * @param buffer the buffer containing the existing dictionary.
+     * @param reader the reader.
      * @param destination a stream to the underlying file, with the pointer at the end of the file.
      * @param word the word to insert.
      * @param frequency the frequency of the new word.
@@ -248,16 +249,16 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final FusionDictionaryBufferInterface buffer,
-            final OutputStream destination, final String word, final int frequency,
-            final ArrayList<WeightedString> bigramStrings,
+    public static void insertWord(final BinaryDictReader reader, final OutputStream destination,
+            final String word, final int frequency, final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
             final boolean isBlackListEntry)
                     throws IOException, UnsupportedFormatException {
         final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
+        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
         if (bigramStrings != null) {
             for (final WeightedString bigram : bigramStrings) {
-                int position = BinaryDictIOUtils.getTerminalPosition(buffer, bigram.mWord);
+                int position = BinaryDictIOUtils.getTerminalPosition(reader, bigram.mWord);
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {
