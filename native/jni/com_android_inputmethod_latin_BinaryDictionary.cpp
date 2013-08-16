@@ -18,42 +18,24 @@
 
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 
-#include <cerrno>
 #include <cstring> // for memset()
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <unistd.h>
 
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/suggest_options.h"
-#include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
 #include "utils/autocorrection_threshold_utils.h"
 
 namespace latinime {
 
 class ProximityInfo;
 
-// Helper method
-static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd) {
-    int ret = munmap(const_cast<void *>(dictBuf), length);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
-    }
-    ret = close(fd);
-    if (ret != 0) {
-        AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
-    }
-}
-
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
     PROF_OPEN;
     PROF_START(66);
-    // TODO: Move dictionary buffer handling to policyimpl.
     const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
     if (sourceDirUtf8Length <= 0) {
         AKLOGE("DICT: Can't get sourceDir string");
@@ -62,41 +44,16 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     char sourceDirChars[sourceDirUtf8Length + 1];
     env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
     sourceDirChars[sourceDirUtf8Length] = '\0';
-    int fd = 0;
-    void *dictBuf = 0;
-    int offset = 0;
-    const bool updatableMmap = (isUpdatable == JNI_TRUE);
-    const int openMode = updatableMmap ? O_RDWR : O_RDONLY;
-    fd = open(sourceDirChars, openMode);
-    if (fd < 0) {
-        AKLOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
+    DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPolicy =
+            DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
+                    sourceDirChars, static_cast<int>(sourceDirUtf8Length),
+                    static_cast<int>(dictOffset), static_cast<int>(dictSize),
+                    isUpdatable == JNI_TRUE);
+    if (!dictionaryStructureWithBufferPolicy) {
         return 0;
     }
-    int pagesize = getpagesize();
-    offset = static_cast<int>(dictOffset) % pagesize;
-    int adjDictOffset = static_cast<int>(dictOffset) - offset;
-    int adjDictSize = static_cast<int>(dictSize) + offset;
-    const int protMode = updatableMmap ? PROT_READ | PROT_WRITE : PROT_READ;
-    dictBuf = mmap(0, adjDictSize, protMode, MAP_PRIVATE, fd, adjDictOffset);
-    if (dictBuf == MAP_FAILED) {
-        AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
-        return 0;
-    }
-    dictBuf = static_cast<char *>(dictBuf) + offset;
-    if (!dictBuf) {
-        AKLOGE("DICT: dictBuf is null");
-        return 0;
-    }
-    Dictionary *dictionary = 0;
-    if (FormatUtils::UNKNOWN_VERSION
-            == FormatUtils::detectFormatVersion(static_cast<uint8_t *>(dictBuf),
-                    static_cast<int>(dictSize))) {
-        AKLOGE("DICT: dictionary format is unknown, bad magic number");
-        releaseDictBuf(static_cast<const char *>(dictBuf) - offset, adjDictSize, fd);
-    } else {
-        dictionary = new Dictionary(env, dictBuf, static_cast<int>(dictSize), fd, offset,
-                updatableMmap);
-    }
+
+    Dictionary *const dictionary = new Dictionary(env, dictionaryStructureWithBufferPolicy);
     PROF_END(66);
     PROF_CLOSE;
     return reinterpret_cast<jlong>(dictionary);
@@ -105,13 +62,6 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
 static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
-    const BinaryDictionaryInfo *const binaryDictionaryInfo = dictionary->getBinaryDictionaryInfo();
-    const int dictBufOffset = binaryDictionaryInfo->getDictBufOffset();
-    const void *dictBuf = binaryDictionaryInfo->getDictBuf();
-    if (!dictBuf) return;
-    releaseDictBuf(static_cast<const char *>(dictBuf) - dictBufOffset,
-            binaryDictionaryInfo->getDictSize() + dictBufOffset,
-            binaryDictionaryInfo->getMmapFd());
     delete dictionary;
 }
 
