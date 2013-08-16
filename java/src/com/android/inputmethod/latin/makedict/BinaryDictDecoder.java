@@ -20,7 +20,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.JniUtils;
 
@@ -548,31 +548,31 @@ public final class BinaryDictDecoder {
     }
 
     /**
-     * Reads a single node from a buffer.
+     * Reads a single node array from a buffer.
      *
-     * This methods reads the file at the current position. A node is fully expected to start at
-     * the current position.
-     * This will recursively read other nodes into the structure, populating the reverse
+     * This methods reads the file at the current position. A node array is fully expected to start
+     * at the current position.
+     * This will recursively read other node arrays into the structure, populating the reverse
      * maps on the fly and using them to keep track of already read nodes.
      *
-     * @param buffer the buffer, correctly positioned at the start of a node.
+     * @param buffer the buffer, correctly positioned at the start of a node array.
      * @param headerSize the size, in bytes, of the file header.
-     * @param reverseNodeMap a mapping from addresses to already read nodes.
+     * @param reverseNodeArrayMap a mapping from addresses to already read node arrays.
      * @param reverseGroupMap a mapping from addresses to already read character groups.
      * @param options file format options.
-     * @return the read node with all his children already read.
+     * @return the read node array with all his children already read.
      */
-    private static Node readNode(final FusionDictionaryBufferInterface buffer, final int headerSize,
-            final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap,
-            final FormatOptions options)
+    private static PtNodeArray readNodeArray(final FusionDictionaryBufferInterface buffer,
+            final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
+            final Map<Integer, CharGroup> reverseGroupMap, final FormatOptions options)
             throws IOException {
-        final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
-        final int nodeOrigin = buffer.position() - headerSize;
+        final ArrayList<CharGroup> nodeArrayContents = new ArrayList<CharGroup>();
+        final int nodeArrayOrigin = buffer.position() - headerSize;
 
         do { // Scan the linked-list node.
-            final int nodeHeadPosition = buffer.position() - headerSize;
+            final int nodeArrayHeadPosition = buffer.position() - headerSize;
             final int count = readCharGroupCount(buffer);
-            int groupOffset = nodeHeadPosition + BinaryDictIOUtils.getGroupCountSize(count);
+            int groupOffset = nodeArrayHeadPosition + BinaryDictIOUtils.getGroupCountSize(count);
             for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
                 CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
                 if (BinaryDictIOUtils.isMovedGroup(info.mFlags, options)) continue;
@@ -589,21 +589,21 @@ public final class BinaryDictDecoder {
                     }
                 }
                 if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
-                    Node children = reverseNodeMap.get(info.mChildrenAddress);
+                    PtNodeArray children = reverseNodeArrayMap.get(info.mChildrenAddress);
                     if (null == children) {
                         final int currentPosition = buffer.position();
                         buffer.position(info.mChildrenAddress + headerSize);
-                        children = readNode(
-                                buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
+                        children = readNodeArray(
+                                buffer, headerSize, reverseNodeArrayMap, reverseGroupMap, options);
                         buffer.position(currentPosition);
                     }
-                    nodeContents.add(
+                    nodeArrayContents.add(
                             new CharGroup(info.mCharacters, shortcutTargets, bigrams,
                                     info.mFrequency,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
                 } else {
-                    nodeContents.add(
+                    nodeArrayContents.add(
                             new CharGroup(info.mCharacters, shortcutTargets, bigrams,
                                     info.mFrequency,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
@@ -624,11 +624,11 @@ public final class BinaryDictDecoder {
         } while (options.mSupportsDynamicUpdate &&
                 buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
 
-        final Node node = new Node(nodeContents);
-        node.mCachedAddressBeforeUpdate = nodeOrigin;
-        node.mCachedAddressAfterUpdate = nodeOrigin;
-        reverseNodeMap.put(node.mCachedAddressAfterUpdate, node);
-        return node;
+        final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
+        nodeArray.mCachedAddressBeforeUpdate = nodeArrayOrigin;
+        nodeArray.mCachedAddressAfterUpdate = nodeArrayOrigin;
+        reverseNodeArrayMap.put(nodeArray.mCachedAddressAfterUpdate, nodeArray);
+        return nodeArray;
     }
 
     /**
@@ -733,10 +733,10 @@ public final class BinaryDictDecoder {
         // Read header
         final FileHeader header = readHeader(reader.getBuffer());
 
-        Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
+        Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final Node root = readNode(reader.getBuffer(), header.mHeaderSize, reverseNodeMapping,
-                reverseGroupMapping, header.mFormatOptions);
+        final PtNodeArray root = readNodeArray(reader.getBuffer(), header.mHeaderSize,
+                reverseNodeArrayMapping, reverseGroupMapping, header.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, header.mDictionaryOptions);
         if (null != dict) {
@@ -802,8 +802,6 @@ public final class BinaryDictDecoder {
 
     /**
      * Calculate bigram frequency from compressed value
-     *
-     * @see #makeBigramFlags
      *
      * @param unigramFrequency
      * @param bigramFrequency compressed frequency

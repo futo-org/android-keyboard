@@ -20,7 +20,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoder.CharEncoding;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.ByteArrayOutputStream;
@@ -78,12 +78,12 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Compute the binary size of the group count for a node
-     * @param node the node
+     * Compute the binary size of the group count for a node array.
+     * @param nodeArray the nodeArray
      * @return the size of the group count, either 1 or 2 bytes.
      */
-    private static int getGroupCountSize(final Node node) {
-        return BinaryDictIOUtils.getGroupCountSize(node.mData.size());
+    private static int getGroupCountSize(final PtNodeArray nodeArray) {
+        return BinaryDictIOUtils.getGroupCountSize(nodeArray.mData.size());
     }
 
     /**
@@ -138,15 +138,17 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Compute the maximum size of a node, assuming 3-byte addresses for everything, and caches
-     * it in the 'actualSize' member of the node.
+     * Compute the maximum size of each node of a node array, assuming 3-byte addresses for
+     * everything, and caches it in the `mCachedSize' member of the nodes; deduce the size of
+     * the containing node array, and cache it it its 'mCachedSize' member.
      *
-     * @param node the node to compute the maximum size of.
+     * @param nodeArray the node array to compute the maximum size of.
      * @param options file format options.
      */
-    private static void calculateNodeMaximumSize(final Node node, final FormatOptions options) {
-        int size = getGroupCountSize(node);
-        for (CharGroup g : node.mData) {
+    private static void calculateNodeArrayMaximumSize(final PtNodeArray nodeArray,
+            final FormatOptions options) {
+        int size = getGroupCountSize(nodeArray);
+        for (CharGroup g : nodeArray.mData) {
             final int groupSize = getCharGroupMaximumSize(g, options);
             g.mCachedSize = groupSize;
             size += groupSize;
@@ -154,7 +156,7 @@ public class BinaryDictEncoder {
         if (options.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        node.mCachedSize = size;
+        nodeArray.mCachedSize = size;
     }
 
     /**
@@ -199,14 +201,16 @@ public class BinaryDictEncoder {
 
     // This method is responsible for finding a nice ordering of the nodes that favors run-time
     // cache performance and dictionary size.
-    /* package for tests */ static ArrayList<Node> flattenTree(final Node root) {
-        final int treeSize = FusionDictionary.countCharGroups(root);
+    /* package for tests */ static ArrayList<PtNodeArray> flattenTree(
+            final PtNodeArray rootNodeArray) {
+        final int treeSize = FusionDictionary.countCharGroups(rootNodeArray);
         MakedictLog.i("Counted nodes : " + treeSize);
-        final ArrayList<Node> flatTree = new ArrayList<Node>(treeSize);
-        return flattenTreeInner(flatTree, root);
+        final ArrayList<PtNodeArray> flatTree = new ArrayList<PtNodeArray>(treeSize);
+        return flattenTreeInner(flatTree, rootNodeArray);
     }
 
-    private static ArrayList<Node> flattenTreeInner(final ArrayList<Node> list, final Node node) {
+    private static ArrayList<PtNodeArray> flattenTreeInner(final ArrayList<PtNodeArray> list,
+            final PtNodeArray nodeArray) {
         // Removing the node is necessary if the tails are merged, because we would then
         // add the same node several times when we only want it once. A number of places in
         // the code also depends on any node being only once in the list.
@@ -224,8 +228,8 @@ public class BinaryDictEncoder {
         // this simple list.remove operation O(n*n) overall. On Android this overhead is very
         // high.
         // For future reference, the code to remove duplicate is a simple : list.remove(node);
-        list.add(node);
-        final ArrayList<CharGroup> branches = node.mData;
+        list.add(nodeArray);
+        final ArrayList<CharGroup> branches = nodeArray.mData;
         final int nodeSize = branches.size();
         for (CharGroup group : branches) {
             if (null != group.mChildren) flattenTreeInner(list, group.mChildren);
@@ -234,52 +238,60 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Get the offset from a position inside a current node to a target node, during update.
+     * Get the offset from a position inside a current node array to a target node array, during
+     * update.
      *
-     * If the current node is before the target node, the target node has not been updated yet,
-     * so we should return the offset from the old position of the current node to the old position
-     * of the target node. If on the other hand the target is before the current node, it already
-     * has been updated, so we should return the offset from the new position in the current node
-     * to the new position in the target node.
-     * @param currentNode the node containing the CharGroup where the offset will be written
-     * @param offsetFromStartOfCurrentNode the offset, in bytes, from the start of currentNode
-     * @param targetNode the target node to get the offset to
-     * @return the offset to the target node
+     * If the current node array is before the target node array, the target node array has not
+     * been updated yet, so we should return the offset from the old position of the current node
+     * array to the old position of the target node array. If on the other hand the target is
+     * before the current node array, it already has been updated, so we should return the offset
+     * from the new position in the current node array to the new position in the target node
+     * array.
+     *
+     * @param currentNodeArray node array containing the CharGroup where the offset will be written
+     * @param offsetFromStartOfCurrentNodeArray offset, in bytes, from the start of currentNodeArray
+     * @param targetNodeArray the target node array to get the offset to
+     * @return the offset to the target node array
      */
-    private static int getOffsetToTargetNodeDuringUpdate(final Node currentNode,
-            final int offsetFromStartOfCurrentNode, final Node targetNode) {
-        final boolean isTargetBeforeCurrent = (targetNode.mCachedAddressBeforeUpdate
-                < currentNode.mCachedAddressBeforeUpdate);
+    private static int getOffsetToTargetNodeArrayDuringUpdate(final PtNodeArray currentNodeArray,
+            final int offsetFromStartOfCurrentNodeArray, final PtNodeArray targetNodeArray) {
+        final boolean isTargetBeforeCurrent = (targetNodeArray.mCachedAddressBeforeUpdate
+                < currentNodeArray.mCachedAddressBeforeUpdate);
         if (isTargetBeforeCurrent) {
-            return targetNode.mCachedAddressAfterUpdate
-                    - (currentNode.mCachedAddressAfterUpdate + offsetFromStartOfCurrentNode);
+            return targetNodeArray.mCachedAddressAfterUpdate
+                    - (currentNodeArray.mCachedAddressAfterUpdate
+                            + offsetFromStartOfCurrentNodeArray);
         } else {
-            return targetNode.mCachedAddressBeforeUpdate
-                    - (currentNode.mCachedAddressBeforeUpdate + offsetFromStartOfCurrentNode);
+            return targetNodeArray.mCachedAddressBeforeUpdate
+                    - (currentNodeArray.mCachedAddressBeforeUpdate
+                            + offsetFromStartOfCurrentNodeArray);
         }
     }
 
     /**
-     * Get the offset from a position inside a current node to a target CharGroup, during update.
-     * @param currentNode the node containing the CharGroup where the offset will be written
-     * @param offsetFromStartOfCurrentNode the offset, in bytes, from the start of currentNode
+     * Get the offset from a position inside a current node array to a target CharGroup, during
+     * update.
+     *
+     * @param currentNodeArray node array containing the CharGroup where the offset will be written
+     * @param offsetFromStartOfCurrentNodeArray offset, in bytes, from the start of currentNodeArray
      * @param targetCharGroup the target CharGroup to get the offset to
      * @return the offset to the target CharGroup
      */
     // TODO: is there any way to factorize this method with the one above?
-    private static int getOffsetToTargetCharGroupDuringUpdate(final Node currentNode,
-            final int offsetFromStartOfCurrentNode, final CharGroup targetCharGroup) {
-        final int oldOffsetBasePoint = currentNode.mCachedAddressBeforeUpdate
-                + offsetFromStartOfCurrentNode;
+    private static int getOffsetToTargetCharGroupDuringUpdate(final PtNodeArray currentNodeArray,
+            final int offsetFromStartOfCurrentNodeArray, final CharGroup targetCharGroup) {
+        final int oldOffsetBasePoint = currentNodeArray.mCachedAddressBeforeUpdate
+                + offsetFromStartOfCurrentNodeArray;
         final boolean isTargetBeforeCurrent = (targetCharGroup.mCachedAddressBeforeUpdate
                 < oldOffsetBasePoint);
-        // If the target is before the current node, then its address has already been updated.
-        // We can use the AfterUpdate member, and compare it to our own member after update.
-        // Otherwise, the AfterUpdate member is not updated yet, so we need to use the BeforeUpdate
-        // member, and of course we have to compare this to our own address before update.
+        // If the target is before the current node array, then its address has already been
+        // updated. We can use the AfterUpdate member, and compare it to our own member after
+        // update. Otherwise, the AfterUpdate member is not updated yet, so we need to use the
+        // BeforeUpdate member, and of course we have to compare this to our own address before
+        // update.
         if (isTargetBeforeCurrent) {
-            final int newOffsetBasePoint = currentNode.mCachedAddressAfterUpdate
-                    + offsetFromStartOfCurrentNode;
+            final int newOffsetBasePoint = currentNodeArray.mCachedAddressAfterUpdate
+                    + offsetFromStartOfCurrentNodeArray;
             return targetCharGroup.mCachedAddressAfterUpdate - newOffsetBasePoint;
         } else {
             return targetCharGroup.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
@@ -287,26 +299,26 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Computes the actual node size, based on the cached addresses of the children nodes.
+     * Computes the actual node array size, based on the cached addresses of the children nodes.
      *
-     * Each node stores its tentative address. During dictionary address computing, these
-     * are not final, but they can be used to compute the node size (the node size depends
-     * on the address of the children because the number of bytes necessary to store an
-     * address depends on its numeric value. The return value indicates whether the node
+     * Each node array stores its tentative address. During dictionary address computing, these
+     * are not final, but they can be used to compute the node array size (the node array size
+     * depends on the address of the children because the number of bytes necessary to store an
+     * address depends on its numeric value. The return value indicates whether the node array
      * contents (as in, any of the addresses stored in the cache fields) have changed with
      * respect to their previous value.
      *
-     * @param node the node to compute the size of.
+     * @param nodeArray the node array to compute the size of.
      * @param dict the dictionary in which the word/attributes are to be found.
      * @param formatOptions file format options.
-     * @return false if none of the cached addresses inside the node changed, true otherwise.
+     * @return false if none of the cached addresses inside the node array changed, true otherwise.
      */
-    private static boolean computeActualNodeSize(final Node node, final FusionDictionary dict,
-            final FormatOptions formatOptions) {
+    private static boolean computeActualNodeArraySize(final PtNodeArray nodeArray,
+            final FusionDictionary dict, final FormatOptions formatOptions) {
         boolean changed = false;
-        int size = getGroupCountSize(node);
-        for (CharGroup group : node.mData) {
-            group.mCachedAddressAfterUpdate = node.mCachedAddressAfterUpdate + size;
+        int size = getGroupCountSize(nodeArray);
+        for (CharGroup group : nodeArray.mData) {
+            group.mCachedAddressAfterUpdate = nodeArray.mCachedAddressAfterUpdate + size;
             if (group.mCachedAddressAfterUpdate != group.mCachedAddressBeforeUpdate) {
                 changed = true;
             }
@@ -318,16 +330,16 @@ public class BinaryDictEncoder {
                 if (formatOptions.mSupportsDynamicUpdate) {
                     groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
                 } else {
-                    groupSize += getByteSize(getOffsetToTargetNodeDuringUpdate(node,
+                    groupSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(nodeArray,
                             groupSize + size, group.mChildren));
                 }
             }
             groupSize += getShortcutListSize(group.mShortcutTargets);
             if (null != group.mBigrams) {
                 for (WeightedString bigram : group.mBigrams) {
-                    final int offset = getOffsetToTargetCharGroupDuringUpdate(node,
+                    final int offset = getOffsetToTargetCharGroupDuringUpdate(nodeArray,
                             groupSize + size + FormatSpec.GROUP_FLAGS_SIZE,
-                            FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord));
+                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
                     groupSize += getByteSize(offset) + FormatSpec.GROUP_FLAGS_SIZE;
                 }
             }
@@ -337,49 +349,49 @@ public class BinaryDictEncoder {
         if (formatOptions.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        if (node.mCachedSize != size) {
-            node.mCachedSize = size;
+        if (nodeArray.mCachedSize != size) {
+            nodeArray.mCachedSize = size;
             changed = true;
         }
         return changed;
     }
 
     /**
-     * Initializes the cached addresses of nodes from their size.
+     * Initializes the cached addresses of node arrays and their containing nodes from their size.
      *
-     * @param flatNodes the array of nodes.
+     * @param flatNodes the list of node arrays.
      * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
-    private static int initializeNodesCachedAddresses(final ArrayList<Node> flatNodes,
+    private static int initializeNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes,
             final FormatOptions formatOptions) {
-        int nodeOffset = 0;
-        for (final Node n : flatNodes) {
-            n.mCachedAddressBeforeUpdate = nodeOffset;
-            int groupCountSize = getGroupCountSize(n);
+        int nodeArrayOffset = 0;
+        for (final PtNodeArray nodeArray : flatNodes) {
+            nodeArray.mCachedAddressBeforeUpdate = nodeArrayOffset;
+            int groupCountSize = getGroupCountSize(nodeArray);
             int groupOffset = 0;
-            for (final CharGroup g : n.mData) {
+            for (final CharGroup g : nodeArray.mData) {
                 g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate =
-                        groupCountSize + nodeOffset + groupOffset;
+                        groupCountSize + nodeArrayOffset + groupOffset;
                 groupOffset += g.mCachedSize;
             }
             final int nodeSize = groupCountSize + groupOffset
                     + (formatOptions.mSupportsDynamicUpdate
                             ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
-            nodeOffset += n.mCachedSize;
+            nodeArrayOffset += nodeArray.mCachedSize;
         }
-        return nodeOffset;
+        return nodeArrayOffset;
     }
 
     /**
-     * Updates the cached addresses of nodes after recomputing their new positions.
+     * Updates the cached addresses of node arrays after recomputing their new positions.
      *
-     * @param flatNodes the array of nodes.
+     * @param flatNodes the list of node arrays.
      */
-    private static void updateNodeCachedAddresses(final ArrayList<Node> flatNodes) {
-        for (final Node n : flatNodes) {
-            n.mCachedAddressBeforeUpdate = n.mCachedAddressAfterUpdate;
-            for (final CharGroup g : n.mData) {
+    private static void updateNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes) {
+        for (final PtNodeArray nodeArray : flatNodes) {
+            nodeArray.mCachedAddressBeforeUpdate = nodeArray.mCachedAddressAfterUpdate;
+            for (final CharGroup g : nodeArray.mData) {
                 g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate;
             }
         }
@@ -391,11 +403,11 @@ public class BinaryDictEncoder {
      * The parent addresses are used by some binary formats at write-to-disk time. Not all formats
      * need them. In particular, version 2 does not need them, and version 3 does.
      *
-     * @param flatNodes the flat array of nodes to fill in
+     * @param flatNodes the flat array of node arrays to fill in
      */
-    private static void computeParentAddresses(final ArrayList<Node> flatNodes) {
-        for (final Node node : flatNodes) {
-            for (final CharGroup group : node.mData) {
+    private static void computeParentAddresses(final ArrayList<PtNodeArray> flatNodes) {
+        for (final PtNodeArray nodeArray : flatNodes) {
+            for (final CharGroup group : nodeArray.mData) {
                 if (null != group.mChildren) {
                     // Assign my address to children's parent address
                     // Here BeforeUpdate and AfterUpdate addresses have the same value, so it
@@ -408,25 +420,25 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Compute the addresses and sizes of an ordered node array.
+     * Compute the addresses and sizes of an ordered list of node arrays.
      *
-     * This method takes a node array and will update its cached address and size values
-     * so that they can be written into a file. It determines the smallest size each of the
-     * nodes can be given the addresses of its children and attributes, and store that into
+     * This method takes a list of node arrays and will update their cached address and size
+     * values so that they can be written into a file. It determines the smallest size each of the
+     * nodes arrays can be given the addresses of its children and attributes, and store that into
      * each node.
      * The order of the node is given by the order of the array. This method makes no effort
      * to find a good order; it only mechanically computes the size this order results in.
      *
      * @param dict the dictionary
-     * @param flatNodes the ordered array of nodes
+     * @param flatNodes the ordered list of nodes arrays
      * @param formatOptions file format options.
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
-    private static ArrayList<Node> computeAddresses(final FusionDictionary dict,
-            final ArrayList<Node> flatNodes, final FormatOptions formatOptions) {
+    private static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
+            final ArrayList<PtNodeArray> flatNodes, final FormatOptions formatOptions) {
         // First get the worst possible sizes and offsets
-        for (final Node n : flatNodes) calculateNodeMaximumSize(n, formatOptions);
-        final int offset = initializeNodesCachedAddresses(flatNodes, formatOptions);
+        for (final PtNodeArray n : flatNodes) calculateNodeArrayMaximumSize(n, formatOptions);
+        final int offset = initializeNodeArraysCachedAddresses(flatNodes, formatOptions);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -435,17 +447,19 @@ public class BinaryDictEncoder {
         boolean changesDone = false;
         do {
             changesDone = false;
-            int nodeStartOffset = 0;
-            for (final Node n : flatNodes) {
-                n.mCachedAddressAfterUpdate = nodeStartOffset;
-                final int oldNodeSize = n.mCachedSize;
-                final boolean changed = computeActualNodeSize(n, dict, formatOptions);
-                final int newNodeSize = n.mCachedSize;
-                if (oldNodeSize < newNodeSize) throw new RuntimeException("Increased size ?!");
-                nodeStartOffset += newNodeSize;
+            int nodeArrayStartOffset = 0;
+            for (final PtNodeArray nodeArray : flatNodes) {
+                nodeArray.mCachedAddressAfterUpdate = nodeArrayStartOffset;
+                final int oldNodeArraySize = nodeArray.mCachedSize;
+                final boolean changed = computeActualNodeArraySize(nodeArray, dict, formatOptions);
+                final int newNodeArraySize = nodeArray.mCachedSize;
+                if (oldNodeArraySize < newNodeArraySize) {
+                    throw new RuntimeException("Increased size ?!");
+                }
+                nodeArrayStartOffset += newNodeArraySize;
                 changesDone |= changed;
             }
-            updateNodeCachedAddresses(flatNodes);
+            updateNodeArraysCachedAddresses(flatNodes);
             ++passes;
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
@@ -453,10 +467,10 @@ public class BinaryDictEncoder {
         if (formatOptions.mSupportsDynamicUpdate) {
             computeParentAddresses(flatNodes);
         }
-        final Node lastNode = flatNodes.get(flatNodes.size() - 1);
+        final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         MakedictLog.i("Compression complete in " + passes + " passes.");
         MakedictLog.i("After address compression : "
-                + (lastNode.mCachedAddressAfterUpdate + lastNode.mCachedSize));
+                + (lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize));
 
         return flatNodes;
     }
@@ -464,25 +478,25 @@ public class BinaryDictEncoder {
     /**
      * Sanity-checking method.
      *
-     * This method checks an array of node for juxtaposition, that is, it will do
-     * nothing if each node's cached address is actually the previous node's address
+     * This method checks a list of node arrays for juxtaposition, that is, it will do
+     * nothing if each node array's cached address is actually the previous node array's address
      * plus the previous node's size.
      * If this is not the case, it will throw an exception.
      *
-     * @param array the array node to check
+     * @param arrays the list of node arrays to check
      */
-    private static void checkFlatNodeArray(final ArrayList<Node> array) {
+    private static void checkFlatNodeArrayList(final ArrayList<PtNodeArray> arrays) {
         int offset = 0;
         int index = 0;
-        for (final Node n : array) {
+        for (final PtNodeArray nodeArray : arrays) {
             // BeforeUpdate and AfterUpdate addresses are the same here, so it does not matter
             // which we use.
-            if (n.mCachedAddressAfterUpdate != offset) {
+            if (nodeArray.mCachedAddressAfterUpdate != offset) {
                 throw new RuntimeException("Wrong address for node " + index
-                        + " : expected " + offset + ", got " + n.mCachedAddressAfterUpdate);
+                        + " : expected " + offset + ", got " + nodeArray.mCachedAddressAfterUpdate);
             }
             ++index;
-            offset += n.mCachedSize;
+            offset += nodeArray.mCachedSize;
         }
     }
 
@@ -707,26 +721,23 @@ public class BinaryDictEncoder {
     }
 
     /**
-     * Write a node to memory. The node is expected to have its final position cached.
+     * Write a node array to memory. The node array is expected to have its final position cached.
      *
-     * This can be an empty map, but the more is inside the faster the lookups will be. It can
-     * be carried on as long as nodes do not move.
-     *
-     * @param dict the dictionary the node is a part of (for relative offsets).
+     * @param dict the dictionary the node array is a part of (for relative offsets).
      * @param buffer the memory buffer to write to.
-     * @param node the node to write.
+     * @param nodeArray the node array to write.
      * @param formatOptions file format options.
      * @return the address of the END of the node.
      */
     @SuppressWarnings("unused")
     private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
-            final Node node, final FormatOptions formatOptions) {
+            final PtNodeArray nodeArray, final FormatOptions formatOptions) {
         // TODO: Make the code in common with BinaryDictIOUtils#writeCharGroup
-        int index = node.mCachedAddressAfterUpdate;
+        int index = nodeArray.mCachedAddressAfterUpdate;
 
-        final int groupCount = node.mData.size();
-        final int countSize = getGroupCountSize(node);
-        final int parentAddress = node.mCachedParentAddress;
+        final int groupCount = nodeArray.mData.size();
+        final int countSize = getGroupCountSize(nodeArray);
+        final int parentAddress = nodeArray.mCachedParentAddress;
         if (1 == countSize) {
             buffer[index++] = (byte)groupCount;
         } else if (2 == countSize) {
@@ -739,7 +750,7 @@ public class BinaryDictEncoder {
         }
         int groupAddress = index;
         for (int i = 0; i < groupCount; ++i) {
-            final CharGroup group = node.mData.get(i);
+            final CharGroup group = nodeArray.mData.get(i);
             if (index != group.mCachedAddressAfterUpdate) {
                 throw new RuntimeException("Bug: write index is not the same as the cached address "
                         + "of the group : " + index + " <> " + group.mCachedAddressAfterUpdate);
@@ -762,7 +773,7 @@ public class BinaryDictEncoder {
                 index = writeParentAddress(buffer, index, parentAddress, formatOptions);
             } else {
                 index = writeParentAddress(buffer, index, parentAddress
-                        + (node.mCachedAddressAfterUpdate - group.mCachedAddressAfterUpdate),
+                        + (nodeArray.mCachedAddressAfterUpdate - group.mCachedAddressAfterUpdate),
                         formatOptions);
             }
 
@@ -812,7 +823,7 @@ public class BinaryDictEncoder {
                 while (bigramIterator.hasNext()) {
                     final WeightedString bigram = bigramIterator.next();
                     final CharGroup target =
-                            FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord);
+                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
                     final int addressOfBigram = target.mCachedAddressAfterUpdate;
                     final int unigramFrequencyForThisWord = target.mFrequency;
                     ++groupAddress;
@@ -832,57 +843,58 @@ public class BinaryDictEncoder {
                     = FormatSpec.NO_FORWARD_LINK_ADDRESS;
             index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        if (index != node.mCachedAddressAfterUpdate + node.mCachedSize) throw new RuntimeException(
-                "Not the same size : written "
-                + (index - node.mCachedAddressAfterUpdate) + " bytes from a node that should have "
-                + node.mCachedSize + " bytes");
+        if (index != nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize) {
+            throw new RuntimeException(
+                    "Not the same size : written " + (index - nodeArray.mCachedAddressAfterUpdate)
+                     + " bytes from a node that should have " + nodeArray.mCachedSize + " bytes");
+        }
         return index;
     }
 
     /**
-     * Dumps a collection of useful statistics about a node array.
+     * Dumps a collection of useful statistics about a list of node arrays.
      *
      * This prints purely informative stuff, like the total estimated file size, the
-     * number of nodes, of character groups, the repartition of each address size, etc
+     * number of node arrays, of character groups, the repartition of each address size, etc
      *
-     * @param nodes the node array.
+     * @param nodeArrays the list of node arrays.
      */
-    private static void showStatistics(ArrayList<Node> nodes) {
+    private static void showStatistics(ArrayList<PtNodeArray> nodeArrays) {
         int firstTerminalAddress = Integer.MAX_VALUE;
         int lastTerminalAddress = Integer.MIN_VALUE;
         int size = 0;
         int charGroups = 0;
         int maxGroups = 0;
         int maxRuns = 0;
-        for (final Node n : nodes) {
-            if (maxGroups < n.mData.size()) maxGroups = n.mData.size();
-            for (final CharGroup cg : n.mData) {
+        for (final PtNodeArray nodeArray : nodeArrays) {
+            if (maxGroups < nodeArray.mData.size()) maxGroups = nodeArray.mData.size();
+            for (final CharGroup cg : nodeArray.mData) {
                 ++charGroups;
                 if (cg.mChars.length > maxRuns) maxRuns = cg.mChars.length;
                 if (cg.mFrequency >= 0) {
-                    if (n.mCachedAddressAfterUpdate < firstTerminalAddress)
-                        firstTerminalAddress = n.mCachedAddressAfterUpdate;
-                    if (n.mCachedAddressAfterUpdate > lastTerminalAddress)
-                        lastTerminalAddress = n.mCachedAddressAfterUpdate;
+                    if (nodeArray.mCachedAddressAfterUpdate < firstTerminalAddress)
+                        firstTerminalAddress = nodeArray.mCachedAddressAfterUpdate;
+                    if (nodeArray.mCachedAddressAfterUpdate > lastTerminalAddress)
+                        lastTerminalAddress = nodeArray.mCachedAddressAfterUpdate;
                 }
             }
-            if (n.mCachedAddressAfterUpdate + n.mCachedSize > size) {
-                size = n.mCachedAddressAfterUpdate + n.mCachedSize;
+            if (nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize > size) {
+                size = nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize;
             }
         }
         final int[] groupCounts = new int[maxGroups + 1];
         final int[] runCounts = new int[maxRuns + 1];
-        for (final Node n : nodes) {
-            ++groupCounts[n.mData.size()];
-            for (final CharGroup cg : n.mData) {
+        for (final PtNodeArray nodeArray : nodeArrays) {
+            ++groupCounts[nodeArray.mData.size()];
+            for (final CharGroup cg : nodeArray.mData) {
                 ++runCounts[cg.mChars.length];
             }
         }
 
         MakedictLog.i("Statistics:\n"
                 + "  total file size " + size + "\n"
-                + "  " + nodes.size() + " nodes\n"
-                + "  " + charGroups + " groups (" + ((float)charGroups / nodes.size())
+                + "  " + nodeArrays.size() + " node arrays\n"
+                + "  " + charGroups + " groups (" + ((float)charGroups / nodeArrays.size())
                         + " groups per node)\n"
                 + "  first terminal at " + firstTerminalAddress + "\n"
                 + "  last terminal at " + lastTerminalAddress + "\n"
@@ -909,11 +921,12 @@ public class BinaryDictEncoder {
             final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
 
-        // Addresses are limited to 3 bytes, but since addresses can be relative to each node, the
-        // structure itself is not limited to 16MB. However, if it is over 16MB deciding the order
-        // of the nodes becomes a quite complicated problem, because though the dictionary itself
-        // does not have a size limit, each node must still be within 16MB of all its children and
-        // parents. As long as this is ensured, the dictionary file may grow to any size.
+        // Addresses are limited to 3 bytes, but since addresses can be relative to each node
+        // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding
+        // the order of the node arrays becomes a quite complicated problem, because though the
+        // dictionary itself does not have a size limit, each node array must still be within 16MB
+        // of all its children and parents. As long as this is ensured, the dictionary file may
+        // grow to any size.
 
         final int version = formatOptions.mVersion;
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
@@ -964,23 +977,23 @@ public class BinaryDictEncoder {
 
         // Leave the choice of the optimal node order to the flattenTree function.
         MakedictLog.i("Flattening the tree...");
-        ArrayList<Node> flatNodes = flattenTree(dict.mRoot);
+        ArrayList<PtNodeArray> flatNodes = flattenTree(dict.mRootNodeArray);
 
         MakedictLog.i("Computing addresses...");
         computeAddresses(dict, flatNodes, formatOptions);
         MakedictLog.i("Checking array...");
-        if (DBG) checkFlatNodeArray(flatNodes);
+        if (DBG) checkFlatNodeArrayList(flatNodes);
 
         // Create a buffer that matches the final dictionary size.
-        final Node lastNode = flatNodes.get(flatNodes.size() - 1);
-        final int bufferSize = lastNode.mCachedAddressAfterUpdate + lastNode.mCachedSize;
+        final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
+        final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
         final byte[] buffer = new byte[bufferSize];
         int index = 0;
 
         MakedictLog.i("Writing file...");
         int dataEndOffset = 0;
-        for (Node n : flatNodes) {
-            dataEndOffset = writePlacedNode(dict, buffer, n, formatOptions);
+        for (PtNodeArray nodeArray : flatNodes) {
+            dataEndOffset = writePlacedNode(dict, buffer, nodeArray, formatOptions);
         }
 
         if (DBG) showStatistics(flatNodes);

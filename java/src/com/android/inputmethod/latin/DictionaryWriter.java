@@ -23,7 +23,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -51,7 +51,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     @Override
     public void clear() {
         final HashMap<String, String> attributes = CollectionUtils.newHashMap();
-        mFusionDictionary = new FusionDictionary(new Node(),
+        mFusionDictionary = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(attributes, false, false));
     }
 

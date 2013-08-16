@@ -25,7 +25,7 @@ import android.util.SparseArray;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
@@ -226,7 +226,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // check unigram
         for (final String word : words) {
-            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRoot, word);
+            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
             assertNotNull(cg);
         }
 
@@ -234,7 +234,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 0; i < bigrams.size(); ++i) {
             final int w1 = bigrams.keyAt(i);
             for (final int w2 : bigrams.valueAt(i)) {
-                final CharGroup cg = FusionDictionary.findWordInTree(dict.mRoot, words.get(w1));
+                final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray,
+                        words.get(w1));
                 assertNotNull(words.get(w1) + "," + words.get(w2), cg.getBigram(words.get(w2)));
             }
         }
@@ -242,7 +243,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // check shortcut
         if (shortcutMap != null) {
             for (final Map.Entry<String, List<String>> entry : shortcutMap.entrySet()) {
-                final CharGroup group = FusionDictionary.findWordInTree(dict.mRoot, entry.getKey());
+                final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray,
+                        entry.getKey());
                 for (final String word : entry.getValue()) {
                     assertNotNull("shortcut not found: " + entry.getKey() + ", " + word,
                             group.getShortcut(word));
@@ -297,7 +299,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
         assertNotNull(file);
 
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
         addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
@@ -440,7 +442,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         assertNotNull(file);
 
         // making the dictionary from lists of words.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(words.size(), dict, words, null /* shortcutMap */);
@@ -538,7 +540,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
         assertNotNull(file);
 
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
@@ -599,7 +601,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
         assertNotNull(file);
 
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);

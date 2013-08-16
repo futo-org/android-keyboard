@@ -59,7 +59,7 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Tours all node without recursive call.
+     * Retrieves all node arrays without recursive call.
      */
     private static void readUnigramsAndBigramsBinaryInner(
             final FusionDictionaryBufferInterface buffer, final int headerSize,
@@ -116,7 +116,7 @@ public final class BinaryDictIOUtils {
                 if (formatOptions.mSupportsDynamicUpdate) {
                     final int forwardLinkAddress = buffer.readUnsignedInt24();
                     if (forwardLinkAddress != FormatSpec.NO_FORWARD_LINK_ADDRESS) {
-                        // the node has a forward link.
+                        // The node array has a forward link.
                         p.mNumOfCharGroup = Position.NOT_READ_GROUPCOUNT;
                         p.mAddress = forwardLinkAddress;
                     } else {
@@ -126,7 +126,7 @@ public final class BinaryDictIOUtils {
                     stack.pop();
                 }
             } else {
-                // the node has more groups.
+                // The node array has more groups.
                 p.mAddress = buffer.position();
             }
 
@@ -139,14 +139,14 @@ public final class BinaryDictIOUtils {
 
     /**
      * Reads unigrams and bigrams from the binary file.
-     * Doesn't make the memory representation of the dictionary.
+     * Doesn't store a full memory representation of the dictionary.
      *
      * @param reader the reader.
      * @param words the map to store the address as a key and the word as a value.
      * @param frequencies the map to store the address as a key and the frequency as a value.
      * @param bigrams the map to store the address as a key and the list of address as a value.
-     * @throws IOException
-     * @throws UnsupportedFormatException
+     * @throws IOException if the file can't be read.
+     * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     public static void readUnigramsAndBigramsBinary(final BinaryDictReader reader,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
@@ -165,8 +165,8 @@ public final class BinaryDictIOUtils {
      * @param buffer the buffer to read.
      * @param word the word we search for.
      * @return the address of the terminal node.
-     * @throws IOException
-     * @throws UnsupportedFormatException
+     * @throws IOException if the file can't be read.
+     * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
     public static int getTerminalPosition(final FusionDictionaryBufferInterface buffer,
@@ -224,9 +224,9 @@ public final class BinaryDictIOUtils {
                 }
 
                 // If we found the next char group, it is under the file pointer.
-                // But if not, we are at the end of this node so we expect to have
+                // But if not, we are at the end of this node array so we expect to have
                 // a forward link address that we need to consult and possibly resume
-                // search on the next node in the linked list.
+                // search on the next node array in the linked list.
                 if (foundNextCharGroup) break;
                 if (!header.mFormatOptions.mSupportsDynamicUpdate) {
                     return FormatSpec.NOT_VALID_WORD;
@@ -365,9 +365,10 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Write a char group to an output stream.
-     * A char group is an in-memory representation of a node in trie.
-     * A char group info is an on-disk representation of a node.
+     * Write a char group to an output stream from a CharGroupInfo.
+     * A char group is an in-memory representation of a node in the patricia trie.
+     * A char group info is a container for low-level information about how the
+     * char group is stored in the binary format.
      *
      * @param destination the stream to write.
      * @param info the char group info to be written.
@@ -427,7 +428,7 @@ public final class BinaryDictIOUtils {
 
         if (info.mBigrams != null) {
             // TODO: Consolidate this code with the code that computes the size of the bigram list
-            //        in BinaryDictEncoder#computeActualNodeSize
+            //        in BinaryDictEncoder#computeActualNodeArraySize
             for (int i = 0; i < info.mBigrams.size(); ++i) {
 
                 final int bigramFrequency = info.mBigrams.get(i).mFrequency;
@@ -479,14 +480,14 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Write a node to the stream.
+     * Write a node array to the stream.
      *
      * @param destination the stream to write.
-     * @param infos groups to be written.
+     * @param infos an array of CharGroupInfo to be written.
      * @return the size written, in bytes.
      * @throws IOException
      */
-    static int writeNode(final OutputStream destination, final CharGroupInfo[] infos)
+    static int writeNodes(final OutputStream destination, final CharGroupInfo[] infos)
             throws IOException {
         int size = getGroupCountSize(infos.length);
         switch (getGroupCountSize(infos.length)) {
@@ -604,12 +605,12 @@ public final class BinaryDictIOUtils {
     public static int getGroupCountSize(final int count) {
         if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
             return 1;
-        } else if (FormatSpec.MAX_CHARGROUPS_IN_A_NODE >= count) {
+        } else if (FormatSpec.MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY >= count) {
             return 2;
         } else {
             throw new RuntimeException("Can't have more than "
-                    + FormatSpec.MAX_CHARGROUPS_IN_A_NODE + " groups in a node (found " + count
-                    + ")");
+                    + FormatSpec.MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY + " groups in a node (found "
+                    + count + ")");
         }
     }
 

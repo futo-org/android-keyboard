@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
@@ -124,8 +124,8 @@ public class XmlDictInputOutput {
                         GERMAN_UMLAUT_PROCESSING_OPTION.equals(optionsString);
                 final boolean processLigatures =
                         FRENCH_LIGATURE_PROCESSING_OPTION.equals(optionsString);
-                mDictionary = new FusionDictionary(new Node(), new DictionaryOptions(attributes,
-                        processUmlauts, processLigatures));
+                mDictionary = new FusionDictionary(new PtNodeArray(),
+                        new DictionaryOptions(attributes, processUmlauts, processLigatures));
             } else {
                 mState = UNKNOWN;
             }

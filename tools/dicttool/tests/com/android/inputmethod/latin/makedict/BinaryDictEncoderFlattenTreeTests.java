@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 
 import junit.framework.TestCase;
 
@@ -31,7 +31,7 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
     // Test the flattened array contains the expected number of nodes, and
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new DictionaryOptions(new HashMap<String, String>(),
                         false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         dict.add("foo", 1, null, false /* isNotAWord */);
@@ -39,10 +39,10 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
         dict.add("ftb", 1, null, false /* isNotAWord */);
         dict.add("bar", 1, null, false /* isNotAWord */);
         dict.add("fool", 1, null, false /* isNotAWord */);
-        final ArrayList<Node> result = BinaryDictEncoder.flattenTree(dict.mRoot);
+        final ArrayList<PtNodeArray> result = BinaryDictEncoder.flattenTree(dict.mRootNodeArray);
         assertEquals(4, result.size());
         while (!result.isEmpty()) {
-            final Node n = result.remove(0);
+            final PtNodeArray n = result.remove(0);
             assertFalse("Flattened array contained the same node twice", result.contains(n));
         }
     }

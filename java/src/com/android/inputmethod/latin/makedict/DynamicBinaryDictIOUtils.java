@@ -86,7 +86,7 @@ public final class DynamicBinaryDictIOUtils {
         }
         final int flags = buffer.readUnsignedByte();
         if (BinaryDictIOUtils.isMovedGroup(flags, formatOptions)) {
-            // if the group is moved, the parent address is stored in the destination group.
+            // If the group is moved, the parent address is stored in the destination group.
             // We are guaranteed to process the destination group later, so there is no need to
             // update anything here.
             buffer.position(originalPosition);
@@ -101,10 +101,10 @@ public final class DynamicBinaryDictIOUtils {
     }
 
     /**
-     * Update parent addresses in a Node that is referred to by nodeOriginAddress.
+     * Update parent addresses in a node array stored at nodeOriginAddress.
      *
      * @param buffer the buffer to be modified.
-     * @param nodeOriginAddress the address of a modified Node.
+     * @param nodeOriginAddress the address of the node array to update.
      * @param newParentAddress the address to be written.
      * @param formatOptions file format options.
      */
@@ -154,7 +154,7 @@ public final class DynamicBinaryDictIOUtils {
      */
     private static int moveCharGroup(final OutputStream destination,
             final FusionDictionaryBufferInterface buffer, final CharGroupInfo info,
-            final int nodeOriginAddress, final int oldGroupAddress,
+            final int nodeArrayOriginAddress, final int oldGroupAddress,
             final FormatOptions formatOptions) throws IOException {
         updateParentAddress(buffer, oldGroupAddress, buffer.limit() + 1, formatOptions);
         buffer.position(oldGroupAddress);
@@ -163,15 +163,16 @@ public final class DynamicBinaryDictIOUtils {
         buffer.put((byte)(FormatSpec.FLAG_IS_MOVED | (currentFlags
                 & (~FormatSpec.MASK_MOVE_AND_DELETE_FLAG))));
         int size = FormatSpec.GROUP_FLAGS_SIZE;
-        updateForwardLink(buffer, nodeOriginAddress, buffer.limit(), formatOptions);
-        size += BinaryDictIOUtils.writeNode(destination, new CharGroupInfo[] { info });
+        updateForwardLink(buffer, nodeArrayOriginAddress, buffer.limit(), formatOptions);
+        size += BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[] { info });
         return size;
     }
+
     @SuppressWarnings("unused")
     private static void updateForwardLink(final FusionDictionaryBufferInterface buffer,
-            final int nodeOriginAddress, final int newNodeAddress,
+            final int nodeArrayOriginAddress, final int newNodeArrayAddress,
             final FormatOptions formatOptions) {
-        buffer.position(nodeOriginAddress);
+        buffer.position(nodeArrayOriginAddress);
         int jumpCount = 0;
         while (jumpCount++ < MAX_JUMPS) {
             final int count = BinaryDictDecoder.readCharGroupCount(buffer);
@@ -179,7 +180,7 @@ public final class DynamicBinaryDictIOUtils {
             final int forwardLinkAddress = buffer.readUnsignedInt24();
             if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                 buffer.position(buffer.position() - FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
-                BinaryDictIOUtils.writeSInt24ToBuffer(buffer, newNodeAddress);
+                BinaryDictIOUtils.writeSInt24ToBuffer(buffer, newNodeArrayAddress);
                 return;
             }
             buffer.position(forwardLinkAddress);
@@ -190,57 +191,59 @@ public final class DynamicBinaryDictIOUtils {
     }
 
     /**
-     * Move a group that is referred to by oldGroupOrigin to the tail of the file.
-     * And set the children address to the byte after the group.
+     * Move a group that is referred to by oldGroupOrigin to the tail of the file, and set the
+     * children address to the byte after the group
      *
-     * @param nodeOrigin the address of the tail of the file.
-     * @param characters
-     * @param length
-     * @param flags
-     * @param frequency
-     * @param parentAddress
-     * @param shortcutTargets
-     * @param bigrams
+     * @param fileEndAddress the address of the tail of the file.
+     * @param codePoints the characters to put inside the group.
+     * @param length how many code points to read from codePoints.
+     * @param flags the flags for this group.
+     * @param frequency the frequency of this terminal.
+     * @param parentAddress the address of the parent group of this group.
+     * @param shortcutTargets the shortcut targets for this group.
+     * @param bigrams the bigrams for this group.
      * @param destination the stream representing the tail of the file.
      * @param buffer the buffer representing the (constant-size) body of the file.
-     * @param oldNodeOrigin
-     * @param oldGroupOrigin
-     * @param formatOptions
+     * @param oldNodeArrayOrigin the origin of the old node array this group was a part of.
+     * @param oldGroupOrigin the old origin where this group used to be stored.
+     * @param formatOptions format options for this dictionary.
      * @return the size written, in bytes.
-     * @throws IOException
+     * @throws IOException if the file can't be accessed
      */
-    private static int moveGroup(final int nodeOrigin, final int[] characters, final int length,
-            final int flags, final int frequency, final int parentAddress,
+    private static int moveGroup(final int fileEndAddress, final int[] codePoints,
+            final int length, final int flags, final int frequency, final int parentAddress,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams, final OutputStream destination,
-            final FusionDictionaryBufferInterface buffer, final int oldNodeOrigin,
+            final FusionDictionaryBufferInterface buffer, final int oldNodeArrayOrigin,
             final int oldGroupOrigin, final FormatOptions formatOptions) throws IOException {
         int size = 0;
-        final int newGroupOrigin = nodeOrigin + 1;
-        final int[] writtenCharacters = Arrays.copyOfRange(characters, 0, length);
+        final int newGroupOrigin = fileEndAddress + 1;
+        final int[] writtenCharacters = Arrays.copyOfRange(codePoints, 0, length);
         final CharGroupInfo tmpInfo = new CharGroupInfo(newGroupOrigin, -1 /* endAddress */,
                 flags, writtenCharacters, frequency, parentAddress, FormatSpec.NO_CHILDREN_ADDRESS,
                 shortcutTargets, bigrams);
         size = BinaryDictIOUtils.computeGroupSize(tmpInfo, formatOptions);
         final CharGroupInfo newInfo = new CharGroupInfo(newGroupOrigin, newGroupOrigin + size,
                 flags, writtenCharacters, frequency, parentAddress,
-                nodeOrigin + 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE, shortcutTargets,
+                fileEndAddress + 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE, shortcutTargets,
                 bigrams);
-        moveCharGroup(destination, buffer, newInfo, oldNodeOrigin, oldGroupOrigin, formatOptions);
+        moveCharGroup(destination, buffer, newInfo, oldNodeArrayOrigin, oldGroupOrigin,
+                formatOptions);
         return 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
 
     /**
      * Insert a word into a binary dictionary.
      *
-     * @param buffer
-     * @param destination
-     * @param word
-     * @param frequency
-     * @param bigramStrings
-     * @param shortcuts
-     * @throws IOException
-     * @throws UnsupportedFormatException
+     * @param buffer the buffer containing the existing dictionary.
+     * @param destination a stream to the underlying file, with the pointer at the end of the file.
+     * @param word the word to insert.
+     * @param frequency the frequency of the new word.
+     * @param bigramStrings bigram list, or null if none.
+     * @param shortcuts shortcut list, or null if none.
+     * @param isBlackListEntry whether this should be a blacklist entry.
+     * @throws IOException if the file can't be accessed.
+     * @throws UnsupportedFormatException if the existing dictionary is in an unexpected format.
      */
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
@@ -323,7 +326,7 @@ public final class DynamicBinaryDictIOUtils {
                                 currentInfo.mFlags, characters2, currentInfo.mFrequency,
                                 newNodeAddress + 1, currentInfo.mChildrenAddress,
                                 currentInfo.mShortcutTargets, currentInfo.mBigrams);
-                        BinaryDictIOUtils.writeNode(destination, new CharGroupInfo[] { newInfo2 });
+                        BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[] { newInfo2 });
                         return;
                     } else if (codePoints[wordPos + p] != currentInfo.mCharacters[p]) {
                         if (p > 0) {
@@ -386,7 +389,7 @@ public final class DynamicBinaryDictIOUtils {
                                     newNodeAddress + written, -1 /* endAddress */, flags,
                                     newCharacters, frequency, newNodeAddress + 1,
                                     FormatSpec.NO_CHILDREN_ADDRESS, shortcuts, bigrams);
-                            BinaryDictIOUtils.writeNode(destination,
+                            BinaryDictIOUtils.writeNodes(destination,
                                     new CharGroupInfo[] { suffixInfo, newInfo });
                             return;
                         }
@@ -438,7 +441,7 @@ public final class DynamicBinaryDictIOUtils {
                         final CharGroupInfo newInfo = new CharGroupInfo(newGroupAddress, -1, flags,
                                 characters, frequency, address, FormatSpec.NO_CHILDREN_ADDRESS,
                                 shortcuts, bigrams);
-                        BinaryDictIOUtils.writeNode(destination, new CharGroupInfo[] { newInfo });
+                        BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[] { newInfo });
                         return;
                     }
                     buffer.position(currentInfo.mChildrenAddress);
@@ -482,7 +485,7 @@ public final class DynamicBinaryDictIOUtils {
                 final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
                         -1 /* endAddress */, flags, characters, frequency, nodeParentAddress,
                         FormatSpec.NO_CHILDREN_ADDRESS, shortcuts, bigrams);
-                BinaryDictIOUtils.writeNode(destination, new CharGroupInfo[]{ newInfo });
+                BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[]{ newInfo });
                 return;
             } else {
                 depth--;

@@ -22,7 +22,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import junit.framework.TestCase;
@@ -42,7 +42,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
     public void testGetRawDictWorks() throws IOException, UnsupportedFormatException {
         // Create a thrice-compressed dictionary file.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new DictionaryOptions(new HashMap<String, String>(),
                         false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         dict.add("foo", TEST_FREQ, null, false /* isNotAWord */);
@@ -72,7 +72,8 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         final FusionDictionary resultDict = BinaryDictDecoder.readDictionaryBinary(reader,
                 null /* dict : an optional dictionary to add words to, or null */);
         assertEquals("Dictionary can't be read back correctly",
-                FusionDictionary.findWordInTree(resultDict.mRoot, "foo").getFrequency(), TEST_FREQ);
+                FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),
+                TEST_FREQ);
     }
 
     public void testGetRawDictFails() throws IOException {

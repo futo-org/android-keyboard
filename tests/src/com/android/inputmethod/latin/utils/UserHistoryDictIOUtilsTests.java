@@ -86,7 +86,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
     private void checkWordInFusionDict(final FusionDictionary dict, final String word,
             final ArrayList<String> expectedBigrams) {
-        final CharGroup group = FusionDictionary.findWordInTree(dict.mRoot, word);
+        final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
         assertNotNull(group);
         assertTrue(group.isTerminal());
 
