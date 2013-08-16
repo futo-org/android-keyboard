@@ -43,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -75,6 +76,8 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();
 
+    private final AtomicReference<AsyncTask<Void, Void, Void>> mWaitingTask;
+
     // Should always be false except when we use this class for test
     @UsedForTesting boolean mIsTest = false;
 
@@ -83,6 +86,7 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
         super(context, dictionaryType);
         mLocale = locale;
         mPrefs = sp;
+        mWaitingTask = new AtomicReference<AsyncTask<Void, Void, Void>>();
         if (mLocale != null && mLocale.length() > 1) {
             loadDictionary();
         }
@@ -174,7 +178,11 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
      */
     private void flushPendingWrites() {
         // Create a background thread to write the pending entries
-        new UpdateBinaryTask(mBigramList, mLocale, this, mPrefs, getContext()).execute();
+        final AsyncTask<Void, Void, Void> old = mWaitingTask.getAndSet(new UpdateBinaryTask(
+                mBigramList, mLocale, this, mPrefs, getContext()).execute());
+        if (old != null) {
+            old.cancel(false);
+        }
     }
 
     @Override
@@ -287,6 +295,7 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
 
         @Override
         protected Void doInBackground(final Void... v) {
+            if (isCancelled()) return null;
             if (mDynamicPredictionDictionary.mIsTest) {
                 // If mIsTest == true, wait until the lock is released.
                 mDynamicPredictionDictionary.mBigramListLock.lock();
@@ -306,6 +315,9 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
         }
 
         private void doWriteTaskLocked() {
+            if (isCancelled()) return;
+            mDynamicPredictionDictionary.mWaitingTask.compareAndSet(this, null);
+
             if (DBG_STRESS_TEST) {
                 try {
                     Log.w(TAG, "Start stress in closing: " + mLocale);
