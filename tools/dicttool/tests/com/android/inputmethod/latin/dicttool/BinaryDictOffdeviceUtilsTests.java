@@ -29,13 +29,9 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -76,7 +72,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
         final FusionDictionary resultDict = BinaryDictDecoder.readDictionaryBinary(reader,
                 null /* dict : an optional dictionary to add words to, or null */);
         assertEquals("Dictionary can't be read back correctly",
-                resultDict.findWordInTree(resultDict.mRoot, "foo").getFrequency(), TEST_FREQ);
+                FusionDictionary.findWordInTree(resultDict.mRoot, "foo").getFrequency(), TEST_FREQ);
     }
 
     public void testGetRawDictFails() throws IOException {
