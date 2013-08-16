@@ -57,6 +57,7 @@ public final class SettingsValues {
     public final SuggestedWords mSuggestPuncList;
     public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
+    public final boolean mCurrentLanguageHasSpaces;
 
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
@@ -118,6 +119,7 @@ public final class SettingsValues {
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = res.getString(R.string.symbols_word_separators);
         mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
+        mCurrentLanguageHasSpaces = res.getBoolean(R.bool.current_language_has_spaces);
 
         // Store the input attributes
         if (null == inputAttributes) {
@@ -186,6 +188,7 @@ public final class SettingsValues {
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
         mHintToSaveText = "Touch again to save";
+        mCurrentLanguageHasSpaces = true;
         mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         mAutoCap = true;
         mVibrateOn = true;

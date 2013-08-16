@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.inputmethod.BaseInputConnection;
 
 @LargeTest
 public class InputLogicTests extends InputTestsBase {
@@ -289,6 +290,20 @@ public class InputLogicTests extends InputTestsBase {
             type(Constants.CODE_DELETE);
         }
         assertEquals("delete whole composing word", "", mEditText.getText().toString());
+    }
+
+    public void testResumeSuggestionOnBackspace() {
+        final String WORD_TO_TYPE = "and this ";
+        type(WORD_TO_TYPE);
+        assertEquals("resume suggestion on backspace", -1,
+                BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        assertEquals("resume suggestion on backspace", -1,
+                BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
+        type(Constants.CODE_DELETE);
+        assertEquals("resume suggestion on backspace", 4,
+                BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        assertEquals("resume suggestion on backspace", 8,
+                BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
     }
     // TODO: Add some tests for non-BMP characters
 }

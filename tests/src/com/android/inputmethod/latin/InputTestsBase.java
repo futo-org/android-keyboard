@@ -46,6 +46,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     // The message that sets the underline is posted with a 100 ms delay
     protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 200;
+    // The message that sets predictions is posted with a 100 ms delay
+    protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
@@ -233,9 +235,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
                 --remainingAttempts;
             }
         }
-        if (!mLatinIME.hasMainDictionary()) {
-            throw new RuntimeException("Can't initialize the main dictionary");
-        }
     }
 
     protected void changeLanguage(final String locale) {
@@ -244,6 +243,16 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
         mLatinIME.loadKeyboard();
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
+        waitForDictionaryToBeLoaded();
+    }
+
+    protected void changeKeyboardLocaleAndDictLocale(final String keyboardLocale,
+            final String dictLocale) {
+        changeLanguage(keyboardLocale);
+        if (!keyboardLocale.equals(dictLocale)) {
+            mLatinIME.replaceMainDictionaryForTest(
+                    LocaleUtils.constructLocaleFromString(dictLocale));
+        }
         waitForDictionaryToBeLoaded();
     }
 
