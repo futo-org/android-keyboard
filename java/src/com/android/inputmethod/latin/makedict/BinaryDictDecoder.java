@@ -430,12 +430,6 @@ public final class BinaryDictDecoder {
         }
     }
 
-    // The word cache here is a stopgap bandaid to help the catastrophic performance
-    // of this method. Since it performs direct, unbuffered random access to the file and
-    // may be called hundreds of thousands of times, the resulting performance is not
-    // reasonable without some kind of cache. Thus:
-    private static TreeMap<Integer, WeightedString> wordCache =
-            new TreeMap<Integer, WeightedString>();
     /**
      * Finds, as a string, the word at the address passed as an argument.
      *
@@ -448,9 +442,6 @@ public final class BinaryDictDecoder {
     /* package for tests */ static WeightedString getWordAtAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions formatOptions) {
-        final WeightedString cachedString = wordCache.get(address);
-        if (null != cachedString) return cachedString;
-
         final WeightedString result;
         final int originalPointer = buffer.position();
         buffer.position(address);
@@ -462,7 +453,6 @@ public final class BinaryDictDecoder {
                     formatOptions);
         }
 
-        wordCache.put(address, result);
         buffer.position(originalPointer);
         return result;
     }
@@ -720,8 +710,6 @@ public final class BinaryDictDecoder {
     public static FusionDictionary readDictionaryBinary(final BinaryDictReader reader,
             final FusionDictionary dict) throws FileNotFoundException, IOException,
             UnsupportedFormatException {
-        // clear cache
-        wordCache.clear();
 
         // if the buffer has not been opened, open the buffer with bytebuffer.
         if (reader.getBuffer() == null) reader.openBuffer(
