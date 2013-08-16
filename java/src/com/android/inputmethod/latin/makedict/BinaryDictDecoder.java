@@ -457,16 +457,13 @@ public final class BinaryDictDecoder {
         return result;
     }
 
-    // TODO: static!? This will behave erratically when used in multi-threaded code.
-    // We need to fix this
-    private static int[] sGetWordBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
     @SuppressWarnings("unused")
     private static WeightedString getWordAtAddressWithParentAddress(
             final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
             final FormatOptions options) {
         int currentAddress = address;
-        int index = FormatSpec.MAX_WORD_LENGTH - 1;
         int frequency = Integer.MIN_VALUE;
+        final StringBuilder builder = new StringBuilder();
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
         for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
             CharGroupInfo currentInfo;
@@ -482,17 +479,12 @@ public final class BinaryDictDecoder {
                 }
             } while (BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags, options));
             if (Integer.MIN_VALUE == frequency) frequency = currentInfo.mFrequency;
-            for (int i = 0; i < currentInfo.mCharacters.length; ++i) {
-                sGetWordBuffer[index--] =
-                        currentInfo.mCharacters[currentInfo.mCharacters.length - i - 1];
-            }
+            builder.insert(0,
+                    new String(currentInfo.mCharacters, 0, currentInfo.mCharacters.length));
             if (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS) break;
             currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
         }
-
-        return new WeightedString(
-                new String(sGetWordBuffer, index + 1, FormatSpec.MAX_WORD_LENGTH - index - 1),
-                        frequency);
+        return new WeightedString(builder.toString(), frequency);
     }
 
     private static WeightedString getWordAtAddressWithoutParentAddress(
