@@ -1948,7 +1948,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     }
                 }
             }
-            if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+            if (currentSettings.isSuggestionsRequested(mDisplayOrientation)
+                    && currentSettings.mCurrentLanguageHasSpaces) {
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord();
             }
             // We just removed a character. We need to update the auto-caps state.
@@ -1977,6 +1978,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void handleCharacter(final int primaryCode, final int x,
             final int y, final int spaceState) {
+        // TODO: refactor this method to stop flipping isComposingWord around all the time, and
+        // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
+        // which has the same name as other handle* methods but is not the same.
         boolean isComposingWord = mWordComposer.isComposingWord();
 
         // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
@@ -1996,12 +2000,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             resetEntireInputState(mLastSelectionStart);
             isComposingWord = false;
         }
-        // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
-        // dozen milliseconds. Avoid calling it as much as possible, since we are on the UI
-        // thread here.
-        if (!isComposingWord && currentSettings.isWordCodePoint(primaryCode)
+        // We want to find out whether to start composing a new word with this character. If so,
+        // we need to reset the composing state and switch isComposingWord. The order of the
+        // tests is important for good performance.
+        // We only start composing if we're not already composing.
+        if (!isComposingWord
+        // We only start composing if this is a word code point. Essentially that means it's a
+        // a letter or a word connector.
+                && currentSettings.isWordCodePoint(primaryCode)
+        // We never go into composing state if suggestions are not requested.
                 && currentSettings.isSuggestionsRequested(mDisplayOrientation) &&
-                !mConnection.isCursorTouchingWord(currentSettings)) {
+        // In languages with spaces, we only start composing a word when we are not already
+        // touching a word. In languages without spaces, the above conditions are sufficient.
+                (!mConnection.isCursorTouchingWord(currentSettings)
+                        || !currentSettings.mCurrentLanguageHasSpaces)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote. The idea here is, single quote is not a
             // separator and it should be treated as a normal character, except in the first
@@ -2089,16 +2101,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
         boolean didAutoCorrect = false;
+        final SettingsValues currentSettings = mSettings.getCurrent();
+        // We avoid sending spaces in languages without spaces if we were composing.
+        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == primaryCode
+                && !currentSettings.mCurrentLanguageHasSpaces && mWordComposer.isComposingWord();
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the separator at the current cursor position.
             resetEntireInputState(mLastSelectionStart);
         }
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        if (mWordComposer.isComposingWord()) {
+        if (mWordComposer.isComposingWord()) { // May have changed since we stored wasComposing
             if (currentSettings.mCorrectionEnabled) {
-                // TODO: maybe cache Strings in an <String> sparse array or something
-                commitCurrentAutoCorrection(new String(new int[]{primaryCode}, 0, 1));
+                final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
+                        : new String(new int[] { primaryCode }, 0, 1);
+                commitCurrentAutoCorrection(separator);
                 didAutoCorrect = true;
             } else {
                 commitTyped(new String(new int[]{primaryCode}, 0, 1));
@@ -2115,7 +2131,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_handleSeparator(primaryCode, mWordComposer.isComposingWord());
         }
-        sendKeyCodePoint(primaryCode);
+
+        if (!shouldAvoidSendingCode) {
+            sendKeyCodePoint(primaryCode);
+        }
 
         if (Constants.CODE_SPACE == primaryCode) {
             if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
@@ -2260,11 +2279,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Get the word on which we should search the bigrams. If we are composing a word, it's
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
         // should just skip whitespace if any, so 1.
-        // TODO: this is slow (2-way IPC) - we should probably cache this instead.
         final SettingsValues currentSettings = mSettings.getCurrent();
-        final String prevWord =
-                mConnection.getNthPreviousWord(currentSettings.mWordSeparators,
-                mWordComposer.isComposingWord() ? 2 : 1);
+        final String prevWord;
+        if (currentSettings.mCurrentLanguageHasSpaces) {
+            // If we are typing in a language with spaces we can just look up the previous
+            // word from textview.
+            prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators,
+                    mWordComposer.isComposingWord() ? 2 : 1);
+        } else {
+            prevWord = LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
+                    : mLastComposedWord.mCommittedWord;
+        }
         return suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive,
                 currentSettings.mCorrectionEnabled, sessionId);
@@ -2534,6 +2559,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
         if (mAppWorkAroundsUtils.isBrokenByRecorrection()) return;
+        // Recorrection is not supported in languages without spaces because we don't know
+        // how to segment them yet.
+        if (!mSettings.getCurrent().mCurrentLanguageHasSpaces) return;
         // If the cursor is not touching a word, or if there is a selection, return right away.
         if (mLastSelectionStart != mLastSelectionEnd) return;
         // If we don't know the cursor location, return.
@@ -2656,7 +2684,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
             mUserHistoryPredictionDictionary.cancelAddingUserHistory(previousWord, committedWord);
         }
-        mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
+        final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
+        if (mSettings.getCurrent().mCurrentLanguageHasSpaces) {
+            // For languages with spaces, we revert to the typed string, but the cursor is still
+            // after the separator so we don't resume suggestions. If the user wants to correct
+            // the word, they have to press backspace again.
+            mConnection.commitText(stringToCommit, 1);
+        } else {
+            // For languages without spaces, we revert the typed string but the cursor is flush
+            // with the typed word, so we need to resume suggestions right away.
+            mWordComposer.setComposingWord(stringToCommit, mKeyboardSwitcher.getKeyboard());
+            mConnection.setComposingText(stringToCommit, 1);
+        }
         if (mSettings.isInternal()) {
             LatinImeLoggerUtils.onSeparator(mLastComposedWord.mSeparatorString,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
@@ -2674,7 +2713,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // This essentially inserts a space, and that's it.
     public void promotePhantomSpace() {
-        if (mSettings.getCurrent().shouldInsertSpacesAutomatically()
+        final SettingsValues currentSettings = mSettings.getCurrent();
+        if (currentSettings.shouldInsertSpacesAutomatically()
+                && currentSettings.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_promotePhantomSpace();
@@ -2885,6 +2926,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting
     /* package for test */ boolean hasMainDictionary() {
         return mSuggest.hasMainDictionary();
+    }
+
+    // DO NOT USE THIS for any other purpose than testing. This can break the keyboard badly.
+    @UsedForTesting
+    /* package for test */ void replaceMainDictionaryForTest(final Locale locale) {
+        mSuggest.resetMainDict(this, locale, null);
     }
 
     public void debugDumpStateAndCrashWithException(final String context) {
