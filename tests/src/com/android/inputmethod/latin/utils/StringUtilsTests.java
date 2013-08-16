@@ -256,4 +256,16 @@ public class StringUtilsTests extends AndroidTestCase {
         // code for now True is acceptable.
         assertTrue(StringUtils.lastPartLooksLikeURL(".abc/def"));
     }
+
+    public void testHexStringUtils() {
+        final byte[] bytes = new byte[] { (byte)0x01, (byte)0x11, (byte)0x22, (byte)0x33,
+                (byte)0x55, (byte)0x88, (byte)0xEE };
+        final String bytesStr = StringUtils.byteArrayToHexString(bytes);
+        final byte[] bytes2 = StringUtils.hexStringToByteArray(bytesStr);
+        for (int i = 0; i < bytes.length; ++i) {
+            assertTrue(bytes[i] == bytes2[i]);
+        }
+        final String bytesStr2 = StringUtils.byteArrayToHexString(bytes2);
+        assertTrue(bytesStr.equals(bytesStr2));
+    }
 }
