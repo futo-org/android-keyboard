@@ -214,7 +214,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CA));
                 assertEquals("de   ", "Allemand",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
-                assertEquals("zz   ", "Alphabet (QWERTY)",
+                assertEquals("zz   ", "Alphabet latin (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
             }
@@ -236,7 +236,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(EN_UK_DVORAK));
                 assertEquals("es_US colemak","Espagnol (États-Unis) (Colemak)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ES_US_COLEMAK));
-                assertEquals("zz pc",    "Alphabet (PC)",
+                assertEquals("zz pc",    "Alphabet latin (PC)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ_PC));
                 return null;
             }
