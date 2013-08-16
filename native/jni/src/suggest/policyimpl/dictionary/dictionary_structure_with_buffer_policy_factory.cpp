@@ -22,18 +22,29 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
+#include "suggest/policyimpl/dictionary/utils/mmaped_buffer.h"
 
 namespace latinime {
 
 /* static */ DictionaryStructureWithBufferPolicy *DictionaryStructureWithBufferPolicyFactory
-        ::newDictionaryStructureWithBufferPolicy(const uint8_t *const dictBuf,
-                const int dictSize) {
-    switch (FormatUtils::detectFormatVersion(dictBuf, dictSize)) {
+        ::newDictionaryStructureWithBufferPolicy(const char *const path, const int pathLength,
+                const int bufOffset, const int size, const bool isUpdatable) {
+    // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
+    // impl classes of DictionaryStructureWithBufferPolicy.
+    const MmapedBuffer *const mmapedBuffer = MmapedBuffer::openBuffer(path, pathLength, bufOffset,
+            size, isUpdatable);
+    if (!mmapedBuffer) {
+        return 0;
+    }
+    switch (FormatUtils::detectFormatVersion(mmapedBuffer->getBuffer(),
+            mmapedBuffer->getBufferSize())) {
         case FormatUtils::VERSION_2:
-            return new PatriciaTriePolicy(dictBuf);
+            return new PatriciaTriePolicy(mmapedBuffer);
         case FormatUtils::VERSION_3:
-            return new DynamicPatriciaTriePolicy(dictBuf);
+            return new DynamicPatriciaTriePolicy(mmapedBuffer);
         default:
+            AKLOGE("DICT: dictionary format is unknown, bad magic number");
+            delete mmapedBuffer;
             ASSERT(false);
             return 0;
     }

@@ -21,7 +21,6 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dictionary/binary_dictionary_info.h"
 
 namespace latinime {
 
@@ -54,8 +53,8 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
 
-    Dictionary(JNIEnv *env, void *dict, int dictSize, int mmapFd, int dictBufOffset,
-            bool isUpdatable);
+    Dictionary(JNIEnv *env,
+            DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPoilcy);
 
     int getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
@@ -78,11 +77,6 @@ class Dictionary {
     void removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
 
-    // TODO: Remove.
-    const BinaryDictionaryInfo *getBinaryDictionaryInfo() const {
-        return &mBinaryDictionaryInfo;
-    }
-
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy;
     }
@@ -92,7 +86,6 @@ class Dictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
-    const BinaryDictionaryInfo mBinaryDictionaryInfo;
     DictionaryStructureWithBufferPolicy *const mDictionaryStructureWithBufferPolicy;
     const BigramDictionary *const mBigramDictionary;
     const SuggestInterface *const mGestureSuggest;
