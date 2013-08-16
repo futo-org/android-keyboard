@@ -162,15 +162,16 @@ public final class BinaryDictIOUtils {
      * Gets the address of the last CharGroup of the exact matching word in the dictionary.
      * If no match is found, returns NOT_VALID_WORD.
      *
-     * @param buffer the buffer to read.
+     * @param reader the reader.
      * @param word the word we search for.
      * @return the address of the terminal node.
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    public static int getTerminalPosition(final FusionDictionaryBufferInterface buffer,
+    public static int getTerminalPosition(final BinaryDictReader reader,
             final String word) throws IOException, UnsupportedFormatException {
+        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         if (buffer.position() != 0) buffer.position(0);
 
@@ -507,18 +508,19 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Find a word from the buffer.
+     * Find a word using the BinaryDictReader.
      *
-     * @param buffer the buffer representing the body of the dictionary file.
+     * @param reader the reader
      * @param word the word searched
      * @return the found group
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static CharGroupInfo findWordFromBuffer(final FusionDictionaryBufferInterface buffer,
+    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictReader reader,
             final String word) throws IOException, UnsupportedFormatException {
-        int position = getTerminalPosition(buffer, word);
+        int position = getTerminalPosition(reader, word);
+        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
         if (position != FormatSpec.NOT_VALID_WORD) {
             buffer.position(0);
             final FileHeader header = BinaryDictDecoder.readHeader(buffer);
