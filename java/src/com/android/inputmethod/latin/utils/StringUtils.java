@@ -357,4 +357,30 @@ public final class StringUtils {
         }
         return true;
     }
+
+    @UsedForTesting
+    public static String byteArrayToHexString(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
+    }
+
+    @UsedForTesting
+    public static byte[] hexStringToByteArray(String hexString) {
+        if (TextUtils.isEmpty(hexString)) {
+            return null;
+        }
+        final int N = hexString.length();
+        final byte[] bytes = new byte[N / 2];
+        for (int i = 0; i < N; i += 2) {
+            bytes[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+                    + Character.digit(hexString.charAt(i + 1), 16));
+        }
+        return bytes;
+    }
 }

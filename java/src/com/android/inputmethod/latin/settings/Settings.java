@@ -27,10 +27,10 @@ import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
-import com.android.inputmethod.latin.utils.DebugLogUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -90,6 +90,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
 
+    private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
+            "pref_last_used_personalization_token";
     public static final String PREF_SEND_FEEDBACK = "send_feedback";
     public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
 
@@ -342,5 +344,15 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             final SharedPreferences prefs) {
         return prefs.getBoolean(
                 DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
+    }
+
+    public void writeLastUsedPersonalizationToken(byte[] token) {
+        final String tokenStr = StringUtils.byteArrayToHexString(token);
+        mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
+    }
+
+    public byte[] readLastUsedPersonalizationToken() {
+        final String tokenStr = mPrefs.getString(PREF_LAST_USED_PERSONALIZATION_TOKEN, null);
+        return StringUtils.hexStringToByteArray(tokenStr);
     }
 }
