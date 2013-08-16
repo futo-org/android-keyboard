@@ -48,6 +48,8 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     public abstract void onDictionaryReady();
 
+    public abstract void onDictionaryClosed();
+
     public void setPredictionDictionary(String locale, DynamicPredictionDictionaryBase dictionary) {
         mPredictionDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
         mLocale = locale;
@@ -68,6 +70,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     public void closeSession() {
         unsetPredictionDictionary();
+        onDictionaryClosed();
     }
 
     public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
