@@ -25,7 +25,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.PendingAttribute;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
@@ -78,7 +78,7 @@ public final class UserHistoryDictIOUtils {
     @UsedForTesting
     static FusionDictionary constructFusionDictionary(
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams) {
-        final FusionDictionary fusionDict = new FusionDictionary(new Node(),
+        final FusionDictionary fusionDict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false,
                         false));
         int profTotal = 0;
@@ -102,7 +102,7 @@ public final class UserHistoryDictIOUtils {
                 if (word1 == null) { // unigram
                     fusionDict.add(word2, freq, null, false /* isNotAWord */);
                 } else { // bigram
-                    if (FusionDictionary.findWordInTree(fusionDict.mRoot, word1) == null) {
+                    if (FusionDictionary.findWordInTree(fusionDict.mRootNodeArray, word1) == null) {
                         fusionDict.add(word1, 2, null, false /* isNotAWord */);
                     }
                     fusionDict.setBigram(word1, word2, freq);

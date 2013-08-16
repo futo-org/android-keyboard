@@ -60,7 +60,7 @@ public final class FormatSpec {
      */
 
     /*
-     * Array of Node(FusionDictionary.Node) layout is as follows:
+     * Node array (FusionDictionary.PtNodeArray) layout is as follows:
      *
      * g |
      * r | the number of groups, 1 or 2 bytes.
@@ -86,7 +86,7 @@ public final class FormatSpec {
      * linkaddress
      */
 
-    /* Node(CharGroup) layout is as follows:
+    /* Node (FusionDictionary.CharGroup) layout is as follows:
      *   | IF !SUPPORTS_DYNAMIC_UPDATE
      *   |   addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
      *   |                           2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
@@ -251,7 +251,7 @@ public final class FormatSpec {
     static final int INVALID_CHARACTER = -1;
 
     static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
-    static final int MAX_CHARGROUPS_IN_A_NODE = 0x7FFF; // 32767
+    static final int MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
     static final int MAX_BIGRAMS_IN_A_GROUP = 10000;
 
     static final int MAX_TERMINAL_FREQUENCY = 255;

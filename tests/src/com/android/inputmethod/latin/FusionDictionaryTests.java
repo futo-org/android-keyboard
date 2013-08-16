@@ -20,7 +20,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 
 import java.util.HashMap;
 
@@ -30,21 +30,21 @@ import java.util.HashMap;
 @SmallTest
 public class FusionDictionaryTests extends AndroidTestCase {
     public void testFindWordInTree() {
-        FusionDictionary dict = new FusionDictionary(new Node(),
+        FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
 
         dict.add("abc", 10, null, false /* isNotAWord */);
-        assertNull(FusionDictionary.findWordInTree(dict.mRoot, "aaa"));
-        assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "abc"));
+        assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));
+        assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "abc"));
 
         dict.add("aa", 10, null, false /* isNotAWord */);
-        assertNull(FusionDictionary.findWordInTree(dict.mRoot, "aaa"));
-        assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "aa"));
+        assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aaa"));
+        assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "aa"));
 
         dict.add("babcd", 10, null, false /* isNotAWord */);
         dict.add("bacde", 10, null, false /* isNotAWord */);
-        assertNull(FusionDictionary.findWordInTree(dict.mRoot, "ba"));
-        assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "babcd"));
-        assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "bacde"));
+        assertNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "ba"));
+        assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "babcd"));
+        assertNotNull(FusionDictionary.findWordInTree(dict.mRootNodeArray, "bacde"));
     }
 }

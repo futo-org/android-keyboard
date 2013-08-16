@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.dicttool;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
@@ -117,7 +117,7 @@ public class CombinedInputOutput {
         final boolean processLigatures =
                 FRENCH_LIGATURE_PROCESSING_OPTION.equals(attributes.get(OPTIONS_TAG));
         attributes.remove(OPTIONS_TAG);
-        final FusionDictionary dict = new FusionDictionary(new Node(), new DictionaryOptions(
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(), new DictionaryOptions(
                 attributes, processUmlauts, processLigatures));
 
         String line;

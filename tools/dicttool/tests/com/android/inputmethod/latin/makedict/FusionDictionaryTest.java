@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.Word;
 
 import junit.framework.TestCase;
@@ -72,7 +72,7 @@ public class FusionDictionaryTest extends TestCase {
         assertNotNull(dict);
         for (final String word : words) {
             if (--limit < 0) return;
-            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRoot, word);
+            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
             assertNotNull(cg);
         }
     }
@@ -95,7 +95,7 @@ public class FusionDictionaryTest extends TestCase {
     // Test the flattened array contains the expected number of nodes, and
     // that it does not contain any duplicates.
     public void testFusion() {
-        final FusionDictionary dict = new FusionDictionary(new Node(),
+        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new DictionaryOptions(new HashMap<String, String>(),
                         false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         final long time = System.currentTimeMillis();
