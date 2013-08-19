@@ -38,10 +38,10 @@ public final class KeyboardRow {
     private static final int KEYWIDTH_FILL_RIGHT = -1;
 
     private final KeyboardParams mParams;
+    /** The height of this row. */
+    private final int mRowHeight;
     /** Default width of a key in this row. */
     private float mDefaultKeyWidth;
-    /** Default height of a key in this row. */
-    public final int mRowHeight;
     /** Default keyLabelFlags in this row. */
     private int mDefaultKeyLabelFlags;
     /** Default backgroundType for this row */
@@ -72,6 +72,10 @@ public final class KeyboardRow {
         mDefaultKeyLabelFlags = 0;
         mCurrentY = y;
         mCurrentX = 0.0f;
+    }
+
+    public int getRowHeight() {
+        return mRowHeight;
     }
 
     public float getDefaultKeyWidth() {

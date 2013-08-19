@@ -234,7 +234,7 @@ public class Key implements Comparable<Key> {
     public Key(final Resources res, final KeyboardParams params, final KeyboardRow row,
             final XmlPullParser parser) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
-        final int rowHeight = row.mRowHeight;
+        final int rowHeight = row.getRowHeight();
         mHeight = rowHeight - params.mVerticalGap;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
