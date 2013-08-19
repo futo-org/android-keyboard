@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.utils;
 
 import android.util.SparseArray;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,6 +93,10 @@ public final class CollectionUtils {
 
     public static <E> CopyOnWriteArrayList<E> newCopyOnWriteArrayList(final E[] array) {
         return new CopyOnWriteArrayList<E>(array);
+    }
+
+    public static <E> ArrayDeque<E> newArrayDeque() {
+        return new ArrayDeque<E>();
     }
 
     public static <E> SparseArray<E> newSparseArray() {
