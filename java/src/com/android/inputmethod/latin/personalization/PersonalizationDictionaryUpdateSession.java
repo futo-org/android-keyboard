@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.personalization;
 
+import android.content.Context;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -48,7 +50,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     public abstract void onDictionaryReady();
 
-    public abstract void onDictionaryClosed();
+    public abstract void onDictionaryClosed(Context context);
 
     public void setPredictionDictionary(String locale, DynamicPredictionDictionaryBase dictionary) {
         mPredictionDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
@@ -68,9 +70,9 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
 
-    public void closeSession() {
+    public void closeSession(Context context) {
         unsetPredictionDictionary();
-        onDictionaryClosed();
+        onDictionaryClosed(context);
     }
 
     public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,

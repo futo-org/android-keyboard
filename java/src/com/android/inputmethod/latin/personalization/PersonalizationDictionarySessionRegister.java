@@ -31,5 +31,4 @@ public class PersonalizationDictionarySessionRegister {
 
     public static void onRemoveData(Context context, String type) {
     }
-
 }
