@@ -155,7 +155,6 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             Log.d(TAG, "testStressTestForSwitchingLanguageAndAddingWords took "
                     + (end - start) + " ms");
         } finally {
-            Log.d(TAG, "waiting for writing ...");
             try {
                 Log.d(TAG, "waiting for writing ...");
                 Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
