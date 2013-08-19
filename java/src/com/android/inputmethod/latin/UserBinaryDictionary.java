@@ -75,7 +75,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final String locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER);
+        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER,
+                false /* isUpdatable */);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         if (SubtypeLocaleUtils.NO_LANGUAGE.equals(locale)) {
             // If we don't have a locale, insert into the "all locales" user dictionary.

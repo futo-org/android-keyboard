@@ -70,7 +70,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS);
+        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS,
+                false /* isUpdatable */);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
@@ -208,7 +209,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                             false /* isNotAWord */);
                     if (!TextUtils.isEmpty(prevWord)) {
                         if (mUseFirstLastBigrams) {
-                            super.setBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM);
+                            super.addBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
+                                    0 /* lastModifiedTime */);
                         }
                     }
                     prevWord = word;
