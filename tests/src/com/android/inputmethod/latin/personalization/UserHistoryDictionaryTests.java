@@ -22,6 +22,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
@@ -81,12 +82,12 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         }
     }
 
-    private void addAndWriteRandomWords(final String locale, final int numberOfWords,
+    private void addAndWriteRandomWords(final String testFilenameSuffix, final int numberOfWords,
             final Random random) {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryPredictionDictionary dict =
                 PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(getContext(),
-                        locale, mPrefs);
+                        testFilenameSuffix /* locale */, mPrefs);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
         // write to file.
@@ -97,12 +98,12 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         File dictFile = null;
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
-        final String locale = "testRandomWords" + System.currentTimeMillis();
+        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
         final int numberOfWords = 1000;
         final Random random = new Random(123456);
 
         try {
-            addAndWriteRandomWords(locale, numberOfWords, random);
+            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random);
         } finally {
             try {
                 Log.d(TAG, "waiting for writing ...");
@@ -111,7 +112,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 Log.d(TAG, "InterruptedException: " + e);
             }
 
-            final String fileName = UserHistoryPredictionDictionary.NAME + "." + locale + ".dict";
+            final String fileName = UserHistoryPredictionDictionary.NAME + "." + testFilenameSuffix
+                    + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
             dictFile = new File(getContext().getFilesDir(), fileName);
 
             if (dictFile != null) {
@@ -135,8 +137,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             String testFilenameSuffixes[] = new String[numberOfLanguages];
             for (int i = 0; i < numberOfLanguages; i++) {
                 testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
-                final String fileName = "UserHistoryDictionary." + testFilenameSuffixes[i]
-                        + ".dict";
+                final String fileName = UserHistoryPredictionDictionary.NAME + "." +
+                        testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
             }
 

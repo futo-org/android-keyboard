@@ -84,6 +84,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
+    /* A extension for a binary dictionary file. */
+    public static final String DICT_FILE_EXTENSION = ".dict";
+
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
      * thread.
@@ -129,7 +132,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected static String getFilenameWithLocale(final String name, final String localeStr) {
-        return name + "." + localeStr + ".dict";
+        return name + "." + localeStr + DICT_FILE_EXTENSION;
     }
 
     /**

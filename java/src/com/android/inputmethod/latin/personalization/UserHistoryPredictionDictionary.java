@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.personalization;
 
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -35,6 +36,6 @@ public class UserHistoryPredictionDictionary extends DynamicPredictionDictionary
 
     @Override
     protected String getDictionaryFileName() {
-        return NAME + "." + getLocale() + ".dict";
+        return NAME + "." + getLocale() + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
     }
 }

@@ -49,6 +49,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     private static final int BIGRAM_FREQUENCY = 100;
     private static final ArrayList<String> NOT_HAVE_BIGRAM = new ArrayList<String>();
     private static final FormatSpec.FormatOptions FORMAT_OPTIONS = new FormatSpec.FormatOptions(2);
+    private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
     /**
      * Return same frequency for all words and bigrams
@@ -177,7 +178,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
         File file = null;
         try {
-            file = File.createTempFile("testReadAndWrite", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("testReadAndWrite", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
             Log.d(TAG, "IOException while creating a temporary file", e);
         }
