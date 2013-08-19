@@ -128,22 +128,24 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
     }
 
-    private static void printBinaryFile(final FusionDictionaryBufferInterface buffer)
+    private static void printBinaryFile(final BinaryDictReader dictReader)
             throws IOException, UnsupportedFormatException {
-        FileHeader header = BinaryDictDecoder.readHeader(buffer);
+        final FileHeader fileHeader = BinaryDictDecoder.readHeader(dictReader);
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         while (buffer.position() < buffer.limit()) {
-            printNode(buffer, header.mFormatOptions);
+            printNode(buffer, fileHeader.mFormatOptions);
         }
     }
 
     private int getWordPosition(final File file, final String word) {
         int position = FormatSpec.NOT_VALID_WORD;
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
         FileInputStream inStream = null;
         try {
             inStream = new FileInputStream(file);
-            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-            position = BinaryDictIOUtils.getTerminalPosition(reader, word);
+            dictReader.openBuffer(
+                    new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+            position = BinaryDictIOUtils.getTerminalPosition(dictReader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         } finally {
@@ -159,11 +161,12 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private CharGroupInfo findWordFromFile(final File file, final String word) {
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
         CharGroupInfo info = null;
         try {
-            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-            info = BinaryDictIOUtils.findWordByBinaryDictReader(reader, word);
+            dictReader.openBuffer(
+                    new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
+            info = BinaryDictIOUtils.findWordByBinaryDictReader(dictReader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
@@ -174,18 +177,18 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
             final ArrayList<WeightedString> shortcuts) {
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
         BufferedOutputStream outStream = null;
         long amountOfTime = -1;
         try {
-            reader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
+            dictReader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
             outStream = new BufferedOutputStream(new FileOutputStream(file, true));
 
             if (!exist) {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
             }
             final long now = System.nanoTime();
-            DynamicBinaryDictIOUtils.insertWord(reader, outStream, word, frequency, bigrams,
+            DynamicBinaryDictIOUtils.insertWord(dictReader, outStream, word, frequency, bigrams,
                     shortcuts, false, false);
             amountOfTime = System.nanoTime() - now;
             outStream.flush();
@@ -208,24 +211,25 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void deleteWord(final File file, final String word) {
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
         try {
-            reader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
-            DynamicBinaryDictIOUtils.deleteWord(reader, word);
+            dictReader.openBuffer(new FusionDictionaryBufferFromWritableByteBufferFactory());
+            DynamicBinaryDictIOUtils.deleteWord(dictReader, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
     }
 
     private void checkReverseLookup(final File file, final String word, final int position) {
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictReader dictReader = new BinaryDictReader(file);
         try {
-            final FusionDictionaryBufferInterface buffer = reader.openAndGetBuffer(
+            final FusionDictionaryBufferInterface buffer = dictReader.openAndGetBuffer(
                     new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-            final FileHeader header = BinaryDictDecoder.readHeader(buffer);
+            final FileHeader fileHeader = BinaryDictDecoder.readHeader(dictReader);
             assertEquals(word,
-                    BinaryDictDecoder.getWordAtAddress(reader.getBuffer(), header.mHeaderSize,
-                            position - header.mHeaderSize, header.mFormatOptions).mWord);
+                    BinaryDictDecoder.getWordAtAddress(dictReader.getBuffer(),
+                            fileHeader.mHeaderSize, position - fileHeader.mHeaderSize,
+                            fileHeader.mFormatOptions).mWord);
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while looking up a word", e);
         } catch (UnsupportedFormatException e) {

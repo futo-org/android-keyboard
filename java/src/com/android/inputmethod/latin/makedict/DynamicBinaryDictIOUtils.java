@@ -49,18 +49,18 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Delete the word from the binary file.
      *
-     * @param reader the reader.
+     * @param dictReader the dict reader.
      * @param word the word we delete
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static void deleteWord(final BinaryDictReader reader, final String word)
+    public static void deleteWord(final BinaryDictReader dictReader, final String word)
             throws IOException, UnsupportedFormatException {
-        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         buffer.position(0);
-        final FileHeader header = BinaryDictDecoder.readHeader(buffer);
-        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(reader, word);
+        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
+        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(dictReader, word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
         buffer.position(wordPosition);
@@ -236,7 +236,7 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Insert a word into a binary dictionary.
      *
-     * @param reader the reader.
+     * @param dictReader the dict reader.
      * @param destination a stream to the underlying file, with the pointer at the end of the file.
      * @param word the word to insert.
      * @param frequency the frequency of the new word.
@@ -249,16 +249,16 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final BinaryDictReader reader, final OutputStream destination,
+    public static void insertWord(final BinaryDictReader dictReader, final OutputStream destination,
             final String word, final int frequency, final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
             final boolean isBlackListEntry)
                     throws IOException, UnsupportedFormatException {
         final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
-        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         if (bigramStrings != null) {
             for (final WeightedString bigram : bigramStrings) {
-                int position = BinaryDictIOUtils.getTerminalPosition(reader, bigram.mWord);
+                int position = BinaryDictIOUtils.getTerminalPosition(dictReader, bigram.mWord);
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {
@@ -273,7 +273,7 @@ public final class DynamicBinaryDictIOUtils {
 
         // find the insert position of the word.
         if (buffer.position() != 0) buffer.position(0);
-        final FileHeader header = BinaryDictDecoder.readHeader(buffer);
+        final FileHeader fileHeader = BinaryDictDecoder.readHeader(dictReader);
 
         int wordPos = 0, address = buffer.position(), nodeOriginAddress = buffer.position();
         final int[] codePoints = FusionDictionary.getCodePoints(word);
@@ -289,9 +289,9 @@ public final class DynamicBinaryDictIOUtils {
             for (int i = 0; i < charGroupCount; ++i) {
                 address = buffer.position();
                 final CharGroupInfo currentInfo = BinaryDictDecoder.readCharGroup(buffer,
-                        buffer.position(), header.mFormatOptions);
+                        buffer.position(), fileHeader.mFormatOptions);
                 final boolean isMovedGroup = BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags,
-                        header.mFormatOptions);
+                        fileHeader.mFormatOptions);
                 if (isMovedGroup) continue;
                 nodeParentAddress = (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS)
                         ? FormatSpec.NO_PARENT_ADDRESS : currentInfo.mParentAddress + address;
@@ -311,16 +311,16 @@ public final class DynamicBinaryDictIOUtils {
                         final int newNodeAddress = buffer.limit();
                         final int flags = BinaryDictEncoder.makeCharGroupFlags(p > 1,
                                 isTerminal, 0, hasShortcuts, hasBigrams, false /* isNotAWord */,
-                                false /* isBlackListEntry */, header.mFormatOptions);
+                                false /* isBlackListEntry */, fileHeader.mFormatOptions);
                         int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p, flags,
                                 frequency, nodeParentAddress, shortcuts, bigrams, destination,
-                                buffer, nodeOriginAddress, address, header.mFormatOptions);
+                                buffer, nodeOriginAddress, address, fileHeader.mFormatOptions);
 
                         final int[] characters2 = Arrays.copyOfRange(currentInfo.mCharacters, p,
                                 currentInfo.mCharacters.length);
                         if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
                             updateParentAddresses(buffer, currentInfo.mChildrenAddress,
-                                    newNodeAddress + written + 1, header.mFormatOptions);
+                                    newNodeAddress + written + 1, fileHeader.mFormatOptions);
                         }
                         final CharGroupInfo newInfo2 = new CharGroupInfo(
                                 newNodeAddress + written + 1, -1 /* endAddress */,
@@ -352,17 +352,17 @@ public final class DynamicBinaryDictIOUtils {
                                     false /* isTerminal */, 0 /* childrenAddressSize*/,
                                     false /* hasShortcut */, false /* hasBigrams */,
                                     false /* isNotAWord */, false /* isBlackListEntry */,
-                                    header.mFormatOptions);
+                                    fileHeader.mFormatOptions);
                             int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p,
                                     prefixFlags, -1 /* frequency */, nodeParentAddress, null, null,
                                     destination, buffer, nodeOriginAddress, address,
-                                    header.mFormatOptions);
+                                    fileHeader.mFormatOptions);
 
                             final int[] suffixCharacters = Arrays.copyOfRange(
                                     currentInfo.mCharacters, p, currentInfo.mCharacters.length);
                             if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
                                 updateParentAddresses(buffer, currentInfo.mChildrenAddress,
-                                        newNodeAddress + written + 1, header.mFormatOptions);
+                                        newNodeAddress + written + 1, fileHeader.mFormatOptions);
                             }
                             final int suffixFlags = BinaryDictEncoder.makeCharGroupFlags(
                                     suffixCharacters.length > 1,
@@ -371,21 +371,21 @@ public final class DynamicBinaryDictIOUtils {
                                     (currentInfo.mFlags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)
                                             != 0,
                                     (currentInfo.mFlags & FormatSpec.FLAG_HAS_BIGRAMS) != 0,
-                                    isNotAWord, isBlackListEntry, header.mFormatOptions);
+                                    isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                             final CharGroupInfo suffixInfo = new CharGroupInfo(
                                     newNodeAddress + written + 1, -1 /* endAddress */, suffixFlags,
                                     suffixCharacters, currentInfo.mFrequency, newNodeAddress + 1,
                                     currentInfo.mChildrenAddress, currentInfo.mShortcutTargets,
                                     currentInfo.mBigrams);
                             written += BinaryDictIOUtils.computeGroupSize(suffixInfo,
-                                    header.mFormatOptions) + 1;
+                                    fileHeader.mFormatOptions) + 1;
 
                             final int[] newCharacters = Arrays.copyOfRange(codePoints, wordPos + p,
                                     codePoints.length);
                             final int flags = BinaryDictEncoder.makeCharGroupFlags(
                                     newCharacters.length > 1, isTerminal,
                                     0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
-                                    isNotAWord, isBlackListEntry, header.mFormatOptions);
+                                    isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                             final CharGroupInfo newInfo = new CharGroupInfo(
                                     newNodeAddress + written, -1 /* endAddress */, flags,
                                     newCharacters, frequency, newNodeAddress + 1,
@@ -407,13 +407,13 @@ public final class DynamicBinaryDictIOUtils {
                         final boolean hasMultipleChars = currentInfo.mCharacters.length > 1;
                         final int flags = BinaryDictEncoder.makeCharGroupFlags(hasMultipleChars,
                                 isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
-                                isNotAWord, isBlackListEntry, header.mFormatOptions);
+                                isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                         final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
                                 -1 /* endAddress */, flags, currentInfo.mCharacters, frequency,
                                 nodeParentAddress, currentInfo.mChildrenAddress, shortcuts,
                                 bigrams);
                         moveCharGroup(destination, buffer, newInfo, nodeOriginAddress, address,
-                                header.mFormatOptions);
+                                fileHeader.mFormatOptions);
                         return;
                     }
                     wordPos += currentInfo.mCharacters.length;
@@ -432,12 +432,12 @@ public final class DynamicBinaryDictIOUtils {
                          */
                         final int newNodeAddress = buffer.limit();
                         updateChildrenAddress(buffer, address, newNodeAddress,
-                                header.mFormatOptions);
+                                fileHeader.mFormatOptions);
                         final int newGroupAddress = newNodeAddress + 1;
                         final boolean hasMultipleChars = (wordLen - wordPos) > 1;
                         final int flags = BinaryDictEncoder.makeCharGroupFlags(hasMultipleChars,
                                 isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
-                                isNotAWord, isBlackListEntry, header.mFormatOptions);
+                                isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                         final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
                         final CharGroupInfo newInfo = new CharGroupInfo(newGroupAddress, -1, flags,
                                 characters, frequency, address, FormatSpec.NO_CHILDREN_ADDRESS,
@@ -482,7 +482,7 @@ public final class DynamicBinaryDictIOUtils {
                 final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
                 final int flags = BinaryDictEncoder.makeCharGroupFlags(characters.length > 1,
                         isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
-                        isNotAWord, isBlackListEntry, header.mFormatOptions);
+                        isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                 final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
                         -1 /* endAddress */, flags, characters, frequency, nodeParentAddress,
                         FormatSpec.NO_CHILDREN_ADDRESS, shortcuts, bigrams);

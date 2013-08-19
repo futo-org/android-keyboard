@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.decoder.HeaderReaderInterface;
 import com.android.inputmethod.latin.utils.ByteArrayWrapper;
 
 import java.io.File;
@@ -27,8 +29,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 
-public class BinaryDictReader {
+public class BinaryDictReader implements HeaderReaderInterface {
 
     public interface FusionDictionaryBufferFactory {
         public FusionDictionaryBufferInterface getFusionDictionaryBuffer(final File file)
@@ -132,5 +135,35 @@ public class BinaryDictReader {
                     throws FileNotFoundException, IOException {
         openBuffer(factory);
         return getBuffer();
+    }
+
+    // The implementation of HeaderReaderInterface
+    @Override
+    public int readVersion() throws IOException, UnsupportedFormatException {
+        return BinaryDictDecoder.checkFormatVersion(mFusionDictionaryBuffer);
+    }
+
+    @Override
+    public int readOptionFlags() {
+        return mFusionDictionaryBuffer.readUnsignedShort();
+    }
+
+    @Override
+    public int readHeaderSize() {
+        return mFusionDictionaryBuffer.readInt();
+    }
+
+    @Override
+    public HashMap<String, String> readAttributes(final int headerSize) {
+        final HashMap<String, String> attributes = new HashMap<String, String>();
+        while (mFusionDictionaryBuffer.position() < headerSize) {
+            // We can avoid infinite loop here since mFusionDictonary.position() is always increased
+            // by calling CharEncoding.readString.
+            final String key = CharEncoding.readString(mFusionDictionaryBuffer);
+            final String value = CharEncoding.readString(mFusionDictionaryBuffer);
+            attributes.put(key, value);
+        }
+        mFusionDictionaryBuffer.position(headerSize);
+        return attributes;
     }
 }
