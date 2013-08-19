@@ -497,21 +497,21 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     // Tests for getTerminalPosition
-    private String getWordFromBinary(final BinaryDictReader reader, final int address) {
-        final FusionDictionaryBufferInterface buffer = reader.getBuffer();
+    private String getWordFromBinary(final BinaryDictReader dictReader, final int address) {
+        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
         if (buffer.position() != 0) buffer.position(0);
 
-        FileHeader header = null;
+        FileHeader fileHeader = null;
         try {
-            header = BinaryDictDecoder.readHeader(buffer);
+            fileHeader = BinaryDictDecoder.readHeader(dictReader);
         } catch (IOException e) {
             return null;
         } catch (UnsupportedFormatException e) {
             return null;
         }
-        if (header == null) return null;
-        return BinaryDictDecoder.getWordAtAddress(buffer, header.mHeaderSize,
-                address - header.mHeaderSize, header.mFormatOptions).mWord;
+        if (fileHeader == null) return null;
+        return BinaryDictDecoder.getWordAtAddress(buffer, fileHeader.mHeaderSize,
+                address - fileHeader.mHeaderSize, fileHeader.mFormatOptions).mWord;
     }
 
     private long runGetTerminalPosition(final BinaryDictReader reader, final String word, int index,

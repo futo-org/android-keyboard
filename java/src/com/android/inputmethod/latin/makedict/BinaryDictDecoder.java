@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.decoder.HeaderReaderInterface;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -250,7 +251,7 @@ public final class BinaryDictDecoder {
         /**
          * Reads a string from a buffer. This is the converse of the above method.
          */
-        private static String readString(final FusionDictionaryBufferInterface buffer) {
+        static String readString(final FusionDictionaryBufferInterface buffer) {
             final StringBuilder s = new StringBuilder();
             int character = readChar(buffer);
             while (character != FormatSpec.INVALID_CHARACTER) {
@@ -629,7 +630,7 @@ public final class BinaryDictDecoder {
      * @throws UnsupportedFormatException
      * @throws IOException
      */
-    private static int checkFormatVersion(final FusionDictionaryBufferInterface buffer)
+    static int checkFormatVersion(final FusionDictionaryBufferInterface buffer)
             throws IOException, UnsupportedFormatException {
         final int version = getFormatVersion(buffer);
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
@@ -643,25 +644,22 @@ public final class BinaryDictDecoder {
 
     /**
      * Reads a header from a buffer.
-     * @param buffer the buffer to read.
+     * @param headerReader the header reader
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    public static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
+    public static FileHeader readHeader(final HeaderReaderInterface headerReader)
             throws IOException, UnsupportedFormatException {
-        final int version = checkFormatVersion(buffer);
-        final int optionsFlags = buffer.readUnsignedShort();
+        final int version = headerReader.readVersion();
+        final int optionsFlags = headerReader.readOptionFlags();
 
-        final HashMap<String, String> attributes = new HashMap<String, String>();
-        final int headerSize;
-        headerSize = buffer.readInt();
+        final int headerSize = headerReader.readHeaderSize();
 
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
 
-        populateOptions(buffer, headerSize, attributes);
-        buffer.position(headerSize);
+        final HashMap<String, String> attributes = headerReader.readAttributes(headerSize);
 
         final FileHeader header = new FileHeader(headerSize,
                 new FusionDictionary.DictionaryOptions(attributes,
@@ -711,14 +709,14 @@ public final class BinaryDictDecoder {
         }
 
         // Read header
-        final FileHeader header = readHeader(reader.getBuffer());
+        final FileHeader fileHeader = readHeader(reader);
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final PtNodeArray root = readNodeArray(reader.getBuffer(), header.mHeaderSize,
-                reverseNodeArrayMapping, reverseGroupMapping, header.mFormatOptions);
+        final PtNodeArray root = readNodeArray(reader.getBuffer(), fileHeader.mHeaderSize,
+                reverseNodeArrayMapping, reverseGroupMapping, fileHeader.mFormatOptions);
 
-        FusionDictionary newDict = new FusionDictionary(root, header.mDictionaryOptions);
+        FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
         if (null != dict) {
             for (final Word w : dict) {
                 if (w.mIsBlacklistEntry) {
