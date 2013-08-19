@@ -36,7 +36,9 @@ public class PersonalizationDictionary extends ExpandableBinaryDictionary {
 
     // Singleton
     private PersonalizationDictionary(final Context context, final String locale) {
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION);
+        // TODO: Make isUpdatable true.
+        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION,
+                false /* isUpdatable */);
         mLocale = locale;
     }
 
