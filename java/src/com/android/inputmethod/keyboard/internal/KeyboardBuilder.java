@@ -745,7 +745,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             mRightEdgeKey = null;
         }
         addEdgeSpace(mParams.mRightPadding, row);
-        mCurrentY += row.mRowHeight;
+        mCurrentY += row.getRowHeight();
         mCurrentRow = null;
         mTopEdge = false;
     }
