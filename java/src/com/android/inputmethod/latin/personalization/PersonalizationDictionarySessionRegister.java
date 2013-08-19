@@ -25,4 +25,11 @@ public class PersonalizationDictionarySessionRegister {
 
     public static void onConfigurationChanged(final Context context, final Configuration conf) {
     }
+
+    public static void onUpdateData(Context context, String type) {
+    }
+
+    public static void onRemoveData(Context context, String type) {
+    }
+
 }
