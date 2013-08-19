@@ -71,6 +71,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
             new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
 
+    private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
+
     public BinaryDictDecoderEncoderTests() {
         this(System.currentTimeMillis(), DEFAULT_MAX_UNIGRAMS);
     }
@@ -293,7 +295,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final String message) {
         File file = null;
         try {
-            file = File.createTempFile("runReadAndWrite", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("runReadAndWrite", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
         }
@@ -435,7 +438,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final FormatSpec.FormatOptions formatOptions, final String message) {
         File file = null;
         try {
-            file = File.createTempFile("runReadUnigrams", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("runReadUnigrams", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
         }
@@ -533,7 +537,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testGetTerminalPosition() {
         File file = null;
         try {
-            file = File.createTempFile("testGetTerminalPosition", ".dict",
+            file = File.createTempFile("testGetTerminalPosition", TEST_DICT_FILE_EXTENSION,
                     getContext().getCacheDir());
         } catch (IOException e) {
             // do nothing
@@ -593,7 +597,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testDeleteWord() {
         File file = null;
         try {
-            file = File.createTempFile("testDeleteWord", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("testDeleteWord", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
             // do nothing
         }

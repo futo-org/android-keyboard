@@ -48,6 +48,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     public static final int DEFAULT_MAX_UNIGRAMS = 1500;
     private final int mMaxUnigrams;
 
+    private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
+
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -234,7 +236,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     public void testInsertWord() {
         File file = null;
         try {
-            file = File.createTempFile("testInsertWord", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("testInsertWord", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
             fail("IOException while creating temporary file: " + e);
         }
@@ -284,7 +287,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     public void testInsertWordWithBigrams() {
         File file = null;
         try {
-            file = File.createTempFile("testInsertWordWithBigrams", ".dict",
+            file = File.createTempFile("testInsertWordWithBigrams", TEST_DICT_FILE_EXTENSION,
                     getContext().getCacheDir());
         } catch (IOException e) {
             fail("IOException while creating temporary file: " + e);
@@ -322,7 +325,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     public void testRandomWords() {
         File file = null;
         try {
-            file = File.createTempFile("testRandomWord", ".dict", getContext().getCacheDir());
+            file = File.createTempFile("testRandomWord", TEST_DICT_FILE_EXTENSION,
+                    getContext().getCacheDir());
         } catch (IOException e) {
         }
         assertNotNull(file);
