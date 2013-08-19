@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -49,142 +49,146 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Delete the word from the binary file.
      *
-     * @param dictReader the dict reader.
+     * @param dictDecoder the dict decoder.
      * @param word the word we delete
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static void deleteWord(final BinaryDictReader dictReader, final String word)
+    public static void deleteWord(final BinaryDictDecoder dictDecoder, final String word)
             throws IOException, UnsupportedFormatException {
-        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
-        buffer.position(0);
-        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
-        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(dictReader, word);
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
+        dictBuffer.position(0);
+        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
-        buffer.position(wordPosition);
-        final int flags = buffer.readUnsignedByte();
-        buffer.position(wordPosition);
-        buffer.put((byte)markAsDeleted(flags));
+        dictBuffer.position(wordPosition);
+        final int flags = dictBuffer.readUnsignedByte();
+        dictBuffer.position(wordPosition);
+        dictBuffer.put((byte)markAsDeleted(flags));
     }
 
     /**
      * Update a parent address in a CharGroup that is referred to by groupOriginAddress.
      *
-     * @param buffer the buffer to write.
+     * @param dictBuffer the DictBuffer to write.
      * @param groupOriginAddress the address of the group.
      * @param newParentAddress the absolute address of the parent.
      * @param formatOptions file format options.
      */
-    public static void updateParentAddress(final FusionDictionaryBufferInterface buffer,
+    public static void updateParentAddress(final DictBuffer dictBuffer,
             final int groupOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
-        final int originalPosition = buffer.position();
-        buffer.position(groupOriginAddress);
+        final int originalPosition = dictBuffer.position();
+        dictBuffer.position(groupOriginAddress);
         if (!formatOptions.mSupportsDynamicUpdate) {
             throw new RuntimeException("this file format does not support parent addresses");
         }
-        final int flags = buffer.readUnsignedByte();
+        final int flags = dictBuffer.readUnsignedByte();
         if (BinaryDictIOUtils.isMovedGroup(flags, formatOptions)) {
             // If the group is moved, the parent address is stored in the destination group.
             // We are guaranteed to process the destination group later, so there is no need to
             // update anything here.
-            buffer.position(originalPosition);
+            dictBuffer.position(originalPosition);
             return;
         }
         if (DBG) {
             MakedictLog.d("update parent address flags=" + flags + ", " + groupOriginAddress);
         }
         final int parentOffset = newParentAddress - groupOriginAddress;
-        BinaryDictIOUtils.writeSInt24ToBuffer(buffer, parentOffset);
-        buffer.position(originalPosition);
+        BinaryDictIOUtils.writeSInt24ToBuffer(dictBuffer, parentOffset);
+        dictBuffer.position(originalPosition);
     }
 
     /**
      * Update parent addresses in a node array stored at nodeOriginAddress.
      *
-     * @param buffer the buffer to be modified.
+     * @param dictBuffer the DictBuffer to be modified.
      * @param nodeOriginAddress the address of the node array to update.
      * @param newParentAddress the address to be written.
      * @param formatOptions file format options.
      */
-    public static void updateParentAddresses(final FusionDictionaryBufferInterface buffer,
+    public static void updateParentAddresses(final DictBuffer dictBuffer,
             final int nodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
-        final int originalPosition = buffer.position();
-        buffer.position(nodeOriginAddress);
+        final int originalPosition = dictBuffer.position();
+        dictBuffer.position(nodeOriginAddress);
         do {
-            final int count = BinaryDictDecoder.readCharGroupCount(buffer);
+            final int count = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
             for (int i = 0; i < count; ++i) {
-                updateParentAddress(buffer, buffer.position(), newParentAddress, formatOptions);
-                BinaryDictIOUtils.skipCharGroup(buffer, formatOptions);
+                updateParentAddress(dictBuffer, dictBuffer.position(), newParentAddress,
+                        formatOptions);
+                BinaryDictIOUtils.skipCharGroup(dictBuffer, formatOptions);
             }
-            final int forwardLinkAddress = buffer.readUnsignedInt24();
-            buffer.position(forwardLinkAddress);
+            final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
+            dictBuffer.position(forwardLinkAddress);
         } while (formatOptions.mSupportsDynamicUpdate
-                && buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
-        buffer.position(originalPosition);
+                && dictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
+        dictBuffer.position(originalPosition);
     }
 
     /**
      * Update a children address in a CharGroup that is addressed by groupOriginAddress.
      *
-     * @param buffer the buffer to write.
+     * @param dictBuffer the DictBuffer to write.
      * @param groupOriginAddress the address of the group.
      * @param newChildrenAddress the absolute address of the child.
      * @param formatOptions file format options.
      */
-    public static void updateChildrenAddress(final FusionDictionaryBufferInterface buffer,
+    public static void updateChildrenAddress(final DictBuffer dictBuffer,
             final int groupOriginAddress, final int newChildrenAddress,
             final FormatOptions formatOptions) {
-        final int originalPosition = buffer.position();
-        buffer.position(groupOriginAddress);
-        final int flags = buffer.readUnsignedByte();
-        final int parentAddress = BinaryDictDecoder.readParentAddress(buffer, formatOptions);
-        BinaryDictIOUtils.skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
+        final int originalPosition = dictBuffer.position();
+        dictBuffer.position(groupOriginAddress);
+        final int flags = dictBuffer.readUnsignedByte();
+        final int parentAddress = BinaryDictDecoderUtils.readParentAddress(dictBuffer,
+                formatOptions);
+        BinaryDictIOUtils.skipString(dictBuffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) dictBuffer.readUnsignedByte();
         final int childrenOffset = newChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS
-                ? FormatSpec.NO_CHILDREN_ADDRESS : newChildrenAddress - buffer.position();
-        BinaryDictIOUtils.writeSInt24ToBuffer(buffer, childrenOffset);
-        buffer.position(originalPosition);
+                ? FormatSpec.NO_CHILDREN_ADDRESS : newChildrenAddress - dictBuffer.position();
+        BinaryDictIOUtils.writeSInt24ToBuffer(dictBuffer, childrenOffset);
+        dictBuffer.position(originalPosition);
     }
 
     /**
      * Helper method to move a char group to the tail of the file.
      */
     private static int moveCharGroup(final OutputStream destination,
-            final FusionDictionaryBufferInterface buffer, final CharGroupInfo info,
+            final DictBuffer dictBuffer, final CharGroupInfo info,
             final int nodeArrayOriginAddress, final int oldGroupAddress,
             final FormatOptions formatOptions) throws IOException {
-        updateParentAddress(buffer, oldGroupAddress, buffer.limit() + 1, formatOptions);
-        buffer.position(oldGroupAddress);
-        final int currentFlags = buffer.readUnsignedByte();
-        buffer.position(oldGroupAddress);
-        buffer.put((byte)(FormatSpec.FLAG_IS_MOVED | (currentFlags
+        updateParentAddress(dictBuffer, oldGroupAddress, dictBuffer.limit() + 1, formatOptions);
+        dictBuffer.position(oldGroupAddress);
+        final int currentFlags = dictBuffer.readUnsignedByte();
+        dictBuffer.position(oldGroupAddress);
+        dictBuffer.put((byte)(FormatSpec.FLAG_IS_MOVED | (currentFlags
                 & (~FormatSpec.MASK_MOVE_AND_DELETE_FLAG))));
         int size = FormatSpec.GROUP_FLAGS_SIZE;
-        updateForwardLink(buffer, nodeArrayOriginAddress, buffer.limit(), formatOptions);
+        updateForwardLink(dictBuffer, nodeArrayOriginAddress, dictBuffer.limit(), formatOptions);
         size += BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[] { info });
         return size;
     }
 
     @SuppressWarnings("unused")
-    private static void updateForwardLink(final FusionDictionaryBufferInterface buffer,
+    private static void updateForwardLink(final DictBuffer dictBuffer,
             final int nodeArrayOriginAddress, final int newNodeArrayAddress,
             final FormatOptions formatOptions) {
-        buffer.position(nodeArrayOriginAddress);
+        dictBuffer.position(nodeArrayOriginAddress);
         int jumpCount = 0;
         while (jumpCount++ < MAX_JUMPS) {
-            final int count = BinaryDictDecoder.readCharGroupCount(buffer);
-            for (int i = 0; i < count; ++i) BinaryDictIOUtils.skipCharGroup(buffer, formatOptions);
-            final int forwardLinkAddress = buffer.readUnsignedInt24();
+            final int count = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
+            for (int i = 0; i < count; ++i) {
+                BinaryDictIOUtils.skipCharGroup(dictBuffer, formatOptions);
+            }
+            final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
             if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
-                buffer.position(buffer.position() - FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
-                BinaryDictIOUtils.writeSInt24ToBuffer(buffer, newNodeArrayAddress);
+                dictBuffer.position(dictBuffer.position() - FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
+                BinaryDictIOUtils.writeSInt24ToBuffer(dictBuffer, newNodeArrayAddress);
                 return;
             }
-            buffer.position(forwardLinkAddress);
+            dictBuffer.position(forwardLinkAddress);
         }
         if (DBG && jumpCount >= MAX_JUMPS) {
             throw new RuntimeException("too many jumps, probably a bug.");
@@ -204,7 +208,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param shortcutTargets the shortcut targets for this group.
      * @param bigrams the bigrams for this group.
      * @param destination the stream representing the tail of the file.
-     * @param buffer the buffer representing the (constant-size) body of the file.
+     * @param dictBuffer the DictBuffer representing the (constant-size) body of the file.
      * @param oldNodeArrayOrigin the origin of the old node array this group was a part of.
      * @param oldGroupOrigin the old origin where this group used to be stored.
      * @param formatOptions format options for this dictionary.
@@ -215,7 +219,7 @@ public final class DynamicBinaryDictIOUtils {
             final int length, final int flags, final int frequency, final int parentAddress,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams, final OutputStream destination,
-            final FusionDictionaryBufferInterface buffer, final int oldNodeArrayOrigin,
+            final DictBuffer dictBuffer, final int oldNodeArrayOrigin,
             final int oldGroupOrigin, final FormatOptions formatOptions) throws IOException {
         int size = 0;
         final int newGroupOrigin = fileEndAddress + 1;
@@ -228,7 +232,7 @@ public final class DynamicBinaryDictIOUtils {
                 flags, writtenCharacters, frequency, parentAddress,
                 fileEndAddress + 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE, shortcutTargets,
                 bigrams);
-        moveCharGroup(destination, buffer, newInfo, oldNodeArrayOrigin, oldGroupOrigin,
+        moveCharGroup(destination, dictBuffer, newInfo, oldNodeArrayOrigin, oldGroupOrigin,
                 formatOptions);
         return 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
@@ -236,7 +240,7 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Insert a word into a binary dictionary.
      *
-     * @param dictReader the dict reader.
+     * @param dictDecoder the dict decoder.
      * @param destination a stream to the underlying file, with the pointer at the end of the file.
      * @param word the word to insert.
      * @param frequency the frequency of the new word.
@@ -249,16 +253,17 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final BinaryDictReader dictReader, final OutputStream destination,
-            final String word, final int frequency, final ArrayList<WeightedString> bigramStrings,
+    public static void insertWord(final BinaryDictDecoder dictDecoder,
+            final OutputStream destination, final String word, final int frequency,
+            final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
             final boolean isBlackListEntry)
                     throws IOException, UnsupportedFormatException {
         final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
-        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (bigramStrings != null) {
             for (final WeightedString bigram : bigramStrings) {
-                int position = BinaryDictIOUtils.getTerminalPosition(dictReader, bigram.mWord);
+                int position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, bigram.mWord);
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {
@@ -272,24 +277,24 @@ public final class DynamicBinaryDictIOUtils {
         final boolean hasShortcuts = shortcuts != null && !shortcuts.isEmpty();
 
         // find the insert position of the word.
-        if (buffer.position() != 0) buffer.position(0);
-        final FileHeader fileHeader = BinaryDictDecoder.readHeader(dictReader);
+        if (dictBuffer.position() != 0) dictBuffer.position(0);
+        final FileHeader fileHeader = BinaryDictDecoderUtils.readHeader(dictDecoder);
 
-        int wordPos = 0, address = buffer.position(), nodeOriginAddress = buffer.position();
+        int wordPos = 0, address = dictBuffer.position(), nodeOriginAddress = dictBuffer.position();
         final int[] codePoints = FusionDictionary.getCodePoints(word);
         final int wordLen = codePoints.length;
 
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) break;
-            nodeOriginAddress = buffer.position();
+            nodeOriginAddress = dictBuffer.position();
             int nodeParentAddress = -1;
-            final int charGroupCount = BinaryDictDecoder.readCharGroupCount(buffer);
+            final int charGroupCount = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
             boolean foundNextGroup = false;
 
             for (int i = 0; i < charGroupCount; ++i) {
-                address = buffer.position();
-                final CharGroupInfo currentInfo = BinaryDictDecoder.readCharGroup(buffer,
-                        buffer.position(), fileHeader.mFormatOptions);
+                address = dictBuffer.position();
+                final CharGroupInfo currentInfo = BinaryDictDecoderUtils.readCharGroup(dictBuffer,
+                        dictBuffer.position(), fileHeader.mFormatOptions);
                 final boolean isMovedGroup = BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags,
                         fileHeader.mFormatOptions);
                 if (isMovedGroup) continue;
@@ -308,18 +313,18 @@ public final class DynamicBinaryDictIOUtils {
                          * after
                          *  abc - d - ef
                          */
-                        final int newNodeAddress = buffer.limit();
+                        final int newNodeAddress = dictBuffer.limit();
                         final int flags = BinaryDictEncoder.makeCharGroupFlags(p > 1,
                                 isTerminal, 0, hasShortcuts, hasBigrams, false /* isNotAWord */,
                                 false /* isBlackListEntry */, fileHeader.mFormatOptions);
                         int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p, flags,
                                 frequency, nodeParentAddress, shortcuts, bigrams, destination,
-                                buffer, nodeOriginAddress, address, fileHeader.mFormatOptions);
+                                dictBuffer, nodeOriginAddress, address, fileHeader.mFormatOptions);
 
                         final int[] characters2 = Arrays.copyOfRange(currentInfo.mCharacters, p,
                                 currentInfo.mCharacters.length);
                         if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-                            updateParentAddresses(buffer, currentInfo.mChildrenAddress,
+                            updateParentAddresses(dictBuffer, currentInfo.mChildrenAddress,
                                     newNodeAddress + written + 1, fileHeader.mFormatOptions);
                         }
                         final CharGroupInfo newInfo2 = new CharGroupInfo(
@@ -344,7 +349,7 @@ public final class DynamicBinaryDictIOUtils {
                              *     - c
                              */
 
-                            final int newNodeAddress = buffer.limit();
+                            final int newNodeAddress = dictBuffer.limit();
                             final int childrenAddress = currentInfo.mChildrenAddress;
 
                             // move prefix
@@ -355,13 +360,13 @@ public final class DynamicBinaryDictIOUtils {
                                     fileHeader.mFormatOptions);
                             int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p,
                                     prefixFlags, -1 /* frequency */, nodeParentAddress, null, null,
-                                    destination, buffer, nodeOriginAddress, address,
+                                    destination, dictBuffer, nodeOriginAddress, address,
                                     fileHeader.mFormatOptions);
 
                             final int[] suffixCharacters = Arrays.copyOfRange(
                                     currentInfo.mCharacters, p, currentInfo.mCharacters.length);
                             if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-                                updateParentAddresses(buffer, currentInfo.mChildrenAddress,
+                                updateParentAddresses(dictBuffer, currentInfo.mChildrenAddress,
                                         newNodeAddress + written + 1, fileHeader.mFormatOptions);
                             }
                             final int suffixFlags = BinaryDictEncoder.makeCharGroupFlags(
@@ -403,7 +408,7 @@ public final class DynamicBinaryDictIOUtils {
                     if (wordPos + currentInfo.mCharacters.length == wordLen) {
                         // the word exists in the dictionary.
                         // only update group.
-                        final int newNodeAddress = buffer.limit();
+                        final int newNodeAddress = dictBuffer.limit();
                         final boolean hasMultipleChars = currentInfo.mCharacters.length > 1;
                         final int flags = BinaryDictEncoder.makeCharGroupFlags(hasMultipleChars,
                                 isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
@@ -412,7 +417,7 @@ public final class DynamicBinaryDictIOUtils {
                                 -1 /* endAddress */, flags, currentInfo.mCharacters, frequency,
                                 nodeParentAddress, currentInfo.mChildrenAddress, shortcuts,
                                 bigrams);
-                        moveCharGroup(destination, buffer, newInfo, nodeOriginAddress, address,
+                        moveCharGroup(destination, dictBuffer, newInfo, nodeOriginAddress, address,
                                 fileHeader.mFormatOptions);
                         return;
                     }
@@ -430,8 +435,8 @@ public final class DynamicBinaryDictIOUtils {
                          * after
                          * ab - cd - e
                          */
-                        final int newNodeAddress = buffer.limit();
-                        updateChildrenAddress(buffer, address, newNodeAddress,
+                        final int newNodeAddress = dictBuffer.limit();
+                        updateChildrenAddress(dictBuffer, address, newNodeAddress,
                                 fileHeader.mFormatOptions);
                         final int newGroupAddress = newNodeAddress + 1;
                         final boolean hasMultipleChars = (wordLen - wordPos) > 1;
@@ -445,7 +450,7 @@ public final class DynamicBinaryDictIOUtils {
                         BinaryDictIOUtils.writeNodes(destination, new CharGroupInfo[] { newInfo });
                         return;
                     }
-                    buffer.position(currentInfo.mChildrenAddress);
+                    dictBuffer.position(currentInfo.mChildrenAddress);
                     foundNextGroup = true;
                     break;
                 }
@@ -454,8 +459,8 @@ public final class DynamicBinaryDictIOUtils {
             if (foundNextGroup) continue;
 
             // reached the end of the array.
-            final int linkAddressPosition = buffer.position();
-            int nextLink = buffer.readUnsignedInt24();
+            final int linkAddressPosition = dictBuffer.position();
+            int nextLink = dictBuffer.readUnsignedInt24();
             if ((nextLink & FormatSpec.MSB24) != 0) {
                 nextLink = -(nextLink & FormatSpec.SINT24_MAX);
             }
@@ -475,9 +480,9 @@ public final class DynamicBinaryDictIOUtils {
                  */
 
                 // change the forward link address.
-                final int newNodeAddress = buffer.limit();
-                buffer.position(linkAddressPosition);
-                BinaryDictIOUtils.writeSInt24ToBuffer(buffer, newNodeAddress);
+                final int newNodeAddress = dictBuffer.limit();
+                dictBuffer.position(linkAddressPosition);
+                BinaryDictIOUtils.writeSInt24ToBuffer(dictBuffer, newNodeAddress);
 
                 final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
                 final int flags = BinaryDictEncoder.makeCharGroupFlags(characters.length > 1,
@@ -490,7 +495,7 @@ public final class DynamicBinaryDictIOUtils {
                 return;
             } else {
                 depth--;
-                buffer.position(nextLink);
+                dictBuffer.position(nextLink);
             }
         }
     }

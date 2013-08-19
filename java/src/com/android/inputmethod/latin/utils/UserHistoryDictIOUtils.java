@@ -22,7 +22,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -119,13 +118,13 @@ public final class UserHistoryDictIOUtils {
     /**
      * Reads dictionary from file.
      */
-    public static void readDictionaryBinary(final BinaryDictReader reader,
+    public static void readDictionaryBinary(final BinaryDictDecoder dictDecoder,
             final OnAddWordListener dict) {
         final Map<Integer, String> unigrams = CollectionUtils.newTreeMap();
         final Map<Integer, Integer> frequencies = CollectionUtils.newTreeMap();
         final Map<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
         try {
-            BinaryDictIOUtils.readUnigramsAndBigramsBinary(reader, unigrams, frequencies,
+            BinaryDictIOUtils.readUnigramsAndBigramsBinary(dictDecoder, unigrams, frequencies,
                     bigrams);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while reading file", e);
@@ -157,7 +156,7 @@ public final class UserHistoryDictIOUtils {
                         continue;
                     }
                     to.setBigram(word1, word2,
-                            BinaryDictDecoder.reconstructBigramFrequency(unigramFrequency,
+                            BinaryDictIOUtils.reconstructBigramFrequency(unigramFrequency,
                                     attr.mFrequency));
                 }
             }

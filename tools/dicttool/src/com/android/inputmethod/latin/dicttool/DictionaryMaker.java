@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
-import com.android.inputmethod.latin.makedict.BinaryDictReader;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.MakedictLog;
@@ -176,7 +176,7 @@ public class DictionaryMaker {
                                 inputUnigramXml = filename;
                             } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
                                 inputCombined = filename;
-                            } else if (BinaryDictDecoder.isBinaryDictionary(filename)) {
+                            } else if (BinaryDictDecoderUtils.isBinaryDictionary(filename)) {
                                 inputBinary = filename;
                             } else {
                                 throw new IllegalArgumentException(
@@ -198,7 +198,7 @@ public class DictionaryMaker {
                     }
                 } else {
                     if (null == inputBinary && null == inputUnigramXml) {
-                        if (BinaryDictDecoder.isBinaryDictionary(arg)) {
+                        if (BinaryDictDecoderUtils.isBinaryDictionary(arg)) {
                             inputBinary = arg;
                         } else if (CombinedInputOutput.isCombinedDictionary(arg)) {
                             inputCombined = arg;
@@ -266,9 +266,10 @@ public class DictionaryMaker {
     private static FusionDictionary readBinaryFile(final String binaryFilename)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File file = new File(binaryFilename);
-        final BinaryDictReader reader = new BinaryDictReader(file);
-        reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteBufferFactory());
-        return BinaryDictDecoder.readDictionaryBinary(reader, null);
+        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        dictDecoder.openDictBuffer(
+                new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+        return BinaryDictDecoderUtils.readDictionaryBinary(dictDecoder, null);
     }
 
     /**

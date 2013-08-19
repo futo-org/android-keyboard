@@ -16,14 +16,14 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.FusionDictionaryBufferFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.
-        FusionDictionaryBufferFromByteArrayFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.
-        FusionDictionaryBufferFromByteBufferFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictReader.
-        FusionDictionaryBufferFromWritableByteBufferFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.DictionaryBufferFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+        DictionaryBufferFromByteArrayFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+        DictionaryBufferFromReadOnlyByteBufferFactory;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+        DictionaryBufferFromWritableByteBufferFactory;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -33,10 +33,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Unit tests for BinaryDictReader
+ * Unit tests for BinaryDictDecoder
  */
-public class BinaryDictReaderTests extends AndroidTestCase {
-    private static final String TAG = BinaryDictReaderTests.class.getSimpleName();
+public class BinaryDictDecoderTests extends AndroidTestCase {
+    private static final String TAG = BinaryDictDecoderTests.class.getSimpleName();
 
     private final byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
@@ -61,7 +61,7 @@ public class BinaryDictReaderTests extends AndroidTestCase {
 
     @SuppressWarnings("null")
     public void runTestOpenBuffer(final String testName,
-            final FusionDictionaryBufferFactory factory) {
+            final DictionaryBufferFactory factory) {
         File testFile = null;
         try {
             testFile = File.createTempFile(testName, ".tmp", getContext().getCacheDir());
@@ -70,9 +70,9 @@ public class BinaryDictReaderTests extends AndroidTestCase {
         }
 
         assertNotNull(testFile);
-        final BinaryDictReader reader = new BinaryDictReader(testFile);
+        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(testFile);
         try {
-            reader.openBuffer(factory);
+            dictDecoder.openDictBuffer(factory);
         } catch (Exception e) {
             Log.e(TAG, "Failed to open the buffer", e);
         }
@@ -80,32 +80,32 @@ public class BinaryDictReaderTests extends AndroidTestCase {
         writeDataToFile(testFile);
 
         try {
-            reader.openBuffer(factory);
+            dictDecoder.openDictBuffer(factory);
         } catch (Exception e) {
             Log.e(TAG, "Raised the exception while opening buffer", e);
         }
 
-        assertEquals(testFile.length(), reader.getBuffer().capacity());
+        assertEquals(testFile.length(), dictDecoder.getDictBuffer().capacity());
     }
 
     public void testOpenBufferWithByteBuffer() {
         runTestOpenBuffer("testOpenBufferWithByteBuffer",
-                new FusionDictionaryBufferFromByteBufferFactory());
+                new DictionaryBufferFromReadOnlyByteBufferFactory());
     }
 
     public void testOpenBufferWithByteArray() {
         runTestOpenBuffer("testOpenBufferWithByteArray",
-                new FusionDictionaryBufferFromByteArrayFactory());
+                new DictionaryBufferFromByteArrayFactory());
     }
 
     public void testOpenBufferWithWritableByteBuffer() {
         runTestOpenBuffer("testOpenBufferWithWritableByteBuffer",
-                new FusionDictionaryBufferFromWritableByteBufferFactory());
+                new DictionaryBufferFromWritableByteBufferFactory());
     }
 
     @SuppressWarnings("null")
     public void runTestGetBuffer(final String testName,
-            final FusionDictionaryBufferFactory factory) {
+            final DictionaryBufferFactory factory) {
         File testFile = null;
         try {
             testFile = File.createTempFile(testName, ".tmp", getContext().getCacheDir());
@@ -113,40 +113,41 @@ public class BinaryDictReaderTests extends AndroidTestCase {
             Log.e(TAG, "IOException while the creating temporary file", e);
         }
 
-        final BinaryDictReader reader = new BinaryDictReader(testFile);
+        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(testFile);
 
         // the default return value of getBuffer() must be null.
-        assertNull("the default return value of getBuffer() is not null", reader.getBuffer());
+        assertNull("the default return value of getBuffer() is not null",
+                dictDecoder.getDictBuffer());
 
         writeDataToFile(testFile);
         assertTrue(testFile.exists());
         Log.d(TAG, "file length = " + testFile.length());
 
-        FusionDictionaryBufferInterface buffer = null;
+        DictBuffer dictBuffer = null;
         try {
-            buffer = reader.openAndGetBuffer(factory);
+            dictBuffer = dictDecoder.openAndGetDictBuffer(factory);
         } catch (IOException e) {
             Log.e(TAG, "Failed to open and get the buffer", e);
         }
-        assertNotNull("the buffer must not be null", buffer);
+        assertNotNull("the buffer must not be null", dictBuffer);
 
         for (int i = 0; i < data.length; ++i) {
-            assertEquals(data[i], buffer.readUnsignedByte());
+            assertEquals(data[i], dictBuffer.readUnsignedByte());
         }
     }
 
     public void testGetBufferWithByteBuffer() {
         runTestGetBuffer("testGetBufferWithByteBuffer",
-                new FusionDictionaryBufferFromByteBufferFactory());
+                new DictionaryBufferFromReadOnlyByteBufferFactory());
     }
 
     public void testGetBufferWithByteArray() {
         runTestGetBuffer("testGetBufferWithByteArray",
-                new FusionDictionaryBufferFromByteArrayFactory());
+                new DictionaryBufferFromByteArrayFactory());
     }
 
     public void testGetBufferWithWritableByteBuffer() {
         runTestGetBuffer("testGetBufferWithWritableByteBuffer",
-                new FusionDictionaryBufferFromWritableByteBufferFactory());
+                new DictionaryBufferFromWritableByteBufferFactory());
     }
 }
