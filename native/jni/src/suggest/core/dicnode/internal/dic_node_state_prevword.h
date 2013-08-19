@@ -69,11 +69,14 @@ class DicNodeStatePrevWord {
             const int prevWordNodePos, const int *const src0, const int16_t length0,
             const int *const src1, const int16_t length1, const int *const prevSpacePositions,
             const int lastInputIndex) {
-        mPrevWordCount = prevWordCount;
+        mPrevWordCount = min(prevWordCount, static_cast<int16_t>(MAX_RESULTS));
         mPrevWordProbability = prevWordProbability;
         mPrevWordNodePos = prevWordNodePos;
-        const int twoWordsLen =
+        int twoWordsLen =
                 DicNodeUtils::appendTwoWords(src0, length0, src1, length1, mPrevWord);
+        if (twoWordsLen >= MAX_WORD_LENGTH) {
+            twoWordsLen = MAX_WORD_LENGTH - 1;
+        }
         mPrevWord[twoWordsLen] = KEYCODE_SPACE;
         mPrevWordStart = length0;
         mPrevWordLength = static_cast<int16_t>(twoWordsLen + 1);
