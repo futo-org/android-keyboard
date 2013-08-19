@@ -269,11 +269,11 @@ public class Key implements Comparable<Key> {
         final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview));
 
-        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
+        mLabelFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
         final boolean needsToUpperCase = needsToUpperCase(mLabelFlags, params.mId.mElementId);
         final Locale locale = params.mId.mLocale;
-        int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
+        int actionFlags = style.getFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
 
         int moreKeysColumn = style.getInt(keyAttr,

@@ -24,7 +24,7 @@ public abstract class KeyStyle {
     public abstract String[] getStringArray(TypedArray a, int index);
     public abstract String getString(TypedArray a, int index);
     public abstract int getInt(TypedArray a, int index, int defaultValue);
-    public abstract int getFlag(TypedArray a, int index);
+    public abstract int getFlags(TypedArray a, int index);
 
     protected KeyStyle(final KeyboardTextsSet textsSet) {
         mTextsSet = textsSet;
