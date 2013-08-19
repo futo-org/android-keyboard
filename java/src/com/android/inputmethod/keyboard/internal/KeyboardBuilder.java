@@ -440,9 +440,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 attr, R.styleable.Keyboard_Include);
         final TypedArray keyAttr = mResources.obtainAttributes(attr, R.styleable.Keyboard_Key);
         int keyboardLayout = 0;
-        float savedDefaultKeyWidth = 0;
-        int savedDefaultKeyLabelFlags = 0;
-        int savedDefaultBackgroundType = Key.BACKGROUND_TYPE_NORMAL;
         try {
             XmlParseUtils.checkAttributeExists(
                     keyboardAttr, R.styleable.Keyboard_Include_keyboardLayout, "keyboardLayout",
@@ -450,24 +447,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             keyboardLayout = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_Include_keyboardLayout, 0);
             if (row != null) {
-                if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
-                    // Override current x coordinate.
-                    row.setXPos(row.getKeyX(keyAttr));
-                }
-                // TODO: Remove this if-clause and do the same as backgroundType below.
-                savedDefaultKeyWidth = row.getDefaultKeyWidth();
-                if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyWidth)) {
-                    // Override default key width.
-                    row.setDefaultKeyWidth(row.getKeyWidth(keyAttr));
-                }
-                savedDefaultKeyLabelFlags = row.getDefaultKeyLabelFlags();
-                // Bitwise-or default keyLabelFlag if exists.
-                row.setDefaultKeyLabelFlags(keyAttr.getInt(
-                        R.styleable.Keyboard_Key_keyLabelFlags, 0) | savedDefaultKeyLabelFlags);
-                savedDefaultBackgroundType = row.getDefaultBackgroundType();
-                // Override default backgroundType if exists.
-                row.setDefaultBackgroundType(keyAttr.getInt(
-                        R.styleable.Keyboard_Key_backgroundType, savedDefaultBackgroundType));
+                // Override current x coordinate.
+                row.setXPos(row.getKeyX(keyAttr));
+                // Push current Row attributes and update with new attributes.
+                row.pushRowAttributes(keyAttr);
             }
         } finally {
             keyboardAttr.recycle();
@@ -484,10 +467,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             parseMerge(parserForInclude, row, skip);
         } finally {
             if (row != null) {
-                // Restore default keyWidth, keyLabelFlags, and backgroundType.
-                row.setDefaultKeyWidth(savedDefaultKeyWidth);
-                row.setDefaultKeyLabelFlags(savedDefaultKeyLabelFlags);
-                row.setDefaultBackgroundType(savedDefaultBackgroundType);
+                // Restore Row attributes.
+                row.popRowAttributes();
             }
             parserForInclude.close();
         }
