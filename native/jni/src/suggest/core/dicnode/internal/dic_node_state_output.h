@@ -49,8 +49,10 @@ class DicNodeStateOutput {
     void addMergedNodeCodePoints(const uint16_t mergedNodeCodePointCount,
             const int *const mergedNodeCodePoints) {
         if (mergedNodeCodePoints) {
+            const int additionalCodePointCount = min(static_cast<int>(mergedNodeCodePointCount),
+                    MAX_WORD_LENGTH - mOutputtedCodePointCount);
             memcpy(&mCodePointsBuf[mOutputtedCodePointCount], mergedNodeCodePoints,
-                    mergedNodeCodePointCount * sizeof(mCodePointsBuf[0]));
+                    additionalCodePointCount * sizeof(mCodePointsBuf[0]));
             mOutputtedCodePointCount = static_cast<uint16_t>(
                     mOutputtedCodePointCount + mergedNodeCodePointCount);
             if (mOutputtedCodePointCount < MAX_WORD_LENGTH) {
