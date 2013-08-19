@@ -21,7 +21,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictReader;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
@@ -147,15 +147,16 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {
-        final BinaryDictReader reader = new BinaryDictReader(file);
+        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
         try {
-            reader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+            dictDecoder.openDictBuffer(
+                    new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
         } catch (FileNotFoundException e) {
             Log.e(TAG, "file not found", e);
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
         }
-        UserHistoryDictIOUtils.readDictionaryBinary(reader, listener);
+        UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
     }
 
     public void testGenerateFusionDictionary() {

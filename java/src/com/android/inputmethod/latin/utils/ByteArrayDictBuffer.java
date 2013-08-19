@@ -16,17 +16,17 @@
 
 package com.android.inputmethod.latin.utils;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 
 /**
  * This class provides an implementation for the FusionDictionary buffer interface that is backed
  * by a simpled byte array. It allows to create a binary dictionary in memory.
  */
-public final class ByteArrayWrapper implements FusionDictionaryBufferInterface {
+public final class ByteArrayDictBuffer implements DictBuffer {
     private byte[] mBuffer;
     private int mPosition;
 
-    public ByteArrayWrapper(final byte[] buffer) {
+    public ByteArrayDictBuffer(final byte[] buffer) {
         mBuffer = buffer;
         mPosition = 0;
     }

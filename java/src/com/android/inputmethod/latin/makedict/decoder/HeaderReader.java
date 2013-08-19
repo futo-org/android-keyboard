@@ -24,7 +24,7 @@ import java.util.HashMap;
 /**
  * An interface to read a binary dictionary file header.
  */
-public interface HeaderReaderInterface {
+public interface HeaderReader {
     public int readVersion() throws IOException, UnsupportedFormatException;
     public int readOptionFlags();
     public int readHeaderSize();

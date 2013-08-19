@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
-import com.android.inputmethod.latin.makedict.BinaryDictReader;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
@@ -97,7 +97,7 @@ public final class BinaryDictOffdeviceUtils {
         // over and over, ending in a stack overflow. Hence we limit the depth at which we try
         // decoding the file.
         if (depth > MAX_DECODE_DEPTH) return null;
-        if (BinaryDictDecoder.isBinaryDictionary(src)) {
+        if (BinaryDictDecoderUtils.isBinaryDictionary(src)) {
             spec.mFile = src;
             return spec;
         }
@@ -184,15 +184,15 @@ public final class BinaryDictOffdeviceUtils {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
                 } else {
-                    final BinaryDictReader reader = new BinaryDictReader(decodedSpec.mFile);
-                    reader.openBuffer(
-                            new BinaryDictReader.FusionDictionaryBufferFromByteArrayFactory());
+                    final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(decodedSpec.mFile);
+                    dictDecoder.openDictBuffer(
+                            new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());
                         System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                     }
-                    return BinaryDictDecoder.readDictionaryBinary(reader, null);
+                    return BinaryDictDecoderUtils.readDictionaryBinary(dictDecoder, null);
                 }
             }
         } catch (IOException e) {

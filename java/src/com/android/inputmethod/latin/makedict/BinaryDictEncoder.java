@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;

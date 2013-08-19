@@ -18,13 +18,13 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.CharEncoding;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.utils.ByteArrayWrapper;
+import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,7 +62,7 @@ public final class BinaryDictIOUtils {
      * Retrieves all node arrays without recursive call.
      */
     private static void readUnigramsAndBigramsBinaryInner(
-            final FusionDictionaryBufferInterface buffer, final int headerSize,
+            final DictBuffer dictBuffer, final int headerSize,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams,
             final FormatOptions formatOptions) {
@@ -82,11 +82,11 @@ public final class BinaryDictIOUtils {
                         p.mNumOfCharGroup + ", position=" + p.mPosition + ", length=" + p.mLength);
             }
 
-            if (buffer.position() != p.mAddress) buffer.position(p.mAddress);
+            if (dictBuffer.position() != p.mAddress) dictBuffer.position(p.mAddress);
             if (index != p.mLength) index = p.mLength;
 
             if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
-                p.mNumOfCharGroup = BinaryDictDecoder.readCharGroupCount(buffer);
+                p.mNumOfCharGroup = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
                 p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
                 p.mPosition = 0;
             }
@@ -94,7 +94,7 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            CharGroupInfo info = BinaryDictDecoder.readCharGroup(buffer,
+            CharGroupInfo info = BinaryDictDecoderUtils.readCharGroup(dictBuffer,
                     p.mAddress - headerSize, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
@@ -114,7 +114,7 @@ public final class BinaryDictIOUtils {
 
             if (p.mPosition == p.mNumOfCharGroup) {
                 if (formatOptions.mSupportsDynamicUpdate) {
-                    final int forwardLinkAddress = buffer.readUnsignedInt24();
+                    final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
                     if (forwardLinkAddress != FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                         // The node array has a forward link.
                         p.mNumOfCharGroup = Position.NOT_READ_GROUPCOUNT;
@@ -127,7 +127,7 @@ public final class BinaryDictIOUtils {
                 }
             } else {
                 // The node array has more groups.
-                p.mAddress = buffer.position();
+                p.mAddress = dictBuffer.position();
             }
 
             if (!isMovedGroup && hasChildrenAddress(info.mChildrenAddress)) {
@@ -141,20 +141,20 @@ public final class BinaryDictIOUtils {
      * Reads unigrams and bigrams from the binary file.
      * Doesn't store a full memory representation of the dictionary.
      *
-     * @param dictReader the dict reader.
+     * @param dictDecoder the dict decoder.
      * @param words the map to store the address as a key and the word as a value.
      * @param frequencies the map to store the address as a key and the frequency as a value.
      * @param bigrams the map to store the address as a key and the list of address as a value.
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
-    public static void readUnigramsAndBigramsBinary(final BinaryDictReader dictReader,
+    public static void readUnigramsAndBigramsBinary(final BinaryDictDecoder dictDecoder,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
-        readUnigramsAndBigramsBinaryInner(dictReader.getBuffer(), header.mHeaderSize, words,
+        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        readUnigramsAndBigramsBinaryInner(dictDecoder.getDictBuffer(), header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
 
@@ -162,32 +162,32 @@ public final class BinaryDictIOUtils {
      * Gets the address of the last CharGroup of the exact matching word in the dictionary.
      * If no match is found, returns NOT_VALID_WORD.
      *
-     * @param dictReader the dict reader.
+     * @param dictDecoder the dict decoder.
      * @param word the word we search for.
      * @return the address of the terminal node.
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    public static int getTerminalPosition(final BinaryDictReader dictReader,
+    public static int getTerminalPosition(final BinaryDictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
-        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;
-        if (buffer.position() != 0) buffer.position(0);
+        if (dictBuffer.position() != 0) dictBuffer.position(0);
 
-        final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
+        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
-                final int charGroupCount = BinaryDictDecoder.readCharGroupCount(buffer);
+                final int charGroupCount = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
                 boolean foundNextCharGroup = false;
                 for (int i = 0; i < charGroupCount; ++i) {
-                    final int charGroupPos = buffer.position();
-                    final CharGroupInfo currentInfo = BinaryDictDecoder.readCharGroup(buffer,
-                            buffer.position(), header.mFormatOptions);
+                    final int charGroupPos = dictBuffer.position();
+                    final CharGroupInfo currentInfo = BinaryDictDecoderUtils.readCharGroup(
+                            dictBuffer, dictBuffer.position(), header.mFormatOptions);
                     final boolean isMovedGroup = isMovedGroup(currentInfo.mFlags,
                             header.mFormatOptions);
                     final boolean isDeletedGroup = isDeletedGroup(currentInfo.mFlags,
@@ -219,7 +219,7 @@ public final class BinaryDictIOUtils {
                             return FormatSpec.NOT_VALID_WORD;
                         }
                         foundNextCharGroup = true;
-                        buffer.position(currentInfo.mChildrenAddress);
+                        dictBuffer.position(currentInfo.mChildrenAddress);
                         break;
                     }
                 }
@@ -233,11 +233,11 @@ public final class BinaryDictIOUtils {
                     return FormatSpec.NOT_VALID_WORD;
                 }
 
-                final int forwardLinkAddress = buffer.readUnsignedInt24();
+                final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
                 if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
-                buffer.position(forwardLinkAddress);
+                dictBuffer.position(forwardLinkAddress);
             } while(true);
         }
         return FormatSpec.NOT_VALID_WORD;
@@ -246,12 +246,12 @@ public final class BinaryDictIOUtils {
     /**
      * @return the size written, in bytes. Always 3 bytes.
      */
-    static int writeSInt24ToBuffer(final FusionDictionaryBufferInterface buffer,
+    static int writeSInt24ToBuffer(final DictBuffer dictBuffer,
             final int value) {
         final int absValue = Math.abs(value);
-        buffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
-        buffer.put((byte)((absValue >> 8) & 0xFF));
-        buffer.put((byte)(absValue & 0xFF));
+        dictBuffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
+        dictBuffer.put((byte)((absValue >> 8) & 0xFF));
+        dictBuffer.put((byte)(absValue & 0xFF));
         return 3;
     }
 
@@ -289,31 +289,31 @@ public final class BinaryDictIOUtils {
         return BinaryDictEncoder.getByteSize(value);
     }
 
-    static void skipCharGroup(final FusionDictionaryBufferInterface buffer,
+    static void skipCharGroup(final DictBuffer dictBuffer,
             final FormatOptions formatOptions) {
-        final int flags = buffer.readUnsignedByte();
-        BinaryDictDecoder.readParentAddress(buffer, formatOptions);
-        skipString(buffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        BinaryDictDecoder.readChildrenAddress(buffer, flags, formatOptions);
-        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) buffer.readUnsignedByte();
+        final int flags = dictBuffer.readUnsignedByte();
+        BinaryDictDecoderUtils.readParentAddress(dictBuffer, formatOptions);
+        skipString(dictBuffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        BinaryDictDecoderUtils.readChildrenAddress(dictBuffer, flags, formatOptions);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) dictBuffer.readUnsignedByte();
         if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
-            final int shortcutsSize = buffer.readUnsignedShort();
-            buffer.position(buffer.position() + shortcutsSize
+            final int shortcutsSize = dictBuffer.readUnsignedShort();
+            dictBuffer.position(dictBuffer.position() + shortcutsSize
                     - FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE);
         }
         if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
             int bigramCount = 0;
             while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
-                final int bigramFlags = buffer.readUnsignedByte();
+                final int bigramFlags = dictBuffer.readUnsignedByte();
                 switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
                     case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-                        buffer.readUnsignedByte();
+                        dictBuffer.readUnsignedByte();
                         break;
                     case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-                        buffer.readUnsignedShort();
+                        dictBuffer.readUnsignedShort();
                         break;
                     case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-                        buffer.readUnsignedInt24();
+                        dictBuffer.readUnsignedInt24();
                         break;
                 }
                 if ((bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT) == 0) break;
@@ -324,15 +324,15 @@ public final class BinaryDictIOUtils {
         }
     }
 
-    static void skipString(final FusionDictionaryBufferInterface buffer,
+    static void skipString(final DictBuffer dictBuffer,
             final boolean hasMultipleChars) {
         if (hasMultipleChars) {
-            int character = CharEncoding.readChar(buffer);
+            int character = CharEncoding.readChar(dictBuffer);
             while (character != FormatSpec.INVALID_CHARACTER) {
-                character = CharEncoding.readChar(buffer);
+                character = CharEncoding.readChar(dictBuffer);
             }
         } else {
-            CharEncoding.readChar(buffer);
+            CharEncoding.readChar(dictBuffer);
         }
     }
 
@@ -508,24 +508,25 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Find a word using the BinaryDictReader.
+     * Find a word using the BinaryDictDecoder.
      *
-     * @param dictReader the dict reader
+     * @param dictDecoder the dict reader
      * @param word the word searched
      * @return the found group
      * @throws IOException
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictReader dictReader,
+    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
-        int position = getTerminalPosition(dictReader, word);
-        final FusionDictionaryBufferInterface buffer = dictReader.getBuffer();
+        int position = getTerminalPosition(dictDecoder, word);
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (position != FormatSpec.NOT_VALID_WORD) {
-            buffer.position(0);
-            final FileHeader header = BinaryDictDecoder.readHeader(dictReader);
-            buffer.position(position);
-            return BinaryDictDecoder.readCharGroup(buffer, position, header.mFormatOptions);
+            dictBuffer.position(0);
+            final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+            dictBuffer.position(position);
+            return BinaryDictDecoderUtils.readCharGroup(dictBuffer, position,
+                    header.mFormatOptions);
         }
         return null;
     }
@@ -544,21 +545,21 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final BinaryDictReader dictReader = new BinaryDictReader(file);
-        dictReader.openBuffer(new BinaryDictReader.FusionDictionaryBufferFactory() {
+        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        dictDecoder.openDictBuffer(new BinaryDictDecoder.DictionaryBufferFactory() {
             @Override
-            public FusionDictionaryBufferInterface getFusionDictionaryBuffer(File file)
+            public DictBuffer getDictionaryBuffer(File file)
                     throws FileNotFoundException, IOException {
                 final FileInputStream inStream = new FileInputStream(file);
                 try {
                     inStream.read(buffer);
-                    return new ByteArrayWrapper(buffer);
+                    return new ByteArrayDictBuffer(buffer);
                 } finally {
                     inStream.close();
                 }
             }
         });
-        return BinaryDictDecoder.readHeader(dictReader);
+        return BinaryDictDecoderUtils.readHeader(dictDecoder);
     }
 
     public static FileHeader getDictionaryFileHeaderOrNull(final File file, final long offset,
@@ -635,5 +636,20 @@ public final class BinaryDictIOUtils {
             default:
                 return 0;
         }
+    }
+
+    /**
+     * Calculate bigram frequency from compressed value
+     *
+     * @param unigramFrequency
+     * @param bigramFrequency compressed frequency
+     * @return approximate bigram frequency
+     */
+    public static int reconstructBigramFrequency(final int unigramFrequency,
+            final int bigramFrequency) {
+        final float stepSize = (FormatSpec.MAX_TERMINAL_FREQUENCY - unigramFrequency)
+                / (1.5f + FormatSpec.MAX_BIGRAM_FREQUENCY);
+        final float resultFreqFloat = unigramFrequency + stepSize * (bigramFrequency + 1.0f);
+        return (int)resultFreqFloat;
     }
 }
