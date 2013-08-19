@@ -370,12 +370,19 @@ public final class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Convert hex string to byte array. The string length must be an even number.
+     */
     @UsedForTesting
     public static byte[] hexStringToByteArray(String hexString) {
         if (TextUtils.isEmpty(hexString)) {
             return null;
         }
         final int N = hexString.length();
+        if (N % 2 != 0) {
+            throw new NumberFormatException("Input hex string length must be an even number."
+                    + " Length = " + N);
+        }
         final byte[] bytes = new byte[N / 2];
         for (int i = 0; i < N; i += 2) {
             bytes[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
