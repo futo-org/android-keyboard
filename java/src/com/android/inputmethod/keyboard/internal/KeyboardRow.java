@@ -64,12 +64,11 @@ public final class KeyboardRow {
                 R.styleable.Keyboard_Key);
         mDefaultKeyWidth = keyAttr.getFraction(R.styleable.Keyboard_Key_keyWidth,
                 params.mBaseWidth, params.mBaseWidth, params.mDefaultKeyWidth);
+        mDefaultKeyLabelFlags = keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mDefaultBackgroundType = keyAttr.getInt(R.styleable.Keyboard_Key_backgroundType,
                 Key.BACKGROUND_TYPE_NORMAL);
         keyAttr.recycle();
 
-        // TODO: Initialize this with <Row> attribute as backgroundType is done.
-        mDefaultKeyLabelFlags = 0;
         mCurrentY = y;
         mCurrentX = 0.0f;
     }
