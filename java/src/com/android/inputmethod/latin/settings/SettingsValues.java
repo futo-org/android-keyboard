@@ -306,7 +306,7 @@ public final class SettingsValues {
                 // TODO: Stop using KeySpceParser.getLabel().
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
-                        Dictionary.TYPE_HARDCODED,
+                        Dictionary.DICTIONARY_HARDCODED,
                         SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
             }
         }
