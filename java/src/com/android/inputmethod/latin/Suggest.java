@@ -303,13 +303,14 @@ public final class Suggest {
 
         for (int i = 0; i < suggestionsCount; ++i) {
             final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(), wordInfo.mSourceDict);
+            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(),
+                    wordInfo.mSourceDict.mDictType);
         }
 
         if (!TextUtils.isEmpty(typedWord)) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
-                    Dictionary.TYPE_USER_TYPED,
+                    Dictionary.DICTIONARY_USER_TYPED,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
         }
         SuggestedWordInfo.removeDups(suggestionsContainer);
@@ -353,7 +354,7 @@ public final class Suggest {
         }
 
         for (SuggestedWordInfo wordInfo : suggestionsSet) {
-            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict);
+            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord, wordInfo.mSourceDict.mDictType);
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =

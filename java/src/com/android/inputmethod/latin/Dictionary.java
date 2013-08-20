@@ -28,9 +28,26 @@ import java.util.ArrayList;
 public abstract class Dictionary {
     public static final int NOT_A_PROBABILITY = -1;
 
+    // The following types do not actually come from real dictionary instances, so we create
+    // corresponding instances.
     public static final String TYPE_USER_TYPED = "user_typed";
+    public static final Dictionary DICTIONARY_USER_TYPED = new PhonyDictionary(TYPE_USER_TYPED);
+
     public static final String TYPE_APPLICATION_DEFINED = "application_defined";
+    public static final Dictionary DICTIONARY_APPLICATION_DEFINED =
+            new PhonyDictionary(TYPE_APPLICATION_DEFINED);
+
     public static final String TYPE_HARDCODED = "hardcoded"; // punctuation signs and such
+    public static final Dictionary DICTIONARY_HARDCODED =
+            new PhonyDictionary(TYPE_HARDCODED);
+
+    // Spawned by resuming suggestions. Comes from a span that was in the TextView.
+    public static final String TYPE_RESUMED = "resumed";
+    public static final Dictionary DICTIONARY_RESUMED =
+            new PhonyDictionary(TYPE_RESUMED);
+
+    // The following types of dictionary have actual functional instances. We don't need final
+    // phony dictionary instances for them.
     public static final String TYPE_MAIN = "main";
     public static final String TYPE_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
@@ -42,9 +59,7 @@ public abstract class Dictionary {
     // Personalization prediction dictionary internal to LatinIME's Java code.
     public static final String TYPE_PERSONALIZATION_PREDICTION_IN_JAVA =
             "personalization_prediction_in_java";
-    // Spawned by resuming suggestions. Comes from a span that was in the TextView.
-    public static final String TYPE_RESUMED = "resumed";
-    protected final String mDictType;
+    public final String mDictType;
 
     public Dictionary(final String dictType) {
         mDictType = dictType;
@@ -114,8 +129,30 @@ public abstract class Dictionary {
     /**
      * Subclasses may override to indicate that this Dictionary is not yet properly initialized.
      */
-
     public boolean isInitialized() {
         return true;
+    }
+
+    /**
+     * Not a true dictionary. A placeholder used to indicate suggestions that don't come from any
+     * real dictionary.
+     */
+    private static class PhonyDictionary extends Dictionary {
+        // This class is not publicly instantiable.
+        private PhonyDictionary(final String type) {
+            super(type);
+        }
+
+        @Override
+        public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+                final String prevWord, final ProximityInfo proximityInfo,
+                final boolean blockOffensiveWords) {
+            return null;
+        }
+
+        @Override
+        public boolean isValidWord(String word) {
+            return false;
+        }
     }
 }
