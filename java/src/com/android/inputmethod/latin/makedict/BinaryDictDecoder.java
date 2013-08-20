@@ -19,7 +19,8 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.decoder.HeaderReader;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 import com.android.inputmethod.latin.utils.JniUtils;
 
@@ -32,8 +33,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
+// TODO: Rename this class to "Ver3DictDecoder" or something, and make an interface "DictDecoder".
 @UsedForTesting
-public class BinaryDictDecoder implements HeaderReader {
+public class BinaryDictDecoder {
 
     static {
         JniUtils.loadNativeLibrary();
@@ -132,6 +134,35 @@ public class BinaryDictDecoder implements HeaderReader {
         }
     }
 
+    private final static class HeaderReader {
+        protected static int readVersion(final DictBuffer dictBuffer)
+                throws IOException, UnsupportedFormatException {
+            return BinaryDictDecoderUtils.checkFormatVersion(dictBuffer);
+        }
+
+        protected static int readOptionFlags(final DictBuffer dictBuffer) {
+            return dictBuffer.readUnsignedShort();
+        }
+
+        protected static int readHeaderSize(final DictBuffer dictBuffer) {
+            return dictBuffer.readInt();
+        }
+
+        protected static HashMap<String, String> readAttributes(final DictBuffer dictBuffer,
+                final int headerSize) {
+            final HashMap<String, String> attributes = new HashMap<String, String>();
+            while (dictBuffer.position() < headerSize) {
+                // We can avoid an infinite loop here since dictBuffer.position() is always
+                // increased by calling CharEncoding.readString.
+                final String key = CharEncoding.readString(dictBuffer);
+                final String value = CharEncoding.readString(dictBuffer);
+                attributes.put(key, value);
+            }
+            dictBuffer.position(headerSize);
+            return attributes;
+        }
+    }
+
     private final File mDictionaryBinaryFile;
     private DictBuffer mDictBuffer;
 
@@ -157,33 +188,26 @@ public class BinaryDictDecoder implements HeaderReader {
         return getDictBuffer();
     }
 
-    // The implementation of HeaderReader
-    @Override
-    public int readVersion() throws IOException, UnsupportedFormatException {
-        return BinaryDictDecoderUtils.checkFormatVersion(mDictBuffer);
-    }
+    // TODO : Define public functions of decoders
+    public FileHeader readHeader() throws IOException, UnsupportedFormatException {
+        final int version = HeaderReader.readVersion(mDictBuffer);
+        final int optionsFlags = HeaderReader.readOptionFlags(mDictBuffer);
 
-    @Override
-    public int readOptionFlags() {
-        return mDictBuffer.readUnsignedShort();
-    }
+        final int headerSize = HeaderReader.readHeaderSize(mDictBuffer);
 
-    @Override
-    public int readHeaderSize() {
-        return mDictBuffer.readInt();
-    }
-
-    @Override
-    public HashMap<String, String> readAttributes(final int headerSize) {
-        final HashMap<String, String> attributes = new HashMap<String, String>();
-        while (mDictBuffer.position() < headerSize) {
-            // We can avoid infinite loop here since mFusionDictonary.position() is always increased
-            // by calling CharEncoding.readString.
-            final String key = CharEncoding.readString(mDictBuffer);
-            final String value = CharEncoding.readString(mDictBuffer);
-            attributes.put(key, value);
+        if (headerSize < 0) {
+            throw new UnsupportedFormatException("header size can't be negative.");
         }
-        mDictBuffer.position(headerSize);
-        return attributes;
+
+        final HashMap<String, String> attributes = HeaderReader.readAttributes(mDictBuffer,
+                headerSize);
+
+        final FileHeader header = new FileHeader(headerSize,
+                new FusionDictionary.DictionaryOptions(attributes,
+                        0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
+                        0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
+                new FormatOptions(version,
+                        0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE)));
+        return header;
     }
 }

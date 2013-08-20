@@ -505,7 +505,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         FileHeader fileHeader = null;
         try {
-            fileHeader = BinaryDictDecoderUtils.readHeader(dictDecoder);
+            fileHeader = dictDecoder.readHeader();
         } catch (IOException e) {
             return null;
         } catch (UnsupportedFormatException e) {

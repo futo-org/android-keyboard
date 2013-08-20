@@ -21,8 +21,12 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -227,23 +231,14 @@ final public class BinaryDictionaryGetter {
     // those do not include whitelist entries, the new code with an old version of the dictionary
     // would lose whitelist functionality.
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
-        FileInputStream inStream = null;
         try {
             // Read the version of the file
-            inStream = new FileInputStream(f);
-            final BinaryDictDecoderUtils.ByteBufferDictBuffer dictBuffer =
-                    new BinaryDictDecoderUtils.ByteBufferDictBuffer(inStream.getChannel().map(
-                            FileChannel.MapMode.READ_ONLY, 0, f.length()));
-            final int magic = dictBuffer.readInt();
-            if (magic != FormatSpec.MAGIC_NUMBER) {
-                return false;
-            }
-            final int formatVersion = dictBuffer.readInt();
-            final int headerSize = dictBuffer.readInt();
-            final HashMap<String, String> options = CollectionUtils.newHashMap();
-            BinaryDictDecoderUtils.populateOptions(dictBuffer, headerSize, options);
+            final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(f);
+            dictDecoder.openDictBuffer(
+                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+            final FileHeader header = dictDecoder.readHeader();
 
-            final String version = options.get(VERSION_KEY);
+            final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);
             if (null == version) {
                 // No version in the options : the format is unexpected
                 return false;
@@ -259,14 +254,8 @@ final public class BinaryDictionaryGetter {
             return false;
         } catch (BufferUnderflowException e) {
             return false;
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+        } catch (UnsupportedFormatException e) {
+            return false;
         }
     }
 
