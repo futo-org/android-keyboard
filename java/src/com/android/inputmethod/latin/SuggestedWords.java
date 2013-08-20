@@ -113,7 +113,8 @@ public final class SuggestedWords {
             if (null == text) continue;
             final SuggestedWordInfo suggestedWordInfo = new SuggestedWordInfo(text.toString(),
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_APP_DEFINED,
-                    Dictionary.TYPE_APPLICATION_DEFINED);
+                    Dictionary.TYPE_APPLICATION_DEFINED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */);
             result.add(suggestedWordInfo);
         }
         return result;
@@ -126,7 +127,8 @@ public final class SuggestedWords {
         final ArrayList<SuggestedWordInfo> suggestionsList = CollectionUtils.newArrayList();
         final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED));
+                SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int index = 1; index < previousSize; index++) {
@@ -142,6 +144,7 @@ public final class SuggestedWords {
     }
 
     public static final class SuggestedWordInfo {
+        public static final int NOT_AN_INDEX = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
         public static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
         public static final int KIND_TYPED = 0; // What user typed
@@ -167,15 +170,20 @@ public final class SuggestedWords {
         public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
         public final String mSourceDict;
+        // For auto-commit. This keeps track of the index inside the touch coordinates array
+        // passed to native code to get suggestions for a gesture that corresponds to the first
+        // letter of the second word.
+        public final int mIndexOfTouchPointOfSecondWord;
         private String mDebugString = "";
 
         public SuggestedWordInfo(final String word, final int score, final int kind,
-                final String sourceDict) {
+                final String sourceDict, final int indexOfTouchPointOfSecondWord) {
             mWord = word;
             mScore = score;
             mKind = kind;
             mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWord);
+            mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
         }
 
 
