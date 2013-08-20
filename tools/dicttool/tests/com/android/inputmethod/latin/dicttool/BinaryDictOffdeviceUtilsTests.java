@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
+import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
@@ -58,7 +58,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
                         Compress.getCompressedStream(
                                 new BufferedOutputStream(new FileOutputStream(dst)))));
 
-        BinaryDictEncoder.writeDictionaryBinary(out, dict, new FormatOptions(2, false));
+        BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, new FormatOptions(2, false));
 
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =

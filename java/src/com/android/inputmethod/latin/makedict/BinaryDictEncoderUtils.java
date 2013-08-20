@@ -34,11 +34,11 @@ import java.util.Iterator;
  *
  * All the methods in this class are static.
  */
-public class BinaryDictEncoder {
+public class BinaryDictEncoderUtils {
 
     private static final boolean DBG = MakedictLog.DBG;
 
-    private BinaryDictEncoder() {
+    private BinaryDictEncoderUtils() {
         // This utility class is not publicly instantiable.
     }
 

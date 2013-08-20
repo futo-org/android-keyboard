@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Unit tests for BinaryDictEncoder.flattenTree().
+ * Unit tests for BinaryDictEncoderUtils.flattenTree().
  */
 public class BinaryDictEncoderFlattenTreeTests extends TestCase {
     // Test the flattened array contains the expected number of nodes, and
@@ -39,7 +39,8 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
         dict.add("ftb", 1, null, false /* isNotAWord */);
         dict.add("bar", 1, null, false /* isNotAWord */);
         dict.add("fool", 1, null, false /* isNotAWord */);
-        final ArrayList<PtNodeArray> result = BinaryDictEncoder.flattenTree(dict.mRootNodeArray);
+        final ArrayList<PtNodeArray> result =
+                BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
         assertEquals(4, result.size());
         while (!result.isEmpty()) {
             final PtNodeArray n = result.remove(0);

@@ -272,7 +272,7 @@ public final class BinaryDictIOUtils {
      */
     private static int writeVariableAddress(final OutputStream destination, final int value)
             throws IOException {
-        switch (BinaryDictEncoder.getByteSize(value)) {
+        switch (BinaryDictEncoderUtils.getByteSize(value)) {
         case 1:
             destination.write((byte)value);
             break;
@@ -286,7 +286,7 @@ public final class BinaryDictIOUtils {
             destination.write((byte)(0xFF & value));
             break;
         }
-        return BinaryDictEncoder.getByteSize(value);
+        return BinaryDictEncoderUtils.getByteSize(value);
     }
 
     static void skipCharGroup(final DictBuffer dictBuffer,
@@ -413,14 +413,14 @@ public final class BinaryDictIOUtils {
 
         if (info.mShortcutTargets != null && info.mShortcutTargets.size() > 0) {
             final int shortcutListSize =
-                    BinaryDictEncoder.getShortcutListSize(info.mShortcutTargets);
+                    BinaryDictEncoderUtils.getShortcutListSize(info.mShortcutTargets);
             destination.write((byte)(shortcutListSize >> 8));
             destination.write((byte)(shortcutListSize & 0xFF));
             size += 2;
             final Iterator<WeightedString> shortcutIterator = info.mShortcutTargets.iterator();
             while (shortcutIterator.hasNext()) {
                 final WeightedString target = shortcutIterator.next();
-                destination.write((byte)BinaryDictEncoder.makeShortcutFlags(
+                destination.write((byte)BinaryDictEncoderUtils.makeShortcutFlags(
                         shortcutIterator.hasNext(), target.mFrequency));
                 size++;
                 size += writeString(destination, target.mWord);
@@ -429,7 +429,7 @@ public final class BinaryDictIOUtils {
 
         if (info.mBigrams != null) {
             // TODO: Consolidate this code with the code that computes the size of the bigram list
-            //        in BinaryDictEncoder#computeActualNodeArraySize
+            //        in BinaryDictEncoderUtils#computeActualNodeArraySize
             for (int i = 0; i < info.mBigrams.size(); ++i) {
 
                 final int bigramFrequency = info.mBigrams.get(i).mFrequency;
@@ -439,7 +439,7 @@ public final class BinaryDictIOUtils {
                 final int bigramOffset = info.mBigrams.get(i).mAddress - (info.mOriginalAddress
                         + size);
                 bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0;
-                switch (BinaryDictEncoder.getByteSize(bigramOffset)) {
+                switch (BinaryDictEncoderUtils.getByteSize(bigramOffset)) {
                 case 1:
                     bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
                     break;
@@ -463,18 +463,18 @@ public final class BinaryDictIOUtils {
      */
     static int computeGroupSize(final CharGroupInfo info, final FormatOptions formatOptions) {
         int size = FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                + BinaryDictEncoder.getGroupCharactersSize(info.mCharacters)
+                + BinaryDictEncoderUtils.getGroupCharactersSize(info.mCharacters)
                 + getChildrenAddressSize(info.mFlags, formatOptions);
         if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
             size += FormatSpec.GROUP_FREQUENCY_SIZE;
         }
         if (info.mShortcutTargets != null && !info.mShortcutTargets.isEmpty()) {
-            size += BinaryDictEncoder.getShortcutListSize(info.mShortcutTargets);
+            size += BinaryDictEncoderUtils.getShortcutListSize(info.mShortcutTargets);
         }
         if (info.mBigrams != null) {
             for (final PendingAttribute attr : info.mBigrams) {
                 size += FormatSpec.GROUP_FLAGS_SIZE;
-                size += BinaryDictEncoder.getByteSize(attr.mAddress);
+                size += BinaryDictEncoderUtils.getByteSize(attr.mAddress);
             }
         }
         return size;
