@@ -69,6 +69,13 @@ public abstract class PersonalizationDictionaryUpdateSession {
         dictionary.unRegisterUpdateSession(this);
     }
 
+    public void clearAndFlushPredictionDictionary(Context context) {
+        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        if (dictionary == null) {
+            return;
+        }
+        dictionary.clearAndFlushDictionary();
+    }
 
     public void closeSession(Context context) {
         unsetPredictionDictionary();

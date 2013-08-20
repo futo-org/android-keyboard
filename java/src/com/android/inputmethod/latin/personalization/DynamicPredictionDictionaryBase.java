@@ -411,4 +411,18 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
     public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
         mSessions.remove(session);
     }
+
+    public void clearAndFlushDictionary() {
+        // Clear the node structure on memory
+        clearDictionary();
+        mBigramListLock.lock();
+        try {
+            // Clear the bigram list on memory
+            mBigramList.evictAll();
+        } finally {
+            mBigramListLock.unlock();
+        }
+        // Then flush the cleared state of the dictionary on disk.
+        flushPendingWrites();
+    }
 }
