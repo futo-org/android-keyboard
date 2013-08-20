@@ -40,7 +40,7 @@ import java.util.TreeMap;
  *
  * All the methods in this class are static.
  *
- * TODO: Remove calls from classes except BinaryDictDecoder
+ * TODO: Remove calls from classes except Ver3DictDecoder
  * TODO: Move this file to makedict/internal.
  */
 public final class BinaryDictDecoderUtils {
@@ -649,13 +649,13 @@ public final class BinaryDictDecoderUtils {
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    public static FusionDictionary readDictionaryBinary(final BinaryDictDecoder dictDecoder,
+    public static FusionDictionary readDictionaryBinary(final Ver3DictDecoder dictDecoder,
             final FusionDictionary dict) throws FileNotFoundException, IOException,
             UnsupportedFormatException {
 
         // if the buffer has not been opened, open the buffer with bytebuffer.
         if (dictDecoder.getDictBuffer() == null) dictDecoder.openDictBuffer(
-                new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
         if (dictDecoder.getDictBuffer() == null) {
             MakedictLog.e("Cannot open the buffer");
         }

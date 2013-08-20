@@ -120,14 +120,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     /**
      * Makes new DictBuffer according to BUFFER_TYPE.
      */
-    private void getDictBuffer(final BinaryDictDecoder dictDecoder, final int bufferType)
+    private void getDictBuffer(final Ver3DictDecoder dictDecoder, final int bufferType)
             throws FileNotFoundException, IOException {
         if (bufferType == USE_BYTE_BUFFER) {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
         } else if (bufferType == USE_BYTE_ARRAY) {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
         }
     }
 
@@ -271,7 +271,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap,
             final int bufferType) {
         long now, diff = -1;
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
 
         FusionDictionary dict = null;
         try {
@@ -409,7 +409,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final Map<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
 
         long now = -1, diff = -1;
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             getDictBuffer(dictDecoder, bufferType);
             assertNotNull("Can't get buffer.", dictDecoder.getDictBuffer());
@@ -499,7 +499,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     // Tests for getTerminalPosition
-    private String getWordFromBinary(final BinaryDictDecoder dictDecoder, final int address) {
+    private String getWordFromBinary(final Ver3DictDecoder dictDecoder, final int address) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (dictBuffer.position() != 0) dictBuffer.position(0);
 
@@ -516,7 +516,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 address - fileHeader.mHeaderSize, fileHeader.mFormatOptions).mWord;
     }
 
-    private long runGetTerminalPosition(final BinaryDictDecoder dictDecoder, final String word,
+    private long runGetTerminalPosition(final Ver3DictDecoder dictDecoder, final String word,
             int index, boolean contained) {
         final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
         long diff = -1;
@@ -552,10 +552,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
@@ -613,10 +613,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);

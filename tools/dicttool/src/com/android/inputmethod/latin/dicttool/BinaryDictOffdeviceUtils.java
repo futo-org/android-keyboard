@@ -17,9 +17,9 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 
 import org.xml.sax.SAXException;
 
@@ -184,9 +184,9 @@ public final class BinaryDictOffdeviceUtils {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
                 } else {
-                    final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(decodedSpec.mFile);
+                    final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(decodedSpec.mFile);
                     dictDecoder.openDictBuffer(
-                            new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
+                            new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());

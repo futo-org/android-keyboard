@@ -22,12 +22,12 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
-        DictionaryBufferFromWritableByteBufferFactory;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
+        DictionaryBufferFromWritableByteBufferFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -128,7 +128,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
     }
 
-    private static void printBinaryFile(final BinaryDictDecoder dictDecoder)
+    private static void printBinaryFile(final Ver3DictDecoder dictDecoder)
             throws IOException, UnsupportedFormatException {
         final FileHeader fileHeader = dictDecoder.readHeader();
         final DictBuffer buffer = dictDecoder.getDictBuffer();
@@ -139,12 +139,12 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private int getWordPosition(final File file, final String word) {
         int position = FormatSpec.NOT_VALID_WORD;
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         FileInputStream inStream = null;
         try {
             inStream = new FileInputStream(file);
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -161,11 +161,11 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private CharGroupInfo findWordFromFile(final File file, final String word) {
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         CharGroupInfo info = null;
         try {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             info = BinaryDictIOUtils.findWordByBinaryDictReader(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -177,7 +177,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
             final ArrayList<WeightedString> shortcuts) {
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         BufferedOutputStream outStream = null;
         long amountOfTime = -1;
         try {
@@ -211,7 +211,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void deleteWord(final File file, final String word) {
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             dictDecoder.openDictBuffer(new DictionaryBufferFromWritableByteBufferFactory());
             DynamicBinaryDictIOUtils.deleteWord(dictDecoder, word);
@@ -221,10 +221,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void checkReverseLookup(final File file, final String word, final int position) {
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             final DictBuffer dictBuffer = dictDecoder.openAndGetDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
                     BinaryDictDecoderUtils.getWordAtAddress(dictDecoder.getDictBuffer(),

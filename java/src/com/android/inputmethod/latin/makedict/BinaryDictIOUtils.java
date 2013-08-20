@@ -148,7 +148,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
-    public static void readUnigramsAndBigramsBinary(final BinaryDictDecoder dictDecoder,
+    public static void readUnigramsAndBigramsBinary(final Ver3DictDecoder dictDecoder,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
@@ -169,7 +169,7 @@ public final class BinaryDictIOUtils {
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    public static int getTerminalPosition(final BinaryDictDecoder dictDecoder,
+    public static int getTerminalPosition(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;
@@ -508,7 +508,7 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Find a word using the BinaryDictDecoder.
+     * Find a word using the Ver3DictDecoder.
      *
      * @param dictDecoder the dict reader
      * @param word the word searched
@@ -517,7 +517,7 @@ public final class BinaryDictIOUtils {
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static CharGroupInfo findWordByBinaryDictReader(final BinaryDictDecoder dictDecoder,
+    public static CharGroupInfo findWordByBinaryDictReader(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         int position = getTerminalPosition(dictDecoder, word);
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
@@ -545,8 +545,8 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
-        dictDecoder.openDictBuffer(new BinaryDictDecoder.DictionaryBufferFactory() {
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+        dictDecoder.openDictBuffer(new Ver3DictDecoder.DictionaryBufferFactory() {
             @Override
             public DictBuffer getDictionaryBuffer(File file)
                     throws FileNotFoundException, IOException {

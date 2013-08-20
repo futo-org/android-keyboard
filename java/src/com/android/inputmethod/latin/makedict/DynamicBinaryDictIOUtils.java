@@ -55,7 +55,7 @@ public final class DynamicBinaryDictIOUtils {
      * @throws UnsupportedFormatException
      */
     @UsedForTesting
-    public static void deleteWord(final BinaryDictDecoder dictDecoder, final String word)
+    public static void deleteWord(final Ver3DictDecoder dictDecoder, final String word)
             throws IOException, UnsupportedFormatException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(0);
@@ -253,7 +253,7 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final BinaryDictDecoder dictDecoder,
+    public static void insertWord(final Ver3DictDecoder dictDecoder,
             final OutputStream destination, final String word, final int frequency,
             final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,

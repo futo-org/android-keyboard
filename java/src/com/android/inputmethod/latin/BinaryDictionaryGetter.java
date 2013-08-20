@@ -21,21 +21,16 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -233,9 +228,9 @@ final public class BinaryDictionaryGetter {
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
         try {
             // Read the version of the file
-            final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(f);
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(f);
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             final FileHeader header = dictDecoder.readHeader();
 
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);
