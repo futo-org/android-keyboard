@@ -179,7 +179,7 @@ public final class BinaryDictionary extends Dictionary {
                 // TODO: check that all users of the `kind' parameter are ready to accept
                 // flags too and pass mOutputTypes[j] instead of kind
                 suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
-                        score, kind, mDictType,
+                        score, kind, this /* sourceDict */,
                         mSpaceIndices[0] /* indexOfTouchPointOfSecondWord */));
             }
         }

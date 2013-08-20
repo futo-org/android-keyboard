@@ -403,7 +403,7 @@ public class ExpandableDictionary extends Dictionary {
             // the respective size of the typed word and the suggestion if it matters sometime
             // in the future.
             suggestions.add(new SuggestedWordInfo(new String(word, 0, depth + 1), finalFreq,
-                    SuggestedWordInfo.KIND_CORRECTION, mDictType,
+                    SuggestedWordInfo.KIND_CORRECTION, this /* sourceDict */,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
             if (suggestions.size() >= Suggest.MAX_SUGGESTIONS) return false;
         }
@@ -412,7 +412,7 @@ public class ExpandableDictionary extends Dictionary {
             for (int shortcutIndex = 0; shortcutIndex < length; ++shortcutIndex) {
                 final char[] shortcut = node.mShortcutTargets.get(shortcutIndex);
                 suggestions.add(new SuggestedWordInfo(new String(shortcut, 0, shortcut.length),
-                        finalFreq, SuggestedWordInfo.KIND_SHORTCUT, mDictType,
+                        finalFreq, SuggestedWordInfo.KIND_SHORTCUT, this /* sourceDict */,
                         SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
                 if (suggestions.size() > Suggest.MAX_SUGGESTIONS) return false;
             }
@@ -659,8 +659,8 @@ public class ExpandableDictionary extends Dictionary {
             if (freq >= 0 && node == null) {
                 suggestions.add(new SuggestedWordInfo(new String(mLookedUpString, index,
                         Constants.DICTIONARY_MAX_WORD_LENGTH - index),
-                        freq, SuggestedWordInfo.KIND_CORRECTION, mDictType,
-                        SuggestedWordInfo.NOT_AN_INDEX));
+                        freq, SuggestedWordInfo.KIND_CORRECTION, this /* sourceDict */,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
             }
         }
     }

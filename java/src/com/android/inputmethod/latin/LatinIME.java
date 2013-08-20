@@ -2455,7 +2455,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion,
                     mWordComposer.isBatchMode(), suggestionInfo.mScore, suggestionInfo.mKind,
-                    suggestionInfo.mSourceDict);
+                    suggestionInfo.mSourceDict.mDictType);
         }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
@@ -2584,7 +2584,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (!TextUtils.equals(s, typedWord)) {
                     suggestions.add(new SuggestedWordInfo(s,
                             SuggestionStripView.MAX_SUGGESTIONS - i,
-                            SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED,
+                            SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
                             SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
                 }
             }

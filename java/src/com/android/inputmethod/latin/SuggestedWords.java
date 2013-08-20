@@ -113,7 +113,7 @@ public final class SuggestedWords {
             if (null == text) continue;
             final SuggestedWordInfo suggestedWordInfo = new SuggestedWordInfo(text.toString(),
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_APP_DEFINED,
-                    Dictionary.TYPE_APPLICATION_DEFINED,
+                    Dictionary.DICTIONARY_APPLICATION_DEFINED,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */);
             result.add(suggestedWordInfo);
         }
@@ -127,7 +127,7 @@ public final class SuggestedWords {
         final ArrayList<SuggestedWordInfo> suggestionsList = CollectionUtils.newArrayList();
         final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED,
+                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
@@ -169,7 +169,7 @@ public final class SuggestedWords {
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
-        public final String mSourceDict;
+        public final Dictionary mSourceDict;
         // For auto-commit. This keeps track of the index inside the touch coordinates array
         // passed to native code to get suggestions for a gesture that corresponds to the first
         // letter of the second word.
@@ -177,7 +177,7 @@ public final class SuggestedWords {
         private String mDebugString = "";
 
         public SuggestedWordInfo(final String word, final int score, final int kind,
-                final String sourceDict, final int indexOfTouchPointOfSecondWord) {
+                final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord) {
             mWord = word;
             mScore = score;
             mKind = kind;
@@ -185,7 +185,6 @@ public final class SuggestedWords {
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
         }
-
 
         public void setDebugString(final String str) {
             if (null == str) throw new NullPointerException("Debug info is null");

@@ -258,7 +258,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     protected void pickSuggestionManually(final int index, final String suggestion) {
         mLatinIME.pickSuggestionManually(index, new SuggestedWordInfo(suggestion, 1,
-                SuggestedWordInfo.KIND_CORRECTION, "main",
+                SuggestedWordInfo.KIND_CORRECTION, null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
     }
 
