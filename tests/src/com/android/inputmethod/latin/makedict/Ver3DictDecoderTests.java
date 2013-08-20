@@ -17,12 +17,11 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder.DictionaryBufferFactory;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
-        DictionaryBufferFromByteArrayFactory;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
+import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFactory;
+import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFromByteArrayFactory;
+import com.android.inputmethod.latin.makedict.DictDecoder.
         DictionaryBufferFromReadOnlyByteBufferFactory;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
+import com.android.inputmethod.latin.makedict.DictDecoder.
         DictionaryBufferFromWritableByteBufferFactory;
 
 import android.test.AndroidTestCase;
@@ -60,8 +59,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
     }
 
     @SuppressWarnings("null")
-    public void runTestOpenBuffer(final String testName,
-            final DictionaryBufferFactory factory) {
+    public void runTestOpenBuffer(final String testName, final DictionaryBufferFactory factory) {
         File testFile = null;
         try {
             testFile = File.createTempFile(testName, ".tmp", getContext().getCacheDir());
@@ -104,8 +102,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
     }
 
     @SuppressWarnings("null")
-    public void runTestGetBuffer(final String testName,
-            final DictionaryBufferFactory factory) {
+    public void runTestGetBuffer(final String testName, final DictionaryBufferFactory factory) {
         File testFile = null;
         try {
             testFile = File.createTempFile(testName, ".tmp", getContext().getCacheDir());

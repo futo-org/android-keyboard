@@ -22,12 +22,12 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
+import com.android.inputmethod.latin.makedict.DictDecoder.
+        DictionaryBufferFromWritableByteBufferFactory;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
-        DictionaryBufferFromWritableByteBufferFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

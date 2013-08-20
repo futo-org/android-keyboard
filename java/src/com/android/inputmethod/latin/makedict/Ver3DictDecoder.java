@@ -21,21 +21,18 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncodin
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
-// TODO: Make an interface "DictDecoder".
+/**
+ * An implementation of DictDecoder for version 3 binary dictionary.
+ */
 @UsedForTesting
-public class Ver3DictDecoder {
+public class Ver3DictDecoder implements DictDecoder {
 
     static {
         JniUtils.loadNativeLibrary();
@@ -43,96 +40,6 @@ public class Ver3DictDecoder {
 
     // TODO: implement something sensical instead of just a phony method
     private static native int doNothing();
-
-    public interface DictionaryBufferFactory {
-        public DictBuffer getDictionaryBuffer(final File file)
-                throws FileNotFoundException, IOException;
-    }
-
-    /**
-     * Creates DictionaryBuffer using a ByteBuffer
-     *
-     * This class uses less memory than DictionaryBufferFromByteArrayFactory,
-     * but doesn't perform as fast.
-     * When operating on a big dictionary, this class is preferred.
-     */
-    public static final class DictionaryBufferFromReadOnlyByteBufferFactory
-            implements DictionaryBufferFactory {
-        @Override
-        public DictBuffer getDictionaryBuffer(final File file)
-                throws FileNotFoundException, IOException {
-            FileInputStream inStream = null;
-            ByteBuffer buffer = null;
-            try {
-                inStream = new FileInputStream(file);
-                buffer = inStream.getChannel().map(FileChannel.MapMode.READ_ONLY,
-                        0, file.length());
-            } finally {
-                if (inStream != null) {
-                    inStream.close();
-                }
-            }
-            if (buffer != null) {
-                return new BinaryDictDecoderUtils.ByteBufferDictBuffer(buffer);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Creates DictionaryBuffer using a byte array
-     *
-     * This class performs faster than other classes, but consumes more memory.
-     * When operating on a small dictionary, this class is preferred.
-     */
-    public static final class DictionaryBufferFromByteArrayFactory
-            implements DictionaryBufferFactory {
-        @Override
-        public DictBuffer getDictionaryBuffer(final File file)
-                throws FileNotFoundException, IOException {
-            FileInputStream inStream = null;
-            try {
-                inStream = new FileInputStream(file);
-                final byte[] array = new byte[(int) file.length()];
-                inStream.read(array);
-                return new ByteArrayDictBuffer(array);
-            } finally {
-                if (inStream != null) {
-                    inStream.close();
-                }
-            }
-        }
-    }
-
-    /**
-     * Creates DictionaryBuffer using a writable ByteBuffer and a RandomAccessFile.
-     *
-     * This class doesn't perform as fast as other classes,
-     * but this class is the only option available for destructive operations (insert or delete)
-     * on a dictionary.
-     */
-    @UsedForTesting
-    public static final class DictionaryBufferFromWritableByteBufferFactory
-            implements DictionaryBufferFactory {
-        @Override
-        public DictBuffer getDictionaryBuffer(final File file)
-                throws FileNotFoundException, IOException {
-            RandomAccessFile raFile = null;
-            ByteBuffer buffer = null;
-            try {
-                raFile = new RandomAccessFile(file, "rw");
-                buffer = raFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, file.length());
-            } finally {
-                if (raFile != null) {
-                    raFile.close();
-                }
-            }
-            if (buffer != null) {
-                return new BinaryDictDecoderUtils.ByteBufferDictBuffer(buffer);
-            }
-            return null;
-        }
-    }
 
     private final static class HeaderReader {
         protected static int readVersion(final DictBuffer dictBuffer)
@@ -171,7 +78,7 @@ public class Ver3DictDecoder {
         mDictBuffer = null;
     }
 
-    public void openDictBuffer(final DictionaryBufferFactory factory)
+    public void openDictBuffer(final DictDecoder.DictionaryBufferFactory factory)
             throws FileNotFoundException, IOException {
         mDictBuffer = factory.getDictionaryBuffer(mDictionaryBinaryFile);
     }
@@ -181,14 +88,13 @@ public class Ver3DictDecoder {
     }
 
     @UsedForTesting
-    public DictBuffer openAndGetDictBuffer(
-            final DictionaryBufferFactory factory)
+    public DictBuffer openAndGetDictBuffer(final DictDecoder.DictionaryBufferFactory factory)
                     throws FileNotFoundException, IOException {
         openDictBuffer(factory);
         return getDictBuffer();
     }
 
-    // TODO : Define public functions of decoders
+    @Override
     public FileHeader readHeader() throws IOException, UnsupportedFormatException {
         final int version = HeaderReader.readVersion(mDictBuffer);
         final int optionsFlags = HeaderReader.readOptionFlags(mDictBuffer);

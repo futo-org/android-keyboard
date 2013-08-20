@@ -546,7 +546,7 @@ public final class BinaryDictIOUtils {
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
         final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
-        dictDecoder.openDictBuffer(new Ver3DictDecoder.DictionaryBufferFactory() {
+        dictDecoder.openDictBuffer(new DictDecoder.DictionaryBufferFactory() {
             @Override
             public DictBuffer getDictionaryBuffer(File file)
                     throws FileNotFoundException, IOException {
