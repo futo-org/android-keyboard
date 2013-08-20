@@ -2697,7 +2697,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     suggestions.add(new SuggestedWordInfo(s,
                             SuggestionStripView.MAX_SUGGESTIONS - i,
                             SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                            SuggestedWordInfo.NOT_A_CONFIDENCE
+                                    /* autoCommitFirstWordConfidence */));
                 }
             }
         }

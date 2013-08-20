@@ -137,7 +137,10 @@ public abstract class Dictionary {
     }
 
     /**
-     * Whether we think this suggestion should trigger an auto-commit.
+     * Whether we think this suggestion should trigger an auto-commit. prevWord is the word
+     * before the suggestion, so that we can use n-gram frequencies.
+     * @param candidate The candidate suggestion, in whole (not only the first part).
+     * @return whether we should auto-commit or not.
      */
     public boolean shouldAutoCommit(final SuggestedWordInfo candidate) {
         // If we don't have support for auto-commit, or if we don't know, we return false to

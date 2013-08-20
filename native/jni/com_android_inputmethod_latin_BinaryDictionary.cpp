@@ -70,7 +70,8 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
         jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
         jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jintArray suggestOptions,
         jintArray prevWordCodePointsForBigrams, jintArray outputCodePointsArray,
-        jintArray scoresArray, jintArray spaceIndicesArray, jintArray outputTypesArray) {
+        jintArray scoresArray, jintArray spaceIndicesArray, jintArray outputTypesArray,
+        jintArray outputAutoCommitFirstWordConfidence) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
@@ -253,7 +254,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("getSuggestionsNative"),
-        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I)I"),
+        const_cast<char *>("(JJJ[I[I[I[I[III[I[I[I[I[I[I[I)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)
     },
     {

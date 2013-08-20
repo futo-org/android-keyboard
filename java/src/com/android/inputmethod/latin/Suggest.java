@@ -327,7 +327,8 @@ public final class Suggest {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
                     Dictionary.DICTIONARY_USER_TYPED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         }
         SuggestedWordInfo.removeDups(suggestionsContainer);
 
@@ -474,7 +475,8 @@ public final class Suggest {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
         return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
-                wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord);
+                wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
     }
 
     public void close() {
