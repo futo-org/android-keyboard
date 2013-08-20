@@ -95,6 +95,7 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
+import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -191,7 +192,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
-    private TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
+    private final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
+    // Personalization debugging params
+    private boolean mUseOnlyPersonalizationDictionaryForDebug = false;
+    private boolean mBoostPersonalizationDictionaryForDebug = false;
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
@@ -874,7 +878,33 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // be replaced when the user dictionary reports back with the actual word, which ends
         // up calling #onWordAddedToUserDictionary() in this class.
 
+        initPersonalizationDebugSettings(currentSettingsValues);
+
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+    }
+
+    // Initialization of personalization debug settings. This must be called inside
+    // onStartInputView.
+    private void initPersonalizationDebugSettings(SettingsValues currentSettingsValues) {
+        if (mUseOnlyPersonalizationDictionaryForDebug
+                != currentSettingsValues.mUseOnlyPersonalizationDictionaryForDebug) {
+            // Only for debug
+            initSuggest();
+            mUseOnlyPersonalizationDictionaryForDebug =
+                    currentSettingsValues.mUseOnlyPersonalizationDictionaryForDebug;
+        }
+
+        if (mBoostPersonalizationDictionaryForDebug !=
+                currentSettingsValues.mBoostPersonalizationDictionaryForDebug) {
+            // Only for debug
+            mBoostPersonalizationDictionaryForDebug =
+                    currentSettingsValues.mBoostPersonalizationDictionaryForDebug;
+            if (mBoostPersonalizationDictionaryForDebug) {
+                UserHistoryForgettingCurveUtils.boostMaxFreqForDebug();
+            } else {
+                UserHistoryForgettingCurveUtils.resetMaxFreqForDebug();
+            }
+        }
     }
 
     // Callback for the TargetPackageInfoGetterTask
