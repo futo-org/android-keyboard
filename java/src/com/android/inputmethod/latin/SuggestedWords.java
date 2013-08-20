@@ -143,6 +143,12 @@ public final class SuggestedWords {
         return suggestionsList;
     }
 
+    public SuggestedWordInfo getAutoCommitCandidate() {
+        if (mSuggestedWordInfoList.size() <= 0) return null;
+        final SuggestedWordInfo candidate = mSuggestedWordInfoList.get(0);
+        return candidate.isEligibleForAutoCommit() ? candidate : null;
+    }
+
     public static final class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
@@ -184,6 +190,10 @@ public final class SuggestedWords {
             mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
+        }
+
+        public boolean isEligibleForAutoCommit() {
+            return (KIND_CORRECTION == mKind && NOT_AN_INDEX != mIndexOfTouchPointOfSecondWord);
         }
 
         public void setDebugString(final String str) {
