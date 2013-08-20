@@ -62,10 +62,11 @@ public final class BinaryDictIOUtils {
      * Retrieves all node arrays without recursive call.
      */
     private static void readUnigramsAndBigramsBinaryInner(
-            final DictBuffer dictBuffer, final int headerSize,
+            final Ver3DictDecoder dictDecoder, final int headerSize,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams,
             final FormatOptions formatOptions) {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
 
         Stack<Position> stack = new Stack<Position>();
@@ -94,8 +95,7 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            CharGroupInfo info = BinaryDictDecoderUtils.readCharGroup(dictBuffer,
-                    p.mAddress - headerSize, formatOptions);
+            CharGroupInfo info = dictDecoder.readPtNode(p.mAddress - headerSize, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
             }
@@ -154,7 +154,7 @@ public final class BinaryDictIOUtils {
             UnsupportedFormatException {
         // Read header
         final FileHeader header = dictDecoder.readHeader();
-        readUnigramsAndBigramsBinaryInner(dictDecoder.getDictBuffer(), header.mHeaderSize, words,
+        readUnigramsAndBigramsBinaryInner(dictDecoder, header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
 
@@ -186,8 +186,8 @@ public final class BinaryDictIOUtils {
                 boolean foundNextCharGroup = false;
                 for (int i = 0; i < charGroupCount; ++i) {
                     final int charGroupPos = dictBuffer.position();
-                    final CharGroupInfo currentInfo = BinaryDictDecoderUtils.readCharGroup(
-                            dictBuffer, dictBuffer.position(), header.mFormatOptions);
+                    final CharGroupInfo currentInfo = dictDecoder.readPtNode(charGroupPos,
+                            header.mFormatOptions);
                     final boolean isMovedGroup = isMovedGroup(currentInfo.mFlags,
                             header.mFormatOptions);
                     final boolean isDeletedGroup = isDeletedGroup(currentInfo.mFlags,
@@ -525,8 +525,7 @@ public final class BinaryDictIOUtils {
             dictBuffer.position(0);
             final FileHeader header = dictDecoder.readHeader();
             dictBuffer.position(position);
-            return BinaryDictDecoderUtils.readCharGroup(dictBuffer, position,
-                    header.mFormatOptions);
+            return dictDecoder.readPtNode(position, header.mFormatOptions);
         }
         return null;
     }

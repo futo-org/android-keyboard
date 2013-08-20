@@ -278,6 +278,12 @@ public final class BinaryDictDecoderUtils {
     // Input methods: Read a binary dictionary to memory.
     // readDictionaryBinary is the public entry point for them.
 
+    static int readSInt24(final DictBuffer dictBuffer) {
+        final int retval = dictBuffer.readUnsignedInt24();
+        final int sign = ((retval & FormatSpec.MSB24) != 0) ? -1 : 1;
+        return sign * (retval & FormatSpec.SINT24_MAX);
+    }
+
     static int readChildrenAddress(final DictBuffer dictBuffer,
             final int optionFlags, final FormatOptions options) {
         if (options.mSupportsDynamicUpdate) {
@@ -314,103 +320,6 @@ public final class BinaryDictDecoderUtils {
         }
     }
 
-    private static final int[] CHARACTER_BUFFER = new int[FormatSpec.MAX_WORD_LENGTH];
-    public static CharGroupInfo readCharGroup(final DictBuffer dictBuffer,
-            final int originalGroupAddress, final FormatOptions options) {
-        int addressPointer = originalGroupAddress;
-        final int flags = dictBuffer.readUnsignedByte();
-        ++addressPointer;
-
-        final int parentAddress = readParentAddress(dictBuffer, options);
-        if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
-            addressPointer += 3;
-        }
-
-        final int characters[];
-        if (0 != (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS)) {
-            int index = 0;
-            int character = CharEncoding.readChar(dictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
-            while (-1 != character) {
-                // FusionDictionary is making sure that the length of the word is smaller than
-                // MAX_WORD_LENGTH.
-                // So we'll never write past the end of CHARACTER_BUFFER.
-                CHARACTER_BUFFER[index++] = character;
-                character = CharEncoding.readChar(dictBuffer);
-                addressPointer += CharEncoding.getCharSize(character);
-            }
-            characters = Arrays.copyOfRange(CHARACTER_BUFFER, 0, index);
-        } else {
-            final int character = CharEncoding.readChar(dictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
-            characters = new int[] { character };
-        }
-        final int frequency;
-        if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
-            ++addressPointer;
-            frequency = dictBuffer.readUnsignedByte();
-        } else {
-            frequency = CharGroup.NOT_A_TERMINAL;
-        }
-        int childrenAddress = readChildrenAddress(dictBuffer, flags, options);
-        if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-            childrenAddress += addressPointer;
-        }
-        addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
-        ArrayList<WeightedString> shortcutTargets = null;
-        if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
-            final int pointerBefore = dictBuffer.position();
-            shortcutTargets = new ArrayList<WeightedString>();
-            dictBuffer.readUnsignedShort(); // Skip the size
-            while (true) {
-                final int targetFlags = dictBuffer.readUnsignedByte();
-                final String word = CharEncoding.readString(dictBuffer);
-                shortcutTargets.add(new WeightedString(word,
-                        targetFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY));
-                if (0 == (targetFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
-            }
-            addressPointer += dictBuffer.position() - pointerBefore;
-        }
-        ArrayList<PendingAttribute> bigrams = null;
-        if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
-            bigrams = new ArrayList<PendingAttribute>();
-            int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
-                final int bigramFlags = dictBuffer.readUnsignedByte();
-                ++addressPointer;
-                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE)
-                        ? 1 : -1;
-                int bigramAddress = addressPointer;
-                switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
-                case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-                    bigramAddress += sign * dictBuffer.readUnsignedByte();
-                    addressPointer += 1;
-                    break;
-                case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-                    bigramAddress += sign * dictBuffer.readUnsignedShort();
-                    addressPointer += 2;
-                    break;
-                case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-                    final int offset = (dictBuffer.readUnsignedByte() << 16)
-                            + dictBuffer.readUnsignedShort();
-                    bigramAddress += sign * offset;
-                    addressPointer += 3;
-                    break;
-                default:
-                    throw new RuntimeException("Has bigrams with no address");
-                }
-                bigrams.add(new PendingAttribute(bigramFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY,
-                        bigramAddress));
-                if (0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
-            }
-            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
-                MakedictLog.d("too many bigrams in a group.");
-            }
-        }
-        return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
-                parentAddress, childrenAddress, shortcutTargets, bigrams);
-    }
-
     /**
      * Reads and returns the char group count out of a buffer and forwards the pointer.
      */
@@ -427,24 +336,25 @@ public final class BinaryDictDecoderUtils {
     /**
      * Finds, as a string, the word at the address passed as an argument.
      *
-     * @param dictBuffer the buffer to read from.
+     * @param dictDecoder the dict decoder.
      * @param headerSize the size of the header.
      * @param address the address to seek.
      * @param formatOptions file format options.
      * @return the word with its frequency, as a weighted string.
      */
     /* package for tests */ static WeightedString getWordAtAddress(
-            final DictBuffer dictBuffer, final int headerSize, final int address,
+            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
             final FormatOptions formatOptions) {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         final WeightedString result;
         final int originalPointer = dictBuffer.position();
         dictBuffer.position(address);
 
         if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-            result = getWordAtAddressWithParentAddress(dictBuffer, headerSize, address,
+            result = getWordAtAddressWithParentAddress(dictDecoder, headerSize, address,
                     formatOptions);
         } else {
-            result = getWordAtAddressWithoutParentAddress(dictBuffer, headerSize, address,
+            result = getWordAtAddressWithoutParentAddress(dictDecoder, headerSize, address,
                     formatOptions);
         }
 
@@ -454,8 +364,9 @@ public final class BinaryDictDecoderUtils {
 
     @SuppressWarnings("unused")
     private static WeightedString getWordAtAddressWithParentAddress(
-            final DictBuffer dictBuffer, final int headerSize, final int address,
+            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
             final FormatOptions options) {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         int currentAddress = address;
         int frequency = Integer.MIN_VALUE;
         final StringBuilder builder = new StringBuilder();
@@ -465,7 +376,7 @@ public final class BinaryDictDecoderUtils {
             int loopCounter = 0;
             do {
                 dictBuffer.position(currentAddress + headerSize);
-                currentInfo = readCharGroup(dictBuffer, currentAddress, options);
+                currentInfo = dictDecoder.readPtNode(currentAddress, options);
                 if (BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags, options)) {
                     currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
                 }
@@ -483,8 +394,9 @@ public final class BinaryDictDecoderUtils {
     }
 
     private static WeightedString getWordAtAddressWithoutParentAddress(
-            final DictBuffer dictBuffer, final int headerSize, final int address,
+            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
             final FormatOptions options) {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(headerSize);
         final int count = readCharGroupCount(dictBuffer);
         int groupOffset = BinaryDictIOUtils.getGroupCountSize(count);
@@ -493,7 +405,7 @@ public final class BinaryDictDecoderUtils {
 
         CharGroupInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            CharGroupInfo info = readCharGroup(dictBuffer, groupOffset, options);
+            CharGroupInfo info = dictDecoder.readPtNode(groupOffset, options);
             groupOffset = info.mEndAddress;
             if (info.mOriginalAddress == address) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
@@ -532,17 +444,18 @@ public final class BinaryDictDecoderUtils {
      * This will recursively read other node arrays into the structure, populating the reverse
      * maps on the fly and using them to keep track of already read nodes.
      *
-     * @param dictBuffer the buffer, correctly positioned at the start of a node array.
+     * @param dictDecoder the dict decoder, correctly positioned at the start of a node array.
      * @param headerSize the size, in bytes, of the file header.
      * @param reverseNodeArrayMap a mapping from addresses to already read node arrays.
      * @param reverseGroupMap a mapping from addresses to already read character groups.
      * @param options file format options.
      * @return the read node array with all his children already read.
      */
-    private static PtNodeArray readNodeArray(final DictBuffer dictBuffer,
+    private static PtNodeArray readNodeArray(final Ver3DictDecoder dictDecoder,
             final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
             final Map<Integer, CharGroup> reverseGroupMap, final FormatOptions options)
             throws IOException {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         final ArrayList<CharGroup> nodeArrayContents = new ArrayList<CharGroup>();
         final int nodeArrayOrigin = dictBuffer.position() - headerSize;
 
@@ -551,15 +464,15 @@ public final class BinaryDictDecoderUtils {
             final int count = readCharGroupCount(dictBuffer);
             int groupOffset = nodeArrayHeadPosition + BinaryDictIOUtils.getGroupCountSize(count);
             for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
-                CharGroupInfo info = readCharGroup(dictBuffer, groupOffset, options);
+                CharGroupInfo info = dictDecoder.readPtNode(groupOffset, options);
                 if (BinaryDictIOUtils.isMovedGroup(info.mFlags, options)) continue;
                 ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
                 ArrayList<WeightedString> bigrams = null;
                 if (null != info.mBigrams) {
                     bigrams = new ArrayList<WeightedString>();
                     for (PendingAttribute bigram : info.mBigrams) {
-                        final WeightedString word = getWordAtAddress(
-                                dictBuffer, headerSize, bigram.mAddress, options);
+                        final WeightedString word = getWordAtAddress(dictDecoder, headerSize,
+                                bigram.mAddress, options);
                         final int reconstructedFrequency =
                                 BinaryDictIOUtils.reconstructBigramFrequency(word.mFrequency,
                                         bigram.mFrequency);
@@ -571,7 +484,7 @@ public final class BinaryDictDecoderUtils {
                     if (null == children) {
                         final int currentPosition = dictBuffer.position();
                         dictBuffer.position(info.mChildrenAddress + headerSize);
-                        children = readNodeArray(dictBuffer, headerSize, reverseNodeArrayMap,
+                        children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
                                 reverseGroupMap, options);
                         dictBuffer.position(currentPosition);
                     }
@@ -665,7 +578,7 @@ public final class BinaryDictDecoderUtils {
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final PtNodeArray root = readNodeArray(dictDecoder.getDictBuffer(), fileHeader.mHeaderSize,
+        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mHeaderSize,
                 reverseNodeArrayMapping, reverseGroupMapping, fileHeader.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
