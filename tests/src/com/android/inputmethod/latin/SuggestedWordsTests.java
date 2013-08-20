@@ -34,9 +34,11 @@ public class SuggestedWordsTests extends AndroidTestCase {
         final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
         final ArrayList<SuggestedWordInfo> list = CollectionUtils.newArrayList();
         list.add(new SuggestedWordInfo(TYPED_WORD, TYPED_WORD_FREQ,
-                SuggestedWordInfo.KIND_TYPED, ""));
+                SuggestedWordInfo.KIND_TYPED, "",
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
         for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
-            list.add(new SuggestedWordInfo("" + i, 1, SuggestedWordInfo.KIND_CORRECTION, ""));
+            list.add(new SuggestedWordInfo("" + i, 1, SuggestedWordInfo.KIND_CORRECTION, "",
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
         }
 
         final SuggestedWords words = new SuggestedWords(
