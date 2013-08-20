@@ -92,6 +92,8 @@ public final class SettingsValues {
     public final int mSuggestionVisibility;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
+    public final boolean mBoostPersonalizationDictionaryForDebug;
+    public final boolean mUseOnlyPersonalizationDictionaryForDebug;
 
     // Setting values for additional features
     public final int[] mAdditionalFeaturesSettingValues =
@@ -171,6 +173,10 @@ public final class SettingsValues {
         AdditionalFeaturesSettingUtils.readAdditionalFeaturesPreferencesIntoArray(
                 prefs, mAdditionalFeaturesSettingValues);
         mIsInternal = Settings.isInternal(prefs);
+        mBoostPersonalizationDictionaryForDebug =
+                Settings.readBoostPersonalizationDictionaryForDebug(prefs);
+        mUseOnlyPersonalizationDictionaryForDebug =
+                Settings.readUseOnlyPersonalizationDictionaryForDebug(prefs);
     }
 
     // Only for tests
@@ -216,6 +222,8 @@ public final class SettingsValues {
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = 0;
         mIsInternal = false;
+        mBoostPersonalizationDictionaryForDebug = false;
+        mUseOnlyPersonalizationDictionaryForDebug = false;
     }
 
     @UsedForTesting

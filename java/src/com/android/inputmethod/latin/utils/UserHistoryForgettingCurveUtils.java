@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 public final class UserHistoryForgettingCurveUtils {
     private static final String TAG = UserHistoryForgettingCurveUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
-    private static final int FC_FREQ_MAX = 127;
+    private static final int DEFAULT_FC_FREQ = 127;
+    private static final int BOOSTED_FC_FREQ = 200;
+    private static int FC_FREQ_MAX = DEFAULT_FC_FREQ;
     /* package */ static final int COUNT_MAX = 3;
     private static final int FC_LEVEL_MAX = 3;
     /* package */ static final int ELAPSED_TIME_MAX = 15;
@@ -32,6 +34,14 @@ public final class UserHistoryForgettingCurveUtils {
             TimeUnit.HOURS.toMillis(ELAPSED_TIME_INTERVAL_HOURS);
     private static final int HALF_LIFE_HOURS = 48;
     private static final int MAX_PUSH_ELAPSED = (FC_LEVEL_MAX + 1) * (ELAPSED_TIME_MAX + 1);
+
+    public static void boostMaxFreqForDebug() {
+        FC_FREQ_MAX = BOOSTED_FC_FREQ;
+    }
+
+    public static void resetMaxFreqForDebug() {
+        FC_FREQ_MAX = DEFAULT_FC_FREQ;
+    }
 
     private UserHistoryForgettingCurveUtils() {
         // This utility class is not publicly instantiable.

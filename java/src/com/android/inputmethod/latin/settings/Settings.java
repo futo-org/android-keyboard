@@ -346,6 +346,12 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
     }
 
+    public static boolean readBoostPersonalizationDictionaryForDebug(
+            final SharedPreferences prefs) {
+        return prefs.getBoolean(
+                DebugSettings.PREF_BOOST_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
+    }
+
     public void writeLastUsedPersonalizationToken(byte[] token) {
         final String tokenStr = StringUtils.byteArrayToHexString(token);
         mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
