@@ -21,10 +21,10 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
@@ -147,10 +147,10 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
             dictDecoder.openDictBuffer(
-                    new BinaryDictDecoder.DictionaryBufferFromByteArrayFactory());
+                    new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
         } catch (FileNotFoundException e) {
             Log.e(TAG, "file not found", e);
         } catch (IOException e) {

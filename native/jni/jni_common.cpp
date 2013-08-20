@@ -23,7 +23,7 @@
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
 #endif
-#include "com_android_inputmethod_latin_makedict_BinaryDictDecoder.h"
+#include "com_android_inputmethod_latin_makedict_Ver3DictDecoder.h"
 #include "defines.h"
 
 /*
@@ -55,8 +55,8 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return -1;
     }
 #endif
-    if (!latinime::register_BinaryDictDecoder(env)) {
-        AKLOGE("ERROR: BinaryDictDecoder native registration failed");
+    if (!latinime::register_Ver3DictDecoder(env)) {
+        AKLOGE("ERROR: Ver3DictDecoder native registration failed");
         return -1;
     }
     /* success -- return valid version number */

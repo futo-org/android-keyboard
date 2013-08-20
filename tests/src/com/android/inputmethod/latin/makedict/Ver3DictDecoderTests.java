@@ -17,12 +17,12 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.DictionaryBufferFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder.DictionaryBufferFactory;
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
         DictionaryBufferFromByteArrayFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
         DictionaryBufferFromReadOnlyByteBufferFactory;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoder.
+import com.android.inputmethod.latin.makedict.Ver3DictDecoder.
         DictionaryBufferFromWritableByteBufferFactory;
 
 import android.test.AndroidTestCase;
@@ -33,10 +33,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Unit tests for BinaryDictDecoder
+ * Unit tests for Ver3DictDecoder
  */
-public class BinaryDictDecoderTests extends AndroidTestCase {
-    private static final String TAG = BinaryDictDecoderTests.class.getSimpleName();
+public class Ver3DictDecoderTests extends AndroidTestCase {
+    private static final String TAG = Ver3DictDecoderTests.class.getSimpleName();
 
     private final byte[] data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
@@ -70,7 +70,7 @@ public class BinaryDictDecoderTests extends AndroidTestCase {
         }
 
         assertNotNull(testFile);
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(testFile);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile);
         try {
             dictDecoder.openDictBuffer(factory);
         } catch (Exception e) {
@@ -113,7 +113,7 @@ public class BinaryDictDecoderTests extends AndroidTestCase {
             Log.e(TAG, "IOException while the creating temporary file", e);
         }
 
-        final BinaryDictDecoder dictDecoder = new BinaryDictDecoder(testFile);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile);
 
         // the default return value of getBuffer() must be null.
         assertNull("the default return value of getBuffer() is not null",

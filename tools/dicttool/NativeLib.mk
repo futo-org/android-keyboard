@@ -34,7 +34,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(LATINIME_NATIVE_SRC_DIR)
 # Used in jni_common.cpp to avoid registering useless methods.
 
 LATIN_IME_JNI_SRC_FILES := \
-    com_android_inputmethod_latin_makedict_BinaryDictDecoder.cpp \
+    com_android_inputmethod_latin_makedict_Ver3DictDecoder.cpp \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES :=

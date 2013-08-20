@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "LatinIME: jni: BinaryDictDecoder"
+#define LOG_TAG "LatinIME: jni: Ver3DictDecoder"
 
-#include "com_android_inputmethod_latin_makedict_BinaryDictDecoder.h"
+#include "com_android_inputmethod_latin_makedict_Ver3DictDecoder.h"
 
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
 
 namespace latinime {
-static int latinime_BinaryDictDecoder_doNothing(JNIEnv *env, jclass clazz) {
+static int latinime_Ver3DictDecoder_doNothing(JNIEnv *env, jclass clazz) {
     // This is a phony method for test - it does nothing. It just returns some value
     // unlikely to be in memory by chance for testing purposes.
     // TODO: remove this method.
@@ -35,13 +35,13 @@ static const JNINativeMethod sMethods[] = {
         // TODO: remove this entry when we have one useful method in here
         const_cast<char *>("doNothing"),
         const_cast<char *>("()I"),
-        reinterpret_cast<void *>(latinime_BinaryDictDecoder_doNothing)
+        reinterpret_cast<void *>(latinime_Ver3DictDecoder_doNothing)
     },
 };
 
-int register_BinaryDictDecoder(JNIEnv *env) {
+int register_Ver3DictDecoder(JNIEnv *env) {
     const char *const kClassPathName =
-            "com/android/inputmethod/latin/makedict/BinaryDictDecoder";
+            "com/android/inputmethod/latin/makedict/Ver3DictDecoder";
     return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime

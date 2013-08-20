@@ -33,9 +33,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
-// TODO: Rename this class to "Ver3DictDecoder" or something, and make an interface "DictDecoder".
+// TODO: Make an interface "DictDecoder".
 @UsedForTesting
-public class BinaryDictDecoder {
+public class Ver3DictDecoder {
 
     static {
         JniUtils.loadNativeLibrary();
@@ -166,7 +166,7 @@ public class BinaryDictDecoder {
     private final File mDictionaryBinaryFile;
     private DictBuffer mDictBuffer;
 
-    public BinaryDictDecoder(final File file) {
+    public Ver3DictDecoder(final File file) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
     }
