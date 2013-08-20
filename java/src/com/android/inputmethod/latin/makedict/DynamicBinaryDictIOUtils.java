@@ -59,7 +59,7 @@ public final class DynamicBinaryDictIOUtils {
             throws IOException, UnsupportedFormatException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(0);
-        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final FileHeader header = dictDecoder.readHeader();
         final int wordPosition = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
@@ -278,7 +278,7 @@ public final class DynamicBinaryDictIOUtils {
 
         // find the insert position of the word.
         if (dictBuffer.position() != 0) dictBuffer.position(0);
-        final FileHeader fileHeader = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final FileHeader fileHeader = dictDecoder.readHeader();
 
         int wordPos = 0, address = dictBuffer.position(), nodeOriginAddress = dictBuffer.position();
         final int[] codePoints = FusionDictionary.getCodePoints(word);

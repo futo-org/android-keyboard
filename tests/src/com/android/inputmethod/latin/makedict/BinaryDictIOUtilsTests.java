@@ -130,7 +130,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private static void printBinaryFile(final BinaryDictDecoder dictDecoder)
             throws IOException, UnsupportedFormatException {
-        final FileHeader fileHeader = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final FileHeader fileHeader = dictDecoder.readHeader();
         final DictBuffer buffer = dictDecoder.getDictBuffer();
         while (buffer.position() < buffer.limit()) {
             printNode(buffer, fileHeader.mFormatOptions);
@@ -225,7 +225,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         try {
             final DictBuffer dictBuffer = dictDecoder.openAndGetDictBuffer(
                     new BinaryDictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
-            final FileHeader fileHeader = BinaryDictDecoderUtils.readHeader(dictDecoder);
+            final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
                     BinaryDictDecoderUtils.getWordAtAddress(dictDecoder.getDictBuffer(),
                             fileHeader.mHeaderSize, position - fileHeader.mHeaderSize,

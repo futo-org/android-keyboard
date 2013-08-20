@@ -153,7 +153,7 @@ public final class BinaryDictIOUtils {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final FileHeader header = dictDecoder.readHeader();
         readUnigramsAndBigramsBinaryInner(dictDecoder.getDictBuffer(), header.mHeaderSize, words,
                 frequencies, bigrams, header.mFormatOptions);
     }
@@ -175,7 +175,7 @@ public final class BinaryDictIOUtils {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         if (dictBuffer.position() != 0) dictBuffer.position(0);
 
-        final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+        final FileHeader header = dictDecoder.readHeader();
         int wordPos = 0;
         final int wordLen = word.codePointCount(0, word.length());
         for (int depth = 0; depth < Constants.DICTIONARY_MAX_WORD_LENGTH; ++depth) {
@@ -523,7 +523,7 @@ public final class BinaryDictIOUtils {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (position != FormatSpec.NOT_VALID_WORD) {
             dictBuffer.position(0);
-            final FileHeader header = BinaryDictDecoderUtils.readHeader(dictDecoder);
+            final FileHeader header = dictDecoder.readHeader();
             dictBuffer.position(position);
             return BinaryDictDecoderUtils.readCharGroup(dictBuffer, position,
                     header.mFormatOptions);
@@ -559,7 +559,7 @@ public final class BinaryDictIOUtils {
                 }
             }
         });
-        return BinaryDictDecoderUtils.readHeader(dictDecoder);
+        return dictDecoder.readHeader();
     }
 
     public static FileHeader getDictionaryFileHeaderOrNull(final File file, final long offset,

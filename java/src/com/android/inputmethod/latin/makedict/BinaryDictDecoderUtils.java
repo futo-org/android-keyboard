@@ -22,7 +22,6 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.decoder.HeaderReader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,7 +32,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -640,49 +638,6 @@ public final class BinaryDictDecoderUtils {
     }
 
     /**
-     * Reads a header from a buffer.
-     * @param headerReader the header reader
-     * @throws IOException
-     * @throws UnsupportedFormatException
-     */
-    public static FileHeader readHeader(final HeaderReader headerReader)
-            throws IOException, UnsupportedFormatException {
-        final int version = headerReader.readVersion();
-        final int optionsFlags = headerReader.readOptionFlags();
-
-        final int headerSize = headerReader.readHeaderSize();
-
-        if (headerSize < 0) {
-            throw new UnsupportedFormatException("header size can't be negative.");
-        }
-
-        final HashMap<String, String> attributes = headerReader.readAttributes(headerSize);
-
-        final FileHeader header = new FileHeader(headerSize,
-                new FusionDictionary.DictionaryOptions(attributes,
-                        0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
-                        0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
-                new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE)));
-        return header;
-    }
-
-    /**
-     * Reads options from a buffer and populate a map with their contents.
-     *
-     * The buffer is read at the current position, so the caller must take care the pointer
-     * is in the right place before calling this.
-     */
-    public static void populateOptions(final DictBuffer dictBuffer,
-            final int headerSize, final HashMap<String, String> options) {
-        while (dictBuffer.position() < headerSize) {
-            final String key = CharEncoding.readString(dictBuffer);
-            final String value = CharEncoding.readString(dictBuffer);
-            options.put(key, value);
-        }
-    }
-
-    /**
      * Reads a buffer and returns the memory representation of the dictionary.
      *
      * This high-level method takes a buffer and reads its contents, populating a
@@ -706,7 +661,7 @@ public final class BinaryDictDecoderUtils {
         }
 
         // Read header
-        final FileHeader fileHeader = readHeader(dictDecoder);
+        final FileHeader fileHeader = dictDecoder.readHeader();
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
