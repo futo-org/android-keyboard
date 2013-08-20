@@ -2614,7 +2614,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (!TextUtils.equals(s, typedWord)) {
                     suggestions.add(new SuggestedWordInfo(s,
                             SuggestionStripView.MAX_SUGGESTIONS - i,
-                            SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED));
+                            SuggestedWordInfo.KIND_RESUMED, Dictionary.TYPE_RESUMED,
+                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
                 }
             }
         }
