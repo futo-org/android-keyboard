@@ -1797,6 +1797,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
+        final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
+        if (null != candidate) {
+            if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
+                // TODO: implement auto-commit
+            }
+        }
         BatchInputUpdater.getInstance().onUpdateBatchInput(batchPointers);
     }
 
