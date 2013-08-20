@@ -114,7 +114,7 @@ public final class BinaryDictIOUtils {
             if (p.mPosition == p.mNumOfPtNode) {
                 if (formatOptions.mSupportsDynamicUpdate) {
                     final boolean hasValidForwardLinkAddress =
-                            dictDecoder.readForwardLinkAndAdvancePosition();
+                            dictDecoder.readAndFollowForwardLink();
                     if (hasValidForwardLinkAddress && dictDecoder.hasNextPtNodeArray()) {
                         // The node array has a forward link.
                         p.mNumOfPtNode = Position.NOT_READ_PTNODE_COUNT;
@@ -233,7 +233,7 @@ public final class BinaryDictIOUtils {
                 }
 
                 final boolean hasValidForwardLinkAddress =
-                        dictDecoder.readForwardLinkAndAdvancePosition();
+                        dictDecoder.readAndFollowForwardLink();
                 if (!hasValidForwardLinkAddress || !dictDecoder.hasNextPtNodeArray()) {
                     return FormatSpec.NOT_VALID_WORD;
                 }

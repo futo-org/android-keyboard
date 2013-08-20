@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.utils.JniUtils;
 
 import android.util.Log;
 
@@ -34,32 +33,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * An implementation of DictDecoder for version 3 binary dictionary.
+ * An implementation of binary dictionary decoder for version 4 binary dictionary.
  */
 @UsedForTesting
-public class Ver3DictDecoder extends DictDecoder {
-    private static final String TAG = Ver3DictDecoder.class.getSimpleName();
+public class Ver4DictDecoder extends DictDecoder {
+    private static final String TAG = Ver4DictDecoder.class.getSimpleName();
 
-    static {
-        JniUtils.loadNativeLibrary();
-    }
+    private static final int FILETYPE_TRIE = 1;
+    private static final int FILETYPE_FREQUENCY = 2;
 
-    // TODO: implement something sensical instead of just a phony method
-    private static native int doNothing();
-
-    protected static class PtNodeReader extends DictDecoder.PtNodeReader {
-        private static int readFrequency(final DictBuffer dictBuffer) {
-            return dictBuffer.readUnsignedByte();
-        }
-    }
-
-    private final File mDictionaryBinaryFile;
+    private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
     private DictBuffer mDictBuffer;
+    private DictBuffer mFrequencyBuffer;
 
-    /* package */ Ver3DictDecoder(final File file, final int factoryFlag) {
-        mDictionaryBinaryFile = file;
-        mDictBuffer = null;
+    @UsedForTesting
+    /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
+        mDictDirectory = dictDirectory;
+        mDictBuffer = mFrequencyBuffer = null;
 
         if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
             mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
@@ -72,14 +63,30 @@ public class Ver3DictDecoder extends DictDecoder {
         }
     }
 
-    /* package */ Ver3DictDecoder(final File file, final DictionaryBufferFactory factory) {
-        mDictionaryBinaryFile = file;
+    @UsedForTesting
+    /* package */ Ver4DictDecoder(final File dictDirectory, final DictionaryBufferFactory factory) {
+        mDictDirectory = dictDirectory;
         mBufferFactory = factory;
+        mDictBuffer = mFrequencyBuffer = null;
+    }
+
+    private File getFile(final int fileType) {
+        if (fileType == FILETYPE_TRIE) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.TRIE_FILE_EXTENSION);
+        } else if (fileType == FILETYPE_FREQUENCY) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.FREQ_FILE_EXTENSION);
+        } else {
+            throw new RuntimeException("Unsupported kind of file : " + fileType);
+        }
     }
 
     @Override
     public void openDictBuffer() throws FileNotFoundException, IOException {
-        mDictBuffer = mBufferFactory.getDictionaryBuffer(mDictionaryBinaryFile);
+        final String filename = mDictDirectory.getName();
+        mDictBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_TRIE));
+        mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
     }
 
     @Override
@@ -91,12 +98,6 @@ public class Ver3DictDecoder extends DictDecoder {
         return mDictBuffer;
     }
 
-    @UsedForTesting
-    /* package */ DictBuffer openAndGetDictBuffer() throws FileNotFoundException, IOException {
-        openDictBuffer();
-        return getDictBuffer();
-    }
-
     @Override
     public FileHeader readHeader() throws IOException, UnsupportedFormatException {
         if (mDictBuffer == null) {
@@ -104,16 +105,28 @@ public class Ver3DictDecoder extends DictDecoder {
         }
         final FileHeader header = super.readHeader(mDictBuffer);
         final int version = header.mFormatOptions.mVersion;
-        if (!(version >= 2 && version <= 3)) {
-          throw new UnsupportedFormatException("File header has a wrong version : " + version);
+        if (version != 4) {
+            throw new UnsupportedFormatException("File header has a wrong version : " + version);
         }
         return header;
     }
 
-    // TODO: Make this buffer multi thread safe.
+    protected static class PtNodeReader extends DictDecoder.PtNodeReader {
+        protected static int readFrequency(final DictBuffer frequencyBuffer, final int terminalId) {
+            frequencyBuffer.position(terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE + 1);
+            return frequencyBuffer.readUnsignedByte();
+        }
+
+        protected static int readTerminalId(final DictBuffer dictBuffer) {
+            return dictBuffer.readInt();
+        }
+    }
+
+    // TODO: Make this buffer thread safe.
+    // TODO: Support words longer than FormatSpec.MAX_WORD_LENGTH.
     private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
     @Override
-    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions options) {
+    public PtNodeInfo readPtNode(int ptNodePos, FormatOptions options) {
         int addressPointer = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         addressPointer += FormatSpec.PTNODE_FLAGS_SIZE;
@@ -128,10 +141,8 @@ public class Ver3DictDecoder extends DictDecoder {
             int index = 0;
             int character = CharEncoding.readChar(mDictBuffer);
             addressPointer += CharEncoding.getCharSize(character);
-            while (FormatSpec.INVALID_CHARACTER != character) {
-                // FusionDictionary is making sure that the length of the word is smaller than
-                // MAX_WORD_LENGTH.
-                // So we'll never write past the end of mCharacterBuffer.
+            while (FormatSpec.INVALID_CHARACTER != character
+                    && index < FormatSpec.MAX_WORD_LENGTH) {
                 mCharacterBuffer[index++] = character;
                 character = CharEncoding.readChar(mDictBuffer);
                 addressPointer += CharEncoding.getCharSize(character);
@@ -142,10 +153,17 @@ public class Ver3DictDecoder extends DictDecoder {
             addressPointer += CharEncoding.getCharSize(character);
             characters = new int[] { character };
         }
+        final int terminalId;
+        if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
+            terminalId = PtNodeReader.readTerminalId(mDictBuffer);
+            addressPointer += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
+        } else {
+            terminalId = PtNode.NOT_A_TERMINAL;
+        }
+
         final int frequency;
         if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
-            frequency = PtNodeReader.readFrequency(mDictBuffer);
-            addressPointer += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            frequency = PtNodeReader.readFrequency(mFrequencyBuffer, terminalId);
         } else {
             frequency = PtNode.NOT_A_TERMINAL;
         }
@@ -166,16 +184,23 @@ public class Ver3DictDecoder extends DictDecoder {
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams, 
+            addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams,
                     addressPointer);
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                MakedictLog.d("too many bigrams in a PtNode.");
+                MakedictLog.d("too many bigrams in a node.");
             }
         } else {
             bigrams = null;
         }
         return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
+    }
+
+    private void deleteDictFiles() {
+        final File[] files = mDictDirectory.listFiles();
+        for (int i = 0; i < files.length; ++i) {
+            files[i].delete();
+        }
     }
 
     @Override
@@ -188,15 +213,15 @@ public class Ver3DictDecoder extends DictDecoder {
         try {
             return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
         } catch (IOException e) {
-            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
-                Log.e(TAG, "Failed to delete the broken dictionary.");
+            Log.e(TAG, "The dictionary " + mDictDirectory.getName() + " is broken.", e);
+            if (deleteDictIfBroken) {
+                deleteDictFiles();
             }
             throw e;
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
-                Log.e(TAG, "Failed to delete the broken dictionary.");
+            Log.e(TAG, "The dictionary " + mDictDirectory.getName() + " is broken.", e);
+            if (deleteDictIfBroken) {
+                deleteDictFiles();
             }
             throw e;
         }

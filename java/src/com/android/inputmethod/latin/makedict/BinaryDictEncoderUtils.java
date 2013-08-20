@@ -368,9 +368,9 @@ public class BinaryDictEncoderUtils {
             if (null != ptNode.mBigrams) {
                 for (WeightedString bigram : ptNode.mBigrams) {
                     final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
-                            nodeSize + size + FormatSpec.PTNODE_FLAGS_SIZE,
+                            nodeSize + size + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE,
                             FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
-                    nodeSize += getByteSize(offset) + FormatSpec.PTNODE_FLAGS_SIZE;
+                    nodeSize += getByteSize(offset) + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
                 }
             }
             ptNode.mCachedSize = nodeSize;
