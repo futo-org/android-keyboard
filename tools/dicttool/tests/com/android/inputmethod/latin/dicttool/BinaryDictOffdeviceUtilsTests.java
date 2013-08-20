@@ -17,13 +17,14 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils;
+import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import junit.framework.TestCase;
 
@@ -53,12 +54,13 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         final File dst = File.createTempFile("testGetRawDict", ".tmp");
         dst.deleteOnExit();
+
         final OutputStream out = Compress.getCompressedStream(
                 Compress.getCompressedStream(
                         Compress.getCompressedStream(
                                 new BufferedOutputStream(new FileOutputStream(dst)))));
-
-        BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, new FormatOptions(2, false));
+        final DictEncoder dictEncoder = new Ver3DictEncoder(out);
+        dictEncoder.writeDictionary(dict, new FormatOptions(2, false));
 
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
