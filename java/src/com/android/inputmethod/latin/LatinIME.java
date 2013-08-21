@@ -2051,10 +2051,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 (!mConnection.isCursorTouchingWord(currentSettings)
                         || !currentSettings.mCurrentLanguageHasSpaces)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
-            // the character is a single quote. The idea here is, single quote is not a
-            // separator and it should be treated as a normal character, except in the first
-            // position where it should not start composing a word.
-            isComposingWord = (Constants.CODE_SINGLE_QUOTE != primaryCode);
+            // the character is a single quote or a dash. The idea here is, single quote and dash
+            // are not separators and they should be treated as normal characters, except in the
+            // first position where they should not start composing a word.
+            isComposingWord = (Constants.CODE_SINGLE_QUOTE != primaryCode
+                    && Constants.CODE_DASH != primaryCode);
             // Here we don't need to reset the last composed word. It will be reset
             // when we commit this one, if we ever do; if on the other hand we backspace
             // it entirely and resume suggestions on the previous word, we'd like to still
