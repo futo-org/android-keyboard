@@ -512,7 +512,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             return null;
         }
         if (fileHeader == null) return null;
-        return BinaryDictDecoderUtils.getWordAtAddress(dictBuffer, fileHeader.mHeaderSize,
+        return BinaryDictDecoderUtils.getWordAtAddress(dictDecoder, fileHeader.mHeaderSize,
                 address - fileHeader.mHeaderSize, fileHeader.mFormatOptions).mWord;
     }
 

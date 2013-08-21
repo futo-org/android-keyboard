@@ -21,11 +21,15 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncodin
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.JniUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -67,6 +71,96 @@ public class Ver3DictDecoder implements DictDecoder {
             }
             dictBuffer.position(headerSize);
             return attributes;
+        }
+    }
+
+    private final static class PtNodeReader {
+        protected static int readPtNodeOptionFlags(final DictBuffer dictBuffer) {
+            return dictBuffer.readUnsignedByte();
+        }
+
+        protected static int readParentAddress(final DictBuffer dictBuffer,
+                final FormatOptions formatOptions) {
+            if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
+                return BinaryDictDecoderUtils.readSInt24(dictBuffer);
+            } else {
+                return FormatSpec.NO_PARENT_ADDRESS;
+            }
+        }
+
+        protected static int readFrequency(final DictBuffer dictBuffer) {
+            return dictBuffer.readUnsignedByte();
+        }
+
+        protected static int readChildrenAddress(final DictBuffer dictBuffer, final int optionFlags,
+                final FormatOptions formatOptions) {
+            if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
+                final int address = BinaryDictDecoderUtils.readSInt24(dictBuffer);
+                if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
+                return address;
+            } else {
+                switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+                        return dictBuffer.readUnsignedByte();
+                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+                        return dictBuffer.readUnsignedShort();
+                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+                        return dictBuffer.readUnsignedInt24();
+                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+                    default:
+                        return FormatSpec.NO_CHILDREN_ADDRESS;
+                }
+            }
+        }
+
+        // Reads shortcuts and returns the read length.
+        protected static int readShortcut(final DictBuffer dictBuffer,
+                final ArrayList<WeightedString> shortcutTargets) {
+            final int pointerBefore = dictBuffer.position();
+            dictBuffer.readUnsignedShort(); // skip the size
+            while (true) {
+                final int targetFlags = dictBuffer.readUnsignedByte();
+                final String word = CharEncoding.readString(dictBuffer);
+                shortcutTargets.add(new WeightedString(word,
+                        targetFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY));
+                if (0 == (targetFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
+            }
+            return dictBuffer.position() - pointerBefore;
+        }
+
+        protected static int readBigrams(final DictBuffer dictBuffer,
+                final ArrayList<PendingAttribute> bigrams, final int baseAddress) {
+            int readLength = 0;
+            int bigramCount = 0;
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+                final int bigramFlags = dictBuffer.readUnsignedByte();
+                ++readLength;
+                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE)
+                        ? 1 : -1;
+                int bigramAddress = baseAddress + readLength;
+                switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
+                        bigramAddress += sign * dictBuffer.readUnsignedByte();
+                        readLength += 1;
+                        break;
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
+                        bigramAddress += sign * dictBuffer.readUnsignedShort();
+                        readLength += 2;
+                        break;
+                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
+                        final int offset = (dictBuffer.readUnsignedByte() << 16)
+                                + dictBuffer.readUnsignedShort();
+                        bigramAddress += sign * offset;
+                        readLength += 3;
+                        break;
+                    default:
+                        throw new RuntimeException("Has bigrams with no address");
+                }
+                bigrams.add(new PendingAttribute(bigramFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY,
+                        bigramAddress));
+                if (0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
+            }
+            return readLength;
         }
     }
 
@@ -115,5 +209,66 @@ public class Ver3DictDecoder implements DictDecoder {
                 new FormatOptions(version,
                         0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE)));
         return header;
+    }
+
+    // TODO: Make this buffer multi thread safe.
+    private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
+    @Override
+    public CharGroupInfo readPtNode(final int originalGroupAddress,
+            final FormatOptions options) {
+        int addressPointer = originalGroupAddress;
+        final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
+        ++addressPointer;
+
+        final int parentAddress = PtNodeReader.readParentAddress(mDictBuffer, options);
+        if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
+            addressPointer += 3;
+        }
+
+        final int characters[];
+        if (0 != (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS)) {
+            int index = 0;
+            int character = CharEncoding.readChar(mDictBuffer);
+            addressPointer += CharEncoding.getCharSize(character);
+            while (-1 != character) {
+                // FusionDictionary is making sure that the length of the word is smaller than
+                // MAX_WORD_LENGTH.
+                // So we'll never write past the end of mCharacterBuffer.
+                mCharacterBuffer[index++] = character;
+                character = CharEncoding.readChar(mDictBuffer);
+                addressPointer += CharEncoding.getCharSize(character);
+            }
+            characters = Arrays.copyOfRange(mCharacterBuffer, 0, index);
+        } else {
+            final int character = CharEncoding.readChar(mDictBuffer);
+            addressPointer += CharEncoding.getCharSize(character);
+            characters = new int[] { character };
+        }
+        final int frequency;
+        if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
+            ++addressPointer;
+            frequency = PtNodeReader.readFrequency(mDictBuffer);
+        } else {
+            frequency = CharGroup.NOT_A_TERMINAL;
+        }
+        int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
+        if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
+            childrenAddress += addressPointer;
+        }
+        addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
+        ArrayList<WeightedString> shortcutTargets = null;
+        if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
+            addressPointer += PtNodeReader.readShortcut(mDictBuffer, shortcutTargets);
+        }
+        ArrayList<PendingAttribute> bigrams = null;
+        if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
+            bigrams = new ArrayList<PendingAttribute>();
+            addressPointer += PtNodeReader.readBigrams(mDictBuffer, bigrams, addressPointer);
+            if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+                MakedictLog.d("too many bigrams in a group.");
+            }
+        }
+        return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
+                parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
 }

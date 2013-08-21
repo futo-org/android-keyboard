@@ -112,14 +112,15 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         Log.d(TAG, "    end address = " + info.mEndAddress);
     }
 
-    private static void printNode(final DictBuffer dictBuffer,
+    private static void printNode(final Ver3DictDecoder dictDecoder,
             final FormatSpec.FormatOptions formatOptions) {
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         Log.d(TAG, "Node at " + dictBuffer.position());
         final int count = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
         Log.d(TAG, "    charGroupCount = " + count);
         for (int i = 0; i < count; ++i) {
-            final CharGroupInfo currentInfo = BinaryDictDecoderUtils.readCharGroup(dictBuffer,
-                    dictBuffer.position(), formatOptions);
+            final CharGroupInfo currentInfo = dictDecoder.readPtNode(dictBuffer.position(),
+                    formatOptions);
             printCharGroup(currentInfo);
         }
         if (formatOptions.mSupportsDynamicUpdate) {
@@ -131,9 +132,9 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static void printBinaryFile(final Ver3DictDecoder dictDecoder)
             throws IOException, UnsupportedFormatException {
         final FileHeader fileHeader = dictDecoder.readHeader();
-        final DictBuffer buffer = dictDecoder.getDictBuffer();
-        while (buffer.position() < buffer.limit()) {
-            printNode(buffer, fileHeader.mFormatOptions);
+        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
+        while (dictBuffer.position() < dictBuffer.limit()) {
+            printNode(dictDecoder, fileHeader.mFormatOptions);
         }
     }
 
@@ -227,9 +228,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
                     new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
-                    BinaryDictDecoderUtils.getWordAtAddress(dictDecoder.getDictBuffer(),
-                            fileHeader.mHeaderSize, position - fileHeader.mHeaderSize,
-                            fileHeader.mFormatOptions).mWord);
+                    BinaryDictDecoderUtils.getWordAtAddress(dictDecoder, fileHeader.mHeaderSize,
+                            position - fileHeader.mHeaderSize, fileHeader.mFormatOptions).mWord);
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while looking up a word", e);
         } catch (UnsupportedFormatException e) {

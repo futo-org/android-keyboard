@@ -293,8 +293,8 @@ public final class DynamicBinaryDictIOUtils {
 
             for (int i = 0; i < charGroupCount; ++i) {
                 address = dictBuffer.position();
-                final CharGroupInfo currentInfo = BinaryDictDecoderUtils.readCharGroup(dictBuffer,
-                        dictBuffer.position(), fileHeader.mFormatOptions);
+                final CharGroupInfo currentInfo = dictDecoder.readPtNode(address,
+                        fileHeader.mFormatOptions);
                 final boolean isMovedGroup = BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags,
                         fileHeader.mFormatOptions);
                 if (isMovedGroup) continue;
