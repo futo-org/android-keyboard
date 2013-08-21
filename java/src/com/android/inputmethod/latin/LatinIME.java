@@ -639,6 +639,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().onDestroy();
         }
         unregisterReceiver(mDictionaryPackInstallReceiver);
+        PersonalizationDictionarySessionRegister.onDestroy(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();
