@@ -214,9 +214,8 @@ public class Ver3DictDecoder implements DictDecoder {
     // TODO: Make this buffer multi thread safe.
     private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
     @Override
-    public CharGroupInfo readPtNode(final int originalGroupAddress,
-            final FormatOptions options) {
-        int addressPointer = originalGroupAddress;
+    public CharGroupInfo readPtNode(final int ptNodePos, final FormatOptions options) {
+        int addressPointer = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         ++addressPointer;
 
@@ -268,7 +267,7 @@ public class Ver3DictDecoder implements DictDecoder {
                 MakedictLog.d("too many bigrams in a group.");
             }
         }
-        return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
+        return new CharGroupInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
 }

@@ -35,11 +35,14 @@ import java.nio.channels.FileChannel;
  */
 public interface DictDecoder {
     public FileHeader readHeader() throws IOException, UnsupportedFormatException;
+
     /**
-     * Reads a PtNode and returns CharGroupInfo.
+     * Reads PtNode from nodeAddress.
+     * @param ptNodePos the position of PtNode.
+     * @param formatOptions the format options.
+     * @return CharGroupInfo.
      */
-    public CharGroupInfo readPtNode(final int originalGroupAddress,
-            final FormatOptions formatOptions);
+    public CharGroupInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
 
     public interface DictionaryBufferFactory {
         public DictBuffer getDictionaryBuffer(final File file)
