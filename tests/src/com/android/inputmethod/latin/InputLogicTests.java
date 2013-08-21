@@ -305,5 +305,33 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("resume suggestion on backspace", 8,
                 BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
     }
+
+    private void helperTestComposing(final String wordToType, final boolean shouldBeComposing) {
+        mEditText.setText("");
+        type(wordToType);
+        assertEquals("start composing inside text", shouldBeComposing ? 0 : -1,
+                BaseInputConnection.getComposingSpanStart(mEditText.getText()));
+        assertEquals("start composing inside text", shouldBeComposing ? wordToType.length() : -1,
+                BaseInputConnection.getComposingSpanEnd(mEditText.getText()));
+    }
+
+    public void testStartComposing() {
+        // Should start composing on a letter
+        helperTestComposing("a", true);
+        type("  "); // To reset the composing state
+        // Should not start composing on quote
+        helperTestComposing("'", false);
+        type("  ");
+        helperTestComposing("'-", false);
+        type("  ");
+        // Should not start composing on dash
+        helperTestComposing("-", false);
+        type("  ");
+        helperTestComposing("-'", false);
+        type("  ");
+        helperTestComposing("a-", true);
+        type("  ");
+        helperTestComposing("a'", true);
+    }
     // TODO: Add some tests for non-BMP characters
 }
