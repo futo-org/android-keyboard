@@ -95,7 +95,7 @@ public final class BinaryDictIOUtils {
                 stack.pop();
                 continue;
             }
-            CharGroupInfo info = dictDecoder.readPtNode(p.mAddress - headerSize, formatOptions);
+            CharGroupInfo info = dictDecoder.readPtNode(p.mAddress, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
             }
@@ -131,7 +131,7 @@ public final class BinaryDictIOUtils {
             }
 
             if (!isMovedGroup && hasChildrenAddress(info.mChildrenAddress)) {
-                Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
+                final Position childrenPos = new Position(info.mChildrenAddress, index);
                 stack.push(childrenPos);
             }
         }
