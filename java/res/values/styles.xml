@@ -382,13 +382,10 @@
     >
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorValidTypedWord">@color/highlight_color_ics</item>
-        <item name="colorTypedWord">@color/highlight_color_ics</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
+        <item name="colorTypedWord">@color/typed_word_color_ics</item>
         <item name="colorAutoCorrect">@color/highlight_color_ics</item>
-        <item name="colorSuggested">@color/highlight_color_ics</item>
-        <item name="alphaValidTypedWord">85%</item>
-        <item name="alphaTypedWord">85%</item>
-        <item name="alphaSuggested">70%</item>
+        <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>

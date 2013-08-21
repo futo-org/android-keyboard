@@ -41,7 +41,9 @@
     <color name="spacebar_text_shadow_color_stone">#D0FFFFFF</color>
     <!-- Color resources for IceCreamSandwich theme. -->
     <!-- android:color/holo_blue_light value is #FF33B5E5 -->
-    <color name="highlight_color_ics">@android:color/holo_blue_light</color>
+    <color name="highlight_color_ics">#FF33B5E5</color>
+    <color name="typed_word_color_ics">#D833B5E5</color>
+    <color name="suggested_word_color_ics">#B233B5E5</color>
     <color name="highlight_translucent_color_ics">#9933B5E5</color>
     <color name="key_text_color_ics">@android:color/white</color>
     <color name="key_text_shadow_color_ics">@android:color/transparent</color>
@@ -52,7 +54,6 @@
     <color name="key_shifted_letter_hint_activated_color_ics">@android:color/white</color>
     <color name="spacebar_text_color_ics">#FFC0C0C0</color>
     <color name="spacebar_text_shadow_color_ics">#80000000</color>
-    <color name="typed_word_color_ics">@color/highlight_color_ics</color>
     <!-- Color resources for setup wizard and tutorial -->
     <color name="setup_background">#FFEBEBEB</color>
     <color name="setup_text_dark">#FF707070</color>

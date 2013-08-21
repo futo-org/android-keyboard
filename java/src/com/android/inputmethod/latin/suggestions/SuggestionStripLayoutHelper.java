@@ -125,24 +125,12 @@ final class SuggestionStripLayoutHelper {
                 R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
         mSuggestionStripOption = a.getInt(
                 R.styleable.SuggestionStripView_suggestionStripOption, 0);
-        final float alphaValidTypedWord = ResourceUtils.getFraction(a,
-                R.styleable.SuggestionStripView_alphaValidTypedWord, 1.0f);
-        final float alphaTypedWord = ResourceUtils.getFraction(a,
-                R.styleable.SuggestionStripView_alphaTypedWord, 1.0f);
-        final float alphaAutoCorrect = ResourceUtils.getFraction(a,
-                R.styleable.SuggestionStripView_alphaAutoCorrect, 1.0f);
-        final float alphaSuggested = ResourceUtils.getFraction(a,
-                R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
         mAlphaObsoleted = ResourceUtils.getFraction(a,
-                R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
-        mColorValidTypedWord = applyAlpha(a.getColor(
-                R.styleable.SuggestionStripView_colorValidTypedWord, 0), alphaValidTypedWord);
-        mColorTypedWord = applyAlpha(a.getColor(
-                R.styleable.SuggestionStripView_colorTypedWord, 0), alphaTypedWord);
-        mColorAutoCorrect = applyAlpha(a.getColor(
-                R.styleable.SuggestionStripView_colorAutoCorrect, 0), alphaAutoCorrect);
-        mColorSuggested = applyAlpha(a.getColor(
-                R.styleable.SuggestionStripView_colorSuggested, 0), alphaSuggested);
+                R.styleable.SuggestionStripView_alphaObsoleted, 1.0f);
+        mColorValidTypedWord = a.getColor(R.styleable.SuggestionStripView_colorValidTypedWord, 0);
+        mColorTypedWord = a.getColor(R.styleable.SuggestionStripView_colorTypedWord, 0);
+        mColorAutoCorrect = a.getColor(R.styleable.SuggestionStripView_colorAutoCorrect, 0);
+        mColorSuggested = a.getColor(R.styleable.SuggestionStripView_colorSuggested, 0);
         mSuggestionsCountInStrip = a.getInt(
                 R.styleable.SuggestionStripView_suggestionsCountInStrip,
                 DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);

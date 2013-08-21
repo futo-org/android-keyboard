@@ -169,10 +169,6 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="alphaValidTypedWord" format="fraction" />
-        <attr name="alphaTypedWord" format="fraction" />
-        <attr name="alphaAutoCorrect" format="fraction" />
-        <attr name="alphaSuggested" format="fraction" />
         <attr name="alphaObsoleted" format="fraction" />
         <attr name="suggestionsCountInStrip" format="integer" />
         <attr name="centerSuggestionPercentile" format="fraction" />
