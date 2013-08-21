@@ -228,8 +228,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
                     new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
-                    BinaryDictDecoderUtils.getWordAtAddress(dictDecoder, fileHeader.mHeaderSize,
-                            position - fileHeader.mHeaderSize, fileHeader.mFormatOptions).mWord);
+                    BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mHeaderSize,
+                            position, fileHeader.mFormatOptions).mWord);
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while looking up a word", e);
         } catch (UnsupportedFormatException e) {

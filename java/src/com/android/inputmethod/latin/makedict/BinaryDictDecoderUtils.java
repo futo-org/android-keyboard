@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -334,40 +333,38 @@ public final class BinaryDictDecoderUtils {
     }
 
     /**
-     * Finds, as a string, the word at the address passed as an argument.
+     * Finds, as a string, the word at the position passed as an argument.
      *
      * @param dictDecoder the dict decoder.
      * @param headerSize the size of the header.
-     * @param address the address to seek.
+     * @param pos the position to seek.
      * @param formatOptions file format options.
      * @return the word with its frequency, as a weighted string.
      */
-    /* package for tests */ static WeightedString getWordAtAddress(
-            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
+    /* package for tests */ static WeightedString getWordAtPosition(
+            final Ver3DictDecoder dictDecoder, final int headerSize, final int pos,
             final FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         final WeightedString result;
-        final int originalPointer = dictBuffer.position();
-        dictBuffer.position(address);
+        final int originalPos = dictBuffer.position();
+        dictBuffer.position(pos);
 
         if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-            result = getWordAtAddressWithParentAddress(dictDecoder, headerSize, address,
-                    formatOptions);
+            result = getWordAtPositionWithParentAddress(dictDecoder, pos, formatOptions);
         } else {
-            result = getWordAtAddressWithoutParentAddress(dictDecoder, headerSize, address,
+            result = getWordAtPositionWithoutParentAddress(dictDecoder, headerSize, pos,
                     formatOptions);
         }
 
-        dictBuffer.position(originalPointer);
+        dictBuffer.position(originalPos);
         return result;
     }
 
     @SuppressWarnings("unused")
-    private static WeightedString getWordAtAddressWithParentAddress(
-            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
-            final FormatOptions options) {
+    private static WeightedString getWordAtPositionWithParentAddress(
+            final Ver3DictDecoder dictDecoder, final int pos, final FormatOptions options) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        int currentAddress = address;
+        int currentPos = pos;
         int frequency = Integer.MIN_VALUE;
         final StringBuilder builder = new StringBuilder();
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
@@ -375,10 +372,10 @@ public final class BinaryDictDecoderUtils {
             CharGroupInfo currentInfo;
             int loopCounter = 0;
             do {
-                dictBuffer.position(currentAddress + headerSize);
-                currentInfo = dictDecoder.readPtNode(currentAddress, options);
+                dictBuffer.position(currentPos);
+                currentInfo = dictDecoder.readPtNode(currentPos, options);
                 if (BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags, options)) {
-                    currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
+                    currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
                 }
                 if (DBG && loopCounter++ > MAX_JUMPS) {
                     MakedictLog.d("Too many jumps - probably a bug");
@@ -388,37 +385,37 @@ public final class BinaryDictDecoderUtils {
             builder.insert(0,
                     new String(currentInfo.mCharacters, 0, currentInfo.mCharacters.length));
             if (currentInfo.mParentAddress == FormatSpec.NO_PARENT_ADDRESS) break;
-            currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
+            currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
         }
         return new WeightedString(builder.toString(), frequency);
     }
 
-    private static WeightedString getWordAtAddressWithoutParentAddress(
-            final Ver3DictDecoder dictDecoder, final int headerSize, final int address,
+    private static WeightedString getWordAtPositionWithoutParentAddress(
+            final Ver3DictDecoder dictDecoder, final int headerSize, final int pos,
             final FormatOptions options) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(headerSize);
         final int count = readCharGroupCount(dictBuffer);
-        int groupOffset = BinaryDictIOUtils.getGroupCountSize(count);
+        int groupPos = headerSize + BinaryDictIOUtils.getGroupCountSize(count);
         final StringBuilder builder = new StringBuilder();
         WeightedString result = null;
 
         CharGroupInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            CharGroupInfo info = dictDecoder.readPtNode(groupOffset, options);
-            groupOffset = info.mEndAddress;
-            if (info.mOriginalAddress == address) {
+            CharGroupInfo info = dictDecoder.readPtNode(groupPos, options);
+            groupPos = info.mEndAddress;
+            if (info.mOriginalAddress == pos) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
                 result = new WeightedString(builder.toString(), info.mFrequency);
                 break; // and return
             }
             if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
-                if (info.mChildrenAddress > address) {
+                if (info.mChildrenAddress > pos) {
                     if (null == last) continue;
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                    dictBuffer.position(last.mChildrenAddress + headerSize);
+                    dictBuffer.position(last.mChildrenAddress);
                     i = readCharGroupCount(dictBuffer);
-                    groupOffset = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
+                    groupPos = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
                     last = null;
                     continue;
                 }
@@ -426,9 +423,9 @@ public final class BinaryDictDecoderUtils {
             }
             if (0 == i && BinaryDictIOUtils.hasChildrenAddress(last.mChildrenAddress)) {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                dictBuffer.position(last.mChildrenAddress + headerSize);
+                dictBuffer.position(last.mChildrenAddress);
                 i = readCharGroupCount(dictBuffer);
-                groupOffset = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
+                groupPos = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
                 last = null;
                 continue;
             }
@@ -457,21 +454,21 @@ public final class BinaryDictDecoderUtils {
             throws IOException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         final ArrayList<CharGroup> nodeArrayContents = new ArrayList<CharGroup>();
-        final int nodeArrayOrigin = dictBuffer.position() - headerSize;
+        final int nodeArrayOriginPos = dictBuffer.position();
 
         do { // Scan the linked-list node.
-            final int nodeArrayHeadPosition = dictBuffer.position() - headerSize;
+            final int nodeArrayHeadPos = dictBuffer.position();
             final int count = readCharGroupCount(dictBuffer);
-            int groupOffset = nodeArrayHeadPosition + BinaryDictIOUtils.getGroupCountSize(count);
+            int groupOffsetPos = nodeArrayHeadPos + BinaryDictIOUtils.getGroupCountSize(count);
             for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
-                CharGroupInfo info = dictDecoder.readPtNode(groupOffset, options);
+                CharGroupInfo info = dictDecoder.readPtNode(groupOffsetPos, options);
                 if (BinaryDictIOUtils.isMovedGroup(info.mFlags, options)) continue;
                 ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
                 ArrayList<WeightedString> bigrams = null;
                 if (null != info.mBigrams) {
                     bigrams = new ArrayList<WeightedString>();
                     for (PendingAttribute bigram : info.mBigrams) {
-                        final WeightedString word = getWordAtAddress(dictDecoder, headerSize,
+                        final WeightedString word = getWordAtPosition(dictDecoder, headerSize,
                                 bigram.mAddress, options);
                         final int reconstructedFrequency =
                                 BinaryDictIOUtils.reconstructBigramFrequency(word.mFrequency,
@@ -483,7 +480,7 @@ public final class BinaryDictDecoderUtils {
                     PtNodeArray children = reverseNodeArrayMap.get(info.mChildrenAddress);
                     if (null == children) {
                         final int currentPosition = dictBuffer.position();
-                        dictBuffer.position(info.mChildrenAddress + headerSize);
+                        dictBuffer.position(info.mChildrenAddress);
                         children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
                                 reverseGroupMap, options);
                         dictBuffer.position(currentPosition);
@@ -500,7 +497,7 @@ public final class BinaryDictDecoderUtils {
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
                 }
-                groupOffset = info.mEndAddress;
+                groupOffsetPos = info.mEndAddress;
             }
 
             // reach the end of the array.
@@ -516,8 +513,8 @@ public final class BinaryDictDecoderUtils {
                 dictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
 
         final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
-        nodeArray.mCachedAddressBeforeUpdate = nodeArrayOrigin;
-        nodeArray.mCachedAddressAfterUpdate = nodeArrayOrigin;
+        nodeArray.mCachedAddressBeforeUpdate = nodeArrayOriginPos;
+        nodeArray.mCachedAddressAfterUpdate = nodeArrayOriginPos;
         reverseNodeArrayMap.put(nodeArray.mCachedAddressAfterUpdate, nodeArray);
         return nodeArray;
     }
