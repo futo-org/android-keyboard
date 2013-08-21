@@ -253,7 +253,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoder.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -305,7 +305,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoder.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
@@ -343,7 +343,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoder.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
+            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
             out.close();
         } catch (IOException e) {
             assertTrue(false);

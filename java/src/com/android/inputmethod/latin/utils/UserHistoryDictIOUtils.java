@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.BinaryDictEncoder;
+import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -62,7 +62,7 @@ public final class UserHistoryDictIOUtils {
             final FormatOptions formatOptions) {
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
         try {
-            BinaryDictEncoder.writeDictionaryBinary(destination, fusionDict, formatOptions);
+            BinaryDictEncoderUtils.writeDictionaryBinary(destination, fusionDict, formatOptions);
             Log.d(TAG, "end writing");
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);

@@ -44,7 +44,7 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * Unit tests for BinaryDictDecoderUtils and BinaryDictEncoder.
+ * Unit tests for BinaryDictDecoderUtils and BinaryDictEncoderUtils.
  */
 @LargeTest
 public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
@@ -210,7 +210,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             // If you need to dump the dict to a textual file, uncomment the line below and the
             // function above
             // dumpToCombinedFileForDebug(file, "/tmp/foo");
-            BinaryDictEncoder.writeDictionaryBinary(out, dict, formatOptions);
+            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, formatOptions);
             diff = System.currentTimeMillis() - now;
 
             out.flush();

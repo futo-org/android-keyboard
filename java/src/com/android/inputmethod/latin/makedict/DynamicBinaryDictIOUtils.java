@@ -314,7 +314,7 @@ public final class DynamicBinaryDictIOUtils {
                          *  abc - d - ef
                          */
                         final int newNodeAddress = dictBuffer.limit();
-                        final int flags = BinaryDictEncoder.makeCharGroupFlags(p > 1,
+                        final int flags = BinaryDictEncoderUtils.makeCharGroupFlags(p > 1,
                                 isTerminal, 0, hasShortcuts, hasBigrams, false /* isNotAWord */,
                                 false /* isBlackListEntry */, fileHeader.mFormatOptions);
                         int written = moveGroup(newNodeAddress, currentInfo.mCharacters, p, flags,
@@ -353,7 +353,7 @@ public final class DynamicBinaryDictIOUtils {
                             final int childrenAddress = currentInfo.mChildrenAddress;
 
                             // move prefix
-                            final int prefixFlags = BinaryDictEncoder.makeCharGroupFlags(p > 1,
+                            final int prefixFlags = BinaryDictEncoderUtils.makeCharGroupFlags(p > 1,
                                     false /* isTerminal */, 0 /* childrenAddressSize*/,
                                     false /* hasShortcut */, false /* hasBigrams */,
                                     false /* isNotAWord */, false /* isBlackListEntry */,
@@ -369,7 +369,7 @@ public final class DynamicBinaryDictIOUtils {
                                 updateParentAddresses(dictBuffer, currentInfo.mChildrenAddress,
                                         newNodeAddress + written + 1, fileHeader.mFormatOptions);
                             }
-                            final int suffixFlags = BinaryDictEncoder.makeCharGroupFlags(
+                            final int suffixFlags = BinaryDictEncoderUtils.makeCharGroupFlags(
                                     suffixCharacters.length > 1,
                                     (currentInfo.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0,
                                     0 /* childrenAddressSize */,
@@ -387,7 +387,7 @@ public final class DynamicBinaryDictIOUtils {
 
                             final int[] newCharacters = Arrays.copyOfRange(codePoints, wordPos + p,
                                     codePoints.length);
-                            final int flags = BinaryDictEncoder.makeCharGroupFlags(
+                            final int flags = BinaryDictEncoderUtils.makeCharGroupFlags(
                                     newCharacters.length > 1, isTerminal,
                                     0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
                                     isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
@@ -410,7 +410,7 @@ public final class DynamicBinaryDictIOUtils {
                         // only update group.
                         final int newNodeAddress = dictBuffer.limit();
                         final boolean hasMultipleChars = currentInfo.mCharacters.length > 1;
-                        final int flags = BinaryDictEncoder.makeCharGroupFlags(hasMultipleChars,
+                        final int flags = BinaryDictEncoderUtils.makeCharGroupFlags(hasMultipleChars,
                                 isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
                                 isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                         final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
@@ -440,7 +440,7 @@ public final class DynamicBinaryDictIOUtils {
                                 fileHeader.mFormatOptions);
                         final int newGroupAddress = newNodeAddress + 1;
                         final boolean hasMultipleChars = (wordLen - wordPos) > 1;
-                        final int flags = BinaryDictEncoder.makeCharGroupFlags(hasMultipleChars,
+                        final int flags = BinaryDictEncoderUtils.makeCharGroupFlags(hasMultipleChars,
                                 isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
                                 isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                         final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
@@ -485,7 +485,7 @@ public final class DynamicBinaryDictIOUtils {
                 BinaryDictIOUtils.writeSInt24ToBuffer(dictBuffer, newNodeAddress);
 
                 final int[] characters = Arrays.copyOfRange(codePoints, wordPos, wordLen);
-                final int flags = BinaryDictEncoder.makeCharGroupFlags(characters.length > 1,
+                final int flags = BinaryDictEncoderUtils.makeCharGroupFlags(characters.length > 1,
                         isTerminal, 0 /* childrenAddressSize */, hasShortcuts, hasBigrams,
                         isNotAWord, isBlackListEntry, fileHeader.mFormatOptions);
                 final CharGroupInfo newInfo = new CharGroupInfo(newNodeAddress + 1,
