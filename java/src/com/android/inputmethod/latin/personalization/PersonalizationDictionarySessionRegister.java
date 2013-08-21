@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.latin.amanatto.AmanattoDataUpdater;
-
 import android.content.Context;
 import android.content.res.Configuration;
 
