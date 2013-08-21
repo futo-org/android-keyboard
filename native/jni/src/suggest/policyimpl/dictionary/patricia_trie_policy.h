@@ -24,7 +24,7 @@
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
-#include "suggest/policyimpl/dictionary/utils/mmaped_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
 
@@ -33,7 +33,7 @@ class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const MmapedBuffer *const buffer)
+    PatriciaTriePolicy(const MmappedBuffer *const buffer)
             : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer()),
               mDictRoot(mBuffer->getBuffer() + mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
@@ -97,7 +97,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
-    const MmapedBuffer *const mBuffer;
+    const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
     const uint8_t *const mDictRoot;
     const BigramListPolicy mBigramListPolicy;

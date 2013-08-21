@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_MMAPED_BUFFER_H
-#define LATINIME_MMAPED_BUFFER_H
+#ifndef LATINIME_MMAPPED_BUFFER_H
+#define LATINIME_MMAPPED_BUFFER_H
 
 #include <cerrno>
 #include <fcntl.h>
@@ -27,39 +27,40 @@
 
 namespace latinime {
 
-class MmapedBuffer {
+class MmappedBuffer {
  public:
-    static MmapedBuffer* openBuffer(const char *const path, const int pathLength,
-            const int bufOffset, const int size, const bool isUpdatable) {
+    static MmappedBuffer* openBuffer(const char *const path, const int pathLength,
+            const int bufferOffset, const int bufferSize, const bool isUpdatable) {
         const int openMode = isUpdatable ? O_RDWR : O_RDONLY;
-        const int fd = open(path, openMode);
-        if (fd < 0) {
+        const int mmapFd = open(path, openMode);
+        if (mmapFd < 0) {
             AKLOGE("DICT: Can't open the source. path=%s errno=%d", path, errno);
             return 0;
         }
         const int pagesize = getpagesize();
-        const int offset = bufOffset % pagesize;
-        int adjOffset = bufOffset - offset;
-        int adjSize = size + offset;
+        const int offset = bufferOffset % pagesize;
+        int alignedOffset = bufferOffset - offset;
+        int alignedSize = bufferSize + offset;
         const int protMode = isUpdatable ? PROT_READ | PROT_WRITE : PROT_READ;
-        void *const mmapedBuffer = mmap(0, adjSize, protMode, MAP_PRIVATE, fd, adjOffset);
-        if (mmapedBuffer == MAP_FAILED) {
+        void *const mmappedBuffer = mmap(0, alignedSize, protMode, MAP_PRIVATE, mmapFd,
+                alignedOffset);
+        if (mmappedBuffer == MAP_FAILED) {
             AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
-            close(fd);
+            close(mmapFd);
             return 0;
         }
-        uint8_t *const buffer = static_cast<uint8_t *>(mmapedBuffer) + offset;
+        uint8_t *const buffer = static_cast<uint8_t *>(mmappedBuffer) + offset;
         if (!buffer) {
             AKLOGE("DICT: buffer is null");
-            close(fd);
+            close(mmapFd);
             return 0;
         }
-        return new MmapedBuffer(buffer, adjSize, fd, offset, isUpdatable);
+        return new MmappedBuffer(buffer, bufferSize, mmappedBuffer, alignedSize, mmapFd,
+                isUpdatable);
     }
 
-    ~MmapedBuffer() {
-        int ret = munmap(static_cast<void *>(mBuffer - mBufferOffset),
-                mBufferSize + mBufferOffset);
+    ~MmappedBuffer() {
+        int ret = munmap(mMmappedBuffer, mAlignedSize);
         if (ret != 0) {
             AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
         }
@@ -82,18 +83,20 @@ class MmapedBuffer {
     }
 
  private:
-    AK_FORCE_INLINE MmapedBuffer(uint8_t *const buffer, const int bufferSize, const int mmapFd,
-            const int bufferOffset, const bool isUpdatable)
-            : mBuffer(buffer), mBufferSize(bufferSize), mMmapFd(mmapFd),
-              mBufferOffset(bufferOffset), mIsUpdatable(isUpdatable) {}
+    AK_FORCE_INLINE MmappedBuffer(uint8_t *const buffer, const int bufferSize,
+            void *const mmappedBuffer, const int alignedSize, const int mmapFd,
+            const bool isUpdatable)
+            : mBuffer(buffer), mBufferSize(bufferSize), mMmappedBuffer(mmappedBuffer),
+              mAlignedSize(alignedSize), mMmapFd(mmapFd), mIsUpdatable(isUpdatable) {}
 
-    DISALLOW_IMPLICIT_CONSTRUCTORS(MmapedBuffer);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(MmappedBuffer);
 
     uint8_t *const mBuffer;
     const int mBufferSize;
+    void *const mMmappedBuffer;
+    const int mAlignedSize;
     const int mMmapFd;
-    const int mBufferOffset;
     const bool mIsUpdatable;
 };
 }
-#endif /* LATINIME_MMAPED_BUFFER_H */
+#endif /* LATINIME_MMAPPED_BUFFER_H */

@@ -22,7 +22,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
-#include "suggest/policyimpl/dictionary/utils/mmaped_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
 
@@ -31,7 +31,7 @@ namespace latinime {
                 const int bufOffset, const int size, const bool isUpdatable) {
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // impl classes of DictionaryStructureWithBufferPolicy.
-    const MmapedBuffer *const mmapedBuffer = MmapedBuffer::openBuffer(path, pathLength, bufOffset,
+    const MmappedBuffer *const mmapedBuffer = MmappedBuffer::openBuffer(path, pathLength, bufOffset,
             size, isUpdatable);
     if (!mmapedBuffer) {
         return 0;
