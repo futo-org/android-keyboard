@@ -21,17 +21,18 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,14 +137,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
     private void writeDictToFile(final File file,
             final UserHistoryDictionaryBigramList bigramList) {
-        try {
-            final FileOutputStream out = new FileOutputStream(file);
-            UserHistoryDictIOUtils.writeDictionaryBinary(out, this, bigramList, FORMAT_OPTIONS);
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file", e);
-        }
+        final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+        UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, bigramList, FORMAT_OPTIONS);
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {

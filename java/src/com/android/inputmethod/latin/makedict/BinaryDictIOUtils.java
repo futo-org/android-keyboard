@@ -375,7 +375,7 @@ public final class BinaryDictIOUtils {
      * @param info the char group info to be written.
      * @return the size written, in bytes.
      */
-    public static int writeCharGroup(final OutputStream destination, final CharGroupInfo info)
+    private static int writeCharGroup(final OutputStream destination, final CharGroupInfo info)
             throws IOException {
         int size = FormatSpec.GROUP_FLAGS_SIZE;
         destination.write((byte)info.mFlags);
@@ -505,29 +505,6 @@ public final class BinaryDictIOUtils {
         for (final CharGroupInfo info : infos) size += writeCharGroup(destination, info);
         writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
         return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
-    }
-
-    /**
-     * Find a word using the Ver3DictDecoder.
-     *
-     * @param dictDecoder the dict reader
-     * @param word the word searched
-     * @return the found group
-     * @throws IOException
-     * @throws UnsupportedFormatException
-     */
-    @UsedForTesting
-    public static CharGroupInfo findWordByBinaryDictReader(final Ver3DictDecoder dictDecoder,
-            final String word) throws IOException, UnsupportedFormatException {
-        int position = getTerminalPosition(dictDecoder, word);
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        if (position != FormatSpec.NOT_VALID_WORD) {
-            dictBuffer.position(0);
-            final FileHeader header = dictDecoder.readHeader();
-            dictBuffer.position(position);
-            return dictDecoder.readPtNode(position, header.mFormatOptions);
-        }
-        return null;
     }
 
     private static final int HEADER_READING_BUFFER_SIZE = 16384;

@@ -28,8 +28,10 @@ import com.android.inputmethod.latin.ExpandableDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
@@ -40,7 +42,6 @@ import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.Forge
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -332,24 +333,9 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
             final String fileName =
                     mDynamicPredictionDictionary.getDictionaryFileName();
             final File file = new File(mContext.getFilesDir(), fileName);
-            FileOutputStream out = null;
 
-            try {
-                out = new FileOutputStream(file);
-                UserHistoryDictIOUtils.writeDictionaryBinary(out, this, mBigramList, VERSION3);
-                out.flush();
-                out.close();
-            } catch (IOException e) {
-                Log.e(TAG, "IO Exception while writing file", e);
-            } finally {
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // ignore
-                    }
-                }
-            }
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, mBigramList, VERSION3);
 
             // Save the timestamp after we finish writing the binary dictionary.
             Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);

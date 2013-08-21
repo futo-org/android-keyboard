@@ -911,13 +911,11 @@ public class BinaryDictEncoderUtils {
     /**
      * Dumps a FusionDictionary to a file.
      *
-     * This is the public entry point to write a dictionary to a file.
-     *
      * @param destination the stream to write the binary data to.
      * @param dict the dictionary to write.
      * @param formatOptions file format options.
      */
-    public static void writeDictionaryBinary(final OutputStream destination,
+    /* package */ static void writeDictionaryBinary(final OutputStream destination,
             final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
 
