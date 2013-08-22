@@ -108,7 +108,7 @@ public class BinaryDictEncoderUtils {
      * like address lists do.
      */
     static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
-        if (null == shortcutList) return 0;
+        if (null == shortcutList || shortcutList.isEmpty()) return 0;
         int size = FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
         for (final WeightedString shortcut : shortcutList) {
             size += getShortcutSize(shortcut);
@@ -601,8 +601,9 @@ public class BinaryDictEncoderUtils {
     private static byte makeCharGroupFlags(final CharGroup group, final int groupAddress,
             final int childrenOffset, final FormatOptions formatOptions) {
         return (byte) makeCharGroupFlags(group.mChars.length > 1, group.mFrequency >= 0,
-                getByteSize(childrenOffset), group.mShortcutTargets != null, group.mBigrams != null,
-                group.mIsNotAWord, group.mIsBlacklistEntry, formatOptions);
+                getByteSize(childrenOffset),
+                group.mShortcutTargets != null && !group.mShortcutTargets.isEmpty(),
+                group.mBigrams != null, group.mIsNotAWord, group.mIsBlacklistEntry, formatOptions);
     }
 
     /**
@@ -795,7 +796,7 @@ public class BinaryDictEncoderUtils {
             groupAddress += shift;
 
             // Write shortcuts
-            if (null != group.mShortcutTargets) {
+            if (null != group.mShortcutTargets && !group.mShortcutTargets.isEmpty()) {
                 final int indexOfShortcutByteSize = index;
                 index += FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
                 groupAddress += FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
