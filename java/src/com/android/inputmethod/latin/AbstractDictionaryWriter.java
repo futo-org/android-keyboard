@@ -19,10 +19,11 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 // TODO: Quit extending Dictionary after implementing dynamic binary dictionary.
@@ -49,32 +50,21 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
 
     abstract public void removeBigramWords(final String word0, final String word1);
 
-    abstract protected void writeBinaryDictionary(final FileOutputStream out)
+    abstract protected void writeDictionary(final DictEncoder dictEncoder)
             throws IOException, UnsupportedFormatException;
 
     public void write(final String fileName) {
         final String tempFileName = fileName + ".temp";
         final File file = new File(mContext.getFilesDir(), fileName);
         final File tempFile = new File(mContext.getFilesDir(), tempFileName);
-        FileOutputStream out = null;
         try {
-            out = new FileOutputStream(tempFile);
-            writeBinaryDictionary(out);
-            out.flush();
-            out.close();
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            writeDictionary(dictEncoder);
             tempFile.renameTo(file);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format", e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
         }
     }
 }

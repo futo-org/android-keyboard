@@ -252,9 +252,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("abcd", 10, null, false);
 
         try {
-            final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
-            out.close();
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         } catch (UnsupportedFormatException e) {
@@ -304,9 +303,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("efgh", 15, null, false);
 
         try {
-            final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
-            out.close();
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file); 
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
         } catch (UnsupportedFormatException e) {
@@ -342,9 +340,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         dict.add("initial", 10, null, false);
 
         try {
-            final FileOutputStream out = new FileOutputStream(file);
-            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, FORMAT_OPTIONS);
-            out.close();
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
         } catch (IOException e) {
             assertTrue(false);
         } catch (UnsupportedFormatException e) {

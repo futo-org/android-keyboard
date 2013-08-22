@@ -32,7 +32,6 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,17 +203,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         long now = -1, diff = -1;
 
         try {
-            final FileOutputStream out = new FileOutputStream(file);
+            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
 
             now = System.currentTimeMillis();
             // If you need to dump the dict to a textual file, uncomment the line below and the
             // function above
             // dumpToCombinedFileForDebug(file, "/tmp/foo");
-            BinaryDictEncoderUtils.writeDictionaryBinary(out, dict, formatOptions);
+            dictEncoder.writeDictionary(dict, formatOptions);
             diff = System.currentTimeMillis() - now;
-
-            out.flush();
-            out.close();
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);
         } catch (UnsupportedFormatException e) {
