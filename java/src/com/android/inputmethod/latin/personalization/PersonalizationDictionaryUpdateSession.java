@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-
 import android.content.Context;
 
 import java.lang.ref.WeakReference;
@@ -49,9 +47,9 @@ public abstract class PersonalizationDictionaryUpdateSession {
     // TODO: Use a dynamic binary dictionary instead
     public WeakReference<PersonalizationDictionary> mDictionary;
     public WeakReference<DynamicPredictionDictionaryBase> mPredictionDictionary;
-    public final String mLocale;
+    public final String mSystemLocale;
     public PersonalizationDictionaryUpdateSession(String locale) {
-        mLocale = locale;
+        mSystemLocale = locale;
     }
 
     public abstract void onDictionaryReady();
@@ -104,6 +102,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
         onDictionaryClosed(context);
     }
 
+    // TODO: Support multi locale to add bigram
     public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
             int frequency) {
         final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
@@ -114,6 +113,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     // Bulk import
+    // TODO: Support multi locale to add bigram
     public void addBigramsToPersonalizationDictionary(
             final ArrayList<PersonalizationLanguageModelParam> lmParams) {
         final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
