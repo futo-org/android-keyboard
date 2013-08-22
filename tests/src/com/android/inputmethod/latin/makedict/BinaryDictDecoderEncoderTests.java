@@ -22,11 +22,13 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
@@ -34,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -341,6 +344,22 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 "chain with shortcuts"));
         results.add(runReadAndWrite(sWords, sStarBigrams, sShortcuts, bufferType, formatOptions,
                 "star with shortcuts"));
+    }
+
+    // Unit test for CharEncoding.readString and CharEncoding.writeString.
+    public void testCharEncoding() {
+        // the max length of a word in sWords is less than 50.
+        // See generateWords.
+        final byte[] buffer = new byte[50 * 3];
+        final DictBuffer dictBuffer = new ByteArrayDictBuffer(buffer);
+        for (final String word : sWords) {
+            Log.d("testReadAndWriteString", "write : " + word);
+            Arrays.fill(buffer, (byte)0);
+            CharEncoding.writeString(buffer, 0, word);
+            dictBuffer.position(0);
+            final String str = CharEncoding.readString(dictBuffer);
+            assertEquals(word, str);
+        }
     }
 
     public void testReadAndWriteWithByteBuffer() {
