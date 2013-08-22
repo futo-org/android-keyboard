@@ -53,6 +53,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
+    private static final int NUM_OF_NODES_HAVING_SHORTCUTS = 50;
+    private static final int NUM_OF_SHORTCUTS = 5;
 
     private static final int USE_BYTE_ARRAY = 1;
     private static final int USE_BYTE_BUFFER = 2;
@@ -63,6 +65,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final SparseArray<List<Integer>> sStarBigrams = CollectionUtils.newSparseArray();
     private static final SparseArray<List<Integer>> sChainBigrams =
             CollectionUtils.newSparseArray();
+    private static final Map<String, List<String>> sShortcuts = CollectionUtils.newHashMap();
 
     private static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
     private static final FormatSpec.FormatOptions VERSION3_WITHOUT_DYNAMIC_UPDATE =
@@ -95,6 +98,16 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 1; i < sWords.size(); ++i) {
             sStarBigrams.get(0).add(i);
         }
+
+        sShortcuts.clear();
+        for (int i = 0; i < NUM_OF_NODES_HAVING_SHORTCUTS; ++i) {
+            final int from = Math.abs(random.nextInt()) % sWords.size();
+            sShortcuts.put(sWords.get(from), new ArrayList<String>());
+            for (int j = 0; j < NUM_OF_SHORTCUTS; ++j) {
+                final int to = Math.abs(random.nextInt()) % sWords.size();
+                sShortcuts.get(sWords.get(from)).add(sWords.get(to));
+            }
+        }
     }
 
     private int[] generateCodePointSet(final int codePointSetSize, final Random random) {
@@ -104,7 +117,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             if (r < 0) continue;
             // Don't insert 0~0x20, but insert any other code point.
             // Code points are in the range 0~0x10FFFF.
-            final int candidateCodePoint = (int)(0x20 + r % (Character.MAX_CODE_POINT - 0x20));
+            final int candidateCodePoint = 0x20 + r % (Character.MAX_CODE_POINT - 0x20);
             // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
             if (candidateCodePoint >= Character.MIN_SURROGATE
                     && candidateCodePoint <= Character.MAX_SURROGATE) continue;
@@ -243,6 +256,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // check shortcut
         if (shortcutMap != null) {
             for (final Map.Entry<String, List<String>> entry : shortcutMap.entrySet()) {
+                assertTrue(words.contains(entry.getKey()));
                 final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray,
                         entry.getKey());
                 for (final String word : entry.getValue()) {
@@ -321,6 +335,12 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 formatOptions, "chain"));
         results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */, bufferType,
                 formatOptions, "star"));
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, sShortcuts, bufferType, formatOptions,
+                "unigram with shortcuts"));
+        results.add(runReadAndWrite(sWords, sChainBigrams, sShortcuts, bufferType, formatOptions,
+                "chain with shortcuts"));
+        results.add(runReadAndWrite(sWords, sStarBigrams, sShortcuts, bufferType, formatOptions,
+                "star with shortcuts"));
     }
 
     public void testReadAndWriteWithByteBuffer() {
