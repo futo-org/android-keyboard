@@ -19,8 +19,8 @@ package com.android.inputmethod.latin.utils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.BinaryDictEncoderUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
+import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -30,7 +30,6 @@ import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,12 +56,12 @@ public final class UserHistoryDictIOUtils {
     /**
      * Writes dictionary to file.
      */
-    public static void writeDictionaryBinary(final OutputStream destination,
+    public static void writeDictionary(final DictEncoder dictEncoder,
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
             final FormatOptions formatOptions) {
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
         try {
-            BinaryDictEncoderUtils.writeDictionaryBinary(destination, fusionDict, formatOptions);
+            dictEncoder.writeDictionary(fusionDict, formatOptions);
             Log.d(TAG, "end writing");
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);
