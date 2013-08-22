@@ -71,14 +71,16 @@ LATIN_IME_CORE_SRC_FILES := \
         header/header_policy.cpp \
         header/header_reading_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
-        utils/byte_array_utils.cpp \
-        utils/format_utils.cpp \
         dictionary_structure_with_buffer_policy_factory.cpp \
         dynamic_patricia_trie_node_reader.cpp \
         dynamic_patricia_trie_policy.cpp \
         dynamic_patricia_trie_reading_utils.cpp \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/utils/, \
+        byte_array_utils.cpp \
+        extendable_buffer.cpp \
+        format_utils.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \
         scoring_params.cpp \
