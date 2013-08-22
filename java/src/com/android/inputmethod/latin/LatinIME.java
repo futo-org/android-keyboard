@@ -73,6 +73,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
@@ -173,6 +174,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private UserBinaryDictionary mUserDictionary;
     private UserHistoryPredictionDictionary mUserHistoryPredictionDictionary;
     private PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
+    private PersonalizationDictionary mPersonalizationDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -567,6 +569,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mUserHistoryPredictionDictionary = PersonalizationDictionaryHelper
                 .getUserHistoryPredictionDictionary(this, localeStr, prefs);
         newSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
+        mPersonalizationDictionary = PersonalizationDictionaryHelper
+                .getPersonalizationDictionary(this, localeStr, prefs);
+        newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
         mPersonalizationPredictionDictionary = PersonalizationDictionaryHelper
                 .getPersonalizationPredictionDictionary(this, localeStr, prefs);
         newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);

@@ -18,28 +18,32 @@ package com.android.inputmethod.latin.personalization;
 
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.util.ArrayList;
 
 /**
  * This class is a dictionary for the personalized language model that uses binary dictionary.
  */
 public class PersonalizationDictionary extends ExpandableBinaryDictionary {
     private static final String NAME = "personalization";
-
-    public static void registerUpdateListener(PersonalizationDictionaryUpdateSession listener) {
-        // TODO: Implement
-    }
+    private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
+            CollectionUtils.newArrayList();
 
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
 
-    // Singleton
-    private PersonalizationDictionary(final Context context, final String locale) {
+    public PersonalizationDictionary(final Context context, final String locale,
+            final SharedPreferences prefs) {
         // TODO: Make isUpdatable true.
         super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_PERSONALIZATION,
                 false /* isUpdatable */);
         mLocale = locale;
+        // TODO: Restore last updated time
+        loadDictionary();
     }
 
     @Override
@@ -49,15 +53,21 @@ public class PersonalizationDictionary extends ExpandableBinaryDictionary {
 
     @Override
     protected boolean hasContentChanged() {
-        // TODO: Implement
         return false;
     }
 
     @Override
     protected boolean needsToReloadBeforeWriting() {
-        // TODO: Implement
         return false;
     }
 
-    // TODO: Implement
+    public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        session.setDictionary(this);
+        mSessions.add(session);
+        session.onDictionaryReady();
+    }
+
+    public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
+        mSessions.remove(session);
+    }
 }
