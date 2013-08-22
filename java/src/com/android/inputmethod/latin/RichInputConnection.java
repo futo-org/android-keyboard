@@ -169,7 +169,6 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(mComposingText);
-        mExpectedCursorPosition += mComposingText.length();
         mComposingText.setLength(0);
         if (null != mIC) {
             mIC.finishComposingText();
