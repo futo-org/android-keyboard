@@ -62,7 +62,8 @@ public class Ver3DictEncoder implements DictEncoder {
         if (mOutStream == null) {
             openStream();
         }
-        BinaryDictEncoderUtils.writeDictionaryBinary(mOutStream, dict, formatOptions);
+        BinaryDictEncoderUtils.writeDictionaryHeader(mOutStream, dict, formatOptions);
+        BinaryDictEncoderUtils.writeDictionaryBody(mOutStream, dict, formatOptions);
         close();
     }
 }
