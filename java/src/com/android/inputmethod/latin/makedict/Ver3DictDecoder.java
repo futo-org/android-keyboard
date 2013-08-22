@@ -255,18 +255,26 @@ public class Ver3DictDecoder implements DictDecoder {
             childrenAddress += addressPointer;
         }
         addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
-        ArrayList<WeightedString> shortcutTargets = null;
+        final ArrayList<WeightedString> shortcutTargets;
         if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
+            // readShortcut will add shortcuts to shortcutTargets.
+            shortcutTargets = new ArrayList<WeightedString>();
             addressPointer += PtNodeReader.readShortcut(mDictBuffer, shortcutTargets);
+        } else {
+            shortcutTargets = null;
         }
-        ArrayList<PendingAttribute> bigrams = null;
+
+        final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
             addressPointer += PtNodeReader.readBigrams(mDictBuffer, bigrams, addressPointer);
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
                 MakedictLog.d("too many bigrams in a group.");
             }
+        } else {
+            bigrams = null;
         }
+
         return new CharGroupInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
