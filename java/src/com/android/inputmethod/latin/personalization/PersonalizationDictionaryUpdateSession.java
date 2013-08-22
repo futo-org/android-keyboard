@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.personalization;
 
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
+
 import android.content.Context;
 
 import java.lang.ref.WeakReference;
@@ -45,20 +47,39 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     // TODO: Use a dynamic binary dictionary instead
+    public WeakReference<PersonalizationDictionary> mDictionary;
     public WeakReference<DynamicPredictionDictionaryBase> mPredictionDictionary;
-    public String mLocale;
+    public final String mLocale;
+    public PersonalizationDictionaryUpdateSession(String locale) {
+        mLocale = locale;
+    }
 
     public abstract void onDictionaryReady();
 
     public abstract void onDictionaryClosed(Context context);
 
-    public void setPredictionDictionary(String locale, DynamicPredictionDictionaryBase dictionary) {
+    public void setDictionary(PersonalizationDictionary dictionary) {
+        mDictionary = new WeakReference<PersonalizationDictionary>(dictionary);
+    }
+
+    public void setPredictionDictionary(DynamicPredictionDictionaryBase dictionary) {
         mPredictionDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
-        mLocale = locale;
+    }
+
+    protected PersonalizationDictionary getDictionary() {
+        return mDictionary == null ? null : mDictionary.get();
     }
 
     protected DynamicPredictionDictionaryBase getPredictionDictionary() {
         return mPredictionDictionary == null ? null : mPredictionDictionary.get();
+    }
+
+    private void unsetDictionary() {
+        final PersonalizationDictionary dictionary = getDictionary();
+        if (dictionary == null) {
+            return;
+        }
+        dictionary.unRegisterUpdateSession(this);
     }
 
     private void unsetPredictionDictionary() {
@@ -78,6 +99,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     public void closeSession(Context context) {
+        unsetDictionary();
         unsetPredictionDictionary();
         onDictionaryClosed(context);
     }
