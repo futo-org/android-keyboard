@@ -165,31 +165,53 @@ public class Ver3DictDecoder implements DictDecoder {
     }
 
     private final File mDictionaryBinaryFile;
+    private final DictionaryBufferFactory mBufferFactory;
     private DictBuffer mDictBuffer;
 
     public Ver3DictDecoder(final File file) {
+        this(file, USE_READONLY_BYTEBUFFER);
+    }
+
+    public Ver3DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
+
+        if ((factoryFlag & MASK_DICTBUFFER) == USE_READONLY_BYTEBUFFER) {
+            mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
+        } else if ((factoryFlag  & MASK_DICTBUFFER) == USE_BYTEARRAY) {
+            mBufferFactory = new DictionaryBufferFromByteArrayFactory();
+        } else if ((factoryFlag & MASK_DICTBUFFER) == USE_WRITABLE_BYTEBUFFER) {
+            mBufferFactory = new DictionaryBufferFromWritableByteBufferFactory();
+        } else {
+            mBufferFactory = new DictionaryBufferFromReadOnlyByteBufferFactory();
+        }
     }
 
-    public void openDictBuffer(final DictDecoder.DictionaryBufferFactory factory)
-            throws FileNotFoundException, IOException {
-        mDictBuffer = factory.getDictionaryBuffer(mDictionaryBinaryFile);
+    public Ver3DictDecoder(final File file, final DictionaryBufferFactory factory) {
+        mDictionaryBinaryFile = file;
+        mBufferFactory = factory;
     }
 
-    public DictBuffer getDictBuffer() {
+    public void openDictBuffer() throws FileNotFoundException, IOException {
+        mDictBuffer = mBufferFactory.getDictionaryBuffer(mDictionaryBinaryFile);
+    }
+
+    /* package */ DictBuffer getDictBuffer() {
         return mDictBuffer;
     }
 
     @UsedForTesting
-    public DictBuffer openAndGetDictBuffer(final DictDecoder.DictionaryBufferFactory factory)
-                    throws FileNotFoundException, IOException {
-        openDictBuffer(factory);
+    /* package */ DictBuffer openAndGetDictBuffer() throws FileNotFoundException, IOException {
+        openDictBuffer();
         return getDictBuffer();
     }
 
     @Override
     public FileHeader readHeader() throws IOException, UnsupportedFormatException {
+        if (mDictBuffer == null) {
+            openDictBuffer();
+        }
+
         final int version = HeaderReader.readVersion(mDictBuffer);
         final int optionsFlags = HeaderReader.readOptionFlags(mDictBuffer);
 
@@ -277,5 +299,14 @@ public class Ver3DictDecoder implements DictDecoder {
 
         return new CharGroupInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
+    }
+
+    @Override
+    public FusionDictionary readDictionaryBinary(final FusionDictionary dict)
+            throws FileNotFoundException, IOException, UnsupportedFormatException {
+        if (mDictBuffer == null) {
+            openDictBuffer();
+        }
+        return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
     }
 }

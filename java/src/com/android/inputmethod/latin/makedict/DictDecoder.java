@@ -44,6 +44,26 @@ public interface DictDecoder {
      */
     public CharGroupInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
 
+    /**
+     * Reads a buffer and returns the memory representation of the dictionary.
+     *
+     * This high-level method takes a buffer and reads its contents, populating a
+     * FusionDictionary structure. The optional dict argument is an existing dictionary to
+     * which words from the buffer should be added. If it is null, a new dictionary is created.
+     *
+     * @param dict an optional dictionary to add words to, or null.
+     * @return the created (or merged) dictionary.
+     */
+    @UsedForTesting
+    public FusionDictionary readDictionaryBinary(final FusionDictionary dict)
+            throws FileNotFoundException, IOException, UnsupportedFormatException;
+
+    // Flags for DictionaryBufferFactory.
+    public static final int USE_READONLY_BYTEBUFFER = 0x01000000;
+    public static final int USE_BYTEARRAY = 0x02000000;
+    public static final int USE_WRITABLE_BYTEBUFFER = 0x04000000;
+    public static final int MASK_DICTBUFFER = 0x0F000000;
+
     public interface DictionaryBufferFactory {
         public DictBuffer getDictionaryBuffer(final File file)
                 throws FileNotFoundException, IOException;

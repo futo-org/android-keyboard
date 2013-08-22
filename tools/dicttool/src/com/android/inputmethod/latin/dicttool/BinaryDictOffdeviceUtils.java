@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
@@ -184,15 +185,14 @@ public final class BinaryDictOffdeviceUtils {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
                 } else {
-                    final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(decodedSpec.mFile);
-                    dictDecoder.openDictBuffer(
-                            new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
+                    final DictDecoder dictDecoder = new Ver3DictDecoder(decodedSpec.mFile,
+                            DictDecoder.USE_BYTEARRAY);
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
                         System.out.println("Packaging : " + decodedSpec.describeChain());
                         System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                     }
-                    return BinaryDictDecoderUtils.readDictionaryBinary(dictDecoder, null);
+                    return dictDecoder.readDictionaryBinary(null);
                 }
             }
         } catch (IOException e) {

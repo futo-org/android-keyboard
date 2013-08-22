@@ -28,6 +28,7 @@ import com.android.inputmethod.latin.ExpandableDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
@@ -242,11 +243,12 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
         };
 
         // Load the dictionary from binary file
-        final Ver3DictDecoder reader = new Ver3DictDecoder(
-                new File(getContext().getFilesDir(), fileName));
+        final File dictFile = new File(getContext().getFilesDir(), fileName);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(dictFile,
+                DictDecoder.USE_BYTEARRAY);
         try {
-            reader.openDictBuffer(new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
-            UserHistoryDictIOUtils.readDictionaryBinary(reader, listener);
+            dictDecoder.openDictBuffer();
+            UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
         } catch (FileNotFoundException e) {
             // This is an expected condition: we don't have a user history dictionary for this
             // language yet. It will be created sometime later.
