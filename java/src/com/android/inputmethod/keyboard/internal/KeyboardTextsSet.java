@@ -1899,9 +1899,10 @@ public final class KeyboardTextsSet {
         /* 47 */ "\u201C,\u201D,\u201E",
         /* 48 */ "!text/single_laqm_raqm_rtl",
         /* 49 */ "!text/double_laqm_raqm_rtl",
-        /* 50~ */
-        null, null, null,
-        /* ~52 */
+        /* 50 */ null,
+        // U+20AA: "₪" NEW SHEQEL SIGN
+        /* 51 */ "\u20AA",
+        /* 52 */ null,
         /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(|),)|(",
         // U+2605: "★" BLACK STAR
         /* 54 */ "\u2605",
