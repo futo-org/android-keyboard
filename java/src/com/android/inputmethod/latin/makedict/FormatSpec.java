@@ -62,19 +62,19 @@ public final class FormatSpec {
     /*
      * Node array (FusionDictionary.PtNodeArray) layout is as follows:
      *
-     * g |
-     * r | the number of groups, 1 or 2 bytes.
-     * o | 1 byte = bbbbbbbb match
-     * u |   case 1xxxxxxx => xxxxxxx << 8 + next byte
-     * p |   otherwise => bbbbbbbb
-     * c |
-     * ount
+     * n |
+     * o | the number of PtNodes, 1 or 2 bytes.
+     * d | 1 byte = bbbbbbbb match
+     * e |   case 1xxxxxxx => xxxxxxx << 8 + next byte
+     * c |   otherwise => bbbbbbbb
+     * o |
+     * unt
      *
-     * g |
-     * r | sequence of groups,
-     * o | the layout of each group is described below.
-     * u |
-     * ps
+     * n |
+     * o | sequence of PtNodes,
+     * d | the layout of each PtNode is described below.
+     * e |
+     * s
      *
      * f |
      * o | IF SUPPORTS_DYNAMIC_UPDATE (defined in the file header)
@@ -86,19 +86,19 @@ public final class FormatSpec {
      * linkaddress
      */
 
-    /* Node (FusionDictionary.CharGroup) layout is as follows:
+    /* Node (FusionDictionary.PtNode) layout is as follows:
      *   | IF !SUPPORTS_DYNAMIC_UPDATE
-     *   |   addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
-     *   |                           2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
-     * f |                                   01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
-     * l |                                   10 = 2 bytes     : FLAG_GROUP_ADDRESS_TYPE_TWOBYTES
-     * a |                                   11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
+     *   |   addressType                    xx               : mask with MASK_CHILDREN_ADDRESS_TYPE
+     *   |                          2 bits, 00 = no children : FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS
+     * f |                                  01 = 1 byte      : FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE
+     * l |                                  10 = 2 bytes     : FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES
+     * a |                                  11 = 3 bytes     : FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
      * g | ELSE
-     * s |   is moved ?              2 bits, 11 = no          : FLAG_IS_NOT_MOVED
-     *   |                              This must be the same as FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
-     *   |                                   01 = yes         : FLAG_IS_MOVED
+     * s |   is moved ?             2 bits, 11 = no          : FLAG_IS_NOT_MOVED
+     *   |                            This must be the same as FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
+     *   |                                  01 = yes         : FLAG_IS_MOVED
      *   |                        the new address is stored in the same place as the parent address
-     *   |   is deleted?                     10 = yes         : FLAG_IS_DELETED
+     *   |   is deleted?                    10 = yes         : FLAG_IS_DELETED
      *   | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
      *   | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
@@ -116,7 +116,7 @@ public final class FormatSpec {
      * ddress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
-     * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
+     * h |   char, char, char, char    n * (1 or 3 bytes) : use PtNodeInfo for i/o helpers
      * a |   end                       1 byte, = 0
      * r | ELSE
      * s |   char                      1 or 3 bytes
@@ -127,17 +127,22 @@ public final class FormatSpec {
      * e |   frequency                 1 byte
      * q |
      *
-     * c | IF 00 = FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = addressType
-     * h |   // nothing
-     * i | ELSIF 01 = FLAG_GROUP_ADDRESS_TYPE_ONEBYTE == addressType
-     * l |   children address, 1 byte
-     * d | ELSIF 10 = FLAG_GROUP_ADDRESS_TYPE_TWOBYTES == addressType
-     * r |   children address, 2 bytes
-     * e | ELSE // 11 = FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = addressType
-     * n |   children address, 3 bytes
-     * A | END
-     * d
-     * dress
+     * c | IF SUPPORTS_DYNAMIC_UPDATE
+     * h |   children address, 3 bytes
+     * i |   1 byte = bbbbbbbb match
+     * l |     case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
+     * d |     otherwise => (bbbbbbbb<<16) + (next byte << 8) + next byte
+     * r | ELSIF 00 = FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS == addressType
+     * e |   // nothing
+     * n | ELSIF 01 = FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE == addressType
+     * A |   children address, 1 byte
+     * d | ELSIF 10 = FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES == addressType
+     * d |   children address, 2 bytes
+     * r | ELSE // 11 = FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES = addressType
+     * e |   children address, 3 bytes
+     * s | END
+     * s
+     * ress
      *
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
      *   | shortcut string list
@@ -156,33 +161,33 @@ public final class FormatSpec {
      * characters which should never happen anyway (and still work, but take 3 bytes).
      *
      * bigram address list is:
-     * <flags> = | hasNext = 1 bit, 1 = yes, 0 = no     : FLAG_ATTRIBUTE_HAS_NEXT
-     *           | addressSign = 1 bit,                 : FLAG_ATTRIBUTE_OFFSET_NEGATIVE
+     * <flags> = | hasNext = 1 bit, 1 = yes, 0 = no     : FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT
+     *           | addressSign = 1 bit,                 : FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE
      *           |                      1 = must take -address, 0 = must take +address
-     *           |                         xx : mask with MASK_ATTRIBUTE_ADDRESS_TYPE
-     *           | addressFormat = 2 bits, 00 = unused  : FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE
-     *           |                         01 = 1 byte  : FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE
-     *           |                         10 = 2 bytes : FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES
-     *           |                         11 = 3 bytes : FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES
-     *           | 4 bits : frequency         : mask with FLAG_ATTRIBUTE_FREQUENCY
-     * <address> | IF (01 == FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE == addressFormat)
+     *           |                         xx : mask with MASK_BIGRAM_ATTR_ADDRESS_TYPE
+     *           | addressFormat = 2 bits, 00 = unused  : FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE
+     *           |                         01 = 1 byte  : FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE
+     *           |                         10 = 2 bytes : FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES
+     *           |                         11 = 3 bytes : FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES
+     *           | 4 bits : frequency         : mask with FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY
+     * <address> | IF (01 == FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE == addressFormat)
      *           |   read 1 byte, add top 4 bits
-     *           | ELSIF (10 == FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES == addressFormat)
+     *           | ELSIF (10 == FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES == addressFormat)
      *           |   read 2 bytes, add top 4 bits
-     *           | ELSE // 11 == FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES == addressFormat
+     *           | ELSE // 11 == FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES == addressFormat
      *           |   read 3 bytes, add top 4 bits
      *           | END
-     *           | if (FLAG_ATTRIBUTE_OFFSET_NEGATIVE) then address = -address
-     * if (FLAG_ATTRIBUTE_HAS_NEXT) goto bigram_and_shortcut_address_list_is
+     *           | if (FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE) then address = -address
+     * if (FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT) goto bigram_and_shortcut_address_list_is
      *
      * shortcut string list is:
-     * <byte size> = GROUP_SHORTCUT_LIST_SIZE_SIZE bytes, big-endian: size of the list, in bytes.
-     * <flags>     = | hasNext = 1 bit, 1 = yes, 0 = no : FLAG_ATTRIBUTE_HAS_NEXT
+     * <byte size> = PTNODE_SHORTCUT_LIST_SIZE_SIZE bytes, big-endian: size of the list, in bytes.
+     * <flags>     = | hasNext = 1 bit, 1 = yes, 0 = no : FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT
      *               | reserved = 3 bits, must be 0
-     *               | 4 bits : frequency : mask with FLAG_ATTRIBUTE_FREQUENCY
+     *               | 4 bits : frequency : mask with FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY
      * <shortcut>  = | string of characters at the char format described above, with the terminator
      *               | used to signal the end of the string.
-     * if (FLAG_ATTRIBUTE_HAS_NEXT goto flags
+     * if (FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT goto flags
      */
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
@@ -206,11 +211,11 @@ public final class FormatSpec {
     static final int FORWARD_LINK_ADDRESS_SIZE = 3;
 
     // These flags are used only in the static dictionary.
-    static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
-    static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
-    static final int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
-    static final int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
-    static final int FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
+    static final int MASK_CHILDREN_ADDRESS_TYPE = 0xC0;
+    static final int FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS = 0x00;
+    static final int FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE = 0x40;
+    static final int FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES = 0x80;
+    static final int FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES = 0xC0;
 
     static final int FLAG_HAS_MULTIPLE_CHARS = 0x20;
 
@@ -227,32 +232,32 @@ public final class FormatSpec {
     static final int FLAG_IS_NOT_MOVED = 0x80 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
     static final int FLAG_IS_DELETED = 0x80;
 
-    static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
-    static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
-    static final int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
-    static final int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
-    static final int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
-    static final int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
-    static final int FLAG_ATTRIBUTE_FREQUENCY = 0x0F;
+    static final int FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT = 0x80;
+    static final int FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE = 0x40;
+    static final int MASK_BIGRAM_ATTR_ADDRESS_TYPE = 0x30;
+    static final int FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE = 0x10;
+    static final int FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES = 0x20;
+    static final int FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES = 0x30;
+    static final int FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY = 0x0F;
 
-    static final int GROUP_CHARACTERS_TERMINATOR = 0x1F;
+    static final int PTNODE_CHARACTERS_TERMINATOR = 0x1F;
 
-    static final int GROUP_TERMINATOR_SIZE = 1;
-    static final int GROUP_FLAGS_SIZE = 1;
-    static final int GROUP_FREQUENCY_SIZE = 1;
-    static final int GROUP_MAX_ADDRESS_SIZE = 3;
-    static final int GROUP_ATTRIBUTE_FLAGS_SIZE = 1;
-    static final int GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
-    static final int GROUP_SHORTCUT_LIST_SIZE_SIZE = 2;
+    static final int PTNODE_TERMINATOR_SIZE = 1;
+    static final int PTNODE_FLAGS_SIZE = 1;
+    static final int PTNODE_FREQUENCY_SIZE = 1;
+    static final int PTNODE_MAX_ADDRESS_SIZE = 3;
+    static final int PTNODE_ATTRIBUTE_FLAGS_SIZE = 1;
+    static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
+    static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     static final int NO_PARENT_ADDRESS = 0;
     static final int NO_FORWARD_LINK_ADDRESS = 0;
     static final int INVALID_CHARACTER = -1;
 
-    static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
-    static final int MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
-    static final int MAX_BIGRAMS_IN_A_GROUP = 10000;
+    static final int MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT = 0x7F; // 127
+    static final int MAX_PTNODES_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
+    static final int MAX_BIGRAMS_IN_A_PTNODE = 10000;
 
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;

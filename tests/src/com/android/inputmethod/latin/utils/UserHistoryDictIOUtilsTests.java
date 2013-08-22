@@ -25,7 +25,7 @@ import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigramList;
@@ -89,12 +89,12 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
 
     private void checkWordInFusionDict(final FusionDictionary dict, final String word,
             final ArrayList<String> expectedBigrams) {
-        final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
-        assertNotNull(group);
-        assertTrue(group.isTerminal());
+        final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
+        assertNotNull(ptNode);
+        assertTrue(ptNode.isTerminal());
 
         for (final String bigram : expectedBigrams) {
-            assertNotNull(group.getBigram(bigram));
+            assertNotNull(ptNode.getBigram(bigram));
         }
     }
 

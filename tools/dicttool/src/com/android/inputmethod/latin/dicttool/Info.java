@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
@@ -65,20 +65,20 @@ public class Info extends Dicttool.Command {
 
     private static void showWordInfo(final FusionDictionary dict, final String word,
             final boolean plumbing) {
-        final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
-        if (null == group) {
+        final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
+        if (null == ptNode) {
             System.out.println(word + " is not in the dictionary");
             return;
         }
         System.out.println("Word: " + word);
-        System.out.println("  Freq: " + group.getFrequency());
-        if (group.getIsNotAWord()) {
+        System.out.println("  Freq: " + ptNode.getFrequency());
+        if (ptNode.getIsNotAWord()) {
             System.out.println("  Is not a word");
         }
-        if (group.getIsBlacklistEntry()) {
+        if (ptNode.getIsBlacklistEntry()) {
             System.out.println("  Is a blacklist entry");
         }
-        final ArrayList<WeightedString> shortcutTargets = group.getShortcutTargets();
+        final ArrayList<WeightedString> shortcutTargets = ptNode.getShortcutTargets();
         if (null == shortcutTargets || shortcutTargets.isEmpty()) {
             System.out.println("  No shortcuts");
         } else {
@@ -88,7 +88,7 @@ public class Info extends Dicttool.Command {
                                 ? "whitelist" : shortcutTarget.mFrequency) + ")");
             }
         }
-        final ArrayList<WeightedString> bigrams = group.getBigrams();
+        final ArrayList<WeightedString> bigrams = ptNode.getBigrams();
         if (null == bigrams || bigrams.isEmpty()) {
             System.out.println("  No bigrams");
         } else {
