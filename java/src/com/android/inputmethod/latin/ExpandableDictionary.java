@@ -20,6 +20,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -231,7 +232,7 @@ public class ExpandableDictionary extends Dictionary {
             childNode.mShortcutOnly = isShortcutOnly;
             children.add(childNode);
         }
-        if (wordLength == depth + 1 && shortcutTarget != null) {
+        if (wordLength == depth + 1) {
             // Terminate this word
             childNode.mTerminal = true;
             if (isShortcutOnly) {
@@ -351,6 +352,7 @@ public class ExpandableDictionary extends Dictionary {
     /**
      * Returns the word's frequency or -1 if not found
      */
+    @UsedForTesting
     protected int getWordFrequency(final String word) {
         // Case-sensitive search
         final Node node = searchNode(mRoots, word, 0, word.length());
