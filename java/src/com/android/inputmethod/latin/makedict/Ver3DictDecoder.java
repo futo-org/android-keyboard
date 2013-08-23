@@ -25,6 +25,8 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.JniUtils;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -38,6 +40,7 @@ import java.util.TreeMap;
  */
 @UsedForTesting
 public class Ver3DictDecoder implements DictDecoder {
+    private static final String TAG = Ver3DictDecoder.class.getSimpleName();
 
     static {
         JniUtils.loadNativeLibrary();
@@ -308,7 +311,21 @@ public class Ver3DictDecoder implements DictDecoder {
         if (mDictBuffer == null) {
             openDictBuffer();
         }
-        return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
+        try {
+            return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
+        } catch (IOException e) {
+            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
+            if (!mDictionaryBinaryFile.delete()) {
+                Log.e(TAG, "Failed to delete the broken dictionary.");
+            }
+            throw e;
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
+            if (!mDictionaryBinaryFile.delete()) {
+                Log.e(TAG, "Failed to delete the broken dictionary.");
+            }
+            throw e;
+        }
     }
 
     @Override
