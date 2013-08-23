@@ -521,20 +521,21 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
-        dictDecoder.openDictBuffer(new DictDecoder.DictionaryBufferFactory() {
-            @Override
-            public DictBuffer getDictionaryBuffer(File file)
-                    throws FileNotFoundException, IOException {
-                final FileInputStream inStream = new FileInputStream(file);
-                try {
-                    inStream.read(buffer);
-                    return new ByteArrayDictBuffer(buffer);
-                } finally {
-                    inStream.close();
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+                new DictDecoder.DictionaryBufferFactory() {
+                    @Override
+                    public DictBuffer getDictionaryBuffer(File file)
+                            throws FileNotFoundException, IOException {
+                        final FileInputStream inStream = new FileInputStream(file);
+                        try {
+                            inStream.read(buffer);
+                            return new ByteArrayDictBuffer(buffer);
+                        } finally {
+                            inStream.close();
+                        }
+                    }
                 }
-            }
-        });
+        );
         return dictDecoder.readHeader();
     }
 

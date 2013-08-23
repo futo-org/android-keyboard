@@ -559,17 +559,9 @@ public final class BinaryDictDecoderUtils {
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    public static FusionDictionary readDictionaryBinary(final Ver3DictDecoder dictDecoder,
+    /* package */ static FusionDictionary readDictionaryBinary(final Ver3DictDecoder dictDecoder,
             final FusionDictionary dict) throws FileNotFoundException, IOException,
             UnsupportedFormatException {
-
-        // if the buffer has not been opened, open the buffer with bytebuffer.
-        if (dictDecoder.getDictBuffer() == null) dictDecoder.openDictBuffer(
-                new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
-        if (dictDecoder.getDictBuffer() == null) {
-            MakedictLog.e("Cannot open the buffer");
-        }
-
         // Read header
         final FileHeader fileHeader = dictDecoder.readHeader();
 

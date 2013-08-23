@@ -229,8 +229,6 @@ final public class BinaryDictionaryGetter {
         try {
             // Read the version of the file
             final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(f);
-            dictDecoder.openDictBuffer(
-                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
             final FileHeader header = dictDecoder.readHeader();
 
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);

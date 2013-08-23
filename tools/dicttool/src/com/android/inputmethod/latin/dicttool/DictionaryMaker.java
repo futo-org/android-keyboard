@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -266,10 +267,8 @@ public class DictionaryMaker {
     private static FusionDictionary readBinaryFile(final String binaryFilename)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File file = new File(binaryFilename);
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
-        dictDecoder.openDictBuffer(
-                new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
-        return BinaryDictDecoderUtils.readDictionaryBinary(dictDecoder, null);
+        final DictDecoder dictDecoder = new Ver3DictDecoder(file);
+        return dictDecoder.readDictionaryBinary(null);
     }
 
     /**

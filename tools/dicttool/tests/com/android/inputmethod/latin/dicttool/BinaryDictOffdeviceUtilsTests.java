@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils;
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -69,10 +69,8 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
             assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(decodeSpec.mFile);
-        dictDecoder.openDictBuffer(
-                new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
-        final FusionDictionary resultDict = BinaryDictDecoderUtils.readDictionaryBinary(dictDecoder,
+        final DictDecoder dictDecoder = new Ver3DictDecoder(decodeSpec.mFile);
+        final FusionDictionary resultDict = dictDecoder.readDictionaryBinary(
                 null /* dict : an optional dictionary to add words to, or null */);
         assertEquals("Dictionary can't be read back correctly",
                 FusionDictionary.findWordInTree(resultDict.mRootNodeArray, "foo").getFrequency(),

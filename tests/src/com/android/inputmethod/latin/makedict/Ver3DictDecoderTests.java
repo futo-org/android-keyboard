@@ -68,9 +68,9 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
         }
 
         assertNotNull(testFile);
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile, factory);
         try {
-            dictDecoder.openDictBuffer(factory);
+            dictDecoder.openDictBuffer();
         } catch (Exception e) {
             Log.e(TAG, "Failed to open the buffer", e);
         }
@@ -78,7 +78,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
         writeDataToFile(testFile);
 
         try {
-            dictDecoder.openDictBuffer(factory);
+            dictDecoder.openDictBuffer();
         } catch (Exception e) {
             Log.e(TAG, "Raised the exception while opening buffer", e);
         }
@@ -110,7 +110,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
             Log.e(TAG, "IOException while the creating temporary file", e);
         }
 
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(testFile, factory);
 
         // the default return value of getBuffer() must be null.
         assertNull("the default return value of getBuffer() is not null",
@@ -122,7 +122,7 @@ public class Ver3DictDecoderTests extends AndroidTestCase {
 
         DictBuffer dictBuffer = null;
         try {
-            dictBuffer = dictDecoder.openAndGetDictBuffer(factory);
+            dictBuffer = dictDecoder.openAndGetDictBuffer();
         } catch (IOException e) {
             Log.e(TAG, "Failed to open and get the buffer", e);
         }

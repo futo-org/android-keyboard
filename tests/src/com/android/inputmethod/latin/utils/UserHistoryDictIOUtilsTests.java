@@ -21,6 +21,7 @@ import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -142,10 +143,9 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file, DictDecoder.USE_BYTEARRAY);
         try {
-            dictDecoder.openDictBuffer(
-                    new Ver3DictDecoder.DictionaryBufferFromByteArrayFactory());
+            dictDecoder.openDictBuffer();
         } catch (FileNotFoundException e) {
             Log.e(TAG, "file not found", e);
         } catch (IOException e) {

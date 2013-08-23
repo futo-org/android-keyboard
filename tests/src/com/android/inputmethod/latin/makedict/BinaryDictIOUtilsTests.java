@@ -31,7 +31,6 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -140,23 +139,13 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private int getWordPosition(final File file, final String word) {
         int position = FormatSpec.NOT_VALID_WORD;
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
-        FileInputStream inStream = null;
+
         try {
-            inStream = new FileInputStream(file);
-            dictDecoder.openDictBuffer(
-                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+            dictDecoder.openDictBuffer();
             position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
         return position;
     }
@@ -184,11 +173,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private CharGroupInfo findWordFromFile(final File file, final String word) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         CharGroupInfo info = null;
         try {
-            dictDecoder.openDictBuffer(
-                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+            dictDecoder.openDictBuffer();
             info = findWordByBinaryDictReader(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -200,11 +188,12 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
             final ArrayList<WeightedString> shortcuts) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         BufferedOutputStream outStream = null;
         long amountOfTime = -1;
         try {
-            dictDecoder.openDictBuffer(new DictionaryBufferFromWritableByteBufferFactory());
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+                    DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            dictDecoder.openDictBuffer();
             outStream = new BufferedOutputStream(new FileOutputStream(file, true));
 
             if (!exist) {
@@ -234,9 +223,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void deleteWord(final File file, final String word) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
         try {
-            dictDecoder.openDictBuffer(new DictionaryBufferFromWritableByteBufferFactory());
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+                    DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            dictDecoder.openDictBuffer();
             DynamicBinaryDictIOUtils.deleteWord(dictDecoder, word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -244,10 +234,9 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     }
 
     private void checkReverseLookup(final File file, final String word, final int position) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+
         try {
-            final DictBuffer dictBuffer = dictDecoder.openAndGetDictBuffer(
-                    new Ver3DictDecoder.DictionaryBufferFromReadOnlyByteBufferFactory());
+            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
             final FileHeader fileHeader = dictDecoder.readHeader();
             assertEquals(word,
                     BinaryDictDecoderUtils.getWordAtPosition(dictDecoder, fileHeader.mHeaderSize,
