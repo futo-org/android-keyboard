@@ -327,7 +327,7 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? false : !node.mShortcutOnly;
     }
 
-    protected boolean removeBigram(final String word1, final String word2) {
+    public boolean removeBigram(final String word1, final String word2) {
         // Refer to addOrSetBigram() about word1.toLowerCase()
         final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         final Node secondWord = searchWord(mRoots, word2, 0, null);
@@ -359,7 +359,7 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? -1 : node.mFrequency;
     }
 
-    protected NextWord getBigramWord(final String word1, final String word2) {
+    public NextWord getBigramWord(final String word1, final String word2) {
         // Refer to addOrSetBigram() about word1.toLowerCase()
         final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         final Node secondWord = searchWord(mRoots, word2, 0, null);
@@ -700,7 +700,7 @@ public class ExpandableDictionary extends Dictionary {
         return null;
     }
 
-    protected void clearDictionary() {
+    public void clearDictionary() {
         mRoots = new NodeArray();
     }
 
