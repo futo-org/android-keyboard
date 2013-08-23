@@ -326,15 +326,11 @@ public class BinaryDictEncoderUtils {
             }
             int nodeSize = getNodeHeaderSize(ptNode, formatOptions);
             if (ptNode.isTerminal()) nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
-            if (null == ptNode.mChildren && formatOptions.mSupportsDynamicUpdate) {
+            if (formatOptions.mSupportsDynamicUpdate) {
                 nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
             } else if (null != ptNode.mChildren) {
-                if (formatOptions.mSupportsDynamicUpdate) {
-                    nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
-                } else {
-                    nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
-                            nodeSize + size, ptNode.mChildren));
-                }
+                nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
+                        nodeSize + size, ptNode.mChildren));
             }
             nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
             if (null != ptNode.mBigrams) {
