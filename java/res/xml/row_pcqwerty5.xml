@@ -24,36 +24,23 @@
     <Row
         latin:keyWidth="7.692%p"
     >
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="symbols"
-            >
-                <Key
-                    latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="11.538%p" />
-            </case>
-            <!-- keyboardLayoutSetElement="alphabet*" -->
-            <default>
-                <Key
-                    latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyIcon="!icon/undefined"
-                    latin:keyLabel="!text/label_to_symbol_key_pcqwerty"
-                    latin:keyWidth="11.538%p" />
-            </default>
-        </switch>
+        <Spacer
+            latin:keyWidth="11.538%p" />
         <switch>
             <case
                 latin:shortcutKeyEnabled="true"
             >
                 <Key
-                    latin:keyStyle="shortcutKeyStyle" />
-            </case>
+                    latin:keyStyle="shortcutKeyStyle"
+                    latin:keyWidth="11.538%p" />
+                </case>
             <case
                 latin:clobberSettingsKey="false"
             >
                 <Key
-                    latin:keyStyle="settingsKeyStyle" />
-            </case>
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="11.538%p" />
+                </case>
         </switch>
         <switch>
             <case
@@ -61,21 +48,33 @@
             >
                 <Key
                     latin:keyStyle="languageSwitchKeyStyle"
-                    latin:keyXPos="19.230%p" />
+                    latin:keyWidth="11.538%p" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="53.844%p" />
-            </case>
+                    latin:keyWidth="42.310%p" />
+                </case>
             <!-- languageSwitchKeyEnabled="false" -->
             <default>
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyXPos="19.230%p"
-                    latin:keyWidth="61.536%p" />
+                    latin:keyWidth="53.848%p" />
             </default>
         </switch>
         <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            latin:keyStyle="defaultEnterKeyStyle"
+            latin:keyWidth="15.384%p" />
+        <switch>
+            <case
+                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
+            >
+                <Spacer />
+            </case>
+            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
+            <default>
+                <include
+                    latin:keyboardLayout="@xml/key_symbols_period"
+                    latin:backgroundType="functional" />
+            </default>
+        </switch>
     </Row>
 </merge>

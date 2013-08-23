@@ -23,26 +23,27 @@
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="symbols"
+            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
         >
             <Key
                 latin:keyLabel=";"
-                latin:moreKeys=":" />
-            <Key
-                latin:keyLabel="\'"
-                latin:moreKeys="!fixedColumnOrder!3,!text/double_quotes,!text/single_quotes" />
-        </case>
-        <default>
-            <Key
-                latin:keyLabel=";"
                 latin:keyHintLabel=":"
-                latin:moreKeys=":"
+                latin:additionalMoreKeys=":"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="\'"
                 latin:keyHintLabel="&quot;"
-                latin:moreKeys="!fixedColumnOrder!4,!text/double_quotes,&quot;,!text/single_quotes"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:additionalMoreKeys="&quot;"
+                latin:keyStyle="hasShiftedLetterHintStyle"
+                latin:moreKeys="!fixedColumnOrder!4,!text/double_quotes,%,!text/single_quotes" />
+        </case>
+        <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
+        <default>
+            <Key
+                latin:keyLabel=":" />
+            <Key
+                latin:keyLabel="&quot;"
+                latin:moreKeys="!fixedColumnOrder!3,!text/double_quotes,!text/single_quotes" />
         </default>
     </switch>
 </merge>
