@@ -323,7 +323,7 @@ public final class BinaryDictDecoderUtils {
     /**
      * Reads and returns the PtNode count out of a buffer and forwards the pointer.
      */
-    public static int readPtNodeCount(final DictBuffer dictBuffer) {
+    /* package */ static int readPtNodeCount(final DictBuffer dictBuffer) {
         final int msb = dictBuffer.readUnsignedByte();
         if (FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT >= msb) {
             return msb;

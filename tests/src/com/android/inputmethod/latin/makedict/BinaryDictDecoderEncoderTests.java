@@ -555,7 +555,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         int position = -1;
         try {
             final long now = System.nanoTime();
-            position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
+            position = dictDecoder.getTerminalPosition(word);
             diff = System.nanoTime() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException while getTerminalPosition", e);
@@ -596,16 +596,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         try {
             // too long word
             final String longWord = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-            assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, longWord));
+            assertEquals(FormatSpec.NOT_VALID_WORD, dictDecoder.getTerminalPosition(longWord));
 
             // null
-            assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, null));
+            assertEquals(FormatSpec.NOT_VALID_WORD, dictDecoder.getTerminalPosition(null));
 
             // empty string
-            assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, ""));
+            assertEquals(FormatSpec.NOT_VALID_WORD, dictDecoder.getTerminalPosition(""));
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
@@ -655,16 +652,16 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, sWords.get(0)));
+                    dictDecoder.getTerminalPosition(sWords.get(0)));
             DynamicBinaryDictIOUtils.deleteWord(dictDecoder, sWords.get(0));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, sWords.get(0)));
+                    dictDecoder.getTerminalPosition(sWords.get(0)));
 
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, sWords.get(5)));
+                    dictDecoder.getTerminalPosition(sWords.get(5)));
             DynamicBinaryDictIOUtils.deleteWord(dictDecoder, sWords.get(5));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    BinaryDictIOUtils.getTerminalPosition(dictDecoder, sWords.get(5)));
+                    dictDecoder.getTerminalPosition(sWords.get(5)));
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
