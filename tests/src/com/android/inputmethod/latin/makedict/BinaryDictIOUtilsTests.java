@@ -22,8 +22,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
-import com.android.inputmethod.latin.makedict.DictDecoder.
-        DictionaryBufferFromWritableByteBufferFactory;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -128,6 +126,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
     }
 
+    @SuppressWarnings("unused")
     private static void printBinaryFile(final Ver3DictDecoder dictDecoder)
             throws IOException, UnsupportedFormatException {
         final FileHeader fileHeader = dictDecoder.readHeader();

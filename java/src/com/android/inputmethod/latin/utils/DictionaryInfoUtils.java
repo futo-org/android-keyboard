@@ -27,10 +27,8 @@ import com.android.inputmethod.latin.BinaryDictionaryGetter;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
