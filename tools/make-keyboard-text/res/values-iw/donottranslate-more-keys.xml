@@ -52,5 +52,5 @@
     <string name="single_angle_quotes">!text/single_laqm_raqm_rtl</string>
     <string name="double_angle_quotes">!text/double_laqm_raqm_rtl</string>
     <!-- U+20AA: "₪" NEW SHEQEL SIGN -->
-    <string name="keylabel_for_currency_generic">&#x20AA;</string>
+    <string name="keylabel_for_currency">&#x20AA;</string>
 </resources>

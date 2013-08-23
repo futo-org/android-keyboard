@@ -153,8 +153,8 @@ public final class KeyboardTextsSet {
         /* 48 */ "single_angle_quotes",
         /* 49 */ "double_angle_quotes",
         /* 50 */ "more_keys_for_currency_dollar",
-        /* 51 */ "keylabel_for_currency_generic",
-        /* 52 */ "more_keys_for_currency_generic",
+        /* 51 */ "keylabel_for_currency",
+        /* 52 */ "more_keys_for_currency",
         /* 53 */ "more_keys_for_punctuation",
         /* 54 */ "more_keys_for_star",
         /* 55 */ "more_keys_for_bullet",
@@ -1401,9 +1401,10 @@ public final class KeyboardTextsSet {
         /* 47 */ null,
         /* 48 */ "!text/single_laqm_raqm_rtl",
         /* 49 */ "!text/double_laqm_raqm_rtl",
-        /* 50~ */
-        null, null, null,
-        /* ~52 */
+        /* 50 */ null,
+        // U+FDFC: "﷼" RIAL SIGN
+        /* 51 */ "\uFDFC",
+        /* 52 */ null,
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON

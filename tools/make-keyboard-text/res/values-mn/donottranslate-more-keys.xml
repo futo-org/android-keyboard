@@ -24,5 +24,5 @@
          U+0412: "В" CYRILLIC CAPITAL LETTER VE -->
     <string name="label_to_alpha_key">&#x0410;&#x0411;&#x0412;</string>
     <!-- U+20AE: "₮" TUGRIK SIGN -->
-    <string name="keylabel_for_currency_generic">&#x20AE;</string>
+    <string name="keylabel_for_currency">&#x20AE;</string>
 </resources>

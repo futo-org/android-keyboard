@@ -24,5 +24,5 @@
          U+0E04: "ค" THAI CHARACTER KHO KHWAI -->
     <string name="label_to_alpha_key">&#x0E01;&#x0E02;&#x0E04;</string>
     <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT -->
-    <string name="keylabel_for_currency_generic">&#x0E3F;</string>
+    <string name="keylabel_for_currency">&#x0E3F;</string>
 </resources>
