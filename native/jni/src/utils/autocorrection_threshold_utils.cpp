@@ -83,9 +83,12 @@ const int AutocorrectionThresholdUtils::FULL_WORD_MULTIPLIER = 2;
         return 0.0f;
     }
 
+    if (score <= 0 || distance >= afterLength) {
+        // normalizedScore must be 0.0f (the minimum value) if the score is less than or equal to 0,
+        // or if the edit distance is larger than or equal to afterLength.
+        return 0.0f;
+    }
     // add a weight based on edit distance.
-    // distance <= max(afterLength, beforeLength) == afterLength,
-    // so, 0 <= distance / afterLength <= 1
     const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
 
     // TODO: Revise the following logic thoroughly by referring to...
