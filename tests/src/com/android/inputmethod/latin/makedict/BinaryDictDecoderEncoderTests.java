@@ -39,10 +39,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Unit tests for BinaryDictDecoderUtils and BinaryDictEncoderUtils.
@@ -61,13 +61,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private static final int USE_BYTE_ARRAY = 1;
     private static final int USE_BYTE_BUFFER = 2;
 
-    private static final List<String> sWords = CollectionUtils.newArrayList();
+    private static final ArrayList<String> sWords = CollectionUtils.newArrayList();
     private static final SparseArray<List<Integer>> sEmptyBigrams =
             CollectionUtils.newSparseArray();
     private static final SparseArray<List<Integer>> sStarBigrams = CollectionUtils.newSparseArray();
     private static final SparseArray<List<Integer>> sChainBigrams =
             CollectionUtils.newSparseArray();
-    private static final Map<String, List<String>> sShortcuts = CollectionUtils.newHashMap();
+    private static final HashMap<String, List<String>> sShortcuts = CollectionUtils.newHashMap();
 
     private static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
     private static final FormatSpec.FormatOptions VERSION3_WITHOUT_DYNAMIC_UPDATE =
@@ -177,7 +177,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
      * Adds unigrams to the dictionary.
      */
     private void addUnigrams(final int number, final FusionDictionary dict,
-            final List<String> words, final Map<String, List<String>> shortcutMap) {
+            final List<String> words, final HashMap<String, List<String>> shortcutMap) {
         for (int i = 0; i < number; ++i) {
             final String word = words.get(i);
             final ArrayList<WeightedString> shortcuts = CollectionUtils.newArrayList();
@@ -234,7 +234,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     private void checkDictionary(final FusionDictionary dict, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap) {
+            final SparseArray<List<Integer>> bigrams,
+            final HashMap<String, List<String>> shortcutMap) {
         assertNotNull(dict);
 
         // check unigram
@@ -255,7 +256,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // check shortcut
         if (shortcutMap != null) {
-            for (final Map.Entry<String, List<String>> entry : shortcutMap.entrySet()) {
+            for (final Entry<String, List<String>> entry : shortcutMap.entrySet()) {
                 assertTrue(words.contains(entry.getKey()));
                 final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray,
                         entry.getKey());
@@ -278,8 +279,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private long timeReadingAndCheckDict(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap,
-            final int bufferType) {
+            final SparseArray<List<Integer>> bigrams,
+            final HashMap<String, List<String>> shortcutMap, final int bufferType) {
         long now, diff = -1;
 
         FusionDictionary dict = null;
@@ -302,7 +303,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
     private String runReadAndWrite(final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcuts,
+            final SparseArray<List<Integer>> bigrams, final HashMap<String, List<String>> shortcuts,
             final int bufferType, final FormatSpec.FormatOptions formatOptions,
             final String message) {
         File file = null;
@@ -387,9 +388,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     private void checkWordMap(final List<String> expectedWords,
             final SparseArray<List<Integer>> expectedBigrams,
-            final Map<Integer, String> resultWords,
-            final Map<Integer, Integer> resultFrequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> resultBigrams) {
+            final TreeMap<Integer, String> resultWords,
+            final TreeMap<Integer, Integer> resultFrequencies,
+            final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams) {
         // check unigrams
         final Set<String> actualWordsSet = new HashSet<String>(resultWords.values());
         final Set<String> expectedWordsSet = new HashSet<String>(expectedWords);
@@ -400,7 +401,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
 
         // check bigrams
-        final Map<String, List<String>> expBigrams = new HashMap<String, List<String>>();
+        final HashMap<String, List<String>> expBigrams = new HashMap<String, List<String>>();
         for (int i = 0; i < expectedBigrams.size(); ++i) {
             final String word1 = expectedWords.get(expectedBigrams.keyAt(i));
             for (int w2 : expectedBigrams.valueAt(i)) {
@@ -411,7 +412,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             }
         }
 
-        final Map<String, List<String>> actBigrams = new HashMap<String, List<String>>();
+        final HashMap<String, List<String>> actBigrams = new HashMap<String, List<String>>();
         for (Entry<Integer, ArrayList<PendingAttribute>> entry : resultBigrams.entrySet()) {
             final String word1 = resultWords.get(entry.getKey());
             final int unigramFreq = resultFrequencies.get(entry.getKey());
@@ -435,10 +436,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final SparseArray<List<Integer>> bigrams, final int bufferType) {
         FileInputStream inStream = null;
 
-        final Map<Integer, String> resultWords = CollectionUtils.newTreeMap();
-        final Map<Integer, ArrayList<PendingAttribute>> resultBigrams =
+        final TreeMap<Integer, String> resultWords = CollectionUtils.newTreeMap();
+        final TreeMap<Integer, ArrayList<PendingAttribute>> resultBigrams =
                 CollectionUtils.newTreeMap();
-        final Map<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
+        final TreeMap<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
 
         long now = -1, diff = -1;
         try {
@@ -446,8 +447,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             dictDecoder.openDictBuffer();
             assertNotNull("Can't get buffer.", dictDecoder.getDictBuffer());
             now = System.currentTimeMillis();
-            BinaryDictIOUtils.readUnigramsAndBigramsBinary(dictDecoder, resultWords, resultFreqs,
-                    resultBigrams);
+            dictDecoder.readUnigramsAndBigramsBinary(resultWords, resultFreqs, resultBigrams);
             diff = System.currentTimeMillis() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
@@ -467,7 +467,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         return diff;
     }
 
-    private String runReadUnigramsAndBigramsBinary(final List<String> words,
+    private String runReadUnigramsAndBigramsBinary(final ArrayList<String> words,
             final SparseArray<List<Integer>> bigrams, final int bufferType,
             final FormatSpec.FormatOptions formatOptions, final String message) {
         File file = null;
@@ -496,8 +496,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 + " : " + message + " : " + outputOptions(bufferType, formatOptions);
     }
 
-    private void runReadUnigramsAndBigramsTests(final List<String> results, final int bufferType,
-            final FormatSpec.FormatOptions formatOptions) {
+    private void runReadUnigramsAndBigramsTests(final ArrayList<String> results,
+            final int bufferType, final FormatSpec.FormatOptions formatOptions) {
         results.add(runReadUnigramsAndBigramsBinary(sWords, sEmptyBigrams, bufferType,
                 formatOptions, "unigram"));
         results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, bufferType,
@@ -507,7 +507,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testReadUnigramsAndBigramsBinaryWithByteBuffer() {
-        final List<String> results = CollectionUtils.newArrayList();
+        final ArrayList<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
@@ -519,7 +519,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testReadUnigramsAndBigramsBinaryWithByteArray() {
-        final List<String> results = CollectionUtils.newArrayList();
+        final ArrayList<String> results = CollectionUtils.newArrayList();
 
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
