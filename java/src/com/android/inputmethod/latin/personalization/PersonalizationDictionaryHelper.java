@@ -33,14 +33,12 @@ public class PersonalizationDictionaryHelper {
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryPredictionDictionary>>
             sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
 
+    private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
+            sLangPersonalizationDictCache = CollectionUtils.newConcurrentHashMap();
+
     private static final ConcurrentHashMap<String,
             SoftReference<PersonalizationPredictionDictionary>>
                     sLangPersonalizationPredictionDictCache =
-                            CollectionUtils.newConcurrentHashMap();
-
-    private static final ConcurrentHashMap<String,
-            SoftReference<PersonalizationDictionary>>
-                    sLangPersonalizationDictCache =
                             CollectionUtils.newConcurrentHashMap();
 
     public static UserHistoryPredictionDictionary getUserHistoryPredictionDictionary(
