@@ -126,7 +126,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
     int pos = getRootPosition();
     DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, getBigramsStructurePolicy(),
             getShortcutsStructurePolicy());
-    while (currentLength <= length) {
+    while (currentLength < length) {
         // When foundMatchedNode becomes true, currentLength is increased at least once.
         bool foundMatchedNode = false;
         int totalChildCount = 0;
@@ -144,13 +144,15 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
             for (int i = 0; i < childCount; i++) {
                 nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(pos, MAX_WORD_LENGTH,
                         mergedNodeCodePoints);
-                if (nodeReader.isDeleted() || nodeReader.getCodePointCount() <= 0) {
+                const int nodeCodePointCount = nodeReader.getCodePointCount();
+                if (nodeReader.isDeleted() || nodeCodePointCount <= 0
+                        || currentLength + nodeCodePointCount > length) {
                     // Skip deleted or empty node.
                     pos = nodeReader.getSiblingNodePos();
                     continue;
                 }
                 bool matched = true;
-                for (int j = 0; j < nodeReader.getCodePointCount(); ++j) {
+                for (int j = 0; j < nodeCodePointCount; ++j) {
                     if (mergedNodeCodePoints[j] != searchCodePoints[currentLength + j]) {
                         // Different code point is found.
                         matched = false;
@@ -158,7 +160,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
                     }
                 }
                 if (matched) {
-                    currentLength += nodeReader.getCodePointCount();
+                    currentLength += nodeCodePointCount;
                     if (length == currentLength) {
                         // Terminal position is found.
                         return nodeReader.getNodePos();
