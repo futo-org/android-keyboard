@@ -43,8 +43,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         public static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
         public static final int ALPHABET_SHIFT_LOCKED = 3;
         public static final int ALPHABET_SHIFT_LOCK_SHIFTED = 4;
-        public static final int SYMBOLS_UNSHIFTED = 5;
-        public static final int SYMBOLS_SHIFTED = 6;
+        public static final int SYMBOLS = 5;
     }
 
     private int mLayout = MockConstants.ALPHABET_UNSHIFTED;
@@ -69,8 +68,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         case MockConstants.ALPHABET_AUTOMATIC_SHIFTED: return "ALPHABET_AUTOMATIC_SHIFTED";
         case MockConstants.ALPHABET_SHIFT_LOCKED: return "ALPHABET_SHIFT_LOCKED";
         case MockConstants.ALPHABET_SHIFT_LOCK_SHIFTED: return "ALPHABET_SHIFT_LOCK_SHIFTED";
-        case MockConstants.SYMBOLS_UNSHIFTED: return "SYMBOLS_UNSHIFTED";
-        case MockConstants.SYMBOLS_SHIFTED: return "SYMBOLS_SHIFTED";
+        case MockConstants.SYMBOLS: return "SYMBOLS";
         default: return "UNKNOWN<" + layoutId + ">";
         }
     }
@@ -111,12 +109,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     @Override
     public void setSymbolsKeyboard() {
-        mLayout = MockConstants.SYMBOLS_UNSHIFTED;
-    }
-
-    @Override
-    public void setSymbolsShiftedKeyboard() {
-        mLayout = MockConstants.SYMBOLS_SHIFTED;
+        mLayout = MockConstants.SYMBOLS;
     }
 
     @Override
