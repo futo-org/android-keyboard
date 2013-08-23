@@ -258,12 +258,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
-    public void setSymbolsShiftedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
-    }
-
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
     public void requestUpdatingShiftState() {
         mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState(),
                 mLatinIME.getCurrentRecapitalizeState());

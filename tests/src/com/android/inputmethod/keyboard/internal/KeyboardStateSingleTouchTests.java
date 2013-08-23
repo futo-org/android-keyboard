@@ -34,38 +34,14 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         pressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
     }
 
-    // Shift key in symbols.
-    public void testShiftSymbols() {
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-
-        // Press/release "?123" key, back to symbols.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release symbol letter key, remain in symbols shifted.
-        pressAndReleaseKey('1', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-    }
-
     // Switching between alphabet and symbols.
     public void testAlphabetAndSymbols() {
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press/release "ABC" key, back to alphabet.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, back to alphabet.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Press/release "?123" key, back to symbols (not symbols shifted).
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
     }
 
     // Switching between alphabet shifted and symbols.
@@ -74,16 +50,7 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
 
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "ABC" key, back to alphabet (not alphabet shifted).
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Press/release shift key, enter into alphabet shifted.
-        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\< key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press/release "ABC" key, back to alphabet (not alphabet shifted).
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
     }
@@ -95,39 +62,21 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
                 ALPHABET_SHIFT_LOCKED);
 
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press/release "ABC" key, back to alphabet shift locked.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, back to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, back to symbols (not symbols shifted).
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
     }
 
     // Automatic switch back to alphabet by space key.
     public void testSwitchBackBySpace() {
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter symbol letter.
-        pressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey('1', SYMBOLS, SYMBOLS);
         // Enter space, switch back to alphabet.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter symbol shift letter.
-        pressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter space, switch back to alphabet.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, ALPHABET_UNSHIFTED);
-        // Press/release "?123" key, enter into symbols (not symbols shifted).
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SPACE, SYMBOLS, ALPHABET_UNSHIFTED);
     }
 
     // Automatic switch back to alphabet shift locked test by space key.
@@ -137,20 +86,11 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
                 ALPHABET_SHIFT_LOCKED);
 
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter symbol letter.
-        pressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey('1', SYMBOLS, SYMBOLS);
         // Enter space, switch back to alphabet shift locked.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_UNSHIFTED, ALPHABET_SHIFT_LOCKED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter symbol shift letter.
-        pressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter space, switch back to alphabet shift locked.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        pressAndReleaseKey(CODE_SPACE, SYMBOLS, ALPHABET_SHIFT_LOCKED);
     }
 
     // Automatic upper case test
@@ -173,20 +113,11 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
 
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press/release symbol letter key, remain in symbols.
-        pressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey('1', SYMBOLS, SYMBOLS);
         // Press/release space, switch back to automatic shifted.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
-
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release symbol shift letter key, remain in symbols shifted.
-        pressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release space, switch back to automatic shifted.
-        pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+        pressAndReleaseKey(CODE_SPACE, SYMBOLS, ALPHABET_AUTOMATIC_SHIFTED);
     }
 
     // Long press shift key.
@@ -302,14 +233,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
                 ALPHABET_UNSHIFTED);
 
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Update shift state, remained in symbols.
-        updateShiftState(SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Update shift state, remained in symbols shifted.
-        updateShiftState(SYMBOLS_SHIFTED);
+        updateShiftState(SYMBOLS);
 
         // Set capitalize the first character of all words mode.
         setAutoCapsMode(CAP_MODE_WORDS);
@@ -337,14 +263,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Load keyboard, should be in automatic shifted.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Update shift state, remained in symbols.
-        updateShiftState(SYMBOLS_UNSHIFTED);
-
-        // Press/release "=\<" key, enter symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Update shift state, remained in symbols shifted.
-        updateShiftState(SYMBOLS_SHIFTED);
+        updateShiftState(SYMBOLS);
     }
 
     // Sliding input in alphabet.
@@ -358,10 +279,10 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
         // Alphabet -> "?123" key + letter -> alphabet.
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter keys, switch back to alphabet.
-        pressAndSlideFromKey('@', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        stopSlidingOnKey('!', SYMBOLS_UNSHIFTED, ALPHABET_UNSHIFTED);
+        pressAndSlideFromKey('@', SYMBOLS, SYMBOLS);
+        stopSlidingOnKey('!', SYMBOLS, ALPHABET_UNSHIFTED);
 
         // Alphabet shifted -> shift key + letter -> alphabet.
         // Press/release shift key, enter alphabet shifted.
@@ -376,20 +297,20 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter keys, switch back to alphabet (not alphabet shifted).
-        pressAndSlideFromKey('@', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        stopSlidingOnKey('!', SYMBOLS_UNSHIFTED, ALPHABET_UNSHIFTED);
+        pressAndSlideFromKey('@', SYMBOLS, SYMBOLS);
+        stopSlidingOnKey('!', SYMBOLS, ALPHABET_UNSHIFTED);
 
         // Alphabet shift locked -> shift key + letter -> alphabet shift locked.
         // Long press shift key, enter alphabet shift locked.
         longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter keys, switch back to alphabet shift locked.
-        pressAndSlideFromKey('!', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        stopSlidingOnKey('!', SYMBOLS_UNSHIFTED, ALPHABET_SHIFT_LOCKED);
+        pressAndSlideFromKey('!', SYMBOLS, SYMBOLS);
+        stopSlidingOnKey('!', SYMBOLS, ALPHABET_SHIFT_LOCKED);
 
         // Alphabet shift locked -> "?123" key + letter -> alphabet shift locked.
         // Press and slide from shift key, enter alphabet shifted.
@@ -413,9 +334,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
         // Alphabet -> "?123" key + letter -> cancel -> alphabet.
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter key, remains in symbols.
-        pressAndSlideFromKey('!', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey('!', SYMBOLS, SYMBOLS);
         // Cancel sliding, switch back to alphabet.
         stopSlidingAndCancel(ALPHABET_UNSHIFTED);
 
@@ -433,9 +354,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter key, remains in symbols.
-        pressAndSlideFromKey('!', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey('!', SYMBOLS, SYMBOLS);
         // Cancel sliding, switch back to alphabet (not alphabet shifted).
         stopSlidingAndCancel(ALPHABET_UNSHIFTED);
 
@@ -444,9 +365,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press and slide from "123?" key, enter symbols.
-        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Enter/release into symbol letter key, remains in symbols.
-        pressAndSlideFromKey('!', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndSlideFromKey('!', SYMBOLS, SYMBOLS);
         // Cancel sliding, switch back to alphabet shift locked.
         stopSlidingAndCancel( ALPHABET_SHIFT_LOCKED);
 
@@ -461,21 +382,14 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
     // Sliding input in symbols.
     public void testSlidingSymbols() {
-        // Symbols -> "=\<" key + letter -> symbols.
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press and slide from shift key, enter symbols shifted.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter/release symbol shifted letter keys, switch back to symbols.
-        pressAndSlideFromKey('|', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        stopSlidingOnKey('~', SYMBOLS_SHIFTED, SYMBOLS_UNSHIFTED);
-
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Symbols -> "ABC" key + letter -> Symbols.
         // Press and slide from "ABC" key, enter alphabet.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Enter/release letter keys, switch back to symbols.
         pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS);
         // Press/release "ABC" key, switch to alphabet.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
 
@@ -486,12 +400,12 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press and slide from "ABC" key.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Enter/release letter keys, switch back to symbols.
         pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS);
         // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
 
@@ -503,52 +417,27 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press and slide from "ABC" key, enter alphabet shift locked.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
         // Enter/release letter keys, switch back to symbols.
         pressAndSlideFromKey('Z', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        stopSlidingOnKey('A', ALPHABET_SHIFT_LOCKED, SYMBOLS_UNSHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols -> "=\<" key + letter -> symbols ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press and slide from "=\<" key, enter symbols shifted.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter/release symbols shift letter keys, switch back to symbols.
-        pressAndSlideFromKey('|', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        stopSlidingOnKey('~', SYMBOLS_SHIFTED, SYMBOLS_UNSHIFTED);
+        stopSlidingOnKey('A', ALPHABET_SHIFT_LOCKED, SYMBOLS);
         // Press/release "ABC" key, switch to alphabet shift locked.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
     }
 
     // Cancel sliding input in symbols.
     public void testSlidingSymbolsCancel() {
-        // Symbols -> "=\<" key + letter -> cancel -> symbols.
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press and slide from shift key, enter symbols shifted.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter/release symbol shifted letter key, remains in symbols shifted.
-        pressAndSlideFromKey('|', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Cancel sliding, switch back to symbols.
-        stopSlidingAndCancel(SYMBOLS_UNSHIFTED);
-
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Symbols -> "ABC" key + letter -> Symbols.
         // Press and slide from "ABC" key, enter alphabet.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Enter/release letter keys, remains in alphabet.
         pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Cancel sliding, switch back to symbols.
-        stopSlidingAndCancel(SYMBOLS_UNSHIFTED);
+        stopSlidingAndCancel(SYMBOLS);
         // Press/release "ABC" key, switch to alphabet.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
 
@@ -559,13 +448,13 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press and slide from "ABC" key.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Enter/release letter key, remains in alphabet.
         pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Cancel sliding, switch back to symbols.
-        stopSlidingAndCancel(SYMBOLS_UNSHIFTED);
+        stopSlidingAndCancel(SYMBOLS);
         // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
 
@@ -577,194 +466,13 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Press and slide from "ABC" key, enter alphabet shift locked.
         pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
         // Enter/release letter key, remains in alphabet shifted.
         pressAndSlideFromKey('Z', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
         // Cancel sliding, switch back to symbols.
-        stopSlidingAndCancel(SYMBOLS_UNSHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols -> "=\<" key + letter -> symbols ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press and slide from "=\<" key, enter symbols shifted.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Enter/release symbols shift letter key, remains in symbols shifted.
-        pressAndSlideFromKey('|', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Cancel sliding, switch back to symbols.
-        stopSlidingAndCancel(SYMBOLS_UNSHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-    }
-
-    // Sliding input in symbols shifted.
-    public void testSlidingSymbolsShifted() {
-        // Symbols shifted -> "?123" + letter -> symbols shifted.
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from shift key, enter symbols.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter/release symbol letter keys, switch back to symbols shifted.
-        pressAndSlideFromKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        stopSlidingOnKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_SHIFTED);
-
-        // Symbols shifted -> "ABC" key + letter -> symbols shifted.
-        // Press and slide from "ABC" key, enter alphabet.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Enter/release letter keys, switch back to symbols shifted.
-        pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Alphabet shifted -> symbols shifted -> "ABC" + letter -> symbols shifted ->
-        // alphabet.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Press/release shift key, enter alphabet shifted.
-        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "ABC" key.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Enter/release letter keys, switch back to symbols shifted.
-        pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        stopSlidingOnKey('a', ALPHABET_UNSHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Alphabet shift locked -> symbols shifted -> "ABC" + letter -> symbols shifted ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "ABC" key.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        // Enter/release letter keys, switch back to symbols shifted.
-        pressAndSlideFromKey('Z', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        stopSlidingOnKey('A', ALPHABET_SHIFT_LOCKED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols shifted -> "?123" + letter -> symbols shifted ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "?123" key.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter/release symbol letter keys, switch back to symbols shifted.
-        pressAndSlideFromKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        stopSlidingOnKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-    }
-
-    // Cancel sliding input in symbols shifted.
-    public void testSlidingSymbolsShiftedCancel() {
-        // Symbols shifted -> "?123" + letter -> symbols shifted.
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from shift key, enter symbols.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter/release symbol letter key, remains in symbols.
-        pressAndSlideFromKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Cancel sliding, switch back to symbols shifted.
-        stopSlidingAndCancel(SYMBOLS_SHIFTED);
-
-        // Symbols shifted -> "ABC" key + letter -> symbols shifted.
-        // Press and slide from "ABC" key, enter alphabet.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Enter/release letter key, remains in alphabet.
-        pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Cancel sliding, switch back to symbols shifted.
-        stopSlidingAndCancel(SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Alphabet shifted -> symbols shifted -> "ABC" + letter -> symbols shifted ->
-        // alphabet.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Press/release shift key, enter alphabet shifted.
-        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "ABC" key.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Enter/release letter key, remains in alphabet.
-        pressAndSlideFromKey('z', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Cancel sliding, switch back to symbols shifted.
-        stopSlidingAndCancel(SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-
-        // Alphabet shift locked -> symbols shifted -> "ABC" + letter -> symbols shifted ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "ABC" key.
-        pressAndSlideFromKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        // Enter/release letter key, remains in alphabet shift locked.
-        pressAndSlideFromKey('Z', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        // Cancel sliding, switch back to symbols shifted.
-        stopSlidingAndCancel(SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, switch to alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols shifted -> "?123" + letter -> symbols shifted ->
-        // alphabet shift locked.
-        // Load keyboard
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-                ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter into symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter into symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press and slide from "?123" key.
-        pressAndSlideFromKey(CODE_SHIFT, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Enter/release symbol letter key, remains in symbols.
-        pressAndSlideFromKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Cancel sliding, switch back to symbols shifted.
-        stopSlidingAndCancel(SYMBOLS_SHIFTED);
+        stopSlidingAndCancel(SYMBOLS);
         // Press/release "ABC" key, switch to alphabet shift locked.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
     }
@@ -783,14 +491,7 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         loadKeyboard(ALPHABET_UNSHIFTED);
 
         // Press/release "?123" key.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Change focus to new text field.
-        loadKeyboard(ALPHABET_UNSHIFTED);
-
-        // Press/release "?123" key.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Change focus to new text field.
         loadKeyboard(ALPHABET_UNSHIFTED);
     }
@@ -814,14 +515,7 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
 
         // Press/release "?123" key.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Change focus to new text field.
-        loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
-
-        // Press/release "?123" key.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Change focus to new text field.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
     }
@@ -860,49 +554,11 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Alphabet shift locked -> symbols -> rotate -> symbols ->
         // Alphabet shift locked.
         // Press/release "?123" key, enter symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS, SYMBOLS);
         // Rotate device, remain in symbols,
-        rotateDevice(SYMBOLS_UNSHIFTED);
+        rotateDevice(SYMBOLS);
         // Press/release "ABC" key, alphabet shift locked state should be maintained.
         pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols shifted -> rotate -> symbols shifted ->
-        // Alphabet shift locked.
-        // Press/release "?123" key, enter symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Rotate device, remain in symbols shifted.
-        rotateDevice(SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, alphabet shift locked state should be maintained.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-
-        // Alphabet shift locked -> symbols shifted -> alphabet shift locked -> rotate ->
-        // Alphabet shift locked -> symbols.
-        // Press/release "?123" key, enter symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, enter alphabet shift locked.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
-        // Rotate device, remain in alphabet shift locked.
-        rotateDevice(ALPHABET_SHIFT_LOCKED);
-        // Press/release "?123" key, enter symbols (not symbols shifted).
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-
-        // Alphabet -> symbols shifted -> alphabet -> rotate ->
-        // Alphabet -> symbols.
-        loadKeyboard(ALPHABET_UNSHIFTED);
-        // Press/release "?123" key, enter symbols.
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Press/release "=\<" key, enter symbols shifted.
-        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Press/release "ABC" key, enter alphabet.
-        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-        // Rotate device, remain in alphabet shift locked.
-        rotateDevice(ALPHABET_UNSHIFTED);
-        // Press/release "?123" key, enter symbols (not symbols shifted).
-        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
     }
 
     // Rapidly type shift key.

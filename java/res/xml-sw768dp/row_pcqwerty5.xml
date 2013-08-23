@@ -28,7 +28,7 @@
             latin:keyboardLayout="@xml/key_settings" />
         <switch>
             <case
-                latin:keyboardLayoutSetElement="symbols|symbolsShifted"
+                latin:keyboardLayoutSetElement="symbols"
             >
                 <Spacer
                     latin:keyXPos="15.0%p"

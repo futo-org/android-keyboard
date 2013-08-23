@@ -26,7 +26,7 @@
     >
         <switch>
             <case
-                latin:keyboardLayoutSetElement="symbols|symbolsShifted"
+                latin:keyboardLayoutSetElement="symbols"
             >
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"

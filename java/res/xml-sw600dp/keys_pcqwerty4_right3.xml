@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="symbols|symbolsShifted"
+            latin:keyboardLayoutSetElement="symbols"
         >
             <!-- U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
                  U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
