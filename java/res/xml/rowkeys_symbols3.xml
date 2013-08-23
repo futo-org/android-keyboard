@@ -24,6 +24,9 @@
     <Key
         latin:keyLabel="!"
         latin:moreKeys="!text/more_keys_for_symbols_exclamation" />
+    <Key
+        latin:keyLabel="!text/keylabel_for_symbols_question"
+        latin:moreKeys="!text/more_keys_for_symbols_question" />
     <switch>
         <case
             latin:languageCode="fa"
@@ -33,11 +36,11 @@
             <Key
                 latin:keyLabel="&#x00AB;"
                 latin:code="0x00BB"
-                latin:moreKeys="!text/more_keys_for_double_quote" />
+                latin:moreKeys="!fixedColumnOrder!6,!text/more_keys_for_double_quote,&quot;" />
             <Key
                 latin:keyLabel="&#x00BB;"
                 latin:code="0x00AB"
-                latin:moreKeys="!text/more_keys_for_single_quote" />
+                latin:moreKeys="!fixedColumnOrder!6,!text/more_keys_for_single_quote,\'" />
         </case>
         <default>
             <Key
@@ -48,14 +51,18 @@
                 latin:moreKeys="!text/more_keys_for_single_quote" />
         </default>
     </switch>
+    <!-- U+2013: "–" EN DASH
+         U+2014: "—" EM DASH
+         U+00B7: "·" MIDDLE DOT -->
+    <Key
+        latin:keyLabel="-"
+        latin:moreKeys="_,~,&#x2013;,&#x2014;,&#x00B7;" />
     <Key
         latin:keyLabel=":" />
     <Key
         latin:keyLabel="!text/keylabel_for_symbols_semicolon"
         latin:moreKeys="!text/more_keys_for_symbols_semicolon" />
     <Key
-        latin:keyLabel="/" />
-    <Key
-        latin:keyLabel="!text/keylabel_for_symbols_question"
-        latin:moreKeys="!text/more_keys_for_symbols_question" />
+        latin:keyLabel="/"
+        latin:moreKeys="\\|,\\\\,^" />
 </merge>

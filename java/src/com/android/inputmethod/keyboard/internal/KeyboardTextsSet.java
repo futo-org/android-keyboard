@@ -289,8 +289,7 @@ public final class KeyboardTextsSet {
         // U+2666: "♦" BLACK DIAMOND SUIT
         // U+2663: "♣" BLACK CLUB SUIT
         /* 55 */ "\u266A,\u2665,\u2660,\u2666,\u2663",
-        // U+00B1: "±" PLUS-MINUS SIGN
-        /* 56 */ "\u00B1",
+        /* 56 */ EMPTY,
         // The all letters need to be mirrored are found at
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
         /* 57 */ "!fixedColumnOrder!3,<,{,[",
@@ -1907,9 +1906,8 @@ public final class KeyboardTextsSet {
         // U+2605: "★" BLACK STAR
         /* 54 */ "\u2605",
         /* 55 */ null,
-        // U+00B1: "±" PLUS-MINUS SIGN
         // U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN
-        /* 56 */ "\u00B1,\uFB29",
+        /* 56 */ "\uFB29",
         // The all letters need to be mirrored are found at
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
         /* 57 */ "!fixedColumnOrder!3,<|>,{|},[|]",
