@@ -78,7 +78,7 @@
                 latin:keyLabel="="
                 latin:moreKeys="+" />
         </case>
-        <!-- keyboardLayoutSetElement="alphabet*Shifted|symbols*" -->
+        <!-- keyboardLayoutSetElement="alphabet*Shifted|symbols" -->
         <default>
             <include
                 latin:keyboardLayout="@xml/keys_pcqwerty_symbols1" />

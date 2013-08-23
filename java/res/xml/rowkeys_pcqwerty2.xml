@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="symbols|symbolsShifted"
+            latin:keyboardLayoutSetElement="symbols"
         >
             <include
                 latin:keyboardLayout="@xml/keys_pcqwerty_symbols2" />
