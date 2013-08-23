@@ -281,13 +281,7 @@ public class DictionaryInfoUtils {
     }
 
     public static FileHeader getDictionaryFileHeaderOrNull(final File file) {
-        try {
-            return BinaryDictIOUtils.getDictionaryFileHeader(file, 0, file.length());
-        } catch (UnsupportedFormatException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
+        return BinaryDictIOUtils.getDictionaryFileHeaderOrNull(file, 0, file.length());
     }
 
     private static DictionaryInfo createDictionaryInfoFromFileAddress(

@@ -517,7 +517,7 @@ public final class BinaryDictIOUtils {
      * @param offset The offset in the file where to start reading the data.
      * @param length The length of the data file.
      */
-    public static FileHeader getDictionaryFileHeader(
+    private static FileHeader getDictionaryFileHeader(
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
@@ -528,6 +528,7 @@ public final class BinaryDictIOUtils {
                             throws FileNotFoundException, IOException {
                         final FileInputStream inStream = new FileInputStream(file);
                         try {
+                            inStream.skip(offset);
                             inStream.read(buffer);
                             return new ByteArrayDictBuffer(buffer);
                         } finally {
