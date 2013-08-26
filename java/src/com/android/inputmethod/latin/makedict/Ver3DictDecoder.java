@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * An implementation of DictDecoder for version 3 binary dictionary.
@@ -317,4 +318,16 @@ public class Ver3DictDecoder implements DictDecoder {
         }
         return BinaryDictIOUtils.getTerminalPosition(this, word);
     }
+
+    @Override
+    public void readUnigramsAndBigramsBinary(final TreeMap<Integer, String> words,
+            final TreeMap<Integer, Integer> frequencies,
+            final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams)
+            throws IOException, UnsupportedFormatException {
+        if (mDictBuffer == null) {
+            openDictBuffer();
+        }
+        BinaryDictIOUtils.readUnigramsAndBigramsBinary(this, words, frequencies, bigrams);
+    }
+
 }

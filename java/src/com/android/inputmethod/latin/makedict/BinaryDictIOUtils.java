@@ -148,7 +148,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
-    public static void readUnigramsAndBigramsBinary(final Ver3DictDecoder dictDecoder,
+    /* package */ static void readUnigramsAndBigramsBinary(final Ver3DictDecoder dictDecoder,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
