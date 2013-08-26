@@ -58,6 +58,19 @@ public interface DictDecoder {
     public FusionDictionary readDictionaryBinary(final FusionDictionary dict)
             throws FileNotFoundException, IOException, UnsupportedFormatException;
 
+    /**
+     * Gets the address of the last PtNode of the exact matching word in the dictionary.
+     * If no match is found, returns NOT_VALID_WORD.
+     *
+     * @param word the word we search for.
+     * @return the address of the terminal node.
+     * @throws IOException if the file can't be read.
+     * @throws UnsupportedFormatException if the format of the file is not recognized.
+     */
+    @UsedForTesting
+    public int getTerminalPosition(final String word)
+            throws IOException, UnsupportedFormatException;
+
     // Flags for DictionaryBufferFactory.
     public static final int USE_READONLY_BYTEBUFFER = 0x01000000;
     public static final int USE_BYTEARRAY = 0x02000000;

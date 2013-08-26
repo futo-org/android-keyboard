@@ -309,4 +309,12 @@ public class Ver3DictDecoder implements DictDecoder {
         }
         return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
     }
+
+    @Override
+    public int getTerminalPosition(String word) throws IOException, UnsupportedFormatException {
+        if (mDictBuffer == null) {
+            openDictBuffer();
+        }
+        return BinaryDictIOUtils.getTerminalPosition(this, word);
+    }
 }
