@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,9 +29,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * Base class for an in-memory dictionary that can grow dynamically and can
+ * Class for an in-memory dictionary that can grow dynamically and can
  * be searched for suggestions and valid words.
  */
+// TODO: Remove after binary dictionary supports dynamic update.
 public class ExpandableDictionary extends Dictionary {
     private static final String TAG = ExpandableDictionary.class.getSimpleName();
     /**
@@ -40,23 +40,11 @@ public class ExpandableDictionary extends Dictionary {
      */
     private static final int FULL_WORD_SCORE_MULTIPLIER = 2;
 
-    // Bigram frequency is a fixed point number with 1 meaning 1.2 and 255 meaning 1.8.
-    protected static final int BIGRAM_MAX_FREQUENCY = 255;
-
-    private Context mContext;
     private char[] mWordBuilder = new char[Constants.DICTIONARY_MAX_WORD_LENGTH];
     private int mMaxDepth;
     private int mInputLength;
 
-    private boolean mRequiresReload;
-
-    private boolean mUpdatingDictionary;
-
-    // Use this lock before touching mUpdatingDictionary & mRequiresDownload
-    private Object mUpdatingLock = new Object();
-
     private static final class Node {
-        Node() {}
         char mCode;
         int mFrequency;
         boolean mTerminal;
@@ -158,44 +146,10 @@ public class ExpandableDictionary extends Dictionary {
 
     private int[][] mCodes;
 
-    public ExpandableDictionary(final Context context, final String dictType) {
+    public ExpandableDictionary(final String dictType) {
         super(dictType);
-        mContext = context;
         clearDictionary();
         mCodes = new int[Constants.DICTIONARY_MAX_WORD_LENGTH][];
-    }
-
-    public void loadDictionary() {
-        synchronized (mUpdatingLock) {
-            startDictionaryLoadingTaskLocked();
-        }
-    }
-
-    public void startDictionaryLoadingTaskLocked() {
-        if (!mUpdatingDictionary) {
-            mUpdatingDictionary = true;
-            mRequiresReload = false;
-            new LoadDictionaryTask().start();
-        }
-    }
-
-    public void setRequiresReload(final boolean reload) {
-        synchronized (mUpdatingLock) {
-            mRequiresReload = reload;
-        }
-    }
-
-    public boolean getRequiresReload() {
-        return mRequiresReload;
-    }
-
-    /** Override to load your dictionary here, on a background thread. */
-    public void loadDictionaryAsync() {
-        // empty base implementation
-    }
-
-    public Context getContext() {
-        return mContext;
     }
 
     public int getMaxWordLength() {
@@ -257,7 +211,6 @@ public class ExpandableDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords) {
-        if (reloadDictionaryIfRequired()) return null;
         if (composer.size() > 1) {
             if (composer.size() >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
                 return null;
@@ -273,17 +226,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    // This reloads the dictionary if required, and returns whether it's currently updating its
-    // contents or not.
-    private boolean reloadDictionaryIfRequired() {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) startDictionaryLoadingTaskLocked();
-            return mUpdatingDictionary;
-        }
-    }
-
-    protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
+    private ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo) {
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         mInputLength = codes.size();
@@ -313,11 +256,6 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public synchronized boolean isValidWord(final String word) {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) startDictionaryLoadingTaskLocked();
-            if (mUpdatingDictionary) return false;
-        }
         final Node node = searchNode(mRoots, word, 0, word.length());
         // If node is null, we didn't find the word, so it's not valid.
         // If node.mShortcutOnly is true, then it exists as a shortcut but not as a word,
@@ -353,7 +291,7 @@ public class ExpandableDictionary extends Dictionary {
      * Returns the word's frequency or -1 if not found
      */
     @UsedForTesting
-    protected int getWordFrequency(final String word) {
+    public int getWordFrequency(final String word) {
         // Case-sensitive search
         final Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
@@ -442,7 +380,7 @@ public class ExpandableDictionary extends Dictionary {
      * @param suggestions the list in which to add suggestions
      */
     // TODO: Share this routine with the native code for BinaryDictionary
-    protected void getWordsRec(final NodeArray roots, final WordComposer codes, final char[] word,
+    private void getWordsRec(final NodeArray roots, final WordComposer codes, final char[] word,
             final int depth, final boolean completion, final int snr, final int inputIndex,
             final int skipPos, final ArrayList<SuggestedWordInfo> suggestions) {
         final int count = roots.mLength;
@@ -702,17 +640,6 @@ public class ExpandableDictionary extends Dictionary {
 
     public void clearDictionary() {
         mRoots = new NodeArray();
-    }
-
-    private final class LoadDictionaryTask extends Thread {
-        LoadDictionaryTask() {}
-        @Override
-        public void run() {
-            loadDictionaryAsync();
-            synchronized (mUpdatingLock) {
-                mUpdatingDictionary = false;
-            }
-        }
     }
 
     private static char toLowerCase(final char c) {

@@ -27,11 +27,11 @@ public class PersonalizationPredictionDictionary extends DynamicPredictionDictio
 
     /* package */ PersonalizationPredictionDictionary(final Context context, final String locale,
             final SharedPreferences sp) {
-        super(context, locale, sp, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA);
+        super(context, locale, sp, Dictionary.TYPE_PERSONALIZATION_PREDICTION_IN_JAVA,
+                getDictionaryFileName(locale));
     }
 
-    @Override
-    protected String getDictionaryFileName() {
-        return NAME + "." + getLocale() + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+    private static String getDictionaryFileName(final String locale) {
+        return NAME + "." + locale + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
     }
 }

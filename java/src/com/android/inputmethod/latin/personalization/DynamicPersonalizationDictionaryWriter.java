@@ -55,7 +55,7 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
 
     public DynamicPersonalizationDictionaryWriter(final Context context, final String dictType) {
         super(context, dictType);
-        mExpandableDictionary = new ExpandableDictionary(context, dictType);
+        mExpandableDictionary = new ExpandableDictionary(dictType);
     }
 
     @Override

@@ -26,8 +26,8 @@ import android.util.Log;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PersonalizationDictionaryHelper {
-    private static final String TAG = PersonalizationDictionaryHelper.class.getSimpleName();
+public class PersonalizationHelper {
+    private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryPredictionDictionary>>
@@ -52,6 +52,7 @@ public class PersonalizationDictionaryHelper {
                     if (DEBUG) {
                         Log.w(TAG, "Use cached UserHistoryPredictionDictionary for " + locale);
                     }
+                    dict.asyncReloadDictionaryIfRequired();
                     return dict;
                 }
             }

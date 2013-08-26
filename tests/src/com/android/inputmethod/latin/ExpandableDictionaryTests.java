@@ -28,8 +28,7 @@ public class ExpandableDictionaryTests extends AndroidTestCase {
     private final static int UNIGRAM_FREQ = 50;
 
     public void testAddWordAndGetWordFrequency() {
-        final ExpandableDictionary dict = new ExpandableDictionary(getContext(),
-                Dictionary.TYPE_USER);
+        final ExpandableDictionary dict = new ExpandableDictionary(Dictionary.TYPE_USER);
 
         // Add words
         dict.addWord("abcde", "abcde", UNIGRAM_FREQ);
