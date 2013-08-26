@@ -32,7 +32,8 @@ import com.android.inputmethod.latin.personalization.UserHistoryDictionaryBigram
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Reads and writes Binary files for a UserHistoryDictionary.
@@ -119,12 +120,11 @@ public final class UserHistoryDictIOUtils {
      */
     public static void readDictionaryBinary(final Ver3DictDecoder dictDecoder,
             final OnAddWordListener dict) {
-        final Map<Integer, String> unigrams = CollectionUtils.newTreeMap();
-        final Map<Integer, Integer> frequencies = CollectionUtils.newTreeMap();
-        final Map<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
+        final TreeMap<Integer, String> unigrams = CollectionUtils.newTreeMap();
+        final TreeMap<Integer, Integer> frequencies = CollectionUtils.newTreeMap();
+        final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams = CollectionUtils.newTreeMap();
         try {
-            BinaryDictIOUtils.readUnigramsAndBigramsBinary(dictDecoder, unigrams, frequencies,
-                    bigrams);
+            dictDecoder.readUnigramsAndBigramsBinary(unigrams, frequencies, bigrams);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while reading file", e);
         } catch (UnsupportedFormatException e) {
@@ -139,10 +139,11 @@ public final class UserHistoryDictIOUtils {
      * Adds all unigrams and bigrams in maps to OnAddWordListener.
      */
     @UsedForTesting
-    static void addWordsFromWordMap(final Map<Integer, String> unigrams,
-            final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams, final OnAddWordListener to) {
-        for (Map.Entry<Integer, String> entry : unigrams.entrySet()) {
+    static void addWordsFromWordMap(final TreeMap<Integer, String> unigrams,
+            final TreeMap<Integer, Integer> frequencies,
+            final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams,
+            final OnAddWordListener to) {
+        for (Entry<Integer, String> entry : unigrams.entrySet()) {
             final String word1 = entry.getValue();
             final int unigramFrequency = frequencies.get(entry.getKey());
             to.setUnigram(word1, null, unigramFrequency);

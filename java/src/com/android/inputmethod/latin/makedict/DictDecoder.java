@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * An interface of binary dictionary decoder.
@@ -69,6 +71,21 @@ public interface DictDecoder {
      */
     @UsedForTesting
     public int getTerminalPosition(final String word)
+            throws IOException, UnsupportedFormatException;
+
+    /**
+     * Reads unigrams and bigrams from the binary file.
+     * Doesn't store a full memory representation of the dictionary.
+     *
+     * @param words the map to store the address as a key and the word as a value.
+     * @param frequencies the map to store the address as a key and the frequency as a value.
+     * @param bigrams the map to store the address as a key and the list of address as a value.
+     * @throws IOException if the file can't be read.
+     * @throws UnsupportedFormatException if the format of the file is not recognized.
+     */
+    public void readUnigramsAndBigramsBinary(final TreeMap<Integer, String> words,
+            final TreeMap<Integer, Integer> frequencies,
+            final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams)
             throws IOException, UnsupportedFormatException;
 
     // Flags for DictionaryBufferFactory.
