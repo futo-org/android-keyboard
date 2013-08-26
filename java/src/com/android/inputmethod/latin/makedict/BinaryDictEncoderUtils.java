@@ -18,7 +18,7 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -33,6 +33,8 @@ import java.util.Iterator;
  * Encodes binary files for a FusionDictionary.
  *
  * All the methods in this class are static.
+ *
+ * TODO: Rename this class to DictEncoderUtils.
  */
 public class BinaryDictEncoderUtils {
 
@@ -58,46 +60,46 @@ public class BinaryDictEncoderUtils {
      * @param characters the character array
      * @return the size of the char array, including the terminator if any
      */
-    static int getGroupCharactersSize(final int[] characters) {
+    static int getPtNodeCharactersSize(final int[] characters) {
         int size = CharEncoding.getCharArraySize(characters);
-        if (characters.length > 1) size += FormatSpec.GROUP_TERMINATOR_SIZE;
+        if (characters.length > 1) size += FormatSpec.PTNODE_TERMINATOR_SIZE;
         return size;
     }
 
     /**
-     * Compute the binary size of the character array in a group
+     * Compute the binary size of the character array in a PtNode
      *
      * If only one character, this is the size of this character. If many, it's the sum of their
      * sizes + 1 byte for the terminator.
      *
-     * @param group the group
+     * @param ptNode the PtNode
      * @return the size of the char array, including the terminator if any
      */
-    private static int getGroupCharactersSize(final CharGroup group) {
-        return getGroupCharactersSize(group.mChars);
+    private static int getPtNodeCharactersSize(final PtNode ptNode) {
+        return getPtNodeCharactersSize(ptNode.mChars);
     }
 
     /**
-     * Compute the binary size of the group count for a node array.
+     * Compute the binary size of the PtNode count for a node array.
      * @param nodeArray the nodeArray
-     * @return the size of the group count, either 1 or 2 bytes.
+     * @return the size of the PtNode count, either 1 or 2 bytes.
      */
-    private static int getGroupCountSize(final PtNodeArray nodeArray) {
-        return BinaryDictIOUtils.getGroupCountSize(nodeArray.mData.size());
+    private static int getPtNodeCountSize(final PtNodeArray nodeArray) {
+        return BinaryDictIOUtils.getPtNodeCountSize(nodeArray.mData.size());
     }
 
     /**
      * Compute the size of a shortcut in bytes.
      */
     private static int getShortcutSize(final WeightedString shortcut) {
-        int size = FormatSpec.GROUP_ATTRIBUTE_FLAGS_SIZE;
+        int size = FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
         final String word = shortcut.mWord;
         final int length = word.length();
         for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
             final int codePoint = word.codePointAt(i);
             size += CharEncoding.getCharSize(codePoint);
         }
-        size += FormatSpec.GROUP_TERMINATOR_SIZE;
+        size += FormatSpec.PTNODE_TERMINATOR_SIZE;
         return size;
     }
 
@@ -109,7 +111,7 @@ public class BinaryDictEncoderUtils {
      */
     static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
         if (null == shortcutList || shortcutList.isEmpty()) return 0;
-        int size = FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
+        int size = FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
         for (final WeightedString shortcut : shortcutList) {
             size += getShortcutSize(shortcut);
         }
@@ -117,60 +119,60 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Compute the maximum size of a CharGroup, assuming 3-byte addresses for everything.
+     * Compute the maximum size of a PtNode, assuming 3-byte addresses for everything.
      *
-     * @param group the CharGroup to compute the size of.
+     * @param ptNode the PtNode to compute the size of.
      * @param options file format options.
-     * @return the maximum size of the group.
+     * @return the maximum size of the PtNode.
      */
-    private static int getCharGroupMaximumSize(final CharGroup group, final FormatOptions options) {
-        int size = getGroupHeaderSize(group, options);
+    private static int getPtNodeMaximumSize(final PtNode ptNode, final FormatOptions options) {
+        int size = getNodeHeaderSize(ptNode, options);
         // If terminal, one byte for the frequency
-        if (group.isTerminal()) size += FormatSpec.GROUP_FREQUENCY_SIZE;
-        size += FormatSpec.GROUP_MAX_ADDRESS_SIZE; // For children address
-        size += getShortcutListSize(group.mShortcutTargets);
-        if (null != group.mBigrams) {
-            size += (FormatSpec.GROUP_ATTRIBUTE_FLAGS_SIZE
-                    + FormatSpec.GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE)
-                    * group.mBigrams.size();
+        if (ptNode.isTerminal()) size += FormatSpec.PTNODE_FREQUENCY_SIZE;
+        size += FormatSpec.PTNODE_MAX_ADDRESS_SIZE; // For children address
+        size += getShortcutListSize(ptNode.mShortcutTargets);
+        if (null != ptNode.mBigrams) {
+            size += (FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE
+                    + FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE)
+                    * ptNode.mBigrams.size();
         }
         return size;
     }
 
     /**
-     * Compute the maximum size of each node of a node array, assuming 3-byte addresses for
+     * Compute the maximum size of each PtNode of a PtNode array, assuming 3-byte addresses for
      * everything, and caches it in the `mCachedSize' member of the nodes; deduce the size of
      * the containing node array, and cache it it its 'mCachedSize' member.
      *
-     * @param nodeArray the node array to compute the maximum size of.
+     * @param ptNodeArray the node array to compute the maximum size of.
      * @param options file format options.
      */
-    private static void calculateNodeArrayMaximumSize(final PtNodeArray nodeArray,
+    private static void calculatePtNodeArrayMaximumSize(final PtNodeArray ptNodeArray,
             final FormatOptions options) {
-        int size = getGroupCountSize(nodeArray);
-        for (CharGroup g : nodeArray.mData) {
-            final int groupSize = getCharGroupMaximumSize(g, options);
-            g.mCachedSize = groupSize;
-            size += groupSize;
+        int size = getPtNodeCountSize(ptNodeArray);
+        for (PtNode node : ptNodeArray.mData) {
+            final int nodeSize = getPtNodeMaximumSize(node, options);
+            node.mCachedSize = nodeSize;
+            size += nodeSize;
         }
         if (options.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        nodeArray.mCachedSize = size;
+        ptNodeArray.mCachedSize = size;
     }
 
     /**
-     * Compute the size of the header (flag + [parent address] + characters size) of a CharGroup.
+     * Compute the size of the header (flag + [parent address] + characters size) of a PtNode.
      *
-     * @param group the group of which to compute the size of the header
+     * @param ptNode the PtNode of which to compute the size of the header
      * @param options file format options.
      */
-    private static int getGroupHeaderSize(final CharGroup group, final FormatOptions options) {
+    private static int getNodeHeaderSize(final PtNode ptNode, final FormatOptions options) {
         if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
-            return FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                    + getGroupCharactersSize(group);
+            return FormatSpec.PTNODE_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
+                    + getPtNodeCharactersSize(ptNode);
         } else {
-            return FormatSpec.GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
+            return FormatSpec.PTNODE_FLAGS_SIZE + getPtNodeCharactersSize(ptNode);
         }
     }
 
@@ -203,14 +205,14 @@ public class BinaryDictEncoderUtils {
     // cache performance and dictionary size.
     /* package for tests */ static ArrayList<PtNodeArray> flattenTree(
             final PtNodeArray rootNodeArray) {
-        final int treeSize = FusionDictionary.countCharGroups(rootNodeArray);
+        final int treeSize = FusionDictionary.countPtNodes(rootNodeArray);
         MakedictLog.i("Counted nodes : " + treeSize);
         final ArrayList<PtNodeArray> flatTree = new ArrayList<PtNodeArray>(treeSize);
         return flattenTreeInner(flatTree, rootNodeArray);
     }
 
     private static ArrayList<PtNodeArray> flattenTreeInner(final ArrayList<PtNodeArray> list,
-            final PtNodeArray nodeArray) {
+            final PtNodeArray ptNodeArray) {
         // Removing the node is necessary if the tails are merged, because we would then
         // add the same node several times when we only want it once. A number of places in
         // the code also depends on any node being only once in the list.
@@ -228,11 +230,11 @@ public class BinaryDictEncoderUtils {
         // this simple list.remove operation O(n*n) overall. On Android this overhead is very
         // high.
         // For future reference, the code to remove duplicate is a simple : list.remove(node);
-        list.add(nodeArray);
-        final ArrayList<CharGroup> branches = nodeArray.mData;
+        list.add(ptNodeArray);
+        final ArrayList<PtNode> branches = ptNodeArray.mData;
         final int nodeSize = branches.size();
-        for (CharGroup group : branches) {
-            if (null != group.mChildren) flattenTreeInner(list, group.mChildren);
+        for (PtNode ptNode : branches) {
+            if (null != ptNode.mChildren) flattenTreeInner(list, ptNode.mChildren);
         }
         return list;
     }
@@ -248,7 +250,7 @@ public class BinaryDictEncoderUtils {
      * from the new position in the current node array to the new position in the target node
      * array.
      *
-     * @param currentNodeArray node array containing the CharGroup where the offset will be written
+     * @param currentNodeArray node array containing the PtNode where the offset will be written
      * @param offsetFromStartOfCurrentNodeArray offset, in bytes, from the start of currentNodeArray
      * @param targetNodeArray the target node array to get the offset to
      * @return the offset to the target node array
@@ -269,20 +271,20 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Get the offset from a position inside a current node array to a target CharGroup, during
+     * Get the offset from a position inside a current node array to a target PtNode, during
      * update.
      *
-     * @param currentNodeArray node array containing the CharGroup where the offset will be written
+     * @param currentNodeArray node array containing the PtNode where the offset will be written
      * @param offsetFromStartOfCurrentNodeArray offset, in bytes, from the start of currentNodeArray
-     * @param targetCharGroup the target CharGroup to get the offset to
-     * @return the offset to the target CharGroup
+     * @param targetPtNode the target PtNode to get the offset to
+     * @return the offset to the target PtNode
      */
     // TODO: is there any way to factorize this method with the one above?
-    private static int getOffsetToTargetCharGroupDuringUpdate(final PtNodeArray currentNodeArray,
-            final int offsetFromStartOfCurrentNodeArray, final CharGroup targetCharGroup) {
+    private static int getOffsetToTargetPtNodeDuringUpdate(final PtNodeArray currentNodeArray,
+            final int offsetFromStartOfCurrentNodeArray, final PtNode targetPtNode) {
         final int oldOffsetBasePoint = currentNodeArray.mCachedAddressBeforeUpdate
                 + offsetFromStartOfCurrentNodeArray;
-        final boolean isTargetBeforeCurrent = (targetCharGroup.mCachedAddressBeforeUpdate
+        final boolean isTargetBeforeCurrent = (targetPtNode.mCachedAddressBeforeUpdate
                 < oldOffsetBasePoint);
         // If the target is before the current node array, then its address has already been
         // updated. We can use the AfterUpdate member, and compare it to our own member after
@@ -292,9 +294,9 @@ public class BinaryDictEncoderUtils {
         if (isTargetBeforeCurrent) {
             final int newOffsetBasePoint = currentNodeArray.mCachedAddressAfterUpdate
                     + offsetFromStartOfCurrentNodeArray;
-            return targetCharGroup.mCachedAddressAfterUpdate - newOffsetBasePoint;
+            return targetPtNode.mCachedAddressAfterUpdate - newOffsetBasePoint;
         } else {
-            return targetCharGroup.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
+            return targetPtNode.mCachedAddressBeforeUpdate - oldOffsetBasePoint;
         }
     }
 
@@ -308,49 +310,49 @@ public class BinaryDictEncoderUtils {
      * contents (as in, any of the addresses stored in the cache fields) have changed with
      * respect to their previous value.
      *
-     * @param nodeArray the node array to compute the size of.
+     * @param ptNodeArray the node array to compute the size of.
      * @param dict the dictionary in which the word/attributes are to be found.
      * @param formatOptions file format options.
      * @return false if none of the cached addresses inside the node array changed, true otherwise.
      */
-    private static boolean computeActualNodeArraySize(final PtNodeArray nodeArray,
+    private static boolean computeActualPtNodeArraySize(final PtNodeArray ptNodeArray,
             final FusionDictionary dict, final FormatOptions formatOptions) {
         boolean changed = false;
-        int size = getGroupCountSize(nodeArray);
-        for (CharGroup group : nodeArray.mData) {
-            group.mCachedAddressAfterUpdate = nodeArray.mCachedAddressAfterUpdate + size;
-            if (group.mCachedAddressAfterUpdate != group.mCachedAddressBeforeUpdate) {
+        int size = getPtNodeCountSize(ptNodeArray);
+        for (PtNode ptNode : ptNodeArray.mData) {
+            ptNode.mCachedAddressAfterUpdate = ptNodeArray.mCachedAddressAfterUpdate + size;
+            if (ptNode.mCachedAddressAfterUpdate != ptNode.mCachedAddressBeforeUpdate) {
                 changed = true;
             }
-            int groupSize = getGroupHeaderSize(group, formatOptions);
-            if (group.isTerminal()) groupSize += FormatSpec.GROUP_FREQUENCY_SIZE;
-            if (null == group.mChildren && formatOptions.mSupportsDynamicUpdate) {
-                groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
-            } else if (null != group.mChildren) {
+            int nodeSize = getNodeHeaderSize(ptNode, formatOptions);
+            if (ptNode.isTerminal()) nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            if (null == ptNode.mChildren && formatOptions.mSupportsDynamicUpdate) {
+                nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+            } else if (null != ptNode.mChildren) {
                 if (formatOptions.mSupportsDynamicUpdate) {
-                    groupSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
+                    nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
                 } else {
-                    groupSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(nodeArray,
-                            groupSize + size, group.mChildren));
+                    nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
+                            nodeSize + size, ptNode.mChildren));
                 }
             }
-            groupSize += getShortcutListSize(group.mShortcutTargets);
-            if (null != group.mBigrams) {
-                for (WeightedString bigram : group.mBigrams) {
-                    final int offset = getOffsetToTargetCharGroupDuringUpdate(nodeArray,
-                            groupSize + size + FormatSpec.GROUP_FLAGS_SIZE,
+            nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
+            if (null != ptNode.mBigrams) {
+                for (WeightedString bigram : ptNode.mBigrams) {
+                    final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
+                            nodeSize + size + FormatSpec.PTNODE_FLAGS_SIZE,
                             FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
-                    groupSize += getByteSize(offset) + FormatSpec.GROUP_FLAGS_SIZE;
+                    nodeSize += getByteSize(offset) + FormatSpec.PTNODE_FLAGS_SIZE;
                 }
             }
-            group.mCachedSize = groupSize;
-            size += groupSize;
+            ptNode.mCachedSize = nodeSize;
+            size += nodeSize;
         }
         if (formatOptions.mSupportsDynamicUpdate) {
             size += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        if (nodeArray.mCachedSize != size) {
-            nodeArray.mCachedSize = size;
+        if (ptNodeArray.mCachedSize != size) {
+            ptNodeArray.mCachedSize = size;
             changed = true;
         }
         return changed;
@@ -363,19 +365,19 @@ public class BinaryDictEncoderUtils {
      * @param formatOptions file format options.
      * @return the byte size of the entire stack.
      */
-    private static int initializeNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes,
+    private static int initializePtNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes,
             final FormatOptions formatOptions) {
         int nodeArrayOffset = 0;
         for (final PtNodeArray nodeArray : flatNodes) {
             nodeArray.mCachedAddressBeforeUpdate = nodeArrayOffset;
-            int groupCountSize = getGroupCountSize(nodeArray);
-            int groupOffset = 0;
-            for (final CharGroup g : nodeArray.mData) {
-                g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate =
-                        groupCountSize + nodeArrayOffset + groupOffset;
-                groupOffset += g.mCachedSize;
+            int nodeCountSize = getPtNodeCountSize(nodeArray);
+            int nodeffset = 0;
+            for (final PtNode ptNode : nodeArray.mData) {
+                ptNode.mCachedAddressBeforeUpdate = ptNode.mCachedAddressAfterUpdate =
+                        nodeCountSize + nodeArrayOffset + nodeffset;
+                nodeffset += ptNode.mCachedSize;
             }
-            final int nodeSize = groupCountSize + groupOffset
+            final int nodeSize = nodeCountSize + nodeffset
                     + (formatOptions.mSupportsDynamicUpdate
                             ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
             nodeArrayOffset += nodeArray.mCachedSize;
@@ -388,11 +390,11 @@ public class BinaryDictEncoderUtils {
      *
      * @param flatNodes the list of node arrays.
      */
-    private static void updateNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes) {
+    private static void updatePtNodeArraysCachedAddresses(final ArrayList<PtNodeArray> flatNodes) {
         for (final PtNodeArray nodeArray : flatNodes) {
             nodeArray.mCachedAddressBeforeUpdate = nodeArray.mCachedAddressAfterUpdate;
-            for (final CharGroup g : nodeArray.mData) {
-                g.mCachedAddressBeforeUpdate = g.mCachedAddressAfterUpdate;
+            for (final PtNode ptNode : nodeArray.mData) {
+                ptNode.mCachedAddressBeforeUpdate = ptNode.mCachedAddressAfterUpdate;
             }
         }
     }
@@ -407,38 +409,38 @@ public class BinaryDictEncoderUtils {
      */
     private static void computeParentAddresses(final ArrayList<PtNodeArray> flatNodes) {
         for (final PtNodeArray nodeArray : flatNodes) {
-            for (final CharGroup group : nodeArray.mData) {
-                if (null != group.mChildren) {
+            for (final PtNode ptNode : nodeArray.mData) {
+                if (null != ptNode.mChildren) {
                     // Assign my address to children's parent address
                     // Here BeforeUpdate and AfterUpdate addresses have the same value, so it
                     // does not matter which we use.
-                    group.mChildren.mCachedParentAddress = group.mCachedAddressAfterUpdate
-                            - group.mChildren.mCachedAddressAfterUpdate;
+                    ptNode.mChildren.mCachedParentAddress = ptNode.mCachedAddressAfterUpdate
+                            - ptNode.mChildren.mCachedAddressAfterUpdate;
                 }
             }
         }
     }
 
     /**
-     * Compute the addresses and sizes of an ordered list of node arrays.
+     * Compute the addresses and sizes of an ordered list of PtNode arrays.
      *
-     * This method takes a list of node arrays and will update their cached address and size
+     * This method takes a list of PtNode arrays and will update their cached address and size
      * values so that they can be written into a file. It determines the smallest size each of the
-     * nodes arrays can be given the addresses of its children and attributes, and store that into
-     * each node.
-     * The order of the node is given by the order of the array. This method makes no effort
+     * PtNode arrays can be given the addresses of its children and attributes, and store that into
+     * each PtNode.
+     * The order of the PtNode is given by the order of the array. This method makes no effort
      * to find a good order; it only mechanically computes the size this order results in.
      *
      * @param dict the dictionary
-     * @param flatNodes the ordered list of nodes arrays
+     * @param flatNodes the ordered list of PtNode arrays
      * @param formatOptions file format options.
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
     private static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
             final ArrayList<PtNodeArray> flatNodes, final FormatOptions formatOptions) {
         // First get the worst possible sizes and offsets
-        for (final PtNodeArray n : flatNodes) calculateNodeArrayMaximumSize(n, formatOptions);
-        final int offset = initializeNodeArraysCachedAddresses(flatNodes, formatOptions);
+        for (final PtNodeArray n : flatNodes) calculatePtNodeArrayMaximumSize(n, formatOptions);
+        final int offset = initializePtNodeArraysCachedAddresses(flatNodes, formatOptions);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
         MakedictLog.i("(Recursively seen size : " + offset + ")");
@@ -447,19 +449,20 @@ public class BinaryDictEncoderUtils {
         boolean changesDone = false;
         do {
             changesDone = false;
-            int nodeArrayStartOffset = 0;
-            for (final PtNodeArray nodeArray : flatNodes) {
-                nodeArray.mCachedAddressAfterUpdate = nodeArrayStartOffset;
-                final int oldNodeArraySize = nodeArray.mCachedSize;
-                final boolean changed = computeActualNodeArraySize(nodeArray, dict, formatOptions);
-                final int newNodeArraySize = nodeArray.mCachedSize;
+            int ptNodeArrayStartOffset = 0;
+            for (final PtNodeArray ptNodeArray : flatNodes) {
+                ptNodeArray.mCachedAddressAfterUpdate = ptNodeArrayStartOffset;
+                final int oldNodeArraySize = ptNodeArray.mCachedSize;
+                final boolean changed =
+                        computeActualPtNodeArraySize(ptNodeArray, dict, formatOptions);
+                final int newNodeArraySize = ptNodeArray.mCachedSize;
                 if (oldNodeArraySize < newNodeArraySize) {
                     throw new RuntimeException("Increased size ?!");
                 }
-                nodeArrayStartOffset += newNodeArraySize;
+                ptNodeArrayStartOffset += newNodeArraySize;
                 changesDone |= changed;
             }
-            updateNodeArraysCachedAddresses(flatNodes);
+            updatePtNodeArraysCachedAddresses(flatNodes);
             ++passes;
             if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
@@ -467,10 +470,10 @@ public class BinaryDictEncoderUtils {
         if (formatOptions.mSupportsDynamicUpdate) {
             computeParentAddresses(flatNodes);
         }
-        final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
+        final PtNodeArray lastPtNodeArray = flatNodes.get(flatNodes.size() - 1);
         MakedictLog.i("Compression complete in " + passes + " passes.");
         MakedictLog.i("After address compression : "
-                + (lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize));
+                + (lastPtNodeArray.mCachedAddressAfterUpdate + lastPtNodeArray.mCachedSize));
 
         return flatNodes;
     }
@@ -478,25 +481,26 @@ public class BinaryDictEncoderUtils {
     /**
      * Sanity-checking method.
      *
-     * This method checks a list of node arrays for juxtaposition, that is, it will do
+     * This method checks a list of PtNode arrays for juxtaposition, that is, it will do
      * nothing if each node array's cached address is actually the previous node array's address
      * plus the previous node's size.
      * If this is not the case, it will throw an exception.
      *
      * @param arrays the list of node arrays to check
      */
-    private static void checkFlatNodeArrayList(final ArrayList<PtNodeArray> arrays) {
+    private static void checkFlatPtNodeArrayList(final ArrayList<PtNodeArray> arrays) {
         int offset = 0;
         int index = 0;
-        for (final PtNodeArray nodeArray : arrays) {
+        for (final PtNodeArray ptNodeArray : arrays) {
             // BeforeUpdate and AfterUpdate addresses are the same here, so it does not matter
             // which we use.
-            if (nodeArray.mCachedAddressAfterUpdate != offset) {
+            if (ptNodeArray.mCachedAddressAfterUpdate != offset) {
                 throw new RuntimeException("Wrong address for node " + index
-                        + " : expected " + offset + ", got " + nodeArray.mCachedAddressAfterUpdate);
+                        + " : expected " + offset + ", got " +
+                        ptNodeArray.mCachedAddressAfterUpdate);
             }
             ++index;
-            offset += nodeArray.mCachedSize;
+            offset += ptNodeArray.mCachedSize;
         }
     }
 
@@ -552,19 +556,19 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Makes the flag value for a char group.
+     * Makes the flag value for a PtNode.
      *
-     * @param hasMultipleChars whether the group has multiple chars.
-     * @param isTerminal whether the group is terminal.
+     * @param hasMultipleChars whether the PtNode has multiple chars.
+     * @param isTerminal whether the PtNode is terminal.
      * @param childrenAddressSize the size of a children address.
-     * @param hasShortcuts whether the group has shortcuts.
-     * @param hasBigrams whether the group has bigrams.
-     * @param isNotAWord whether the group is not a word.
-     * @param isBlackListEntry whether the group is a blacklist entry.
+     * @param hasShortcuts whether the PtNode has shortcuts.
+     * @param hasBigrams whether the PtNode has bigrams.
+     * @param isNotAWord whether the PtNode is not a word.
+     * @param isBlackListEntry whether the PtNode is a blacklist entry.
      * @param formatOptions file format options.
      * @return the flags
      */
-    static int makeCharGroupFlags(final boolean hasMultipleChars, final boolean isTerminal,
+    static int makePtNodeFlags(final boolean hasMultipleChars, final boolean isTerminal,
             final int childrenAddressSize, final boolean hasShortcuts, final boolean hasBigrams,
             final boolean isNotAWord, final boolean isBlackListEntry,
             final FormatOptions formatOptions) {
@@ -576,16 +580,16 @@ public class BinaryDictEncoderUtils {
         } else if (true) {
             switch (childrenAddressSize) {
                 case 1:
-                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
+                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE;
                     break;
                 case 2:
-                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
+                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES;
                     break;
                 case 3:
-                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
+                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES;
                     break;
                 case 0:
-                    flags |= FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS;
+                    flags |= FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS;
                     break;
                 default:
                     throw new RuntimeException("Node with a strange address");
@@ -598,12 +602,12 @@ public class BinaryDictEncoderUtils {
         return flags;
     }
 
-    private static byte makeCharGroupFlags(final CharGroup group, final int groupAddress,
+    private static byte makePtNodeFlags(final PtNode node, final int ptNodeAddress,
             final int childrenOffset, final FormatOptions formatOptions) {
-        return (byte) makeCharGroupFlags(group.mChars.length > 1, group.mFrequency >= 0,
+        return (byte) makePtNodeFlags(node.mChars.length > 1, node.mFrequency >= 0,
                 getByteSize(childrenOffset),
-                group.mShortcutTargets != null && !group.mShortcutTargets.isEmpty(),
-                group.mBigrams != null, group.mIsNotAWord, group.mIsBlacklistEntry, formatOptions);
+                node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
+                node.mBigrams != null, node.mIsNotAWord, node.mIsBlacklistEntry, formatOptions);
     }
 
     /**
@@ -618,17 +622,17 @@ public class BinaryDictEncoderUtils {
      */
     private static final int makeBigramFlags(final boolean more, final int offset,
             int bigramFrequency, final int unigramFrequency, final String word) {
-        int bigramFlags = (more ? FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT : 0)
-                + (offset < 0 ? FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0);
+        int bigramFlags = (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
+                + (offset < 0 ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0);
         switch (getByteSize(offset)) {
         case 1:
-            bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
+            bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE;
             break;
         case 2:
-            bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES;
+            bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES;
             break;
         case 3:
-            bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
+            bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES;
             break;
         default:
             throw new RuntimeException("Strange offset size");
@@ -673,7 +677,7 @@ public class BinaryDictEncoderUtils {
         // small over-estimation that we get in this case. TODO: actually remove this bigram
         // if discretizedFrequency < 0.
         final int finalBigramFrequency = discretizedFrequency > 0 ? discretizedFrequency : 0;
-        bigramFlags += finalBigramFrequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY;
+        bigramFlags += finalBigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
         return bigramFlags;
     }
 
@@ -698,8 +702,8 @@ public class BinaryDictEncoderUtils {
      * @return the flags
      */
     static final int makeShortcutFlags(final boolean more, final int frequency) {
-        return (more ? FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT : 0)
-                + (frequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY);
+        return (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
+                + (frequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY);
     }
 
     private static final int writeParentAddress(final byte[] buffer, final int index,
@@ -722,68 +726,69 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Write a node array to memory. The node array is expected to have its final position cached.
+     * Write a PtNodeArray to memory. The PtNodeArray is expected to have its final position cached.
      *
      * @param dict the dictionary the node array is a part of (for relative offsets).
      * @param buffer the memory buffer to write to.
-     * @param nodeArray the node array to write.
+     * @param ptNodeArray the node array to write.
      * @param formatOptions file format options.
      * @return the address of the END of the node.
      */
     @SuppressWarnings("unused")
     private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
-            final PtNodeArray nodeArray, final FormatOptions formatOptions) {
-        // TODO: Make the code in common with BinaryDictIOUtils#writeCharGroup
-        int index = nodeArray.mCachedAddressAfterUpdate;
+            final PtNodeArray ptNodeArray, final FormatOptions formatOptions) {
+        // TODO: Make the code in common with BinaryDictIOUtils#writePtNode
+        int index = ptNodeArray.mCachedAddressAfterUpdate;
 
-        final int groupCount = nodeArray.mData.size();
-        final int countSize = getGroupCountSize(nodeArray);
-        final int parentAddress = nodeArray.mCachedParentAddress;
+        final int ptNodeCount = ptNodeArray.mData.size();
+        final int countSize = getPtNodeCountSize(ptNodeArray);
+        final int parentAddress = ptNodeArray.mCachedParentAddress;
         if (1 == countSize) {
-            buffer[index++] = (byte)groupCount;
+            buffer[index++] = (byte)ptNodeCount;
         } else if (2 == countSize) {
             // We need to signal 2-byte size by setting the top bit of the MSB to 1, so
             // we | 0x80 to do this.
-            buffer[index++] = (byte)((groupCount >> 8) | 0x80);
-            buffer[index++] = (byte)(groupCount & 0xFF);
+            buffer[index++] = (byte)((ptNodeCount >> 8) | 0x80);
+            buffer[index++] = (byte)(ptNodeCount & 0xFF);
         } else {
             throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
         }
-        int groupAddress = index;
-        for (int i = 0; i < groupCount; ++i) {
-            final CharGroup group = nodeArray.mData.get(i);
-            if (index != group.mCachedAddressAfterUpdate) {
+        int ptNodeAddress = index;
+        for (int i = 0; i < ptNodeCount; ++i) {
+            final PtNode ptNode = ptNodeArray.mData.get(i);
+            if (index != ptNode.mCachedAddressAfterUpdate) {
                 throw new RuntimeException("Bug: write index is not the same as the cached address "
-                        + "of the group : " + index + " <> " + group.mCachedAddressAfterUpdate);
+                        + "of the node : " + index + " <> " + ptNode.mCachedAddressAfterUpdate);
             }
-            groupAddress += getGroupHeaderSize(group, formatOptions);
+            ptNodeAddress += getNodeHeaderSize(ptNode, formatOptions);
             // Sanity checks.
-            if (DBG && group.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
+            if (DBG && ptNode.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > "
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
-                        + " : " + group.mFrequency);
+                        + " : " + ptNode.mFrequency);
             }
-            if (group.mFrequency >= 0) groupAddress += FormatSpec.GROUP_FREQUENCY_SIZE;
-            final int childrenOffset = null == group.mChildren
+            if (ptNode.mFrequency >= 0) ptNodeAddress += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            final int childrenOffset = null == ptNode.mChildren
                     ? FormatSpec.NO_CHILDREN_ADDRESS
-                            : group.mChildren.mCachedAddressAfterUpdate - groupAddress;
+                            : ptNode.mChildren.mCachedAddressAfterUpdate - ptNodeAddress;
             buffer[index++] =
-                    makeCharGroupFlags(group, groupAddress, childrenOffset, formatOptions);
+                    makePtNodeFlags(ptNode, ptNodeAddress, childrenOffset, formatOptions);
 
             if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
                 index = writeParentAddress(buffer, index, parentAddress, formatOptions);
             } else {
                 index = writeParentAddress(buffer, index, parentAddress
-                        + (nodeArray.mCachedAddressAfterUpdate - group.mCachedAddressAfterUpdate),
+                        + (ptNodeArray.mCachedAddressAfterUpdate
+                                - ptNode.mCachedAddressAfterUpdate),
                         formatOptions);
             }
 
-            index = CharEncoding.writeCharArray(group.mChars, buffer, index);
-            if (group.hasSeveralChars()) {
-                buffer[index++] = FormatSpec.GROUP_CHARACTERS_TERMINATOR;
+            index = CharEncoding.writeCharArray(ptNode.mChars, buffer, index);
+            if (ptNode.hasSeveralChars()) {
+                buffer[index++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
             }
-            if (group.mFrequency >= 0) {
-                buffer[index++] = (byte) group.mFrequency;
+            if (ptNode.mFrequency >= 0) {
+                buffer[index++] = (byte) ptNode.mFrequency;
             }
 
             final int shift;
@@ -793,23 +798,24 @@ public class BinaryDictEncoderUtils {
                 shift = writeVariableAddress(buffer, index, childrenOffset);
             }
             index += shift;
-            groupAddress += shift;
+            ptNodeAddress += shift;
 
             // Write shortcuts
-            if (null != group.mShortcutTargets && !group.mShortcutTargets.isEmpty()) {
+            if (null != ptNode.mShortcutTargets && !ptNode.mShortcutTargets.isEmpty()) {
                 final int indexOfShortcutByteSize = index;
-                index += FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
-                groupAddress += FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE;
-                final Iterator<WeightedString> shortcutIterator = group.mShortcutTargets.iterator();
+                index += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
+                ptNodeAddress += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
+                final Iterator<WeightedString> shortcutIterator =
+                        ptNode.mShortcutTargets.iterator();
                 while (shortcutIterator.hasNext()) {
                     final WeightedString target = shortcutIterator.next();
-                    ++groupAddress;
+                    ++ptNodeAddress;
                     int shortcutFlags = makeShortcutFlags(shortcutIterator.hasNext(),
                             target.mFrequency);
                     buffer[index++] = (byte)shortcutFlags;
                     final int shortcutShift = CharEncoding.writeString(buffer, index, target.mWord);
                     index += shortcutShift;
-                    groupAddress += shortcutShift;
+                    ptNodeAddress += shortcutShift;
                 }
                 final int shortcutByteSize = index - indexOfShortcutByteSize;
                 if (shortcutByteSize > 0xFFFF) {
@@ -819,22 +825,22 @@ public class BinaryDictEncoderUtils {
                 buffer[indexOfShortcutByteSize + 1] = (byte)(shortcutByteSize & 0xFF);
             }
             // Write bigrams
-            if (null != group.mBigrams) {
-                final Iterator<WeightedString> bigramIterator = group.mBigrams.iterator();
+            if (null != ptNode.mBigrams) {
+                final Iterator<WeightedString> bigramIterator = ptNode.mBigrams.iterator();
                 while (bigramIterator.hasNext()) {
                     final WeightedString bigram = bigramIterator.next();
-                    final CharGroup target =
+                    final PtNode target =
                             FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
                     final int addressOfBigram = target.mCachedAddressAfterUpdate;
                     final int unigramFrequencyForThisWord = target.mFrequency;
-                    ++groupAddress;
-                    final int offset = addressOfBigram - groupAddress;
+                    ++ptNodeAddress;
+                    final int offset = addressOfBigram - ptNodeAddress;
                     int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
                             bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
                     buffer[index++] = (byte)bigramFlags;
                     final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
                     index += bigramShift;
-                    groupAddress += bigramShift;
+                    ptNodeAddress += bigramShift;
                 }
             }
 
@@ -844,64 +850,64 @@ public class BinaryDictEncoderUtils {
                     = FormatSpec.NO_FORWARD_LINK_ADDRESS;
             index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
         }
-        if (index != nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize) {
+        if (index != ptNodeArray.mCachedAddressAfterUpdate + ptNodeArray.mCachedSize) {
             throw new RuntimeException(
-                    "Not the same size : written " + (index - nodeArray.mCachedAddressAfterUpdate)
-                     + " bytes from a node that should have " + nodeArray.mCachedSize + " bytes");
+                    "Not the same size : written " + (index - ptNodeArray.mCachedAddressAfterUpdate)
+                     + " bytes from a node that should have " + ptNodeArray.mCachedSize + " bytes");
         }
         return index;
     }
 
     /**
-     * Dumps a collection of useful statistics about a list of node arrays.
+     * Dumps a collection of useful statistics about a list of PtNode arrays.
      *
      * This prints purely informative stuff, like the total estimated file size, the
-     * number of node arrays, of character groups, the repartition of each address size, etc
+     * number of PtNode arrays, of PtNodes, the repartition of each address size, etc
      *
-     * @param nodeArrays the list of node arrays.
+     * @param ptNodeArrays the list of PtNode arrays.
      */
-    private static void showStatistics(ArrayList<PtNodeArray> nodeArrays) {
+    private static void showStatistics(ArrayList<PtNodeArray> ptNodeArrays) {
         int firstTerminalAddress = Integer.MAX_VALUE;
         int lastTerminalAddress = Integer.MIN_VALUE;
         int size = 0;
-        int charGroups = 0;
-        int maxGroups = 0;
+        int ptNodes = 0;
+        int maxNodes = 0;
         int maxRuns = 0;
-        for (final PtNodeArray nodeArray : nodeArrays) {
-            if (maxGroups < nodeArray.mData.size()) maxGroups = nodeArray.mData.size();
-            for (final CharGroup cg : nodeArray.mData) {
-                ++charGroups;
-                if (cg.mChars.length > maxRuns) maxRuns = cg.mChars.length;
-                if (cg.mFrequency >= 0) {
-                    if (nodeArray.mCachedAddressAfterUpdate < firstTerminalAddress)
-                        firstTerminalAddress = nodeArray.mCachedAddressAfterUpdate;
-                    if (nodeArray.mCachedAddressAfterUpdate > lastTerminalAddress)
-                        lastTerminalAddress = nodeArray.mCachedAddressAfterUpdate;
+        for (final PtNodeArray ptNodeArray : ptNodeArrays) {
+            if (maxNodes < ptNodeArray.mData.size()) maxNodes = ptNodeArray.mData.size();
+            for (final PtNode ptNode : ptNodeArray.mData) {
+                ++ptNodes;
+                if (ptNode.mChars.length > maxRuns) maxRuns = ptNode.mChars.length;
+                if (ptNode.mFrequency >= 0) {
+                    if (ptNodeArray.mCachedAddressAfterUpdate < firstTerminalAddress)
+                        firstTerminalAddress = ptNodeArray.mCachedAddressAfterUpdate;
+                    if (ptNodeArray.mCachedAddressAfterUpdate > lastTerminalAddress)
+                        lastTerminalAddress = ptNodeArray.mCachedAddressAfterUpdate;
                 }
             }
-            if (nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize > size) {
-                size = nodeArray.mCachedAddressAfterUpdate + nodeArray.mCachedSize;
+            if (ptNodeArray.mCachedAddressAfterUpdate + ptNodeArray.mCachedSize > size) {
+                size = ptNodeArray.mCachedAddressAfterUpdate + ptNodeArray.mCachedSize;
             }
         }
-        final int[] groupCounts = new int[maxGroups + 1];
+        final int[] ptNodeCounts = new int[maxNodes + 1];
         final int[] runCounts = new int[maxRuns + 1];
-        for (final PtNodeArray nodeArray : nodeArrays) {
-            ++groupCounts[nodeArray.mData.size()];
-            for (final CharGroup cg : nodeArray.mData) {
-                ++runCounts[cg.mChars.length];
+        for (final PtNodeArray ptNodeArray : ptNodeArrays) {
+            ++ptNodeCounts[ptNodeArray.mData.size()];
+            for (final PtNode ptNode : ptNodeArray.mData) {
+                ++runCounts[ptNode.mChars.length];
             }
         }
 
         MakedictLog.i("Statistics:\n"
                 + "  total file size " + size + "\n"
-                + "  " + nodeArrays.size() + " node arrays\n"
-                + "  " + charGroups + " groups (" + ((float)charGroups / nodeArrays.size())
-                        + " groups per node)\n"
+                + "  " + ptNodeArrays.size() + " node arrays\n"
+                + "  " + ptNodes + " PtNodes (" + ((float)ptNodes / ptNodeArrays.size())
+                        + " PtNodes per node)\n"
                 + "  first terminal at " + firstTerminalAddress + "\n"
                 + "  last terminal at " + lastTerminalAddress + "\n"
-                + "  Group stats : max = " + maxGroups);
-        for (int i = 0; i < groupCounts.length; ++i) {
-            MakedictLog.i("    " + i + " : " + groupCounts[i]);
+                + "  PtNode stats : max = " + maxNodes);
+        for (int i = 0; i < ptNodeCounts.length; ++i) {
+            MakedictLog.i("    " + i + " : " + ptNodeCounts[i]);
         }
         MakedictLog.i("  Character run stats : max = " + maxRuns);
         for (int i = 0; i < runCounts.length; ++i) {
@@ -922,7 +928,7 @@ public class BinaryDictEncoderUtils {
 
         // Addresses are limited to 3 bytes, but since addresses can be relative to each node
         // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding
-        // the order of the node arrays becomes a quite complicated problem, because though the
+        // the order of the PtNode arrays becomes a quite complicated problem, because though the
         // dictionary itself does not have a size limit, each node array must still be within 16MB
         // of all its children and parents. As long as this is ensured, the dictionary file may
         // grow to any size.
@@ -980,8 +986,8 @@ public class BinaryDictEncoderUtils {
 
         MakedictLog.i("Computing addresses...");
         computeAddresses(dict, flatNodes, formatOptions);
-        MakedictLog.i("Checking array...");
-        if (DBG) checkFlatNodeArrayList(flatNodes);
+        MakedictLog.i("Checking PtNode array...");
+        if (DBG) checkFlatPtNodeArrayList(flatNodes);
 
         // Create a buffer that matches the final dictionary size.
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);

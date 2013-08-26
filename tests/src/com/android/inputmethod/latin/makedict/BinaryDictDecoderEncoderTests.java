@@ -25,7 +25,7 @@ import android.util.SparseArray;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
@@ -239,17 +239,17 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // check unigram
         for (final String word : words) {
-            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
-            assertNotNull(cg);
+            final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
+            assertNotNull(ptNode);
         }
 
         // check bigram
         for (int i = 0; i < bigrams.size(); ++i) {
             final int w1 = bigrams.keyAt(i);
             for (final int w2 : bigrams.valueAt(i)) {
-                final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray,
+                final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray,
                         words.get(w1));
-                assertNotNull(words.get(w1) + "," + words.get(w2), cg.getBigram(words.get(w2)));
+                assertNotNull(words.get(w1) + "," + words.get(w2), ptNode.getBigram(words.get(w2)));
             }
         }
 
@@ -257,11 +257,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         if (shortcutMap != null) {
             for (final Map.Entry<String, List<String>> entry : shortcutMap.entrySet()) {
                 assertTrue(words.contains(entry.getKey()));
-                final CharGroup group = FusionDictionary.findWordInTree(dict.mRootNodeArray,
+                final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray,
                         entry.getKey());
                 for (final String word : entry.getValue()) {
                     assertNotNull("shortcut not found: " + entry.getKey() + ", " + word,
-                            group.getShortcut(word));
+                            ptNode.getShortcut(word));
                 }
             }
         }

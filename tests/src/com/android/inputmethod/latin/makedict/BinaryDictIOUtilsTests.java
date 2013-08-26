@@ -86,8 +86,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         return builder.toString();
     }
 
-    private static void printCharGroup(final CharGroupInfo info) {
-        Log.d(TAG, "    CharGroup at " + info.mOriginalAddress);
+    private static void printPtNode(final PtNodeInfo info) {
+        Log.d(TAG, "    PtNode at " + info.mOriginalAddress);
         Log.d(TAG, "        flags = " + info.mFlags);
         Log.d(TAG, "        parentAddress = " + info.mParentAddress);
         Log.d(TAG, "        characters = " + new String(info.mCharacters, 0,
@@ -115,12 +115,12 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             final FormatSpec.FormatOptions formatOptions) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         Log.d(TAG, "Node at " + dictBuffer.position());
-        final int count = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
-        Log.d(TAG, "    charGroupCount = " + count);
+        final int count = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+        Log.d(TAG, "    ptNodeCount = " + count);
         for (int i = 0; i < count; ++i) {
-            final CharGroupInfo currentInfo = dictDecoder.readPtNode(dictBuffer.position(),
+            final PtNodeInfo currentInfo = dictDecoder.readPtNode(dictBuffer.position(),
                     formatOptions);
-            printCharGroup(currentInfo);
+            printPtNode(currentInfo);
         }
         if (formatOptions.mSupportsDynamicUpdate) {
             final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
@@ -155,11 +155,11 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
      *
      * @param dictDecoder the dict decoder
      * @param word the word searched
-     * @return the found group
+     * @return the found ptNodeInfo
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    private static CharGroupInfo findWordByBinaryDictReader(final Ver3DictDecoder dictDecoder,
+    private static PtNodeInfo findWordByBinaryDictReader(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         int position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
@@ -172,10 +172,10 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         return null;
     }
 
-    private CharGroupInfo findWordFromFile(final File file, final String word) {
-        CharGroupInfo info = null;
+    private PtNodeInfo findWordFromFile(final File file, final String word) {
+        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
+        PtNodeInfo info = null;
         try {
-            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
             dictDecoder.openDictBuffer();
             info = findWordByBinaryDictReader(dictDecoder, word);
         } catch (IOException e) {
@@ -328,7 +328,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         insertAndCheckWord(file, "banana", 0, false, null, null);
         insertAndCheckWord(file, "recursive", 60, true, banana, null);
 
-        final CharGroupInfo info = findWordFromFile(file, "recursive");
+        final PtNodeInfo info = findWordFromFile(file, "recursive");
         int bananaPos = getWordPosition(file, "banana");
         assertNotNull(info.mBigrams);
         assertEquals(info.mBigrams.size(), 1);
