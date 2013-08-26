@@ -45,6 +45,7 @@ public final class UserHistoryDictionaryBigramList {
     /**
      * Called when the user typed a word.
      */
+    @UsedForTesting
     public void addBigram(String word1, String word2) {
         addBigram(word1, word2, FORGETTING_CURVE_INITIAL_VALUE);
     }

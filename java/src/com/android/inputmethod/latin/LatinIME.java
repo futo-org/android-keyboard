@@ -74,8 +74,8 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
-import com.android.inputmethod.latin.personalization.PersonalizationDictionaryHelper;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
+import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
 import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
 import com.android.inputmethod.latin.settings.Settings;
@@ -566,13 +566,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mUserHistoryPredictionDictionary = PersonalizationDictionaryHelper
+        mUserHistoryPredictionDictionary = PersonalizationHelper
                 .getUserHistoryPredictionDictionary(this, localeStr, prefs);
         newSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
-        mPersonalizationDictionary = PersonalizationDictionaryHelper
+        mPersonalizationDictionary = PersonalizationHelper
                 .getPersonalizationDictionary(this, localeStr, prefs);
         newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
-        mPersonalizationPredictionDictionary = PersonalizationDictionaryHelper
+        mPersonalizationPredictionDictionary = PersonalizationHelper
                 .getPersonalizationPredictionDictionary(this, localeStr, prefs);
         newSuggest.setPersonalizationPredictionDictionary(mPersonalizationPredictionDictionary);
 
