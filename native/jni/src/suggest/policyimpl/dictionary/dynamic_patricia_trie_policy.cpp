@@ -39,7 +39,7 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
     int nextPos = dicNode->getChildrenPos();
     int totalChildCount = 0;
     do {
-        const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
+        const int childCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
                 mDictRoot, &nextPos);
         totalChildCount += childCount;
         if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
@@ -131,7 +131,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
         bool foundMatchedNode = false;
         int totalChildCount = 0;
         do {
-            const int childCount = PatriciaTrieReadingUtils::getGroupCountAndAdvancePosition(
+            const int childCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
                     mDictRoot, &pos);
             totalChildCount += childCount;
             if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
@@ -179,7 +179,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
             if (foundMatchedNode) {
                 break;
             }
-            // If the matched node is not found in the current node group, try to follow the
+            // If the matched node is not found in the current PtNode array, try to follow the
             // forward link.
             pos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(
                     mDictRoot, pos);

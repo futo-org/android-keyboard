@@ -23,15 +23,15 @@ namespace latinime {
 
 typedef PatriciaTrieReadingUtils PtReadingUtils;
 
-const PtReadingUtils::NodeFlags PtReadingUtils::MASK_GROUP_ADDRESS_TYPE = 0xC0;
-const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
-const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
-const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
-const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
+const PtReadingUtils::NodeFlags PtReadingUtils::MASK_CHILDREN_POSITION_TYPE = 0xC0;
+const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_CHILDREN_POSITION_TYPE_NOPOSITION = 0x00;
+const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_CHILDREN_POSITION_TYPE_ONEBYTE = 0x40;
+const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_CHILDREN_POSITION_TYPE_TWOBYTES = 0x80;
+const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_CHILDREN_POSITION_TYPE_THREEBYTES = 0xC0;
 
 // Flag for single/multiple char group
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_HAS_MULTIPLE_CHARS = 0x20;
-// Flag for terminal groups
+// Flag for terminal PtNodes
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_TERMINAL = 0x10;
 // Flag for shortcut targets presence
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_HAS_SHORTCUT_TARGETS = 0x08;
@@ -46,14 +46,14 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
         const uint8_t *const buffer, const NodeFlags flags, int *const pos) {
     const int base = *pos;
     int offset = 0;
-    switch (MASK_GROUP_ADDRESS_TYPE & flags) {
-        case FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+    switch (MASK_CHILDREN_POSITION_TYPE & flags) {
+        case FLAG_CHILDREN_POSITION_TYPE_ONEBYTE:
             offset = ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
             break;
-        case FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+        case FLAG_CHILDREN_POSITION_TYPE_TWOBYTES:
             offset = ByteArrayUtils::readUint16AndAdvancePosition(buffer, pos);
             break;
-        case FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+        case FLAG_CHILDREN_POSITION_TYPE_THREEBYTES:
             offset = ByteArrayUtils::readUint24AndAdvancePosition(buffer, pos);
             break;
         default:
