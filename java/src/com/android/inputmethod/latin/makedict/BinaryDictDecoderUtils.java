@@ -561,8 +561,7 @@ public final class BinaryDictDecoderUtils {
      */
     @UsedForTesting
     /* package */ static FusionDictionary readDictionaryBinary(final Ver3DictDecoder dictDecoder,
-            final FusionDictionary dict) throws FileNotFoundException, IOException,
-            UnsupportedFormatException {
+            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
         // Read header
         final FileHeader fileHeader = dictDecoder.readHeader();
 
