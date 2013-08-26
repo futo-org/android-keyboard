@@ -53,6 +53,13 @@ public final class KeyboardId {
     public static final int ELEMENT_PHONE = 7;
     public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
+    public static final int ELEMENT_EMOJI_RECENTS = 10;
+    public static final int ELEMENT_EMOJI_CATEGORY1 = 11;
+    public static final int ELEMENT_EMOJI_CATEGORY2 = 12;
+    public static final int ELEMENT_EMOJI_CATEGORY3 = 13;
+    public static final int ELEMENT_EMOJI_CATEGORY4 = 14;
+    public static final int ELEMENT_EMOJI_CATEGORY5 = 15;
+    public static final int ELEMENT_EMOJI_CATEGORY6 = 16;
 
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
@@ -215,6 +222,13 @@ public final class KeyboardId {
         case ELEMENT_PHONE: return "phone";
         case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
+        case ELEMENT_EMOJI_RECENTS: return "emojiRecents";
+        case ELEMENT_EMOJI_CATEGORY1: return "emojiCategory1";
+        case ELEMENT_EMOJI_CATEGORY2: return "emojiCategory2";
+        case ELEMENT_EMOJI_CATEGORY3: return "emojiCategory3";
+        case ELEMENT_EMOJI_CATEGORY4: return "emojiCategory4";
+        case ELEMENT_EMOJI_CATEGORY5: return "emojiCategory5";
+        case ELEMENT_EMOJI_CATEGORY6: return "emojiCategory6";
         default: return null;
         }
     }
