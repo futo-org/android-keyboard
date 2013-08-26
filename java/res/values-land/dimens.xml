@@ -79,4 +79,7 @@
     <dimen name="gesture_floating_preview_text_offset">54dp</dimen>
     <dimen name="gesture_floating_preview_horizontal_padding">23dp</dimen>
     <dimen name="gesture_floating_preview_vertical_padding">15dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">8.3333%p</fraction>
 </resources>

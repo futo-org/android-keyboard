@@ -29,6 +29,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
@@ -113,6 +114,7 @@ import java.util.Locale;
  * </pre>
  */
 
+// TODO: Write unit tests for this class.
 public class KeyboardBuilder<KP extends KeyboardParams> {
     private static final String BUILDER_TAG = "Keyboard.Builder";
     private static final boolean DEBUG = false;
@@ -120,6 +122,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     // Keyboard XML Tags
     private static final String TAG_KEYBOARD = "Keyboard";
     private static final String TAG_ROW = "Row";
+    private static final String TAG_GRID_ROWS = "GridRows";
     private static final String TAG_KEY = "Key";
     private static final String TAG_SPACER = "Spacer";
     private static final String TAG_INCLUDE = "include";
@@ -312,6 +315,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                         startRow(row);
                     }
                     parseRowContent(parser, row, skip);
+                } else if (TAG_GRID_ROWS.equals(tag)) {
+                    if (DEBUG) startTag("<%s>%s", TAG_GRID_ROWS, skip ? " skipped" : "");
+                    parseGridRows(parser, skip);
                 } else if (TAG_INCLUDE.equals(tag)) {
                     parseIncludeKeyboardContent(parser, skip);
                 } else if (TAG_SWITCH.equals(tag)) {
@@ -387,6 +393,73 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_ROW);
             }
         }
+    }
+
+    private void parseGridRows(final XmlPullParser parser, final boolean skip)
+            throws XmlPullParserException, IOException {
+        if (skip) {
+            XmlParseUtils.checkEndTag(TAG_GRID_ROWS, parser);
+            if (DEBUG) {
+                startEndTag("<%s /> skipped", TAG_GRID_ROWS);
+            }
+            return;
+        }
+        final KeyboardRow gridRows = new KeyboardRow(mResources, mParams, parser, mCurrentY);
+        final TypedArray gridRowAttr = mResources.obtainAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard_GridRows);
+        final int codesArrayId = gridRowAttr.getResourceId(
+                R.styleable.Keyboard_GridRows_codesArray, 0);
+        final int textsArrayId = gridRowAttr.getResourceId(
+                R.styleable.Keyboard_GridRows_textsArray, 0);
+        gridRowAttr.recycle();
+        if (codesArrayId == 0 && textsArrayId == 0) {
+            throw new XmlParseUtils.ParseException(
+                    "Missing codesArray or textsArray attributes", parser);
+        }
+        if (codesArrayId != 0 && textsArrayId != 0) {
+            throw new XmlParseUtils.ParseException(
+                    "Both codesArray and textsArray attributes specifed", parser);
+        }
+        final String[] array = mResources.getStringArray(
+                codesArrayId != 0 ? codesArrayId : textsArrayId);
+        final int counts = array.length;
+        final float keyWidth = gridRows.getKeyWidth(null, 0.0f);
+        final int numColumns = (int)(mParams.mOccupiedWidth / keyWidth);
+        for (int index = 0; index < counts; index += numColumns) {
+            final KeyboardRow row = new KeyboardRow(mResources, mParams, parser, mCurrentY);
+            startRow(row);
+            for (int c = 0; c < numColumns; c++) {
+                final int i = index + c;
+                if (i >= counts) {
+                    break;
+                }
+                final String label;
+                final int code;
+                final String outputText;
+                if (codesArrayId != 0) {
+                    final String codeArraySpec = array[i];
+                    label = CodesArrayParser.parseLabel(codeArraySpec);
+                    code = CodesArrayParser.parseCode(codeArraySpec);
+                    outputText = CodesArrayParser.parseOutputText(codeArraySpec);
+                } else {
+                    final String textArraySpec = array[i];
+                    // TODO: Utilize KeySpecParser or write more generic TextsArrayParser.
+                    label = textArraySpec;
+                    code = Constants.CODE_OUTPUT_TEXT;
+                    outputText = textArraySpec + (char)Constants.CODE_SPACE;
+                }
+                final int x = (int)row.getKeyX(null);
+                final int y = row.getKeyY();
+                final Key key = new Key(mParams, label, null /* hintLabel */, 0 /* iconId */,
+                        code, outputText, x, y, (int)keyWidth, (int)row.getRowHeight(),
+                        row.getDefaultKeyLabelFlags(), row.getDefaultBackgroundType());
+                endKey(key);
+                row.advanceXPos(keyWidth);
+            }
+            endRow(row);
+        }
+
+        XmlParseUtils.checkEndTag(TAG_GRID_ROWS, parser);
     }
 
     private void parseKey(final XmlPullParser parser, final KeyboardRow row, final boolean skip)
@@ -744,7 +817,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void endKeyboard() {
-        // nothing to do here.
+        // {@link #parseGridRows(XmlPullParser,boolean)} may populate keyboard rows higher than
+        // previously expected.
+        final int actualHeight = mCurrentY - mParams.mVerticalGap + mParams.mBottomPadding;
+        mParams.mOccupiedHeight = Math.max(mParams.mOccupiedHeight, actualHeight);
     }
 
     private void addEdgeSpace(final float width, final KeyboardRow row) {

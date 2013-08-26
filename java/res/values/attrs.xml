@@ -215,6 +215,11 @@
         <attr name="iconEmojiKey" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="Keyboard_GridRows">
+        <attr name="codesArray" format="reference" />
+        <attr name="textsArray" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="Keyboard_Key">
         <!-- The unicode value that this key outputs.
              Code value represented in hexadecimal prefixed with "0x" or code value reference using
