@@ -101,6 +101,7 @@
         <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
     </style>
     <style name="MainKeyboardView" />
+    <style name="EmojiKeyboardView" />
     <style name="MoreKeysKeyboard" />
     <style name="MoreKeysKeyboardView" />
     <style
