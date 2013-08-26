@@ -373,6 +373,13 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
+            <enum name="emojiRecents" value="10" />
+            <enum name="emojiCategory1" value="11" />
+            <enum name="emojiCategory2" value="12" />
+            <enum name="emojiCategory3" value="13" />
+            <enum name="emojiCategory4" value="14" />
+            <enum name="emojiCategory5" value="15" />
+            <enum name="emojiCategory6" value="16" />
         </attr>
         <!-- This should be aligned with KeyboardId.MODE_* -->
         <attr name="mode" format="enum|string">
@@ -427,6 +434,13 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
+            <enum name="emojiRecents" value="10" />
+            <enum name="emojiCategory1" value="11" />
+            <enum name="emojiCategory2" value="12" />
+            <enum name="emojiCategory3" value="13" />
+            <enum name="emojiCategory4" value="14" />
+            <enum name="emojiCategory5" value="15" />
+            <enum name="emojiCategory6" value="16" />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
         <!-- Enable proximity characters correction. Disabled by default. -->
