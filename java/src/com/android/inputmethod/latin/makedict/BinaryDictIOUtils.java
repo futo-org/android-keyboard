@@ -169,7 +169,7 @@ public final class BinaryDictIOUtils {
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    public static int getTerminalPosition(final Ver3DictDecoder dictDecoder,
+    /* package */ static int getTerminalPosition(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;

@@ -60,7 +60,7 @@ public final class DynamicBinaryDictIOUtils {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(0);
         final FileHeader header = dictDecoder.readHeader();
-        final int wordPosition = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
+        final int wordPosition = dictDecoder.getTerminalPosition(word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
         dictBuffer.position(wordPosition);
@@ -263,7 +263,7 @@ public final class DynamicBinaryDictIOUtils {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (bigramStrings != null) {
             for (final WeightedString bigram : bigramStrings) {
-                int position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, bigram.mWord);
+                int position = dictDecoder.getTerminalPosition(bigram.mWord);
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {

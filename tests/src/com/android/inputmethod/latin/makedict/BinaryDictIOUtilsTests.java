@@ -142,8 +142,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         try {
             final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file);
-            dictDecoder.openDictBuffer();
-            position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
+            position = dictDecoder.getTerminalPosition(word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
@@ -161,7 +160,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
      */
     private static PtNodeInfo findWordByBinaryDictReader(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
-        int position = BinaryDictIOUtils.getTerminalPosition(dictDecoder, word);
+        int position = dictDecoder.getTerminalPosition(word);
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (position != FormatSpec.NOT_VALID_WORD) {
             dictBuffer.position(0);
