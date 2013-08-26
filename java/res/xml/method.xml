@@ -24,7 +24,7 @@
     keyboard_locale: script_name/keyboard_layout_set
     af: Afrikaans/qwerty
     ar: Arabic/arabic
-    (az: Azerbaijani/qwerty) # disabled temporarily. waiting for strnig resources.
+    az: Azerbaijani/qwerty
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
@@ -117,7 +117,6 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
     />
-    <!--
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:subtypeId="0x70b0f974"
@@ -125,7 +124,6 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
-    -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1dc3a859"
