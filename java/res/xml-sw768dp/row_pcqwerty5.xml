@@ -24,36 +24,34 @@
     <Row
         latin:keyWidth="8.047%p"
     >
-        <include
-            latin:keyboardLayout="@xml/key_settings" />
         <switch>
             <case
-                latin:keyboardLayoutSetElement="symbols"
-            >
-                <Spacer
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
-            </case>
-            <case
-                latin:mode="email|url"
+                latin:languageSwitchKeyEnabled="true"
             >
                 <Key
-                    latin:keyStyle="comKeyStyle"
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
+                    latin:keyStyle="languageSwitchKeyStyle"
+                    latin:backgroundType="functional" />
             </case>
-            <default>
-                <Spacer
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
-            </default>
         </switch>
         <Key
             latin:keyStyle="spaceKeyStyle"
+            latin:keyXPos="25.5%p"
             latin:keyWidth="49.0%p" />
-        <include
-            latin:keyXPos="-8.047%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+        <switch>
+            <case
+                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
+            >
+                <include
+                    latin:keyXPos="-8.047%p"
+                    latin:keyboardLayout="@xml/key_shortcut" />
+            </case>
+            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
+            <default>
+                <include
+                    latin:keyXPos="-8.047%p"
+                    latin:backgroundType="functional"
+                    latin:keyboardLayout="@xml/key_symbols_period" />
+            </default>
+        </switch>
     </Row>
 </merge>

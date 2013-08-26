@@ -38,9 +38,23 @@
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="25.5%p"
             latin:keyWidth="49.0%p" />
-         <include
-            latin:keyXPos="-9.0%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+        <switch>
+            <case
+                latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
+            >
+                <include
+                    latin:keyXPos="-9.0%p"
+                    latin:keyWidth="9.0%p"
+                    latin:keyboardLayout="@xml/key_shortcut" />
+            </case>
+            <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
+            <default>
+                <include
+                    latin:keyXPos="-9.0%p"
+                    latin:keyWidth="9.0%p"
+                    latin:backgroundType="functional"
+                    latin:keyboardLayout="@xml/key_symbols_period" />
+            </default>
+        </switch>
     </Row>
 </merge>

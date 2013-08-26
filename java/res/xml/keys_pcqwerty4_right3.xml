@@ -27,16 +27,16 @@
         >
             <Key
                 latin:keyLabel=","
-                latin:moreKeys="&lt;" />
+                latin:additionalMoreKeys="&lt;" />
             <Key
                 latin:keyLabel="."
-                latin:moreKeys="&gt;" />
-            <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+                latin:additionalMoreKeys="&gt;" />
             <Key
                 latin:keyLabel="/"
-                latin:moreKeys="\?,&#x00BF;" />
+                latin:additionalMoreKeys="\?"
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </case>
-        <!-- keyboardLayoutSetElement="alphabet*Shifted|symbols*" -->
+        <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <!-- U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
                  U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
@@ -50,10 +50,9 @@
             <Key
                 latin:keyLabel="&gt;"
                 latin:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;" />
-            <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
             <Key
                 latin:keyLabel="\?"
-                latin:moreKeys="&#x00BF;" />
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </default>
     </switch>
 </merge>
