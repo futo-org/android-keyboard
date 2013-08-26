@@ -123,6 +123,9 @@
     <dimen name="gesture_floating_preview_vertical_padding">16dp</dimen>
     <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
 
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">14.2857%p</fraction>
+
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>
 
