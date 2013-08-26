@@ -28,7 +28,7 @@ class PatriciaTrieReadingUtils {
  public:
     typedef uint8_t NodeFlags;
 
-    static AK_FORCE_INLINE int getGroupCountAndAdvancePosition(
+    static AK_FORCE_INLINE int getPtNodeArraySizeAndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint8_t firstByte = ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
         if (firstByte < 0x80) {
@@ -116,17 +116,17 @@ class PatriciaTrieReadingUtils {
     }
 
     static AK_FORCE_INLINE bool hasChildrenInFlags(const NodeFlags flags) {
-        return FLAG_GROUP_ADDRESS_TYPE_NOADDRESS != (MASK_GROUP_ADDRESS_TYPE & flags);
+        return FLAG_CHILDREN_POSITION_TYPE_NOPOSITION != (MASK_CHILDREN_POSITION_TYPE & flags);
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTrieReadingUtils);
 
-    static const NodeFlags MASK_GROUP_ADDRESS_TYPE;
-    static const NodeFlags FLAG_GROUP_ADDRESS_TYPE_NOADDRESS;
-    static const NodeFlags FLAG_GROUP_ADDRESS_TYPE_ONEBYTE;
-    static const NodeFlags FLAG_GROUP_ADDRESS_TYPE_TWOBYTES;
-    static const NodeFlags FLAG_GROUP_ADDRESS_TYPE_THREEBYTES;
+    static const NodeFlags MASK_CHILDREN_POSITION_TYPE;
+    static const NodeFlags FLAG_CHILDREN_POSITION_TYPE_NOPOSITION;
+    static const NodeFlags FLAG_CHILDREN_POSITION_TYPE_ONEBYTE;
+    static const NodeFlags FLAG_CHILDREN_POSITION_TYPE_TWOBYTES;
+    static const NodeFlags FLAG_CHILDREN_POSITION_TYPE_THREEBYTES;
 
     static const NodeFlags FLAG_HAS_MULTIPLE_CHARS;
     static const NodeFlags FLAG_IS_TERMINAL;
