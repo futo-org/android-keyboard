@@ -23,28 +23,26 @@
 >
     <switch>
         <case
-            latin:keyboardLayoutSetElement="symbols"
+            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted"
         >
-            <!-- U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-                 U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-                 U+2264: "≤" LESS-THAN OR EQUAL TO
-                 U+2265: "≥" GREATER-THAN EQUAL TO
-                 U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-                 U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
-           <Key
+            <Key
                 latin:keyLabel=","
+                latin:keyHintLabel="&lt;"
                 latin:additionalMoreKeys="&lt;"
-                latin:moreKeys="!fixedColumnOrder!4,&#x2039;,&#x2064;,&#x00AB;" />
+                latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
+                latin:keyHintLabel="&gt;"
                 latin:additionalMoreKeys="&gt;"
-                latin:moreKeys="!fixedColumnOrder!4,&#x203A;,&#x2065;,&#x00BB;" />
-            <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+                latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="/"
+                latin:keyHintLabel="\?"
                 latin:additionalMoreKeys="\?"
-                latin:moreKeys="&#x00BF;" />
+                latin:keyStyle="hasShiftedLetterHintStyle"
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </case>
+        <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <!-- U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
                  U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
@@ -53,24 +51,14 @@
                  U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
                  U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
             <Key
-                latin:keyLabel=","
-                latin:keyHintLabel="&lt;"
-                latin:additionalMoreKeys="&lt;"
-                latin:moreKeys="!fixedColumnOrder!4,&#x2039;,&#x2264;,&#x00AB;"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:keyLabel="&lt;"
+                latin:moreKeys="!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;" />
             <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="&gt;"
-                latin:additionalMoreKeys="&gt;"
-                latin:moreKeys="!fixedColumnOrder!4,&#x203A;,&#x2265;,&#x00BB;"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+                latin:keyLabel="&gt;"
+                latin:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;" />
             <Key
-                latin:keyLabel="/"
-                latin:keyHintLabel="\?"
-                latin:additionalMoreKeys="\?"
-                latin:moreKeys="&#x00BF;"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:keyLabel="\?"
+                latin:moreKeys="!text/more_keys_for_symbols_question" />
         </default>
     </switch>
 </merge>

@@ -27,25 +27,22 @@
         >
             <Key
                 latin:keyLabel="["
-                latin:moreKeys="{" />
+                latin:additionalMoreKeys="{" />
             <Key
                 latin:keyLabel="]"
-                latin:moreKeys="}" />
-            <!-- U+00A6: "¦" BROKEN BAR -->
+                latin:additionalMoreKeys="}" />
             <Key
                 latin:keyLabel="\\"
-                latin:moreKeys="\\|,&#x00A6;" />
+                latin:additionalMoreKeys="\\|" />
         </case>
-        <!-- keyboardLayoutSetElement="alphabet*Shifted|symbols*" -->
+        <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
                 latin:keyLabel="{" />
             <Key
                 latin:keyLabel="}" />
-            <!-- U+00A6: "¦" BROKEN BAR -->
             <Key
-                latin:keyLabel="|"
-                latin:moreKeys="&#x00A6;" />
+                latin:keyLabel="|" />
         </default>
     </switch>
 </merge>

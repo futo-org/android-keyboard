@@ -27,12 +27,13 @@
         >
             <Key
                 latin:keyLabel=";"
-                latin:moreKeys=":" />
+                latin:additionalMoreKeys=":" />
             <Key
                 latin:keyLabel="\'"
-                latin:moreKeys="!fixedColumnOrder!4,!text/double_quotes,&quot;,!text/single_quotes" />
+                latin:additionalMoreKeys="&quot;"
+                latin:moreKeys="!fixedColumnOrder!4,!text/double_quotes,%,!text/single_quotes" />
         </case>
-        <!-- keyboardLayoutSetElement="alphabet*Shifted|symbols*" -->
+        <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
         <default>
             <Key
                 latin:keyLabel=":" />

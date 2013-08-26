@@ -21,21 +21,11 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:keyboardLayoutSetElement="symbols"
-        >
-            <include
-                latin:keyboardLayout="@xml/keys_pcqwerty_symbols2" />
-        </case>
-        <default>
-            <!-- The keys on this PC layout row2 consist of the letters of QWERTY layout row1 and
-                 some symbols keys. -->
-            <include
-                latin:keyboardLayout="@xml/rowkeys_qwerty1"
-                latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
-        </default>
-    </switch>
+    <!-- The keys on this PC layout row2 consist of the letters of QWERTY layout row1 and
+         some symbols keys. -->
+    <include
+        latin:keyboardLayout="@xml/rowkeys_qwerty1"
+        latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
     <include
         latin:keyboardLayout="@xml/keys_pcqwerty2_right3" />
 </merge>

@@ -25,9 +25,6 @@
         latin:elementKeyboard="@xml/kbd_pcqwerty"
         latin:enableProximityCharsCorrection="true" />
     <Element
-        latin:elementName="symbols"
-        latin:elementKeyboard="@xml/kbd_pcqwerty_symbols" />
-    <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element

@@ -231,25 +231,24 @@ public final class KeyboardTextsSet {
         /* 126 */ "label_to_phone_symbols_key",
         /* 127 */ "label_time_am",
         /* 128 */ "label_time_pm",
-        /* 129 */ "label_to_symbol_key_pcqwerty",
-        /* 130 */ "keylabel_for_popular_domain",
-        /* 131 */ "more_keys_for_popular_domain",
-        /* 132 */ "more_keys_for_smiley",
-        /* 133 */ "single_laqm_raqm",
-        /* 134 */ "single_laqm_raqm_rtl",
-        /* 135 */ "single_raqm_laqm",
-        /* 136 */ "double_laqm_raqm",
-        /* 137 */ "double_laqm_raqm_rtl",
-        /* 138 */ "double_raqm_laqm",
-        /* 139 */ "single_lqm_rqm",
-        /* 140 */ "single_9qm_lqm",
-        /* 141 */ "single_9qm_rqm",
-        /* 142 */ "double_lqm_rqm",
-        /* 143 */ "double_9qm_lqm",
-        /* 144 */ "double_9qm_rqm",
-        /* 145 */ "more_keys_for_single_quote",
-        /* 146 */ "more_keys_for_double_quote",
-        /* 147 */ "more_keys_for_tablet_double_quote",
+        /* 129 */ "keylabel_for_popular_domain",
+        /* 130 */ "more_keys_for_popular_domain",
+        /* 131 */ "more_keys_for_smiley",
+        /* 132 */ "single_laqm_raqm",
+        /* 133 */ "single_laqm_raqm_rtl",
+        /* 134 */ "single_raqm_laqm",
+        /* 135 */ "double_laqm_raqm",
+        /* 136 */ "double_laqm_raqm_rtl",
+        /* 137 */ "double_raqm_laqm",
+        /* 138 */ "single_lqm_rqm",
+        /* 139 */ "single_9qm_lqm",
+        /* 140 */ "single_9qm_rqm",
+        /* 141 */ "double_lqm_rqm",
+        /* 142 */ "double_9qm_lqm",
+        /* 143 */ "double_9qm_rqm",
+        /* 144 */ "more_keys_for_single_quote",
+        /* 145 */ "more_keys_for_double_quote",
+        /* 146 */ "more_keys_for_tablet_double_quote",
     };
 
     private static final String EMPTY = "";
@@ -389,12 +388,10 @@ public final class KeyboardTextsSet {
         /* 127 */ "AM",
         // Key label for "post meridiem"
         /* 128 */ "PM",
-        // Label for "switch to symbols" key on PC QWERTY layout
-        /* 129 */ "Sym",
-        /* 130 */ ".com",
+        /* 129 */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
-        /* 131 */ "!hasLabels!,.net,.org,.gov,.edu",
-        /* 132 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
+        /* 130 */ "!hasLabels!,.net,.org,.gov,.edu",
+        /* 131 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
@@ -416,24 +413,24 @@ public final class KeyboardTextsSet {
         // The following each quotation mark pair consist of
         // <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
-        /* 133 */ "\u2039,\u203A",
-        /* 134 */ "\u2039|\u203A,\u203A|\u2039",
-        /* 135 */ "\u203A,\u2039",
-        /* 136 */ "\u00AB,\u00BB",
-        /* 137 */ "\u00AB|\u00BB,\u00BB|\u00AB",
-        /* 138 */ "\u00BB,\u00AB",
+        /* 132 */ "\u2039,\u203A",
+        /* 133 */ "\u2039|\u203A,\u203A|\u2039",
+        /* 134 */ "\u203A,\u2039",
+        /* 135 */ "\u00AB,\u00BB",
+        /* 136 */ "\u00AB|\u00BB,\u00BB|\u00AB",
+        /* 137 */ "\u00BB,\u00AB",
         // The following each quotation mark triplet consists of
         // <another quotation mark>, <opening quotation mark>, <closing quotation mark>
         // and is named after (single|double)_<opening quotation mark>_<closing quotation mark>.
-        /* 139 */ "\u201A,\u2018,\u2019",
-        /* 140 */ "\u2019,\u201A,\u2018",
-        /* 141 */ "\u2018,\u201A,\u2019",
-        /* 142 */ "\u201E,\u201C,\u201D",
-        /* 143 */ "\u201D,\u201E,\u201C",
-        /* 144 */ "\u201C,\u201E,\u201D",
-        /* 145 */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
-        /* 146 */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
-        /* 147 */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
+        /* 138 */ "\u201A,\u2018,\u2019",
+        /* 139 */ "\u2019,\u201A,\u2018",
+        /* 140 */ "\u2018,\u201A,\u2019",
+        /* 141 */ "\u201E,\u201C,\u201D",
+        /* 142 */ "\u201D,\u201E,\u201C",
+        /* 143 */ "\u201C,\u201E,\u201D",
+        /* 144 */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
+        /* 145 */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
+        /* 146 */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
     };
 
     /* Language af: Afrikaans */
