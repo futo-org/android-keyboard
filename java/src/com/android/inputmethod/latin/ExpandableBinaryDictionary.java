@@ -23,6 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.personalization.DynamicPersonalizationDictionaryWriter;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
@@ -118,10 +119,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
-            final String dictType, final boolean isUpdatable) {
-        if (isUpdatable) {
-            // TODO: Employ dynamically updatable DictionaryWriter.
-            return new DictionaryWriter(context, dictType);
+            final String dictType, final boolean isDynamicPersonalizationDictionary) {
+        if (isDynamicPersonalizationDictionary) {
+            return new DynamicPersonalizationDictionaryWriter(context, dictType);
         } else {
             return new DictionaryWriter(context, dictType);
         }
@@ -145,6 +145,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mIsUpdatable = isUpdatable;
         mBinaryDictionary = null;
         mSharedDictionaryController = getSharedDictionaryController(filename);
+        // Currently, only dynamic personalization dictionary is updatable.
         mDictionaryWriter = getDictionaryWriter(context, dictType, isUpdatable);
     }
 
