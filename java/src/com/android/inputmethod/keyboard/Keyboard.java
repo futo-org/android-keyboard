@@ -51,6 +51,11 @@ public class Keyboard {
     /** Total width of the keyboard, including the padding and keys */
     public final int mOccupiedWidth;
 
+    /** Base height of the keyboard, used to calculate rows' height */
+    public final int mBaseHeight;
+    /** Base width of the keyboard, used to calculate keys' width */
+    public final int mBaseWidth;
+
     /** The padding above the keyboard */
     public final int mTopPadding;
     /** Default gap between rows */
@@ -84,6 +89,8 @@ public class Keyboard {
         mThemeId = params.mThemeId;
         mOccupiedHeight = params.mOccupiedHeight;
         mOccupiedWidth = params.mOccupiedWidth;
+        mBaseHeight = params.mBaseHeight;
+        mBaseWidth = params.mBaseWidth;
         mMostCommonKeyHeight = params.mMostCommonKeyHeight;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
@@ -109,6 +116,8 @@ public class Keyboard {
         mThemeId = keyboard.mThemeId;
         mOccupiedHeight = keyboard.mOccupiedHeight;
         mOccupiedWidth = keyboard.mOccupiedWidth;
+        mBaseHeight = keyboard.mBaseHeight;
+        mBaseWidth = keyboard.mBaseWidth;
         mMostCommonKeyHeight = keyboard.mMostCommonKeyHeight;
         mMostCommonKeyWidth = keyboard.mMostCommonKeyWidth;
         mMoreKeysTemplate = keyboard.mMoreKeysTemplate;
