@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -91,6 +92,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /* A extension for a binary dictionary file. */
     public static final String DICT_FILE_EXTENSION = ".dict";
+
+    private final AtomicReference<AsyncWriteBinaryDictionaryTask> mWaitingTask =
+            new AtomicReference<AsyncWriteBinaryDictionaryTask>();
 
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
@@ -175,6 +179,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 mBinaryDictionary.close();
                 mBinaryDictionary = null;
             }
+        } finally {
+            mLocalDictionaryController.writeLock().unlock();
+        }
+    }
+
+    protected void clear() {
+        mLocalDictionaryController.writeLock().lock();
+        try {
+            mDictionaryWriter.clear();
         } finally {
             mLocalDictionaryController.writeLock().unlock();
         }
@@ -267,7 +280,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
                         mDictionaryWriter.getSuggestions(composer, prevWord, proximityInfo,
                                 blockOffensiveWords);
-                if (mBinaryDictionary != null) {
+                // TODO: Remove checking mIsUpdatable and use native suggestion.
+                if (mBinaryDictionary != null && !mIsUpdatable) {
                     final ArrayList<SuggestedWordInfo> binarySuggestion =
                             mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
                                     blockOffensiveWords);
@@ -276,7 +290,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     } else if (binarySuggestion == null) {
                         return inMemDictSuggestion;
                     } else {
-                        binarySuggestion.addAll(binarySuggestion);
+                        binarySuggestion.addAll(inMemDictSuggestion);
                         return binarySuggestion;
                     }
                 } else {
@@ -402,7 +416,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Reloads the dictionary if required. Reload will occur asynchronously in a separate thread.
      */
-    void asyncReloadDictionaryIfRequired() {
+    public void asyncReloadDictionaryIfRequired() {
         if (!isReloadRequired()) return;
         if (DEBUG) {
             Log.d(TAG, "Starting AsyncReloadDictionaryTask: " + mFilename);
@@ -413,7 +427,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Reloads the dictionary if required.
      */
-    protected final void syncReloadDictionaryIfRequired() {
+    public final void syncReloadDictionaryIfRequired() {
         if (!isReloadRequired()) return;
         syncReloadDictionaryInternal();
     }
@@ -489,6 +503,68 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         @Override
         public void run() {
             syncReloadDictionaryInternal();
+        }
+    }
+
+    /**
+     * Load the dictionary to memory.
+     */
+    protected void asyncLoadDictionaryToMemory() {
+        new AsyncLoadDictionaryToMemoryTask().start();
+    }
+
+    /**
+     * Thread class for asynchronously loading dictionary to memory.
+     */
+    private class AsyncLoadDictionaryToMemoryTask extends Thread {
+        @Override
+        public void run() {
+            mLocalDictionaryController.writeLock().lock();
+            try {
+                mSharedDictionaryController.readLock().lock();
+                try {
+                    loadDictionaryAsync();
+                } finally {
+                    mSharedDictionaryController.readLock().unlock();
+                }
+            } finally {
+                mLocalDictionaryController.writeLock().unlock();
+            }
+        }
+    }
+
+    /**
+     * Generate binary dictionary using DictionaryWriter.
+     */
+    protected void asyncWriteBinaryDictionary() {
+        final AsyncWriteBinaryDictionaryTask newTask = new AsyncWriteBinaryDictionaryTask();
+        newTask.start();
+        final AsyncWriteBinaryDictionaryTask oldTask = mWaitingTask.getAndSet(newTask);
+        if (oldTask != null) {
+            oldTask.interrupt();
+        }
+    }
+
+    /**
+     * Thread class for asynchronously writing the binary dictionary.
+     */
+    private class AsyncWriteBinaryDictionaryTask extends Thread {
+        @Override
+        public void run() {
+            mSharedDictionaryController.writeLock().lock();
+            try {
+                mLocalDictionaryController.writeLock().lock();
+                try {
+                    if (isInterrupted()) {
+                        return;
+                    }
+                    writeBinaryDictionary();
+                } finally {
+                    mLocalDictionaryController.writeLock().unlock();
+                }
+            } finally {
+                mSharedDictionaryController.writeLock().unlock();
+            }
         }
     }
 

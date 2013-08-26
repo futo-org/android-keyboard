@@ -18,108 +18,88 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.ExpandableDictionary;
+import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.makedict.DictDecoder;
-import com.android.inputmethod.latin.makedict.DictEncoder;
-import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
-import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
-import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
-import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class is a base class of a dictionary for the personalized prediction language model.
  */
-public abstract class DynamicPredictionDictionaryBase extends ExpandableDictionary {
-
+public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDictionary {
     private static final String TAG = DynamicPredictionDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
     private static final boolean DBG_STRESS_TEST = false;
     private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
 
-    private static final FormatOptions VERSION3 = new FormatOptions(3,
-            true /* supportsDynamicUpdate */);
-
     /** Any pair being typed or picked */
-    private static final int FREQUENCY_FOR_TYPED = 2;
-
-    /** Maximum number of pairs. Pruning will start when databases goes above this number. */
-    private static final int MAX_HISTORY_BIGRAMS = 10000;
+    public static final int FREQUENCY_FOR_TYPED = 2;
 
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
 
-    private final UserHistoryDictionaryBigramList mBigramList =
-            new UserHistoryDictionaryBigramList();
-    private final ReentrantLock mBigramListLock = new ReentrantLock();
+    private final String mFileName;
+
     private final SharedPreferences mPrefs;
 
     private final ArrayList<PersonalizationDictionaryUpdateSession> mSessions =
             CollectionUtils.newArrayList();
 
-    private final AtomicReference<AsyncTask<Void, Void, Void>> mWaitingTask;
-
     // Should always be false except when we use this class for test
     @UsedForTesting boolean mIsTest = false;
 
     /* package */ DynamicPredictionDictionaryBase(final Context context, final String locale,
-            final SharedPreferences sp, final String dictionaryType) {
-        super(context, dictionaryType);
+            final SharedPreferences sp, final String dictionaryType, final String fileName) {
+        super(context, locale, dictionaryType, true);
         mLocale = locale;
+        mFileName = fileName;
         mPrefs = sp;
-        mWaitingTask = new AtomicReference<AsyncTask<Void, Void, Void>>();
         if (mLocale != null && mLocale.length() > 1) {
-            loadDictionary();
+            asyncLoadDictionaryToMemory();
+            asyncReloadDictionaryIfRequired();
         }
     }
 
     @Override
     public void close() {
-        flushPendingWrites();
-        // Don't close the database as locale changes will require it to be reopened anyway
-        // Also, the database is written to somewhat frequently, so it needs to be kept alive
-        // throughout the life of the process.
-        // mOpenHelper.close();
-        // Ignore close because we cache PersonalizationPredictionDictionary for each language.
-        // See getInstance() above.
+        // Close only binary dictionary to reuse this dictionary.
         // super.close();
+        closeBinaryDictionary();
+        // Flush pending writes.
+        // TODO: Remove after this class become to use a dynamic binary dictionary.
+        asyncWriteBinaryDictionary();
+        Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
     }
 
     @Override
-    protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo) {
-        // Inhibit suggestions (not predictions) for user history for now. Removing this method
-        // is enough to use it through the standard ExpandableDictionary way.
-        return null;
+    protected boolean hasContentChanged() {
+        return false;
+    }
+
+    @Override
+    protected boolean needsToReloadBeforeWriting() {
+        return false;
     }
 
     /**
      * Return whether the passed charsequence is in the dictionary.
      */
     @Override
-    public synchronized boolean isValidWord(final String word) {
-        // TODO: figure out what is the correct thing to do here.
+    public boolean isValidWord(final String word) {
+     // Words included only in the user history should be treated as not in dictionary words.
         return false;
     }
 
@@ -131,74 +111,29 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public int addToPersonalizationPredictionDictionary(
-            final String word1, final String word2, final boolean isValid) {
-        if (word2.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
-                (word1 != null && word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
-            return -1;
+    public void addToPersonalizationPredictionDictionary(
+            final String word0, final String word1, final boolean isValid) {
+        if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+            return;
         }
-        if (mBigramListLock.tryLock()) {
-            try {
-                super.addWord(
-                        word2, null /* the "shortcut" parameter is null */, FREQUENCY_FOR_TYPED);
-                mBigramList.addBigram(null, word2, (byte)FREQUENCY_FOR_TYPED);
-                // Do not insert a word as a bigram of itself
-                if (word2.equals(word1)) {
-                    return 0;
-                }
-                final int freq;
-                if (null == word1) {
-                    freq = FREQUENCY_FOR_TYPED;
-                } else {
-                    freq = super.setBigramAndGetFrequency(
-                            word1, word2, new ForgettingCurveParams(isValid));
-                }
-                mBigramList.addBigram(word1, word2);
-                return freq;
-            } finally {
-                mBigramListLock.unlock();
-            }
+        addWordDynamically(word1, null /* the "shortcut" parameter is null */, FREQUENCY_FOR_TYPED,
+                false /* isNotAWord */);
+        // Do not insert a word as a bigram of itself
+        if (word1.equals(word0)) {
+            return;
         }
-        return -1;
+        if (null != word0) {
+            addBigramDynamically(word0, word1, FREQUENCY_FOR_TYPED, isValid);
+        }
     }
 
-    public boolean cancelAddingUserHistory(final String word1, final String word2) {
-        if (mBigramListLock.tryLock()) {
-            try {
-                if (mBigramList.removeBigram(word1, word2)) {
-                    return super.removeBigram(word1, word2);
-                }
-            } finally {
-                mBigramListLock.unlock();
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Schedules a background thread to write any pending words to the database.
-     */
-    private void flushPendingWrites() {
-        // Create a background thread to write the pending entries
-        final AsyncTask<Void, Void, Void> old = mWaitingTask.getAndSet(new UpdateBinaryTask(
-                mBigramList, mLocale, this, mPrefs, getContext()).execute());
-        if (old != null) {
-            old.cancel(false);
-        }
+    public void cancelAddingUserHistory(final String word0, final String word1) {
+        removeBigramDynamically(word0, word1);
     }
 
     @Override
-    public final void loadDictionaryAsync() {
-        // This must be run on non-main thread
-        mBigramListLock.lock();
-        try {
-            loadDictionaryAsyncLocked();
-        } finally {
-            mBigramListLock.unlock();
-        }
-    }
-
-    private void loadDictionaryAsyncLocked() {
+    protected void loadDictionaryAsync() {
         final int[] profTotalCount = { 0 };
         final String locale = getLocale();
         if (DBG_STRESS_TEST) {
@@ -210,10 +145,8 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
             }
         }
         final long last = Settings.readLastUserHistoryWriteTime(mPrefs, locale);
-        final boolean initializing = last == 0;
         final long now = System.currentTimeMillis();
-        final String fileName = getDictionaryFileName();
-        final ExpandableDictionary dictionary = this;
+        final ExpandableBinaryDictionary dictionary = this;
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
             public void setUnigram(final String word, final String shortcutTarget,
@@ -221,29 +154,25 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
                 if (DBG_SAVE_RESTORE) {
                     Log.d(TAG, "load unigram: " + word + "," + frequency);
                 }
-                dictionary.addWord(word, shortcutTarget, frequency);
+                addWord(word, shortcutTarget, frequency, false /* isNotAWord */);
                 ++profTotalCount[0];
-                addToBigramListLocked(null, word, (byte)frequency);
             }
 
             @Override
-            public void setBigram(final String word1, final String word2, final int frequency) {
-                if (word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
-                        && word2.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
+            public void setBigram(final String word0, final String word1, final int frequency) {
+                if (word0.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
+                        && word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
                     if (DBG_SAVE_RESTORE) {
-                        Log.d(TAG, "load bigram: " + word1 + "," + word2 + "," + frequency);
+                        Log.d(TAG, "load bigram: " + word0 + "," + word1 + "," + frequency);
                     }
                     ++profTotalCount[0];
-                    dictionary.setBigramAndGetFrequency(
-                            word1, word2, initializing ? new ForgettingCurveParams(true)
-                            : new ForgettingCurveParams(frequency, now, last));
+                    addBigram(word0, word1, frequency, last);
                 }
-                addToBigramListLocked(word1, word2, (byte)frequency);
             }
         };
 
         // Load the dictionary from binary file
-        final File dictFile = new File(getContext().getFilesDir(), fileName);
+        final File dictFile = new File(mContext.getFilesDir(), mFileName);
         final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(dictFile,
                 DictDecoder.USE_BYTEARRAY);
         try {
@@ -263,131 +192,14 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
         }
     }
 
-    protected abstract String getDictionaryFileName();
-
     protected String getLocale() {
         return mLocale;
     }
 
-    private void addToBigramListLocked(String word0, String word1, byte fcValue) {
-        mBigramList.addBigram(word0, word1, fcValue);
-    }
-
-    /**
-     * Async task to write pending words to the binarydicts.
-     */
-    private static final class UpdateBinaryTask extends AsyncTask<Void, Void, Void>
-            implements BigramDictionaryInterface {
-        private final UserHistoryDictionaryBigramList mBigramList;
-        private final boolean mAddLevel0Bigrams;
-        private final String mLocale;
-        private final DynamicPredictionDictionaryBase mDynamicPredictionDictionary;
-        private final SharedPreferences mPrefs;
-        private final Context mContext;
-
-        public UpdateBinaryTask(final UserHistoryDictionaryBigramList pendingWrites,
-                final String locale, final DynamicPredictionDictionaryBase dict,
-                final SharedPreferences prefs, final Context context) {
-            mBigramList = pendingWrites;
-            mLocale = locale;
-            mDynamicPredictionDictionary = dict;
-            mPrefs = prefs;
-            mContext = context;
-            mAddLevel0Bigrams = mBigramList.size() <= MAX_HISTORY_BIGRAMS;
-        }
-
-        @Override
-        protected Void doInBackground(final Void... v) {
-            if (isCancelled()) return null;
-            if (mDynamicPredictionDictionary.mIsTest) {
-                // If mIsTest == true, wait until the lock is released.
-                mDynamicPredictionDictionary.mBigramListLock.lock();
-                try {
-                    doWriteTaskLocked();
-                } finally {
-                    mDynamicPredictionDictionary.mBigramListLock.unlock();
-                }
-            } else if (mDynamicPredictionDictionary.mBigramListLock.tryLock()) {
-                try {
-                    doWriteTaskLocked();
-                } finally {
-                    mDynamicPredictionDictionary.mBigramListLock.unlock();
-                }
-            }
-            return null;
-        }
-
-        private void doWriteTaskLocked() {
-            if (isCancelled()) return;
-            mDynamicPredictionDictionary.mWaitingTask.compareAndSet(this, null);
-
-            if (DBG_STRESS_TEST) {
-                try {
-                    Log.w(TAG, "Start stress in closing: " + mLocale);
-                    Thread.sleep(15000);
-                    Log.w(TAG, "End stress in closing");
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "In stress test", e);
-                }
-            }
-
-            final long now = PROFILE_SAVE_RESTORE ? System.currentTimeMillis() : 0;
-            final String fileName =
-                    mDynamicPredictionDictionary.getDictionaryFileName();
-            final File file = new File(mContext.getFilesDir(), fileName);
-
-            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
-            UserHistoryDictIOUtils.writeDictionary(dictEncoder, this, mBigramList, VERSION3);
-
-            // Save the timestamp after we finish writing the binary dictionary.
-            Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
-            if (PROFILE_SAVE_RESTORE) {
-                final long diff = System.currentTimeMillis() - now;
-                Log.w(TAG, "PROF: Write User HistoryDictionary: " + mLocale + ", " + diff + "ms.");
-            }
-        }
-
-        @Override
-        public int getFrequency(final String word1, final String word2) {
-            final int freq;
-            if (word1 == null) { // unigram
-                freq = FREQUENCY_FOR_TYPED;
-                final byte prevFc = mBigramList.getBigrams(word1).get(word2);
-            } else { // bigram
-                final NextWord nw =
-                        mDynamicPredictionDictionary.getBigramWord(word1, word2);
-                if (nw != null) {
-                    final ForgettingCurveParams fcp = nw.getFcParams();
-                    final byte prevFc = mBigramList.getBigrams(word1).get(word2);
-                    final byte fc = fcp.getFc();
-                    final boolean isValid = fcp.isValid();
-                    if (prevFc > 0 && prevFc == fc) {
-                        freq = fc & 0xFF;
-                    } else if (UserHistoryForgettingCurveUtils.
-                            needsToSave(fc, isValid, mAddLevel0Bigrams)) {
-                        freq = fc & 0xFF;
-                    } else {
-                        // Delete this entry
-                        freq = -1;
-                    }
-                } else {
-                    // Delete this entry
-                    freq = -1;
-                }
-            }
-            return freq;
-        }
-    }
-
     @UsedForTesting
     /* package for test */ void forceAddWordForTest(
-            final String word1, final String word2, final boolean isValid) {
-        mBigramListLock.lock();
-        try {
-            addToPersonalizationPredictionDictionary(word1, word2, isValid);
-        } finally {
-            mBigramListLock.unlock();
-        }
+            final String word0, final String word1, final boolean isValid) {
+        addToPersonalizationPredictionDictionary(word0, word1, isValid);
     }
 
     public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
@@ -402,15 +214,8 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableDictiona
 
     public void clearAndFlushDictionary() {
         // Clear the node structure on memory
-        clearDictionary();
-        mBigramListLock.lock();
-        try {
-            // Clear the bigram list on memory
-            mBigramList.evictAll();
-        } finally {
-            mBigramListLock.unlock();
-        }
+        clear();
         // Then flush the cleared state of the dictionary on disk.
-        flushPendingWrites();
+        asyncWriteBinaryDictionary();
     }
 }

@@ -86,7 +86,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             final Random random) {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryPredictionDictionary dict =
-                PersonalizationDictionaryHelper.getUserHistoryPredictionDictionary(getContext(),
+                PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
                         testFilenameSuffix /* locale */, mPrefs);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
