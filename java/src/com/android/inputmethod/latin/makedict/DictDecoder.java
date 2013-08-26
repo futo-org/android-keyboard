@@ -40,9 +40,9 @@ public interface DictDecoder {
      * Reads PtNode from nodeAddress.
      * @param ptNodePos the position of PtNode.
      * @param formatOptions the format options.
-     * @return CharGroupInfo.
+     * @return PtNodeInfo.
      */
-    public CharGroupInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
+    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
 
     /**
      * Reads a buffer and returns the memory representation of the dictionary.

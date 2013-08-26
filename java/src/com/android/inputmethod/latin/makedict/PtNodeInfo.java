@@ -21,9 +21,9 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import java.util.ArrayList;
 
 /**
- * Raw char group info straight out of a file. This will contain numbers for addresses.
+ * Raw PtNode info straight out of a file. This will contain numbers for addresses.
  */
-public final class CharGroupInfo {
+public final class PtNodeInfo {
 
     public final int mOriginalAddress;
     public final int mEndAddress;
@@ -35,7 +35,7 @@ public final class CharGroupInfo {
     public final ArrayList<WeightedString> mShortcutTargets;
     public final ArrayList<PendingAttribute> mBigrams;
 
-    public CharGroupInfo(final int originalAddress, final int endAddress, final int flags,
+    public PtNodeInfo(final int originalAddress, final int endAddress, final int flags,
             final int[] characters, final int frequency, final int parentAddress,
             final int childrenAddress, final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams) {

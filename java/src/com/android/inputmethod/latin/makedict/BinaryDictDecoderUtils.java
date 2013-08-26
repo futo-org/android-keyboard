@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
@@ -41,6 +41,7 @@ import java.util.TreeMap;
  *
  * TODO: Remove calls from classes except Ver3DictDecoder
  * TODO: Move this file to makedict/internal.
+ * TODO: Rename this class to DictDecoderUtils.
  */
 public final class BinaryDictDecoderUtils {
 
@@ -213,7 +214,7 @@ public final class BinaryDictDecoderUtils {
                     buffer[index++] = (byte)(0xFF & codePoint);
                 }
             }
-            buffer[index++] = FormatSpec.GROUP_CHARACTERS_TERMINATOR;
+            buffer[index++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
             return index - origin;
         }
 
@@ -237,7 +238,7 @@ public final class BinaryDictDecoderUtils {
                     buffer.write((byte) (0xFF & codePoint));
                 }
             }
-            buffer.write(FormatSpec.GROUP_CHARACTERS_TERMINATOR);
+            buffer.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
         }
 
         /**
@@ -264,7 +265,7 @@ public final class BinaryDictDecoderUtils {
         static int readChar(final DictBuffer dictBuffer) {
             int character = dictBuffer.readUnsignedByte();
             if (!fitsOnOneByte(character)) {
-                if (FormatSpec.GROUP_CHARACTERS_TERMINATOR == character) {
+                if (FormatSpec.PTNODE_CHARACTERS_TERMINATOR == character) {
                     return FormatSpec.INVALID_CHARACTER;
                 }
                 character <<= 16;
@@ -295,14 +296,14 @@ public final class BinaryDictDecoderUtils {
             }
         }
         int address;
-        switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+        switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return dictBuffer.readUnsignedByte();
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
                 return dictBuffer.readUnsignedShort();
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
                 return dictBuffer.readUnsignedInt24();
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
             default:
                 return FormatSpec.NO_CHILDREN_ADDRESS;
         }
@@ -320,14 +321,14 @@ public final class BinaryDictDecoderUtils {
     }
 
     /**
-     * Reads and returns the char group count out of a buffer and forwards the pointer.
+     * Reads and returns the PtNode count out of a buffer and forwards the pointer.
      */
-    public static int readCharGroupCount(final DictBuffer dictBuffer) {
+    public static int readPtNodeCount(final DictBuffer dictBuffer) {
         final int msb = dictBuffer.readUnsignedByte();
-        if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
+        if (FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT >= msb) {
             return msb;
         } else {
-            return ((FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT & msb) << 8)
+            return ((FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT & msb) << 8)
                     + dictBuffer.readUnsignedByte();
         }
     }
@@ -369,18 +370,18 @@ public final class BinaryDictDecoderUtils {
         final StringBuilder builder = new StringBuilder();
         // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
         for (int count = 0; count < FormatSpec.MAX_WORD_LENGTH; ++count) {
-            CharGroupInfo currentInfo;
+            PtNodeInfo currentInfo;
             int loopCounter = 0;
             do {
                 dictBuffer.position(currentPos);
                 currentInfo = dictDecoder.readPtNode(currentPos, options);
-                if (BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags, options)) {
+                if (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options)) {
                     currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
                 }
                 if (DBG && loopCounter++ > MAX_JUMPS) {
                     MakedictLog.d("Too many jumps - probably a bug");
                 }
-            } while (BinaryDictIOUtils.isMovedGroup(currentInfo.mFlags, options));
+            } while (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options));
             if (Integer.MIN_VALUE == frequency) frequency = currentInfo.mFrequency;
             builder.insert(0,
                     new String(currentInfo.mCharacters, 0, currentInfo.mCharacters.length));
@@ -395,14 +396,14 @@ public final class BinaryDictDecoderUtils {
             final FormatOptions options) {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(headerSize);
-        final int count = readCharGroupCount(dictBuffer);
-        int groupPos = headerSize + BinaryDictIOUtils.getGroupCountSize(count);
+        final int count = readPtNodeCount(dictBuffer);
+        int groupPos = headerSize + BinaryDictIOUtils.getPtNodeCountSize(count);
         final StringBuilder builder = new StringBuilder();
         WeightedString result = null;
 
-        CharGroupInfo last = null;
+        PtNodeInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            CharGroupInfo info = dictDecoder.readPtNode(groupPos, options);
+            PtNodeInfo info = dictDecoder.readPtNode(groupPos, options);
             groupPos = info.mEndAddress;
             if (info.mOriginalAddress == pos) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
@@ -414,8 +415,8 @@ public final class BinaryDictDecoderUtils {
                     if (null == last) continue;
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                     dictBuffer.position(last.mChildrenAddress);
-                    i = readCharGroupCount(dictBuffer);
-                    groupPos = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
+                    i = readPtNodeCount(dictBuffer);
+                    groupPos = last.mChildrenAddress + BinaryDictIOUtils.getPtNodeCountSize(i);
                     last = null;
                     continue;
                 }
@@ -424,8 +425,8 @@ public final class BinaryDictDecoderUtils {
             if (0 == i && BinaryDictIOUtils.hasChildrenAddress(last.mChildrenAddress)) {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                 dictBuffer.position(last.mChildrenAddress);
-                i = readCharGroupCount(dictBuffer);
-                groupPos = last.mChildrenAddress + BinaryDictIOUtils.getGroupCountSize(i);
+                i = readPtNodeCount(dictBuffer);
+                groupPos = last.mChildrenAddress + BinaryDictIOUtils.getPtNodeCountSize(i);
                 last = null;
                 continue;
             }
@@ -444,25 +445,25 @@ public final class BinaryDictDecoderUtils {
      * @param dictDecoder the dict decoder, correctly positioned at the start of a node array.
      * @param headerSize the size, in bytes, of the file header.
      * @param reverseNodeArrayMap a mapping from addresses to already read node arrays.
-     * @param reverseGroupMap a mapping from addresses to already read character groups.
+     * @param reversePtNodeMap a mapping from addresses to already read PtNodes.
      * @param options file format options.
      * @return the read node array with all his children already read.
      */
     private static PtNodeArray readNodeArray(final Ver3DictDecoder dictDecoder,
             final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
-            final Map<Integer, CharGroup> reverseGroupMap, final FormatOptions options)
+            final Map<Integer, PtNode> reversePtNodeMap, final FormatOptions options)
             throws IOException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        final ArrayList<CharGroup> nodeArrayContents = new ArrayList<CharGroup>();
+        final ArrayList<PtNode> nodeArrayContents = new ArrayList<PtNode>();
         final int nodeArrayOriginPos = dictBuffer.position();
 
         do { // Scan the linked-list node.
             final int nodeArrayHeadPos = dictBuffer.position();
-            final int count = readCharGroupCount(dictBuffer);
-            int groupOffsetPos = nodeArrayHeadPos + BinaryDictIOUtils.getGroupCountSize(count);
-            for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
-                CharGroupInfo info = dictDecoder.readPtNode(groupOffsetPos, options);
-                if (BinaryDictIOUtils.isMovedGroup(info.mFlags, options)) continue;
+            final int count = readPtNodeCount(dictBuffer);
+            int groupOffsetPos = nodeArrayHeadPos + BinaryDictIOUtils.getPtNodeCountSize(count);
+            for (int i = count; i > 0; --i) { // Scan the array of PtNode.
+                PtNodeInfo info = dictDecoder.readPtNode(groupOffsetPos, options);
+                if (BinaryDictIOUtils.isMovedPtNode(info.mFlags, options)) continue;
                 ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
                 ArrayList<WeightedString> bigrams = null;
                 if (null != info.mBigrams) {
@@ -482,17 +483,17 @@ public final class BinaryDictDecoderUtils {
                         final int currentPosition = dictBuffer.position();
                         dictBuffer.position(info.mChildrenAddress);
                         children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
-                                reverseGroupMap, options);
+                                reversePtNodeMap, options);
                         dictBuffer.position(currentPosition);
                     }
                     nodeArrayContents.add(
-                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                            new PtNode(info.mCharacters, shortcutTargets, bigrams,
                                     info.mFrequency,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
                 } else {
                     nodeArrayContents.add(
-                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                            new PtNode(info.mCharacters, shortcutTargets, bigrams,
                                     info.mFrequency,
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
                                     0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
@@ -566,9 +567,9 @@ public final class BinaryDictDecoderUtils {
         final FileHeader fileHeader = dictDecoder.readHeader();
 
         Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<Integer, PtNodeArray>();
-        Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
+        Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<Integer, PtNode>();
         final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mHeaderSize,
-                reverseNodeArrayMapping, reverseGroupMapping, fileHeader.mFormatOptions);
+                reverseNodeArrayMapping, reversePtNodeMapping, fileHeader.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, fileHeader.mDictionaryOptions);
         if (null != dict) {

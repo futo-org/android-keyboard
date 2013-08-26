@@ -22,7 +22,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncodin
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
@@ -44,17 +44,17 @@ public final class BinaryDictIOUtils {
     }
 
     private static final class Position {
-        public static final int NOT_READ_GROUPCOUNT = -1;
+        public static final int NOT_READ_PTNODE_COUNT = -1;
 
         public int mAddress;
-        public int mNumOfCharGroup;
+        public int mNumOfPtNode;
         public int mPosition;
         public int mLength;
 
         public Position(int address, int length) {
             mAddress = address;
             mLength = length;
-            mNumOfCharGroup = NOT_READ_GROUPCOUNT;
+            mNumOfPtNode = NOT_READ_PTNODE_COUNT;
         }
     }
 
@@ -79,45 +79,45 @@ public final class BinaryDictIOUtils {
             Position p = stack.peek();
 
             if (DBG) {
-                MakedictLog.d("read: address=" + p.mAddress + ", numOfCharGroup=" +
-                        p.mNumOfCharGroup + ", position=" + p.mPosition + ", length=" + p.mLength);
+                MakedictLog.d("read: address=" + p.mAddress + ", numOfPtNode=" +
+                        p.mNumOfPtNode + ", position=" + p.mPosition + ", length=" + p.mLength);
             }
 
             if (dictBuffer.position() != p.mAddress) dictBuffer.position(p.mAddress);
             if (index != p.mLength) index = p.mLength;
 
-            if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
-                p.mNumOfCharGroup = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
-                p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
+            if (p.mNumOfPtNode == Position.NOT_READ_PTNODE_COUNT) {
+                p.mNumOfPtNode = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+                p.mAddress += getPtNodeCountSize(p.mNumOfPtNode);
                 p.mPosition = 0;
             }
-            if (p.mNumOfCharGroup == 0) {
+            if (p.mNumOfPtNode == 0) {
                 stack.pop();
                 continue;
             }
-            CharGroupInfo info = dictDecoder.readPtNode(p.mAddress, formatOptions);
+            PtNodeInfo info = dictDecoder.readPtNode(p.mAddress, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
             }
             p.mPosition++;
 
-            final boolean isMovedGroup = isMovedGroup(info.mFlags,
+            final boolean isMovedPtNode = isMovedPtNode(info.mFlags,
                     formatOptions);
-            final boolean isDeletedGroup = isDeletedGroup(info.mFlags,
+            final boolean isDeletedPtNode = isDeletedPtNode(info.mFlags,
                     formatOptions);
-            if (!isMovedGroup && !isDeletedGroup
-                    && info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) {// found word
+            if (!isMovedPtNode && !isDeletedPtNode
+                    && info.mFrequency != FusionDictionary.PtNode.NOT_A_TERMINAL) {// found word
                 words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
                 frequencies.put(info.mOriginalAddress, info.mFrequency);
                 if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
             }
 
-            if (p.mPosition == p.mNumOfCharGroup) {
+            if (p.mPosition == p.mNumOfPtNode) {
                 if (formatOptions.mSupportsDynamicUpdate) {
                     final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
                     if (forwardLinkAddress != FormatSpec.NO_FORWARD_LINK_ADDRESS) {
                         // The node array has a forward link.
-                        p.mNumOfCharGroup = Position.NOT_READ_GROUPCOUNT;
+                        p.mNumOfPtNode = Position.NOT_READ_PTNODE_COUNT;
                         p.mAddress = forwardLinkAddress;
                     } else {
                         stack.pop();
@@ -126,11 +126,11 @@ public final class BinaryDictIOUtils {
                     stack.pop();
                 }
             } else {
-                // The node array has more groups.
+                // The Ptnode array has more PtNodes.
                 p.mAddress = dictBuffer.position();
             }
 
-            if (!isMovedGroup && hasChildrenAddress(info.mChildrenAddress)) {
+            if (!isMovedPtNode && hasChildrenAddress(info.mChildrenAddress)) {
                 final Position childrenPos = new Position(info.mChildrenAddress, index);
                 stack.push(childrenPos);
             }
@@ -159,7 +159,7 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Gets the address of the last CharGroup of the exact matching word in the dictionary.
+     * Gets the address of the last PtNode of the exact matching word in the dictionary.
      * If no match is found, returns NOT_VALID_WORD.
      *
      * @param dictDecoder the dict decoder.
@@ -182,17 +182,17 @@ public final class BinaryDictIOUtils {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
-                final int charGroupCount = BinaryDictDecoderUtils.readCharGroupCount(dictBuffer);
-                boolean foundNextCharGroup = false;
-                for (int i = 0; i < charGroupCount; ++i) {
-                    final int charGroupPos = dictBuffer.position();
-                    final CharGroupInfo currentInfo = dictDecoder.readPtNode(charGroupPos,
+                final int ptNodeCount = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+                boolean foundNextPtNode = false;
+                for (int i = 0; i < ptNodeCount; ++i) {
+                    final int ptNodePos = dictBuffer.position();
+                    final PtNodeInfo currentInfo = dictDecoder.readPtNode(ptNodePos,
                             header.mFormatOptions);
-                    final boolean isMovedGroup = isMovedGroup(currentInfo.mFlags,
+                    final boolean isMovedNode = isMovedPtNode(currentInfo.mFlags,
                             header.mFormatOptions);
-                    final boolean isDeletedGroup = isDeletedGroup(currentInfo.mFlags,
+                    final boolean isDeletedNode = isDeletedPtNode(currentInfo.mFlags,
                             header.mFormatOptions);
-                    if (isMovedGroup) continue;
+                    if (isMovedNode) continue;
                     boolean same = true;
                     for (int p = 0, j = word.offsetByCodePoints(0, wordPos);
                             p < currentInfo.mCharacters.length;
@@ -205,30 +205,30 @@ public final class BinaryDictIOUtils {
                     }
 
                     if (same) {
-                        // found the group matches the word.
+                        // found the PtNode matches the word.
                         if (wordPos + currentInfo.mCharacters.length == wordLen) {
-                            if (currentInfo.mFrequency == CharGroup.NOT_A_TERMINAL
-                                    || isDeletedGroup) {
+                            if (currentInfo.mFrequency == PtNode.NOT_A_TERMINAL
+                                    || isDeletedNode) {
                                 return FormatSpec.NOT_VALID_WORD;
                             } else {
-                                return charGroupPos;
+                                return ptNodePos;
                             }
                         }
                         wordPos += currentInfo.mCharacters.length;
                         if (currentInfo.mChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS) {
                             return FormatSpec.NOT_VALID_WORD;
                         }
-                        foundNextCharGroup = true;
+                        foundNextPtNode = true;
                         dictBuffer.position(currentInfo.mChildrenAddress);
                         break;
                     }
                 }
 
-                // If we found the next char group, it is under the file pointer.
+                // If we found the next PtNode, it is under the file pointer.
                 // But if not, we are at the end of this node array so we expect to have
                 // a forward link address that we need to consult and possibly resume
                 // search on the next node array in the linked list.
-                if (foundNextCharGroup) break;
+                if (foundNextPtNode) break;
                 if (!header.mFormatOptions.mSupportsDynamicUpdate) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
@@ -289,8 +289,7 @@ public final class BinaryDictIOUtils {
         return BinaryDictEncoderUtils.getByteSize(value);
     }
 
-    static void skipCharGroup(final DictBuffer dictBuffer,
-            final FormatOptions formatOptions) {
+    static void skipPtNode(final DictBuffer dictBuffer, final FormatOptions formatOptions) {
         final int flags = dictBuffer.readUnsignedByte();
         BinaryDictDecoderUtils.readParentAddress(dictBuffer, formatOptions);
         skipString(dictBuffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
@@ -299,27 +298,27 @@ public final class BinaryDictIOUtils {
         if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
             final int shortcutsSize = dictBuffer.readUnsignedShort();
             dictBuffer.position(dictBuffer.position() + shortcutsSize
-                    - FormatSpec.GROUP_SHORTCUT_LIST_SIZE_SIZE);
+                    - FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
         }
         if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
             int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
                 final int bigramFlags = dictBuffer.readUnsignedByte();
-                switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
+                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
                         dictBuffer.readUnsignedByte();
                         break;
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
                         dictBuffer.readUnsignedShort();
                         break;
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
                         dictBuffer.readUnsignedInt24();
                         break;
                 }
-                if ((bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT) == 0) break;
+                if ((bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT) == 0) break;
             }
-            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
-                throw new RuntimeException("Too many bigrams in a group.");
+            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                throw new RuntimeException("Too many bigrams in a PtNode.");
             }
         }
     }
@@ -360,24 +359,24 @@ public final class BinaryDictIOUtils {
                 size += 3;
             }
         }
-        destination.write((byte)FormatSpec.GROUP_CHARACTERS_TERMINATOR);
-        size += FormatSpec.GROUP_TERMINATOR_SIZE;
+        destination.write((byte)FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+        size += FormatSpec.PTNODE_TERMINATOR_SIZE;
         return size;
     }
 
     /**
-     * Write a char group to an output stream from a CharGroupInfo.
-     * A char group is an in-memory representation of a node in the patricia trie.
-     * A char group info is a container for low-level information about how the
-     * char group is stored in the binary format.
+     * Write a PtNode to an output stream from a PtNodeInfo.
+     * A PtNode is an in-memory representation of a node in the patricia trie.
+     * A PtNode info is a container for low-level information about how the
+     * PtNode is stored in the binary format.
      *
      * @param destination the stream to write.
-     * @param info the char group info to be written.
+     * @param info the PtNode info to be written.
      * @return the size written, in bytes.
      */
-    private static int writeCharGroup(final OutputStream destination, final CharGroupInfo info)
+    private static int writePtNode(final OutputStream destination, final PtNodeInfo info)
             throws IOException {
-        int size = FormatSpec.GROUP_FLAGS_SIZE;
+        int size = FormatSpec.PTNODE_FLAGS_SIZE;
         destination.write((byte)info.mFlags);
         final int parentOffset = info.mParentAddress == FormatSpec.NO_PARENT_ADDRESS ?
                 FormatSpec.NO_PARENT_ADDRESS : info.mParentAddress - info.mOriginalAddress;
@@ -392,7 +391,7 @@ public final class BinaryDictIOUtils {
             }
         }
         if (info.mCharacters.length > 1) {
-            destination.write((byte)FormatSpec.GROUP_CHARACTERS_TERMINATOR);
+            destination.write((byte)FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
             size++;
         }
 
@@ -402,7 +401,7 @@ public final class BinaryDictIOUtils {
         }
 
         if (DBG) {
-            MakedictLog.d("writeCharGroup origin=" + info.mOriginalAddress + ", size=" + size
+            MakedictLog.d("writePtNode origin=" + info.mOriginalAddress + ", size=" + size
                     + ", child=" + info.mChildrenAddress + ", characters ="
                     + new String(info.mCharacters, 0, info.mCharacters.length));
         }
@@ -434,23 +433,23 @@ public final class BinaryDictIOUtils {
 
                 final int bigramFrequency = info.mBigrams.get(i).mFrequency;
                 int bigramFlags = (i < info.mBigrams.size() - 1)
-                        ? FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT : 0;
+                        ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0;
                 size++;
                 final int bigramOffset = info.mBigrams.get(i).mAddress - (info.mOriginalAddress
                         + size);
-                bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0;
+                bigramFlags |= (bigramOffset < 0) ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0;
                 switch (BinaryDictEncoderUtils.getByteSize(bigramOffset)) {
                 case 1:
-                    bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
+                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE;
                     break;
                 case 2:
-                    bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES;
+                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES;
                     break;
                 case 3:
-                    bigramFlags |= FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
+                    bigramFlags |= FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES;
                     break;
                 }
-                bigramFlags |= bigramFrequency & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY;
+                bigramFlags |= bigramFrequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY;
                 destination.write((byte)bigramFlags);
                 size += writeVariableAddress(destination, Math.abs(bigramOffset));
             }
@@ -459,21 +458,21 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Compute the size of the char group.
+     * Compute the size of the PtNode.
      */
-    static int computeGroupSize(final CharGroupInfo info, final FormatOptions formatOptions) {
-        int size = FormatSpec.GROUP_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
-                + BinaryDictEncoderUtils.getGroupCharactersSize(info.mCharacters)
+    static int computePtNodeSize(final PtNodeInfo info, final FormatOptions formatOptions) {
+        int size = FormatSpec.PTNODE_FLAGS_SIZE + FormatSpec.PARENT_ADDRESS_SIZE
+                + BinaryDictEncoderUtils.getPtNodeCharactersSize(info.mCharacters)
                 + getChildrenAddressSize(info.mFlags, formatOptions);
         if ((info.mFlags & FormatSpec.FLAG_IS_TERMINAL) != 0) {
-            size += FormatSpec.GROUP_FREQUENCY_SIZE;
+            size += FormatSpec.PTNODE_FREQUENCY_SIZE;
         }
         if (info.mShortcutTargets != null && !info.mShortcutTargets.isEmpty()) {
             size += BinaryDictEncoderUtils.getShortcutListSize(info.mShortcutTargets);
         }
         if (info.mBigrams != null) {
             for (final PendingAttribute attr : info.mBigrams) {
-                size += FormatSpec.GROUP_FLAGS_SIZE;
+                size += FormatSpec.PTNODE_FLAGS_SIZE;
                 size += BinaryDictEncoderUtils.getByteSize(attr.mAddress);
             }
         }
@@ -484,14 +483,14 @@ public final class BinaryDictIOUtils {
      * Write a node array to the stream.
      *
      * @param destination the stream to write.
-     * @param infos an array of CharGroupInfo to be written.
+     * @param infos an array of PtNodeInfo to be written.
      * @return the size written, in bytes.
      * @throws IOException
      */
-    static int writeNodes(final OutputStream destination, final CharGroupInfo[] infos)
+    static int writeNodes(final OutputStream destination, final PtNodeInfo[] infos)
             throws IOException {
-        int size = getGroupCountSize(infos.length);
-        switch (getGroupCountSize(infos.length)) {
+        int size = getPtNodeCountSize(infos.length);
+        switch (getPtNodeCountSize(infos.length)) {
             case 1:
                 destination.write((byte)infos.length);
                 break;
@@ -500,9 +499,9 @@ public final class BinaryDictIOUtils {
                 destination.write((byte)(infos.length & 0xFF));
                 break;
             default:
-                throw new RuntimeException("Invalid group count size.");
+                throw new RuntimeException("Invalid node count size.");
         }
-        for (final CharGroupInfo info : infos) size += writeCharGroup(destination, info);
+        for (final PtNodeInfo info : infos) size += writePtNode(destination, info);
         writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
         return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
@@ -560,11 +559,11 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Helper method to check whether the group is moved.
+     * Helper method to check whether the node is moved.
      */
-    public static boolean isMovedGroup(final int flags, final FormatOptions options) {
+    public static boolean isMovedPtNode(final int flags, final FormatOptions options) {
         return options.mSupportsDynamicUpdate
-                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
+                && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_MOVED);
     }
 
     /**
@@ -576,26 +575,26 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Helper method to check whether the group is deleted.
+     * Helper method to check whether the node is deleted.
      */
-    public static boolean isDeletedGroup(final int flags, final FormatOptions formatOptions) {
+    public static boolean isDeletedPtNode(final int flags, final FormatOptions formatOptions) {
         return formatOptions.mSupportsDynamicUpdate
-                && ((flags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
+                && ((flags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) == FormatSpec.FLAG_IS_DELETED);
     }
 
     /**
-     * Compute the binary size of the group count
-     * @param count the group count
-     * @return the size of the group count, either 1 or 2 bytes.
+     * Compute the binary size of the node count
+     * @param count the node count
+     * @return the size of the node count, either 1 or 2 bytes.
      */
-    public static int getGroupCountSize(final int count) {
-        if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
+    public static int getPtNodeCountSize(final int count) {
+        if (FormatSpec.MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT >= count) {
             return 1;
-        } else if (FormatSpec.MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY >= count) {
+        } else if (FormatSpec.MAX_PTNODES_IN_A_PT_NODE_ARRAY >= count) {
             return 2;
         } else {
             throw new RuntimeException("Can't have more than "
-                    + FormatSpec.MAX_CHARGROUPS_IN_A_PT_NODE_ARRAY + " groups in a node (found "
+                    + FormatSpec.MAX_PTNODES_IN_A_PT_NODE_ARRAY + " PtNode in a PtNodeArray (found "
                     + count + ")");
         }
     }
@@ -603,14 +602,14 @@ public final class BinaryDictIOUtils {
     static int getChildrenAddressSize(final int optionFlags,
             final FormatOptions formatOptions) {
         if (formatOptions.mSupportsDynamicUpdate) return FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
-        switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+        switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return 1;
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
                 return 2;
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
                 return 3;
-            case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+            case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
             default:
                 return 0;
         }

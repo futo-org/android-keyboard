@@ -21,7 +21,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncodin
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.JniUtils;
 
@@ -99,14 +99,14 @@ public class Ver3DictDecoder implements DictDecoder {
                 if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
                 return address;
             } else {
-                switch (optionFlags & FormatSpec.MASK_GROUP_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
+                switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                         return dictBuffer.readUnsignedByte();
-                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
+                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
                         return dictBuffer.readUnsignedShort();
-                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
+                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
                         return dictBuffer.readUnsignedInt24();
-                    case FormatSpec.FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
+                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
                     default:
                         return FormatSpec.NO_CHILDREN_ADDRESS;
                 }
@@ -122,8 +122,8 @@ public class Ver3DictDecoder implements DictDecoder {
                 final int targetFlags = dictBuffer.readUnsignedByte();
                 final String word = CharEncoding.readString(dictBuffer);
                 shortcutTargets.add(new WeightedString(word,
-                        targetFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY));
-                if (0 == (targetFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
+                        targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
+                if (0 == (targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
             }
             return dictBuffer.position() - pointerBefore;
         }
@@ -132,22 +132,22 @@ public class Ver3DictDecoder implements DictDecoder {
                 final ArrayList<PendingAttribute> bigrams, final int baseAddress) {
             int readLength = 0;
             int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
                 final int bigramFlags = dictBuffer.readUnsignedByte();
                 ++readLength;
-                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_OFFSET_NEGATIVE)
+                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE)
                         ? 1 : -1;
                 int bigramAddress = baseAddress + readLength;
-                switch (bigramFlags & FormatSpec.MASK_ATTRIBUTE_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
+                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
                         bigramAddress += sign * dictBuffer.readUnsignedByte();
                         readLength += 1;
                         break;
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
                         bigramAddress += sign * dictBuffer.readUnsignedShort();
                         readLength += 2;
                         break;
-                    case FormatSpec.FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
                         final int offset = (dictBuffer.readUnsignedByte() << 16)
                                 + dictBuffer.readUnsignedShort();
                         bigramAddress += sign * offset;
@@ -156,9 +156,10 @@ public class Ver3DictDecoder implements DictDecoder {
                     default:
                         throw new RuntimeException("Has bigrams with no address");
                 }
-                bigrams.add(new PendingAttribute(bigramFlags & FormatSpec.FLAG_ATTRIBUTE_FREQUENCY,
+                bigrams.add(new PendingAttribute(
+                        bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
                         bigramAddress));
-                if (0 == (bigramFlags & FormatSpec.FLAG_ATTRIBUTE_HAS_NEXT)) break;
+                if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
             }
             return readLength;
         }
@@ -236,7 +237,7 @@ public class Ver3DictDecoder implements DictDecoder {
     // TODO: Make this buffer multi thread safe.
     private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
     @Override
-    public CharGroupInfo readPtNode(final int ptNodePos, final FormatOptions options) {
+    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions options) {
         int addressPointer = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
         ++addressPointer;
@@ -270,7 +271,7 @@ public class Ver3DictDecoder implements DictDecoder {
             ++addressPointer;
             frequency = PtNodeReader.readFrequency(mDictBuffer);
         } else {
-            frequency = CharGroup.NOT_A_TERMINAL;
+            frequency = PtNode.NOT_A_TERMINAL;
         }
         int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
         if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
@@ -290,14 +291,13 @@ public class Ver3DictDecoder implements DictDecoder {
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
             addressPointer += PtNodeReader.readBigrams(mDictBuffer, bigrams, addressPointer);
-            if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_GROUP) {
-                MakedictLog.d("too many bigrams in a group.");
+            if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                MakedictLog.d("too many bigrams in a PtNode.");
             }
         } else {
             bigrams = null;
         }
-
-        return new CharGroupInfo(ptNodePos, addressPointer, flags, characters, frequency,
+        return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
 

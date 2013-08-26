@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.Word;
 
@@ -121,7 +121,7 @@ public class Diff extends Dicttool.Command {
     private static void diffWords(final FusionDictionary dict0, final FusionDictionary dict1) {
         boolean hasDifferences = false;
         for (final Word word0 : dict0) {
-            final CharGroup word1 = FusionDictionary.findWordInTree(dict1.mRootNodeArray,
+            final PtNode word1 = FusionDictionary.findWordInTree(dict1.mRootNodeArray,
                     word0.mWord);
             if (null == word1) {
                 // This word is not in dict1
@@ -151,7 +151,7 @@ public class Diff extends Dicttool.Command {
             }
         }
         for (final Word word1 : dict1) {
-            final CharGroup word0 = FusionDictionary.findWordInTree(dict0.mRootNodeArray,
+            final PtNode word0 = FusionDictionary.findWordInTree(dict0.mRootNodeArray,
                     word1.mWord);
             if (null == word0) {
                 // This word is not in dict0

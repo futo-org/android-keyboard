@@ -17,7 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.Word;
@@ -72,8 +72,8 @@ public class FusionDictionaryTest extends TestCase {
         assertNotNull(dict);
         for (final String word : words) {
             if (--limit < 0) return;
-            final CharGroup cg = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
-            assertNotNull(cg);
+            final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
+            assertNotNull(ptNode);
         }
     }
 
