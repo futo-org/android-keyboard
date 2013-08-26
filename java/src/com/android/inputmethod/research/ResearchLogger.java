@@ -1427,7 +1427,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 kid.navigateNext(), kid.navigatePrevious(), kid.mClobberSettingsKey,
                 isPasswordView, kid.mShortcutKeyEnabled, kid.mHasShortcutKey,
                 kid.mLanguageSwitchKeyEnabled, kid.isMultiLine(), keyboard.mOccupiedWidth,
-                keyboard.mOccupiedHeight, keyboard.mKeys);
+                keyboard.mOccupiedHeight, keyboard.getKeys());
     }
 
     /**
