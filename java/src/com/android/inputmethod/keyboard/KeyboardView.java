@@ -285,7 +285,7 @@ public class KeyboardView extends View {
         // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
         if (drawAllKeys || isHardwareAccelerated) {
             // Draw all keys.
-            for (final Key key : mKeyboard.mKeys) {
+            for (final Key key : mKeyboard.getKeys()) {
                 onDrawKey(key, canvas, paint);
             }
         } else {

@@ -69,7 +69,7 @@ public class Keyboard {
     public final int mMaxMoreKeysKeyboardColumn;
 
     /** Array of keys and icons in this keyboard */
-    public final Key[] mKeys;
+    private final Key[] mKeys;
     public final Key[] mShiftKeys;
     public final Key[] mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
@@ -104,6 +104,28 @@ public class Keyboard {
         mProximityCharsCorrectionEnabled = params.mProximityCharsCorrectionEnabled;
     }
 
+    protected Keyboard(final Keyboard keyboard) {
+        mId = keyboard.mId;
+        mThemeId = keyboard.mThemeId;
+        mOccupiedHeight = keyboard.mOccupiedHeight;
+        mOccupiedWidth = keyboard.mOccupiedWidth;
+        mMostCommonKeyHeight = keyboard.mMostCommonKeyHeight;
+        mMostCommonKeyWidth = keyboard.mMostCommonKeyWidth;
+        mMoreKeysTemplate = keyboard.mMoreKeysTemplate;
+        mMaxMoreKeysKeyboardColumn = keyboard.mMaxMoreKeysKeyboardColumn;
+        mKeyVisualAttributes = keyboard.mKeyVisualAttributes;
+        mTopPadding = keyboard.mTopPadding;
+        mVerticalGap = keyboard.mVerticalGap;
+
+        mKeys = keyboard.mKeys;
+        mShiftKeys = keyboard.mShiftKeys;
+        mAltCodeKeysWhileTyping = keyboard.mAltCodeKeysWhileTyping;
+        mIconsSet = keyboard.mIconsSet;
+
+        mProximityInfo = keyboard.mProximityInfo;
+        mProximityCharsCorrectionEnabled = keyboard.mProximityCharsCorrectionEnabled;
+    }
+
     public boolean hasProximityCharsCorrection(final int code) {
         if (!mProximityCharsCorrectionEnabled) {
             return false;
@@ -120,6 +142,10 @@ public class Keyboard {
         return mProximityInfo;
     }
 
+    public Key[] getKeys() {
+        return mKeys;
+    }
+
     public Key getKey(final int code) {
         if (code == Constants.CODE_UNSPECIFIED) {
             return null;
@@ -130,7 +156,7 @@ public class Keyboard {
                 return mKeyCache.valueAt(index);
             }
 
-            for (final Key key : mKeys) {
+            for (final Key key : getKeys()) {
                 if (key.getCode() == code) {
                     mKeyCache.put(code, key);
                     return key;
@@ -146,7 +172,7 @@ public class Keyboard {
             return true;
         }
 
-        for (final Key key : mKeys) {
+        for (final Key key : getKeys()) {
             if (key == aKey) {
                 mKeyCache.put(key.getCode(), key);
                 return true;
