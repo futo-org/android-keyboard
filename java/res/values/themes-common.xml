@@ -104,7 +104,7 @@
     <style name="MoreKeysKeyboard" />
     <style name="MoreKeysKeyboardView" />
     <style
-        name="SuggestionStripViewStyle"
+        name="SuggestionStripView"
     >
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
