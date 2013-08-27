@@ -58,8 +58,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
-        new KeyboardTheme(8, R.style.KeyboardTheme_Gingerbread),
+        new KeyboardTheme(0, R.style.KeyboardTheme_ICS),
+        new KeyboardTheme(1, R.style.KeyboardTheme_GB),
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
