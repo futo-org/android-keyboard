@@ -27,7 +27,7 @@
          U+00A9: "©" COPYRIGHT SIGN
          U+00A7: "§" SECTION SIGN
          U+00B6: "¶" PILCROW SIGN
-         U+2026: "…" HORIZONTAL ELLIPSIS
+         U+002C: "," COMMA
          U+2022: "•" BULLET -->
     <!-- U+00B0: "°" DEGREE SIGN
          U+2032: "′" PRIME
@@ -36,11 +36,12 @@
          U+2193: "↓" DOWNWARDS ARROW
          U+2190: "←" LEFTWARDS ARROW
          U+2192: "→" RIGHTWARDS ARROW
-         U+03C0: "π" GREEK SMALL LETTER PI -->
+         U+2026: "…" HORIZONTAL ELLIPSIS -->
     <!-- U+0394: "Δ" GREEK CAPITAL LETTER DELTA
-         U+03A0: "Π" GREEK CAPITAL LETTER PI -->
+         U+03A0: "Π" GREEK CAPITAL LETTER PI
+         U+03C0: "π" GREEK SMALL LETTER PI -->
     <Key
         latin:keyLabel="."
         latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!fixedColumnOrder!8,&#x2105;,&#x2122;,&#x00AE;,&#x00A9;,&#x00A7;,&#x00B6;,&#x2026;,&#x2022;,&#x00B0;,&#x2032;,&#x2033;,&#x2191;,&#x2193;,&#x2190;,&#x2192;,&#x03C0;,!text/more_keys_for_bullet,&#x0394;,&#x03A0;" />
+        latin:moreKeys="!fixedColumnOrder!8,&#x2105;,&#x2122;,&#x00AE;,&#x00A9;,&#x00A7;,&#x00B6;,\\,,&#x2022;,&#x00B0;,&#x2032;,&#x2033;,&#x2191;,&#x2193;,&#x2190;,&#x2192;,&#x2026;,!text/more_keys_for_bullet,&#x0394;,&#x03A0;,&#x03C0;" />
 </merge>
