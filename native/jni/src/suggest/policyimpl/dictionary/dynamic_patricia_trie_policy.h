@@ -21,9 +21,9 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/shortcut/shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/utils/extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
@@ -37,7 +37,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DynamicPatriciaTriePolicy(const MmappedBuffer *const buffer)
             : mBuffer(buffer), mExtendableBuffer(), mHeaderPolicy(mBuffer->getBuffer()),
               mDictRoot(mBuffer->getBuffer() + mHeaderPolicy.getSize()),
-              mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
+              mOriginalDictSize(mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
+              mBigramListPolicy(mDictRoot, mOriginalDictSize, &mExtendableBuffer),
+              mShortcutListPolicy(mDictRoot, mOriginalDictSize, &mExtendableBuffer) {}
 
     ~DynamicPatriciaTriePolicy() {
         delete mBuffer;
@@ -93,8 +95,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     // TODO: Consolidate mDictRoot.
     // CAVEAT!: Be careful about array out of bound access with mDictRoot
     const uint8_t *const mDictRoot;
-    const BigramListPolicy mBigramListPolicy;
-    const ShortcutListPolicy mShortcutListPolicy;
+    const int mOriginalDictSize;
+    const DynamicBigramListPolicy mBigramListPolicy;
+    const DynamicShortcutListPolicy mShortcutListPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H
