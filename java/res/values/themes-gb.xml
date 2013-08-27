@@ -15,12 +15,12 @@
 -->
 
 <resources>
-    <style name="KeyboardTheme.Gingerbread" parent="KeyboardIcons">
-        <item name="keyboardStyle">@style/Keyboard.Gingerbread</item>
-        <item name="keyboardViewStyle">@style/KeyboardView.Gingerbread</item>
-        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.Gingerbread</item>
-        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.Gingerbread</item>
-        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.Gingerbread</item>
+    <style name="KeyboardTheme.GB" parent="KeyboardIcons">
+        <item name="keyboardStyle">@style/Keyboard.GB</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.GB</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.GB</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.GB</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.GB</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle</item>
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>

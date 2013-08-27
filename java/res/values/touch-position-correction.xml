@@ -37,7 +37,7 @@
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_gingerbread"
+        name="touch_position_correction_data_gb"
         translatable="false"
     >
         <!-- First row -->
@@ -57,7 +57,7 @@
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_ice_cream_sandwich"
+        name="touch_position_correction_data_ics"
         translatable="false"
     >
         <!-- First row -->

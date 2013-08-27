@@ -20,7 +20,7 @@
     <color name="highlight_translucent_color_default">#99FCAE00</color>
     <color name="key_text_color_default">@android:color/white</color>
     <color name="key_text_shadow_color_default">#BB000000</color>
-    <color name="key_text_inactivated_color_default">@android:color/white</color>
+    <color name="key_text_inactivated_color_default">#66E0E4E5</color>
     <color name="key_hint_letter_color_default">#80000000</color>
     <color name="key_hint_label_color_default">#E0E0E4E5</color>
     <color name="key_shifted_letter_hint_inactivated_color_default">#66E0E4E5</color>

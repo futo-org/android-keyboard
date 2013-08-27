@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <style name="KeyboardIcons.IceCreamSandwich">
+    <style name="KeyboardIcons.ICS">
         <!-- Keyboard icons -->
         <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are missing.
              sym_keyboard_123_mic_holo
