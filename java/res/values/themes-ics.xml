@@ -25,7 +25,7 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
-        <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle.ICS</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
         <item name="moreKeysKeyboardBackground">@drawable/keyboard_popup_panel_background_holo</item>
         <item name="suggestionStripBackground">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionBackground">@drawable/btn_suggestion_ics</item>
@@ -116,7 +116,8 @@
         <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_ics</item>
     </style>
     <style
-        name="SuggestionStripViewStyle.ICS"
+        name="SuggestionStripView.ICS"
+        parent="SuggestionStripView"
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
