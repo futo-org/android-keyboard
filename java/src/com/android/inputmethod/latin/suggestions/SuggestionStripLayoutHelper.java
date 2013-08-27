@@ -122,7 +122,7 @@ final class SuggestionStripLayoutHelper {
         mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
 
         final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
+                R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripView);
         mSuggestionStripOption = a.getInt(
                 R.styleable.SuggestionStripView_suggestionStripOption, 0);
         mAlphaObsoleted = ResourceUtils.getFraction(a,
