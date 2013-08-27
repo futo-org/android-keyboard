@@ -26,8 +26,6 @@
     <bool name="config_default_key_preview_popup">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
-    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_index" translatable="false">5</string>
     <integer name="config_max_more_keys_column">5</integer>
     <!--
         Configuration for MainKeyboardView

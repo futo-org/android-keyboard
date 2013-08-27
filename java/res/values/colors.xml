@@ -29,16 +29,6 @@
     <color name="spacebar_text_shadow_color_default">#80000000</color>
     <color name="typed_word_color_default">@android:color/white</color>
     <color name="gesture_floating_preview_color_default">#C0000000</color>
-    <!-- Color resources for Stone theme. -->
-    <color name="key_text_color_stone">@android:color/black</color>
-    <color name="key_text_shadow_color_stone">@android:color/white</color>
-    <color name="key_text_inactivated_color_stone">#FF808080</color>
-    <color name="key_hint_letter_color_stone">#80000000</color>
-    <color name="key_hint_label_color_stone">#E0000000</color>
-    <color name="key_shifted_letter_hint_inactivated_color_stone">#66000000</color>
-    <color name="key_shifted_letter_hint_activated_color_stone">#CC000000</color>
-    <color name="spacebar_text_color_stone">@android:color/black</color>
-    <color name="spacebar_text_shadow_color_stone">#D0FFFFFF</color>
     <!-- Color resources for IceCreamSandwich theme. -->
     <!-- android:color/holo_blue_light value is #FF33B5E5 -->
     <color name="highlight_color_ics">#FF33B5E5</color>

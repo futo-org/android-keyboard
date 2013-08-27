@@ -98,29 +98,17 @@
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
     <!-- Keyboard theme names -->
-    <string name="layout_basic">Basic</string>
-    <string name="layout_high_contrast">Basic (High Contrast)</string>
-    <string name="layout_stone_bold">Stone (bold)</string>
-    <string name="layout_stone_normal">Stone (normal)</string>
     <string name="layout_gingerbread">Gingerbread</string>
     <string name="layout_ics">IceCreamSandwich</string>
 
     <!-- For keyboard theme switcher dialog -->
     <string-array name="keyboard_layout_modes">
-        <item>@string/layout_basic</item>
-        <item>@string/layout_high_contrast</item>
-        <item>@string/layout_stone_normal</item>
-        <item>@string/layout_stone_bold</item>
-        <item>@string/layout_gingerbread</item>
         <item>@string/layout_ics</item>
+        <item>@string/layout_gingerbread</item>
     </string-array>
     <string-array name="keyboard_layout_modes_values">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
     </string-array>
 
     <!-- Subtype locale display name exceptions.

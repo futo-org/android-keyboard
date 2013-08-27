@@ -29,9 +29,6 @@
     <fraction name="key_bottom_gap">4.911%p</fraction>
     <fraction name="key_horizontal_gap">1.284%p</fraction>
 
-    <fraction name="key_bottom_gap_stone">4.355%p</fraction>
-    <fraction name="key_horizontal_gap_stone">1.505%p</fraction>
-
     <fraction name="key_bottom_gap_gb">5.200%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.447%p</fraction>
 

@@ -15,6 +15,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- TODO: Remove "Basic" theme and make "IceCreamSandwich" default -->
     <!-- Theme "Basic" -->
     <style name="Keyboard">
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
@@ -167,107 +168,6 @@
     </style>
     <style name="SuggestionBackgroundStyle">
         <item name="android:background">@drawable/btn_suggestion</item>
-    </style>
-    <!-- Theme "Basic high contrast" -->
-    <style
-        name="Keyboard.HighContrast"
-        parent="Keyboard"
-    >
-        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">1</item>
-    </style>
-    <style
-        name="KeyboardView.HighContrast"
-        parent="KeyboardView"
-    >
-        <item name="android:background">@android:color/black</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key3</item>
-    </style>
-    <style
-        name="MainKeyboardView.HighContrast"
-        parent="KeyboardView.HighContrast"
-    >
-        <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_default</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_default</item>
-    </style>
-    <!-- Theme "Stone" -->
-    <style
-        name="Keyboard.Stone"
-        parent="Keyboard"
-    >
-        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">6</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap_stone</item>
-        <item name="verticalGap">@fraction/key_bottom_gap_stone</item>
-    </style>
-    <style
-        name="KeyboardView.Stone"
-        parent="KeyboardView"
-    >
-        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
-        <item name="keyTextColor">@color/key_text_color_stone</item>
-        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_stone</item>
-        <item name="keyHintLetterColor">@color/key_hint_letter_color_stone</item>
-        <item name="keyHintLabelColor">@color/key_hint_label_color_stone</item>
-        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_stone</item>
-        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_stone</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_stone</item>
-    </style>
-    <style
-        name="MainKeyboardView.Stone"
-        parent="KeyboardView.Stone"
-    >
-        <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_stone</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_stone</item>
-    </style>
-    <style
-        name="MoreKeysKeyboard.Stone"
-        parent="Keyboard.Stone"
-    >
-        <item name="keyboardTopPadding">0%p</item>
-        <item name="keyboardBottomPadding">0%p</item>
-        <item name="horizontalGap">0%p</item>
-        <item name="touchPositionCorrectionData">@null</item>
-    </style>
-    <style
-        name="MoreKeysKeyboardView.Stone"
-        parent="MoreKeysKeyboardView"
-    >
-        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
-        <item name="keyTextColor">@color/key_text_color_stone</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_stone</item>
-    </style>
-    <!-- Theme "Stone bold" -->
-    <style
-        name="Keyboard.Stone.Bold"
-        parent="Keyboard.Stone"
-    >
-        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">7</item>
-    </style>
-    <style
-        name="KeyboardView.Stone.Bold"
-        parent="KeyboardView.Stone"
-    >
-        <item name="keyTypeface">bold</item>
-    </style>
-    <style
-        name="MainKeyboardView.Stone.Bold"
-        parent="KeyboardView.Stone.Bold"
-    >
-        <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_stone</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_stone</item>
     </style>
     <!-- Theme "Gingerbread" -->
     <style

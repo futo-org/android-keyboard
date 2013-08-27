@@ -58,12 +58,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme(0, R.style.KeyboardTheme),
-        new KeyboardTheme(1, R.style.KeyboardTheme_HighContrast),
-        new KeyboardTheme(6, R.style.KeyboardTheme_Stone),
-        new KeyboardTheme(7, R.style.KeyboardTheme_Stone_Bold),
-        new KeyboardTheme(8, R.style.KeyboardTheme_Gingerbread),
         new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
+        new KeyboardTheme(8, R.style.KeyboardTheme_Gingerbread),
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -121,8 +117,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         } catch (NumberFormatException e) {
             // Format error, keyboard theme is default to 0.
         }
-        Log.w(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to 0");
-        return KEYBOARD_THEMES[0];
+        Log.w(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to "
+                + defaultIndex);
+        return KEYBOARD_THEMES[Integer.valueOf(defaultIndex)];
     }
 
     private void setContextThemeWrapper(final Context context, final KeyboardTheme keyboardTheme) {
