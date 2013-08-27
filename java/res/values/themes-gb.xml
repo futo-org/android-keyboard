@@ -15,15 +15,15 @@
 -->
 
 <resources>
-    <style name="KeyboardTheme.GB" parent="KeyboardIcons">
+    <style name="KeyboardTheme.GB" parent="KeyboardIcons.GB">
         <item name="keyboardStyle">@style/Keyboard.GB</item>
         <item name="keyboardViewStyle">@style/KeyboardView.GB</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.GB</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.GB</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.GB</item>
-        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
-        <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle</item>
-        <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
-        <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle.GB</item>
+        <item name="moreKeysKeyboardBackground">@drawable/keyboard_popup_panel_background_gb</item>
+        <item name="suggestionStripBackground">@drawable/keyboard_suggest_strip_gb</item>
+        <item name="suggestionBackground">@drawable/btn_suggestion_gb</item>
     </style>
 </resources>

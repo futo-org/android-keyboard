@@ -15,13 +15,13 @@
 -->
 
 <resources>
-    <style name="KeyboardIcons">
+    <style name="KeyboardIcons.GB">
         <!-- Keyboard icons -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space</item>
-        <item name="iconEnterKey">@drawable/sym_keyboard_return</item>ZZ
+        <item name="iconEnterKey">@drawable/sym_keyboard_return</item>
         <item name="iconSearchKey">@drawable/sym_keyboard_search</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>

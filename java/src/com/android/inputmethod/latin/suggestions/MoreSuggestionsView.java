@@ -34,7 +34,7 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
     private static final String TAG = MoreSuggestionsView.class.getSimpleName();
 
     public MoreSuggestionsView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, R.attr.moreSuggestionsViewStyle);
+        this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
     }
 
     public MoreSuggestionsView(final Context context, final AttributeSet attrs,

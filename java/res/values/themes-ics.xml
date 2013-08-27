@@ -21,9 +21,9 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
-        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle.ICS</item>
-        <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle.ICS</item>
-        <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle.ICS</item>
+        <item name="moreKeysKeyboardBackground">@drawable/keyboard_popup_panel_background_holo</item>
+        <item name="suggestionStripBackground">@drawable/keyboard_suggest_strip_holo</item>
+        <item name="suggestionBackground">@drawable/btn_suggestion_ics</item>
     </style>
 </resources>

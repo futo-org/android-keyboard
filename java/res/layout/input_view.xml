@@ -34,6 +34,7 @@
         android:layout_height="@dimen/suggestions_strip_height"
         android:paddingRight="@dimen/suggestions_strip_padding"
         android:paddingLeft="@dimen/suggestions_strip_padding"
+        android:background="?attr/suggestionStripBackground"
         style="?attr/suggestionStripViewStyle" />
     <!-- To ensure that key preview popup is correctly placed when the current system locale is
          one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
