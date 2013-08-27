@@ -50,6 +50,10 @@ class ShortcutListReadingUtils {
                 - SHORTCUT_LIST_SIZE_FIELD_SIZE;
     }
 
+    static AK_FORCE_INLINE int getShortcutListSizeFieldSize() {
+        return SHORTCUT_LIST_SIZE_FIELD_SIZE;
+    }
+
     static AK_FORCE_INLINE void skipShortcuts(const uint8_t *const dictRoot, int *const pos) {
         const int shortcutListSize = getShortcutListSizeAndForwardPointer(dictRoot, pos);
         *pos += shortcutListSize;

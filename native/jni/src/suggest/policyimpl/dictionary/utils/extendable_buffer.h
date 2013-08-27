@@ -30,12 +30,12 @@ class ExtendableBuffer {
  public:
     ExtendableBuffer() : mBuffer(INITIAL_BUFFER_SIZE), mUsedSize(0) {}
 
-   AK_FORCE_INLINE uint8_t *getBuffer() {
+    AK_FORCE_INLINE const uint8_t *getBuffer() const {
         return  &mBuffer[0];
     }
 
     // Return if the buffer is successfully extended or not.
-   AK_FORCE_INLINE bool extendBuffer() {
+    AK_FORCE_INLINE bool extendBuffer() {
         if (mBuffer.size() + EXTEND_BUFFER_SIZE_STEP > MAX_BUFFER_SIZE) {
             return false;
         }
