@@ -36,11 +36,6 @@
     <fraction name="key_bottom_gap">6.250%p</fraction>
     <fraction name="key_horizontal_gap">1.352%p</fraction>
 
-    <fraction name="keyboard_top_padding_stone">1.556%p</fraction>
-    <fraction name="keyboard_bottom_padding_stone">0.778%p</fraction>
-    <fraction name="key_bottom_gap_stone">7.506%p</fraction>
-    <fraction name="key_horizontal_gap_stone">1.739%p</fraction>
-
     <fraction name="key_bottom_gap_gb">6.495%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.971%p</fraction>
 

@@ -30,9 +30,6 @@
     <fraction name="key_bottom_gap">4.103%p</fraction>
     <fraction name="key_horizontal_gap">1.034%p</fraction>
 
-    <fraction name="key_bottom_gap_stone">3.379%p</fraction>
-    <fraction name="key_horizontal_gap_stone">1.062%p</fraction>
-
     <fraction name="key_bottom_gap_gb">3.896%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.195%p</fraction>
 
