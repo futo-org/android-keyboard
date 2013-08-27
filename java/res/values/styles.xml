@@ -15,21 +15,17 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="KeyboardIcons" />
     <!-- Default theme values -->
     <style name="Keyboard">
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_default</item>
         <item name="rowHeight">25%p</item>
         <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding</item>
         <item name="keyboardLeftPadding">@fraction/keyboard_left_padding</item>
         <item name="keyboardRightPadding">@fraction/keyboard_right_padding</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap</item>
-        <item name="verticalGap">@fraction/key_bottom_gap</item>
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="KeyboardView">
-        <item name="android:background">@drawable/keyboard_background</item>
         <item name="keyLetterSize">@fraction/key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
         <item name="keyLabelSize">@fraction/key_label_ratio</item>
@@ -38,26 +34,15 @@
         <item name="keyHintLabelRatio">@fraction/key_hint_label_ratio</item>
         <item name="keyShiftedLetterHintRatio">@fraction/key_uppercase_letter_ratio</item>
         <item name="keyTypeface">normal</item>
-        <item name="keyTextColor">@color/key_text_color_default</item>
-        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_default</item>
-        <item name="keyHintLetterColor">@color/key_hint_letter_color_default</item>
-        <item name="keyHintLabelColor">@color/key_hint_label_color_default</item>
-        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_default</item>
-        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_default</item>
         <item name="keyLabelHorizontalPadding">@dimen/key_label_horizontal_padding</item>
         <item name="keyHintLetterPadding">@dimen/key_hint_letter_padding</item>
         <item name="keyPopupHintLetterPadding">@dimen/key_popup_hint_letter_padding</item>
         <item name="keyShiftedLetterHintPadding">@dimen/key_uppercase_letter_padding</item>
-        <item name="keyPreviewTextColor">@color/key_text_color_default</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_default</item>
-        <item name="keyTextShadowRadius">2.75</item>
         <item name="backgroundDimAlpha">128</item>
         <item name="gestureFloatingPreviewTextSize">@dimen/gesture_floating_preview_text_size</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_default</item>
         <item name="gestureFloatingPreviewTextOffset">@dimen/gesture_floating_preview_text_offset</item>
-        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_default</item>
         <item name="gestureFloatingPreviewHorizontalPadding">@dimen/gesture_floating_preview_horizontal_padding</item>
         <item name="gestureFloatingPreviewVerticalPadding">@dimen/gesture_floating_preview_vertical_padding</item>
         <item name="gestureFloatingPreviewRoundRadius">@dimen/gesture_floating_preview_round_radius</item>
@@ -68,7 +53,6 @@
         <item name="gestureTrailFadeoutStartDelay">@integer/config_gesture_trail_fadeout_start_delay</item>
         <item name="gestureTrailFadeoutDuration">@integer/config_gesture_trail_fadeout_duration</item>
         <item name="gestureTrailUpdateInterval">@integer/config_gesture_trail_update_interval</item>
-        <item name="gestureTrailColor">@color/highlight_color_default</item>
         <item name="gestureTrailStartWidth">@dimen/gesture_trail_start_width</item>
         <item name="gestureTrailEndWidth">@dimen/gesture_trail_end_width</item>
         <item name="gestureTrailBodyRatio">@integer/gesture_trail_body_ratio</item>
@@ -79,7 +63,6 @@
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
         <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_default</item>
         <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
         <item name="slidingKeyInputPreviewBodyRatio">@integer/config_sliding_key_input_preview_body_ratio</item>
         <item name="slidingKeyInputPreviewShadowRatio">@integer/config_sliding_key_input_preview_shadow_ratio</item>
@@ -87,11 +70,11 @@
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
         <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
-        <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
         <item name="languageOnSpacebarFinalAlpha">@integer/config_language_on_spacebar_final_alpha</item>
         <item name="languageOnSpacebarFadeoutAnimator">@anim/language_on_spacebar_fadeout</item>
         <!-- Remove animations for now because it could drain a non-negligible amount of battery while typing.
@@ -113,56 +96,16 @@
         <item name="gestureRecognitionSpeedThreshold">@fraction/config_gesture_recognition_speed_threshold</item>
         <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
     </style>
-    <style
-        name="MainKeyboardView"
-        parent="KeyboardView">
-        <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_default</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_default</item>
-    </style>
-    <style
-        name="MoreKeysKeyboard"
-        parent="Keyboard"
-    >
-        <item name="keyboardTopPadding">0%p</item>
-        <item name="keyboardBottomPadding">0%p</item>
-        <item name="horizontalGap">0%p</item>
-        <item name="touchPositionCorrectionData">@null</item>
-    </style>
-    <style
-        name="MoreKeysKeyboardView"
-        parent="KeyboardView"
-    >
-        <item name="keyBackground">@drawable/btn_keyboard_key_popup_gb</item>
-        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction</item>
-    </style>
-    <style name="MoreKeysKeyboardPanelStyle">
-        <item name="android:background">@drawable/keyboard_popup_panel_background</item>
-    </style>
+    <style name="MainKeyboardView" />
+    <style name="MoreKeysKeyboard" />
+    <style name="MoreKeysKeyboardView" />
     <style
         name="SuggestionStripViewStyle"
     >
-        <item name="android:background">@drawable/keyboard_suggest_strip</item>
-        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorValidTypedWord">@color/highlight_color_default</item>
-        <item name="colorTypedWord">@color/typed_word_color_default</item>
-        <item name="colorAutoCorrect">@color/highlight_color_default</item>
-        <item name="colorSuggested">@color/highlight_color_default</item>
-        <item name="alphaObsoleted">50%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
-    </style>
-    <style
-        name="MoreSuggestionsViewStyle"
-        parent="MoreKeysKeyboardView"
-    >
-    </style>
-    <style name="SuggestionBackgroundStyle">
-        <item name="android:background">@drawable/btn_suggestion_gb</item>
     </style>
     <!-- Theme "Gingerbread" -->
     <style
@@ -172,6 +115,8 @@
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">1</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_gb</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_gb</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_gb</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
         <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
     </style>
@@ -179,20 +124,33 @@
         name="KeyboardView.GB"
         parent="KeyboardView"
     >
-        <item name="android:background">@drawable/keyboard_dark_background</item>
+        <item name="android:background">@drawable/keyboard_background_gb</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gb</item>
         <item name="keyTypeface">bold</item>
-        <item name="keyPreviewLayout">@layout/key_preview_gb</item>
+        <item name="keyTextColor">@color/key_text_color_gb</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_gb</item>
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_gb</item>
+        <item name="keyHintLabelColor">@color/key_hint_label_color_gb</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_gb</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_gb</item>
+        <item name="keyPreviewTextColor">@color/key_text_color_gb</item>
+        <item name="keyTextShadowColor">@color/key_text_shadow_color_gb</item>
+        <item name="keyTextShadowRadius">2.75</item>
     </style>
     <style
         name="MainKeyboardView.GB"
         parent="KeyboardView.GB"
     >
+        <item name="keyPreviewLayout">@layout/key_preview_gb</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_gb</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_gb</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_gb</item>
+        <item name="gestureTrailColor">@color/highlight_color_gb</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_gb</item>
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_default</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_default</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_gb</item>
+        <item name="spacebarTextColor">@color/spacebar_text_color_gb</item>
+        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
     </style>
     <style
         name="MoreKeysKeyboard.GB"
@@ -205,9 +163,23 @@
     </style>
     <style
         name="MoreKeysKeyboardView.GB"
-        parent="MoreKeysKeyboardView"
+        parent="KeyboardView.GB"
     >
         <item name="android:background">@null</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_gb</item>
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_gb</item>
+    </style>
+    <style
+        name="SuggestionStripViewStyle.GB"
+        parent="SuggestionStripViewStyle"
+    >
+        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
+        <item name="colorValidTypedWord">@color/highlight_color_gb</item>
+        <item name="colorTypedWord">@color/typed_word_color_gb</item>
+        <item name="colorAutoCorrect">@color/highlight_color_gb</item>
+        <item name="colorSuggested">@color/highlight_color_gb</item>
+        <item name="alphaObsoleted">50%</item>
     </style>
     <!-- Theme "IceCreamSandwich" -->
     <style
@@ -226,30 +198,31 @@
         name="KeyboardView.ICS"
         parent="KeyboardView"
     >
-        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="android:background">@drawable/keyboard_background_ics</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
         <item name="keyTypeface">bold</item>
+        <item name="keyTextColor">@color/key_text_color_ics</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_ics</item>
         <item name="keyHintLetterColor">@color/key_hint_letter_color_ics</item>
         <item name="keyHintLabelColor">@color/key_hint_label_color_ics</item>
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_ics</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_ics</item>
-        <item name="keyPreviewLayout">@layout/key_preview_ics</item>
         <item name="keyPreviewTextColor">@color/key_text_color_ics</item>
-        <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="keyTextShadowColor">@color/key_text_shadow_color_ics</item>
         <item name="keyTextShadowRadius">0.0</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
-        <item name="gestureTrailColor">@color/highlight_color_ics</item>
     </style>
     <style
         name="MainKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
+        <item name="keyPreviewLayout">@layout/key_preview_ics</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_ics</item>
+        <item name="gestureTrailColor">@color/highlight_color_ics</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
         <item name="spacebarTextColor">@color/spacebar_text_color_ics</item>
         <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_ics</item>
     </style>
@@ -264,42 +237,22 @@
     </style>
     <style
         name="MoreKeysKeyboardView.ICS"
-        parent="MoreKeysKeyboardView"
+        parent="KeyboardView.ICS"
     >
         <item name="android:background">@null</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
+        <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_ics</item>
-    </style>
-    <style name="MoreKeysKeyboardPanelStyle.ICS">
-        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
     <style
         name="SuggestionStripViewStyle.ICS"
     >
-        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
         <item name="colorTypedWord">@color/typed_word_color_ics</item>
         <item name="colorAutoCorrect">@color/highlight_color_ics</item>
         <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
-        <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
-        <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
-        <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
-    </style>
-    <style
-        name="MoreSuggestionsViewStyle.ICS"
-        parent="MoreKeysKeyboardView.ICS"
-    >
-    </style>
-    <style name="SuggestionBackgroundStyle.ICS">
-        <item name="android:background">@drawable/btn_suggestion_ics</item>
-    </style>
-    <style
-        name="SuggestionPreviewBackgroundStyle.ICS"
-        parent="MoreKeysKeyboardPanelStyle.ICS"
-    >
     </style>
     <style name="MoreKeysKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>

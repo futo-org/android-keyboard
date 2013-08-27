@@ -26,11 +26,12 @@
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
-        <attr name="moreKeysKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionStripViewStyle" format="reference" />
-        <attr name="moreSuggestionsViewStyle" format="reference" />
-        <attr name="suggestionBackgroundStyle" format="reference" />
+        <!-- Styled attributes for android:background -->
+        <attr name="moreKeysKeyboardBackground" format="reference" />
+        <attr name="suggestionStripBackground" format="reference" />
+        <attr name="suggestionBackground" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">

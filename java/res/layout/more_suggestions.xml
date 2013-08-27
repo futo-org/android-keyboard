@@ -17,21 +17,21 @@
 ** limitations under the License.
 */
 -->
+
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?attr/moreKeysKeyboardBackground"
+>
+    <com.android.inputmethod.latin.suggestions.MoreSuggestionsView
+        xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+        android:id="@+id/more_suggestions_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="?attr/moreKeysKeyboardPanelStyle"
-        >
-    <com.android.inputmethod.latin.suggestions.MoreSuggestionsView
-            xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/more_suggestions_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            latin:keyLetterSize="@dimen/suggestion_text_size"
-            latin:keyLabelSize="@dimen/suggestion_text_size"
-            latin:keyHintLetterRatio="@fraction/more_suggestions_info_ratio"
-            latin:keyHintLetterColor="@android:color/white"
-            />
+        latin:keyLetterSize="@dimen/suggestion_text_size"
+        latin:keyLabelSize="@dimen/suggestion_text_size"
+        latin:keyHintLetterRatio="@fraction/more_suggestions_info_ratio"
+        latin:keyHintLetterColor="@android:color/white" />
 </LinearLayout>

@@ -24,4 +24,4 @@
     android:layout_height="wrap_content"
     android:textSize="6dp"
     android:textColor="@android:color/white"
-    style="?attr/suggestionBackgroundStyle" />
+    android:background="?attr/suggestionBackground" />

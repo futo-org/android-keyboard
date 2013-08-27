@@ -24,17 +24,15 @@
     <dimen name="keyboardHeight">283.5dp</dimen>
     <fraction name="minKeyboardHeight">45%p</fraction>
 
-    <fraction name="keyboard_top_padding">2.444%p</fraction>
-    <fraction name="keyboard_bottom_padding">0.0%p</fraction>
-    <fraction name="key_bottom_gap">4.911%p</fraction>
-    <fraction name="key_horizontal_gap">1.284%p</fraction>
-
+    <fraction name="keyboard_top_padding_gb">2.444%p</fraction>
+    <fraction name="keyboard_bottom_padding_gb">0.0%p</fraction>
     <fraction name="key_bottom_gap_gb">5.200%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.447%p</fraction>
 
+    <fraction name="keyboard_top_padding_ics">2.727%p</fraction>
+    <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
     <fraction name="key_bottom_gap_ics">4.5%p</fraction>
     <fraction name="key_horizontal_gap_ics">0.9%p</fraction>
-    <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
 
     <dimen name="popup_key_height">81.9dp</dimen>
 
