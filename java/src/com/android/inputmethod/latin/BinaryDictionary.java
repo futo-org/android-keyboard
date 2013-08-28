@@ -21,7 +21,6 @@ import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.settings.AdditionalFeaturesSettingUtils;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
@@ -120,15 +119,16 @@ public final class BinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
-                0 /* sessionId */);
+                additionalFeaturesOptions, 0 /* sessionId */);
     }
 
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int sessionId) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final int sessionId) {
         if (!isValidDictionary()) return null;
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
@@ -148,8 +148,7 @@ public final class BinaryDictionary extends Dictionary {
         final InputPointers ips = composer.getInputPointers();
         final int inputSize = isGesture ? ips.getPointerSize() : composerSize;
         mNativeSuggestOptions.setIsGesture(isGesture);
-        mNativeSuggestOptions.setAdditionalFeaturesOptions(
-                AdditionalFeaturesSettingUtils.getAdditionalNativeSuggestOptions());
+        mNativeSuggestOptions.setAdditionalFeaturesOptions(additionalFeaturesOptions);
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 getTraverseSession(sessionId).getSession(), ips.getXCoordinates(),

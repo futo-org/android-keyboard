@@ -52,7 +52,7 @@ public final class DictionaryPool extends LinkedBlockingQueue<DictAndKeyboard> {
                 @Override
                 public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
                         final String prevWord, final ProximityInfo proximityInfo,
-                        final boolean blockOffensiveWords) {
+                        final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
                     return noSuggestions;
                 }
                 @Override

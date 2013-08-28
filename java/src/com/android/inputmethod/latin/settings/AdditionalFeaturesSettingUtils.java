@@ -40,8 +40,4 @@ public class AdditionalFeaturesSettingUtils {
             final SharedPreferences prefs, final int[] additionalFeaturesPreferences) {
         // do nothing.
     }
-
-    public static int[] getAdditionalNativeSuggestOptions() {
-        return Settings.getInstance().getCurrent().mAdditionalFeaturesSettingValues;
-    }
 }

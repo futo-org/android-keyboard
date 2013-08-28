@@ -147,9 +147,9 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            boolean blockOffensiveWords) {
+            boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         return mExpandableDictionary.getSuggestions(composer, prevWord, proximityInfo,
-                blockOffensiveWords);
+                blockOffensiveWords, additionalFeaturesOptions);
     }
 
     @Override
