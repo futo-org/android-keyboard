@@ -28,12 +28,9 @@
         name="emoji_recents"
         format="string"
     >
-        <item>52</item>
-        <item>45</item>
-        <item>43</item>
-        <item>45</item>
-        <item>4E</item>
-        <item>54</item>
+        <!-- These code point should be aligned with {@link RecentsKeyboard#TEMPLATE_KEY_CODE_*. -->
+        <item>30</item>
+        <item>31</item>
     </array>
     <array
         name="emoji_nature"

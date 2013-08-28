@@ -17,19 +17,6 @@
 <!-- Note: This emoji code point list is valid on JB-MR2 (API == 18).
      There is another emoji code point list for KLP and later under res/xml/values-v19. -->
 <resources>
-    <!-- Dummy codeArrays for recents emoji keyboard.
-         Do not remove these keys, because they are used as a template. -->
-    <array
-        name="emoji_recents"
-        format="string"
-    >
-        <item>52</item>
-        <item>45</item>
-        <item>43</item>
-        <item>45</item>
-        <item>4E</item>
-        <item>54</item>
-    </array>
     <array
         name="emoji_nature"
         format="string"
