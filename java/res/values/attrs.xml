@@ -26,6 +26,8 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
+        <!-- EmojiKeyboardView style -->
+        <attr name="emojiKeyboardViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
@@ -163,6 +165,10 @@
         <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="EmojiKeyboardView">
+        <attr name="emojiTabLabelColor" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOption" format="integer">
             <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
@@ -217,6 +223,7 @@
         <attr name="iconLanguageSwitchKey" format="reference" />
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
+        <attr name="iconImeKey" format="reference" />
         <attr name="iconEmojiKey" format="reference" />
     </declare-styleable>
 

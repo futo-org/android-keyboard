@@ -23,6 +23,7 @@
         <item name="keyboardStyle">@style/Keyboard.ICS</item>
         <item name="keyboardViewStyle">@style/KeyboardView.ICS</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
+        <item name="emojiKeyboardViewStyle">@style/EmojiKeyboardView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
@@ -96,6 +97,13 @@
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="spacebarTextColor">@color/spacebar_text_color_ics</item>
         <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_ics</item>
+    </style>
+    <style
+        name="EmojiKeyboardView.ICS"
+        parent="KeyboardView.ICS"
+    >
+        <item name="keyBackground">@drawable/btn_keyboard_key_functional_ics</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>
     </style>
     <style
         name="MoreKeysKeyboard.ICS"
