@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.R;
  * This is an extended {@link KeyboardView} class that hosts a scroll keyboard.
  * Multi-touch unsupported. No {@link PointerTracker}s. No gesture support.
  */
+// TODO: Implement key popup preview.
 public final class ScrollKeyboardView extends KeyboardView implements
         ScrollViewWithNotifier.ScrollListener, GestureDetector.OnGestureListener {
     private static final boolean PAGINATION = false;

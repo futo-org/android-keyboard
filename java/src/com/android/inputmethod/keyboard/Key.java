@@ -764,8 +764,9 @@ public class Key implements Comparable<Key> {
     }
 
     public final int getDrawX() {
+        final int x = getX();
         final OptionalAttributes attrs = mOptionalAttributes;
-        return (attrs == null) ? mX : mX + attrs.mVisualInsetsLeft;
+        return (attrs == null) ? x : x + attrs.mVisualInsetsLeft;
     }
 
     public final int getDrawWidth() {
@@ -823,9 +824,9 @@ public class Key implements Comparable<Key> {
      * @return the square of the distance of the point from the nearest edge of the key
      */
     public int squaredDistanceToEdge(final int x, final int y) {
-        final int left = mX;
+        final int left = getX();
         final int right = left + mWidth;
-        final int top = mY;
+        final int top = getY();
         final int bottom = top + mHeight;
         final int edgeX = x < left ? left : (x > right ? right : x);
         final int edgeY = y < top ? top : (y > bottom ? bottom : y);
