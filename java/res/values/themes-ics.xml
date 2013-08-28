@@ -18,7 +18,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.ICS" parent="KeyboardIcons.ICS">
         <item name="keyboardStyle">@style/Keyboard.ICS</item>
         <item name="keyboardViewStyle">@style/KeyboardView.ICS</item>
@@ -26,10 +26,9 @@
         <item name="emojiKeyboardViewStyle">@style/EmojiKeyboardView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
+        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
-        <item name="moreKeysKeyboardBackground">@drawable/keyboard_popup_panel_background_holo</item>
-        <item name="suggestionStripBackground">@drawable/keyboard_suggest_strip_holo</item>
-        <item name="suggestionBackground">@drawable/btn_suggestion_ics</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.ICS</item>
     </style>
     <style name="KeyboardIcons.ICS">
         <!-- Keyboard icons -->
@@ -124,9 +123,15 @@
         <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_ics</item>
     </style>
     <style
+        name="MoreKeysKeyboardContainer.ICS"
+    >
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+    </style>
+    <style
         name="SuggestionStripView.ICS"
         parent="SuggestionStripView"
     >
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
         <item name="colorTypedWord">@color/typed_word_color_ics</item>
@@ -134,8 +139,7 @@
         <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
     </style>
-    <style name="MoreKeysKeyboardAnimation">
-        <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
-        <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
+    <style name="SuggestionWord.ICS">
+        <item name="android:background">@drawable/btn_suggestion_ics</item>
     </style>
 </resources>

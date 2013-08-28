@@ -26,10 +26,9 @@
         <item name="emojiKeyboardViewStyle">@style/EmojiKeyboardView.GB</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.GB</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.GB</item>
+        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.GB</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.GB</item>
-        <item name="moreKeysKeyboardBackground">@drawable/keyboard_popup_panel_background_gb</item>
-        <item name="suggestionStripBackground">@drawable/keyboard_suggest_strip_gb</item>
-        <item name="suggestionBackground">@drawable/btn_suggestion_gb</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.GB</item>
     </style>
     <style name="KeyboardIcons.GB">
         <!-- Keyboard icons -->
@@ -123,14 +122,23 @@
         <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_gb</item>
     </style>
     <style
+        name="MoreKeysKeyboardContainer.GB"
+    >
+        <item name="android:background">@drawable/keyboard_popup_panel_background_gb</item>
+    </style>
+    <style
         name="SuggestionStripView.GB"
         parent="SuggestionStripView"
     >
+        <item name="android:background">@drawable/keyboard_suggest_strip_gb</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/highlight_color_gb</item>
         <item name="colorTypedWord">@color/typed_word_color_gb</item>
         <item name="colorAutoCorrect">@color/highlight_color_gb</item>
         <item name="colorSuggested">@color/highlight_color_gb</item>
         <item name="alphaObsoleted">50%</item>
+    </style>
+    <style name="SuggestionWord.GB">
+        <item name="android:background">@drawable/btn_suggestion_gb</item>
     </style>
 </resources>
