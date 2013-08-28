@@ -80,6 +80,7 @@
     vi: Vietnamese/qwerty
     zu: Zulu/qwerty
     zz: QWERTY/qwerty
+    (zz: Emoji/emoji)
     -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- Note: SupportTouchPositionCorrection extra value is obsolete and maintained for backward
@@ -510,4 +511,15 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable"
     />
+    <!-- Emoji subtype has to be an addtional subtype added at boot time because ICS doesn't
+         support Emoji. -->
+    <!--
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_emoji"
+            android:subtypeId="0xc14d88b2"
+            android:imeSubtypeLocale="zz"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=emoji"
+    />
+    -->
 </input-method>

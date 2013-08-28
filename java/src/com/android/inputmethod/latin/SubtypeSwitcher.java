@@ -53,12 +53,22 @@ public final class SubtypeSwitcher {
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
+    private InputMethodSubtype mEmojiSubtype;
     private boolean mIsNetworkConnected;
 
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
     private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
-            R.string.subtype_no_language_qwerty, R.drawable.ic_subtype_keyboard, "zz", "keyboard",
-            "KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable",
+            R.string.subtype_no_language_qwerty, R.drawable.ic_subtype_keyboard,
+            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard",
+            "KeyboardLayoutSet=" + SubtypeLocaleUtils.QWERTY
+            + ",AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable",
+            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+    // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
+    // Dummy Emoji subtype. See {@link R.xml.method}.
+    private static final InputMethodSubtype DUMMY_EMOJI_SUBTYPE = new InputMethodSubtype(
+            R.string.subtype_emoji, R.drawable.ic_subtype_keyboard,
+            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard",
+            "KeyboardLayoutSet=" + SubtypeLocaleUtils.EMOJI,
             false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
 
     static final class NeedsToDisplayLanguage {
@@ -270,5 +280,18 @@ public final class SubtypeSwitcher {
         Log.w(TAG, "No input method subtype found; return dummy subtype: "
                 + DUMMY_NO_LANGUAGE_SUBTYPE);
         return DUMMY_NO_LANGUAGE_SUBTYPE;
+    }
+
+    public InputMethodSubtype getEmojiSubtype() {
+        if (mEmojiSubtype == null) {
+            mEmojiSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                    SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI);
+        }
+        if (mEmojiSubtype != null) {
+            return mEmojiSubtype;
+        }
+        Log.w(TAG, "Can't find Emoji subtype");
+        Log.w(TAG, "No input method subtype found; return dummy subtype: " + DUMMY_EMOJI_SUBTYPE);
+        return DUMMY_EMOJI_SUBTYPE;
     }
 }
