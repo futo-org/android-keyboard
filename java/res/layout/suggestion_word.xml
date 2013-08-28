@@ -36,4 +36,4 @@
     android:clickable="false"
     android:singleLine="true"
     android:ellipsize="none"
-    android:background="?attr/suggestionBackground" />
+    style="?attr/suggestionWordStyle" />
