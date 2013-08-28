@@ -50,7 +50,7 @@
             latin:keyboardLayout="@xml/key_symbols_period"
             latin:backgroundType="functional" />
         <Key
-            latin:keyStyle="enterKeyStyle"
+            latin:keyStyle="emojiKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
 </merge>
