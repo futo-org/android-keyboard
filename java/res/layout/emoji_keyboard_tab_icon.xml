@@ -18,14 +18,9 @@
 */
 -->
 
-<Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="@fraction/emoji_keyboard_key_width"
-    latin:keyLetterSize="90%p"
-    latin:keyLabelSize="60%p"
->
-    <GridRows
-        latin:textsArray="@array/emoji_emoticons"
-        latin:keyLabelFlags="fontNormal"
-        latin:backgroundType="empty" />
-</Keyboard>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dip"
+    android:layout_weight="1.0"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+/>
