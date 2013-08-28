@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!-- U+0920: "ठ" DEVANAGARI LETTER TTHA -->
+            <Key
+                latin:keyLabel="&#x0920;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0914: "औ" DEVANAGARI LETTER AU -->
+            <Key
+                latin:keyLabel="&#x0914;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of Hindi, different set of
+                 Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keys_nepali_romanized1_shift_left2" />
+            <!-- U+0925: "थ" DEVANAGARI LETTER THA -->
+            <Key
+                latin:keyLabel="&#x0925;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+091E: "ञ" DEVANAGARI LETTER NYA -->
+            <Key
+                latin:keyLabel="&#x091E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of Hindi, different set of
+                 Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keys_nepali_romanized1_shift_right2" />
+            <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
+            <Key
+                latin:keyLabel="&#x0913;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+092B: "फ" DEVANAGARI LETTER PHA -->
+            <Key
+                latin:keyLabel="&#x092B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0908: "ई" DEVANAGARI LETTER II -->
+            <Key
+                latin:keyLabel="&#x0908;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+        <default>
+            <!-- U+091F: "ट" DEVANAGARI LETTER TTA
+                 U+0967: "१" DEVANAGARI DIGIT ONE
+                 U+093C: "़" DEVANAGARI SIGN NUKTA -->
+            <Key
+                latin:keyLabel="&#x091F;"
+                latin:keyHintLabel="1"
+                latin:additionalMoreKeys="&#x0967;,1"
+                latin:moreKeys="&#x093C;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of Hindi, different set of
+                 Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keys_nepali_romanized1_left2" />
+            <!-- U+0930: "र" DEVANAGARI LETTER RA
+                 U+096A: "४" DEVANAGARI DIGIT FOUR -->
+            <Key
+                latin:keyLabel="&#x0930;"
+                latin:keyHintLabel="4"
+                latin:additionalMoreKeys="&#x096A;,4"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0924: "त" DEVANAGARI LETTER TA
+                 U+096B: "५" DEVANAGARI DIGIT FIVE -->
+            <Key
+                latin:keyLabel="&#x0924;"
+                latin:keyHintLabel="5"
+                latin:additionalMoreKeys="&#x096B;,5"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+092F: "य" DEVANAGARI LETTER YA
+                 U+096C: "६" DEVANAGARI DIGIT SIX -->
+            <Key
+                latin:keyLabel="&#x092F;"
+                latin:keyHintLabel="6"
+                latin:additionalMoreKeys="&#x096C;,6"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of Hindi, different set of
+                 Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keys_nepali_romanized1_right3" />
+            <!-- U+092A: "प" DEVANAGARI LETTER PA
+                 U+0966: "०" DEVANAGARI DIGIT ZERO -->
+            <Key
+                latin:keyLabel="&#x092A;"
+                latin:keyHintLabel="0"
+                latin:additionalMoreKeys="&#x0966;,0"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0907: "इ" DEVANAGARI LETTER I -->
+            <Key
+                latin:keyLabel="&#x0907;"
+                latin:keyLabelFlags="fontNormal" />
+         </default>
+    </switch>
+</merge>

@@ -60,6 +60,7 @@
     mn: Mongolian/mongolian
     ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
+    ne: Nepali Romanized/nepali_romanized
     nl: Dutch/qwerty
     nl_BE: Dutch Belgium/azerty
     pl: Polish/qwerty
@@ -361,6 +362,13 @@
             android:imeSubtypeLocale="nb"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xd80a4cee"
+            android:imeSubtypeLocale="ne"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_romanized"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
