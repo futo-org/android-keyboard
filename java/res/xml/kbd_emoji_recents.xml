@@ -22,6 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyWidth="@fraction/emoji_keyboard_key_width"
     latin:keyLetterSize="90%p"
+    latin:keyLabelSize="60%p"
 >
     <GridRows
         latin:codesArray="@array/emoji_recents"
