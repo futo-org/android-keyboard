@@ -272,19 +272,19 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         asyncReloadDictionaryIfRequired();
         // Write lock because getSuggestions in native updates session status.
         if (mLocalDictionaryController.writeLock().tryLock()) {
             try {
                 final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
                         mDictionaryWriter.getSuggestions(composer, prevWord, proximityInfo,
-                                blockOffensiveWords);
+                                blockOffensiveWords, additionalFeaturesOptions);
                 // TODO: Remove checking mIsUpdatable and use native suggestion.
                 if (mBinaryDictionary != null && !mIsUpdatable) {
                     final ArrayList<SuggestedWordInfo> binarySuggestion =
                             mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
-                                    blockOffensiveWords);
+                                    blockOffensiveWords, additionalFeaturesOptions);
                     if (inMemDictSuggestion == null) {
                         return binarySuggestion;
                     } else if (binarySuggestion == null) {

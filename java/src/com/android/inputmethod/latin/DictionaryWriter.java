@@ -92,7 +92,7 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            boolean blockOffensiveWords) {
+            boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         // This class doesn't support suggestion.
         return null;
     }

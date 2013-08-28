@@ -2323,6 +2323,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
         // should just skip whitespace if any, so 1.
         final SettingsValues currentSettings = mSettings.getCurrent();
+        final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
         final String prevWord;
         if (currentSettings.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
@@ -2335,7 +2336,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         return suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive,
-                currentSettings.mCorrectionEnabled, sessionId);
+                currentSettings.mCorrectionEnabled, additionalFeaturesOptions, sessionId);
     }
 
     private SuggestedWords getSuggestedWordsOrOlderSuggestions(final int sessionId) {

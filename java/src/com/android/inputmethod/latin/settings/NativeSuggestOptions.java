@@ -34,6 +34,9 @@ public class NativeSuggestOptions {
     }
 
     public void setAdditionalFeaturesOptions(final int[] additionalOptions) {
+        if (additionalOptions == null) {
+            return;
+        }
         for (int i = 0; i < additionalOptions.length; i++) {
             setIntegerOption(OPTIONS_SIZE + i, additionalOptions[i]);
         }

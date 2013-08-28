@@ -301,12 +301,14 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 // TODO: make a spell checker option to block offensive words or not
                 final ArrayList<SuggestedWordInfo> suggestions =
                         dictInfo.mDictionary.getSuggestions(composer, prevWord,
-                                dictInfo.getProximityInfo(),
-                                true /* blockOffensiveWords */);
-                for (final SuggestedWordInfo suggestion : suggestions) {
-                    final String suggestionStr = suggestion.mWord;
-                    suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
-                            suggestionStr.length(), suggestion.mScore);
+                                dictInfo.getProximityInfo(), true /* blockOffensiveWords */,
+                                null /* additionalFeaturesOptions */);
+                if (suggestions != null) {
+                    for (final SuggestedWordInfo suggestion : suggestions) {
+                        final String suggestionStr = suggestion.mWord;
+                        suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
+                                suggestionStr.length(), suggestion.mScore);
+                    }
                 }
                 isInDict = isInDictForAnyCapitalization(dictInfo.mDictionary, text, capitalizeType);
             } finally {

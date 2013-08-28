@@ -210,7 +210,7 @@ public class ExpandableDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         if (composer.size() > 1) {
             if (composer.size() >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
                 return null;
