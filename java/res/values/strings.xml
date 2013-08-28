@@ -457,6 +457,8 @@ language among those that use the Latin alphabet. This keyboard is laid out in t
 disposition that offers additional keys, but smaller keys compared to other common dispositions for
 mobile devices. [CHAR LIMIT=25] -->
     <string name="subtype_no_language_pcqwerty">Alphabet (PC)</string>
+    <!-- Description for Emoji keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_emoji">Emoji</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
