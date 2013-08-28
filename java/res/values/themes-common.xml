@@ -30,6 +30,7 @@
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="KeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
         <item name="keyLetterSize">@fraction/key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
         <item name="keyLabelSize">@fraction/key_label_ratio</item>
@@ -100,16 +101,24 @@
         <item name="gestureRecognitionSpeedThreshold">@fraction/config_gesture_recognition_speed_threshold</item>
         <item name="suppressKeyPreviewAfterBatchInputDuration">@integer/config_suppress_key_preview_after_batch_input_duration</item>
     </style>
-    <style name="MainKeyboardView" />
+    <style
+        name="MainKeyboardView"
+        parent="KeyboardView" />
     <style name="EmojiKeyboardView" />
     <style name="MoreKeysKeyboard" />
-    <style name="MoreKeysKeyboardView" />
     <style
-        name="SuggestionStripView"
-    >
+        name="MoreKeysKeyboardView"
+        parent="MainKeyboardView" />
+    <style name="MoreKeysKeyboardContainer" />
+    <style name="SuggestionStripView">
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
+    </style>
+    <style name="SuggestionWord" />
+    <style name="MoreKeysKeyboardAnimation">
+        <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
+        <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
     </style>
 </resources>
