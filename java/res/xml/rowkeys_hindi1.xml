@@ -65,7 +65,9 @@
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_devanagari_sign_visarga" />
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_visarga" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVisarga" />
             <!-- U+0918: "घ" DEVANAGARI LETTER GHA -->
             <Key
                 latin:keyLabel="&#x0918;"

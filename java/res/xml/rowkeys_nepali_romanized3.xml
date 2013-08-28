@@ -63,7 +63,9 @@
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_devanagari_sign_virama" />
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVirama" />
         </case>
         <default>
             <!-- U+0937: "ष" DEVANAGARI LETTER SSA -->
@@ -104,7 +106,9 @@
                  render dotted circle for incomplete combining letter of some scripts, different
                  set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_devanagari_sign_virama" />
-         </default>
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVirama" />
+        </default>
     </switch>
 </merge>
