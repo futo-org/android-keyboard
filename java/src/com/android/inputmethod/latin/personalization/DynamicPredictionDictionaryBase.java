@@ -63,7 +63,7 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
 
     /* package */ DynamicPredictionDictionaryBase(final Context context, final String locale,
             final SharedPreferences sp, final String dictionaryType, final String fileName) {
-        super(context, locale, dictionaryType, true);
+        super(context, fileName, dictionaryType, true);
         mLocale = locale;
         mFileName = fileName;
         mPrefs = sp;
