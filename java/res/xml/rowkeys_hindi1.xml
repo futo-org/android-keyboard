@@ -93,6 +93,7 @@
             <include
                 latin:keyboardLayout="@xml/keys_hindi1_left5" />
             <!-- U+092C: "ब" DEVANAGARI LETTER BA
+                 U+096C: "६" DEVANAGARI DIGIT SIX
                  U+092C/U+0952: "ब॒" DEVANAGARI LETTER BA/DEVANAGARI STRESS SIGN ANUDATTA -->
             <Key
                 latin:keyLabel="&#x092C;"
