@@ -20,26 +20,33 @@
 
 <com.android.inputmethod.latin.InputView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="bottom|center_horizontal"
->
-    <!-- To ensure that key preview popup is correctly placed when the current system locale is
-         one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-    <com.android.inputmethod.latin.suggestions.SuggestionStripView
-        android:id="@+id/suggestion_strip_view"
-        android:layoutDirection="ltr"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/suggestions_strip_height"
-        android:paddingRight="@dimen/suggestions_strip_padding"
-        android:paddingLeft="@dimen/suggestions_strip_padding"
-        style="?attr/suggestionStripViewStyle" />
-    <!-- To ensure that key preview popup is correctly placed when the current system locale is
-         one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-    <com.android.inputmethod.keyboard.MainKeyboardView
-        android:id="@+id/keyboard_view"
-        android:layoutDirection="ltr"
+    android:orientation="vertical" >
+    <include
+        layout="@layout/emoji_keyboard_view" />
+    <LinearLayout
+        android:id="@+id/main_keyboard_frame"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <!-- To ensure that key preview popup is correctly placed when the current system locale is
+             one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
+        <com.android.inputmethod.latin.suggestions.SuggestionStripView
+            android:id="@+id/suggestion_strip_view"
+            android:layoutDirection="ltr"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/suggestions_strip_height"
+            android:paddingRight="@dimen/suggestions_strip_padding"
+            android:paddingLeft="@dimen/suggestions_strip_padding"
+            style="?attr/suggestionStripViewStyle" />
+        <!-- To ensure that key preview popup is correctly placed when the current system locale is
+             one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
+        <com.android.inputmethod.keyboard.MainKeyboardView
+            android:id="@+id/keyboard_view"
+            android:layoutDirection="ltr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </com.android.inputmethod.latin.InputView>

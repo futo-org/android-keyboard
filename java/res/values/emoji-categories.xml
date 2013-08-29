@@ -36,26 +36,73 @@
         name="emoji_nature"
         format="string"
     >
+        <item>2744</item> <!-- SNOWFLAKE -->
     </array>
     <array
         name="emoji_symbols"
         format="string"
     >
+        <item>2460</item> <!-- CIRCLED DIGIT ONE -->
+        <item>2461</item> <!-- CIRCLED DIGIT TWO -->
+        <item>2462</item> <!-- CIRCLED DIGIT THREE -->
+        <item>2463</item> <!-- CIRCLED DIGIT FOUR -->
+        <item>2464</item> <!-- CIRCLED DIGIT FIVE -->
+        <item>2465</item> <!-- CIRCLED DIGIT SIX -->
+        <item>2466</item> <!-- CIRCLED DIGIT SEVEN -->
+        <item>2467</item> <!-- CIRCLED DIGIT EIGHT -->
+        <item>2468</item> <!-- CIRCLED DIGIT NINE -->
+        <item>2469</item> <!-- CIRCLED DIGIT TEN -->
+        <item>00ae</item> <!-- REGISTERED SIGN -->
+        <item>00a9</item> <!-- COPYRIGHT SIGN -->
+        <item>2122</item> <!-- TRADE MARK SIGN -->
+        <item>2734</item> <!-- EIGHT POINTED BLACK STAR -->
+        <item>2733</item> <!-- EIGHT POINTED PINWHEEL STAR -->
+        <item>2716</item> <!-- HEAVY MULTIPLICATION MARK -->
+        <item>2195</item> <!-- UP DOWN ARROW -->
+        <item>2197</item> <!-- NORTH EAST ARROW -->
+        <item>27a1</item> <!-- BLACK RIGHTWARDS ARROW -->
+        <item>2198</item> <!-- SOUTH EAST ARROW -->
+        <item>2199</item> <!-- SOUTH WEST ARROW -->
+        <item>2196</item> <!-- NORTH EAST ARROW -->
+        <item>2194</item> <!-- LEFT RIGHT ARROW -->
+        <item>25c0</item> <!-- BLACK LEFT-POINTING TRIANGLE -->
+        <item>25b6</item> <!-- BLACK ROGHT-POINTING TRIANGLE -->
+        <item>2747</item> <!-- SPARKLE -->
+        <item>25aa</item> <!-- BLACK SMALL SQUARE -->
+        <item>203c</item> <!-- DOUBLE EXCLAMATION MARK -->
+        <item>2660</item> <!-- BLACK SPADE SUIT -->
+        <item>2665</item> <!-- BLACK HEART SUIT -->
+        <item>2663</item> <!-- BLACK CLUB SUIT -->
+        <item>2666</item> <!-- BLACK DIAMOND SUIT -->
+        <item>21a9</item> <!-- LEFTWARDS ARROW WITH HOOK -->
+        <item>21aa</item> <!-- RIGHTWARDS ARROW WITH HOOK -->
     </array>
     <array
         name="emoji_faces"
         format="string"
     >
+        <item>270C</item> <!-- VICTORY HAND -->
+        <item>2764</item> <!-- HEAVY BLACK HEART -->
     </array>
     <array
         name="emoji_objects"
         format="string"
     >
+        <item>260e</item> <!-- BLACK TELEPHONE -->
+        <item>2709</item> <!-- ENVELOPE -->
+        <item>2712</item> <!-- BLACK NIB -->
+        <item>270f</item> <!-- PENCIL -->
+        <item>2702</item> <!-- BLACK SCISSORS -->
+        <item>2669</item> <!-- QUARTER NOTE -->
+        <item>266a</item> <!-- EIGHTH NOTE -->
+        <item>266c</item> <!-- BEAMED SIXTEENTH NOTES -->
     </array>
     <array
         name="emoji_places"
         format="string"
     >
+        <item>2708</item> <!-- AIRPLANE -->
+        <item>2668</item> <!-- HOT SPRINGS -->
     </array>
     <array
         name="emoji_emoticons"

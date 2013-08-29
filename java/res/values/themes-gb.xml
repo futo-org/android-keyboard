@@ -96,6 +96,8 @@
         <item name="spacebarTextColor">@color/spacebar_text_color_gb</item>
         <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
     </style>
+    <!-- Though {@link EmojiKeyboardView} doesn't extend {@link KeyboardView}, some views inside it,
+         for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
         name="EmojiKeyboardView.GB"
         parent="KeyboardView.GB"
