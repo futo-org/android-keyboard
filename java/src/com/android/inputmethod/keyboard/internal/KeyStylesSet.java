@@ -124,10 +124,11 @@ public final class KeyStylesSet {
 
         @Override
         public int getFlags(final TypedArray a, final int index) {
+            final int parentFlags = mStyles.get(mParentStyleName).getFlags(a, index);
             final Integer value = (Integer)mStyleAttributes.get(index);
-            final int flags = a.getInt(index, (value != null) ? value : 0);
-            final KeyStyle parentStyle = mStyles.get(mParentStyleName);
-            return flags | parentStyle.getFlags(a, index);
+            final int styleFlags = (value != null) ? value : 0;
+            final int flags = a.getInt(index, 0);
+            return flags | styleFlags | parentFlags;
         }
 
         public void readKeyAttributes(final TypedArray keyAttr) {
@@ -163,7 +164,8 @@ public final class KeyStylesSet {
         private void readFlags(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 final Integer value = (Integer)mStyleAttributes.get(index);
-                mStyleAttributes.put(index, a.getInt(index, 0) | (value != null ? value : 0));
+                final int styleFlags = value != null ? value : 0;
+                mStyleAttributes.put(index, a.getInt(index, 0) | styleFlags);
             }
         }
 
