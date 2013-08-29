@@ -625,6 +625,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         final AttributeSet attr = Xml.asAttributeSet(parser);
         final TypedArray caseAttr = mResources.obtainAttributes(attr, R.styleable.Keyboard_Case);
         try {
+            final boolean keyboardLayoutSetMatched = matchString(caseAttr,
+                    R.styleable.Keyboard_Case_keyboardLayoutSet,
+                    SubtypeLocaleUtils.getKeyboardLayoutSetName(id.mSubtype));
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));
@@ -657,15 +660,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
             final boolean countryCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
-            final boolean selected = keyboardLayoutSetElementMatched && modeMatched
-                    && navigateNextMatched && navigatePreviousMatched && passwordInputMatched
-                    && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
-                    && shortcutKeyOnSymbolsMatched && hasShortcutKeyMatched
-                    && languageSwitchKeyEnabledMatched && isMultiLineMatched && imeActionMatched
-                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
+            final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
+                    && modeMatched && navigateNextMatched && navigatePreviousMatched
+                    && passwordInputMatched && clobberSettingsKeyMatched
+                    && shortcutKeyEnabledMatched && shortcutKeyOnSymbolsMatched
+                    && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
+                    && isMultiLineMatched && imeActionMatched && localeCodeMatched
+                    && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                        textAttr(caseAttr.getString(
+                                R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSetElement),
                                 "keyboardLayoutSetElement"),
