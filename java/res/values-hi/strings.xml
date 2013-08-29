@@ -143,13 +143,15 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"अंग्रेज़ी (यूके) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"अंग्रेज़ी (यूएस) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"स्पेनिश (यूएस) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_no_language" msgid="7137390094240139495">"कोई भाषा नहीं (लैटिन वर्णाक्षर)"</string>
+    <string name="subtype_no_language" msgid="7137390094240139495">"भाषा उपलब्ध नहीं है (लैटिन वर्णाक्षर)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"वर्णाक्षर (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"वर्णाक्षर (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8144348527575640087">"वर्णाक्षर (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"वर्णाक्षर (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"वर्णाक्षर (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णाक्षर (PC)"</string>
+    <!-- no translation found for subtype_emoji (7483586578074549196) -->
+    <skip />
     <string name="custom_input_styles_title" msgid="8429952441821251512">"कस्‍टम इनपुट शैलियां"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली जोड़ें"</string>
     <string name="add" msgid="8299699805688017798">"जोड़ें"</string>
@@ -225,7 +227,7 @@
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"वाक्यांश"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"अधिक विकल्प"</string>
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"कम विकल्‍प"</string>
-    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"ठीक"</string>
+    <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"ठीक है"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"शब्द:"</string>
     <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"शॉर्टकट:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"भाषा:"</string>
