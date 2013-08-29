@@ -24,13 +24,13 @@
     <string name="english_ime_research_log" msgid="8492602295696577851">"Research Log Commands"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Look up contact names"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Spell checker uses entries from your contact list"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrate on key-press"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on key-press"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrate on keypress"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on keypress"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Text correction"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Gesture typing"</string>
-    <string name="misc_category" msgid="6894192814868233453">"Other Options"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Other options"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Advanced settings"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Options for experts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Switch to other input methods"</string>
@@ -66,7 +66,7 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Modest"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Aggressive"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Very aggressive"</string>
-    <string name="bigram_prediction" msgid="1084449187723948550">"Next word suggestions"</string>
+    <string name="bigram_prediction" msgid="1084449187723948550">"Next-word suggestions"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Use the previous word when making suggestions"</string>
     <string name="gesture_input" msgid="826951152254563827">"Enable gesture typing"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"Input a word by sliding through the letters"</string>
@@ -77,7 +77,7 @@
     <string name="label_go_key" msgid="1635148082137219148">"Go"</string>
     <string name="label_next_key" msgid="362972844525672568">"Next"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Prev"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Done"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Finished"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Wait"</string>
@@ -150,14 +150,16 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alphabet (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alphabet (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alphabet (PC)"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Custom input styles"</string>
+    <!-- no translation found for subtype_emoji (7483586578074549196) -->
+    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Customised input styles"</string>
     <string name="add_style" msgid="6163126614514489951">"Add style"</string>
     <string name="add" msgid="8299699805688017798">"Add"</string>
     <string name="remove" msgid="4486081658752944606">"Remove"</string>
     <string name="save" msgid="7646738597196767214">"Save"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Language"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Your custom input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Your customised input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
     <string name="enable" msgid="5031294444630523247">"Enable"</string>
     <string name="not_now" msgid="6172462888202790482">"Not now"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
