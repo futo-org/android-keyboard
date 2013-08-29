@@ -31,7 +31,7 @@
     <string name="correction_category" msgid="2236750915056607613">"Pembetulan teks"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Taipan gerak isyarat"</string>
     <string name="misc_category" msgid="6894192814868233453">"Pilihan lain"</string>
-    <string name="advanced_settings" msgid="362895144495591463">"Tetapan terperinci"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Tetapan lanjutan"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Pilihan untuk pakar"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Tukar ke kaedah input lain"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kunci pertukaran bahasa meliputi kaedah masukan lain juga"</string>
@@ -40,7 +40,7 @@
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Tunjukkan penunjuk slaid"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Paparkan petunjuk visual semasa meluncur daripada kekunci Shift atau Simbol"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Pop tmbl knci ketpkn lengah"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tiada lengah"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tiada kelewatan"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Lalai"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g>ms"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"Tetapan asal sistem"</string>
@@ -48,7 +48,7 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Menggunakan nama daripada Kenalan untuk cadangan dan pembetulan"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Titik ruang berganda"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Mengetik 2X pada bar ruang memasukkan titik diikuti dengan ruang"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Huruf besar auto"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Autopenghurufbesaran"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Besarkan perkataan pertama setiap ayat"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Kamus peribadi"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Kamus tambahan"</string>
@@ -62,7 +62,7 @@
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Jangan cadangkan perkataan yang boleh menyinggung"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Auto pembetulan"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Bar ruang dan tanda baca secara automatik membetulkan perkataan yang ditaip salah"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Matikan"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dimati"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Sederhana"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Agresif"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Sangat agresif"</string>
@@ -80,7 +80,7 @@
     <string name="label_done_key" msgid="2441578748772529288">"Selesai"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Hantar"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Jeda"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Tnggu"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Tunggu"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Pasangkan set kepala untuk mendengar kekunci kata laluan disebut dengan kuat."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Teks semasa adalah %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Tiada teks dimasukkan"</string>
@@ -91,19 +91,19 @@
     <string name="spoken_description_delete" msgid="8740376944276199801">"Padam"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simbol"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Huruf"</string>
-    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Nombor"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Numbers"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"Tetapan"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
-    <string name="spoken_description_space" msgid="2582521050049860859">"Space"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Ruang"</string>
     <string name="spoken_description_mic" msgid="615536748882611950">"Input suara"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Muka senyum"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"Carian"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Kembali"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Cari"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Tukar bahasa"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"Seterusnya"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"Sebelumnya"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Kunci anjak didayakan"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift didayakan"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kunci huruf besar didayakan"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Kunci anjak dilumpuhkan"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Mod simbol"</string>
@@ -122,11 +122,11 @@
     <string name="keyboard_mode_time" msgid="4381856885582143277">"masa"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kunci input suara"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Hidpkn kekunci utama"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pd ppn k’unci simbol"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"Matikan"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. pd kekunci utma"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. pd kekunci smbl"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pada papan kekunci utama"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pada papan kekunci simbol"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Dimati"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon pada papan kekunci utama"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon pada papan kekunci simbol"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Input suara dilmphkn"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan kaedah input"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Bahasa input"</string>
@@ -138,7 +138,7 @@
     <string name="prefs_description_log" msgid="7525225584555429211">"Bantu memperbaik editor kaedah input ini dengan menghantar statistik penggunaan dan laporan ranap secara automatik"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema papan kekunci"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (Australia)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"Bahasa Sepanyol (AS)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Bahasa Inggeris (UK) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Bahasa Inggeris (AS) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
@@ -153,14 +153,14 @@
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Gaya input peribadi"</string>
     <string name="add_style" msgid="6163126614514489951">"Tambah gaya"</string>
     <string name="add" msgid="8299699805688017798">"Tambah"</string>
-    <string name="remove" msgid="4486081658752944606">"Alih keluar"</string>
+    <string name="remove" msgid="4486081658752944606">"Alih Keluar"</string>
     <string name="save" msgid="7646738597196767214">"Simpan"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Bahasa"</string>
-    <string name="keyboard_layout_set" msgid="4309233698194565609">"Reka Letak"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Reka letak"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Gaya input tersuai anda perlu didayakan sebelum anda mula menggunakannya. Adakah anda ingin mendayakannya sekarang?"</string>
     <string name="enable" msgid="5031294444630523247">"Dayakan"</string>
     <string name="not_now" msgid="6172462888202790482">"Bukan sekarang"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Gaya input yang sama sudah wujud: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Kelewatan tekan lama kekunci"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Tempoh getaran tekan kekunci"</string>
@@ -220,7 +220,7 @@
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Tekan untuk mengulas dan memuat turun"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Memuat turun: cadangan untuk <xliff:g id="LANGUAGE">%1$s</xliff:g> akan sedia tidak lama lagi."</string>
     <string name="version_text" msgid="2715354215568469385">"Versi <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
-    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Tambah"</string>
+    <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"tambah"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Tambah ke kamus"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"Frasa"</string>
     <string name="user_dict_settings_add_dialog_more_options" msgid="5671682004887093112">"Lagi pilihan"</string>

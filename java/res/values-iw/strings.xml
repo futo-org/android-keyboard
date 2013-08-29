@@ -39,7 +39,7 @@
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"הצג כאשר ניתן להשתמש בשפות קלט מרובות"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"הצג את סמן ההסטה"</string>
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"הצג סימון ויזואלי בעת הסטה מ-Shift או ממקשי סמלים"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"עיכוב סגירת חלון קופץ של מקש"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"עיכוב בסגירת חלון קופץ של מקש"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ללא עיכוב"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ברירת מחדל"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> אלפ\' שניה"</string>
@@ -51,7 +51,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"הפיכת אותיות לרישיות באופן אוטומטי"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"השתמש באות גדולה במילה הראשונה של כל משפט"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"מילון אישי"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"הוספת מילונים"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"תוספי מילונים"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"מילון ראשי"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"הצג הצעות לתיקונים"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"הצג הצעות למילים בעת הקלדה"</string>
@@ -71,13 +71,13 @@
     <string name="gesture_input" msgid="826951152254563827">"אפשר הקלדה ללא הרמת אצבע"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"הזן מילה על ידי החלקת האצבע מאות לאות"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"הצג שובל תנועות"</string>
-    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה מקדימה דינמית צפה"</string>
+    <string name="gesture_floating_preview_text" msgid="4443240334739381053">"תצוגה צפה דינמית"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ראה את המילה המוצעת תוך כדי הזזת האצבע"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : נשמרה"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"בצע"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"התחל"</string>
     <string name="label_next_key" msgid="362972844525672568">"הבא"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"הקודם"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"סיום"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"בוצע"</string>
     <string name="label_send_key" msgid="2815056534433717444">"שלח"</string>
     <string name="label_pause_key" msgid="181098308428035340">"השהה"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"המתן"</string>
@@ -93,18 +93,18 @@
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"אותיות"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"מספרים"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"הגדרות"</string>
-    <string name="spoken_description_tab" msgid="2667716002663482248">"טאב"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"כרטיסייה"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"רווח"</string>
     <string name="spoken_description_mic" msgid="615536748882611950">"קלט קולי"</string>
-    <string name="spoken_description_smiley" msgid="2256309826200113918">"פרצוף סמיילי"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"חזור"</string>
-    <string name="spoken_description_search" msgid="1247236163755920808">"חיפוש"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"סמיילי"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"חזרה"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"חפש"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"נקודה"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"החלף שפה"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"הבא"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"הקודם"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift מופעל"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock מופעל"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift פועל"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock פועל"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift מושבת"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"מצב סמלים"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"מצב אותיות"</string>
@@ -134,7 +134,7 @@
     <string name="select_language" msgid="3693815588777926848">"שפות קלט"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"גע שוב כדי לשמור"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"מילון זמין"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"הפוך משוב ממשתמשים לפעיל"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"הפעל משוב ממשתמשים"</string>
     <string name="prefs_description_log" msgid="7525225584555429211">"עזור לשפר את עורך שיטת הקלט על ידי שליחה אוטומטית של סטטיסטיקת שימוש ודוחות קריסה."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"עיצוב מקלדת"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"אנגלית (בריטניה)"</string>
@@ -161,7 +161,7 @@
     <string name="enable" msgid="5031294444630523247">"הפעל"</string>
     <string name="not_now" msgid="6172462888202790482">"לא עכשיו"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"סגנון קלט זהה כבר קיים: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"מצב מחקר שימושיות"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"מצב לחקירת שימושיות"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"השהיית לחיצה ארוכה על מקש"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"משך רטט של לחיצת מקש"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"עוצמת קול של לחיצת מקש"</string>
@@ -173,7 +173,7 @@
     <string name="button_default" msgid="3988017840431881491">"ברירת מחדל"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ברוך הבא אל <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"עם הקלדת החלקה"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"התחל"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"תחילת העבודה"</string>
     <string name="setup_next_action" msgid="371821437915144603">"השלב הבא"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"הגדרת <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"הפעל את <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
@@ -209,7 +209,7 @@
     <string name="message_updating" msgid="4457761393932375219">"מחפש עדכונים"</string>
     <string name="message_loading" msgid="8689096636874758814">"טוען..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"מילון ראשי"</string>
-    <string name="cancel" msgid="6830980399865683324">"ביטול"</string>
+    <string name="cancel" msgid="6830980399865683324">"בטל"</string>
     <string name="install_dict" msgid="180852772562189365">"התקן"</string>
     <string name="cancel_download_dict" msgid="7843340278507019303">"בטל"</string>
     <string name="delete_dict" msgid="756853268088330054">"מחק"</string>
