@@ -1177,11 +1177,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return currentHeight;
         }
 
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView == null) {
+        final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
+        if (visibleKeyboardView == null) {
             return 0;
         }
-        final int keyboardHeight = mainKeyboardView.getHeight();
+        // TODO: !!!!!!!!!!!!!!!!!!!! Handle different backing view heights between the main   !!!
+        // keyboard and the emoji keyboard. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        final int keyboardHeight = visibleKeyboardView.getHeight();
         final int suggestionsHeight = mSuggestionStripView.getHeight();
         final int displayHeight = getResources().getDisplayMetrics().heightPixels;
         final Rect rect = new Rect();
@@ -1199,8 +1201,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView == null || mSuggestionStripView == null) {
+        final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
+        if (visibleKeyboardView == null || mSuggestionStripView == null) {
             return;
         }
         final int adjustedBackingHeight = getAdjustedBackingViewHeight();
@@ -1215,13 +1217,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int visibleTopY = extraHeight;
         // Need to set touchable region only if input view is being shown
-        if (mainKeyboardView.isShown()) {
+        if (visibleKeyboardView.isShown()) {
             if (mSuggestionStripView.getVisibility() == View.VISIBLE) {
                 visibleTopY -= suggestionsHeight;
             }
-            final int touchY = mainKeyboardView.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchWidth = mainKeyboardView.getWidth();
-            final int touchHeight = mainKeyboardView.getHeight() + extraHeight
+            final int touchY = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
+            final int touchWidth = visibleKeyboardView.getWidth();
+            final int touchHeight = visibleKeyboardView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
