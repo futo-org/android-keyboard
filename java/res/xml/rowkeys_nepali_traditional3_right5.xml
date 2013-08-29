@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/key_devanagari_sign_anusvara" />
+            <!-- U+0919: "ङ" DEVANAGARI LETTER NGA -->
+            <Key
+                latin:keyLabel="&#x0919;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_ai" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariVowelSignAi" />
+            <!-- U+0930/U+0941: "रु" DEVANAGARI LETTER RA/DEVANAGARI VOWEL SIGN U -->
+            <Key
+                latin:keyLabel="&#x0930;&#x0941;"
+                latin:moreKeys="!"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keyLabel="\?" />
+        </case>
+        <default>
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
+            <!-- U+093D: "ऽ" DEVANAGARI SIGN AVAGRAHA -->
+            <include
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_visarga" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVisarga"
+                latin:moreKeys="&#x093D;" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keystyle_devanagari_vowel_sign_e" />
+            <!-- Override more keys with empty definition -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignE" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariVowelSignE" />
+            <!-- U+0964: "।" DEVANAGARI DANDA -->
+            <Key
+                latin:keyLabel="&#x0964;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0930: "र" DEVANAGARI LETTER RA -->
+            <Key
+                latin:keyLabel="&#x0930;"
+                latin:moreKeys="!"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- Because the font rendering system prior to API version 16 can't automatically
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
+            <include
+                latin:keyboardLayout="@xml/keystyle_devanagari_sign_virama" />
+            <Key
+                latin:keyStyle="baseKeyDevanagariSignVirama"
+                latin:moreKeys="\?" />
+        </default>
+    </switch>
+</merge>

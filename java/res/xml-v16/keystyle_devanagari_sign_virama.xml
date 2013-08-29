@@ -25,10 +25,9 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- U+25CC: "◌" DOTTED CIRCLE
-         U+0903: "ः" DEVANAGARI SIGN VISARGA -->
-    <Key
-        latin:keyLabel="&#x25CC;&#x0903;"
-        latin:code="0x0903"
-        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+    <!-- U+094D: "्" DEVANAGARI SIGN VIRAMA -->
+    <key-style
+        latin:styleName="baseKeyDevanagariSignVirama"
+        latin:keyLabel="&#x094D;"
+        latin:keyLabelFlags="fontNormal" />
 </merge>

@@ -27,7 +27,8 @@
 >
     <!-- U+25CC: "◌" DOTTED CIRCLE
          U+094D: "्" DEVANAGARI SIGN VIRAMA -->
-    <Key
+    <key-style
+        latin:styleName="baseKeyDevanagariSignVirama"
         latin:keyLabel="&#x25CC;&#x094D;"
         latin:code="0x094D"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />

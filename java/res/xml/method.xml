@@ -61,6 +61,7 @@
     ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
     ne: Nepali Romanized/nepali_romanized
+    ne: Nepali Traditional/nepali_traditional
     nl: Dutch/qwerty
     nl_BE: Dutch Belgium/azerty
     pl: Polish/qwerty
@@ -369,6 +370,13 @@
             android:imeSubtypeLocale="ne"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_romanized"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_nepali_traditional"
+            android:subtypeId="0x5fafea88"
+            android:imeSubtypeLocale="ne"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"

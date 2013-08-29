@@ -42,6 +42,13 @@
                     latin:moreKeys="!text/more_keys_for_arabic_diacritics"
                     latin:keyStyle="punctuationKeyStyle" />
             </case>
+            <case
+                latin:languageCode="ne"
+                latin:keyboardLayoutSet="nepali_traditional"
+            >
+                <include
+                    latin:keyboardLayout="@xml/key_nepali_traditional_period" />
+            </case>
             <default>
                 <Key
                     latin:keyStyle="punctuationKeyStyle" />

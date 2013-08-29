@@ -25,35 +25,11 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
-            <!-- U+25CC: "◌" DOTTED CIRCLE
-                 U+0948/U+0902: "ैं" DEVANAGARI VOWEL SIGN AI/DEVANAGARI SIGN ANUSVARA -->
-            <key-style
-                latin:styleName="moreKeysDevanagariVowelSignAi"
-                latin:moreKeys="&#x25CC;&#x0948;&#x0902;|&#x0948;&#x0902;,%" />
-        </case>
-        <case
-            latin:keyboardLayoutSet="nepali_traditional"
-        >
-            <!-- U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA -->
-            <key-style
-                latin:styleName="moreKeysDevanagariVowelSignAi"
-                latin:moreKeys="&#x0936;&#x094D;&#x0930;" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="moreKeysDevanagariVowelSignAi" />
-        </default>
-    </switch>
     <!-- U+25CC: "◌" DOTTED CIRCLE
-         U+0948: "ै" DEVANAGARI VOWEL SIGN AI -->
+         U+0903: "ः" DEVANAGARI SIGN VISARGA -->
     <key-style
-        latin:styleName="baseKeyDevanagariVowelSignAi"
-        latin:parentStyle="moreKeysDevanagariVowelSignAi"
-        latin:keyLabel="&#x25CC;&#x0948;"
-        latin:code="0x0948"
+        latin:styleName="baseKeyDevanagariSignVisarga"
+        latin:keyLabel="&#x25CC;&#x0903;"
+        latin:code="0x0903"
         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 </merge>

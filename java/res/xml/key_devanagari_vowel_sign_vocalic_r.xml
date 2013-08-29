@@ -35,6 +35,14 @@
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR"
                 latin:moreKeys="&#x25CC;&#x0944;|&#x0944;" />
         </case>
+        <case
+            latin:keyboardLayoutSet="nepali_traditional"
+        >
+            <!-- U+0913: "ओ" DEVANAGARI LETTER O -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignVocalicR"
+                latin:moreKeys="&#x0913;" />
+        </case>
         <default>
              <key-style
                 latin:styleName="moreKeysDevanagariVowelSignVocalicR" />
