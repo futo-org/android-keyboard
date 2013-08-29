@@ -71,7 +71,7 @@ class DynamicPatriciaTrieNodeReader {
     }
 
     AK_FORCE_INLINE bool hasChildren() const {
-        return PatriciaTrieReadingUtils::hasChildrenInFlags(mFlags);
+        return mChildrenPos != NOT_A_DICT_POS;
     }
 
     AK_FORCE_INLINE bool isTerminal() const {
