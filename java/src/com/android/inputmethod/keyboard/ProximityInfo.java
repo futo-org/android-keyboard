@@ -342,7 +342,9 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
             for (int centerY = yStart; centerY <= yEnd; centerY += mCellHeight) {
                 int index = baseIndexOfCurrentRow;
                 for (int centerX = xStart; centerX <= xEnd; centerX += mCellWidth) {
-                    if (key.squaredDistanceToEdge(centerX, centerY) < thresholdSquared) {
+                    // TODO: Remove "index < neighborCountPerCell.length" below.
+                    if (index < neighborCountPerCell.length
+                            && key.squaredDistanceToEdge(centerX, centerY) < thresholdSquared) {
                         neighborsFlatBuffer[index * keyCount + neighborCountPerCell[index]] = key;
                         ++neighborCountPerCell[index];
                     }
