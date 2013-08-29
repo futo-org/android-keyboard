@@ -32,7 +32,13 @@ const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
         const uint8_t *const buffer, const NodeFlags flags, int *const pos) {
     if ((flags & MASK_MOVED) == FLAG_IS_NOT_MOVED) {
         const int base = *pos;
-        return base + ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+        const int offset = ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+        if (offset == 0) {
+            // 0 offset means that the node does not have children.
+            return NOT_A_DICT_POS;
+        } else {
+            return base + offset;
+        }
     } else {
         return NOT_A_DICT_POS;
     }
