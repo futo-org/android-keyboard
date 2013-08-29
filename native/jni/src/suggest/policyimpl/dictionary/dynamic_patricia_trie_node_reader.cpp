@@ -45,14 +45,10 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     } else {
         mProbability = NOT_A_PROBABILITY;
     }
-    if (hasChildren()) {
-        mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
-                dictBuf, mFlags, &pos);
-        if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
-            mChildrenPos += mOriginalDictSize;
-        }
-    } else {
-        mChildrenPos = NOT_A_DICT_POS;
+    mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
+            dictBuf, mFlags, &pos);
+    if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
+        mChildrenPos += mOriginalDictSize;
     }
     if (usesAdditionalBuffer) {
         pos += mOriginalDictSize;
