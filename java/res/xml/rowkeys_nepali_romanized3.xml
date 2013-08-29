@@ -38,10 +38,10 @@
                 latin:keyLabel="&#x091B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
-                 render dotted circle for incomplete combining letter of Hindi, different set of
-                 Key definitions are needed based on the API version. -->
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_nepali_romanized3_shift_left" />
+                latin:keyboardLayout="@xml/key_devanagari_sign_candrabindu" />
             <!-- U+092D: "भ" DEVANAGARI LETTER BHA -->
             <Key
                 latin:keyLabel="&#x092D;"
@@ -51,19 +51,19 @@
                 latin:keyLabel="&#x0936;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
-                 render dotted circle for incomplete combining letter of Hindi, different set of
-                 Key definitions are needed based on the API version. -->
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_nepali_romanized3_shift_center" />
+                latin:keyboardLayout="@xml/key_devanagari_sign_anusvara" />
             <!-- U+0919: "ङ" DEVANAGARI LETTER NGA -->
             <Key
                 latin:keyLabel="&#x0919;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
-                 render dotted circle for incomplete combining letter of Hindi, different set of
-                 Key definitions are needed based on the API version. -->
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_nepali_romanized3_shift_right" />
+                latin:keyboardLayout="@xml/key_devanagari_sign_virama" />
         </case>
         <default>
             <!-- U+0937: "ष" DEVANAGARI LETTER SSA -->
@@ -101,10 +101,10 @@
                 latin:moreKeys="&#x093D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
-                 render dotted circle for incomplete combining letter of Hindi, different set of
-                 Key definitions are needed based on the API version. -->
+                 render dotted circle for incomplete combining letter of some scripts, different
+                 set of Key definitions are needed based on the API version. -->
             <include
-                latin:keyboardLayout="@xml/key_nepali_romanized3" />
+                latin:keyboardLayout="@xml/key_devanagari_sign_virama" />
          </default>
     </switch>
 </merge>
