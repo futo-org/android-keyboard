@@ -47,6 +47,7 @@
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
+    hy: Armenian Phonetic/armenian_phonetic
     in: Indonesian/qwerty    # "id" is official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
@@ -268,6 +269,13 @@
             android:imeSubtypeLocale="hu"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0xe39ac3ca"
+            android:imeSubtypeLocale="hy"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=armenian_phonetic"
     />
     <!-- Java uses the deprecated "in" code instead of the standard "id" code for Indonesian. -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"

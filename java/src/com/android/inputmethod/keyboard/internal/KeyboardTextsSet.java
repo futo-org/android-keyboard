@@ -1753,6 +1753,25 @@ public final class KeyboardTextsSet {
         /* 49 */ "!text/double_raqm_laqm",
     };
 
+    /* Language hy: Armenian */
+    private static final String[] LANGUAGE_hy = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null,
+        /* ~52 */
+        // U+055E: "՞" ARMENIAN QUESTION MARK
+        /* 53 */ "!fixedColumnOrder!4,\u055E,!,\\,,?,:,;,@",
+        /* 54~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
+        /* ~107 */
+        /* 108 */ "\u055E,?",
+    };
+
     /* Language is: Icelandic */
     private static final String[] LANGUAGE_is = {
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
@@ -3288,6 +3307,7 @@ public final class KeyboardTextsSet {
         "hi", LANGUAGE_hi, /* Hindi */
         "hr", LANGUAGE_hr, /* Croatian */
         "hu", LANGUAGE_hu, /* Hungarian */
+        "hy", LANGUAGE_hy, /* Armenian */
         "is", LANGUAGE_is, /* Icelandic */
         "it", LANGUAGE_it, /* Italian */
         "iw", LANGUAGE_iw, /* Hebrew */
