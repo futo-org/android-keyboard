@@ -160,6 +160,8 @@
     <skip />
     <!-- no translation found for subtype_no_language_pcqwerty (5354918232046200018) -->
     <skip />
+    <!-- no translation found for subtype_emoji (7483586578074549196) -->
+    <skip />
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Карыстальніцкія стылі ўводу"</string>
     <string name="add_style" msgid="6163126614514489951">"Дадаць стыль"</string>
     <string name="add" msgid="8299699805688017798">"Дадаць"</string>

@@ -150,6 +150,8 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Αλφάβητο (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Αλφάβητο (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Αλφάβητο (PC)"</string>
+    <!-- no translation found for subtype_emoji (7483586578074549196) -->
+    <skip />
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Προσαρμοσ. στυλ εισαγ."</string>
     <string name="add_style" msgid="6163126614514489951">"Προσθ. στυλ"</string>
     <string name="add" msgid="8299699805688017798">"Προσθήκη"</string>

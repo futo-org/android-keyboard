@@ -56,14 +56,14 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"නිවැරදි කිරීම් යෝජනා පෙන්වන්න"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ටයිප් කරන අතරතුර යෝජිත වචන දර්ශනය කරන්න"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"සැමවිටම පෙන්වන්න"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"සිරස් ආකෘති ආකාරය තුළ පෙන්වන්න"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"සිරස් ආකෘති ප්‍රකාරය තුළ පෙන්වන්න"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"සැමවිට සඟවන්න"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"අප්‍රසන්න වචන අවහිර කරන්න"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"විභව්‍යව අප්‍රසන්න වචන යෝජනා නොකරන්න"</string>
     <string name="auto_correction" msgid="7630720885194996950">"ස්වයං-නිවැරදි කිරීම"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"ඉඩ යතුර සහ විරාම ලකුණ වැරදියට ටයිප් කළ වචන ස්වයංක්‍රියව නිවැරදි කරයි"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"අක්‍රිය කරන්න"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"මධ්‍යස්ථ"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"අක්‍රියයි"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"මධ්‍යස්"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"ආක්‍රමණකාරී"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"ඉතා ආක්‍රමණකාරී"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"ඊළඟ-වචනයේ යෝජනා"</string>
@@ -75,7 +75,7 @@
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"ඉංගිතය කරන අතරතුර යෝජිත වචන බලන්න"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : සුරැකිණි"</string>
     <string name="label_go_key" msgid="1635148082137219148">"යන්න"</string>
-    <string name="label_next_key" msgid="362972844525672568">"මීලඟ"</string>
+    <string name="label_next_key" msgid="362972844525672568">"ඊළඟ"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"පෙර"</string>
     <string name="label_done_key" msgid="2441578748772529288">"හරි"</string>
     <string name="label_send_key" msgid="2815056534433717444">"යවන්න"</string>
@@ -101,12 +101,12 @@
     <string name="spoken_description_search" msgid="1247236163755920808">"සෙවීම"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"තිත"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"භාෂාව මාරු කරන්න"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"මීලඟ"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"ඊළඟ"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"පෙර"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"ෂිෆ්ට් සබල කර ඇත"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"කැප්ස් ලොක් සබල කර ඇත"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"ෂිෆ්ට් අබල කර ඇත"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"සංකේත ප්‍රකාරය"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"සංකේත ආකාරය"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"අකුරු ආකාරය"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"දුරකථන ආකාරය"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"දුරකථන සංකේත ආකාරය"</string>
@@ -124,9 +124,9 @@
     <string name="voice_input" msgid="3583258583521397548">"හඬ ආදාන යතුර"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"ප්‍රධාන යතුරු පුවරුව මත"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"සංකේත යතුරු පුවරුව මත"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"අක්‍රිය කරන්න"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"අක්‍රියයි"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ප්‍රධාන යතුරු පුවරුව මත මයික්‍රෆෝනය"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"සංකේත යතුරු පුවරුව මත  මයික්‍රෆෝනය"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"සංකේත යතුරු පුවරුව මත මයික්‍රෆෝනය"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"හඬ ආදානය අබල කර ඇත"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ආදාන ක්‍රම වින්‍යාස කරන්න"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ආදාන භාෂා"</string>
@@ -137,12 +137,12 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"පරිශීලක ප්‍රතිපෝෂණ සබල කරන්න"</string>
     <string name="prefs_description_log" msgid="7525225584555429211">"භාවිතය පිළිබඳ සංඛ්‍යාලේඛන සහ බිඳ වැටීම් වාර්තා ස්වයංක්‍රියව යැවීම මගින් ආදාන ක්‍රම සංස්කාරක වැඩි දියුණු කිරීමට උදව් වන්න."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"යතුරු පුවරු තේමාව"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"ඉංග්‍රීසි (බ්‍රිතාන්‍ය)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"ඉංග්‍රීසි (ඇමෙරිකානු)"</string>
-    <string name="subtype_es_US" msgid="5583145191430180200">"ස්පාඤ්ඤ (එජ)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"ඉංග්‍රිසි (එරා) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"ඉංග්‍රීසි (එජ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
-    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"ස්පාඤ්ඤ (එජ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"ඉංග්‍රීසි (UK)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"ඉංග්‍රීසි (US)"</string>
+    <string name="subtype_es_US" msgid="5583145191430180200">"ස්පාඤ්ඤ (US)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"ඉංග්‍රිසි (UK) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"ඉංග්‍රීසි (US) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"ස්පාඤ්ඤ (US) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"භාෂාවක් නැත (අකාරාදිය)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"අකාරාදිය (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"අකාරාදිය (QWERTZ)"</string>
@@ -150,6 +150,8 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"අකාරාදිය (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"අකාරාදිය (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"අකාරාදිය (PC)"</string>
+    <!-- no translation found for subtype_emoji (7483586578074549196) -->
+    <skip />
     <string name="custom_input_styles_title" msgid="8429952441821251512">"අභිරුචි ආදාන විලාස"</string>
     <string name="add_style" msgid="6163126614514489951">"විලාසය එක් කරන්න"</string>
     <string name="add" msgid="8299699805688017798">"එක් කරන්න"</string>
@@ -172,13 +174,13 @@
     <string name="error" msgid="8940763624668513648">"දෝෂයක් ඇති විය"</string>
     <string name="button_default" msgid="3988017840431881491">"සුපුරුදු"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> වෙත සාදරයෙන් පිළිගනිමු"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ඉංගිතයෙන් ටයිප් කිරීම් සමග"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"ආරම්භ කර ගැනීම"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ඉංගිත ටයිප් කිරීම් සමග"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"අරඹන්න"</string>
     <string name="setup_next_action" msgid="371821437915144603">"ඊළඟ පියවර"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> සැකසෙමින් පවතී"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> සබල කරන්න"</string>
     <string name="setup_step1_instruction" msgid="2578631936624637241">"කරණාකර ඔබගේ භාෂවෙහි සහ ආදාන සැකසීම් වල \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" පරික්ෂා කරන්න. මෙය ඔබගේ උපාංගය මත එයට ධාවනය වීමට අනුමැතිය දෙනු ඇත."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> දැනටමත් ඔබගේ භාෂාවෙන් සහ ආදාන සැකසීම්වල සබල කර ඇත, එමනිසා මෙම පියවර නිමයි. ඊළග එක වෙතට!"</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> දැනටමත් ඔබගේ භාෂාවෙන් සහ ආදාන සැකසීම්වල සබල කර ඇත, එම නිසා මෙම පියවර නිමයි. ඊළග එක වෙතට!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"සැකසීම් තුළ සබල කරන්න"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> වෙත මාරුවන්න"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"ඊළඟට, ඔබගේ සක්‍රිය පෙළ-ආදාන ක්‍රමය ලෙස \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" තෝරන්න."</string>
@@ -186,9 +188,9 @@
     <string name="setup_step3_title" msgid="3154757183631490281">"සුබපැතුම්, ඔබ සියල්ල පිහිටුවා ඇත!"</string>
     <string name="setup_step3_instruction" msgid="8025981829605426000">"දැන් ඔබට <xliff:g id="APPLICATION_NAME">%s</xliff:g> සමගින් ඔබගේ  සියළුම ප්‍රියතම යෙදුම් වලින් ටයිප් කළ හැක."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"අතිරේක භාෂා වින්‍යාස කරන්න"</string>
-    <string name="setup_finish_action" msgid="276559243409465389">"අවසන්ය"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"යෙදුම් අයිකනය පෙන්වන්න"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"දියත්කරනය තුළ යෙදුම් අයිකනය දර්ශනය කරන්න"</string>
+    <string name="setup_finish_action" msgid="276559243409465389">"අවසන්"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"යෙදුම් නිරූපකය පෙන්වන්න"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"දියත්කරනය තුළ යෙදුම් නිරූපකය දර්ශනය කරන්න"</string>
     <string name="app_name" msgid="6320102637491234792">"ශබ්දකෝෂ සැපයුම්කරු"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"ශබ්දකෝෂ සැපයුම්කරු"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"ශබ්ද කෝෂ සේවාව"</string>
@@ -200,7 +202,7 @@
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"පරිශීලක ශබ්ද කෝෂය"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"ශබ්දකෝෂය ලබාගත හැක"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"දැනට බාගැනේ"</string>
-    <string name="dictionary_installed" msgid="8081558343559342962">"පිහිටුවා ඇත"</string>
+    <string name="dictionary_installed" msgid="8081558343559342962">"ස්ථාපිතයි"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"ස්ථාපනය කළ, අබල කළ"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"ශබ්දකෝෂ සේවාව වෙත සම්බන්ධ වීමට ගැටලුවක්ද"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"ශබ්ද කෝෂ ලබාගත නොහැක"</string>
@@ -219,7 +221,7 @@
     <string name="dict_available_notification_title" msgid="6514288591959117288">"<xliff:g id="LANGUAGE">%1$s</xliff:g> සඳහා ශබ්දකෝෂයක් ලබාගත හැක"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"සමාලෝචනය කිරීමට සහ බාගැනීමට ඔබන්න"</string>
     <string name="toast_downloading_suggestions" msgid="1313027353588566660">"බාගැනේ: <xliff:g id="LANGUAGE">%1$s</xliff:g> සඳහා යෝජනා ඉක්මනින් සුදානම් වනු ඇත."</string>
-    <string name="version_text" msgid="2715354215568469385">"අනුවාදය <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
+    <string name="version_text" msgid="2715354215568469385">"<xliff:g id="VERSION_NUMBER">%1$s</xliff:g> අනුවාදය"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"එක් කරන්න"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"ශබ්ද කෝෂය වෙත එක් කරන්න"</string>
     <string name="user_dict_settings_add_screen_title" msgid="5818914331629278758">"වාක්‍ය ඛණ්ඩය"</string>
