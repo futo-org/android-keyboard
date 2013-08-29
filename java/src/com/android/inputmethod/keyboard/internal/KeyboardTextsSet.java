@@ -275,7 +275,7 @@ public final class KeyboardTextsSet {
         /* 50 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* 51 */ "$",
         /* 52 */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
-        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(,)",
+        /* 53 */ "\\,,?,!,;,@,:",
         // U+2020: "†" DAGGER
         // U+2021: "‡" DOUBLE DAGGER
         // U+2605: "★" BLACK STAR
@@ -775,7 +775,7 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null,
         /* ~52 */
         // U+00B7: "·" MIDDLE DOT
-        /* 53 */ "!fixedColumnOrder!9,\u00B7,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(,)",
+        /* 53 */ "\\,,?,!,\u00B7,;,@,:",
         /* 54~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -1247,7 +1247,7 @@ public final class KeyboardTextsSet {
         /* ~52 */
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 53 */ "!fixedColumnOrder!9,\u00A1,\",\',#,-,:,!,\\,,?,\u00BF,@,&,\\%,+,;,/,(,)",
+        /* 53 */ "!fixedColumnOrder!4,;,!,\\,,?,:,\u00A1,@,\u00BF",
         /* 54~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -1894,7 +1894,7 @@ public final class KeyboardTextsSet {
         // U+20AA: "₪" NEW SHEQEL SIGN
         /* 51 */ "\u20AA",
         /* 52 */ null,
-        /* 53 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(|),)|(",
+        /* 53 */ null,
         // U+2605: "★" BLACK STAR
         /* 54 */ "\u2605",
         /* 55 */ null,
