@@ -379,6 +379,7 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Case">
+        <attr name="keyboardLayoutSet" format="string" />
         <!-- This should be aligned with KeyboardLayoutSet_Element's elementName. -->
         <attr name="keyboardLayoutSetElement" format="enum|string">
             <enum name="alphabet" value="0" />
