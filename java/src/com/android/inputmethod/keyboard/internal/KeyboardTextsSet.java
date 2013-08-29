@@ -275,7 +275,7 @@ public final class KeyboardTextsSet {
         /* 50 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* 51 */ "$",
         /* 52 */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
-        /* 53 */ "\\,,?,!,;,@,:",
+        /* 53 */ "!fixedColumnOrder!3,!,\\,,?,:,;,@",
         // U+2020: "†" DAGGER
         // U+2021: "‡" DOUBLE DAGGER
         // U+2605: "★" BLACK STAR
@@ -775,7 +775,7 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null,
         /* ~52 */
         // U+00B7: "·" MIDDLE DOT
-        /* 53 */ "\\,,?,!,\u00B7,;,@,:",
+        /* 53 */ "!fixedColumnOrder!4,\u00B7,!,\\,,?,:,;,@",
         /* 54~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
