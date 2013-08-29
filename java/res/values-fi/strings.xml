@@ -22,12 +22,12 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"Syöttövalinnat"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Tutkimuslokin komennot"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Hae kontaktien nimiä"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Oikeinkirjoituksen tarkistus käyttää kontaktiluettelosi tietoja."</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Hae yht.tietojen nimiä"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Oikeinkirjoituksen tarkistus käyttää yhteystietojasi."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Käytä värinää näppäimiä painettaessa"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Toista ääni näppäimiä painettaessa"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ponnahdusikkuna painalluksella"</string>
-    <string name="general_category" msgid="1859088467017573195">"Yleinen"</string>
+    <string name="general_category" msgid="1859088467017573195">"Yleiset"</string>
     <string name="correction_category" msgid="2236750915056607613">"Tekstin korjaus"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Piirtokirjoitus"</string>
     <string name="misc_category" msgid="6894192814868233453">"Muut vaihtoehdot"</string>
@@ -38,33 +38,33 @@
     <string name="show_language_switch_key" msgid="5915478828318774384">"Kielenvaihtonäppäin"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Näytä, kun käytössä on useita syöttökieliä"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Näytä liu\'utuksen tilaosoitin"</string>
-    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Näytä visuaalinen vihje liu\'uttaessasi Shift- tai Symbol-näppäim."</string>
+    <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Näytä visuaalinen vihje Vaihto- tai Symbol-näppäim. liu\'uttam."</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Näppäimen hylkäysviive"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Ei viivettä"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Oletus"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> ms"</string>
-    <string name="settings_system_default" msgid="6268225104743331821">"Järjest. oletusarvo"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"Ehdota yhteystietojen nimiä"</string>
+    <string name="settings_system_default" msgid="6268225104743331821">"Järjestelmän oletusarvo"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Ehdota yht.tietojen nimiä"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Käytä yhteystietojen nimiä ehdotuksissa ja korjauksissa"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Kaksoisvälilyönti = piste"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"Välilyönnin kaksoisnapautus lisää tekstiin pisteen ja välilyönnin"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automaattiset isot kirjaimet"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Kirjoita jokaisen lauseen ensimmäinen sana isolla alkukirjaimella"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Oma sanakirja"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Lisäsanakirjat"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Sanakirjalisäosat"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Pääsanakirja"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä korjausehdotukset"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Näytä aina"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Näytä pystyasennossa"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"Näytä pystysuunnassa"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Piilota aina"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"Estä loukkaavat sanat"</string>
-    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Älä ehdota mahdollisesti loukkaavia sanoja"</string>
+    <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Älä ehdota mahd. loukkaavia sanoja"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Autom. korjaus"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Välilyönnit ja välimerkit korjaavat väärinkirjoitetut sanat automaattisesti"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Älä käytä"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Välilyönti ja välimerkit korjaavat väärinkirjoitetut sanat autom."</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ei käytössä"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Osittainen"</string>
-    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Täysi"</string>
+    <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Aggressiivinen"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Hyvin aggressiivinen"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"Seuraavan sanan ehdotukset"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"Käytä edellistä sanaa ehdotuksien perusteena"</string>
@@ -73,38 +73,38 @@
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Näytä eleen jälki"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"Dynaaminen kelluva esikatselu"</string>
     <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"Näytä ehdotettu sana piirron aikana"</string>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Tallennettu"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Siirry"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: tallennettu"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Mene"</string>
     <string name="label_next_key" msgid="362972844525672568">"Seur."</string>
-    <string name="label_previous_key" msgid="1211868118071386787">"Edell"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Edel."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Valmis"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Lähetä"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Läh."</string>
     <string name="label_pause_key" msgid="181098308428035340">"Tauko"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Odota"</string>
-    <string name="spoken_use_headphones" msgid="896961781287283493">"Liitä kuulokkeet kuullaksesi, mitä näppäimiä painat kirjoittaessasi salasanaa."</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Liitä kuulokkeet, niin kuulet mitä näppäimiä painat kirjoittaessasi salasanaa."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Nykyinen teksti on %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ei kirjoitettua tekstiä"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Näppäimen koodi %d"</string>
-    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Vaihto päällä (napauta poistaaksesi käytöstä)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock päällä (napauta poistaaksesi käytöstä)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"Poisto"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Vaihto"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Vaihto päällä (poista käytöstä napauttamalla)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock päällä (poista käytöstä napauttamalla)"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Poista"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symbolit"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Kirjaimet"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"Numerot"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"Asetukset"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Sarkain"</string>
     <string name="spoken_description_space" msgid="2582521050049860859">"Välilyönti"</string>
-    <string name="spoken_description_mic" msgid="615536748882611950">"Puheohjaus"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Äänisyöte"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Hymiö"</string>
-    <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Takaisin"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Haku"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Piste"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Vaihda kieli"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"Seuraava"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"Edellinen"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Vaihto päällä"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock päällä"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock päällä"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Vaihto pois käytöstä"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbolit-tila"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Näppäimistötila"</string>
@@ -121,13 +121,13 @@
     <string name="keyboard_mode_text" msgid="6479436687899701619">"teksti"</string>
     <string name="keyboard_mode_time" msgid="4381856885582143277">"aika"</string>
     <string name="keyboard_mode_url" msgid="1519819835514911218">"URL-osoite"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Ääniohjausavain"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Äänisyöteavain"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Päänäppäimistössä"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Symbolinäppäimistössä"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"Älä näytä"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Symbolinäppäim."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Ei käytössä"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr. päänäppäim."</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. symbolinäppäim."</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Ääniohjaus on pois käytöstä"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. symbolinäpp."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Äänisyöte ei käyt."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Määritä syöttötavat"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Syöttökielet"</string>
     <string name="send_feedback" msgid="1780431884109392046">"Lähetä palautetta"</string>
@@ -140,7 +140,7 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"englanti (Iso-Britannia)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"englanti (Yhdysvallat)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"espanja (Yhdysvallat)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"englanti (Iso-Britannia) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"englanti (Iso-Br.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"englanti (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"espanja (Yhdysvallat) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ei kieltä (aakkoset)"</string>
@@ -157,10 +157,10 @@
     <string name="save" msgid="7646738597196767214">"Tallenna"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Kieli"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Asettelu"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Ota muokattu syötetyyli käyttöön käyttääksesi sitä."</string>
-    <string name="enable" msgid="5031294444630523247">"Käyttöön"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Muokattua syöttötyyliä ei ole otettu käyttöön. Haluatko ottaa sen käyttöön nyt?"</string>
+    <string name="enable" msgid="5031294444630523247">"Ota käyttöön"</string>
     <string name="not_now" msgid="6172462888202790482">"Ei nyt"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Sama tulotyyli on jo olemassa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Syöttötyyli on jo olemassa: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Käytettävyystutkimustila"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"Pitkän painalluksen viive"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"Painalluksen värinän kesto"</string>
@@ -172,19 +172,19 @@
     <string name="error" msgid="8940763624668513648">"Tapahtui virhe"</string>
     <string name="button_default" msgid="3988017840431881491">"Oletusarvot"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"Tervetuloa käyttämään sovellusta <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"sekä piirtokirjoitus"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ja piirtokirjoitus"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"Aloita"</string>
     <string name="setup_next_action" msgid="371821437915144603">"Seuraava vaihe"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"Sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> asetukset"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"Ota <xliff:g id="APPLICATION_NAME">%s</xliff:g> käyttöön"</string>
-    <string name="setup_step1_instruction" msgid="2578631936624637241">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> kieli- ja syöttötapa-asetuksissa, mikä valtuuttaa sovel. laitteellesi."</string>
-    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> on jo käytössä Kieli- ja syöttöasetuksissa, joten tämä vaihe on tehty. Siirrytään eteenpäin!"</string>
+    <string name="setup_step1_instruction" msgid="2578631936624637241">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> Kieli ja syöttötapa -asetuksissa. Se antaa sovellukselle luvan toimia laitteessasi."</string>
+    <string name="setup_step1_finished_instruction" msgid="10761482004957994">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> on jo käytössä Kieli ja syöttötapa -asetuksissa, joten tämä vaihe on tehty. Siirrytään eteenpäin!"</string>
     <string name="setup_step1_action" msgid="4366513534999901728">"Ota käyttöön asetuksissa"</string>
     <string name="setup_step2_title" msgid="6860725447906690594">"Siirry sovellukseen <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step2_instruction" msgid="9141481964870023336">"Valitse <xliff:g id="APPLICATION_NAME">%s</xliff:g> käytössä olevaksi tekstinsyöttötavaksi."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"Vaihda syöttötapaa"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"Onneksi olkoon, valmista tuli!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"Nyt voit kirjoittaa kaikkiin lempisovelluksiisi sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> avulla."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"Nyt voit kirjoittaa kaikissa lempisovelluksissasi sovelluksen <xliff:g id="APPLICATION_NAME">%s</xliff:g> avulla."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"Määritä lisää kieliä"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"Valmis"</string>
     <string name="show_setup_wizard_icon" msgid="5008028590593710830">"Näytä sovelluskuvake"</string>
@@ -199,11 +199,11 @@
     <string name="user_dictionaries" msgid="3582332055892252845">"Käyttäjän sanakirjat"</string>
     <string name="default_user_dict_pref_name" msgid="1625055720489280530">"Käyttäjän sanakirja"</string>
     <string name="dictionary_available" msgid="4728975345815214218">"Sanakirja saatavilla"</string>
-    <string name="dictionary_downloading" msgid="2982650524622620983">"Ladataan parhaillaan"</string>
+    <string name="dictionary_downloading" msgid="2982650524622620983">"Ladataan"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"Asennettu"</string>
     <string name="dictionary_disabled" msgid="8950383219564621762">"Asennettu, poistettu käytöstä"</string>
-    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Ongelma yhdistettässä sanakirjapalveluun"</string>
-    <string name="no_dictionaries_available" msgid="8039920716566132611">"Ei sanakirjoja saatavilla"</string>
+    <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"Ei yhteyttä sanak."</string>
+    <string name="no_dictionaries_available" msgid="8039920716566132611">"Ei sanak. saatavilla"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"Päivitä"</string>
     <string name="last_update" msgid="730467549913588780">"Päivitetty viimeksi"</string>
     <string name="message_updating" msgid="4457761393932375219">"Tarkistetaan päivityksiä"</string>
@@ -217,8 +217,8 @@
     <string name="download_over_metered" msgid="1643065851159409546">"Lataa nyt (<xliff:g id="SIZE_IN_MEGABYTES">%1$.1f</xliff:g> Mt)"</string>
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Lataa wifi-yhteydellä"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"Kielen <xliff:g id="LANGUAGE">%1$s</xliff:g> sanakirja on saatavilla"</string>
-    <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta tai ladata sen"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Ladataan: pian ehdotuksia näytetään kielellä <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
+    <string name="dict_available_notification_description" msgid="1075194169443163487">"Paina tätä, jos haluat tarkastella kohdetta ja ladata sen"</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Ladataan: ehdotuksia näytetään pian kielellä <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
     <string name="version_text" msgid="2715354215568469385">"Versio <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Lisää"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Lisää sanakirjaan"</string>
@@ -227,7 +227,7 @@
     <string name="user_dict_settings_add_dialog_less_options" msgid="2716586567241724126">"Väh. vaihtoeht."</string>
     <string name="user_dict_settings_add_dialog_confirm" msgid="4703129507388332950">"OK"</string>
     <string name="user_dict_settings_add_word_option_name" msgid="6665558053408962865">"Sana:"</string>
-    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Pikanäppäin"</string>
+    <string name="user_dict_settings_add_shortcut_option_name" msgid="3094731590655523777">"Pikanäppäin:"</string>
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"Kieli:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"Kirjoita sana"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"Valinnainen pikanäppäin"</string>

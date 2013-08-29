@@ -24,7 +24,7 @@
     <string name="english_ime_research_log" msgid="8492602295696577851">"Research Log Commands"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ເບິ່ງທີ່ຊື່ຂອງລາຍຊື່ຜູ່ຕິດຕໍ່"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"ໂຕຊ່ວຍສະກົດໃຊ້ຂໍ້ມູນຈາກລາຍການຂອງລາຍຊື່ຜູ່ຕິດຕໍ່ຂອງທ່ານ"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"ການສັ່ນໃນການພິມ"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"ສັ່ນເຕືອນເມື່ອພິມ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ສຽງໃນການກົດປຸ່ມ"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ໂຕອັກສອນເວລາພິມ"</string>
     <string name="general_category" msgid="1859088467017573195">"ທົ່ວໄປ"</string>
@@ -49,14 +49,14 @@
     <string name="use_double_space_period" msgid="8781529969425082860">"ຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດ"</string>
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"ກົດທີ່ປຸ່ມຍະຫວ່າງສອງເທື່ອເພື່ອໃສ່ຈ້ຳເມັດແລ້ວຕາມດ້ວຍການຍະຫວ່າງ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ເຮັດໂຕພິມໃຫຍ່ອັດຕະໂນມັດ"</string>
-    <string name="auto_cap_summary" msgid="7934452761022946874">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລະຄຳໃນປະໂຫຍກ"</string>
+    <string name="auto_cap_summary" msgid="7934452761022946874">"ເຮັດໂຕພິມໃຫຍ່ໃຫ້ໂຕອັກສອນທຳອິດຂອງແຕ່ລໃນປະໂຫຍກ"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"ວັດຈະນານຸກົມສ່ວນໂຕ"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"ໂຕເສີມວັດຈະນານຸກົມ"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"ວັດຈະນານຸກົມຫຼັກ"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"ສະແດງການແນະນຳຄຳທີ່ຖືກຕ້ອງ"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"ສະແດງຄຳສັບທີ່ແນະນຳໃນເວລາທີ່ກຳລັງພິມ"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ສະແດງຕະຫລອດ"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"ສະແດງໃນໂຫມດແນວຕັ້ງ"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"ກົດທີ່ຄຳສັບທີ່ພິມລົງໄປເພື່ອແປງໃຫ້ມັນຖືກຕ້ອງ"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ເຊື່ອງໄວ້ຕະຫລອດ"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"ປິດກັ້ນຄຳທີ່ບໍ່ສຸພາບ"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"ຫ້າມແນະນຳຄຳທີ່ບໍ່ສຸພາບ"</string>
@@ -89,7 +89,7 @@
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift ເປີດນຳໃຊ້ຢູ່ (ກົດເພື່ອປິດນຳໃຊ້)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock ເປີດຢູ່ (ກົດເພື່ອປິດນຳໃຊ້)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"ລຶບ"</string>
-    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"ສັນ​ຍາ​ລັກ"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"ສັນຍາລັກ"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"ໂຕອັກ​ສອນ"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"ໂຕເລກ"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"ການຕັ້ງຄ່າ"</string>
@@ -114,7 +114,7 @@
     <string name="announce_keyboard_mode" msgid="4729081055438508321">"ກຳລັງສະແດງແປ້ນພິມ <xliff:g id="MODE">%s</xliff:g>"</string>
     <string name="keyboard_mode_date" msgid="3137520166817128102">"ວັນທີ"</string>
     <string name="keyboard_mode_date_time" msgid="339593358488851072">"ວັນ​ທີ​ແລະ​ເວ​ລາ"</string>
-    <string name="keyboard_mode_email" msgid="6216248078128294262">"ອີເມວ"</string>
+    <string name="keyboard_mode_email" msgid="6216248078128294262">"email"</string>
     <string name="keyboard_mode_im" msgid="1137405089766557048">"ຂໍ້ຄວາມ"</string>
     <string name="keyboard_mode_number" msgid="7991623440699957069">"ໂຕເລກ"</string>
     <string name="keyboard_mode_phone" msgid="6851627527401433229">"ໂທລະສັບ"</string>
@@ -137,18 +137,18 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"ເປີດນຳໃຊ້ຄຳຕິຊົມຈາກຜູ່ໃຊ້"</string>
     <string name="prefs_description_log" msgid="7525225584555429211">"ຊ່ວຍເພີ່ມປະສິດທິພາບໂຕແກ້ໄຂການປ້ອນຂໍ້ມູນ ໂດຍການສົ່ງສະຖິຕິການນຳໃຊ້ ແລະການລາຍການຂໍ້ຜິດພາດໂດຍອັດຕະໂນມັດ"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"ສີສັນແປ້ນພິມ"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"ອັງກິດ (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"ອັງກິດ (ອາເມລິກາ)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"ອັງກິດ (ສະຫະລາດຊະອານາຈັກ)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"ອັງກິດ (ສະຫະລັດຯ)"</string>
     <string name="subtype_es_US" msgid="5583145191430180200">"ສະເປນ (ອາເມລິກາ)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"ພາສາອັງກິດ (ອັງກິດ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"ອັງກິດ (ອາເມລິກາ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"ແອສປາໂຍນ (ສະ​ຫະ​ລັດ​) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ບໍ່ມີພາສາ (ໂຕອັກສອນ)"</string>
-    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ໂຕອັກສອນ (QWERTY​)"</string>
-    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ໂຕອັກສອນ (QWERTZ​)"</string>
-    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"ໂຕອັກສອນ (AZERTY​)"</string>
-    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"ໂຕອັກສອນ (Dvorak​)"</string>
-    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ໂຕອັກສອນ (Colemak​)"</string>
+    <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ໂຕອັກສອນ (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ໂຕອັກສອນ (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8144348527575640087">"ໂຕອັກສອນ (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"ໂຕອັກສອນ (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ໂຕອັກສອນ (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ໂຕອັກສອນ (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"ຮູບແບບການປ້ອນຂໍ້ມູນສ່ວນຕົວ"</string>
     <string name="add_style" msgid="6163126614514489951">"ເພີ່ມຮູບແບບ"</string>
@@ -173,7 +173,7 @@
     <string name="button_default" msgid="3988017840431881491">"ຄ່າເລີ່ມຕົ້ນ"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"ຍິນ​ດີ​ຕ້ອນ​ຮັບສູ່ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"ດ້ວຍການພິມແບບ Gesture"</string>
-    <string name="setup_start_action" msgid="8936036460897347708">"ເລີ່ມກັນເລີຍ!"</string>
+    <string name="setup_start_action" msgid="8936036460897347708">"ເລີ່ມຕົ້ນ"</string>
     <string name="setup_next_action" msgid="371821437915144603">"ຂັ້ນຕອນຕໍ່ໄປ"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"ຕັ້ງຄ່າ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
     <string name="setup_step1_title" msgid="3147967630253462315">"ເປີດນຳໃຊ້ <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
@@ -231,7 +231,7 @@
     <string name="user_dict_settings_add_locale_option_name" msgid="4738643440987277705">"ພາສາ:"</string>
     <string name="user_dict_settings_add_word_hint" msgid="4902434148985906707">"ພິມ​ຄໍາ​ສັບ​ໃດ​ນຶ່ງ"</string>
     <string name="user_dict_settings_add_shortcut_hint" msgid="2265453012555060178">"ໂຕເລືອກທາງລັດ"</string>
-    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ແກ້ໄຂຄຳ"</string>
+    <string name="user_dict_settings_edit_dialog_title" msgid="3765774633869590352">"ແກ້ໄຂຄຳສັບ"</string>
     <string name="user_dict_settings_context_menu_edit_title" msgid="6812255903472456302">"ແກ້ໄຂ"</string>
     <string name="user_dict_settings_context_menu_delete_title" msgid="8142932447689461181">"ລຶບ"</string>
     <string name="user_dict_settings_empty_text" msgid="558499587532668203">"ທ່ານບໍ່ມີຄຳສັບໃດໆໃນວັດຈະນານຸກົມຜູ່ໃຊ້ເທື່ອ. ເພີ່ມຄຳສັບໄດ້ໂດຍການສຳພັດທີ່ປຸ່ມ ເພີ່ມ (+)."</string>
