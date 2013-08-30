@@ -165,9 +165,20 @@ final class SuggestionStripLayoutHelper {
         return mMaxMoreSuggestionsRow;
     }
 
-    public void setMoreSuggestionsHeight(final int remainingHeight) {
+    private int getMoreSuggestionsHeight() {
+        return mMaxMoreSuggestionsRow * mMoreSuggestionsRowHeight + mMoreSuggestionsBottomGap;
+    }
+
+    public int setMoreSuggestionsHeight(final int remainingHeight) {
+        final int currentHeight = getMoreSuggestionsHeight();
+        if (currentHeight <= remainingHeight) {
+            return currentHeight;
+        }
+
         mMaxMoreSuggestionsRow = (remainingHeight - mMoreSuggestionsBottomGap)
                 / mMoreSuggestionsRowHeight;
+        final int newHeight = getMoreSuggestionsHeight();
+        return newHeight;
     }
 
     private static Drawable getMoreSuggestionsHint(final Resources res, final float textSize,
