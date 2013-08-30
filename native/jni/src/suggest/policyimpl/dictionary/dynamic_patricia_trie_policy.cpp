@@ -20,95 +20,68 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
 namespace latinime {
-
-// To avoid infinite loop caused by invalid or malicious forward links.
-const int DynamicPatriciaTriePolicy::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
-            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
-    int mergedNodeCodePoints[MAX_WORD_LENGTH];
-    int nextPos = dicNode->getChildrenPos();
-    int totalChildCount = 0;
-    do {
-        const int childCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
-                mDictRoot, &nextPos);
-        totalChildCount += childCount;
-        if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
-            // Invalid dictionary.
-            AKLOGI("Invalid dictionary. childCount: %d, totalChildCount: %d, MAX: %d",
-                    childCount, totalChildCount, MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP);
-            ASSERT(false);
-            return;
-        }
-        for (int i = 0; i < childCount; i++) {
-            nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nextPos, MAX_WORD_LENGTH,
-                    mergedNodeCodePoints);
-            if (!nodeReader.isDeleted()) {
-                // Push child node when the node is not a deleted node.
-                childDicNodes->pushLeavingChild(dicNode, nodeReader.getNodePos(),
-                        nodeReader.getChildrenPos(), nodeReader.getProbability(),
-                        nodeReader.isTerminal(), nodeReader.hasChildren(),
-                        nodeReader.isBlacklisted() || nodeReader.isNotAWord(),
-                        nodeReader.getCodePointCount(), mergedNodeCodePoints);
-            }
-            nextPos = nodeReader.getSiblingNodePos();
-        }
-        nextPos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(mDictRoot, nextPos);
-    } while (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(nextPos));
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
+            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    readingHelper.initWithNodeArrayPos(dicNode->getChildrenPos());
+    const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
+    while (!readingHelper.isEnd()) {
+        childDicNodes->pushLeavingChild(dicNode, nodeReader->getNodePos(),
+                nodeReader->getChildrenPos(), nodeReader->getProbability(),
+                nodeReader->isTerminal() && !nodeReader->isDeleted(),
+                nodeReader->hasChildren(), nodeReader->isBlacklisted() || nodeReader->isNotAWord(),
+                nodeReader->getCodePointCount(), readingHelper.getMergedNodeCodePoints());
+        readingHelper.readNextSiblingNode();
+    }
 }
 
 int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int nodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
-        *outUnigramProbability = NOT_A_PROBABILITY;
-        return 0;
-    }
     // This method traverses parent nodes from the terminal by following parent pointers; thus,
     // node code points are stored in the buffer in the reverse order.
     int reverseCodePoints[maxCodePointCount];
-    int mergedNodeCodePoints[maxCodePointCount];
-    int codePointCount = 0;
-
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
-            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
-    // First, read terminal node and get its probability.
-    nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nodePos, maxCodePointCount,
-            mergedNodeCodePoints);
-    // Store terminal node probability.
-    *outUnigramProbability = nodeReader.getProbability();
-    // Store terminal node code points to buffer in the reverse order.
-    for (int i = nodeReader.getCodePointCount() - 1; i >= 0; --i) {
-        reverseCodePoints[codePointCount++] = mergedNodeCodePoints[i];
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
+            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    // First, read the terminal node and get its probability.
+    readingHelper.initWithNodePos(nodePos);
+    if (!readingHelper.isValidTerminalNode()) {
+        // Node at the nodePos is not a valid terminal node.
+        *outUnigramProbability = NOT_A_PROBABILITY;
+        return 0;
     }
-    // Then, follow parent pos toward the root node.
-    while (nodeReader.getParentPos() != NOT_A_DICT_POS) {
-        // codePointCount must be incremented at least once in each iteration to ensure preventing
-        // infinite loop.
-        if (nodeReader.isDeleted() || codePointCount > maxCodePointCount
-                || nodeReader.getCodePointCount() <= 0) {
+    // Store terminal node probability.
+    *outUnigramProbability = readingHelper.getNodeReader()->getProbability();
+    // Then, following parent node link to the dictionary root and fetch node code points.
+    while (!readingHelper.isEnd()) {
+        if (readingHelper.getTotalCodePointCount() > maxCodePointCount) {
             // The nodePos is not a valid terminal node position in the dictionary.
             *outUnigramProbability = NOT_A_PROBABILITY;
             return 0;
         }
-        // Read parent node.
-        nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(nodeReader.getParentPos(),
-                maxCodePointCount, mergedNodeCodePoints);
         // Store node code points to buffer in the reverse order.
-        for (int i = nodeReader.getCodePointCount() - 1; i >= 0; --i) {
-            reverseCodePoints[codePointCount++] = mergedNodeCodePoints[i];
-        }
+        readingHelper.fetchMergedNodeCodePointsInReverseOrder(
+                readingHelper.getPrevTotalCodePointCount(), reverseCodePoints);
+        // Follow parent node toward the root node.
+        readingHelper.readParentNode();
+    }
+    if (readingHelper.isError()) {
+        // The node position or the dictionary is invalid.
+        *outUnigramProbability = NOT_A_PROBABILITY;
+        return 0;
     }
     // Reverse the stored code points to output them.
+    const int codePointCount = readingHelper.getTotalCodePointCount();
     for (int i = 0; i < codePointCount; ++i) {
         outCodePoints[i] = reverseCodePoints[codePointCount - i - 1];
     }
@@ -121,73 +94,39 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
     for (int i = 0; i < length; ++i) {
         searchCodePoints[i] = forceLowerCaseSearch ? CharUtils::toLowerCase(inWord[i]) : inWord[i];
     }
-    int mergedNodeCodePoints[MAX_WORD_LENGTH];
-    int currentLength = 0;
-    int pos = getRootPosition();
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
-            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
-    while (currentLength < length) {
-        // When foundMatchedNode becomes true, currentLength is increased at least once.
-        bool foundMatchedNode = false;
-        int totalChildCount = 0;
-        do {
-            const int childCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
-                    mDictRoot, &pos);
-            totalChildCount += childCount;
-            if (childCount <= 0 || totalChildCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP) {
-                // Invalid dictionary.
-                AKLOGI("Invalid dictionary. childCount: %d, totalChildCount: %d, MAX: %d",
-                        childCount, totalChildCount, MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP);
-                ASSERT(false);
+    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
+            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    readingHelper.initWithNodeArrayPos(getRootPosition());
+    const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
+    while (!readingHelper.isEnd()) {
+        const int matchedCodePointCount = readingHelper.getPrevTotalCodePointCount();
+        if (readingHelper.getTotalCodePointCount() > length
+                || !readingHelper.isMatchedCodePoint(0 /* index */,
+                        searchCodePoints[matchedCodePointCount])) {
+            // Current node has too many code points or its first code point is different from
+            // target code point. Skip this node and read the next sibling node.
+            readingHelper.readNextSiblingNode();
+            continue;
+        }
+        // Check following merged node code points.
+        const int nodeCodePointCount = nodeReader->getCodePointCount();
+        for (int j = 1; j < nodeCodePointCount; ++j) {
+            if (!readingHelper.isMatchedCodePoint(
+                    j, searchCodePoints[matchedCodePointCount + j])) {
+                // Different code point is found. The given word is not included in the dictionary.
                 return NOT_A_VALID_WORD_POS;
             }
-            for (int i = 0; i < childCount; i++) {
-                nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(pos, MAX_WORD_LENGTH,
-                        mergedNodeCodePoints);
-                const int nodeCodePointCount = nodeReader.getCodePointCount();
-                if (nodeReader.isDeleted() || nodeCodePointCount <= 0
-                        || currentLength + nodeCodePointCount > length) {
-                    // Skip deleted or empty node.
-                    pos = nodeReader.getSiblingNodePos();
-                    continue;
-                }
-                bool matched = true;
-                for (int j = 0; j < nodeCodePointCount; ++j) {
-                    if (mergedNodeCodePoints[j] != searchCodePoints[currentLength + j]) {
-                        // Different code point is found.
-                        matched = false;
-                        break;
-                    }
-                }
-                if (matched) {
-                    currentLength += nodeCodePointCount;
-                    if (length == currentLength) {
-                        // Terminal position is found.
-                        return nodeReader.getNodePos();
-                    }
-                    if (!nodeReader.hasChildren()) {
-                        return NOT_A_VALID_WORD_POS;
-                    }
-                    foundMatchedNode = true;
-                    // Advance to the children nodes.
-                    pos = nodeReader.getChildrenPos();
-                    break;
-                }
-                // Try next sibling node.
-                pos = nodeReader.getSiblingNodePos();
-            }
-            if (foundMatchedNode) {
-                break;
-            }
-            // If the matched node is not found in the current PtNode array, try to follow the
-            // forward link.
-            pos = DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(
-                    mDictRoot, pos);
-        } while (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(pos));
-        if (!foundMatchedNode) {
-            // Matched node is not found.
+        }
+        // All characters are matched.
+        if (length == readingHelper.getTotalCodePointCount()) {
+            // Terminal position is found.
+            return nodeReader->getNodePos();
+        }
+        if (!nodeReader->hasChildren()) {
             return NOT_A_VALID_WORD_POS;
         }
+        // Advance to the children nodes.
+        readingHelper.readChildNode();
     }
     // If we already traversed the tree further than the word is long, there means
     // there was no match (or we would have found it).
