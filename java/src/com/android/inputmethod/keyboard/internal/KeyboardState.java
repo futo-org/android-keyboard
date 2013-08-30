@@ -46,6 +46,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setSymbolsKeyboard();
+        public void setEmojiKeyboard();
 
         /**
          * Request to call back {@link KeyboardState#onUpdateShiftState(int, int)}.
@@ -71,7 +72,10 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
+    // TODO: Consolidate these two mode booleans into one integer to distinguish between alphabet,
+    // symbols, and emoji mode.
     private boolean mIsAlphabetMode;
+    private boolean mIsEmojiMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mPrevMainKeyboardWasShiftLocked;
     private int mRecapitalizeMode;
@@ -86,6 +90,7 @@ public final class KeyboardState {
         public boolean mIsValid;
         public boolean mIsAlphabetMode;
         public boolean mIsAlphabetShiftLocked;
+        public boolean mIsEmojiMode;
         public int mShiftMode;
 
         @Override
@@ -94,6 +99,8 @@ public final class KeyboardState {
             if (mIsAlphabetMode) {
                 if (mIsAlphabetShiftLocked) return "ALPHABET_SHIFT_LOCKED";
                 return "ALPHABET_" + shiftModeToString(mShiftMode);
+            } else if (mIsEmojiMode) {
+                return "EMOJI";
             } else {
                 return "SYMBOLS";
             }
@@ -125,6 +132,7 @@ public final class KeyboardState {
     public void onSaveKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         state.mIsAlphabetMode = mIsAlphabetMode;
+        state.mIsEmojiMode = mIsEmojiMode;
         if (mIsAlphabetMode) {
             state.mIsAlphabetShiftLocked = mAlphabetShiftState.isShiftLocked();
             state.mShiftMode = mAlphabetShiftState.isAutomaticShifted() ? AUTOMATIC_SHIFT
@@ -145,6 +153,8 @@ public final class KeyboardState {
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
             setAlphabetKeyboard();
+        } else if (state.mIsEmojiMode) {
+            setEmojiKeyboard();
         } else {
             setSymbolsKeyboard();
         }
@@ -254,6 +264,7 @@ public final class KeyboardState {
 
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
+        mIsEmojiMode = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
         mSwitchActions.requestUpdatingShiftState();
@@ -268,6 +279,15 @@ public final class KeyboardState {
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
+    }
+
+    private void setEmojiKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setEmojiKeyboard");
+        }
+        mIsAlphabetMode = false;
+        mIsEmojiMode = true;
+        mSwitchActions.setEmojiKeyboard();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCaps) {
@@ -547,6 +567,8 @@ public final class KeyboardState {
         // If the code is a letter, update keyboard shift state.
         if (Constants.isLetterCode(code)) {
             updateAlphabetShiftState(autoCaps, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+        } else if (code == Constants.CODE_EMOJI) {
+            setEmojiKeyboard();
         }
     }
 
