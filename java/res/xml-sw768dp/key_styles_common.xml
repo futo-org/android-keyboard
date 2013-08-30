@@ -113,7 +113,8 @@
         latin:styleName="emojiKeyStyle"
         latin:code="!code/key_emoji"
         latin:keyIcon="!icon/emoji_key"
-        latin:keyActionFlags="noKeyPreview" />
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
