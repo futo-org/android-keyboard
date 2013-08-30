@@ -113,11 +113,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void setEmojiKeyboard() {
-        // Just ignore.
-    }
-
-    @Override
     public void requestUpdatingShiftState() {
         mState.onUpdateShiftState(mAutoCapsState, RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
     }

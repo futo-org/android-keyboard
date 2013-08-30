@@ -39,7 +39,7 @@
         </case>
         <default>
             <Key
-                latin:keyStyle="emojiKeyStyle" />
+                latin:keyStyle="smileyKeyStyle" />
         </default>
     </switch>
 </merge>
