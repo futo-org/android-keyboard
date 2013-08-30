@@ -66,9 +66,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private SharedPreferences mPrefs;
 
     private InputView mCurrentInputView;
-    private View mMainKeyboardFrame;
     private MainKeyboardView mKeyboardView;
-    private EmojiKeyboardView mEmojiKeyboardView;
     private LatinIME mLatinIME;
     private Resources mResources;
 
@@ -169,8 +167,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setKeyboard(final Keyboard keyboard) {
-        // Make {@link MainKeyboardView} visible and hide {@link EmojiKeyboardView}.
-        setMainKeyboardFrame();
         final MainKeyboardView keyboardView = mKeyboardView;
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
         keyboardView.setKeyboard(keyboard);
@@ -257,18 +253,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
     }
 
-    private void setMainKeyboardFrame() {
-        mMainKeyboardFrame.setVisibility(View.VISIBLE);
-        mEmojiKeyboardView.setVisibility(View.GONE);
-    }
-
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setEmojiKeyboard() {
-        mMainKeyboardFrame.setVisibility(View.GONE);
-        mEmojiKeyboardView.setVisibility(View.VISIBLE);
-    }
-
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void requestUpdatingShiftState() {
@@ -320,16 +304,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setContextThemeWrapper(mLatinIME, mKeyboardTheme);
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
-        mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
-        mEmojiKeyboardView = (EmojiKeyboardView)mCurrentInputView.findViewById(
-                R.id.emoji_keyboard_view);
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
-        mEmojiKeyboardView.setHardwareAcceleratedDrawingEnabled(
-                isHardwareAcceleratedDrawingEnabled);
-        mEmojiKeyboardView.setKeyboardActionListener(mLatinIME);
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.
