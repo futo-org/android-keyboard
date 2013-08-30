@@ -135,8 +135,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
     }
 
-    public void setMoreSuggestionsHeight(final int remainingHeight) {
-        mLayoutHelper.setMoreSuggestionsHeight(remainingHeight);
+    public int setMoreSuggestionsHeight(final int remainingHeight) {
+        return mLayoutHelper.setMoreSuggestionsHeight(remainingHeight);
     }
 
     public boolean isShowingAddToDictionaryHint() {
