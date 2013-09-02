@@ -74,6 +74,7 @@ LATIN_IME_CORE_SRC_FILES := \
         dictionary_structure_with_buffer_policy_factory.cpp \
         dynamic_patricia_trie_node_reader.cpp \
         dynamic_patricia_trie_policy.cpp \
+        dynamic_patricia_trie_reading_helper.cpp \
         dynamic_patricia_trie_reading_utils.cpp \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
