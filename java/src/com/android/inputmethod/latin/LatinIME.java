@@ -1827,7 +1827,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
-        showSuggestionStrip(suggestedWords, null);
+        showSuggestionStrip(suggestedWords);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         mainKeyboardView.showGestureFloatingPreviewText(suggestedWords);
         if (dismissGestureFloatingPreviewText) {
@@ -2343,12 +2343,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final String typedWord = mWordComposer.getTypedWord();
         getSuggestedWordsOrOlderSuggestions(Suggest.SESSION_TYPING,
                 new OnGetSuggestedWordsCallback() {
             @Override
             public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                showSuggestionStrip(suggestedWords, typedWord);
+                showSuggestionStrip(suggestedWords);
             }
         });
     }
@@ -2429,16 +2428,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* isPrediction */);
     }
 
-    private void showSuggestionStrip(final SuggestedWords suggestedWords, final String typedWord) {
+    private void showSuggestionStrip(final SuggestedWords suggestedWords) {
         if (suggestedWords.isEmpty()) {
             clearSuggestionStrip();
             return;
         }
         final String autoCorrection;
         if (suggestedWords.mWillAutoCorrect) {
-            autoCorrection = suggestedWords.getWord(1);
+            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
         } else {
-            autoCorrection = typedWord;
+            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD);
         }
         mWordComposer.setAutoCorrection(autoCorrection);
         final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
@@ -2708,8 +2707,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         // Since there is only one word, willAutoCorrect is false.
                         suggestedWords = suggestedWordsIncludingTypedWord;
                     }
-                    unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords,
-                            typedWord);
+                    unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords);
                 }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
@@ -2718,12 +2716,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     true /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
                     false /* isPrediction */);
-            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords, typedWord);
+            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords);
         }
     }
 
     public void unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
-            final SuggestedWords suggestedWords, final String typedWord) {
+            final SuggestedWords suggestedWords) {
         // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
         // We never want to auto-correct on a resumed suggestion. Please refer to the three places
         // above in restartSuggestionsOnWordTouchedByCursor() where suggestedWords is affected.
@@ -2731,7 +2729,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the text to adapt it.
         // TODO: remove mIsAutoCorrectionIndicatorOn (see comment on definition)
         mIsAutoCorrectionIndicatorOn = false;
-        showSuggestionStrip(suggestedWords, typedWord);
+        showSuggestionStrip(suggestedWords);
     }
 
     /**
