@@ -19,7 +19,7 @@
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/utils/extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
 

@@ -21,9 +21,12 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/utils/extendable_buffer.h"
 
 namespace latinime {
+
+class BufferWithExtendableBuffer;
+class DictionaryBigramsStructurePolicy;
+class DictionaryShortcutsStructurePolicy;
 
 /*
  * This class is used for traversing dynamic patricia trie. This class supports iterating nodes and

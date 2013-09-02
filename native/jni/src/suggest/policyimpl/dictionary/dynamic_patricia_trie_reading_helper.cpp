@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+
 namespace latinime {
 
 // To avoid infinite loop caused by invalid or malicious forward links.
