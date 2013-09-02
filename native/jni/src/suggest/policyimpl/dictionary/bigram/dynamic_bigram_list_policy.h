@@ -31,50 +31,48 @@ namespace latinime {
  */
 class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    DynamicBigramListPolicy(const uint8_t *const bigramsBuf, const int bufSize,
-            const ExtendableBuffer *const additionalBuffer)
-            : mDictRoot(bigramsBuf), mBufSize(bufSize), mAdditionalBuffer(additionalBuffer) {}
+    DynamicBigramListPolicy(const BufferWithExtendableBuffer *const buffer)
+            : mBuffer(buffer) {}
 
     ~DynamicBigramListPolicy() {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
             int *const pos) const {
-        const bool usesAdditionalBuffer = *pos >= mBufSize;
-        const uint8_t *const buffer = (usesAdditionalBuffer) ?
-                mAdditionalBuffer->getBuffer() : mDictRoot;
+        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         if (usesAdditionalBuffer) {
-            *pos -= mBufSize;
+            *pos -= mBuffer->getOriginalBufferSize();
         }
         const BigramListReadingUtils::BigramFlags flags =
                 BigramListReadingUtils::getFlagsAndForwardPointer(buffer, pos);
         *outBigramPos = BigramListReadingUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, pos);
         if (usesAdditionalBuffer) {
-            *outBigramPos += mBufSize;
+            *outBigramPos += mBuffer->getOriginalBufferSize();
         }
         *outProbability = BigramListReadingUtils::getProbabilityFromFlags(flags);
         *outHasNext = BigramListReadingUtils::hasNext(flags);
         if (usesAdditionalBuffer) {
-            *pos += mBufSize;
+            *pos += mBuffer->getOriginalBufferSize();
         }
     }
 
     void skipAllBigrams(int *const pos) const {
-        if (*pos >= mBufSize) {
-            *pos -= mBufSize;
-            BigramListReadingUtils::skipExistingBigrams(mAdditionalBuffer->getBuffer(), pos);
-            *pos += mBufSize;
-        } else {
-            BigramListReadingUtils::skipExistingBigrams(mDictRoot, pos);
+        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
+        if (usesAdditionalBuffer) {
+            *pos -= mBuffer->getOriginalBufferSize();
+        }
+        BigramListReadingUtils::skipExistingBigrams(buffer, pos);
+        if (usesAdditionalBuffer) {
+            *pos += mBuffer->getOriginalBufferSize();
         }
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicBigramListPolicy);
 
-    const uint8_t *const mDictRoot;
-    const int mBufSize;
-    const ExtendableBuffer *const mAdditionalBuffer;
+    const BufferWithExtendableBuffer *const mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_BIGRAM_LIST_POLICY_H

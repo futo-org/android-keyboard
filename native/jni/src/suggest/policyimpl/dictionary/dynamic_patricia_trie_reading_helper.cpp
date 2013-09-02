@@ -25,16 +25,15 @@ const int DynamicPatriciaTrieReadingHelper::MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINI
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
 void DynamicPatriciaTrieReadingHelper::nextNodeArray() {
-    const bool usesAdditionalBuffer = mPos >= mOriginalDictSize;
-    const uint8_t *const dictBuf = (usesAdditionalBuffer)
-            ? mExtendableBuffer->getBuffer() : mDictRoot;
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mPos);
+    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        mPos -= mOriginalDictSize;
+        mPos -= mBuffer->getOriginalBufferSize();
     }
     mNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(dictBuf,
             &mPos);
     if (usesAdditionalBuffer) {
-        mPos += mOriginalDictSize;
+        mPos += mBuffer->getOriginalBufferSize();
     }
     // Count up nodes and node arrays to avoid infinite loop.
     mTotalNodeCount += mNodeCount;
@@ -59,16 +58,15 @@ void DynamicPatriciaTrieReadingHelper::nextNodeArray() {
 
 // Follow the forward link and read the next node array if exists.
 void DynamicPatriciaTrieReadingHelper::followForwardLink() {
-    const bool usesAdditionalBuffer = mPos >= mOriginalDictSize;
-    const uint8_t *const dictBuf = (usesAdditionalBuffer)
-            ? mExtendableBuffer->getBuffer() : mDictRoot;
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mPos);
+    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        mPos -= mOriginalDictSize;
+        mPos -= mBuffer->getOriginalBufferSize();
     }
     const int forwardLinkPosition =
             DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(dictBuf, mPos);
     if (usesAdditionalBuffer) {
-        mPos += mOriginalDictSize;
+        mPos += mBuffer->getOriginalBufferSize();
     }
     if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.

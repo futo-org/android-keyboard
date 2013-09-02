@@ -31,8 +31,8 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
     if (!dicNode->hasChildren()) {
         return;
     }
-    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
-            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
+            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     readingHelper.initWithNodeArrayPos(dicNode->getChildrenPos());
     const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
     while (!readingHelper.isEnd()) {
@@ -51,8 +51,8 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
     // This method traverses parent nodes from the terminal by following parent pointers; thus,
     // node code points are stored in the buffer in the reverse order.
     int reverseCodePoints[maxCodePointCount];
-    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
-            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
+            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     // First, read the terminal node and get its probability.
     readingHelper.initWithNodePos(nodePos);
     if (!readingHelper.isValidTerminalNode()) {
@@ -94,8 +94,8 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
     for (int i = 0; i < length; ++i) {
         searchCodePoints[i] = forceLowerCaseSearch ? CharUtils::toLowerCase(inWord[i]) : inWord[i];
     }
-    DynamicPatriciaTrieReadingHelper readingHelper(mDictRoot, mOriginalDictSize,
-            &mExtendableBuffer, getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
+            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     readingHelper.initWithNodeArrayPos(getRootPosition());
     const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
     while (!readingHelper.isEnd()) {
@@ -137,7 +137,7 @@ int DynamicPatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_PROBABILITY;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
+    DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
             getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted() || nodeReader.isBlacklisted() || nodeReader.isNotAWord()) {
@@ -150,7 +150,7 @@ int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) cons
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
+    DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
             getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted()) {
@@ -163,7 +163,7 @@ int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_DICT_POS;
     }
-    DynamicPatriciaTrieNodeReader nodeReader(mDictRoot, mOriginalDictSize, &mExtendableBuffer,
+    DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
             getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     nodeReader.fetchNodeInfoFromBuffer(nodePos);
     if (nodeReader.isDeleted()) {

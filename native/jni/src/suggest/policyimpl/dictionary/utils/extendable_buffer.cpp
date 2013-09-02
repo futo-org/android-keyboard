@@ -18,8 +18,8 @@
 
 namespace latinime {
 
-const size_t ExtendableBuffer::INITIAL_BUFFER_SIZE = 16 * 1024;
-const size_t ExtendableBuffer::MAX_BUFFER_SIZE = 1024 * 1024;
-const size_t ExtendableBuffer::EXTEND_BUFFER_SIZE_STEP = 16 * 1024;
+const size_t BufferWithExtendableBuffer::INITIAL_ADDITIONAL_BUFFER_SIZE = 16 * 1024;
+const size_t BufferWithExtendableBuffer::MAX_ADDITIONAL_BUFFER_SIZE = 1024 * 1024;
+const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 16 * 1024;
 
 }

@@ -31,9 +31,8 @@ namespace latinime {
  */
 class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  public:
-    DynamicShortcutListPolicy(const uint8_t *const shortcutBuf, const int bufSize,
-            const ExtendableBuffer *const additionalBuffer)
-            : mShortcutsBuf(shortcutBuf), mBufSize(bufSize), mAdditionalBuffer(additionalBuffer) {}
+    explicit DynamicShortcutListPolicy(const BufferWithExtendableBuffer *const buffer)
+            : mBuffer(buffer) {}
 
     ~DynamicShortcutListPolicy() {}
 
@@ -47,11 +46,10 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
             int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
             int *const pos) const {
-        const bool usesAdditionalBuffer = *pos >= mBufSize;
-        const uint8_t *const buffer = usesAdditionalBuffer
-                ? mAdditionalBuffer->getBuffer() : mShortcutsBuf;
+        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         if (usesAdditionalBuffer) {
-            *pos -= mBufSize;
+            *pos -= mBuffer->getOriginalBufferSize();
         }
         const ShortcutListReadingUtils::ShortcutFlags flags =
                 ShortcutListReadingUtils::getFlagsAndForwardPointer(buffer, pos);
@@ -66,29 +64,28 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
                     buffer, maxCodePointCount, outCodePoint, pos);
         }
         if (usesAdditionalBuffer) {
-            *pos += mBufSize;
+            *pos += mBuffer->getOriginalBufferSize();
         }
     }
 
     void skipAllShortcuts(int *const pos) const {
-        if (*pos >= mBufSize) {
-            *pos -= mBufSize;
-            const int shortcutListSize = ShortcutListReadingUtils
-                    ::getShortcutListSizeAndForwardPointer(mAdditionalBuffer->getBuffer(), pos);
-            *pos += mBufSize + shortcutListSize;
-        } else {
-            const int shortcutListSize = ShortcutListReadingUtils
-                    ::getShortcutListSizeAndForwardPointer(mShortcutsBuf, pos);
-            *pos += shortcutListSize;
+        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
+        if (usesAdditionalBuffer) {
+            *pos -= mBuffer->getOriginalBufferSize();
+        }
+        const int shortcutListSize = ShortcutListReadingUtils
+                ::getShortcutListSizeAndForwardPointer(buffer, pos);
+        *pos += shortcutListSize;
+        if (usesAdditionalBuffer) {
+            *pos += mBuffer->getOriginalBufferSize();
         }
     }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicShortcutListPolicy);
 
-    const uint8_t *const mShortcutsBuf;
-    const int mBufSize;
-    const ExtendableBuffer *const mAdditionalBuffer;
+    const BufferWithExtendableBuffer *const mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_SHORTCUT_LIST_POLICY_H

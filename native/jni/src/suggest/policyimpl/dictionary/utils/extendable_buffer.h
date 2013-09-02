@@ -14,57 +14,71 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_EXTENDABLE_BUFFER_H
-#define LATINIME_EXTENDABLE_BUFFER_H
+#ifndef LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H
+#define LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H
 
 #include <cstddef>
 #include <stdint.h>
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
+// TODO: change file name according to the class name.
 // This is used as a buffer that can be extended for updatable dictionaries.
-class ExtendableBuffer {
+// To optimize performance, raw pointer is directly used for reading buffer. The position has to be
+// adjusted to access additional buffer. On the other hand, this class does not provide writable
+// raw pointer but provides several methods that handle boundary checking for writing data.
+class BufferWithExtendableBuffer {
  public:
-    ExtendableBuffer() : mBuffer(INITIAL_BUFFER_SIZE), mUsedSize(0) {}
+    BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize)
+            : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
+              mAdditionalBuffer(INITIAL_ADDITIONAL_BUFFER_SIZE), mUsedAdditionalBufferSize(0) {}
 
-    AK_FORCE_INLINE const uint8_t *getBuffer() const {
-        return  &mBuffer[0];
+    /**
+     * For reading.
+     */
+    AK_FORCE_INLINE bool isInAdditionalBuffer(const int position) const {
+        return position >= mOriginalBufferSize;
     }
+
+    // CAVEAT!: Be careful about array out of bound access with buffers
+    AK_FORCE_INLINE const uint8_t *getBuffer(const bool usesAdditionalBuffer) const {
+        if (usesAdditionalBuffer) {
+            return &mAdditionalBuffer[0];
+        } else {
+            return mOriginalBuffer;
+        }
+    }
+
+    AK_FORCE_INLINE int getOriginalBufferSize() const {
+        return mOriginalBufferSize;
+    }
+
+
+ private:
+    DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
+
+    static const size_t INITIAL_ADDITIONAL_BUFFER_SIZE;
+    static const size_t MAX_ADDITIONAL_BUFFER_SIZE;
+    static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
+
+    uint8_t *const mOriginalBuffer;
+    const int mOriginalBufferSize;
+    std::vector<uint8_t> mAdditionalBuffer;
+    int mUsedAdditionalBufferSize;
 
     // Return if the buffer is successfully extended or not.
     AK_FORCE_INLINE bool extendBuffer() {
-        if (mBuffer.size() + EXTEND_BUFFER_SIZE_STEP > MAX_BUFFER_SIZE) {
+        if (mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP
+                > MAX_ADDITIONAL_BUFFER_SIZE) {
             return false;
         }
-        mBuffer.resize(mBuffer.size() + EXTEND_BUFFER_SIZE_STEP);
+        mAdditionalBuffer.resize(mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP);
         return true;
     }
-
-    AK_FORCE_INLINE int getAllocatedSize() const {
-        return mBuffer.size();
-    }
-
-    AK_FORCE_INLINE int getUsedSize() const {
-        return mUsedSize;
-    }
-
-    AK_FORCE_INLINE void clear() {
-        mUsedSize = 0;
-        mBuffer.clear();
-    }
-
- private:
-    DISALLOW_COPY_AND_ASSIGN(ExtendableBuffer);
-
-    static const size_t INITIAL_BUFFER_SIZE;
-    static const size_t MAX_BUFFER_SIZE;
-    static const size_t EXTEND_BUFFER_SIZE_STEP;
-
-    std::vector<uint8_t> mBuffer;
-    int mUsedSize;
 };
 }
-#endif /* LATINIME_MMAPED_BUFFER_H */
+#endif /* LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H */
