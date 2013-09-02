@@ -211,26 +211,31 @@ public final class Suggest {
         mAutoCorrectionThreshold = threshold;
     }
 
-    public SuggestedWords getSuggestedWords(final WordComposer wordComposer,
+    public interface OnGetSuggestedWordsCallback {
+        public void onGetSuggestedWords(final SuggestedWords suggestedWords);
+    }
+
+    public void getSuggestedWords(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions, final int sessionId) {
+            final int[] additionalFeaturesOptions, final int sessionId,
+            final OnGetSuggestedWordsCallback callback) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
-            return getSuggestedWordsForBatchInput(
-                    wordComposer, prevWordForBigram, proximityInfo, blockOffensiveWords,
-                    additionalFeaturesOptions, sessionId);
+            getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo,
+                    blockOffensiveWords, additionalFeaturesOptions, sessionId, callback);
         } else {
-            return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
-                    blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions);
+            getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
+                    blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions, callback);
         }
     }
 
-    // Retrieves suggestions for the typing input.
-    private SuggestedWords getSuggestedWordsForTypingInput(final WordComposer wordComposer,
+    // Retrieves suggestions for the typing input
+    // and calls the callback function with the suggestions.
+    private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions) {
+            final int[] additionalFeaturesOptions, final OnGetSuggestedWordsCallback callback) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -253,8 +258,8 @@ public final class Suggest {
 
         for (final String key : mDictionaries.keySet()) {
             final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestions(
-                    wordComposerForLookup, prevWordForBigram, proximityInfo, blockOffensiveWords,
+            suggestionsSet.addAll(dictionary.getSuggestions(wordComposerForLookup,
+                    prevWordForBigram, proximityInfo, blockOffensiveWords,
                     additionalFeaturesOptions));
         }
 
@@ -332,7 +337,7 @@ public final class Suggest {
             suggestionsList = suggestionsContainer;
         }
 
-        return new SuggestedWords(suggestionsList,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsList,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
@@ -340,14 +345,15 @@ public final class Suggest {
                 hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                !wordComposer.isComposingWord() /* isPrediction */);
+                !wordComposer.isComposingWord() /* isPrediction */));
     }
 
-    // Retrieves suggestions for the batch input.
-    private SuggestedWords getSuggestedWordsForBatchInput(final WordComposer wordComposer,
+    // Retrieves suggestions for the batch input
+    // and calls the callback function with the suggestions.
+    private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId) {
+            final int sessionId, final OnGetSuggestedWordsCallback callback) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
@@ -401,12 +407,12 @@ public final class Suggest {
 
         // In the batch input mode, the most relevant suggested word should act as a "typed word"
         // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
-        return new SuggestedWords(suggestionsContainer,
+        callback.onGetSuggestedWords(new SuggestedWords(suggestionsContainer,
                 true /* typedWordValid */,
                 false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
+                false /* isPrediction */));
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(
