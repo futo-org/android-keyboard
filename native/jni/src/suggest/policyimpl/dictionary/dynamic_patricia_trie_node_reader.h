@@ -25,9 +25,9 @@
 
 namespace latinime {
 
+class BufferWithExtendableBuffer;
 class DictionaryBigramsStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
-class ExtendableBuffer;
 
 /*
  * This class is used for helping to read nodes of dynamic patricia trie. This class handles moved
@@ -35,12 +35,10 @@ class ExtendableBuffer;
  */
 class DynamicPatriciaTrieNodeReader {
  public:
-    DynamicPatriciaTrieNodeReader(const uint8_t *const dictRoot, const int originalDictSize,
-            const ExtendableBuffer *const extendableBuffer,
+    DynamicPatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
-            : mDictRoot(dictRoot), mOriginalDictSize(originalDictSize),
-              mExtendableBuffer(extendableBuffer), mBigramsPolicy(bigramsPolicy),
+            : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
               mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS), mFlags(0),
               mParentPos(NOT_A_DICT_POS),  mCodePointCount(0), mProbability(NOT_A_PROBABILITY),
               mChildrenPos(NOT_A_DICT_POS), mShortcutPos(NOT_A_DICT_POS),
@@ -124,10 +122,7 @@ class DynamicPatriciaTrieNodeReader {
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeReader);
 
-    // TODO: Consolidate mDictRoot.
-    const uint8_t *const mDictRoot;
-    const int mOriginalDictSize;
-    const ExtendableBuffer *const mExtendableBuffer;
+    const BufferWithExtendableBuffer *const mBuffer;
     const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
     const DictionaryShortcutsStructurePolicy *const mShortcutsPolicy;
     int mNodePos;

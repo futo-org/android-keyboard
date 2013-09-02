@@ -25,10 +25,12 @@ namespace latinime {
 
 void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos,
         const int maxCodePointCount, int *const outCodePoints) {
-    const bool usesAdditionalBuffer = nodePos >= mOriginalDictSize;
-    const uint8_t *const dictBuf =
-            usesAdditionalBuffer ? mExtendableBuffer->getBuffer() : mDictRoot;
-    int pos = (usesAdditionalBuffer) ? nodePos - mOriginalDictSize : nodePos;
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(nodePos);
+    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
+    int pos = nodePos;
+    if (usesAdditionalBuffer) {
+        pos -= mBuffer->getOriginalBufferSize();
+    }
     mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const int parentPos =
             DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictBuf, &pos);
@@ -48,10 +50,10 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
             dictBuf, mFlags, &pos);
     if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
-        mChildrenPos += mOriginalDictSize;
+        mChildrenPos += mBuffer->getOriginalBufferSize();
     }
     if (usesAdditionalBuffer) {
-        pos += mOriginalDictSize;
+        pos += mBuffer->getOriginalBufferSize();
     }
     if (PatriciaTrieReadingUtils::hasShortcutTargets(mFlags)) {
         mShortcutPos = pos;

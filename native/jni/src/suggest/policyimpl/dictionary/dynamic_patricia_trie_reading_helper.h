@@ -31,15 +31,12 @@ namespace latinime {
  */
 class DynamicPatriciaTrieReadingHelper {
  public:
-    DynamicPatriciaTrieReadingHelper(const uint8_t *const dictRoot, const int originalDictSize,
-            const ExtendableBuffer *const extendableBuffer,
+    DynamicPatriciaTrieReadingHelper(const BufferWithExtendableBuffer *const buffer,
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mIsError(false), mPos(NOT_A_DICT_POS), mNodeCount(0), mPrevTotalCodePointCount(0),
-              mTotalNodeCount(0), mNodeArrayCount(0), mDictRoot(dictRoot),
-              mOriginalDictSize(originalDictSize),  mExtendableBuffer(extendableBuffer),
-              mNodeReader(mDictRoot, mOriginalDictSize, mExtendableBuffer, bigramsPolicy,
-                      shortcutsPolicy) {}
+              mTotalNodeCount(0), mNodeArrayCount(0), mBuffer(buffer),
+              mNodeReader(mBuffer, bigramsPolicy, shortcutsPolicy) {}
 
     ~DynamicPatriciaTrieReadingHelper() {}
 
@@ -177,9 +174,7 @@ class DynamicPatriciaTrieReadingHelper {
     int mPrevTotalCodePointCount;
     int mTotalNodeCount;
     int mNodeArrayCount;
-    const uint8_t *const mDictRoot;
-    const int mOriginalDictSize;
-    const ExtendableBuffer *const mExtendableBuffer;
+    const BufferWithExtendableBuffer *const mBuffer;
     DynamicPatriciaTrieNodeReader mNodeReader;
     int mMergedNodeCodePoints[MAX_WORD_LENGTH];
 
