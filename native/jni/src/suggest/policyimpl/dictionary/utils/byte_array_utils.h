@@ -29,7 +29,34 @@ namespace latinime {
 class ByteArrayUtils {
  public:
     /**
-     * Integer
+     * Integer writing
+     *
+     * Each method write a corresponding size integer in a big endian manner.
+     */
+    static AK_FORCE_INLINE void writeUintAndAdvancePosition(uint8_t *const buffer,
+            const uint32_t data, const int size, int *const pos) {
+        // size must be in 1 to 4.
+        ASSERT(size >= 1 && size <= 4);
+        switch (size) {
+            case 1:
+                ByteArrayUtils::writeUint8AndAdvancePosition(buffer, data, pos);
+                return;
+            case 2:
+                ByteArrayUtils::writeUint16AndAdvancePosition(buffer, data, pos);
+                return;
+            case 3:
+                ByteArrayUtils::writeUint24AndAdvancePosition(buffer, data, pos);
+                return;
+            case 4:
+                ByteArrayUtils::writeUint32AndAdvancePosition(buffer, data, pos);
+                return;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Integer reading
      *
      * Each method read a corresponding size integer in a big endian manner.
      */
@@ -187,6 +214,32 @@ class ByteArrayUtils {
 
     static const uint8_t MINIMAL_ONE_BYTE_CHARACTER_VALUE;
     static const uint8_t CHARACTER_ARRAY_TERMINATOR;
+
+    static AK_FORCE_INLINE void writeUint32AndAdvancePosition(uint8_t *const buffer,
+            const uint32_t data, int *const pos) {
+        buffer[(*pos)++] = (data >> 24) & 0xFF;
+        buffer[(*pos)++] = (data >> 16) & 0xFF;
+        buffer[(*pos)++] = (data >> 8) & 0xFF;
+        buffer[(*pos)++] = data & 0xFF;
+    }
+
+    static AK_FORCE_INLINE void writeUint24AndAdvancePosition(uint8_t *const buffer,
+            const uint32_t data, int *const pos) {
+        buffer[(*pos)++] = (data >> 16) & 0xFF;
+        buffer[(*pos)++] = (data >> 8) & 0xFF;
+        buffer[(*pos)++] = data & 0xFF;
+    }
+
+    static AK_FORCE_INLINE void writeUint16AndAdvancePosition(uint8_t *const buffer,
+            const uint16_t data, int *const pos) {
+        buffer[(*pos)++] = (data >> 8) & 0xFF;
+        buffer[(*pos)++] = data & 0xFF;
+    }
+
+    static AK_FORCE_INLINE void writeUint8AndAdvancePosition(uint8_t *const buffer,
+            const uint8_t data, int *const pos) {
+        buffer[(*pos)++] = data & 0xFF;
+    }
 };
 } // namespace latinime
 #endif /* LATINIME_BYTE_ARRAY_UTILS_H */
