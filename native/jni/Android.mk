@@ -79,8 +79,8 @@ LATIN_IME_CORE_SRC_FILES := \
         patricia_trie_policy.cpp \
         patricia_trie_reading_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
+        buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \
-        extendable_buffer.cpp \
         format_utils.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \
     $(addprefix suggest/policyimpl/typing/, \

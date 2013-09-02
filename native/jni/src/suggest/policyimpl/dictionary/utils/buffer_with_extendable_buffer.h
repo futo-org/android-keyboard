@@ -26,7 +26,6 @@
 
 namespace latinime {
 
-// TODO: change file name according to the class name.
 // This is used as a buffer that can be extended for updatable dictionaries.
 // To optimize performance, raw pointer is directly used for reading buffer. The position has to be
 // adjusted to access additional buffer. On the other hand, this class does not provide writable

@@ -22,7 +22,7 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_reading_utils.h"
-#include "suggest/policyimpl/dictionary/utils/extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
 
