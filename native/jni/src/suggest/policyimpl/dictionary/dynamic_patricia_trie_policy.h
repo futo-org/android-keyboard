@@ -87,7 +87,6 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
-    static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
 
     const MmappedBuffer *const mBuffer;
     const ExtendableBuffer mExtendableBuffer;
