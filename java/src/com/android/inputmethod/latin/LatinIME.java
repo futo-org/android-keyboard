@@ -107,6 +107,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -128,6 +130,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
 
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
+
+    private static final int GET_SUGGESTED_WORDS_TIMEOUT = 500;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -221,6 +225,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
 
     public final UIHandler mHandler = new UIHandler(this);
+    private InputUpdater mInputUpdater;
 
     public static final class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
@@ -229,8 +234,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
         private static final int MSG_RESUME_SUGGESTIONS = 4;
         private static final int MSG_REOPEN_DICTIONARIES = 5;
+        private static final int MSG_ON_END_BATCH_INPUT = 6;
 
+        private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
+        private static final int ARG1_SHOW_GESTURE_FLOATING_PREVIEW_TEXT = 2;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
@@ -263,8 +271,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 switcher.updateShiftState();
                 break;
             case MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords)msg.obj,
-                        msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
+                if (msg.arg1 == ARG1_NOT_GESTURE_INPUT) {
+                    latinIme.showSuggestionStrip((SuggestedWords) msg.obj);
+                } else {
+                    latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords) msg.obj,
+                            msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
+                }
                 break;
             case MSG_RESUME_SUGGESTIONS:
                 latinIme.restartSuggestionsOnWordTouchedByCursor();
@@ -275,6 +287,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // in the practice, the dictionary is not finished opening yet so we wouldn't
                 // get any suggestions. Wait one frame.
                 postUpdateSuggestionStrip();
+                break;
+            case MSG_ON_END_BATCH_INPUT:
+                latinIme.onEndBatchInputAsyncInternal((SuggestedWords) msg.obj);
                 break;
             }
         }
@@ -317,9 +332,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 final boolean dismissGestureFloatingPreviewText) {
             removeMessages(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
             final int arg1 = dismissGestureFloatingPreviewText
-                    ? ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT : 0;
+                    ? ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT
+                    : ARG1_SHOW_GESTURE_FLOATING_PREVIEW_TEXT;
             obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, arg1, 0, suggestedWords)
                     .sendToTarget();
+        }
+
+        public void showSuggestionStrip(final SuggestedWords suggestedWords) {
+            removeMessages(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+            obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP,
+                    ARG1_NOT_GESTURE_INPUT, 0, suggestedWords).sendToTarget();
+        }
+
+        public void onEndBatchInput(final SuggestedWords suggestedWords) {
+            obtainMessage(MSG_ON_END_BATCH_INPUT, suggestedWords).sendToTarget();
         }
 
         public void startDoubleSpacePeriodTimer() {
@@ -514,6 +540,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter newDictFilter = new IntentFilter();
         newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+
+        mInputUpdater = new InputUpdater(this);
     }
 
     // Has to be package-visible for unit tests
@@ -650,6 +678,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         PersonalizationDictionarySessionRegister.onDestroy(this);
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
+        if (mInputUpdater != null) {
+            mInputUpdater.onDestroy();
+            mInputUpdater = null;
+        }
         super.onDestroy();
     }
 
@@ -1668,7 +1700,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
-        BatchInputUpdater.getInstance().onStartBatchInput(this);
+        mInputUpdater.onStartBatchInput();
         mHandler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
         final SettingsValues settingsValues = mSettings.getCurrent();
@@ -1708,46 +1740,41 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
-    private static final class BatchInputUpdater implements Handler.Callback {
+    private static final class InputUpdater implements Handler.Callback {
         private final Handler mHandler;
-        private LatinIME mLatinIme;
+        private final LatinIME mLatinIme;
         private final Object mLock = new Object();
         private boolean mInBatchInput; // synchronized using {@link #mLock}.
 
-        private BatchInputUpdater() {
+        private InputUpdater(final LatinIME latinIme) {
             final HandlerThread handlerThread = new HandlerThread(
-                    BatchInputUpdater.class.getSimpleName());
+                    InputUpdater.class.getSimpleName());
             handlerThread.start();
             mHandler = new Handler(handlerThread.getLooper(), this);
-        }
-
-        // Initialization-on-demand holder
-        private static final class OnDemandInitializationHolder {
-            public static final BatchInputUpdater sInstance = new BatchInputUpdater();
-        }
-
-        public static BatchInputUpdater getInstance() {
-            return OnDemandInitializationHolder.sInstance;
+            mLatinIme = latinIme;
         }
 
         private static final int MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 1;
+        private static final int MSG_GET_SUGGESTED_WORDS = 2;
 
         @Override
         public boolean handleMessage(final Message msg) {
             switch (msg.what) {
-            case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                updateBatchInput((InputPointers)msg.obj);
-                break;
+                case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
+                    updateBatchInput((InputPointers)msg.obj);
+                    break;
+                case MSG_GET_SUGGESTED_WORDS:
+                    mLatinIme.getSuggestedWords(msg.arg1, (OnGetSuggestedWordsCallback) msg.obj);
+                    break;
             }
             return true;
         }
 
         // Run in the UI thread.
-        public void onStartBatchInput(final LatinIME latinIme) {
+        public void onStartBatchInput() {
             synchronized (mLock) {
                 mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
                 mInBatchInput = true;
-                mLatinIme = latinIme;
                 mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                         SuggestedWords.EMPTY, false /* dismissGestureFloatingPreviewText */);
             }
@@ -1766,7 +1793,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
                                 suggestedWords, false /* dismissGestureFloatingPreviewText */);
-                    }});
+                    }
+                });
             }
         }
 
@@ -1797,7 +1825,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         mInBatchInput = false;
                         mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(suggestedWords,
                                 true /* dismissGestureFloatingPreviewText */);
-                        mLatinIme.onEndBatchInputAsyncInternal(suggestedWords);
+                        mLatinIme.mHandler.onEndBatchInput(suggestedWords);
                     }
                 });
             }
@@ -1808,7 +1836,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private void getSuggestedWordsGestureLocked(final InputPointers batchPointers,
                 final OnGetSuggestedWordsCallback callback) {
             mLatinIme.mWordComposer.setBatchInputPointers(batchPointers);
-            mLatinIme.getSuggestedWordsOrOlderSuggestions(Suggest.SESSION_GESTURE,
+            mLatinIme.getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_GESTURE,
                     new OnGetSuggestedWordsCallback() {
                 @Override
                 public void onGetSuggestedWords(SuggestedWords suggestedWords) {
@@ -1823,8 +1851,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             });
         }
+
+        public void getSuggestedWords(final int sessionId,
+                final OnGetSuggestedWordsCallback callback) {
+            mHandler.obtainMessage(MSG_GET_SUGGESTED_WORDS, sessionId, 0, callback).sendToTarget();
+        }
+
+        private void onDestroy() {
+            mHandler.removeMessages(MSG_GET_SUGGESTED_WORDS);
+            mHandler.removeMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+            mHandler.getLooper().quit();
+        }
     }
 
+    // This method must run in UI Thread.
     private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
             final boolean dismissGestureFloatingPreviewText) {
         showSuggestionStrip(suggestedWords);
@@ -1843,9 +1883,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // TODO: implement auto-commit
             }
         }
-        BatchInputUpdater.getInstance().onUpdateBatchInput(batchPointers);
+        mInputUpdater.onUpdateBatchInput(batchPointers);
     }
 
+    // This method must run in UI Thread.
     public void onEndBatchInputAsyncInternal(final SuggestedWords suggestedWords) {
         final String batchInputText = suggestedWords.isEmpty()
                 ? null : suggestedWords.getWord(0);
@@ -1870,7 +1911,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
-        BatchInputUpdater.getInstance().onEndBatchInput(batchPointers);
+        mInputUpdater.onEndBatchInput(batchPointers);
     }
 
     private String specificTldProcessingOnTextInput(final String text) {
@@ -1908,7 +1949,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCancelBatchInput() {
-        BatchInputUpdater.getInstance().onCancelBatchInput();
+        mInputUpdater.onCancelBatchInput();
     }
 
     private void handleBackspace(final int spaceState) {
@@ -2343,13 +2384,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        getSuggestedWordsOrOlderSuggestions(Suggest.SESSION_TYPING,
+        final CountDownLatch latch = new CountDownLatch(1);
+        final SuggestedWords[] suggestedWordsArray = new SuggestedWords[1];
+        getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
                 new OnGetSuggestedWordsCallback() {
-            @Override
-            public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                showSuggestionStrip(suggestedWords);
-            }
-        });
+                    @Override
+                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                        suggestedWordsArray[0] = suggestedWords;
+                        latch.countDown();
+                    }
+                }
+        );
+
+        try {
+            // Wait for the result of getSuggestedWords
+            // We set the time out to avoid ANR.
+            latch.await(GET_SUGGESTED_WORDS_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            // TODO: Cancel all pending "getSuggestedWords" tasks when it failed. We may want to add
+            // "onGetSuggestionFailed" to "OnGetSuggestedWordsCallback".
+            Log.e(TAG, "InterruptedException while waiting for getSuggestedWords.", e);
+            return;
+        }
+        if (suggestedWordsArray[0] != null) {
+            showSuggestionStrip(suggestedWordsArray[0]);
+        }
     }
 
     private void getSuggestedWords(final int sessionId,
@@ -2380,9 +2439,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 additionalFeaturesOptions, sessionId, callback);
     }
 
-    private void getSuggestedWordsOrOlderSuggestions(final int sessionId,
+    private void getSuggestedWordsOrOlderSuggestionsAsync(final int sessionId,
             final OnGetSuggestedWordsCallback callback) {
-        getSuggestedWords(sessionId, new OnGetSuggestedWordsCallback() {
+        mInputUpdater.getSuggestedWords(sessionId, new OnGetSuggestedWordsCallback() {
             @Override
             public void onGetSuggestedWords(SuggestedWords suggestedWords) {
                 callback.onGetSuggestedWords(maybeRetrieveOlderSuggestions(
@@ -2689,9 +2748,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (suggestions.isEmpty()) {
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
-            getSuggestedWords(Suggest.SESSION_TYPING, new OnGetSuggestedWordsCallback() {
+            mInputUpdater.getSuggestedWords(Suggest.SESSION_TYPING,
+                    new OnGetSuggestedWordsCallback() {
                 @Override
-                public void onGetSuggestedWords(SuggestedWords suggestedWordsIncludingTypedWord) {
+                public void onGetSuggestedWords(
+                        final SuggestedWords suggestedWordsIncludingTypedWord) {
                     final SuggestedWords suggestedWords;
                     if (suggestedWordsIncludingTypedWord.size() > 1) {
                         // We were able to compute new suggestions for this word.
@@ -2729,7 +2790,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the text to adapt it.
         // TODO: remove mIsAutoCorrectionIndicatorOn (see comment on definition)
         mIsAutoCorrectionIndicatorOn = false;
-        showSuggestionStrip(suggestedWords);
+        mHandler.showSuggestionStrip(suggestedWords);
     }
 
     /**
