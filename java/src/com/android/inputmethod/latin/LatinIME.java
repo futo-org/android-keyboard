@@ -131,7 +131,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
 
-    private static final int GET_SUGGESTED_WORDS_TIMEOUT = 500;
+    private static final int GET_SUGGESTED_WORDS_TIMEOUT = 50;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -2396,6 +2396,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
         );
 
+        // TODO: Quit blocking the main thread.
         try {
             // Wait for the result of getSuggestedWords
             // We set the time out to avoid ANR.
