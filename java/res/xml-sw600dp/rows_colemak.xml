@@ -52,7 +52,7 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_colemak3" />
         <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
+            latin:keyboardLayout="@xml/keys_exclamation_question" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="fillRight" />

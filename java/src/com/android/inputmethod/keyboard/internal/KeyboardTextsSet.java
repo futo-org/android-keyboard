@@ -357,10 +357,9 @@ public final class KeyboardTextsSet {
         // U+2030: "‰" PER MILLE SIGN
         /* 103 */ "\u2030",
         /* 104 */ ",",
-        /* 105 */ "!",
-        /* 106 */ "!",
-        /* 107 */ "?",
-        /* 108 */ "?",
+        /* 105~ */
+        EMPTY, EMPTY, EMPTY, EMPTY,
+        /* ~108 */
         /* 109 */ "\'",
         /* 110 */ "\"",
         /* 111 */ "\"",
@@ -1931,6 +1930,15 @@ public final class KeyboardTextsSet {
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         /* 59 */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,\u00AB|\u00BB",
         /* 60 */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
+        /* 61~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~104 */
+        /* 105 */ "!",
+        /* 106 */ "!",
+        /* 107 */ "?",
+        /* 108 */ "?",
     };
 
     /* Language ka: Georgian */

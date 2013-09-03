@@ -50,7 +50,7 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_east_slavic3" />
         <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
+            latin:keyboardLayout="@xml/keys_exclamation_question" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

@@ -37,9 +37,7 @@
             latin:keyboardLayout="@xml/key_space"
             latin:backgroundType="normal" />
         <include
-            latin:keyboardLayout="@xml/key_apostrophe" />
-        <include
-            latin:keyboardLayout="@xml/key_dash" />
+            latin:keyboardLayout="@xml/keys_comma_period" />
         <include
             latin:keyboardLayout="@xml/key_f2" />
     </Row>
