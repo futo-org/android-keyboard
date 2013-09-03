@@ -53,10 +53,7 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="/"
-                latin:keyHintLabel="\@"
-                latin:moreKeys="\@"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:keyLabel="/" />
         </default>
     </switch>
 </merge>

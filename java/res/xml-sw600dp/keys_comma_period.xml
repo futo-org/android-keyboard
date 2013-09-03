@@ -23,24 +23,59 @@
 >
     <switch>
         <case
-            latin:mode="email"
+            latin:mode="email|url"
         >
             <Key
-                latin:keyLabel="," />
+                latin:keyLabel="."
+                latin:keyHintLabel="_"
+                latin:moreKeys="_"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
-                latin:keyLabel="." />
+                latin:keyLabel=","
+                latin:keyHintLabel="-"
+                latin:moreKeys="-"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
-        <default>
+        <case
+            latin:languageCode="ar"
+        >
             <Key
-                latin:keyLabel="!text/keylabel_for_tablet_comma"
-                latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
-                latin:moreKeys="!text/more_keys_for_tablet_comma"
+                latin:keyLabel="!text/keylabel_for_apostrophe"
+                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
+                latin:moreKeys="!text/more_keys_for_apostrophe"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
-                latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
-                latin:moreKeys="!text/more_keys_for_tablet_period"
+                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
+        </case>
+        <case
+            latin:languageCode="fa"
+        >
+            <Key
+                latin:keyLabel="!text/keylabel_for_apostrophe"
+                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/more_keys_for_apostrophe"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
+            <Key
+                latin:keyLabel="."
+                latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/more_keys_for_arabic_diacritics"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="."
+                latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
+                latin:moreKeys="!text/more_keys_for_tablet_period" />
+            <Key
+                latin:keyLabel="!text/keylabel_for_tablet_comma"
+                latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
+                latin:moreKeys="!text/more_keys_for_tablet_comma" />
         </default>
     </switch>
 </merge>

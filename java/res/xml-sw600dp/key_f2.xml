@@ -28,15 +28,6 @@
             <Key
                 latin:keyStyle="comKeyStyle" />
         </case>
-        <case
-            latin:imeAction="actionSearch"
-        >
-            <Key
-                latin:keyLabel=":"
-                latin:keyHintLabel="+"
-                latin:moreKeys="+"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </case>
         <default>
             <Key
                 latin:keyStyle="emojiKeyStyle" />
