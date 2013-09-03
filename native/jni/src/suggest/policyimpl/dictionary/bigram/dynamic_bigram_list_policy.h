@@ -31,7 +31,7 @@ namespace latinime {
  */
 class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    DynamicBigramListPolicy(const BufferWithExtendableBuffer *const buffer)
+    DynamicBigramListPolicy(BufferWithExtendableBuffer *const buffer)
             : mBuffer(buffer) {}
 
     ~DynamicBigramListPolicy() {}
@@ -43,15 +43,15 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
         if (usesAdditionalBuffer) {
             *pos -= mBuffer->getOriginalBufferSize();
         }
-        const BigramListReadingUtils::BigramFlags flags =
-                BigramListReadingUtils::getFlagsAndForwardPointer(buffer, pos);
-        *outBigramPos = BigramListReadingUtils::getBigramAddressAndForwardPointer(
+        const BigramListReadWriteUtils::BigramFlags flags =
+                BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
+        *outBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, pos);
-        if (usesAdditionalBuffer) {
+        if (usesAdditionalBuffer && *outBigramPos != NOT_A_VALID_WORD_POS) {
             *outBigramPos += mBuffer->getOriginalBufferSize();
         }
-        *outProbability = BigramListReadingUtils::getProbabilityFromFlags(flags);
-        *outHasNext = BigramListReadingUtils::hasNext(flags);
+        *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
+        *outHasNext = BigramListReadWriteUtils::hasNext(flags);
         if (usesAdditionalBuffer) {
             *pos += mBuffer->getOriginalBufferSize();
         }
@@ -63,16 +63,25 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
         if (usesAdditionalBuffer) {
             *pos -= mBuffer->getOriginalBufferSize();
         }
-        BigramListReadingUtils::skipExistingBigrams(buffer, pos);
+        BigramListReadWriteUtils::skipExistingBigrams(buffer, pos);
         if (usesAdditionalBuffer) {
             *pos += mBuffer->getOriginalBufferSize();
         }
     }
 
+    // Copy bigrams from the bigram list that starts at fromPos to toPos and advance these
+    // positions after bigram lists. This method skips invalid bigram entries.
+    bool copyAllBigrams(int *const fromPos, int *const toPos);
+
+    bool addBigramEntry(const int bigramPos, const int probability, int *const pos);
+
+    // Return if targetBigramPos is found or not.
+    bool removeBigram(const int bigramListPos, const int targetBigramPos);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicBigramListPolicy);
 
-    const BufferWithExtendableBuffer *const mBuffer;
+    BufferWithExtendableBuffer *const mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_BIGRAM_LIST_POLICY_H

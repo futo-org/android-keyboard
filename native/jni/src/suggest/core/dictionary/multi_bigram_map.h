@@ -73,6 +73,9 @@ class MultiBigramMap {
                     bigramsListPos);
             while (bigramsIt.hasNext()) {
                 bigramsIt.next();
+                if (bigramsIt.getBigramPos() == NOT_A_VALID_WORD_POS) {
+                    continue;
+                }
                 mBigramMap[bigramsIt.getBigramPos()] = bigramsIt.getProbability();
                 mBloomFilter.setInFilter(bigramsIt.getBigramPos());
             }
