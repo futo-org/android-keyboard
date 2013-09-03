@@ -117,9 +117,15 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        const int length = mDictionaryStructurePolicy->
+        if (bigramsIt.getBigramPos() == NOT_A_VALID_WORD_POS) {
+            continue;
+        }
+        const int codePointCount = mDictionaryStructurePolicy->
                 getCodePointsAndProbabilityAndReturnCodePointCount(bigramsIt.getBigramPos(),
                         MAX_WORD_LENGTH, bigramBuffer, &unigramProbability);
+        if (codePointCount <= 0) {
+            continue;
+        }
         // Due to space constraints, the probability for bigrams is approximate - the lower the
         // unigram probability, the worse the precision. The theoritical maximum error in
         // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
@@ -127,8 +133,8 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
         // here, but it can't get too bad.
         const int probability = ProbabilityUtils::computeProbabilityForBigram(
                 unigramProbability, bigramsIt.getProbability());
-        addWordBigram(bigramBuffer, length, probability, outBigramProbability, outBigramCodePoints,
-                outputTypes);
+        addWordBigram(bigramBuffer, codePointCount, probability, outBigramProbability,
+                outBigramCodePoints, outputTypes);
         ++bigramCount;
     }
     return min(bigramCount, MAX_RESULTS);

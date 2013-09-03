@@ -68,6 +68,7 @@ LATIN_IME_CORE_SRC_FILES := \
     suggest/core/session/dic_traverse_session.cpp \
     $(addprefix suggest/policyimpl/dictionary/, \
         bigram/bigram_list_reading_utils.cpp \
+        bigram/dynamic_bigram_list_policy.cpp \
         header/header_policy.cpp \
         header/header_reading_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \

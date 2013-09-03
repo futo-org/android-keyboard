@@ -20,24 +20,25 @@
 
 namespace latinime {
 
-const BigramListReadingUtils::BigramFlags BigramListReadingUtils::MASK_ATTRIBUTE_ADDRESS_TYPE =
+const BigramListReadWriteUtils::BigramFlags BigramListReadWriteUtils::MASK_ATTRIBUTE_ADDRESS_TYPE =
         0x30;
-const BigramListReadingUtils::BigramFlags
-        BigramListReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
-const BigramListReadingUtils::BigramFlags
-        BigramListReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
-const BigramListReadingUtils::BigramFlags
-        BigramListReadingUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
-const BigramListReadingUtils::BigramFlags
-        BigramListReadingUtils::FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
+const BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
+const BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
+const BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
+const BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
 // Flag for presence of more attributes
-const BigramListReadingUtils::BigramFlags BigramListReadingUtils::FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
+const BigramListReadWriteUtils::BigramFlags BigramListReadWriteUtils::FLAG_ATTRIBUTE_HAS_NEXT =
+        0x80;
 // Mask for attribute probability, stored on 4 bits inside the flags byte.
-const BigramListReadingUtils::BigramFlags
-        BigramListReadingUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
-const int BigramListReadingUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
+const BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
+const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
 
-/* static */ int BigramListReadingUtils::getBigramAddressAndForwardPointer(
+/* static */ int BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
         const uint8_t *const bigramsBuf, const BigramFlags flags, int *const pos) {
     int offset = 0;
     const int origin = *pos;
@@ -51,6 +52,9 @@ const int BigramListReadingUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
         case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
             offset = ByteArrayUtils::readUint24AndAdvancePosition(bigramsBuf, pos);
             break;
+    }
+    if (offset == 0) {
+        return NOT_A_VALID_WORD_POS;
     }
     if (isOffsetNegative(flags)) {
         return origin - offset;
