@@ -22,6 +22,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 
 namespace latinime {
@@ -178,8 +179,12 @@ bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int 
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
     }
-    // TODO: Implement.
-    return false;
+    DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
+            getBigramsStructurePolicy(), getShortcutsStructurePolicy());
+    readingHelper.initWithNodeArrayPos(getRootPosition());
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &mBigramListPolicy, &mShortcutListPolicy);
+    return writingHelper.addUnigramWord(&readingHelper, word, length, probability);
 }
 
 bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
@@ -188,8 +193,19 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
-    // TODO: Implement.
-    return false;
+    const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
+            false /* forceLowerCaseSearch */);
+    if (word0Pos == NOT_A_VALID_WORD_POS) {
+        return false;
+    }
+    const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
+            false /* forceLowerCaseSearch */);
+    if (word1Pos == NOT_A_VALID_WORD_POS) {
+        return false;
+    }
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &mBigramListPolicy, &mShortcutListPolicy);
+    return writingHelper.addBigramWords(word0Pos, word1Pos, probability);
 }
 
 bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
@@ -198,8 +214,19 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
         AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
         return false;
     }
-    // TODO: Implement.
-    return false;
+    const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
+            false /* forceLowerCaseSearch */);
+    if (word0Pos == NOT_A_VALID_WORD_POS) {
+        return false;
+    }
+    const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
+            false /* forceLowerCaseSearch */);
+    if (word1Pos == NOT_A_VALID_WORD_POS) {
+        return false;
+    }
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &mBigramListPolicy, &mShortcutListPolicy);
+    return writingHelper.removeBigramWords(word0Pos, word1Pos);
 }
 
 } // namespace latinime

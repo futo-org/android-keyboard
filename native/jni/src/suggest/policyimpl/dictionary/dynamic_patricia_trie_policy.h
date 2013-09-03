@@ -88,9 +88,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
-    const BufferWithExtendableBuffer mBufferWithExtendableBuffer;
-    const DynamicBigramListPolicy mBigramListPolicy;
-    const DynamicShortcutListPolicy mShortcutListPolicy;
+    BufferWithExtendableBuffer mBufferWithExtendableBuffer;
+    DynamicBigramListPolicy mBigramListPolicy;
+    DynamicShortcutListPolicy mShortcutListPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H
