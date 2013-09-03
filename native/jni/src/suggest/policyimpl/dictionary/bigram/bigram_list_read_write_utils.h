@@ -25,7 +25,6 @@
 
 namespace latinime {
 
-// TODO: Change name of this file according to the class name.
 class BigramListReadWriteUtils {
 public:
    typedef uint8_t BigramFlags;
