@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols1" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
@@ -38,24 +38,23 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols2"
-            latin:keyXPos="4.5%p" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
-        <Row
+    <Row
         latin:keyWidth="9.0%p"
     >
         <Key
-            latin:keyStyle="toMoreSymbolKeyStyle"
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols3" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
         <Key
-            latin:keyStyle="toMoreSymbolKeyStyle"
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_symbols4" />
+        latin:keyboardLayout="@xml/row_symbols_shift4" />
 </merge>

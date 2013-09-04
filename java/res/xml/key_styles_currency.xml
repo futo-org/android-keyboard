@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 */
 -->
 
-<!-- TODO: Move these definitions to text resources and remove key_currency.xml. -->
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
@@ -27,7 +26,7 @@
             latin:passwordInput="true"
         >
             <include
-                latin:keyboardLayout="@xml/key_dollar" />
+                latin:keyboardLayout="@xml/key_styles_currency_dollar" />
         </case>
         <!-- Countries using Euro currency, 23 countries as of November 2012.
               1. Andorra (ca_AD, ca_ES)
@@ -57,7 +56,7 @@
             latin:countryCode="AD|AT|BE|CY|EE|FI|FR|DE|GR|IE|IT|XK|LU|MT|MO|ME|NL|PT|SM|SK|SI|ES|VA"
         >
             <include
-                latin:keyboardLayout="@xml/key_euro" />
+                latin:keyboardLayout="@xml/key_styles_currency_euro" />
         </case>
         <!-- Note: Some subtype locale may not have country code, and it it supposed to indicate the
              country where the language originally/mainly spoken. -->
@@ -81,7 +80,7 @@
             latin:localeCode="da|de|es|el|fi|fr|it|nl|sk|sl|sv|tr"
         >
             <include
-                latin:keyboardLayout="@xml/key_euro" />
+                latin:keyboardLayout="@xml/key_styles_currency_euro" />
         </case>
         <!-- ca: Catalan (Andorra, Spain)
              et: Estonian (Estonia)
@@ -91,7 +90,7 @@
             latin:languageCode="ca|et|lb|mt"
         >
             <include
-                latin:keyboardLayout="@xml/key_euro" />
+                latin:keyboardLayout="@xml/key_styles_currency_euro" />
         </case>
         <!-- fa: Persian (Rial and Afgahni)
              hi: Hindi (Indian Rupee)
@@ -105,9 +104,26 @@
         <case
             latin:languageCode="fa|hi|iw|mn|th|uk|vi"
         >
-            <Key
+            <!-- U+00A3: "£" POUND SIGN
+                 U+20AC: "€" EURO SIGN
+                 U+00A2: "¢" CENT SIGN -->
+            <key-style
+                latin:styleName="currencyKeyStyle"
                 latin:keyLabel="!text/keylabel_for_currency"
                 latin:moreKeys="!text/more_keys_for_currency" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keyLabel="&#x00A3;" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keyLabel="&#x20AC;" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keyLabel="$"
+                latin:moreKeys="&#x00A2;" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keyLabel="&#x00A2;" />
         </case>
         <!-- GB: United Kingdom (Pound) -->
         <case
@@ -118,14 +134,28 @@
                  U+00A5: "¥" YEN SIGN
                  U+00A2: "¢" CENT SIGN
                  U+20B1: "₱" PESO SIGN -->
-            <Key
+            <key-style
+                latin:styleName="currencyKeyStyle"
                 latin:keyLabel="&#x00A3;"
                 latin:moreKeys="&#x00A2;,$,&#x20AC;,&#x00A5;,&#x20B1;" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keyLabel="&#x20AC;" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keyLabel="&#x00A5;" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keyLabel="$"
+                latin:moreKeys="&#x00A2;" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keyLabel="&#x00A2;" />
         </case>
         <!-- ar: Arabic (Dollar and Rial) -->
         <default>
             <include
-                latin:keyboardLayout="@xml/key_dollar" />
+                latin:keyboardLayout="@xml/key_styles_currency_dollar" />
         </default>
     </switch>
 </merge>

@@ -44,6 +44,9 @@
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_thai_symbols" />
     <Element
+        latin:elementName="symbolsShifted"
+        latin:elementKeyboard="@xml/kbd_thai_symbols_shift" />
+    <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element
