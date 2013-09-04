@@ -388,6 +388,7 @@
             <enum name="alphabetShiftLocked" value="3" />
             <enum name="alphabetShiftLockShifted" value="4" />
             <enum name="symbols" value="5" />
+            <enum name="symbolsShifted" value="6"  />
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
@@ -449,6 +450,7 @@
             <enum name="alphabetShiftLocked" value="3" />
             <enum name="alphabetShiftLockShifted" value="4" />
             <enum name="symbols" value="5" />
+            <enum name="symbolsShifted" value="6"  />
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />

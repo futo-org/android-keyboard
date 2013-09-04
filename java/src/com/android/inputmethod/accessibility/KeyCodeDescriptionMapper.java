@@ -156,6 +156,7 @@ public final class KeyCodeDescriptionMapper {
             resId = R.string.spoken_description_to_symbol;
             break;
         case KeyboardId.ELEMENT_SYMBOLS:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_to_alpha;
             break;
         case KeyboardId.ELEMENT_PHONE:
@@ -190,6 +191,7 @@ public final class KeyCodeDescriptionMapper {
             break;
         case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_shift_shifted;
             break;
         default:

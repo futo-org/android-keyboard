@@ -357,6 +357,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             break;
         case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             text = context.getText(R.string.spoken_description_shiftmode_on);
             break;
         default:
@@ -388,6 +389,7 @@ public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateComp
             resId = R.string.spoken_description_mode_alpha;
             break;
         case KeyboardId.ELEMENT_SYMBOLS:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_mode_symbol;
             break;
         case KeyboardId.ELEMENT_PHONE:
