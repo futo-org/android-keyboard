@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Inglés (Reino Unido) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Inglés (EE.UU.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Español (EE.UU.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (tradicional)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Ningún idioma (alfabeto)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alfabeto (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alfabeto (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alfabeto (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alfabeto (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alfabeto (PC)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos de entrada personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Añadir estilo"</string>
     <string name="add" msgid="8299699805688017798">"Añadir"</string>
