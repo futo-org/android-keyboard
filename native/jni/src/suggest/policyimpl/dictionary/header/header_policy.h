@@ -17,6 +17,7 @@
 #ifndef LATINIME_HEADER_POLICY_H
 #define LATINIME_HEADER_POLICY_H
 
+#include <cctype>
 #include <stdint.h>
 
 #include "defines.h"
@@ -30,7 +31,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     explicit HeaderPolicy(const uint8_t *const dictBuf)
             : mDictBuf(dictBuf), mDictionaryFlags(HeaderReadingUtils::getFlags(dictBuf)),
               mSize(HeaderReadingUtils::getHeaderSize(dictBuf)),
-              mMultiWordCostMultiplier(readMultiWordCostMultiplier()) {}
+              mAttributeMap(createAttributeMapAndReadAllAttributes(mDictBuf)),
+              mMultiWordCostMultiplier(readMultipleWordCostMultiplier()) {}
 
     ~HeaderPolicy() {}
 
@@ -55,34 +57,31 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mMultiWordCostMultiplier;
     }
 
-    AK_FORCE_INLINE void readHeaderValueOrQuestionMark(const char *const key,
-            int *outValue, int outValueSize) const {
-        if (outValueSize <= 0) return;
-        if (outValueSize == 1) {
-            outValue[0] = '\0';
-            return;
-        }
-        if (!HeaderReadingUtils::readHeaderValue(mDictBuf,
-                key, outValue, outValueSize)) {
-            outValue[0] = '?';
-            outValue[1] = '\0';
-        }
-    }
+    void readHeaderValueOrQuestionMark(const char *const key,
+            int *outValue, int outValueSize) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
-    static const float DEFAULT_MULTI_WORD_COST_MULTIPLIER;
-    static const float MULTI_WORD_COST_MULTIPLIER_SCALE;
+    static const float DEFAULT_MULTIPLE_WORD_COST_MULTIPLIER;
+    static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
     const uint8_t *const mDictBuf;
     const HeaderReadingUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
+    HeaderReadingUtils::AttributeMap mAttributeMap;
     const float mMultiWordCostMultiplier;
 
-    float readMultiWordCostMultiplier() const;
-};
+    float readMultipleWordCostMultiplier() const;
 
+    static HeaderReadingUtils::AttributeMap createAttributeMapAndReadAllAttributes(
+            const uint8_t *const dictBuf);
+
+    static int parseIntAttributeValue(const std::vector<int> *const attributeValue);
+
+    static void insertCharactersIntoVector(
+            const char *const characters, std::vector<int> *const vector);
+};
 } // namespace latinime
 #endif /* LATINIME_HEADER_POLICY_H */

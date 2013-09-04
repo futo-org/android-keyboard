@@ -176,39 +176,6 @@ class ByteArrayUtils {
         return length;
     }
 
-    // Returns an integer less than, equal to, or greater than zero when string starting from pos
-    // in buffer is less than, match, or is greater than charArray.
-    static AK_FORCE_INLINE int compareStringInBufferWithCharArray(const uint8_t *const buffer,
-            const char *const charArray, const int maxLength, int *const pos) {
-        int index = 0;
-        int codePoint = readCodePointAndAdvancePosition(buffer, pos);
-        const uint8_t *const uint8CharArrayForComparison =
-                reinterpret_cast<const uint8_t *>(charArray);
-        while (NOT_A_CODE_POINT != codePoint
-                && '\0' != uint8CharArrayForComparison[index] && index < maxLength) {
-            if (codePoint != uint8CharArrayForComparison[index]) {
-                // Different character is found.
-                // Skip the rest of the string in the buffer.
-                advancePositionToBehindString(buffer, maxLength - index, pos);
-                return codePoint - uint8CharArrayForComparison[index];
-            }
-            // Advance
-            codePoint = readCodePointAndAdvancePosition(buffer, pos);
-            ++index;
-        }
-        if (NOT_A_CODE_POINT != codePoint && index < maxLength) {
-            // Skip the rest of the string in the buffer.
-            advancePositionToBehindString(buffer, maxLength - index, pos);
-        }
-        if (NOT_A_CODE_POINT == codePoint && '\0' == uint8CharArrayForComparison[index]) {
-            // When both of the last characters are terminals, we consider the string in the buffer
-            // matches the given char array
-            return 0;
-        } else {
-            return codePoint - uint8CharArrayForComparison[index];
-        }
-    }
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ByteArrayUtils);
 
