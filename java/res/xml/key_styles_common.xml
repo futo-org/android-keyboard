@@ -156,6 +156,15 @@
         latin:keyLabel="!text/label_to_alpha_key"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
+        latin:styleName="toMoreSymbolKeyStyle"
+        latin:code="!code/key_shift"
+        latin:keyLabel="!text/label_to_more_symbol_key"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
+    <key-style
+        latin:styleName="backFromMoreSymbolKeyStyle"
+        latin:code="!code/key_shift"
+        latin:parentStyle="baseForToSymbolKeyStyle" />
+    <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
         latin:keyLabelFlags="hasPopupHint"
