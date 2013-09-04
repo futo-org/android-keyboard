@@ -41,7 +41,7 @@
     <string name="sliding_key_input_preview_summary" msgid="6340524345729093886">"Shift या Symbol कुंजियो से स्लाइड करते समय विज़ुअल क्यू दिखाएं"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"सामान्य"</string>
     <string name="abbreviation_unit_milliseconds" msgid="8700286094028323363">"<xliff:g id="MILLISECONDS">%s</xliff:g> मिलीसेकंड"</string>
     <string name="settings_system_default" msgid="6268225104743331821">"सिस्टम डिफ़ॉल्ट"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"संपर्क नाम सुझाएं"</string>
@@ -170,7 +170,7 @@
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
     <string name="read_external_dictionary_confirm_install_message" msgid="6898610163768980870">"<xliff:g id="LOCALE_NAME">%s</xliff:g> के लिए वास्तव में यह फ़ाइल इंस्टॉल करें?"</string>
     <string name="error" msgid="8940763624668513648">"कोई त्रुटि हुई थी"</string>
-    <string name="button_default" msgid="3988017840431881491">"डिफ़ॉल्ट"</string>
+    <string name="button_default" msgid="3988017840431881491">"सामान्य"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"<xliff:g id="APPLICATION_NAME">%s</xliff:g> में आपका स्वागत है"</string>
     <string name="setup_welcome_additional_description" msgid="8150252008545768953">"हावभाव लेखन के साथ"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"आरंभ करें"</string>

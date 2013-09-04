@@ -26,7 +26,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Correcteur orthographique utilise entrées de liste de contacts."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères à chaque touche"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères"</string>
     <string name="general_category" msgid="1859088467017573195">"Général"</string>
     <string name="correction_category" msgid="2236750915056607613">"Correction du texte"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Saisie gestuelle"</string>

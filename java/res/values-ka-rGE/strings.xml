@@ -22,10 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"შეყვანის მეთოდები"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"კვლევის აღრიცხვის ბრძანებები"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"კონტაქტების სახელების მოძიება"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"მართლწერის შემმოწმებელი ერთეულებს თქვენი კონტაქტების სიიდან იყენებს"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"კონტაქტებში ძებნა"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"კონტაქტების სიის გამოყენება მართლწერის შემოწმებისას"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ვიბრაცია კლავიშზე დაჭერისას"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"ხმაური კლავიშზე დაჭერისას"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"ხმა კლავიშზე დაჭერისას"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"გადიდება ღილაკზე დაჭერისას"</string>
     <string name="general_category" msgid="1859088467017573195">"ძირითადი"</string>
     <string name="correction_category" msgid="2236750915056607613">"ტექსტის კორექცია"</string>
