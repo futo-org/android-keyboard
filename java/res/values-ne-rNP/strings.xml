@@ -53,11 +53,11 @@
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"व्यक्तिगत शब्दकोश"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-अन शब्दकोश"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"मुख्य शब्दकोश"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझावहरू देखाउनुहोस्"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझावहरू देखाउने"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"टाइप गर्ने बेलामा सुझाव शब्दहरू देखाउनुहोस्"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"सधैँ देखाउनुहोस्"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"सधैँ देखाउने"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3859783767435239118">"चित्र मोडमा देखाउनुहोस्"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"सधैँ लुकाउनुहोस्"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"सधैँ लुकाउने"</string>
     <string name="prefs_block_potentially_offensive_title" msgid="5078480071057408934">"आपत्तिजनक शब्दहरूलाई रोक्नुहोस्"</string>
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"सम्भावित आपत्तिजनक शब्दहरू सुझाव नगर्नुहोस्"</string>
     <string name="auto_correction" msgid="7630720885194996950">"स्वतः सुधार"</string>
@@ -80,7 +80,7 @@
     <string name="label_done_key" msgid="2441578748772529288">"भयो"</string>
     <string name="label_send_key" msgid="2815056534433717444">"पठाउनुहोस्"</string>
     <string name="label_pause_key" msgid="181098308428035340">"रोक्नुहोस्"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"प्रतीक्षा गर्नुहोस्"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"प्रतीक्षा गर्ने"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"हेडसेट प्लग इन गर्नुहोस्"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s हो"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"कुनै पाठ प्रविष्टि गरिएको छैन"</string>
@@ -88,7 +88,7 @@
     <string name="spoken_description_shift" msgid="244197883292549308">"सिफ्ट"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"सिप्ट सक्रिय (असक्षम पार्न ट्याप गर्नुहोस्)"</string>
     <string name="spoken_description_caps_lock" msgid="3276478269526304432">"क्याप्स लक सक्रिय छ (असक्षम पार्न ट्याप गर्नुहोस्)"</string>
-    <string name="spoken_description_delete" msgid="8740376944276199801">"मेट्नुहोस्"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"मेट्ने"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"प्रतिकहरू"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"अक्षरहरू"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"नम्बरहरू"</string>
@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"अंग्रेजी (युके) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"अंग्रेजी (युएस्) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"स्पेनेली (युएस्) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (परम्परागत)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"कुनै भाषा होइन (वर्णमाला)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"वर्णमाला (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"वर्णमाला (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"वर्णमाला (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"वर्णमाला (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"वर्णमाला (PC)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"इमोजी"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"अनुकूलन इनपुट शैली"</string>
     <string name="add_style" msgid="6163126614514489951">"शैली थप्नुहोस्"</string>
     <string name="add" msgid="8299699805688017798">"थप्नुहोस्"</string>

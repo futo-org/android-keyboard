@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"អង់គ្លេស (ចក្រភព​អង់គ្លេស) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"អង់គ្លេស (អាមេរិក) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"អេស្ប៉ាញ (អាមេរិក​) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (អក្សរ​ពេញ​)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"គ្មាន​ភាសា (អក្សរ​ក្រម)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"តាម​លំដាប់​អក្សរក្រម (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"តាម​លំដាប់​អក្សរក្រម (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"តាម​លំដាប់​អក្សរក្រម (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"តាម​លំដាប់​អក្សរក្រម (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"តាម​លំដាប់​អក្សរក្រម (កុំព្យូទ័រ)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"សញ្ញា​អារម្មណ៍"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"រចនាប័ទ្ម​បញ្ចូល​ផ្ទាល់ខ្លួន"</string>
     <string name="add_style" msgid="6163126614514489951">"បន្ថែម​រចនាប័ទ្ម"</string>
     <string name="add" msgid="8299699805688017798">"បន្ថែម"</string>
