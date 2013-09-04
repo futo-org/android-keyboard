@@ -25,8 +25,9 @@
     <string name="label_to_alpha_key">&#x05D0;&#x05D1;&#x05D2;</string>
     <!-- U+2605: "★" BLACK STAR -->
     <string name="more_keys_for_star">&#x2605;</string>
-    <!-- U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN -->
-    <string name="more_keys_for_plus">&#xFB29;</string>
+    <!-- U+00B1: "±" PLUS-MINUS SIGN
+         U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN -->
+    <string name="more_keys_for_plus">&#x00B1;,&#xFB29;</string>
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!3,&lt;|&gt;,{|},[|]</string>

@@ -45,8 +45,8 @@ public final class KeyboardState {
         public void setAlphabetAutomaticShiftedKeyboard();
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
-        public void setSymbolsKeyboard();
         public void setEmojiKeyboard();
+        public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
         /**
