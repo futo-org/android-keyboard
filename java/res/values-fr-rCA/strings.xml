@@ -26,7 +26,7 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Correcteur orthographique utilise entrées de liste de contacts."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères à chaque touche"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères"</string>
     <string name="general_category" msgid="1859088467017573195">"Général"</string>
     <string name="correction_category" msgid="2236750915056607613">"Correction du texte"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"Saisie gestuelle"</string>
@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Anglais (Royaume-Uni) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Anglais (États-Unis) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Espagnol, États-Unis (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (traditionnel)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Aucune langue (alphabet)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Alphabet latin (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Alphabet latin (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Alphabet latin (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Alphabet latin (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Alphabet latin (PC)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"Emoji"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Styles saisie personnalisés"</string>
     <string name="add_style" msgid="6163126614514489951">"Ajouter style"</string>
     <string name="add" msgid="8299699805688017798">"Ajouter"</string>

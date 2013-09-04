@@ -22,10 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_input_options" msgid="3909945612939668554">"შეყვანის მეთოდები"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"კვლევის აღრიცხვის ბრძანებები"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"კონტაქტების სახელების მოძიება"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"მართლწერის შემმოწმებელი ერთეულებს თქვენი კონტაქტების სიიდან იყენებს"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"კონტაქტებში ძებნა"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"კონტაქტების სიის გამოყენება მართლწერის შემოწმებისას"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"ვიბრაცია კლავიშზე დაჭერისას"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"ხმაური კლავიშზე დაჭერისას"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"ხმა კლავიშზე დაჭერისას"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"გადიდება ღილაკზე დაჭერისას"</string>
     <string name="general_category" msgid="1859088467017573195">"ძირითადი"</string>
     <string name="correction_category" msgid="2236750915056607613">"ტექსტის კორექცია"</string>
@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"ინგლისური (გაერთ. სამ.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"ინგლისური (აშშ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"ესპანური (აშშ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (ტრადიციული)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"ენის გარეშე (ანბანი)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"ანბანი (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"ანბანი (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"ანბანი (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"ანბანი (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"ანბანი (PC)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"სიცილაკები"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"შეყვანის სტილების კონფიგურაცია"</string>
     <string name="add_style" msgid="6163126614514489951">"სტილის დამატება"</string>
     <string name="add" msgid="8299699805688017798">"დამატება"</string>

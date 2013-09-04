@@ -146,6 +146,8 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Англійская (Вялікабрытанія) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Англійская (ЗША) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"iспанская (ЗША) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
+    <!-- no translation found for subtype_nepali_traditional (9032247506728040447) -->
+    <skip />
     <!-- no translation found for subtype_no_language (7137390094240139495) -->
     <skip />
     <!-- no translation found for subtype_no_language_qwerty (244337630616742604) -->
