@@ -16,23 +16,22 @@
 
 #include "suggest/policyimpl/dictionary/header/header_reading_utils.h"
 
-#include <cctype>
-#include <cstdlib>
+#include <vector>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
-const int HeaderReadingUtils::MAX_OPTION_KEY_LENGTH = 256;
+const int HeaderReadingUtils::MAX_ATTRIBUTE_KEY_LENGTH = 256;
+const int HeaderReadingUtils::MAX_ATTRIBUTE_VALUE_LENGTH = 256;
 
 const int HeaderReadingUtils::HEADER_MAGIC_NUMBER_SIZE = 4;
 const int HeaderReadingUtils::HEADER_DICTIONARY_VERSION_SIZE = 2;
 const int HeaderReadingUtils::HEADER_FLAG_SIZE = 2;
 const int HeaderReadingUtils::HEADER_SIZE_FIELD_SIZE = 4;
 
-const HeaderReadingUtils::DictionaryFlags
-        HeaderReadingUtils::NO_FLAGS = 0;
+const HeaderReadingUtils::DictionaryFlags HeaderReadingUtils::NO_FLAGS = 0;
 // Flags for special processing
 // Those *must* match the flags in makedict (FormatSpec#*_PROCESSING_FLAG) or
 // something very bad (like, the apocalypse) will happen. Please update both at the same time.
@@ -56,53 +55,27 @@ const HeaderReadingUtils::DictionaryFlags
             HEADER_MAGIC_NUMBER_SIZE + HEADER_DICTIONARY_VERSION_SIZE);
 }
 
-// Returns if the key is found or not and reads the found value into outValue.
-/* static */ bool HeaderReadingUtils::readHeaderValue(const uint8_t *const dictBuf,
-        const char *const key, int *outValue, const int outValueSize) {
-    if (outValueSize <= 0) {
-        return false;
-    }
+/* static */ void HeaderReadingUtils::fetchAllHeaderAttributes(const uint8_t *const dictBuf,
+        AttributeMap *const headerAttributes) {
     const int headerSize = getHeaderSize(dictBuf);
     int pos = getHeaderOptionsPosition();
     if (pos == NOT_A_DICT_POS) {
         // The header doesn't have header options.
-        return false;
+        return;
     }
+    int keyBuffer[MAX_ATTRIBUTE_KEY_LENGTH];
+    int valueBuffer[MAX_ATTRIBUTE_VALUE_LENGTH];
     while (pos < headerSize) {
-        if(ByteArrayUtils::compareStringInBufferWithCharArray(
-                dictBuf, key, headerSize - pos, &pos) == 0) {
-            // The key was found.
-            const int length = ByteArrayUtils::readStringAndAdvancePosition(dictBuf, outValueSize,
-                    outValue, &pos);
-            // Add a 0 terminator to the string.
-            outValue[length < outValueSize ? length : outValueSize - 1] = '\0';
-            return true;
-        }
-        ByteArrayUtils::advancePositionToBehindString(dictBuf, headerSize - pos, &pos);
+        const int keyLength = ByteArrayUtils::readStringAndAdvancePosition(dictBuf,
+                MAX_ATTRIBUTE_KEY_LENGTH, keyBuffer, &pos);
+        std::vector<int> key;
+        key.insert(key.end(), keyBuffer, keyBuffer + keyLength);
+        const int valueLength = ByteArrayUtils::readStringAndAdvancePosition(dictBuf,
+                MAX_ATTRIBUTE_VALUE_LENGTH, valueBuffer, &pos);
+        std::vector<int> value;
+        value.insert(value.end(), valueBuffer, valueBuffer + valueLength);
+        headerAttributes->insert(AttributeMap::value_type(key, value));
     }
-    // The key was not found.
-    return false;
-}
-
-/* static */ int HeaderReadingUtils::readHeaderValueInt(
-        const uint8_t *const dictBuf, const char *const key) {
-    const int bufferSize = LARGEST_INT_DIGIT_COUNT;
-    int intBuffer[bufferSize];
-    char charBuffer[bufferSize];
-    if (!readHeaderValue(dictBuf, key, intBuffer, bufferSize)) {
-        return S_INT_MIN;
-    }
-    for (int i = 0; i < bufferSize; ++i) {
-        charBuffer[i] = intBuffer[i];
-        if (charBuffer[i] == '0') {
-            break;
-        }
-        if (!isdigit(charBuffer[i])) {
-            // If not a number, return S_INT_MIN
-            return S_INT_MIN;
-        }
-    }
-    return atoi(charBuffer);
 }
 
 } // namespace latinime

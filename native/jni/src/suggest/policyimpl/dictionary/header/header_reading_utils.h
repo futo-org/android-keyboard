@@ -17,7 +17,9 @@
 #ifndef LATINIME_HEADER_READING_UTILS_H
 #define LATINIME_HEADER_READING_UTILS_H
 
+#include <map>
 #include <stdint.h>
+#include <vector>
 
 #include "defines.h"
 
@@ -26,8 +28,7 @@ namespace latinime {
 class HeaderReadingUtils {
  public:
     typedef uint16_t DictionaryFlags;
-
-    static const int MAX_OPTION_KEY_LENGTH;
+    typedef std::map<std::vector<int>, std::vector<int> > AttributeMap;
 
     static int getHeaderSize(const uint8_t *const dictBuf);
 
@@ -50,13 +51,14 @@ class HeaderReadingUtils {
                 + HEADER_SIZE_FIELD_SIZE;
     }
 
-    static bool readHeaderValue(const uint8_t *const dictBuf,
-            const char *const key, int *outValue, const int outValueSize);
-
-    static int readHeaderValueInt(const uint8_t *const dictBuf, const char *const key);
+    static void fetchAllHeaderAttributes(const uint8_t *const dictBuf,
+            AttributeMap *const headerAttributes);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadingUtils);
+
+    static const int MAX_ATTRIBUTE_KEY_LENGTH;
+    static const int MAX_ATTRIBUTE_VALUE_LENGTH;
 
     static const int HEADER_MAGIC_NUMBER_SIZE;
     static const int HEADER_DICTIONARY_VERSION_SIZE;
