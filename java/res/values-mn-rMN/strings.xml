@@ -143,6 +143,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Англи (ИБ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Англи (АНУ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_es_US" msgid="6261791057007890189">"Испани (АНУ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_nepali_traditional" msgid="9032247506728040447">"<xliff:g id="LANGUAGE">%s</xliff:g> (Уламжлалт)"</string>
     <string name="subtype_no_language" msgid="7137390094240139495">"Хэл байхгүй (Цагаан толгой)"</string>
     <string name="subtype_no_language_qwerty" msgid="244337630616742604">"Цагаан толгой (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="443066912507547976">"Цагаан толгой (QWERTZ)"</string>
@@ -150,8 +151,7 @@
     <string name="subtype_no_language_dvorak" msgid="1564494667584718094">"Цагаан толгой (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="5837418400010302623">"Цагаан толгой (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="5354918232046200018">"Цагаан толгой (PC)"</string>
-    <!-- no translation found for subtype_emoji (7483586578074549196) -->
-    <skip />
+    <string name="subtype_emoji" msgid="7483586578074549196">"Инээмсэглэл"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Өөрийн оруулах загвар"</string>
     <string name="add_style" msgid="6163126614514489951">"Загвар нэмэх"</string>
     <string name="add" msgid="8299699805688017798">"Нэмэх"</string>
