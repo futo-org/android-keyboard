@@ -912,23 +912,15 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Dumps a FusionDictionary to a file.
+     * Writes a file header to an output stream.
      *
-     * @param destination the stream to write the binary data to.
+     * @param destination the stream to write the file header to.
      * @param dict the dictionary to write.
      * @param formatOptions file format options.
      */
-    /* package */ static void writeDictionaryBinary(final OutputStream destination,
+    /* package */ static void writeDictionaryHeader(final OutputStream destination,
             final FusionDictionary dict, final FormatOptions formatOptions)
-            throws IOException, UnsupportedFormatException {
-
-        // Addresses are limited to 3 bytes, but since addresses can be relative to each node
-        // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding
-        // the order of the PtNode arrays becomes a quite complicated problem, because though the
-        // dictionary itself does not have a size limit, each node array must still be within 16MB
-        // of all its children and parents. As long as this is ensured, the dictionary file may
-        // grow to any size.
-
+                    throws IOException, UnsupportedFormatException {
         final int version = formatOptions.mVersion;
         if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
                 || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
@@ -975,6 +967,24 @@ public class BinaryDictEncoderUtils {
         destination.write(bytes);
 
         headerBuffer.close();
+    }
+
+    /**
+     * Dumps a FusionDictionary to a file.
+     *
+     * @param destination the stream to write the dictionary body to.
+     * @param dict the dictionary to write.
+     * @param formatOptions file format options.
+     */
+    /* package */ static void writeDictionaryBody(final OutputStream destination,
+            final FusionDictionary dict, final FormatOptions formatOptions) throws IOException {
+
+        // Addresses are limited to 3 bytes, but since addresses can be relative to each node
+        // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding
+        // the order of the PtNode arrays becomes a quite complicated problem, because though the
+        // dictionary itself does not have a size limit, each node array must still be within 16MB
+        // of all its children and parents. As long as this is ensured, the dictionary file may
+        // grow to any size.
 
         // Leave the choice of the optimal node order to the flattenTree function.
         MakedictLog.i("Flattening the tree...");
