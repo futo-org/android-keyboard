@@ -27,19 +27,13 @@
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyWidth="15%p" />
-        <!-- U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-             U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
-        <Key
-            latin:keyLabel="&#x201E;"
-            latin:moreKeys="&#x201A;"
-            latin:backgroundType="functional" />
         <include
-            latin:keyXPos="25%p"
-            latin:keyboardLayout="@xml/key_space" />
-        <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
-        <Key
-            latin:keyLabel="&#x2026;"
-            latin:backgroundType="functional" />
+            latin:keyboardLayout="@xml/keys_less_greater" />
+        <include
+            latin:keyXPos="35%p"
+            latin:keyboardLayout="@xml/key_space_30" />
+        <include
+            latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
