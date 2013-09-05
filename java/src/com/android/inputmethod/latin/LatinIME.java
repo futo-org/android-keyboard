@@ -2532,11 +2532,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* isPrediction */);
     }
 
-    private void showSuggestionStrip(final SuggestedWords suggestedWords) {
-        if (suggestedWords.isEmpty()) {
-            clearSuggestionStrip();
-            return;
-        }
+    private void setAutoCorrection(final SuggestedWords suggestedWords) {
+        if (suggestedWords.isEmpty()) return;
         final String autoCorrection;
         if (suggestedWords.mWillAutoCorrect) {
             autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
@@ -2544,17 +2541,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD);
         }
         mWordComposer.setAutoCorrection(autoCorrection);
+    }
+
+    private void showSuggestionStrip(final SuggestedWords suggestedWords) {
+        if (suggestedWords.isEmpty()) {
+            clearSuggestionStrip();
+            return;
+        }
+        setAutoCorrection(suggestedWords);
         final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
         setSuggestedWords(suggestedWords, isAutoCorrection);
         setAutoCorrectionIndicator(isAutoCorrection);
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private void commitCurrentAutoCorrection(final String separator, final Runnable callback) {
-        // Complete any pending suggestions query first
-        if (mHandler.hasPendingUpdateSuggestions()) {
-            updateSuggestionStrip();
-        }
+    private void completeCommitCurrentAutoCorrection(final String separator) {
         final String typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
         final String typedWord = mWordComposer.getTypedWord();
         final String autoCorrection = (typedAutoCorrection != null)
@@ -2588,9 +2589,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         typedWord, autoCorrection));
             }
         }
-        if (callback != null) {
-            callback.run();
-        }
+    }
+
+    private void commitCurrentAutoCorrection(final String separator, final Runnable callback) {
+        getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
+                new OnGetSuggestedWordsCallback() {
+                    @Override
+                    public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                        if (suggestedWords != null) {
+                            setAutoCorrection(suggestedWords);
+                        }
+                        completeCommitCurrentAutoCorrection(separator);
+                        if (callback != null) {
+                            callback.run();
+                        }
+                    }
+                });
     }
 
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
