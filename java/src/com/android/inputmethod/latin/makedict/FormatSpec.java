@@ -112,8 +112,10 @@ public final class FormatSpec {
      * e | 1 byte = bbbbbbbb match
      * n |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
      * t |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
-     * a |
-     * ddress
+     * a | This address is relative to the head of the PtNode.
+     * d | If the node doesn't have a parent, this field is set to 0.
+     * d |
+     * ress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use PtNodeInfo for i/o helpers
@@ -132,17 +134,18 @@ public final class FormatSpec {
      * i |   1 byte = bbbbbbbb match
      * l |     case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
      * d |     otherwise => (bbbbbbbb<<16) + (next byte << 8) + next byte
-     * r | ELSIF 00 = FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS == addressType
-     * e |   // nothing
-     * n | ELSIF 01 = FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE == addressType
-     * A |   children address, 1 byte
-     * d | ELSIF 10 = FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES == addressType
-     * d |   children address, 2 bytes
-     * r | ELSE // 11 = FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES = addressType
-     * e |   children address, 3 bytes
-     * s | END
-     * s
-     * ress
+     * r |   if this node doesn't have children, this field is set to 0.
+     * e |     (see BinaryDictEncoderUtils#writeVariableSignedAddress)
+     * n | ELSIF 00 = FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS == addressType
+     * a |   // nothing
+     * d | ELSIF 01 = FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE == addressType
+     * d |   children address, 1 byte
+     * r | ELSIF 10 = FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES == addressType
+     * e |   children address, 2 bytes
+     * s | ELSE // 11 = FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES = addressType
+     * s |   children address, 3 bytes
+     *   | END
+     *   | This address is relative to the position of this field.
      *
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
      *   | shortcut string list
