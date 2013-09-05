@@ -66,27 +66,10 @@ class BufferWithExtendableBuffer {
      * Writing is allowed for original buffer, already written region of additional buffer and the
      * tail of additional buffer.
      */
-    AK_FORCE_INLINE bool writeUintAndAdvancePosition(const uint32_t data, const int size,
-            int *const pos) {
-        if (!(size >= 1 && size <= 4)) {
-            AKLOGI("writeUintAndAdvancePosition() is called with invalid size: %d", size);
-            ASSERT(false);
-            return false;
-        }
-        if (!checkAndPrepareWriting(*pos, size)) {
-            return false;
-        }
-        const bool usesAdditionalBuffer = isInAdditionalBuffer(*pos);
-        uint8_t *const buffer = usesAdditionalBuffer ? &mAdditionalBuffer[0] : mOriginalBuffer;
-        if (usesAdditionalBuffer) {
-            *pos -= mOriginalBufferSize;
-        }
-        ByteArrayUtils::writeUintAndAdvancePosition(buffer, data, size, pos);
-        if (usesAdditionalBuffer) {
-            *pos += mOriginalBufferSize;
-        }
-        return true;
-    }
+    bool writeUintAndAdvancePosition(const uint32_t data, const int size, int *const pos);
+
+    bool writeCodePointsAndAdvancePosition(const int *const codePoints, const int codePointCount,
+            const bool writesTerminator, int *const pos);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
@@ -112,29 +95,7 @@ class BufferWithExtendableBuffer {
 
     // Returns if it is possible to write size-bytes from pos. When pos is at the tail position of
     // the additional buffer, try extending the buffer.
-    AK_FORCE_INLINE bool checkAndPrepareWriting(const int pos, const int size) {
-        if (isInAdditionalBuffer(pos)) {
-            if (pos == mUsedAdditionalBufferSize) {
-                // Append data to the tail.
-                if (pos + size > static_cast<int>(mAdditionalBuffer.size())) {
-                    // Need to extend buffer.
-                    if (!extendBuffer()) {
-                        return false;
-                    }
-                }
-                mUsedAdditionalBufferSize += size;
-            } else if (pos + size >= mUsedAdditionalBufferSize) {
-                // The access will beyond the tail of used region.
-                return false;
-            }
-        } else {
-            if (pos < 0 || mOriginalBufferSize < pos + size) {
-                // Invalid position or violate the boundary.
-                return false;
-            }
-        }
-        return true;
-    }
+    AK_FORCE_INLINE bool checkAndPrepareWriting(const int pos, const int size);
 };
 }
 #endif /* LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H */

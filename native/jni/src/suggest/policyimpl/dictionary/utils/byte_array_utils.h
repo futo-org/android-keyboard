@@ -115,7 +115,7 @@ class ByteArrayUtils {
     }
 
     /**
-     * Code Point
+     * Code Point Reading
      *
      * 1 byte = bbbbbbbb match
      * case 000xxxxx: xxxxx << 16 + next byte << 8 + next byte
@@ -149,7 +149,7 @@ class ByteArrayUtils {
     }
 
     /**
-     * String (array of code points)
+     * String (array of code points) Reading
      *
      * Reads code points until the terminator is found.
      */
@@ -174,6 +174,51 @@ class ByteArrayUtils {
             codePoint = readCodePointAndAdvancePosition(buffer, pos);
         }
         return length;
+    }
+
+    /**
+     * String (array of code points) Writing
+     */
+    static void writeCodePointsAndAdvancePosition(uint8_t *const buffer,
+            const int *const codePoints, const int codePointCount, const bool writesTerminator,
+            int *const pos) {
+        for (int i = 0; i < codePointCount; ++i) {
+            const int codePoint = codePoints[i];
+            if (codePoint == NOT_A_CODE_POINT || codePoint == CHARACTER_ARRAY_TERMINATOR) {
+                break;
+            } else if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+                // three bytes character.
+                writeUint24AndAdvancePosition(buffer, codePoint, pos);
+            } else {
+                // one byte character.
+                writeUint8AndAdvancePosition(buffer, codePoint, pos);
+            }
+        }
+        if (writesTerminator) {
+            writeUint8AndAdvancePosition(buffer, CHARACTER_ARRAY_TERMINATOR, pos);
+        }
+    }
+
+    static int calculateRequiredByteCountToStoreCodePoints(const int *const codePoints,
+            const int codePointCount, const bool writesTerminator) {
+        int byteCount = 0;
+        for (int i = 0; i < codePointCount; ++i) {
+            const int codePoint = codePoints[i];
+            if (codePoint == NOT_A_CODE_POINT || codePoint == CHARACTER_ARRAY_TERMINATOR) {
+                break;
+            } else if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+                // three bytes character.
+                byteCount += 3;
+            } else {
+                // one byte character.
+                byteCount += 1;
+            }
+        }
+        if (writesTerminator) {
+            // The terminator is one byte.
+            byteCount += 1;
+        }
+        return byteCount;
     }
 
  private:

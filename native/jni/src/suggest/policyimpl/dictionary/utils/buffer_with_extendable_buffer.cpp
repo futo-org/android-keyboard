@@ -22,4 +22,70 @@ const size_t BufferWithExtendableBuffer::INITIAL_ADDITIONAL_BUFFER_SIZE = 16 * 1
 const size_t BufferWithExtendableBuffer::MAX_ADDITIONAL_BUFFER_SIZE = 1024 * 1024;
 const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 16 * 1024;
 
+bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data, const int size,
+        int *const pos) {
+    if (!(size >= 1 && size <= 4)) {
+        AKLOGI("writeUintAndAdvancePosition() is called with invalid size: %d", size);
+        ASSERT(false);
+        return false;
+    }
+    if (!checkAndPrepareWriting(*pos, size)) {
+        return false;
+    }
+    const bool usesAdditionalBuffer = isInAdditionalBuffer(*pos);
+    uint8_t *const buffer = usesAdditionalBuffer ? &mAdditionalBuffer[0] : mOriginalBuffer;
+    if (usesAdditionalBuffer) {
+        *pos -= mOriginalBufferSize;
+    }
+    ByteArrayUtils::writeUintAndAdvancePosition(buffer, data, size, pos);
+    if (usesAdditionalBuffer) {
+        *pos += mOriginalBufferSize;
+    }
+    return true;
+}
+
+bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *const codePoints,
+        const int codePointCount, const bool writesTerminator ,int *const pos) {
+    const size_t size = ByteArrayUtils::calculateRequiredByteCountToStoreCodePoints(
+            codePoints, codePointCount, writesTerminator);
+    if (!checkAndPrepareWriting(*pos, size)) {
+        return false;
+    }
+    const bool usesAdditionalBuffer = isInAdditionalBuffer(*pos);
+    uint8_t *const buffer = usesAdditionalBuffer ? &mAdditionalBuffer[0] : mOriginalBuffer;
+    if (usesAdditionalBuffer) {
+        *pos -= mOriginalBufferSize;
+    }
+    ByteArrayUtils::writeCodePointsAndAdvancePosition(buffer, codePoints, codePointCount,
+            writesTerminator, pos);
+    if (usesAdditionalBuffer) {
+        *pos += mOriginalBufferSize;
+    }
+    return true;
+}
+
+bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int size) {
+    if (isInAdditionalBuffer(pos)) {
+        if (pos == mUsedAdditionalBufferSize) {
+            // Append data to the tail.
+            if (pos + size > static_cast<int>(mAdditionalBuffer.size())) {
+                // Need to extend buffer.
+                if (!extendBuffer()) {
+                    return false;
+                }
+            }
+            mUsedAdditionalBufferSize += size;
+        } else if (pos + size >= mUsedAdditionalBufferSize) {
+            // The access will beyond the tail of used region.
+            return false;
+        }
+    } else {
+        if (pos < 0 || mOriginalBufferSize < pos + size) {
+            // Invalid position or violate the boundary.
+            return false;
+        }
+    }
+    return true;
+}
+
 }
