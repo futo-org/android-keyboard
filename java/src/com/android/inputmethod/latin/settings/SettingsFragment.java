@@ -61,7 +61,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             DBG_USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS
                     || Build.VERSION.SDK_INT <= 18 /* Build.VERSION.JELLY_BEAN_MR2 */;
 
-    private ListPreference mVoicePreference;
+    private CheckBoxPreference mVoiceInputKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThresholdPreference;
     private ListPreference mKeyPreviewPopupDismissDelay;
@@ -107,7 +107,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         SubtypeLocaleUtils.init(context);
         AudioAndHapticFeedbackManager.init(context);
 
-        mVoicePreference = (ListPreference) findPreference(Settings.PREF_VOICE_MODE);
+        mVoiceInputKeyPreference =
+                (CheckBoxPreference) findPreference(Settings.PREF_VOICE_INPUT_KEY);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(Settings.PREF_SHOW_SUGGESTIONS_SETTING);
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -166,7 +167,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
-            generalSettings.removePreference(mVoicePreference);
+            generalSettings.removePreference(mVoiceInputKeyPreference);
         }
 
         final PreferenceGroup advancedSettings =
@@ -243,10 +244,8 @@ public final class SettingsFragment extends InputMethodSettingsFragment
     public void onResume() {
         super.onResume();
         final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        if (isShortcutImeEnabled) {
-            updateVoiceModeSummary();
-        } else {
-            getPreferenceScreen().removePreference(mVoicePreference);
+        if (!isShortcutImeEnabled) {
+            getPreferenceScreen().removePreference(mVoiceInputKeyPreference);
         }
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         final CheckBoxPreference showSetupWizardIcon =
@@ -287,7 +286,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
             LauncherIconVisibilityManager.updateSetupWizardIconVisibility(getActivity());
         }
         ensureConsistencyOfAutoCorrectionSettings();
-        updateVoiceModeSummary();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
@@ -328,12 +326,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         final CharSequence[] entries = lp.getEntries();
         if (entries == null || entries.length <= 0) return;
         lp.setSummary(entries[lp.findIndexOfValue(lp.getValue())]);
-    }
-
-    private void updateVoiceModeSummary() {
-        mVoicePreference.setSummary(
-                getResources().getStringArray(R.array.voice_input_modes_summary)
-                        [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
