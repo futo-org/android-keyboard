@@ -1234,7 +1234,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         int visibleTopY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (visibleKeyboardView.isShown()) {
-            if (mSuggestionStripView.getVisibility() == View.VISIBLE) {
+            // Note that the height of Emoji layout is the same as the height of the main keyboard
+            // and the suggestion strip
+            if (mKeyboardSwitcher.isShowingEmojiKeyboard()
+                    || mSuggestionStripView.getVisibility() == View.VISIBLE) {
                 visibleTopY -= suggestionsHeight;
             }
             final int touchY = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
