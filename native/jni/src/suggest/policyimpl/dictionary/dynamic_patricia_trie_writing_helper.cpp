@@ -19,6 +19,7 @@
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 
 namespace latinime {
