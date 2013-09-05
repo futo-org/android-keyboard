@@ -32,7 +32,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             : mDictBuf(dictBuf), mDictionaryFlags(HeaderReadingUtils::getFlags(dictBuf)),
               mSize(HeaderReadingUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(mDictBuf)),
-              mMultiWordCostMultiplier(readMultipleWordCostMultiplier()) {}
+              mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
+              mUsesForgettingCurve(readUsesForgettingCurveFlag()),
+              mLastUpdatedTime(readLastUpdatedTime()) {}
 
     ~HeaderPolicy() {}
 
@@ -57,6 +59,14 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mMultiWordCostMultiplier;
     }
 
+    AK_FORCE_INLINE bool usesForgettingCurve() const {
+        return mUsesForgettingCurve;
+    }
+
+    AK_FORCE_INLINE int getLastUpdatedTime() const {
+        return mLastUpdatedTime;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
@@ -64,6 +74,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
+    static const char *const USES_FORGETTING_CURVE_KEY;
+    static const char *const LAST_UPDATED_TIME_KEY;
     static const float DEFAULT_MULTIPLE_WORD_COST_MULTIPLIER;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
@@ -72,8 +84,16 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mSize;
     HeaderReadingUtils::AttributeMap mAttributeMap;
     const float mMultiWordCostMultiplier;
+    const bool mUsesForgettingCurve;
+    const int mLastUpdatedTime;
 
     float readMultipleWordCostMultiplier() const;
+
+    bool readUsesForgettingCurveFlag() const;
+
+    int readLastUpdatedTime() const;
+
+    bool getAttributeValueAsInt(const char *const key, int *const outValue) const;
 
     static HeaderReadingUtils::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);
