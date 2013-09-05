@@ -361,12 +361,6 @@ public final class Suggest {
 
         // At second character typed, search the unigrams (scores being affected by bigrams)
         for (final String key : mDictionaries.keySet()) {
-            // Skip User history dictionary for lookup
-            // TODO: The user history dictionary should just override getSuggestionsWithSessionId
-            // to make sure it doesn't return anything and we should remove this test
-            if (key.equals(Dictionary.TYPE_USER_HISTORY)) {
-                continue;
-            }
             final Dictionary dictionary = mDictionaries.get(key);
             suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(wordComposer,
                     prevWordForBigram, proximityInfo, blockOffensiveWords,
