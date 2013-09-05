@@ -1668,15 +1668,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return didAutoCorrect;
     }
 
-    // Called from PointerTracker through the KeyboardActionListener interface
-    @Override
-    public void onTextInput(final String rawText) {
-        mConnection.beginBatchEdit();
-        if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(rawText);
-        } else {
-            resetComposingState(true /* alsoResetLastComposedWord */);
-        }
+    // Called from the end of onTextInput
+    private void completeOnTextInput(final String rawText) {
         mHandler.postUpdateSuggestionStrip();
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS
                 && ResearchLogger.RESEARCH_KEY_OUTPUT_TEXT.equals(rawText)) {
@@ -1699,12 +1692,44 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mEnteredText = text;
     }
 
+    // Called from PointerTracker through the KeyboardActionListener interface
+    @Override
+    public void onTextInput(final String rawText) {
+        mConnection.beginBatchEdit();
+        boolean isReturningAsynchronously = false;
+        if (mWordComposer.isComposingWord()) {
+            commitCurrentAutoCorrection(rawText, new Runnable() {
+                @Override
+                public void run() {
+                    completeOnTextInput(rawText);
+                }
+            });
+            isReturningAsynchronously = true;
+        } else {
+            resetComposingState(true /* alsoResetLastComposedWord */);
+        }
+        if (!isReturningAsynchronously) {
+            completeOnTextInput(rawText);
+        }
+    }
+
+    private void completeOnStartBatchInput(final SettingsValues settingsValues) {
+        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+        if (Character.isLetterOrDigit(codePointBeforeCursor)
+                || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+            mSpaceState = SPACE_STATE_PHANTOM;
+        }
+        mConnection.endBatchEdit();
+        mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+    }
+
     @Override
     public void onStartBatchInput() {
         mInputUpdater.onStartBatchInput();
         mHandler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
         final SettingsValues settingsValues = mSettings.getCurrent();
+        boolean isReturningAsynchronously = false;
         if (mWordComposer.isComposingWord()) {
             if (settingsValues.mIsInternal) {
                 if (mWordComposer.isBatchMode()) {
@@ -1726,19 +1751,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // tapping probably is that the word you intend to type is not in the dictionary,
                 // so we do not attempt to correct, on the assumption that if that was a dictionary
                 // word, the user would probably have gestured instead.
-                commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+                commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR, new Runnable() {
+                    @Override
+                    public void run() {
+                        completeOnStartBatchInput(settingsValues);
+                    }
+                });
+                isReturningAsynchronously = true;
             } else {
                 commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             }
             mExpectingUpdateSelection = true;
         }
-        final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
-        if (Character.isLetterOrDigit(codePointBeforeCursor)
-                || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
-            mSpaceState = SPACE_STATE_PHANTOM;
+        if (!isReturningAsynchronously) {
+            completeOnStartBatchInput(settingsValues);
         }
-        mConnection.endBatchEdit();
-        mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
     private static final class InputUpdater implements Handler.Callback {
@@ -2218,30 +2245,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.updateShiftState();
     }
 
-    // Returns true if we did an autocorrection, false otherwise.
-    private boolean handleSeparator(final int primaryCode, final int x, final int y,
-            final int spaceState) {
-        boolean didAutoCorrect = false;
-        final SettingsValues currentSettings = mSettings.getCurrent();
-        // We avoid sending spaces in languages without spaces if we were composing.
-        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == primaryCode
-                && !currentSettings.mCurrentLanguageHasSpaces && mWordComposer.isComposingWord();
-        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
-            // If we are in the middle of a recorrection, we need to commit the recorrection
-            // first so that we can insert the separator at the current cursor position.
-            resetEntireInputState(mLastSelectionStart);
-        }
-        if (mWordComposer.isComposingWord()) { // May have changed since we stored wasComposing
-            if (currentSettings.mCorrectionEnabled) {
-                final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
-                        : new String(new int[] { primaryCode }, 0, 1);
-                commitCurrentAutoCorrection(separator);
-                didAutoCorrect = true;
-            } else {
-                commitTyped(new String(new int[]{primaryCode}, 0, 1));
-            }
-        }
-
+    private void completeHandleSeparator(final int primaryCode, final int x, final int y,
+            final int spaceState, final SettingsValues currentSettings,
+            final boolean shouldAvoidSendingCode) {
         final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
                 Constants.SUGGESTION_STRIP_COORDINATE == x);
 
@@ -2296,7 +2302,44 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         mKeyboardSwitcher.updateShiftState();
-        return didAutoCorrect;
+    }
+
+    // Returns true if we do an autocorrection, false otherwise.
+    private boolean handleSeparator(final int primaryCode, final int x, final int y,
+            final int spaceState) {
+        boolean doesAutoCorrect = false;
+        final SettingsValues currentSettings = mSettings.getCurrent();
+        // We avoid sending spaces in languages without spaces if we were composing.
+        final boolean shouldAvoidSendingCode = Constants.CODE_SPACE == primaryCode
+                && !currentSettings.mCurrentLanguageHasSpaces && mWordComposer.isComposingWord();
+        if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            // If we are in the middle of a recorrection, we need to commit the recorrection
+            // first so that we can insert the separator at the current cursor position.
+            resetEntireInputState(mLastSelectionStart);
+        }
+        boolean isReturningAsynchronously = false;
+        if (mWordComposer.isComposingWord()) { // May have changed since we stored wasComposing
+            if (currentSettings.mCorrectionEnabled) {
+                final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
+                        : new String(new int[] { primaryCode }, 0, 1);
+                commitCurrentAutoCorrection(separator, new Runnable() {
+                    @Override
+                    public void run() {
+                        completeHandleSeparator(primaryCode, x, y, spaceState, currentSettings,
+                               shouldAvoidSendingCode);
+                    }
+                });
+                doesAutoCorrect = true;
+                isReturningAsynchronously = true;
+            } else {
+                commitTyped(new String(new int[]{primaryCode}, 0, 1));
+            }
+        }
+        if (!isReturningAsynchronously) {
+            completeHandleSeparator(primaryCode, x, y, spaceState, currentSettings,
+                    shouldAvoidSendingCode);
+        }
+        return doesAutoCorrect;
     }
 
     private CharSequence getTextWithUnderline(final String text) {
@@ -2507,7 +2550,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private void commitCurrentAutoCorrection(final String separatorString) {
+    private void commitCurrentAutoCorrection(final String separator, final Runnable callback) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             updateSuggestionStrip();
@@ -2523,16 +2566,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             if (mSettings.isInternal()) {
                 LatinImeLoggerUtils.onAutoCorrection(
-                        typedWord, autoCorrection, separatorString, mWordComposer);
+                        typedWord, autoCorrection, separator, mWordComposer);
             }
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 final SuggestedWords suggestedWords = mSuggestedWords;
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
-                        separatorString, mWordComposer.isBatchMode(), suggestedWords);
+                        separator, mWordComposer.isBatchMode(), suggestedWords);
             }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
-                    separatorString);
+                    separator);
             if (!typedWord.equals(autoCorrection)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened. It has no other effect; in particular
@@ -2544,6 +2587,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
                         typedWord, autoCorrection));
             }
+        }
+        if (callback != null) {
+            callback.run();
         }
     }
 
