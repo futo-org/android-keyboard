@@ -72,7 +72,7 @@ void DynamicPatriciaTrieReadingHelper::followForwardLink() {
     }
     if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.
-        mPos = forwardLinkPosition;
+        mPos += forwardLinkPosition;
         nextNodeArray();
     } else {
         // All node arrays have been read.
