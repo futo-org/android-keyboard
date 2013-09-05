@@ -361,8 +361,10 @@ public final class KeyboardTextsSet {
         /* 103 */ "\u2030",
         /* 104 */ ",",
         /* 105~ */
-        EMPTY, EMPTY, EMPTY, EMPTY,
-        /* ~108 */
+        EMPTY, EMPTY, EMPTY,
+        /* ~107 */
+        // U+2026: "…" HORIZONTAL ELLIPSIS
+        /* 108 */ "\u2026",
         /* 109 */ "\'",
         /* 110 */ "\"",
         /* 111 */ "\"",

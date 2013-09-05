@@ -21,20 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
-        >
-            <key-style
-                latin:styleName="hasShiftedLetterHintStyle"
-                latin:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="hasShiftedLetterHintStyle"
-                latin:keyLabelFlags="hasShiftedLetterHint" />
-        </default>
-    </switch>
     <!-- Functional key styles -->
     <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
     <key-style
