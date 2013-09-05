@@ -106,6 +106,8 @@ public final class KeyboardLayoutSet {
         EditorInfo mEditorInfo;
         boolean mDisableTouchPositionCorrectionDataForTest;
         boolean mVoiceKeyEnabled;
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
@@ -259,6 +261,8 @@ public final class KeyboardLayoutSet {
             return this;
         }
 
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
         public Builder setOptions(final boolean voiceKeyEnabled, final boolean voiceKeyOnMain,
                 final boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
