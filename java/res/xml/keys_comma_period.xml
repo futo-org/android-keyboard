@@ -29,11 +29,13 @@
                 latin:keyLabel="."
                 latin:keyHintLabel="_"
                 latin:moreKeys="_"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel=","
                 latin:keyHintLabel="-"
                 latin:moreKeys="-"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <case
@@ -43,12 +45,14 @@
                 latin:keyLabel="!text/keylabel_for_apostrophe"
                 latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
                 latin:moreKeys="!text/more_keys_for_apostrophe"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
                 latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/more_keys_for_arabic_diacritics"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <case
@@ -59,22 +63,26 @@
                 latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/more_keys_for_apostrophe"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
                 latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/more_keys_for_arabic_diacritics"
+                latin:backgroundType="functional"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key
                 latin:keyLabel="."
                 latin:keyHintLabel="!text/keyhintlabel_for_tablet_period"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_tablet_period" />
             <Key
                 latin:keyLabel="!text/keylabel_for_tablet_comma"
                 latin:keyHintLabel="!text/keyhintlabel_for_tablet_comma"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_tablet_comma" />
         </default>
     </switch>

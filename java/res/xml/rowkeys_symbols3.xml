@@ -22,8 +22,8 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="!"
-        latin:moreKeys="!text/more_keys_for_symbols_exclamation" />
+        latin:keyLabel="*"
+        latin:moreKeys="!text/more_keys_for_star" />
     <switch>
         <case
             latin:languageCode="fa"
@@ -54,8 +54,9 @@
         latin:keyLabel="!text/keylabel_for_symbols_semicolon"
         latin:moreKeys="!text/more_keys_for_symbols_semicolon" />
     <Key
-        latin:keyLabel="/" />
-    <Key
         latin:keyLabel="!text/keylabel_for_symbols_question"
         latin:moreKeys="!text/more_keys_for_symbols_question" />
+    <Key
+        latin:keyLabel="!"
+        latin:moreKeys="!text/more_keys_for_symbols_exclamation" />
 </merge>

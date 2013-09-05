@@ -34,17 +34,23 @@
     <!-- U+221A: "√" SQUARE ROOT -->
     <Key
         latin:keyLabel="&#x221A;" />
-    <!-- U+03C0: "π" GREEK SMALL LETTER PI
-         U+03A0: "Π" GREEK CAPITAL LETTER PI  -->
+    <!-- U+03A0: "Π" GREEK CAPITAL LETTER PI
+         U+03C0: "π" GREEK SMALL LETTER PI  -->
     <Key
-        latin:keyLabel="&#x03C0;"
-        latin:moreKeys="&#x03A0;" />
+        latin:keyLabel="&#x03A0;"
+        latin:moreKeys="&#x03C0;" />
     <!-- U+00F7: "÷" DIVISION SIGN -->
     <Key
         latin:keyLabel="&#x00F7;" />
     <!-- U+00D7: "×" MULTIPLICATION SIGN -->
     <Key
         latin:keyLabel="&#x00D7;" />
-    <include
-        latin:keyboardLayout="@xml/keys_curly_brackets" />
+    <!-- U+00B6: "¶" PILCROW SIGN
+         U+00A7: "§" SECTION SIGN -->
+    <Key
+        latin:keyLabel="&#x00B6;"
+        latin:moreKeys="&#x00A7;" />
+    <!-- U+2206: "∆" INCREMENT -->
+    <Key
+        latin:keyLabel="&#x2206;" />
 </merge>

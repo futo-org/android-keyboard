@@ -21,6 +21,20 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint" />
+        </default>
+    </switch>
     <!-- Base key style for the key which may have settings or tab key as popup key. -->
     <include
         latin:keyboardLayout="@xml/key_styles_f1" />

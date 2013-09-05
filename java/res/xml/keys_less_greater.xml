@@ -30,20 +30,24 @@
             <Key
                 latin:keyLabel="&#x00AB;"
                 latin:code="0x00BB"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_less_than" />
             <Key
                 latin:keyLabel="&#x00BB;"
                 latin:code="0x00AB"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_greater_than" />
         </case>
         <default>
             <Key
                 latin:keyLabel="&lt;"
                 latin:code="!code/key_less_than"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_less_than" />
             <Key
                 latin:keyLabel="&gt;"
                 latin:code="!code/key_greater_than"
+                latin:backgroundType="functional"
                 latin:moreKeys="!text/more_keys_for_greater_than" />
         </default>
     </switch>
