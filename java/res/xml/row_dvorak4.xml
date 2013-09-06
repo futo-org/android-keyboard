@@ -65,7 +65,7 @@
         </switch>
         <include
             latin:keyXPos="25%p"
-            latin:keyboardLayout="@xml/key_space" />
+            latin:keyboardLayout="@xml/key_space_5kw" />
         <Key
             latin:keyLabel="z"
             latin:keyLabelFlags="hasPopupHint"
