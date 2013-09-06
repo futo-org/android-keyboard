@@ -56,6 +56,15 @@ class DynamicPatriciaTrieReadingUtils {
         return FLAG_IS_DELETED == (MASK_MOVED & flags);
     }
 
+    static AK_FORCE_INLINE NodeFlags updateAndGetFlags(const NodeFlags originalFlags,
+            const bool isMoved, const bool isDeleted) {
+        NodeFlags flags = originalFlags;
+        flags = isMoved ? ((flags & (!MASK_MOVED)) | FLAG_IS_MOVED) : flags;
+        flags = isDeleted ? ((flags & (!MASK_MOVED)) | FLAG_IS_DELETED) : flags;
+        flags = (!isMoved && !isDeleted) ? ((flags & (!MASK_MOVED)) | FLAG_IS_NOT_MOVED) : flags;
+        return flags;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieReadingUtils);
 
