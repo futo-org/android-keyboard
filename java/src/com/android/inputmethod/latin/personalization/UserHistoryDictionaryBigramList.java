@@ -97,6 +97,10 @@ public final class UserHistoryDictionaryBigramList {
         return mBigramMap.isEmpty();
     }
 
+    public boolean containsKey(String word) {
+        return mBigramMap.containsKey(word);
+    }
+
     public Set<String> keySet() {
         return mBigramMap.keySet();
     }

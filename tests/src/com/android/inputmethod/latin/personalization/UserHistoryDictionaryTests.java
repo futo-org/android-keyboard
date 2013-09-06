@@ -82,14 +82,29 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         }
     }
 
+    /**
+     * @param checksContents if true, checks whether written words are actually in the dictionary
+     * or not.
+     */
     private void addAndWriteRandomWords(final String testFilenameSuffix, final int numberOfWords,
-            final Random random) {
+            final Random random, final boolean checksContents) {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryPredictionDictionary dict =
                 PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
                         testFilenameSuffix /* locale */, mPrefs);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
+        if (checksContents) {
+            try {
+                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
+            } catch (InterruptedException e) {
+            }
+            for (int i = 0; i < 10 && i < numberOfWords; ++i) {
+                final String word = words.get(i);
+                // This may fail as long as we use tryLock on inserting the bigram words
+                assertTrue(dict.isInDictionaryForTests(word));
+            }
+        }
         // write to file.
         dict.close();
     }
@@ -103,7 +118,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final Random random = new Random(123456);
 
         try {
-            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random);
+            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
+                    true /* checksContents */);
         } finally {
             try {
                 Log.d(TAG, "waiting for writing ...");
@@ -148,7 +164,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 final int index = i % numberOfLanguages;
                 // Switch languages to testFilenameSuffixes[index].
                 addAndWriteRandomWords(testFilenameSuffixes[index],
-                        numberOfWordsInsertedForEachLanguageSwitch, random);
+                        numberOfWordsInsertedForEachLanguageSwitch, random,
+                        false /* checksContents */);
             }
 
             final long end = System.currentTimeMillis();
