@@ -119,6 +119,29 @@ class PatriciaTrieReadingUtils {
         return FLAG_CHILDREN_POSITION_TYPE_NOPOSITION != (MASK_CHILDREN_POSITION_TYPE & flags);
     }
 
+    static AK_FORCE_INLINE NodeFlags createAndGetFlags(const bool isBlacklisted,
+            const bool isNotAWord, const bool isTerminal, const bool hasShortcutTargets,
+            const bool hasBigrams, const bool hasMultipleChars,
+            const int childrenPositionFieldSize) {
+        NodeFlags nodeFlags = 0;
+        nodeFlags = isBlacklisted ? (nodeFlags | FLAG_IS_BLACKLISTED) : nodeFlags;
+        nodeFlags = isNotAWord ? (nodeFlags | FLAG_IS_NOT_A_WORD) : nodeFlags;
+        nodeFlags = isTerminal ? (nodeFlags | FLAG_IS_TERMINAL) : nodeFlags;
+        nodeFlags = hasShortcutTargets ? (nodeFlags | FLAG_HAS_SHORTCUT_TARGETS) : nodeFlags;
+        nodeFlags = hasBigrams ? (nodeFlags | FLAG_HAS_BIGRAMS) : nodeFlags;
+        nodeFlags = hasMultipleChars ? (nodeFlags | FLAG_HAS_MULTIPLE_CHARS) : nodeFlags;
+        if (childrenPositionFieldSize == 1) {
+            nodeFlags |= FLAG_CHILDREN_POSITION_TYPE_ONEBYTE;
+        } else if (childrenPositionFieldSize == 2) {
+            nodeFlags |= FLAG_CHILDREN_POSITION_TYPE_TWOBYTES;
+        } else if (childrenPositionFieldSize == 3) {
+            nodeFlags |= FLAG_CHILDREN_POSITION_TYPE_THREEBYTES;
+        } else {
+            nodeFlags |= FLAG_CHILDREN_POSITION_TYPE_NOPOSITION;
+        }
+        return nodeFlags;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTrieReadingUtils);
 
