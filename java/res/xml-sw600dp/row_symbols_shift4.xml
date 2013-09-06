@@ -31,7 +31,7 @@
         <!-- Here is empty space. -->
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space"
+            latin:keyboardLayout="@xml/key_space_5kw"
             latin:backgroundType="normal" />
         <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
         <Spacer

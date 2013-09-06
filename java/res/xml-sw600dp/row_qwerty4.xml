@@ -34,7 +34,7 @@
             latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space"
+            latin:keyboardLayout="@xml/key_space_5kw"
             latin:backgroundType="normal" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
