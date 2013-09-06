@@ -501,52 +501,52 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Helper method to write a variable-size address to a file.
+     * Helper method to write a children position to a file.
      *
      * @param buffer the buffer to write to.
      * @param index the index in the buffer to write the address to.
-     * @param address the address to write.
+     * @param position the position to write.
      * @return the size in bytes the address actually took.
      */
-    private static int writeVariableAddress(final byte[] buffer, int index, final int address) {
-        switch (getByteSize(address)) {
+    private static int writeChildrenPosition(final byte[] buffer, int index, final int position) {
+        switch (getByteSize(position)) {
         case 1:
-            buffer[index++] = (byte)address;
+            buffer[index++] = (byte)position;
             return 1;
         case 2:
-            buffer[index++] = (byte)(0xFF & (address >> 8));
-            buffer[index++] = (byte)(0xFF & address);
+            buffer[index++] = (byte)(0xFF & (position >> 8));
+            buffer[index++] = (byte)(0xFF & position);
             return 2;
         case 3:
-            buffer[index++] = (byte)(0xFF & (address >> 16));
-            buffer[index++] = (byte)(0xFF & (address >> 8));
-            buffer[index++] = (byte)(0xFF & address);
+            buffer[index++] = (byte)(0xFF & (position >> 16));
+            buffer[index++] = (byte)(0xFF & (position >> 8));
+            buffer[index++] = (byte)(0xFF & position);
             return 3;
         case 0:
             return 0;
         default:
-            throw new RuntimeException("Address " + address + " has a strange size");
+            throw new RuntimeException("Position " + position + " has a strange size");
         }
     }
 
     /**
-     * Helper method to write a variable-size signed address to a file.
+     * Helper method to write a signed children position to a file.
      *
      * @param buffer the buffer to write to.
      * @param index the index in the buffer to write the address to.
-     * @param address the address to write.
+     * @param position the position to write.
      * @return the size in bytes the address actually took.
      */
-    private static int writeVariableSignedAddress(final byte[] buffer, int index,
-            final int address) {
-        if (!BinaryDictIOUtils.hasChildrenAddress(address)) {
+    private static int writeSignedChildrenPosition(final byte[] buffer, int index,
+            final int position) {
+        if (!BinaryDictIOUtils.hasChildrenAddress(position)) {
             buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
         } else {
-            final int absAddress = Math.abs(address);
+            final int absPosition = Math.abs(position);
             buffer[index++] =
-                    (byte)((address < 0 ? FormatSpec.MSB8 : 0) | (0xFF & (absAddress >> 16)));
-            buffer[index++] = (byte)(0xFF & (absAddress >> 8));
-            buffer[index++] = (byte)(0xFF & absAddress);
+                    (byte)((position < 0 ? FormatSpec.MSB8 : 0) | (0xFF & (absPosition >> 16)));
+            buffer[index++] = (byte)(0xFF & (absPosition >> 8));
+            buffer[index++] = (byte)(0xFF & absPosition);
         }
         return 3;
     }
@@ -795,9 +795,9 @@ public class BinaryDictEncoderUtils {
             }
 
             if (formatOptions.mSupportsDynamicUpdate) {
-                index += writeVariableSignedAddress(buffer, index, childrenPosition);
+                index += writeSignedChildrenPosition(buffer, index, childrenPosition);
             } else {
-                index += writeVariableAddress(buffer, index, childrenPosition);
+                index += writeChildrenPosition(buffer, index, childrenPosition);
             }
 
             // Write shortcuts
@@ -835,7 +835,7 @@ public class BinaryDictEncoderUtils {
                     int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
                             bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
                     buffer[index++] = (byte)bigramFlags;
-                    final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
+                    final int bigramShift = writeChildrenPosition(buffer, index, Math.abs(offset));
                     index += bigramShift;
                 }
             }
