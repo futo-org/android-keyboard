@@ -38,8 +38,8 @@ class DynamicPatriciaTrieReadingHelper {
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mIsError(false), mPos(NOT_A_DICT_POS), mNodeCount(0), mPrevTotalCodePointCount(0),
-              mTotalNodeCount(0), mNodeArrayCount(0), mBuffer(buffer),
-              mNodeReader(mBuffer, bigramsPolicy, shortcutsPolicy) {}
+              mTotalNodeCount(0), mNodeArrayCount(0), mPosOfLastForwardLinkField(NOT_A_DICT_POS),
+              mBuffer(buffer), mNodeReader(mBuffer, bigramsPolicy, shortcutsPolicy) {}
 
     ~DynamicPatriciaTrieReadingHelper() {}
 
@@ -62,6 +62,7 @@ class DynamicPatriciaTrieReadingHelper {
             mPrevTotalCodePointCount = 0;
             mTotalNodeCount = 0;
             mNodeArrayCount = 0;
+            mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             nextNodeArray();
             if (!isEnd()) {
                 fetchNodeInfo();
@@ -81,6 +82,7 @@ class DynamicPatriciaTrieReadingHelper {
             mPrevTotalCodePointCount = 0;
             mTotalNodeCount = 1;
             mNodeArrayCount = 1;
+            mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             fetchNodeInfo();
         }
     }
@@ -140,6 +142,7 @@ class DynamicPatriciaTrieReadingHelper {
             mTotalNodeCount = 0;
             mNodeArrayCount = 0;
             mPos = mNodeReader.getChildrenPos();
+            mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             // Read children node array.
             nextNodeArray();
             if (!isEnd()) {
@@ -158,10 +161,15 @@ class DynamicPatriciaTrieReadingHelper {
             mNodeArrayCount = 1;
             mNodeCount = 1;
             mPos = mNodeReader.getParentPos();
+            mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             fetchNodeInfo();
         } else {
             mPos = NOT_A_DICT_POS;
         }
+    }
+
+    AK_FORCE_INLINE int getPosOfLastForwardLinkField() const {
+        return mPosOfLastForwardLinkField;
     }
 
  private:
@@ -177,6 +185,7 @@ class DynamicPatriciaTrieReadingHelper {
     int mPrevTotalCodePointCount;
     int mTotalNodeCount;
     int mNodeArrayCount;
+    int mPosOfLastForwardLinkField;
     const BufferWithExtendableBuffer *const mBuffer;
     DynamicPatriciaTrieNodeReader mNodeReader;
     int mMergedNodeCodePoints[MAX_WORD_LENGTH];
