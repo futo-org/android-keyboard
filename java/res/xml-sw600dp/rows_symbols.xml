@@ -50,12 +50,23 @@
         <Key
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
+        <Key
+            latin:keyLabel="\\" />
+        <Key
+            latin:keyLabel="=" />
         <include
             latin:keyboardLayout="@xml/rowkeys_symbols3" />
         <Key
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_symbols4" />
+    <Row
+        latin:keyWidth="9.0%p"
+    >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="10.0%p" />
+        <include
+            latin:keyboardLayout="@xml/row_symbols4" />
+    </Row>
 </merge>
