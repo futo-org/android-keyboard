@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
 
@@ -134,7 +135,20 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
     return NOT_A_VALID_WORD_POS;
 }
 
-int DynamicPatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
+int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
+        const int bigramProbability) const {
+    // TODO: check mHeaderPolicy.usesForgettingCurve();
+    if (unigramProbability == NOT_A_PROBABILITY) {
+        return NOT_A_PROBABILITY;
+    } else if (bigramProbability == NOT_A_PROBABILITY) {
+        return ProbabilityUtils::backoff(unigramProbability);
+    } else {
+        return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
+                bigramProbability);
+    }
+}
+
+int DynamicPatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_PROBABILITY;
     }
@@ -144,7 +158,7 @@ int DynamicPatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
     if (nodeReader.isDeleted() || nodeReader.isBlacklisted() || nodeReader.isNotAWord()) {
         return NOT_A_PROBABILITY;
     }
-    return nodeReader.getProbability();
+    return getProbability(nodeReader.getProbability(), NOT_A_PROBABILITY);
 }
 
 int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {

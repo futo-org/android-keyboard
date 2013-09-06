@@ -47,7 +47,10 @@ class DictionaryStructureWithBufferPolicy {
     virtual int getTerminalNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const = 0;
 
-    virtual int getUnigramProbability(const int nodePos) const = 0;
+    virtual int getProbability(const int unigramProbability,
+            const int bigramProbability) const = 0;
+
+    virtual int getUnigramProbabilityOfPtNode(const int nodePos) const = 0;
 
     virtual int getShortcutPositionOfNode(const int nodePos) const = 0;
 

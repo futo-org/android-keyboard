@@ -116,10 +116,6 @@ class DicNodeStatePrevWord {
         return mPrevWordStart;
     }
 
-    int16_t getPrevWordProbability() const {
-        return mPrevWordProbability;
-    }
-
     int getPrevWordNodePos() const {
         return mPrevWordNodePos;
     }

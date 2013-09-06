@@ -171,7 +171,9 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 terminalIndex, doubleLetterTerminalIndex, doubleLetterLevel);
         const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
                 + doubleLetterCost;
-        const bool isPossiblyOffensiveWord = terminalDicNode->getProbability() <= 0;
+        const bool isPossiblyOffensiveWord =
+                traverseSession->getDictionaryStructurePolicy()->getProbability(
+                        terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
         const bool isExactMatch = terminalDicNode->isExactMatch();
         const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
         // Heuristic: We exclude freq=0 first-char-uppercase words from exact match.
