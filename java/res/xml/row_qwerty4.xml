@@ -31,7 +31,7 @@
             latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="25%p"
-            latin:keyboardLayout="@xml/key_space" />
+            latin:keyboardLayout="@xml/key_space_5kw" />
         <switch>
             <case
                 latin:languageCode="ar|fa"
