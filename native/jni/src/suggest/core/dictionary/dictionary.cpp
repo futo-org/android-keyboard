@@ -90,7 +90,7 @@ int Dictionary::getProbability(const int *word, int length) const {
     if (NOT_A_VALID_WORD_POS == pos) {
         return NOT_A_PROBABILITY;
     }
-    return getDictionaryStructurePolicy()->getUnigramProbability(pos);
+    return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
 }
 
 bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {
