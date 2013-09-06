@@ -52,10 +52,23 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
+        <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
+        <Key
+            latin:keyLabel="&#x00A1;" />
+        <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
+        <Key
+            latin:keyLabel="&#x00BF;" />
         <Key
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_symbols_shift4" />
+    <Row
+        latin:keyWidth="9.0%p"
+    >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="10%p" />
+        <include
+            latin:keyboardLayout="@xml/row_symbols_shift4" />
+    </Row>
 </merge>

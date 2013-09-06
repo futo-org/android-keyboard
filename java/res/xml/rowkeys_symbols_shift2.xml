@@ -22,8 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyStyle="moreCurrency1KeyStyle"
-        latin:keyXPos="5%p" />
+        latin:keyStyle="moreCurrency1KeyStyle" />
     <Key
         latin:keyStyle="moreCurrency2KeyStyle" />
     <Key

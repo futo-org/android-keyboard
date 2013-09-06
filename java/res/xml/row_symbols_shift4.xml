@@ -17,25 +17,15 @@
 ** limitations under the License.
 */
 -->
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin" >
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
-    <Row
-        latin:keyWidth="10%p"
-    >
-        <Key
-            latin:keyStyle="toAlphaKeyStyle"
-            latin:keyWidth="15%p" />
-        <include
-            latin:keyboardLayout="@xml/keys_less_greater" />
-        <include
-            latin:keyXPos="35%p"
-            latin:keyboardLayout="@xml/key_space_3kw" />
-        <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
-        <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
-    </Row>
+    <include latin:keyboardLayout="@xml/keys_less_greater" />
+    <include
+        latin:keyboardLayout="@xml/key_space_symbols" />
+    <include latin:keyboardLayout="@xml/keys_comma_period" />
+
+    <Key
+        latin:keyStyle="enterKeyStyle"
+        latin:keyWidth="fillRight" />
+
 </merge>
