@@ -56,7 +56,9 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getTerminalNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const;
 
-    int getUnigramProbability(const int nodePos) const;
+    int getProbability(const int unigramProbability, const int bigramProbability) const;
+
+    int getUnigramProbabilityOfPtNode(const int nodePos) const;
 
     int getShortcutPositionOfNode(const int nodePos) const;
 

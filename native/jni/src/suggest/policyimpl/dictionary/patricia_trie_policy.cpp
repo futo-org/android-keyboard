@@ -21,6 +21,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
 
@@ -306,7 +307,19 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
     }
 }
 
-int PatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
+int PatriciaTriePolicy::getProbability(const int unigramProbability,
+        const int bigramProbability) const {
+    if (unigramProbability == NOT_A_PROBABILITY) {
+        return NOT_A_PROBABILITY;
+    } else if (bigramProbability == NOT_A_PROBABILITY) {
+        return ProbabilityUtils::backoff(unigramProbability);
+    } else {
+        return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
+                bigramProbability);
+    }
+}
+
+int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
     if (nodePos == NOT_A_VALID_WORD_POS) {
         return NOT_A_PROBABILITY;
     }
@@ -324,7 +337,8 @@ int PatriciaTriePolicy::getUnigramProbability(const int nodePos) const {
         return NOT_A_PROBABILITY;
     }
     PatriciaTrieReadingUtils::skipCharacters(mDictRoot, flags, MAX_WORD_LENGTH, &pos);
-    return PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
+    return getProbability(PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(
+            mDictRoot, &pos), NOT_A_PROBABILITY);
 }
 
 int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {

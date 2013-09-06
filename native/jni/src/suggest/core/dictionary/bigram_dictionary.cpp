@@ -23,7 +23,6 @@
 #include "defines.h"
 #include "suggest/core/dictionary/binary_dictionary_bigrams_iterator.h"
 #include "suggest/core/dictionary/dictionary.h"
-#include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
 
@@ -131,7 +130,7 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
         // resulting probability is 8 - although in the practice it's never bigger than 3 or 4
         // in very bad cases. This means that sometimes, we'll see some bigrams interverted
         // here, but it can't get too bad.
-        const int probability = ProbabilityUtils::computeProbabilityForBigram(
+        const int probability = mDictionaryStructurePolicy->getProbability(
                 unigramProbability, bigramsIt.getProbability());
         addWordBigram(bigramBuffer, codePointCount, probability, outBigramProbability,
                 outBigramCodePoints, outputTypes);

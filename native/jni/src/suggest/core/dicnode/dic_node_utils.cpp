@@ -21,7 +21,6 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/multi_bigram_map.h"
-#include "suggest/core/dictionary/probability_utils.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "utils/char_utils.h"
 
@@ -93,13 +92,15 @@ namespace latinime {
     if (NOT_A_VALID_WORD_POS == wordPos || NOT_A_VALID_WORD_POS == prevWordPos) {
         // Note: Normally wordPos comes from the dictionary and should never equal
         // NOT_A_VALID_WORD_POS.
-        return ProbabilityUtils::backoff(unigramProbability);
+        return dictionaryStructurePolicy->getProbability(unigramProbability,
+                NOT_A_PROBABILITY);
     }
     if (multiBigramMap) {
         return multiBigramMap->getBigramProbability(dictionaryStructurePolicy, prevWordPos,
                 wordPos, unigramProbability);
     }
-    return ProbabilityUtils::backoff(unigramProbability);
+    return dictionaryStructurePolicy->getProbability(unigramProbability,
+            NOT_A_PROBABILITY);
 }
 
 ////////////////
