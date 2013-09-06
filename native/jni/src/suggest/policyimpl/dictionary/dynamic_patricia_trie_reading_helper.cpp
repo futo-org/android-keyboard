@@ -70,6 +70,7 @@ void DynamicPatriciaTrieReadingHelper::followForwardLink() {
     if (usesAdditionalBuffer) {
         mPos += mBuffer->getOriginalBufferSize();
     }
+    mPosOfLastForwardLinkField = mPos;
     if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.
         mPos += forwardLinkPosition;

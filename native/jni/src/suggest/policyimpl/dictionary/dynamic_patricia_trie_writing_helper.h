@@ -23,6 +23,7 @@ namespace latinime {
 
 class BufferWithExtendableBuffer;
 class DynamicBigramListPolicy;
+class DynamicPatriciaTrieNodeReader;
 class DynamicPatriciaTrieReadingHelper;
 class DynamicShortcutListPolicy;
 
@@ -51,6 +52,17 @@ class DynamicPatriciaTrieWritingHelper {
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
+
+    bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
+            const int movedPos);
+
+    bool writeNodeToBuffer(const bool isBlacklisted, const bool isNotAWord, const int parentPos,
+            const int *const codePoints, const int codePointCount, const int probability,
+            const int childrenPos, const int originalBigramListPos,
+            const int originalShortcutListPos, int *const writingPos);
+
+    bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
+            const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */
