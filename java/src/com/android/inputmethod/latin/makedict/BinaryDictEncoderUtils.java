@@ -721,6 +721,17 @@ public class BinaryDictEncoderUtils {
         }
     }
 
+    private static final int getChildrenPosition(final PtNode ptNode,
+            final FormatOptions formatOptions) {
+        int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
+                + getNodeHeaderSize(ptNode, formatOptions);
+        if (ptNode.mFrequency >= 0) {
+            positionOfChildrenPosField += FormatSpec.PTNODE_FREQUENCY_SIZE;
+        }
+        return null == ptNode.mChildren ? FormatSpec.NO_CHILDREN_ADDRESS
+                : ptNode.mChildren.mCachedAddressAfterUpdate - positionOfChildrenPosField;
+    }
+
     /**
      * Write a PtNodeArray to memory. The PtNodeArray is expected to have its final position cached.
      *
@@ -749,26 +760,22 @@ public class BinaryDictEncoderUtils {
         } else {
             throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
         }
-        int ptNodeAddress = index;
         for (int i = 0; i < ptNodeCount; ++i) {
             final PtNode ptNode = ptNodeArray.mData.get(i);
             if (index != ptNode.mCachedAddressAfterUpdate) {
                 throw new RuntimeException("Bug: write index is not the same as the cached address "
                         + "of the node : " + index + " <> " + ptNode.mCachedAddressAfterUpdate);
             }
-            ptNodeAddress += getNodeHeaderSize(ptNode, formatOptions);
             // Sanity checks.
             if (DBG && ptNode.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > "
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
                         + " : " + ptNode.mFrequency);
             }
-            if (ptNode.mFrequency >= 0) ptNodeAddress += FormatSpec.PTNODE_FREQUENCY_SIZE;
-            final int childrenOffset = null == ptNode.mChildren
-                    ? FormatSpec.NO_CHILDREN_ADDRESS
-                            : ptNode.mChildren.mCachedAddressAfterUpdate - ptNodeAddress;
-            buffer[index++] =
-                    makePtNodeFlags(ptNode, ptNodeAddress, childrenOffset, formatOptions);
+
+            final int childrenPosition = getChildrenPosition(ptNode, formatOptions);
+            buffer[index++] = makePtNodeFlags(ptNode, index, childrenPosition,
+                    formatOptions);
 
             if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
                 index = writeParentAddress(buffer, index, parentAddress, formatOptions);
@@ -787,31 +794,25 @@ public class BinaryDictEncoderUtils {
                 buffer[index++] = (byte) ptNode.mFrequency;
             }
 
-            final int shift;
             if (formatOptions.mSupportsDynamicUpdate) {
-                shift = writeVariableSignedAddress(buffer, index, childrenOffset);
+                index += writeVariableSignedAddress(buffer, index, childrenPosition);
             } else {
-                shift = writeVariableAddress(buffer, index, childrenOffset);
+                index += writeVariableAddress(buffer, index, childrenPosition);
             }
-            index += shift;
-            ptNodeAddress += shift;
 
             // Write shortcuts
             if (null != ptNode.mShortcutTargets && !ptNode.mShortcutTargets.isEmpty()) {
                 final int indexOfShortcutByteSize = index;
                 index += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
-                ptNodeAddress += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
                 final Iterator<WeightedString> shortcutIterator =
                         ptNode.mShortcutTargets.iterator();
                 while (shortcutIterator.hasNext()) {
                     final WeightedString target = shortcutIterator.next();
-                    ++ptNodeAddress;
                     int shortcutFlags = makeShortcutFlags(shortcutIterator.hasNext(),
                             target.mFrequency);
                     buffer[index++] = (byte)shortcutFlags;
                     final int shortcutShift = CharEncoding.writeString(buffer, index, target.mWord);
                     index += shortcutShift;
-                    ptNodeAddress += shortcutShift;
                 }
                 final int shortcutByteSize = index - indexOfShortcutByteSize;
                 if (shortcutByteSize > 0xFFFF) {
@@ -829,14 +830,13 @@ public class BinaryDictEncoderUtils {
                             FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
                     final int addressOfBigram = target.mCachedAddressAfterUpdate;
                     final int unigramFrequencyForThisWord = target.mFrequency;
-                    ++ptNodeAddress;
-                    final int offset = addressOfBigram - ptNodeAddress;
+                    final int offset = addressOfBigram
+                            - (index + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
                     int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
                             bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
                     buffer[index++] = (byte)bigramFlags;
                     final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
                     index += bigramShift;
-                    ptNodeAddress += bigramShift;
                 }
             }
 
@@ -999,7 +999,6 @@ public class BinaryDictEncoderUtils {
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
         final byte[] buffer = new byte[bufferSize];
-        int index = 0;
 
         MakedictLog.i("Writing file...");
         int dataEndOffset = 0;
