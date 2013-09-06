@@ -31,7 +31,7 @@
             latin:keyboardLayout="@xml/keys_less_greater" />
         <include
             latin:keyXPos="35%p"
-            latin:keyboardLayout="@xml/key_space_30" />
+            latin:keyboardLayout="@xml/key_space_3kw" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
