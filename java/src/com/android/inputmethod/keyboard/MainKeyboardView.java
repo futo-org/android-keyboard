@@ -183,6 +183,7 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final NonDistinctMultitouchHelper mNonDistinctMultitouchHelper;
 
     private final KeyTimerHandler mKeyTimerHandler;
+    private final int mLanguageOnSpacebarHorizontalMargin;
 
     private static final class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
             implements TimerProxy {
@@ -512,6 +513,9 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
                 altCodeKeyWhileTypingFadeinAnimatorResId, this);
 
         mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
+
+        mLanguageOnSpacebarHorizontalMargin =
+                (int) getResources().getDimension(R.dimen.language_on_spacebar_horizontal_margin);
     }
 
     @Override
@@ -1188,26 +1192,27 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         }
     }
 
-    private static boolean fitsTextIntoWidth(final int width, final String text,
-            final Paint paint) {
+    private boolean fitsTextIntoWidth(final int width, final String text, final Paint paint) {
+        final int maxTextWidth = width - mLanguageOnSpacebarHorizontalMargin * 2;
         paint.setTextScaleX(1.0f);
         final float textWidth = TypefaceUtils.getLabelWidth(text, paint);
         if (textWidth < width) {
             return true;
         }
 
-        final float scaleX = width / textWidth;
+        final float scaleX = maxTextWidth / textWidth;
         if (scaleX < MINIMUM_XSCALE_OF_LANGUAGE_NAME) {
             return false;
         }
 
         paint.setTextScaleX(scaleX);
-        return TypefaceUtils.getLabelWidth(text, paint) < width;
+        return TypefaceUtils.getLabelWidth(text, paint) < maxTextWidth;
     }
 
     // Layout language name on spacebar.
-    private static String layoutLanguageOnSpacebar(final Paint paint,
+    private String layoutLanguageOnSpacebar(final Paint paint,
             final InputMethodSubtype subtype, final int width) {
+
         // Choose appropriate language name to fit into the width.
         final String fullText = SubtypeLocaleUtils.getFullDisplayName(subtype);
         if (fitsTextIntoWidth(width, fullText, paint)) {
