@@ -27,7 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Encodes binary files for a FusionDictionary.
@@ -432,7 +431,7 @@ public class BinaryDictEncoderUtils {
      * @param formatOptions file format options.
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
-    private static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
+    /* package */ static ArrayList<PtNodeArray> computeAddresses(final FusionDictionary dict,
             final ArrayList<PtNodeArray> flatNodes, final FormatOptions formatOptions) {
         // First get the worst possible sizes and offsets
         for (final PtNodeArray n : flatNodes) calculatePtNodeArrayMaximumSize(n, formatOptions);
@@ -484,7 +483,7 @@ public class BinaryDictEncoderUtils {
      *
      * @param arrays the list of node arrays to check
      */
-    private static void checkFlatPtNodeArrayList(final ArrayList<PtNodeArray> arrays) {
+    /* package */ static void checkFlatPtNodeArrayList(final ArrayList<PtNodeArray> arrays) {
         int offset = 0;
         int index = 0;
         for (final PtNodeArray ptNodeArray : arrays) {
@@ -508,7 +507,8 @@ public class BinaryDictEncoderUtils {
      * @param position the position to write.
      * @return the size in bytes the address actually took.
      */
-    private static int writeChildrenPosition(final byte[] buffer, int index, final int position) {
+    /* package */ static int writeChildrenPosition(final byte[] buffer, int index,
+            final int position) {
         switch (getByteSize(position)) {
         case 1:
             buffer[index++] = (byte)position;
@@ -537,7 +537,7 @@ public class BinaryDictEncoderUtils {
      * @param position the position to write.
      * @return the size in bytes the address actually took.
      */
-    private static int writeSignedChildrenPosition(final byte[] buffer, int index,
+    /* package */ static int writeSignedChildrenPosition(final byte[] buffer, int index,
             final int position) {
         if (!BinaryDictIOUtils.hasChildrenAddress(position)) {
             buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
@@ -598,7 +598,7 @@ public class BinaryDictEncoderUtils {
         return flags;
     }
 
-    private static byte makePtNodeFlags(final PtNode node, final int ptNodeAddress,
+    /* package */ static byte makePtNodeFlags(final PtNode node, final int ptNodeAddress,
             final int childrenOffset, final FormatOptions formatOptions) {
         return (byte) makePtNodeFlags(node.mChars.length > 1, node.mFrequency >= 0,
                 getByteSize(childrenOffset),
@@ -616,7 +616,7 @@ public class BinaryDictEncoderUtils {
      * @param word the second bigram, for debugging purposes
      * @return the flags
      */
-    private static final int makeBigramFlags(final boolean more, final int offset,
+    /* package */ static final int makeBigramFlags(final boolean more, final int offset,
             int bigramFrequency, final int unigramFrequency, final String word) {
         int bigramFlags = (more ? FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT : 0)
                 + (offset < 0 ? FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE : 0);
@@ -702,7 +702,7 @@ public class BinaryDictEncoderUtils {
                 + (frequency & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY);
     }
 
-    private static final int writeParentAddress(final byte[] buffer, final int index,
+    /* package */ static final int writeParentAddress(final byte[] buffer, final int index,
             final int address, final FormatOptions formatOptions) {
         if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
             if (address == FormatSpec.NO_PARENT_ADDRESS) {
@@ -721,7 +721,7 @@ public class BinaryDictEncoderUtils {
         }
     }
 
-    private static final int getChildrenPosition(final PtNode ptNode,
+    /* package */ static final int getChildrenPosition(final PtNode ptNode,
             final FormatOptions formatOptions) {
         int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
                 + getNodeHeaderSize(ptNode, formatOptions);
@@ -736,35 +736,29 @@ public class BinaryDictEncoderUtils {
      * Write a PtNodeArray to memory. The PtNodeArray is expected to have its final position cached.
      *
      * @param dict the dictionary the node array is a part of (for relative offsets).
-     * @param buffer the memory buffer to write to.
+     * @param dictEncoder the dictionary encoder.
      * @param ptNodeArray the node array to write.
      * @param formatOptions file format options.
-     * @return the address of the END of the node.
      */
     @SuppressWarnings("unused")
-    private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
-            final PtNodeArray ptNodeArray, final FormatOptions formatOptions) {
+    /* package */ static void writePlacedNode(final FusionDictionary dict,
+            final DictEncoder dictEncoder, final PtNodeArray ptNodeArray,
+            final FormatOptions formatOptions) {
         // TODO: Make the code in common with BinaryDictIOUtils#writePtNode
-        int index = ptNodeArray.mCachedAddressAfterUpdate;
+        dictEncoder.setPosition(ptNodeArray.mCachedAddressAfterUpdate);
 
         final int ptNodeCount = ptNodeArray.mData.size();
-        final int countSize = getPtNodeCountSize(ptNodeArray);
-        final int parentAddress = ptNodeArray.mCachedParentAddress;
-        if (1 == countSize) {
-            buffer[index++] = (byte)ptNodeCount;
-        } else if (2 == countSize) {
-            // We need to signal 2-byte size by setting the top bit of the MSB to 1, so
-            // we | 0x80 to do this.
-            buffer[index++] = (byte)((ptNodeCount >> 8) | 0x80);
-            buffer[index++] = (byte)(ptNodeCount & 0xFF);
-        } else {
-            throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
-        }
+        dictEncoder.writePtNodeCount(ptNodeCount);
+        final int parentPosition =
+                (ptNodeArray.mCachedParentAddress == FormatSpec.NO_PARENT_ADDRESS)
+                ? FormatSpec.NO_PARENT_ADDRESS
+                : ptNodeArray.mCachedParentAddress + ptNodeArray.mCachedAddressAfterUpdate;
         for (int i = 0; i < ptNodeCount; ++i) {
             final PtNode ptNode = ptNodeArray.mData.get(i);
-            if (index != ptNode.mCachedAddressAfterUpdate) {
+            if (dictEncoder.getPosition() != ptNode.mCachedAddressAfterUpdate) {
                 throw new RuntimeException("Bug: write index is not the same as the cached address "
-                        + "of the node : " + index + " <> " + ptNode.mCachedAddressAfterUpdate);
+                        + "of the node : " + dictEncoder.getPosition() + " <> "
+                        + ptNode.mCachedAddressAfterUpdate);
             }
             // Sanity checks.
             if (DBG && ptNode.mFrequency > FormatSpec.MAX_TERMINAL_FREQUENCY) {
@@ -773,85 +767,23 @@ public class BinaryDictEncoderUtils {
                         + " : " + ptNode.mFrequency);
             }
 
-            final int childrenPosition = getChildrenPosition(ptNode, formatOptions);
-            buffer[index++] = makePtNodeFlags(ptNode, index, childrenPosition,
-                    formatOptions);
-
-            if (parentAddress == FormatSpec.NO_PARENT_ADDRESS) {
-                index = writeParentAddress(buffer, index, parentAddress, formatOptions);
-            } else {
-                index = writeParentAddress(buffer, index, parentAddress
-                        + (ptNodeArray.mCachedAddressAfterUpdate
-                                - ptNode.mCachedAddressAfterUpdate),
-                        formatOptions);
-            }
-
-            index = CharEncoding.writeCharArray(ptNode.mChars, buffer, index);
-            if (ptNode.hasSeveralChars()) {
-                buffer[index++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
-            }
-            if (ptNode.mFrequency >= 0) {
-                buffer[index++] = (byte) ptNode.mFrequency;
-            }
-
-            if (formatOptions.mSupportsDynamicUpdate) {
-                index += writeSignedChildrenPosition(buffer, index, childrenPosition);
-            } else {
-                index += writeChildrenPosition(buffer, index, childrenPosition);
-            }
-
-            // Write shortcuts
-            if (null != ptNode.mShortcutTargets && !ptNode.mShortcutTargets.isEmpty()) {
-                final int indexOfShortcutByteSize = index;
-                index += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
-                final Iterator<WeightedString> shortcutIterator =
-                        ptNode.mShortcutTargets.iterator();
-                while (shortcutIterator.hasNext()) {
-                    final WeightedString target = shortcutIterator.next();
-                    int shortcutFlags = makeShortcutFlags(shortcutIterator.hasNext(),
-                            target.mFrequency);
-                    buffer[index++] = (byte)shortcutFlags;
-                    final int shortcutShift = CharEncoding.writeString(buffer, index, target.mWord);
-                    index += shortcutShift;
-                }
-                final int shortcutByteSize = index - indexOfShortcutByteSize;
-                if (shortcutByteSize > 0xFFFF) {
-                    throw new RuntimeException("Shortcut list too large");
-                }
-                buffer[indexOfShortcutByteSize] = (byte)(shortcutByteSize >> 8);
-                buffer[indexOfShortcutByteSize + 1] = (byte)(shortcutByteSize & 0xFF);
-            }
-            // Write bigrams
-            if (null != ptNode.mBigrams) {
-                final Iterator<WeightedString> bigramIterator = ptNode.mBigrams.iterator();
-                while (bigramIterator.hasNext()) {
-                    final WeightedString bigram = bigramIterator.next();
-                    final PtNode target =
-                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
-                    final int addressOfBigram = target.mCachedAddressAfterUpdate;
-                    final int unigramFrequencyForThisWord = target.mFrequency;
-                    final int offset = addressOfBigram
-                            - (index + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-                    int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
-                            bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
-                    buffer[index++] = (byte)bigramFlags;
-                    final int bigramShift = writeChildrenPosition(buffer, index, Math.abs(offset));
-                    index += bigramShift;
-                }
-            }
-
+            dictEncoder.writePtNodeFlags(ptNode, parentPosition, formatOptions);
+            dictEncoder.writeParentPosition(parentPosition, ptNode, formatOptions);
+            dictEncoder.writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
+            dictEncoder.writeFrequency(ptNode.mFrequency);
+            dictEncoder.writeChildrenPosition(ptNode, formatOptions);
+            dictEncoder.writeShortcuts(ptNode.mShortcutTargets);
+            dictEncoder.writeBigrams(ptNode.mBigrams, dict);
         }
         if (formatOptions.mSupportsDynamicUpdate) {
-            buffer[index] = buffer[index + 1] = buffer[index + 2]
-                    = FormatSpec.NO_FORWARD_LINK_ADDRESS;
-            index += FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
+            dictEncoder.writeForwardLinkAddress(FormatSpec.NO_FORWARD_LINK_ADDRESS);
         }
-        if (index != ptNodeArray.mCachedAddressAfterUpdate + ptNodeArray.mCachedSize) {
-            throw new RuntimeException(
-                    "Not the same size : written " + (index - ptNodeArray.mCachedAddressAfterUpdate)
+        if (dictEncoder.getPosition() != ptNodeArray.mCachedAddressAfterUpdate
+                + ptNodeArray.mCachedSize) {
+            throw new RuntimeException("Not the same size : written "
+                     + (dictEncoder.getPosition() - ptNodeArray.mCachedAddressAfterUpdate)
                      + " bytes from a node that should have " + ptNodeArray.mCachedSize + " bytes");
         }
-        return index;
     }
 
     /**
@@ -862,7 +794,7 @@ public class BinaryDictEncoderUtils {
      *
      * @param ptNodeArrays the list of PtNode arrays.
      */
-    private static void showStatistics(ArrayList<PtNodeArray> ptNodeArrays) {
+    /* package */ static void showStatistics(ArrayList<PtNodeArray> ptNodeArrays) {
         int firstTerminalAddress = Integer.MAX_VALUE;
         int lastTerminalAddress = Integer.MIN_VALUE;
         int size = 0;
@@ -967,50 +899,5 @@ public class BinaryDictEncoderUtils {
         destination.write(bytes);
 
         headerBuffer.close();
-    }
-
-    /**
-     * Dumps a FusionDictionary to a file.
-     *
-     * @param destination the stream to write the dictionary body to.
-     * @param dict the dictionary to write.
-     * @param formatOptions file format options.
-     */
-    /* package */ static void writeDictionaryBody(final OutputStream destination,
-            final FusionDictionary dict, final FormatOptions formatOptions) throws IOException {
-
-        // Addresses are limited to 3 bytes, but since addresses can be relative to each node
-        // array, the structure itself is not limited to 16MB. However, if it is over 16MB deciding
-        // the order of the PtNode arrays becomes a quite complicated problem, because though the
-        // dictionary itself does not have a size limit, each node array must still be within 16MB
-        // of all its children and parents. As long as this is ensured, the dictionary file may
-        // grow to any size.
-
-        // Leave the choice of the optimal node order to the flattenTree function.
-        MakedictLog.i("Flattening the tree...");
-        ArrayList<PtNodeArray> flatNodes = flattenTree(dict.mRootNodeArray);
-
-        MakedictLog.i("Computing addresses...");
-        computeAddresses(dict, flatNodes, formatOptions);
-        MakedictLog.i("Checking PtNode array...");
-        if (DBG) checkFlatPtNodeArrayList(flatNodes);
-
-        // Create a buffer that matches the final dictionary size.
-        final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
-        final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
-        final byte[] buffer = new byte[bufferSize];
-
-        MakedictLog.i("Writing file...");
-        int dataEndOffset = 0;
-        for (PtNodeArray nodeArray : flatNodes) {
-            dataEndOffset = writePlacedNode(dict, buffer, nodeArray, formatOptions);
-        }
-
-        if (DBG) showStatistics(flatNodes);
-
-        destination.write(buffer, 0, dataEndOffset);
-
-        destination.close();
-        MakedictLog.i("Done");
     }
 }
