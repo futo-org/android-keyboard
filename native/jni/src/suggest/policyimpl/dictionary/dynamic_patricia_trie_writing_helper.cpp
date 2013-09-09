@@ -26,6 +26,9 @@
 
 namespace latinime {
 
+// TODO: Enable dynamic update and remove this flag.
+const bool DynamicPatriciaTrieWritingHelper::ENABLE_DYNAMIC_UPDATE = false;
+
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability) {
@@ -56,12 +59,12 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         }
         // All characters are matched.
         if (codePointCount == readingHelper->getTotalCodePointCount()) {
-            if (nodeReader->isTerminal()) {
-                // TODO: Update probability.
+            if (ENABLE_DYNAMIC_UPDATE) {
+                setPtNodeProbability(nodeReader, probability,
+                        readingHelper->getMergedNodeCodePoints());
             } else {
-                // TODO: Make it terminal and update probability.
+                return false;
             }
-            return false;
         }
         if (!nodeReader->hasChildren()) {
             // TODO: Create children node array and add new node as a child.
@@ -76,12 +79,14 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         return false;
     }
     int pos = readingHelper->getPosOfLastForwardLinkField();
-    // TODO: Remove.
-    return false;
-    return createAndInsertNodeIntoPtNodeArray(parentPos,
-            wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
-            codePointCount - readingHelper->getPrevTotalCodePointCount(),
-            probability, &pos);
+    if (ENABLE_DYNAMIC_UPDATE) {
+        return createAndInsertNodeIntoPtNodeArray(parentPos,
+                wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
+                codePointCount - readingHelper->getPrevTotalCodePointCount(),
+                probability, &pos);
+    } else {
+        return false;
+    }
 }
 
 bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const int word1Pos,
@@ -210,6 +215,32 @@ bool DynamicPatriciaTrieWritingHelper::createAndInsertNodeIntoPtNodeArray(const 
     if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
         return false;
+    }
+    return true;
+}
+
+bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
+        const DynamicPatriciaTrieNodeReader *const originalPtNode, const int probability,
+        const int *const codePoints) {
+    if (originalPtNode->isTerminal()) {
+        // Overwrites the probability.
+        int probabilityFieldPos = originalPtNode->getProbabilityFieldPos();
+        if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
+                probability, &probabilityFieldPos)) {
+            return false;
+        }
+    } else {
+        // Make the node terminal and write the probability.
+        int movedPos = mBuffer->getTailPosition();
+        if (!markNodeAsMovedAndSetPosition(originalPtNode, movedPos)) {
+            return false;
+        }
+        if (!writeNodeToBuffer(originalPtNode->isBlacklisted(), originalPtNode->isNotAWord(),
+                originalPtNode->getParentPos(), codePoints, originalPtNode->getCodePointCount(),
+                probability, originalPtNode->getChildrenPos(), originalPtNode->getBigramsPos(),
+                originalPtNode->getShortcutPos(), &movedPos)) {
+            return false;
+        }
     }
     return true;
 }
