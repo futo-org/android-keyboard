@@ -69,7 +69,7 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
         mPrefs = sp;
         if (mLocale != null && mLocale.length() > 1) {
             asyncLoadDictionaryToMemory();
-            asyncReloadDictionaryIfRequired();
+            reloadDictionaryIfRequired();
         }
     }
 

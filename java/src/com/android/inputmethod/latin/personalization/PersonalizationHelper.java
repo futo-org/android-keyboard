@@ -52,7 +52,7 @@ public class PersonalizationHelper {
                     if (DEBUG) {
                         Log.w(TAG, "Use cached UserHistoryPredictionDictionary for " + locale);
                     }
-                    dict.asyncReloadDictionaryIfRequired();
+                    dict.reloadDictionaryIfRequired();
                     return dict;
                 }
             }
