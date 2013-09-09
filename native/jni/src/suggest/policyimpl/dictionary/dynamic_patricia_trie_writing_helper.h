@@ -67,6 +67,13 @@ class DynamicPatriciaTrieWritingHelper {
 
     bool setPtNodeProbability(const DynamicPatriciaTrieNodeReader *const originalNode,
             const int probability, const int *const codePoints);
+
+    bool createChildrenPtNodeArrayAndAChildPtNode(
+            const DynamicPatriciaTrieNodeReader *const parentNode, const int probability,
+            const int *const codePoints, const int codePointCount);
+
+    bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
+            const int nodeCodePointCount, const int probability);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */
