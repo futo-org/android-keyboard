@@ -84,11 +84,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to support dynamically updating the dictionary */
     private final boolean mIsUpdatable;
 
-    // TODO: remove, once dynamic operations will be serialized
+    // TODO: remove, once dynamic operations is serialized
     /** Controls access to the shared binary dictionary file across multiple instances. */
     private final DictionaryController mSharedDictionaryController;
 
-    // TODO: remove, once dynamic operations will be serialized
+    // TODO: remove, once dynamic operations is serialized
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
