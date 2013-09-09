@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.personalization;
 
 import android.content.Context;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.AbstractDictionaryWriter;
 import com.android.inputmethod.latin.ExpandableDictionary;
@@ -155,5 +156,11 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     @Override
     public boolean isValidWord(final String word) {
         return mExpandableDictionary.isValidWord(word);
+    }
+
+    @UsedForTesting
+    public boolean isInDictionaryForTests(final String word) {
+        // TODO: Use native method to determine whether the word is in dictionary or not
+        return mBigramList.containsKey(word);
     }
 }

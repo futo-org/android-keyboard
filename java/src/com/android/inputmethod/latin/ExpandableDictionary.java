@@ -265,10 +265,10 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? false : !node.mShortcutOnly;
     }
 
-    public boolean removeBigram(final String word1, final String word2) {
+    public boolean removeBigram(final String word0, final String word1) {
         // Refer to addOrSetBigram() about word1.toLowerCase()
-        final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
-        final Node secondWord = searchWord(mRoots, word2, 0, null);
+        final Node firstWord = searchWord(mRoots, word0.toLowerCase(), 0, null);
+        final Node secondWord = searchWord(mRoots, word1, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         NextWord bigramNode = null;
         if (bigrams == null || bigrams.size() == 0) {
@@ -297,10 +297,10 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? -1 : node.mFrequency;
     }
 
-    public NextWord getBigramWord(final String word1, final String word2) {
-        // Refer to addOrSetBigram() about word1.toLowerCase()
-        final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
-        final Node secondWord = searchWord(mRoots, word2, 0, null);
+    public NextWord getBigramWord(final String word0, final String word1) {
+        // Refer to addOrSetBigram() about word0.toLowerCase()
+        final Node firstWord = searchWord(mRoots, word0.toLowerCase(), 0, null);
+        final Node secondWord = searchWord(mRoots, word1, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         if (bigrams == null || bigrams.size() == 0) {
             return null;
@@ -473,37 +473,41 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    public int setBigramAndGetFrequency(final String word1, final String word2,
+    public int setBigramAndGetFrequency(final String word0, final String word1,
             final int frequency) {
-        return setBigramAndGetFrequency(word1, word2, frequency, null /* unused */);
+        return setBigramAndGetFrequency(word0, word1, frequency, null /* unused */);
     }
 
-    public int setBigramAndGetFrequency(final String word1, final String word2,
+    public int setBigramAndGetFrequency(final String word0, final String word1,
             final ForgettingCurveParams fcp) {
-        return setBigramAndGetFrequency(word1, word2, 0 /* unused */, fcp);
+        return setBigramAndGetFrequency(word0, word1, 0 /* unused */, fcp);
     }
 
     /**
      * Adds bigrams to the in-memory trie structure that is being used to retrieve any word
-     * @param word1 the first word of this bigram
-     * @param word2 the second word of this bigram
+     * @param word0 the first word of this bigram
+     * @param word1 the second word of this bigram
      * @param frequency frequency for this bigram
      * @param fcp an instance of ForgettingCurveParams to use for decay policy
      * @return returns the final bigram frequency
      */
-    private int setBigramAndGetFrequency(final String word1, final String word2,
+    private int setBigramAndGetFrequency(final String word0, final String word1,
             final int frequency, final ForgettingCurveParams fcp) {
+        if (TextUtils.isEmpty(word0)) {
+            Log.e(TAG, "Invalid bigram previous word: " + word0);
+            return frequency;
+        }
         // We don't want results to be different according to case of the looked up left hand side
         // word. We do want however to return the correct case for the right hand side.
         // So we want to squash the case of the left hand side, and preserve that of the right
         // hand side word.
-        final String word1Lower = word1.toLowerCase();
-        if (TextUtils.isEmpty(word1Lower) || TextUtils.isEmpty(word2)) {
-            Log.e(TAG, "Invalid bigram pair: " + word1 + ", " + word1Lower + ", " + word2);
+        final String word0Lower = word0.toLowerCase();
+        if (TextUtils.isEmpty(word0Lower) || TextUtils.isEmpty(word1)) {
+            Log.e(TAG, "Invalid bigram pair: " + word0 + ", " + word0Lower + ", " + word1);
             return frequency;
         }
-        final Node firstWord = searchWord(mRoots, word1Lower, 0, null);
-        final Node secondWord = searchWord(mRoots, word2, 0, null);
+        final Node firstWord = searchWord(mRoots, word0Lower, 0, null);
+        final Node secondWord = searchWord(mRoots, word1, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         if (bigrams == null || bigrams.size() == 0) {
             firstWord.mNGrams = CollectionUtils.newLinkedList();
