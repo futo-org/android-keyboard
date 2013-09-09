@@ -55,6 +55,7 @@
     ka: Georgian/georgian
     (kk: Kazakh/east_slavic) # disabled temporarily. waiting for strnig resources.
     ky: Kyrgyz/east_slavic
+    lo: Lao/lao
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
@@ -329,6 +330,13 @@
             android:imeSubtypeLocale="ky"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x8315772c"
+            android:imeSubtypeLocale="lo"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=lao"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
