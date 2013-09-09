@@ -42,8 +42,9 @@ class DynamicPatriciaTrieNodeReader {
               mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS), mFlags(0),
               mParentPos(NOT_A_DICT_POS),  mCodePointCount(0),
               mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
-              mChildrenPos(NOT_A_DICT_POS), mShortcutPos(NOT_A_DICT_POS),
-              mBigramPos(NOT_A_DICT_POS), mSiblingPos(NOT_A_VALID_WORD_POS) {}
+              mChildrenPosFieldPos(NOT_A_DICT_POS), mChildrenPos(NOT_A_DICT_POS),
+              mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
+              mSiblingPos(NOT_A_VALID_WORD_POS) {}
 
     ~DynamicPatriciaTrieNodeReader() {}
 
@@ -104,7 +105,11 @@ class DynamicPatriciaTrieNodeReader {
         return mProbability;
     }
 
-    // Children node group position
+    // Children PtNode array position
+    AK_FORCE_INLINE int getChildrenPosFieldPos() const {
+        return mChildrenPosFieldPos;
+    }
+
     AK_FORCE_INLINE int getChildrenPos() const {
         return mChildrenPos;
     }
@@ -136,6 +141,7 @@ class DynamicPatriciaTrieNodeReader {
     uint8_t mCodePointCount;
     int mProbabilityFieldPos;
     int mProbability;
+    int mChildrenPosFieldPos;
     int mChildrenPos;
     int mShortcutPos;
     int mBigramPos;
