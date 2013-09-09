@@ -44,10 +44,12 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
 
     private static final String PREF_DEBUG_MODE = "debug_mode";
 
-    // The message that sets the underline is posted with a 100 ms delay
+    // The message that sets the underline is posted with a 200 ms delay
     protected static final int DELAY_TO_WAIT_FOR_UNDERLINE = 200;
-    // The message that sets predictions is posted with a 100 ms delay
+    // The message that sets predictions is posted with a 200 ms delay
     protected static final int DELAY_TO_WAIT_FOR_PREDICTIONS = 200;
+    // The message that sets auto-corrections is posted within a 100 ms delay.
+    protected static final int DELAY_TO_WAIT_FOR_AUTOCORRECTION = 100;
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
@@ -221,6 +223,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     protected void type(final String stringToType) {
         for (int i = 0; i < stringToType.length(); i = stringToType.offsetByCodePoints(i, 1)) {
             type(stringToType.codePointAt(i));
+            sleep(DELAY_TO_WAIT_FOR_AUTOCORRECTION);
         }
     }
 
