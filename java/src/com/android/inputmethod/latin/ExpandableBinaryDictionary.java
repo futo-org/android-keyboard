@@ -84,9 +84,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to support dynamically updating the dictionary */
     private final boolean mIsUpdatable;
 
+    // TODO: remove, once dynamic operations will be serialized
     /** Controls access to the shared binary dictionary file across multiple instances. */
     private final DictionaryController mSharedDictionaryController;
 
+    // TODO: remove, once dynamic operations will be serialized
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
@@ -446,9 +448,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private final void syncReloadDictionaryInternal() {
         // Ensure that only one thread attempts to read or write to the shared binary dictionary
         // file at the same time.
-        mLocalDictionaryController.writeLock().lock();
+        mSharedDictionaryController.writeLock().lock();
         try {
-            mSharedDictionaryController.writeLock().lock();
+            mLocalDictionaryController.writeLock().lock();
             try {
                 final long time = SystemClock.uptimeMillis();
                 final boolean dictionaryFileExists = dictionaryFileExists();
@@ -483,10 +485,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
                 mLocalDictionaryController.mLastUpdateTime = time;
             } finally {
-                mSharedDictionaryController.writeLock().unlock();
+                mLocalDictionaryController.writeLock().unlock();
             }
         } finally {
-            mLocalDictionaryController.writeLock().unlock();
+            mSharedDictionaryController.writeLock().unlock();
         }
     }
 
@@ -519,16 +521,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private class AsyncLoadDictionaryToMemoryTask extends Thread {
         @Override
         public void run() {
-            mLocalDictionaryController.writeLock().lock();
+            mSharedDictionaryController.readLock().lock();
             try {
-                mSharedDictionaryController.readLock().lock();
+                mLocalDictionaryController.writeLock().lock();
                 try {
                     loadDictionaryAsync();
                 } finally {
-                    mSharedDictionaryController.readLock().unlock();
+                    mLocalDictionaryController.writeLock().unlock();
                 }
             } finally {
-                mLocalDictionaryController.writeLock().unlock();
+                mSharedDictionaryController.readLock().unlock();
             }
         }
     }
