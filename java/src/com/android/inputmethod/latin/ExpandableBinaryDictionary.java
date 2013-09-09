@@ -24,6 +24,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.DynamicPersonalizationDictionaryWriter;
+import com.android.inputmethod.latin.personalization.DynamicPredictionDictionaryBase;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
@@ -72,7 +73,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private BinaryDictionary mBinaryDictionary;
 
     /** The in-memory dictionary used to generate the binary dictionary. */
-    private AbstractDictionaryWriter mDictionaryWriter;
+    protected AbstractDictionaryWriter mDictionaryWriter;
 
     /**
      * The name of this dictionary, used as the filename for storing the binary dictionary. Multiple
@@ -620,6 +621,37 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mLocalDictionaryController.writeLock().lock();
         try {
             removeBigramDynamically(word0, word1);
+        } finally {
+            mLocalDictionaryController.writeLock().unlock();
+        }
+    }
+
+    // TODO: Implement native binary methods once the dynamic dictionary implementation is done.
+    @UsedForTesting
+    public boolean isInDictionaryForTests(final String word) {
+        mLocalDictionaryController.writeLock().lock();
+        try {
+            if (mDictType == Dictionary.TYPE_USER_HISTORY) {
+                return ((DynamicPersonalizationDictionaryWriter) mDictionaryWriter)
+                        .isInDictionaryForTests(word);
+            }
+        } finally {
+            mLocalDictionaryController.writeLock().unlock();
+        }
+        return false;
+    }
+
+    // TODO: Remove and use addToPersonalizationPredictionDictionary instead!!!!!!!!!!!!!!!!
+    @UsedForTesting
+    public void forceAddWordForTest(
+            final String word0, final String word1, final boolean isValid) {
+        mLocalDictionaryController.writeLock().lock();
+        try {
+            mDictionaryWriter.addUnigramWord(word1, null /* the "shortcut" parameter is null */,
+                    DynamicPredictionDictionaryBase.FREQUENCY_FOR_TYPED, false /* isNotAWord */);
+            mDictionaryWriter.addBigramWords(word0, word1,
+                    DynamicPredictionDictionaryBase.FREQUENCY_FOR_TYPED, isValid,
+                    0 /* lastTouchedTime */);
         } finally {
             mLocalDictionaryController.writeLock().unlock();
         }

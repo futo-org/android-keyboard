@@ -196,12 +196,6 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
         return mLocale;
     }
 
-    @UsedForTesting
-    /* package for test */ void forceAddWordForTest(
-            final String word0, final String word1, final boolean isValid) {
-        addToPersonalizationPredictionDictionary(word0, word1, isValid);
-    }
-
     public void registerUpdateSession(PersonalizationDictionaryUpdateSession session) {
         session.setPredictionDictionary(this);
         mSessions.add(session);
