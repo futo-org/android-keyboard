@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Reads and writes Binary files for a UserHistoryDictionary.
@@ -43,6 +44,9 @@ import java.util.TreeMap;
 public final class UserHistoryDictIOUtils {
     private static final String TAG = UserHistoryDictIOUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
+    private static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
+    private static final String USES_FORGETTING_CURVE_VALUE = "1";
+    private static final String LAST_UPDATED_TIME_KEY = "date";
 
     public interface OnAddWordListener {
         public void setUnigram(final String word, final String shortcutTarget, final int frequency);
@@ -61,6 +65,9 @@ public final class UserHistoryDictIOUtils {
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
             final FormatOptions formatOptions) {
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
+        fusionDict.addOptionAttribute(USES_FORGETTING_CURVE_KEY, USES_FORGETTING_CURVE_VALUE);
+        fusionDict.addOptionAttribute(LAST_UPDATED_TIME_KEY,
+                String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())));
         try {
             dictEncoder.writeDictionary(fusionDict, formatOptions);
             Log.d(TAG, "end writing");
