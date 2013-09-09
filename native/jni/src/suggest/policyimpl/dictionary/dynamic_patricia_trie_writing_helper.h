@@ -49,6 +49,7 @@ class DynamicPatriciaTrieWritingHelper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
+    static const bool ENABLE_DYNAMIC_UPDATE;
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
@@ -63,6 +64,9 @@ class DynamicPatriciaTrieWritingHelper {
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
+
+    bool setPtNodeProbability(const DynamicPatriciaTrieNodeReader *const originalNode,
+            const int probability, const int *const codePoints);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */

@@ -40,7 +40,8 @@ class DynamicPatriciaTrieNodeReader {
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
               mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS), mFlags(0),
-              mParentPos(NOT_A_DICT_POS),  mCodePointCount(0), mProbability(NOT_A_PROBABILITY),
+              mParentPos(NOT_A_DICT_POS),  mCodePointCount(0),
+              mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mChildrenPos(NOT_A_DICT_POS), mShortcutPos(NOT_A_DICT_POS),
               mBigramPos(NOT_A_DICT_POS), mSiblingPos(NOT_A_VALID_WORD_POS) {}
 
@@ -95,6 +96,10 @@ class DynamicPatriciaTrieNodeReader {
     }
 
     // Probability
+    AK_FORCE_INLINE int getProbabilityFieldPos() const {
+        return mProbabilityFieldPos;
+    }
+
     AK_FORCE_INLINE int getProbability() const {
         return mProbability;
     }
@@ -129,6 +134,7 @@ class DynamicPatriciaTrieNodeReader {
     DynamicPatriciaTrieReadingUtils::NodeFlags mFlags;
     int mParentPos;
     uint8_t mCodePointCount;
+    int mProbabilityFieldPos;
     int mProbability;
     int mChildrenPos;
     int mShortcutPos;

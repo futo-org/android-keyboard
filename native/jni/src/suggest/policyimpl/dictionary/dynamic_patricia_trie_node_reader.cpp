@@ -43,8 +43,13 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
                 dictBuf, mFlags, MAX_WORD_LENGTH, &pos);
     }
     if (isTerminal()) {
+        mProbabilityFieldPos = pos;
+        if (usesAdditionalBuffer) {
+            mProbabilityFieldPos += mBuffer->getOriginalBufferSize();
+        }
         mProbability = PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictBuf, &pos);
     } else {
+        mProbabilityFieldPos = NOT_A_DICT_POS;
         mProbability = NOT_A_PROBABILITY;
     }
     mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
