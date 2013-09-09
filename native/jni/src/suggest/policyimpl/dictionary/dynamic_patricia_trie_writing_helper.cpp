@@ -60,15 +60,20 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         // All characters are matched.
         if (codePointCount == readingHelper->getTotalCodePointCount()) {
             if (ENABLE_DYNAMIC_UPDATE) {
-                setPtNodeProbability(nodeReader, probability,
+                return setPtNodeProbability(nodeReader, probability,
                         readingHelper->getMergedNodeCodePoints());
             } else {
                 return false;
             }
         }
         if (!nodeReader->hasChildren()) {
-            // TODO: Create children node array and add new node as a child.
-            return false;
+            if (ENABLE_DYNAMIC_UPDATE) {
+                return createChildrenPtNodeArrayAndAChildPtNode(nodeReader, probability,
+                        wordCodePoints + readingHelper->getTotalCodePointCount(),
+                        codePointCount - readingHelper->getTotalCodePointCount());
+            } else {
+                return false;
+            }
         }
         // Advance to the children nodes.
         parentPos = nodeReader->getNodePos();
@@ -201,22 +206,8 @@ bool DynamicPatriciaTrieWritingHelper::createAndInsertNodeIntoPtNodeArray(const 
             newPtNodeArrayPos, forwardLinkFieldPos)) {
         return false;
     }
-    int writingPos = newPtNodeArrayPos;
-    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
-            1 /* arraySize */, &writingPos)) {
-        return false;
-    }
-    if (!writeNodeToBuffer(false /* isBlacklisted */, false /* isNotAWord */, parentPos,
-            nodeCodePoints, nodeCodePointCount, probability, NOT_A_DICT_POS /* childrenPos */,
-            NOT_A_DICT_POS /* originalBigramsPos */, NOT_A_DICT_POS /* originalShortcutPos */,
-            &writingPos)) {
-        return false;
-    }
-    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
-            NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
-        return false;
-    }
-    return true;
+    return createNewPtNodeArrayWithAChildPtNode(parentPos, nodeCodePoints, nodeCodePointCount,
+            probability);
 }
 
 bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
@@ -241,6 +232,40 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
                 originalPtNode->getShortcutPos(), &movedPos)) {
             return false;
         }
+    }
+    return true;
+}
+
+bool DynamicPatriciaTrieWritingHelper::createChildrenPtNodeArrayAndAChildPtNode(
+        const DynamicPatriciaTrieNodeReader *const parentNode, const int probability,
+        const int *const codePoints, const int codePointCount) {
+    const int newPtNodeArrayPos = mBuffer->getTailPosition();
+    int childrenPosFieldPos = parentNode->getChildrenPosFieldPos();
+    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
+            newPtNodeArrayPos, &childrenPosFieldPos)) {
+        return false;
+    }
+    return createNewPtNodeArrayWithAChildPtNode(parentNode->getNodePos(), codePoints,
+            codePointCount, probability);
+}
+
+bool DynamicPatriciaTrieWritingHelper::createNewPtNodeArrayWithAChildPtNode(
+        const int parentPtNodePos, const int *const nodeCodePoints, const int nodeCodePointCount,
+        const int probability) {
+    int writingPos = mBuffer->getTailPosition();
+    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
+            1 /* arraySize */, &writingPos)) {
+        return false;
+    }
+    if (!writeNodeToBuffer(false /* isBlacklisted */, false /* isNotAWord */, parentPtNodePos,
+            nodeCodePoints, nodeCodePointCount, probability, NOT_A_DICT_POS /* childrenPos */,
+            NOT_A_DICT_POS /* originalBigramsPos */, NOT_A_DICT_POS /* originalShortcutPos */,
+            &writingPos)) {
+        return false;
+    }
+    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
+            NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
+        return false;
     }
     return true;
 }

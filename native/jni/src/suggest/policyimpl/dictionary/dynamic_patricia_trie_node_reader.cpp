@@ -52,6 +52,10 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
         mProbabilityFieldPos = NOT_A_DICT_POS;
         mProbability = NOT_A_PROBABILITY;
     }
+    mChildrenPosFieldPos = pos;
+    if (usesAdditionalBuffer) {
+        mChildrenPosFieldPos += mBuffer->getOriginalBufferSize();
+    }
     mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
             dictBuf, mFlags, &pos);
     if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
