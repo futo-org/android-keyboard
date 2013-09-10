@@ -68,11 +68,11 @@ const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
     return buffer->writeUintAndAdvancePosition(nodeFlags, NODE_FLAG_FIELD_SIZE, nodeFlagsFieldPos);
 }
 
-/* static */ bool DynamicPatriciaTrieWritingUtils::writeParentPositionAndAdvancePosition(
-        BufferWithExtendableBuffer *const buffer, const int parentPosition,
+// Note that parentOffset is offset from node's head position.
+/* static */ bool DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
+        BufferWithExtendableBuffer *const buffer, const int parentOffset,
         int *const parentPosFieldPos) {
-    // Note that parentPosition is offset from node's head position.
-    int offset = (parentPosition != NOT_A_DICT_POS) ? parentPosition : 0;
+    int offset = (parentOffset != NOT_A_DICT_POS) ? parentOffset : 0;
     return writeDictOffset(buffer, offset, parentPosFieldPos);
 }
 
