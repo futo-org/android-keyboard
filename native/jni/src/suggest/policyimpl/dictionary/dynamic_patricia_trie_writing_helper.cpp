@@ -47,14 +47,16 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         const int nodeCodePointCount = nodeReader->getCodePointCount();
         for (int j = 1; j < nodeCodePointCount; ++j) {
             const int nextIndex = matchedCodePointCount + j;
-            if (nextIndex >= codePointCount) {
-                // TODO: split current node after j - 1, create child and make this terminal.
-                return false;
-            }
-            if (!readingHelper->isMatchedCodePoint(j,
+            if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(j,
                     wordCodePoints[matchedCodePointCount + j])) {
-                // TODO: split current node after j - 1 and create two children.
-                return false;
+                if (ENABLE_DYNAMIC_UPDATE) {
+                    return reallocatePtNodeAndAddNewPtNodes(nodeReader,
+                            readingHelper->getMergedNodeCodePoints(), j, probability,
+                            wordCodePoints + matchedCodePointCount,
+                            codePointCount - matchedCodePointCount);
+                } else {
+                    return false;
+                }
             }
         }
         // All characters are matched.
@@ -145,8 +147,8 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
     return true;
 }
 
-// Write new node at writingPos.
-bool DynamicPatriciaTrieWritingHelper::writeNodeToBuffer(const bool isBlacklisted,
+// Write new PtNode at writingPos.
+bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const bool isBlacklisted,
         const bool isNotAWord, const int parentPos, const int *const codePoints,
         const int codePointCount, const int probability, const int childrenPos,
         const int originalBigramListPos, const int originalShortcutListPos,
@@ -203,6 +205,25 @@ bool DynamicPatriciaTrieWritingHelper::writeNodeToBuffer(const bool isBlackliste
     return true;
 }
 
+bool DynamicPatriciaTrieWritingHelper::writePtNodeToBuffer(const int parentPos,
+        const int *const codePoints, const int codePointCount, const int probability,
+        int *const writingPos) {
+    return writePtNodeWithFullInfoToBuffer(false /* isBlacklisted */, false /* isNotAWord */,
+            parentPos, codePoints, codePointCount, probability,
+            NOT_A_DICT_POS /* childrenPos */, NOT_A_DICT_POS /* originalBigramsPos */,
+            NOT_A_DICT_POS /* originalShortcutPos */, writingPos);
+}
+
+bool DynamicPatriciaTrieWritingHelper::writePtNodeToBufferByCopyingPtNodeInfo(
+        const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
+        const int *const codePoints, const int codePointCount, const int probability,
+        int *const writingPos) {
+    return writePtNodeWithFullInfoToBuffer(originalNode->isBlacklisted(),
+            originalNode->isNotAWord(), parentPos, codePoints, codePointCount, probability,
+            originalNode->getChildrenPos(), originalNode->getBigramsPos(),
+            originalNode->getShortcutPos(), writingPos);
+}
+
 bool DynamicPatriciaTrieWritingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
         const int *const nodeCodePoints, const int nodeCodePointCount, const int probability,
         int *const forwardLinkFieldPos) {
@@ -231,10 +252,8 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
         if (!markNodeAsMovedAndSetPosition(originalPtNode, movedPos)) {
             return false;
         }
-        if (!writeNodeToBuffer(originalPtNode->isBlacklisted(), originalPtNode->isNotAWord(),
-                originalPtNode->getParentPos(), codePoints, originalPtNode->getCodePointCount(),
-                probability, originalPtNode->getChildrenPos(), originalPtNode->getBigramsPos(),
-                originalPtNode->getShortcutPos(), &movedPos)) {
+        if (!writePtNodeToBufferByCopyingPtNodeInfo(originalPtNode, originalPtNode->getParentPos(),
+                codePoints, originalPtNode->getCodePointCount(), probability, &movedPos)) {
             return false;
         }
     }
@@ -262,14 +281,77 @@ bool DynamicPatriciaTrieWritingHelper::createNewPtNodeArrayWithAChildPtNode(
             1 /* arraySize */, &writingPos)) {
         return false;
     }
-    if (!writeNodeToBuffer(false /* isBlacklisted */, false /* isNotAWord */, parentPtNodePos,
-            nodeCodePoints, nodeCodePointCount, probability, NOT_A_DICT_POS /* childrenPos */,
-            NOT_A_DICT_POS /* originalBigramsPos */, NOT_A_DICT_POS /* originalShortcutPos */,
+    if (!writePtNodeToBuffer(parentPtNodePos, nodeCodePoints, nodeCodePointCount, probability,
             &writingPos)) {
         return false;
     }
     if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
             NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
+        return false;
+    }
+    return true;
+}
+
+// Returns whether the dictionary updating was succeeded or not.
+bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
+        const DynamicPatriciaTrieNodeReader *const reallocatingPtNode,
+        const int *const reallocatingPtNodeCodePoints, const int overlappingCodePointCount,
+        const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
+        const int newNodeCodePointCount) {
+    // When addsExtraChild is true, split the reallocating PtNode and add new child.
+    // Reallocating PtNode: abcde, newNode: abcxy.
+    // abc (1st, not terminal) __ de (2nd)
+    //                         \_ xy (extra child, terminal)
+    // Otherwise, this method makes 1st part terminal and write probabilityOfNewPtNode.
+    // Reallocating PtNode: abcde, newNode: abc.
+    // abc (1st, terminal) __ de (2nd)
+    const bool addsExtraChild = newNodeCodePointCount > overlappingCodePointCount;
+    const int firstPtNodePos = mBuffer->getTailPosition();
+    if (!markNodeAsMovedAndSetPosition(reallocatingPtNode, firstPtNodePos)) {
+        return false;
+    }
+    int writingPos = firstPtNodePos;
+    // Write the 1st part of the reallocating node. The children position will be updated later
+    // with actual children position.
+    const int newProbability = addsExtraChild ? NOT_A_PROBABILITY : probabilityOfNewPtNode;
+    if (!writePtNodeToBuffer(reallocatingPtNode->getParentPos(), reallocatingPtNodeCodePoints,
+            overlappingCodePointCount, newProbability, &writingPos)) {
+        return false;
+    }
+    const int actualChildrenPos = writingPos;
+    // Create new children PtNode array.
+    const size_t newPtNodeCount = addsExtraChild ? 2 : 1;
+    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(mBuffer,
+            newPtNodeCount, &writingPos)) {
+        return false;
+    }
+    // Write the 2nd part of the reallocating node.
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(reallocatingPtNode,
+            reallocatingPtNode->getNodePos(),
+            reallocatingPtNodeCodePoints + overlappingCodePointCount,
+            reallocatingPtNode->getCodePointCount() - overlappingCodePointCount,
+            reallocatingPtNode->getProbability(), &writingPos)) {
+        return false;
+    }
+    if (addsExtraChild) {
+        if (!writePtNodeToBuffer(reallocatingPtNode->getNodePos(),
+                newNodeCodePoints + overlappingCodePointCount,
+                newNodeCodePointCount - overlappingCodePointCount, probabilityOfNewPtNode,
+                &writingPos)) {
+            return false;
+        }
+    }
+    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
+            NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
+        return false;
+    }
+    // Load node info. Information of the 1st part will be fetched.
+    DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
+    nodeReader.fetchNodeInfoFromBuffer(firstPtNodePos);
+    // Update children position.
+    int childrenPosFieldPos = nodeReader.getChildrenPosFieldPos();
+    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
+            actualChildrenPos, &childrenPosFieldPos)) {
         return false;
     }
     return true;

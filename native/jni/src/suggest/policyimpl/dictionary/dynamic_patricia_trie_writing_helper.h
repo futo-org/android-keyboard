@@ -57,10 +57,18 @@ class DynamicPatriciaTrieWritingHelper {
     bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
             const int movedPos);
 
-    bool writeNodeToBuffer(const bool isBlacklisted, const bool isNotAWord, const int parentPos,
-            const int *const codePoints, const int codePointCount, const int probability,
-            const int childrenPos, const int originalBigramListPos,
+    bool writePtNodeWithFullInfoToBuffer(const bool isBlacklisted, const bool isNotAWord,
+            const int parentPos,  const int *const codePoints, const int codePointCount,
+            const int probability, const int childrenPos, const int originalBigramListPos,
             const int originalShortcutListPos, int *const writingPos);
+
+    bool writePtNodeToBuffer(const int parentPos, const int *const codePoints,
+            const int codePointCount, const int probability, int *const writingPos);
+
+    bool writePtNodeToBufferByCopyingPtNodeInfo(
+            const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
+            const int *const codePoints, const int codePointCount, const int probability,
+            int *const writingPos);
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
@@ -74,6 +82,12 @@ class DynamicPatriciaTrieWritingHelper {
 
     bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability);
+
+    bool reallocatePtNodeAndAddNewPtNodes(
+            const DynamicPatriciaTrieNodeReader *const reallocatingPtNode,
+            const int *const reallocatingPtNodeCodePoints, const int overlappingCodePointCount,
+            const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
+            const int newNodeCodePointCount);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */
