@@ -1847,10 +1847,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
-        final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
-        if (null != candidate) {
-            if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
-                // TODO: implement auto-commit
+        if (mSettings.getCurrent().mPhraseGestureEnabled) {
+            final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
+            if (null != candidate) {
+                if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
+                    final String[] commitParts = candidate.mWord.split(" ", 2);
+                    batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
+                    promotePhantomSpace();
+                    mConnection.commitText(commitParts[0], 0);
+                    mSpaceState = SPACE_STATE_PHANTOM;
+                    mKeyboardSwitcher.updateShiftState();
+                    mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+                }
             }
         }
         mInputUpdater.onUpdateBatchInput(batchPointers);
@@ -1863,12 +1871,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TextUtils.isEmpty(batchInputText)) {
             return;
         }
-        mWordComposer.setBatchInputWord(batchInputText);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             promotePhantomSpace();
         }
-        mConnection.setComposingText(batchInputText, 1);
+        if (mSettings.getCurrent().mPhraseGestureEnabled) {
+            // Find the last space
+            final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
+            if (0 != indexOfLastSpace) {
+                mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
+            }
+            final String lastWord = batchInputText.substring(indexOfLastSpace);
+            mWordComposer.setBatchInputWord(lastWord);
+            mConnection.setComposingText(lastWord, 1);
+        } else {
+            mWordComposer.setBatchInputWord(batchInputText);
+            mConnection.setComposingText(batchInputText, 1);
+        }
         mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {

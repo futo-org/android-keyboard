@@ -340,4 +340,18 @@ public class ResizableIntArrayTests extends AndroidTestCase {
                     expecteds[i + expectedPos], actuals[i + actualPos]);
         }
     }
+
+    public void testShift() {
+        final ResizableIntArray src = new ResizableIntArray(DEFAULT_CAPACITY);
+        final int limit = DEFAULT_CAPACITY * 10;
+        final int shiftAmount = 20;
+        for (int i = 0; i < limit; ++i) {
+            src.add(i, i);
+            assertEquals("length after add at " + i, i + 1, src.getLength());
+        }
+        src.shift(shiftAmount);
+        for (int i = 0; i < limit - shiftAmount; ++i) {
+            assertEquals("value at " + i, i + shiftAmount, src.get(i));
+        }
+    }
 }

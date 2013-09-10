@@ -132,6 +132,15 @@ public final class ResizableIntArray {
         }
     }
 
+    /**
+     * Shift to the left by elementCount, discarding elementCount pointers at the start.
+     * @param elementCount how many elements to shift.
+     */
+    public void shift(final int elementCount) {
+        System.arraycopy(mArray, elementCount, mArray, 0, mLength - elementCount);
+        mLength -= elementCount;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
