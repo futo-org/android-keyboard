@@ -66,16 +66,17 @@ bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *co
 
 bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int size) {
     if (isInAdditionalBuffer(pos)) {
-        if (pos == mUsedAdditionalBufferSize) {
+        const int tailPosition = getTailPosition();
+        if (pos == tailPosition) {
             // Append data to the tail.
-            if (pos + size > static_cast<int>(mAdditionalBuffer.size())) {
+            if (pos + size > static_cast<int>(mAdditionalBuffer.size()) + mOriginalBufferSize) {
                 // Need to extend buffer.
                 if (!extendBuffer()) {
                     return false;
                 }
             }
             mUsedAdditionalBufferSize += size;
-        } else if (pos + size >= mUsedAdditionalBufferSize) {
+        } else if (pos + size >= tailPosition) {
             // The access will beyond the tail of used region.
             return false;
         }
