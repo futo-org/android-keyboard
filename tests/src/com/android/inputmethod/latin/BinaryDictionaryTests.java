@@ -84,4 +84,42 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 binaryDictionary.isValidDictionary());
         binaryDictionary.close();
     }
+
+    public void testAddUnigramWord() {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int probability = 100;
+        binaryDictionary.addUnigramWord("aaa", probability);
+        // Reallocate and create.
+        binaryDictionary.addUnigramWord("aab", probability);
+        // Insert into children.
+        binaryDictionary.addUnigramWord("aac", probability);
+        // Make terminal.
+        binaryDictionary.addUnigramWord("aa", probability);
+        // Create children.
+        binaryDictionary.addUnigramWord("aaaa", probability);
+        // Reallocate and make termianl.
+        binaryDictionary.addUnigramWord("a", probability);
+
+        final int updatedProbability = 200;
+        // Update.
+        binaryDictionary.addUnigramWord("aaa", updatedProbability);
+
+        assertEquals(probability, binaryDictionary.getFrequency("aab"));
+        assertEquals(probability, binaryDictionary.getFrequency("aac"));
+        assertEquals(probability, binaryDictionary.getFrequency("aac"));
+        assertEquals(probability, binaryDictionary.getFrequency("aaaa"));
+        assertEquals(probability, binaryDictionary.getFrequency("a"));
+        assertEquals(updatedProbability, binaryDictionary.getFrequency("aaa"));
+    }
 }
