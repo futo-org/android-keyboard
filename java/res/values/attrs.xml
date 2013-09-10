@@ -45,6 +45,8 @@
              possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
+        <!-- Image for the functional key used in Emoji layout. -->
+        <attr name="keyBackgroundEmojiFunctional" format="reference" />
 
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />

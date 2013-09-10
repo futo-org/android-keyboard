@@ -103,7 +103,7 @@
         name="EmojiKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
-        <item name="keyBackground">@drawable/btn_keyboard_key_functional_ics</item>
+        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_ics</item>
         <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>
     </style>
     <style
