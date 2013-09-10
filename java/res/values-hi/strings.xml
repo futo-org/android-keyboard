@@ -130,7 +130,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ध्‍वनि इनपुट अक्षम है"</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
-    <string name="send_feedback" msgid="1780431884109392046">"फ़ीडबैक भेजें"</string>
+    <string name="send_feedback" msgid="1780431884109392046">"सुझाव भेजें"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"सहेजने के लिए पुन: स्‍पर्श करें"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
