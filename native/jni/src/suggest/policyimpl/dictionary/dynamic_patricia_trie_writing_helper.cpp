@@ -26,9 +26,6 @@
 
 namespace latinime {
 
-// TODO: Enable dynamic update and remove this flag.
-const bool DynamicPatriciaTrieWritingHelper::ENABLE_DYNAMIC_UPDATE = false;
-
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability) {
@@ -49,33 +46,21 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
             const int nextIndex = matchedCodePointCount + j;
             if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(j,
                     wordCodePoints[matchedCodePointCount + j])) {
-                if (ENABLE_DYNAMIC_UPDATE) {
-                    return reallocatePtNodeAndAddNewPtNodes(nodeReader,
-                            readingHelper->getMergedNodeCodePoints(), j, probability,
-                            wordCodePoints + matchedCodePointCount,
-                            codePointCount - matchedCodePointCount);
-                } else {
-                    return false;
-                }
+                return reallocatePtNodeAndAddNewPtNodes(nodeReader,
+                        readingHelper->getMergedNodeCodePoints(), j, probability,
+                        wordCodePoints + matchedCodePointCount,
+                        codePointCount - matchedCodePointCount);
             }
         }
         // All characters are matched.
         if (codePointCount == readingHelper->getTotalCodePointCount()) {
-            if (ENABLE_DYNAMIC_UPDATE) {
-                return setPtNodeProbability(nodeReader, probability,
-                        readingHelper->getMergedNodeCodePoints());
-            } else {
-                return false;
-            }
+            return setPtNodeProbability(nodeReader, probability,
+                    readingHelper->getMergedNodeCodePoints());
         }
         if (!nodeReader->hasChildren()) {
-            if (ENABLE_DYNAMIC_UPDATE) {
-                return createChildrenPtNodeArrayAndAChildPtNode(nodeReader, probability,
-                        wordCodePoints + readingHelper->getTotalCodePointCount(),
-                        codePointCount - readingHelper->getTotalCodePointCount());
-            } else {
-                return false;
-            }
+            return createChildrenPtNodeArrayAndAChildPtNode(nodeReader, probability,
+                    wordCodePoints + readingHelper->getTotalCodePointCount(),
+                    codePointCount - readingHelper->getTotalCodePointCount());
         }
         // Advance to the children nodes.
         parentPos = nodeReader->getNodePos();
@@ -86,14 +71,10 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         return false;
     }
     int pos = readingHelper->getPosOfLastForwardLinkField();
-    if (ENABLE_DYNAMIC_UPDATE) {
-        return createAndInsertNodeIntoPtNodeArray(parentPos,
-                wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
-                codePointCount - readingHelper->getPrevTotalCodePointCount(),
-                probability, &pos);
-    } else {
-        return false;
-    }
+    return createAndInsertNodeIntoPtNodeArray(parentPos,
+            wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
+            codePointCount - readingHelper->getPrevTotalCodePointCount(),
+            probability, &pos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const int word1Pos,
