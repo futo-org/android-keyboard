@@ -68,7 +68,7 @@ public class Ver3DictEncoder implements DictEncoder {
     @Override
     public void writeDictionary(final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
-        if (formatOptions.mVersion > 3) {
+        if (formatOptions.mVersion > FormatSpec.VERSION3) {
             throw new UnsupportedFormatException(
                     "The given format options has wrong version number : "
                     + formatOptions.mVersion);
@@ -200,7 +200,7 @@ public class Ver3DictEncoder implements DictEncoder {
             mPosition += shortcutShift;
         }
         final int shortcutByteSize = mPosition - indexOfShortcutByteSize;
-        if (shortcutByteSize > 0xFFFF) {
+        if (shortcutByteSize > FormatSpec.MAX_SHORTCUT_LIST_SIZE_IN_A_PTNODE) {
             throw new RuntimeException("Shortcut list too large");
         }
         BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, indexOfShortcutByteSize, shortcutByteSize,

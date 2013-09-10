@@ -198,9 +198,12 @@ public final class FormatSpec {
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
     static final int MINIMUM_SUPPORTED_VERSION = 2;
-    static final int MAXIMUM_SUPPORTED_VERSION = 3;
+    static final int MAXIMUM_SUPPORTED_VERSION = 4;
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
+    static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
+    static final int VERSION3 = 3;
+    static final int VERSION4 = 4;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
@@ -251,10 +254,16 @@ public final class FormatSpec {
     static final int PTNODE_TERMINATOR_SIZE = 1;
     static final int PTNODE_FLAGS_SIZE = 1;
     static final int PTNODE_FREQUENCY_SIZE = 1;
+    static final int PTNODE_TERMINAL_ID_SIZE = 4;
     static final int PTNODE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_ATTRIBUTE_FLAGS_SIZE = 1;
     static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
+
+    // These values are used only by version 4 or later.
+    static final String TRIE_FILE_EXTENSION = ".trie";
+    static final String FREQ_FILE_EXTENSION = ".freq";
+    static final int FREQUENCY_AND_FLAGS_SIZE = 2;
 
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     static final int NO_PARENT_ADDRESS = 0;
@@ -264,6 +273,7 @@ public final class FormatSpec {
     static final int MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT = 0x7F; // 127
     static final int MAX_PTNODES_IN_A_PT_NODE_ARRAY = 0x7FFF; // 32767
     static final int MAX_BIGRAMS_IN_A_PTNODE = 10000;
+    static final int MAX_SHORTCUT_LIST_SIZE_IN_A_PTNODE = 0xFFFF;
 
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
@@ -287,6 +297,7 @@ public final class FormatSpec {
     public static final class FormatOptions {
         public final int mVersion;
         public final boolean mSupportsDynamicUpdate;
+        public final boolean mHasTerminalId;
         @UsedForTesting
         public FormatOptions(final int version) {
             this(version, false);
@@ -300,6 +311,7 @@ public final class FormatSpec {
                         + FIRST_VERSION_WITH_DYNAMIC_UPDATE + " and ulterior.");
             }
             mSupportsDynamicUpdate = supportsDynamicUpdate;
+            mHasTerminalId = (version >= FIRST_VERSION_WITH_TERMINAL_ID);
         }
     }
 
