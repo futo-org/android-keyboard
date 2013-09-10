@@ -176,7 +176,9 @@ bool DynamicPatriciaTrieWritingHelper::writeNodeToBuffer(const bool isBlackliste
     // Copy shortcut list when the originalShortcutListPos is valid dictionary position.
     if (originalShortcutListPos != NOT_A_DICT_POS) {
         int fromPos = originalShortcutListPos;
-        mShortcutPolicy->copyAllShortcuts(&fromPos, writingPos);
+        if (!mShortcutPolicy->copyAllShortcutsAndReturnIfSucceededOrNot(&fromPos, writingPos)) {
+            return false;
+        }
     }
     // Copy bigram list when the originalBigramListPos is valid dictionary position.
     if (originalBigramListPos != NOT_A_DICT_POS) {

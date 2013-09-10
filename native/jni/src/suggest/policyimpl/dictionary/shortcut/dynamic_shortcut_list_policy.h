@@ -83,8 +83,8 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     }
 
     // Copy shortcuts from the shortcut list that starts at fromPos to toPos and advance these
-    // positions after the shortcut lists.
-    void copyAllShortcuts(int *const fromPos, int *const toPos) {
+    // positions after the shortcut lists. This returns whether the copy was succeeded or not.
+    bool copyAllShortcutsAndReturnIfSucceededOrNot(int *const fromPos, int *const toPos) {
         const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
         const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         if (usesAdditionalBuffer) {
@@ -93,16 +93,23 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         const int shortcutListSize = ShortcutListReadingUtils
                 ::getShortcutListSizeAndForwardPointer(buffer, fromPos);
         // Copy shortcut list size.
-        mBuffer->writeUintAndAdvancePosition(
+        if (!mBuffer->writeUintAndAdvancePosition(
                 shortcutListSize + ShortcutListReadingUtils::getShortcutListSizeFieldSize(),
-                ShortcutListReadingUtils::getShortcutListSizeFieldSize(), toPos);
+                ShortcutListReadingUtils::getShortcutListSizeFieldSize(), toPos)) {
+            return false;
+        }
+        // Copy shortcut list.
         for (int i = 0; i < shortcutListSize; ++i) {
-            const uint8_t data = ByteArrayUtils::readUint8AndAdvancePosition(buffer, fromPos);
-            mBuffer->writeUintAndAdvancePosition(data, 1 /* size */, toPos);
+            const uint8_t data = ByteArrayUtils::readUint8AndAdvancePosition(
+                    mBuffer->getBuffer(usesAdditionalBuffer), fromPos);
+            if (!mBuffer->writeUintAndAdvancePosition(data, 1 /* size */, toPos)) {
+                return false;
+            }
         }
         if (usesAdditionalBuffer) {
             *fromPos += mBuffer->getOriginalBufferSize();
         }
+        return true;
     }
 
  private:
