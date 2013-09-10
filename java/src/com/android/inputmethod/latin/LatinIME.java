@@ -86,6 +86,7 @@ import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
+import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.CollectionUtils;
@@ -107,8 +108,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -2428,31 +2427,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final CountDownLatch latch = new CountDownLatch(1);
-        final SuggestedWords[] suggestedWordsArray = new SuggestedWords[1];
+        final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
         getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
                 new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        suggestedWordsArray[0] = suggestedWords;
-                        latch.countDown();
+                        holder.set(suggestedWords);
                     }
                 }
         );
 
-        // TODO: Quit blocking the main thread.
-        try {
-            // Wait for the result of getSuggestedWords
-            // We set the time out to avoid ANR.
-            latch.await(GET_SUGGESTED_WORDS_TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            // TODO: Cancel all pending "getSuggestedWords" tasks when it failed. We may want to add
-            // "onGetSuggestionFailed" to "OnGetSuggestedWordsCallback".
-            Log.e(TAG, "InterruptedException while waiting for getSuggestedWords.", e);
-            return;
-        }
-        if (suggestedWordsArray[0] != null) {
-            showSuggestionStrip(suggestedWordsArray[0]);
+        // This line may cause the current thread to wait.
+        final SuggestedWords suggestedWords = holder.get(null, GET_SUGGESTED_WORDS_TIMEOUT);
+        if (suggestedWords != null) {
+            showSuggestionStrip(suggestedWords);
         }
     }
 
