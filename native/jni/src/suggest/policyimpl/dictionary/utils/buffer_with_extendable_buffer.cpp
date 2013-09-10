@@ -76,7 +76,7 @@ bool BufferWithExtendableBuffer::checkAndPrepareWriting(const int pos, const int
                 }
             }
             mUsedAdditionalBufferSize += size;
-        } else if (pos + size >= tailPosition) {
+        } else if (pos + size > tailPosition) {
             // The access will beyond the tail of used region.
             return false;
         }
