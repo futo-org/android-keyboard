@@ -136,9 +136,10 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
             &writingPos)) {
         return false;
     }
-    // Update moved position, which is stored in the parent position field.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPositionAndAdvancePosition(
-            mBuffer, movedPos, &writingPos)) {
+    // Update moved position, which is stored in the parent offset field.
+    const int movedPosOffset = movedPos - originalNode->getNodePos();
+    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
+            mBuffer, movedPosOffset, &writingPos)) {
         return false;
     }
     return true;
@@ -150,6 +151,7 @@ bool DynamicPatriciaTrieWritingHelper::writeNodeToBuffer(const bool isBlackliste
         const int codePointCount, const int probability, const int childrenPos,
         const int originalBigramListPos, const int originalShortcutListPos,
         int *const writingPos) {
+    const int nodePos = *writingPos;
     // Create node flags and write them.
     const PatriciaTrieReadingUtils::NodeFlags nodeFlags =
             PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord,
@@ -160,9 +162,10 @@ bool DynamicPatriciaTrieWritingHelper::writeNodeToBuffer(const bool isBlackliste
             writingPos)) {
         return false;
     }
-    // Write parent position
-    if (!DynamicPatriciaTrieWritingUtils::writeParentPositionAndAdvancePosition(mBuffer, parentPos,
-            writingPos)) {
+    // Calculate a parent offset and write the offset.
+    const int parentOffset = (parentPos != NOT_A_DICT_POS) ? parentPos - nodePos : NOT_A_DICT_POS;
+    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(mBuffer,
+            parentOffset, writingPos)) {
         return false;
     }
     // Write code points
