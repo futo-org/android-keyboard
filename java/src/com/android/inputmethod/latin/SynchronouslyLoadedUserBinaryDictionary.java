@@ -38,14 +38,14 @@ public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDic
     public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final String prevWordForBigrams, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
-        syncReloadDictionaryIfRequired();
+        reloadDictionaryIfRequired();
         return super.getSuggestions(codes, prevWordForBigrams, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions);
     }
 
     @Override
     public synchronized boolean isValidWord(final String word) {
-        syncReloadDictionaryIfRequired();
+        reloadDictionaryIfRequired();
         return isValidWordInner(word);
     }
 }

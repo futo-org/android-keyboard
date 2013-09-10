@@ -77,7 +77,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void addToDict(final UserHistoryPredictionDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
-            dict.forceAddWordForTest(prevWord, word, true);
+            dict.addToPersonalizationPredictionDictionary(prevWord, word, true);
             prevWord = word;
         }
     }
