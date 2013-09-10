@@ -47,6 +47,7 @@ class BufferWithExtendableBuffer {
         return position >= mOriginalBufferSize;
     }
 
+    // TODO: Resolve the issue that the address can be changed when the vector is resized.
     // CAVEAT!: Be careful about array out of bound access with buffers
     AK_FORCE_INLINE const uint8_t *getBuffer(const bool usesAdditionalBuffer) const {
         if (usesAdditionalBuffer) {
