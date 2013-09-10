@@ -29,7 +29,7 @@ namespace latinime {
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability) {
-    int parentPos = NOT_A_VALID_WORD_POS;
+    int parentPos = NOT_A_DICT_POS;
     while (!readingHelper->isEnd()) {
         const int matchedCodePointCount = readingHelper->getPrevTotalCodePointCount();
         if (!readingHelper->isMatchedCodePoint(0 /* index */,
