@@ -204,6 +204,7 @@ static void latinime_BinaryDictionary_addUnigramWord(JNIEnv *env, jclass clazz, 
     }
     jsize wordLength = env->GetArrayLength(word);
     int codePoints[wordLength];
+    env->GetIntArrayRegion(word, 0, wordLength, codePoints);
     dictionary->addUnigramWord(codePoints, wordLength, probability);
 }
 
@@ -215,8 +216,10 @@ static void latinime_BinaryDictionary_addBigramWords(JNIEnv *env, jclass clazz, 
     }
     jsize word0Length = env->GetArrayLength(word0);
     int word0CodePoints[word0Length];
+    env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
     jsize word1Length = env->GetArrayLength(word1);
     int word1CodePoints[word1Length];
+    env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     dictionary->addBigramWords(word0CodePoints, word0Length, word1CodePoints,
             word1Length, probability);
 }
@@ -229,8 +232,10 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
     }
     jsize word0Length = env->GetArrayLength(word0);
     int word0CodePoints[word0Length];
+    env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
     jsize word1Length = env->GetArrayLength(word1);
     int word1CodePoints[word1Length];
+    env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
     dictionary->removeBigramWords(word0CodePoints, word0Length, word1CodePoints,
             word1Length);
 }

@@ -49,6 +49,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to print debug output to log */
     private static boolean DEBUG = false;
 
+    // TODO: Remove and enable dynamic update in native code.
+    /** Whether to call binary dictionary dynamically updating methods. */
+    private static boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = false;
+
     /**
      * The maximum length of a word in this dictionary.
      */
@@ -72,6 +76,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private BinaryDictionary mBinaryDictionary;
 
+    // TODO: Remove and handle dictionaries in native code.
     /** The in-memory dictionary used to generate the binary dictionary. */
     protected AbstractDictionaryWriter mDictionaryWriter;
 
@@ -225,6 +230,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // TODO: Use a queue to reflect what needs to be reflected.
         if (mLocalDictionaryController.writeLock().tryLock()) {
             try {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    mBinaryDictionary.addUnigramWord(word, frequency);
+                }
+                // TODO: Remove.
                 mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
             } finally {
                 mLocalDictionaryController.writeLock().unlock();
@@ -245,6 +254,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // TODO: Use a queue to reflect what needs to be reflected.
         if (mLocalDictionaryController.writeLock().tryLock()) {
             try {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    mBinaryDictionary.addBigramWords(word0, word1, frequency);
+                }
+                // TODO: Remove.
                 mDictionaryWriter.addBigramWords(word0, word1, frequency, isValid,
                         0 /* lastTouchedTime */);
             } finally {
@@ -265,6 +278,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // TODO: Use a queue to reflect what needs to be reflected.
         if (mLocalDictionaryController.writeLock().tryLock()) {
             try {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    mBinaryDictionary.removeBigramWords(word0, word1);
+                }
+                // TODO: Remove.
                 mDictionaryWriter.removeBigramWords(word0, word1);
             } finally {
                 mLocalDictionaryController.writeLock().unlock();

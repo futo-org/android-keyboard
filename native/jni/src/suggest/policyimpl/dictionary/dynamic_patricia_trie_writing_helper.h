@@ -49,7 +49,6 @@ class DynamicPatriciaTrieWritingHelper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
-    static const bool ENABLE_DYNAMIC_UPDATE;
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
