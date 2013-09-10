@@ -39,7 +39,7 @@ class DynamicPatriciaTrieWritingUtils {
             const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
             int *const nodeFlagsFieldPos);
 
-    static bool writeParentPositionAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
+    static bool writeParentOffsetAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const int parentPosition, int *const parentPosFieldPos);
 
     static bool writeCodePointsAndAdvancePosition(BufferWithExtendableBuffer *const buffer,

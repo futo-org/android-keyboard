@@ -34,7 +34,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const int parentPos =
             DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictBuf, &pos);
-    mParentPos = (parentPos != 0) ? mNodePos + parentPos : NOT_A_DICT_POS;
+    mParentPos = (parentPos != 0) ? nodePos + parentPos : NOT_A_DICT_POS;
     if (outCodePoints != 0) {
         mCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
                 dictBuf, mFlags, maxCodePointCount, outCodePoints, &pos);
