@@ -198,6 +198,27 @@ public class BinaryDictEncoderUtils {
         }
     }
 
+    static int writeUIntToBuffer(final byte[] buffer, int position, final int value,
+            final int size) {
+        switch(size) {
+            case 4:
+                buffer[position++] = (byte) ((value >> 24) & 0xFF);
+                /* fall through */
+            case 3:
+                buffer[position++] = (byte) ((value >> 16) & 0xFF);
+                /* fall through */
+            case 2:
+                buffer[position++] = (byte) ((value >> 8) & 0xFF);
+                /* fall through */
+            case 1:
+                buffer[position++] = (byte) (value & 0xFF);
+                break;
+            default:
+                /* nop */
+        }
+        return position;
+    }
+
     // End utility methods
 
     // This method is responsible for finding a nice ordering of the nodes that favors run-time
@@ -733,7 +754,7 @@ public class BinaryDictEncoderUtils {
     }
 
     /**
-     * Write a PtNodeArray to memory. The PtNodeArray is expected to have its final position cached.
+     * Write a PtNodeArray. The PtNodeArray is expected to have its final position cached.
      *
      * @param dict the dictionary the node array is a part of (for relative offsets).
      * @param dictEncoder the dictionary encoder.
@@ -741,7 +762,7 @@ public class BinaryDictEncoderUtils {
      * @param formatOptions file format options.
      */
     @SuppressWarnings("unused")
-    /* package */ static void writePlacedNode(final FusionDictionary dict,
+    /* package */ static void writePlacedPtNodeArray(final FusionDictionary dict,
             final DictEncoder dictEncoder, final PtNodeArray ptNodeArray,
             final FormatOptions formatOptions) {
         // TODO: Make the code in common with BinaryDictIOUtils#writePtNode
@@ -767,13 +788,7 @@ public class BinaryDictEncoderUtils {
                         + " : " + ptNode.mFrequency);
             }
 
-            dictEncoder.writePtNodeFlags(ptNode, parentPosition, formatOptions);
-            dictEncoder.writeParentPosition(parentPosition, ptNode, formatOptions);
-            dictEncoder.writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
-            dictEncoder.writeFrequency(ptNode.mFrequency);
-            dictEncoder.writeChildrenPosition(ptNode, formatOptions);
-            dictEncoder.writeShortcuts(ptNode.mShortcutTargets);
-            dictEncoder.writeBigrams(ptNode.mBigrams, dict);
+            dictEncoder.writePtNode(ptNode, parentPosition, formatOptions, dict);
         }
         if (formatOptions.mSupportsDynamicUpdate) {
             dictEncoder.writeForwardLinkAddress(FormatSpec.NO_FORWARD_LINK_ADDRESS);

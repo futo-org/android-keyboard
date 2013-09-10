@@ -103,7 +103,7 @@ public class Ver3DictEncoder implements DictEncoder {
         MakedictLog.i("Writing file...");
 
         for (PtNodeArray nodeArray : flatNodes) {
-            BinaryDictEncoderUtils.writePlacedNode(dict, this, nodeArray, formatOptions);
+            BinaryDictEncoderUtils.writePlacedPtNodeArray(dict, this, nodeArray, formatOptions);
         }
         if (MakedictLog.DBG) BinaryDictEncoderUtils.showStatistics(flatNodes);
         mOutStream.write(mBuffer, 0, mPosition);
@@ -126,26 +126,23 @@ public class Ver3DictEncoder implements DictEncoder {
     @Override
     public void writePtNodeCount(final int ptNodeCount) {
         final int countSize = BinaryDictIOUtils.getPtNodeCountSize(ptNodeCount);
-        if (1 == countSize) {
-            mBuffer[mPosition++] = (byte) ptNodeCount;
-        } else if (2 == countSize) {
-            mBuffer[mPosition++] = (byte) ((ptNodeCount >> 8) & 0xFF);
-            mBuffer[mPosition++] = (byte) (ptNodeCount & 0xFF);
-        } else {
+        if (countSize != 1 && countSize != 2) {
             throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
         }
+        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, ptNodeCount,
+                countSize);
     }
 
-    @Override
-    public void writePtNodeFlags(final PtNode ptNode, final int parentAddress,
+    private void writePtNodeFlags(final PtNode ptNode, final int parentAddress,
             final FormatOptions formatOptions) {
         final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
-        mBuffer[mPosition++] = BinaryDictEncoderUtils.makePtNodeFlags(ptNode, mPosition,
-                childrenPos, formatOptions);
+        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition,
+                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, mPosition, childrenPos,
+                        formatOptions),
+                FormatSpec.PTNODE_FLAGS_SIZE);
     }
 
-    @Override
-    public void writeParentPosition(final int parentPosition, final PtNode ptNode,
+    private void writeParentPosition(final int parentPosition, final PtNode ptNode,
             final FormatOptions formatOptions) {
         if (parentPosition == FormatSpec.NO_PARENT_ADDRESS) {
             mPosition = BinaryDictEncoderUtils.writeParentAddress(mBuffer, mPosition,
@@ -156,22 +153,20 @@ public class Ver3DictEncoder implements DictEncoder {
         }
     }
 
-    @Override
-    public void writeCharacters(final int[] codePoints, final boolean hasSeveralChars) {
+    private void writeCharacters(final int[] codePoints, final boolean hasSeveralChars) {
         mPosition = CharEncoding.writeCharArray(codePoints, mBuffer, mPosition);
         if (hasSeveralChars) {
             mBuffer[mPosition++] = FormatSpec.PTNODE_CHARACTERS_TERMINATOR;
         }
     }
 
-    @Override
-    public void writeFrequency(final int frequency) {
+    private void writeFrequency(final int frequency) {
         if (frequency >= 0) {
-            mBuffer[mPosition++] = (byte) frequency;
+            mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, frequency,
+                    FormatSpec.PTNODE_FREQUENCY_SIZE);
         }
     }
 
-    @Override
     public void writeChildrenPosition(final PtNode ptNode, final FormatOptions formatOptions) {
         final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
         if (formatOptions.mSupportsDynamicUpdate) {
@@ -183,8 +178,12 @@ public class Ver3DictEncoder implements DictEncoder {
         }
     }
 
-    @Override
-    public void writeShortcuts(final ArrayList<WeightedString> shortcuts) {
+    /**
+     * Write a shortcut attributes list to mBuffer.
+     *
+     * @param shortcuts the shortcut attributes list.
+     */
+    private void writeShortcuts(final ArrayList<WeightedString> shortcuts) {
         if (null == shortcuts || shortcuts.isEmpty()) return;
 
         final int indexOfShortcutByteSize = mPosition;
@@ -195,7 +194,8 @@ public class Ver3DictEncoder implements DictEncoder {
             final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
                     shortcutIterator.hasNext(),
                     target.mFrequency);
-            mBuffer[mPosition++] = (byte)shortcutFlags;
+            mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, shortcutFlags,
+                    FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             final int shortcutShift = CharEncoding.writeString(mBuffer, mPosition, target.mWord);
             mPosition += shortcutShift;
         }
@@ -203,12 +203,18 @@ public class Ver3DictEncoder implements DictEncoder {
         if (shortcutByteSize > 0xFFFF) {
             throw new RuntimeException("Shortcut list too large");
         }
-        mBuffer[indexOfShortcutByteSize] = (byte)((shortcutByteSize >> 8) & 0xFF);
-        mBuffer[indexOfShortcutByteSize + 1] = (byte)(shortcutByteSize & 0xFF);
+        BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, indexOfShortcutByteSize, shortcutByteSize,
+                FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
     }
 
-    @Override
-    public void writeBigrams(final ArrayList<WeightedString> bigrams, final FusionDictionary dict) {
+    /**
+     * Write a bigram attributes list to mBuffer.
+     *
+     * @param bigrams the bigram attributes list.
+     * @param dict the dictionary the node array is a part of (for relative offsets).
+     */
+    private void writeBigrams(final ArrayList<WeightedString> bigrams,
+            final FusionDictionary dict) {
         if (bigrams == null) return;
 
         final Iterator<WeightedString> bigramIterator = bigrams.iterator();
@@ -220,9 +226,10 @@ public class Ver3DictEncoder implements DictEncoder {
             final int unigramFrequencyForThisWord = target.mFrequency;
             final int offset = addressOfBigram
                     - (mPosition + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-            int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
+            final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
                     offset, bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
-            mBuffer[mPosition++] = (byte) bigramFlags;
+            mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, bigramFlags,
+                    FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
             mPosition += BinaryDictEncoderUtils.writeChildrenPosition(mBuffer, mPosition,
                     Math.abs(offset));
         }
@@ -230,8 +237,19 @@ public class Ver3DictEncoder implements DictEncoder {
 
     @Override
     public void writeForwardLinkAddress(final int forwardLinkAddress) {
-        mBuffer[mPosition++] = (byte) ((forwardLinkAddress >> 16) & 0xFF);
-        mBuffer[mPosition++] = (byte) ((forwardLinkAddress >> 8) & 0xFF);
-        mBuffer[mPosition++] = (byte) (forwardLinkAddress & 0xFF);
+        mPosition = BinaryDictEncoderUtils.writeUIntToBuffer(mBuffer, mPosition, forwardLinkAddress,
+                FormatSpec.FORWARD_LINK_ADDRESS_SIZE);
+    }
+
+    @Override
+    public void writePtNode(final PtNode ptNode, final int parentPosition,
+            final FormatOptions formatOptions, final FusionDictionary dict) {
+        writePtNodeFlags(ptNode, parentPosition, formatOptions);
+        writeParentPosition(parentPosition, ptNode, formatOptions);
+        writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
+        writeFrequency(ptNode.mFrequency);
+        writeChildrenPosition(ptNode, formatOptions);
+        writeShortcuts(ptNode.mShortcutTargets);
+        writeBigrams(ptNode.mBigrams, dict);
     }
 }
