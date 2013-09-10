@@ -20,12 +20,13 @@ namespace latinime {
 
 bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
-    const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
         *fromPos -= mBuffer->getOriginalBufferSize();
     }
     BigramListReadWriteUtils::BigramFlags flags;
     do {
+        // The buffer address can be changed after calling buffer writing methods.
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, fromPos);
         int bigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, fromPos);
@@ -63,7 +64,6 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
 bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int probability,
         int *const pos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
-    const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
         *pos -= mBuffer->getOriginalBufferSize();
     }
@@ -73,6 +73,8 @@ bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int prob
         if (usesAdditionalBuffer) {
             entryPos += mBuffer->getOriginalBufferSize();
         }
+        // The buffer address can be changed after calling buffer writing methods.
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
         BigramListReadWriteUtils::getBigramAddressAndForwardPointer(buffer, flags, pos);
         if (BigramListReadWriteUtils::hasNext(flags)) {
@@ -118,13 +120,14 @@ bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int prob
 
 bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int targetBigramPos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(bigramListPos);
-    const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
     int pos = bigramListPos;
     if (usesAdditionalBuffer) {
         pos -= mBuffer->getOriginalBufferSize();
     }
     BigramListReadWriteUtils::BigramFlags flags;
     do {
+        // The buffer address can be changed after calling buffer writing methods.
+        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, &pos);
         int bigramOffsetFieldPos = pos;
         if (usesAdditionalBuffer) {
@@ -139,8 +142,7 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int ta
             continue;
         }
         // Target entry is found. Write 0 into the bigram pos field to mark the bigram invalid.
-        const int bigramOffsetFieldSize =
-                BigramListReadWriteUtils::attributeAddressSize(flags);
+        const int bigramOffsetFieldSize = BigramListReadWriteUtils::attributeAddressSize(flags);
         if (!mBuffer->writeUintAndAdvancePosition(0 /* data */, bigramOffsetFieldSize,
                 &bigramOffsetFieldPos)) {
             return false;
