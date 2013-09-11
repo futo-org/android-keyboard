@@ -54,10 +54,13 @@ public interface DictDecoder {
      * which words from the buffer should be added. If it is null, a new dictionary is created.
      *
      * @param dict an optional dictionary to add words to, or null.
+     * @param deleteDictIfBroken a flag indicating whether this method should remove the broken
+     * dictionary or not.
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    public FusionDictionary readDictionaryBinary(final FusionDictionary dict)
+    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
+            final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException;
 
     /**

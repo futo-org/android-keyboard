@@ -306,7 +306,8 @@ public class Ver3DictDecoder implements DictDecoder {
     }
 
     @Override
-    public FusionDictionary readDictionaryBinary(final FusionDictionary dict)
+    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
+            final boolean deleteDictIfBroken)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         if (mDictBuffer == null) {
             openDictBuffer();
@@ -315,13 +316,13 @@ public class Ver3DictDecoder implements DictDecoder {
             return BinaryDictDecoderUtils.readDictionaryBinary(this, dict);
         } catch (IOException e) {
             Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (!mDictionaryBinaryFile.delete()) {
+            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
                 Log.e(TAG, "Failed to delete the broken dictionary.");
             }
             throw e;
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "The dictionary " + mDictionaryBinaryFile.getName() + " is broken.", e);
-            if (!mDictionaryBinaryFile.delete()) {
+            if (deleteDictIfBroken && !mDictionaryBinaryFile.delete()) {
                 Log.e(TAG, "Failed to delete the broken dictionary.");
             }
             throw e;

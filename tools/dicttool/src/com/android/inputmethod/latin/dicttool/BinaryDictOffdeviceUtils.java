@@ -192,7 +192,7 @@ public final class BinaryDictOffdeviceUtils {
                         System.out.println("Packaging : " + decodedSpec.describeChain());
                         System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
                     }
-                    return dictDecoder.readDictionaryBinary(null);
+                    return dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
                 }
             }
         } catch (IOException e) {

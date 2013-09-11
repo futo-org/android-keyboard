@@ -268,7 +268,7 @@ public class DictionaryMaker {
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File file = new File(binaryFilename);
         final DictDecoder dictDecoder = new Ver3DictDecoder(file);
-        return dictDecoder.readDictionaryBinary(null);
+        return dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
     }
 
     /**

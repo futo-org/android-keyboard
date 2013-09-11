@@ -289,7 +289,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             dictDecoder.openDictBuffer();
             assertNotNull(dictDecoder.getDictBuffer());
             now = System.currentTimeMillis();
-            dict = dictDecoder.readDictionaryBinary(null);
+            dict = dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
             diff  = System.currentTimeMillis() - now;
         } catch (IOException e) {
             Log.e(TAG, "IOException while reading dictionary", e);
