@@ -348,4 +348,33 @@ public class Ver3DictDecoder implements DictDecoder {
         BinaryDictIOUtils.readUnigramsAndBigramsBinary(this, words, frequencies, bigrams);
     }
 
+    @Override
+    public void setPosition(int newPos) {
+        mDictBuffer.position(newPos);
+    }
+
+    @Override
+    public int getPosition() {
+        return mDictBuffer.position();
+    }
+
+    @Override
+    public int readPtNodeCount() {
+        return BinaryDictDecoderUtils.readPtNodeCount(mDictBuffer);
+    }
+
+    @Override
+    public boolean readForwardLinkAndAdvancePosition() {
+        final int nextAddress = mDictBuffer.readUnsignedInt24();
+        if (nextAddress >= 0 && nextAddress < mDictBuffer.limit()) {
+            mDictBuffer.position(nextAddress);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasNextPtNodeArray() {
+        return mDictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS;
+    }
 }

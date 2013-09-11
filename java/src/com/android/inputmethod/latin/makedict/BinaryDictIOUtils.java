@@ -61,12 +61,11 @@ public final class BinaryDictIOUtils {
     /**
      * Retrieves all node arrays without recursive call.
      */
-    private static void readUnigramsAndBigramsBinaryInner(
-            final Ver3DictDecoder dictDecoder, final int headerSize,
-            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
+    private static void readUnigramsAndBigramsBinaryInner(final DictDecoder dictDecoder,
+            final int headerSize, final Map<Integer, String> words,
+            final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams,
             final FormatOptions formatOptions) {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
 
         Stack<Position> stack = new Stack<Position>();
@@ -83,11 +82,11 @@ public final class BinaryDictIOUtils {
                         p.mNumOfPtNode + ", position=" + p.mPosition + ", length=" + p.mLength);
             }
 
-            if (dictBuffer.position() != p.mAddress) dictBuffer.position(p.mAddress);
+            if (dictDecoder.getPosition() != p.mAddress) dictDecoder.setPosition(p.mAddress);
             if (index != p.mLength) index = p.mLength;
 
             if (p.mNumOfPtNode == Position.NOT_READ_PTNODE_COUNT) {
-                p.mNumOfPtNode = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+                p.mNumOfPtNode = dictDecoder.readPtNodeCount();
                 p.mAddress += getPtNodeCountSize(p.mNumOfPtNode);
                 p.mPosition = 0;
             }
@@ -114,11 +113,12 @@ public final class BinaryDictIOUtils {
 
             if (p.mPosition == p.mNumOfPtNode) {
                 if (formatOptions.mSupportsDynamicUpdate) {
-                    final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
-                    if (forwardLinkAddress != FormatSpec.NO_FORWARD_LINK_ADDRESS) {
+                    final boolean hasValidForwardLinkAddress =
+                            dictDecoder.readForwardLinkAndAdvancePosition();
+                    if (hasValidForwardLinkAddress && dictDecoder.hasNextPtNodeArray()) {
                         // The node array has a forward link.
                         p.mNumOfPtNode = Position.NOT_READ_PTNODE_COUNT;
-                        p.mAddress = forwardLinkAddress;
+                        p.mAddress = dictDecoder.getPosition();
                     } else {
                         stack.pop();
                     }
@@ -127,7 +127,7 @@ public final class BinaryDictIOUtils {
                 }
             } else {
                 // The Ptnode array has more PtNodes.
-                p.mAddress = dictBuffer.position();
+                p.mAddress = dictDecoder.getPosition();
             }
 
             if (!isMovedPtNode && hasChildrenAddress(info.mChildrenAddress)) {
@@ -171,9 +171,8 @@ public final class BinaryDictIOUtils {
     @UsedForTesting
     /* package */ static int getTerminalPosition(final Ver3DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         if (word == null) return FormatSpec.NOT_VALID_WORD;
-        if (dictBuffer.position() != 0) dictBuffer.position(0);
+        dictDecoder.setPosition(0);
 
         final FileHeader header = dictDecoder.readHeader();
         int wordPos = 0;
@@ -182,10 +181,10 @@ public final class BinaryDictIOUtils {
             if (wordPos >= wordLen) return FormatSpec.NOT_VALID_WORD;
 
             do {
-                final int ptNodeCount = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+                final int ptNodeCount = dictDecoder.readPtNodeCount();
                 boolean foundNextPtNode = false;
                 for (int i = 0; i < ptNodeCount; ++i) {
-                    final int ptNodePos = dictBuffer.position();
+                    final int ptNodePos = dictDecoder.getPosition();
                     final PtNodeInfo currentInfo = dictDecoder.readPtNode(ptNodePos,
                             header.mFormatOptions);
                     final boolean isMovedNode = isMovedPtNode(currentInfo.mFlags,
@@ -219,7 +218,7 @@ public final class BinaryDictIOUtils {
                             return FormatSpec.NOT_VALID_WORD;
                         }
                         foundNextPtNode = true;
-                        dictBuffer.position(currentInfo.mChildrenAddress);
+                        dictDecoder.setPosition(currentInfo.mChildrenAddress);
                         break;
                     }
                 }
@@ -233,11 +232,11 @@ public final class BinaryDictIOUtils {
                     return FormatSpec.NOT_VALID_WORD;
                 }
 
-                final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
-                if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
+                final boolean hasValidForwardLinkAddress =
+                        dictDecoder.readForwardLinkAndAdvancePosition();
+                if (!hasValidForwardLinkAddress || !dictDecoder.hasNextPtNodeArray()) {
                     return FormatSpec.NOT_VALID_WORD;
                 }
-                dictBuffer.position(forwardLinkAddress);
             } while(true);
         }
         return FormatSpec.NOT_VALID_WORD;

@@ -91,6 +91,33 @@ public interface DictDecoder {
             final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams)
             throws IOException, UnsupportedFormatException;
 
+    /**
+     * Sets the position of the buffer to the given value.
+     *
+     * @param newPos the new position
+     */
+    public void setPosition(final int newPos);
+
+    /**
+     * Gets the position of the buffer.
+     *
+     * @return the position
+     */
+    public int getPosition();
+
+    /**
+     * Reads and returns the PtNode count out of a buffer and forwards the pointer.
+     */
+    public int readPtNodeCount();
+
+    /**
+     * Reads the forward link and advances the position.
+     *
+     * @return if this method advances the position then true else false.
+     */
+    public boolean readForwardLinkAndAdvancePosition();
+    public boolean hasNextPtNodeArray();
+
     // Flags for DictionaryBufferFactory.
     public static final int USE_READONLY_BYTEBUFFER = 0x01000000;
     public static final int USE_BYTEARRAY = 0x02000000;
