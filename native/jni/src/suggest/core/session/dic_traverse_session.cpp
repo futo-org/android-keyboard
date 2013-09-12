@@ -59,8 +59,9 @@ const DictionaryStructureWithBufferPolicy *DicTraverseSession::getDictionaryStru
     return mDictionary->getDictionaryStructurePolicy();
 }
 
-void DicTraverseSession::resetCache(const int nextActiveCacheSize, const int maxWords) {
-    mDicNodesCache.reset(nextActiveCacheSize, maxWords);
+void DicTraverseSession::resetCache(const int thresholdForNextActiveDicNodes, const int maxWords) {
+    mDicNodesCache.reset(thresholdForNextActiveDicNodes /* nextActiveSize */,
+            maxWords /* terminalSize */);
     mMultiBigramMap.clear();
     mPartiallyCommited = false;
 }
