@@ -73,7 +73,7 @@ class DicTraverseSession {
             const int inputSize, const int *const inputXs, const int *const inputYs,
             const int *const times, const int *const pointerIds, const float maxSpatialDistance,
             const int maxPointerCount);
-    void resetCache(const int nextActiveCacheSize, const int maxWords);
+    void resetCache(const int thresholdForNextActiveDicNodes, const int maxWords);
 
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const;
 

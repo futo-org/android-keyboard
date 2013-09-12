@@ -32,6 +32,8 @@
 #define MAX_WORD_LENGTH 48
 // Must be equal to BinaryDictionary.MAX_RESULTS in Java
 #define MAX_RESULTS 18
+// The biggest value among MAX_CACHE_DIC_NODE_SIZE, MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT, ...
+#define MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY 310
 // Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
 #define MAX_PROXIMITY_CHARS_SIZE 16
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
@@ -321,13 +323,6 @@ static inline void prof_out(void) {
 // TODO: Remove
 #define MAX_POINTER_COUNT 1
 #define MAX_POINTER_COUNT_G 2
-
-// Queue IDs and size for DicNodesCache
-#define DIC_NODES_CACHE_INITIAL_QUEUE_ID_ACTIVE 0
-#define DIC_NODES_CACHE_INITIAL_QUEUE_ID_NEXT_ACTIVE 1
-#define DIC_NODES_CACHE_INITIAL_QUEUE_ID_TERMINAL 2
-#define DIC_NODES_CACHE_INITIAL_QUEUE_ID_CACHE_FOR_CONTINUOUS_SUGGESTION 3
-#define DIC_NODES_CACHE_PRIORITY_QUEUES_SIZE 4
 
 template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
 template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
