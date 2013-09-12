@@ -25,8 +25,9 @@
 
 namespace latinime {
 class Dictionary;
-static jlong latinime_setDicTraverseSession(JNIEnv *env, jclass clazz, jstring localeJStr) {
-    void *traverseSession = DicTraverseSession::getSessionInstance(env, localeJStr);
+static jlong latinime_setDicTraverseSession(JNIEnv *env, jclass clazz, jstring localeJStr,
+        jlong dictSize) {
+    void *traverseSession = DicTraverseSession::getSessionInstance(env, localeJStr, dictSize);
     return reinterpret_cast<jlong>(traverseSession);
 }
 
@@ -53,7 +54,7 @@ static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong 
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("setDicTraverseSessionNative"),
-        const_cast<char *>("(Ljava/lang/String;)J"),
+        const_cast<char *>("(Ljava/lang/String;J)J"),
         reinterpret_cast<void *>(latinime_setDicTraverseSession)
     },
     {

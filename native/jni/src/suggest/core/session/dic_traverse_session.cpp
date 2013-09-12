@@ -23,6 +23,11 @@
 
 namespace latinime {
 
+// 256K bytes threshold is heuristically used to distinguish dictionaries containing many unigrams
+// (e.g. main dictionary) from small dictionaries (e.g. contacts...)
+const int DicTraverseSession::DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION =
+        256 * 1024;
+
 void DicTraverseSession::init(const Dictionary *const dictionary, const int *prevWord,
         int prevWordLength, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;

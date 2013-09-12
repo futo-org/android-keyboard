@@ -23,6 +23,11 @@
 
 namespace latinime {
 
+// The biggest value among MAX_CACHE_DIC_NODE_SIZE, MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT, ...
+const int DicNodesCache::LARGE_PRIORITY_QUEUE_CAPACITY = 310;
+// Capacity for reducing memory footprint.
+const int DicNodesCache::SMALL_PRIORITY_QUEUE_CAPACITY = 100;
+
 /**
  * Truncates all of the dicNodes so that they start at the given commit point.
  * Only called for multi-word typing input.
