@@ -95,7 +95,6 @@ import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
-import com.android.inputmethod.latin.utils.PositionalInfoForUserDictPendingAddition;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
@@ -185,8 +184,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-    private PositionalInfoForUserDictPendingAddition
-            mPositionalInfoForUserDictPendingAddition = null;
     private final WordComposer mWordComposer = new WordComposer();
     private final RichInputConnection mConnection = new RichInputConnection(this);
     private final RecapitalizeStatus mRecapitalizeStatus = new RecapitalizeStatus();
@@ -898,19 +895,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 currentSettingsValues.mGestureTrailEnabled,
                 currentSettingsValues.mGestureFloatingPreviewTextEnabled);
 
-        // If we have a user dictionary addition in progress, we should check now if we should
-        // replace the previously committed string with the word that has actually been added
-        // to the user dictionary.
-        if (null != mPositionalInfoForUserDictPendingAddition
-                && mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
-                        mConnection, editorInfo, mLastSelectionEnd, currentLocale)) {
-            mPositionalInfoForUserDictPendingAddition = null;
-        }
-        // If tryReplaceWithActualWord returns false, we don't know what word was
-        // added to the user dictionary yet, so we keep the data and defer processing. The word will
-        // be replaced when the user dictionary reports back with the actual word, which ends
-        // up calling #onWordAddedToUserDictionary() in this class.
-
         initPersonalizationDebugSettings(currentSettingsValues);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
@@ -1416,7 +1400,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void addWordToUserDictionary(final String word) {
         if (TextUtils.isEmpty(word)) {
             // Probably never supposed to happen, but just in case.
-            mPositionalInfoForUserDictPendingAddition = null;
             return;
         }
         final String wordToEdit;
@@ -1426,22 +1409,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             wordToEdit = word;
         }
         mUserDictionary.addWordToUserDictionary(wordToEdit);
-    }
-
-    public void onWordAddedToUserDictionary(final String newSpelling) {
-        // If word was added but not by us, bail out
-        if (null == mPositionalInfoForUserDictPendingAddition) return;
-        if (mWordComposer.isComposingWord()) {
-            // We are late... give up and return
-            mPositionalInfoForUserDictPendingAddition = null;
-            return;
-        }
-        mPositionalInfoForUserDictPendingAddition.setActualWordBeingAdded(newSpelling);
-        if (mPositionalInfoForUserDictPendingAddition.tryReplaceWithActualWord(
-                mConnection, getCurrentInputEditorInfo(), mLastSelectionEnd,
-                mSubtypeSwitcher.getCurrentSubtypeLocale())) {
-            mPositionalInfoForUserDictPendingAddition = null;
-        }
     }
 
     private void onSettingsKeyPressed() {
