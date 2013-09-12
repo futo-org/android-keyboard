@@ -61,6 +61,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         ViewPager.OnPageChangeListener, View.OnClickListener,
         ScrollKeyboardView.OnKeyClickListener {
     private final int mKeyBackgroundId;
+    private final int mEmojiFunctionalKeyBackgroundId;
     private final ColorStateList mTabLabelColor;
     private final EmojiKeyboardAdapter mEmojiKeyboardAdapter;
 
@@ -116,6 +117,8 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         mKeyBackgroundId = keyboardViewAttr.getResourceId(
                 R.styleable.KeyboardView_keyBackground, 0);
+        mEmojiFunctionalKeyBackgroundId = keyboardViewAttr.getResourceId(
+                R.styleable.KeyboardView_keyBackgroundEmojiFunctional, 0);
         keyboardViewAttr.recycle();
         final TypedArray emojiKeyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.EmojiKeyboardView, defStyle, R.style.EmojiKeyboardView);
@@ -126,10 +129,9 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 context, null /* editorInfo */);
         final Resources res = context.getResources();
         builder.setSubtype(SubtypeSwitcher.getInstance().getEmojiSubtype());
-        // TODO: Make Keyboard height variable.
         builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(res),
-                (int)(ResourceUtils.getDefaultKeyboardHeight(res)
-                        - res.getDimension(R.dimen.suggestions_strip_height)));
+                (int)ResourceUtils.getDefaultKeyboardHeight(res)
+                        + res.getDimensionPixelSize(R.dimen.suggestions_strip_height));
         builder.setOptions(false, false, false /* lanuageSwitchKeyEnabled */);
         final KeyboardLayoutSet layoutSet = builder.build();
         mEmojiKeyboardAdapter = new EmojiKeyboardAdapter(layoutSet, this);
@@ -165,7 +167,6 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                     R.layout.emoji_keyboard_tab_label, null);
             textView.setText(sCategoryLabel[category]);
             textView.setTextColor(mTabLabelColor);
-            textView.setBackgroundResource(mKeyBackgroundId);
             tspec.setIndicator(textView);
         }
         host.addTab(tspec);
@@ -189,27 +190,33 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mEmojiPager.setAdapter(mEmojiKeyboardAdapter);
         mEmojiPager.setOnPageChangeListener(this);
         mEmojiPager.setOffscreenPageLimit(0);
-        final ViewGroup.LayoutParams lp = mEmojiPager.getLayoutParams();
         final Resources res = getResources();
-        lp.height = ResourceUtils.getDefaultKeyboardHeight(res)
-                - res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
-        mEmojiPager.setLayoutParams(lp);
+        final EmojiLayoutParams emojiLp = new EmojiLayoutParams(res);
+        emojiLp.setPagerProps(mEmojiPager);
 
         // TODO: Record current category.
         final int category = CATEGORY_PEOPLE;
         setCurrentCategory(category, true /* force */);
 
+        final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
+        emojiLp.setActionBarProps(actionBar);
+
         // TODO: Implement auto repeat, using View.OnTouchListener?
-        final View deleteKey = findViewById(R.id.emoji_keyboard_delete);
-        deleteKey.setBackgroundResource(mKeyBackgroundId);
+        final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
+        deleteKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         deleteKey.setTag(Constants.CODE_DELETE);
         deleteKey.setOnClickListener(this);
-        final View alphabetKey = findViewById(R.id.emoji_keyboard_alphabet);
-        alphabetKey.setBackgroundResource(mKeyBackgroundId);
+        final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
+        alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
         alphabetKey.setOnClickListener(this);
-        final View sendKey = findViewById(R.id.emoji_keyboard_send);
-        sendKey.setBackgroundResource(mKeyBackgroundId);
+        final ImageView spaceKey = (ImageView)findViewById(R.id.emoji_keyboard_space);
+        spaceKey.setBackgroundResource(mKeyBackgroundId);
+        spaceKey.setTag(Constants.CODE_SPACE);
+        spaceKey.setOnClickListener(this);
+        emojiLp.setKeyProps(spaceKey);
+        final ImageView sendKey = (ImageView)findViewById(R.id.emoji_keyboard_send);
+        sendKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         sendKey.setTag(Constants.CODE_ENTER);
         sendKey.setOnClickListener(this);
     }
