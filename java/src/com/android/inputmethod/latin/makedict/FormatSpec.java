@@ -18,7 +18,10 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.makedict.DictDecoder.DictionaryBufferFactory;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
+
+import java.io.File;
 
 /**
  * Dictionary File Format Specification.
@@ -339,6 +342,28 @@ public final class FormatSpec {
             // It will display as is no matter the device's locale. It should be internationalized.
             return mDictionaryOptions.mAttributes.get(FileHeader.DICTIONARY_DESCRIPTION_ATTRIBUTE);
         }
+    }
+
+    /**
+     * Returns new dictionary decoder.
+     *
+     * @param dictFile the dictionary file.
+     * @param bufferType the flag indicating buffer type which is used by the dictionary decoder.
+     * @return new dictionary decoder if the dictionary file exists, otherwise null.
+     */
+    public static DictDecoder getDictDecoder(final File dictFile, final int bufferType) {
+        if (!dictFile.isFile()) return null;
+        return new Ver3DictDecoder(dictFile, bufferType);
+    }
+
+    public static DictDecoder getDictDecoder(final File dictFile,
+            final DictionaryBufferFactory factory) {
+        if (!dictFile.isFile()) return null;
+        return new Ver3DictDecoder(dictFile, factory);
+    }
+
+    public static DictDecoder getDictDecoder(final File dictFile) {
+        return getDictDecoder(dictFile, DictDecoder.USE_READONLY_BYTEBUFFER);
     }
 
     private FormatSpec() {

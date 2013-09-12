@@ -173,11 +173,7 @@ public class Ver3DictDecoder implements DictDecoder {
     private final DictionaryBufferFactory mBufferFactory;
     private DictBuffer mDictBuffer;
 
-    public Ver3DictDecoder(final File file) {
-        this(file, USE_READONLY_BYTEBUFFER);
-    }
-
-    public Ver3DictDecoder(final File file, final int factoryFlag) {
+    /* package */ Ver3DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;
         mDictBuffer = null;
 
@@ -192,13 +188,19 @@ public class Ver3DictDecoder implements DictDecoder {
         }
     }
 
-    public Ver3DictDecoder(final File file, final DictionaryBufferFactory factory) {
+    /* package */ Ver3DictDecoder(final File file, final DictionaryBufferFactory factory) {
         mDictionaryBinaryFile = file;
         mBufferFactory = factory;
     }
 
+    @Override
     public void openDictBuffer() throws FileNotFoundException, IOException {
         mDictBuffer = mBufferFactory.getDictionaryBuffer(mDictionaryBinaryFile);
+    }
+
+    @Override
+    public boolean isOpenedDictBuffer() {
+        return mDictBuffer != null;
     }
 
     /* package */ DictBuffer getDictBuffer() {

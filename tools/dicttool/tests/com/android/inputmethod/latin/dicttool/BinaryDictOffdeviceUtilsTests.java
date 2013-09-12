@@ -18,12 +18,12 @@ package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.DictDecoder;
 import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import junit.framework.TestCase;
@@ -69,7 +69,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
             assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
         }
         assertEquals("Wrong decode spec", 3, decodeSpec.mDecoderSpec.size());
-        final DictDecoder dictDecoder = new Ver3DictDecoder(decodeSpec.mFile);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodeSpec.mFile);
         final FusionDictionary resultDict = dictDecoder.readDictionaryBinary(
                 null /* dict : an optional dictionary to add words to, or null */,
                 false /* deleteDictIfBroken */);
