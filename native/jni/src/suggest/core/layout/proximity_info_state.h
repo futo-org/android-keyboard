@@ -46,10 +46,11 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mIsContinuousSuggestionPossible(false), mSampledInputXs(), mSampledInputYs(),
-              mSampledTimes(), mSampledInputIndice(), mSampledLengthCache(),
-              mBeelineSpeedPercentiles(), mSampledNormalizedSquaredLengthCache(), mSpeedRates(),
-              mDirections(), mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
+              mIsContinuousSuggestionPossible(false), mHasBeenUpdatedByGeometricInput(false),
+              mSampledInputXs(), mSampledInputYs(), mSampledTimes(), mSampledInputIndice(),
+              mSampledLengthCache(), mBeelineSpeedPercentiles(),
+              mSampledNormalizedSquaredLengthCache(), mSpeedRates(), mDirections(),
+              mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
               mSampledSearchKeyVectors(), mTouchPositionCorrectionEnabled(false),
               mSampledInputSize(0), mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
@@ -204,6 +205,7 @@ class ProximityInfoState {
     int mGridHeight;
     int mGridWidth;
     bool mIsContinuousSuggestionPossible;
+    bool mHasBeenUpdatedByGeometricInput;
 
     std::vector<int> mSampledInputXs;
     std::vector<int> mSampledInputYs;

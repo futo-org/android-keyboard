@@ -36,8 +36,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
     ASSERT(isGeometric || (inputSize < MAX_WORD_LENGTH));
-    mIsContinuousSuggestionPossible =
-            ProximityInfoStateUtils::checkAndReturnIsContinuousSuggestionPossible(
+    mIsContinuousSuggestionPossible = (mHasBeenUpdatedByGeometricInput != isGeometric) ?
+            false : ProximityInfoStateUtils::checkAndReturnIsContinuousSuggestionPossible(
                     inputSize, xCoordinates, yCoordinates, times, mSampledInputSize,
                     &mSampledInputXs, &mSampledInputYs, &mSampledTimes, &mSampledInputIndice);
     if (DEBUG_DICT) {
@@ -155,6 +155,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (DEBUG_GEO_FULL) {
         AKLOGI("ProximityState init finished: %d points out of %d", mSampledInputSize, inputSize);
     }
+    mHasBeenUpdatedByGeometricInput = isGeometric;
 }
 
 // This function basically converts from a length to an edit distance. Accordingly, it's obviously
