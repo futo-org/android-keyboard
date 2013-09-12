@@ -166,7 +166,7 @@
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"कुंजी को देर तक दबाने का विलंब"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="7918341459947439226">"कुंजी-स्पर्श कंपन अवधि"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि वॉल्यूम"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="6027007337036891623">"कुंजी-स्पर्श ध्वनि आवाज़"</string>
     <string name="prefs_read_external_dictionary" msgid="2588931418575013067">"बाहरी शब्दकोश फ़ाइल पढ़ें"</string>
     <string name="read_external_dictionary_no_files_message" msgid="4947420942224623792">"डाउनलोड फ़ोल्डर में कोई शब्दकोश फ़ाइल नहीं है"</string>
     <string name="read_external_dictionary_multiple_files_title" msgid="7637749044265808628">"इंस्टॉल करने के लिए कोई शब्दकोश फ़ाइल चुनें"</string>
@@ -186,15 +186,15 @@
     <string name="setup_step2_instruction" msgid="9141481964870023336">"इसके बाद, \"<xliff:g id="APPLICATION_NAME">%s</xliff:g>\" को अपनी सक्रिय पाठ-इनपुट पद्धति के रूप में चुनें."</string>
     <string name="setup_step2_action" msgid="1660330307159824337">"इनपुट पद्धतियां स्विच करें"</string>
     <string name="setup_step3_title" msgid="3154757183631490281">"बधाई हो, आप बिल्कुल तैयार हैं!"</string>
-    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब आप <xliff:g id="APPLICATION_NAME">%s</xliff:g> के साथ अपने सभी पसंदीदा एप्लिकेशन में लिख सकते हैं."</string>
+    <string name="setup_step3_instruction" msgid="8025981829605426000">"अब आप <xliff:g id="APPLICATION_NAME">%s</xliff:g> के साथ अपने सभी पसंदीदा एप्स में लिख सकते हैं."</string>
     <string name="setup_step3_action" msgid="600879797256942259">"अतिरिक्त भाषाएं कॉन्फ़िगर करना"</string>
     <string name="setup_finish_action" msgid="276559243409465389">"समाप्त"</string>
-    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"एप्लिकेशन आइकन दिखाएं"</string>
-    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लॉन्चर में एप्लिकेशन आइकन प्रदर्शित करें"</string>
+    <string name="show_setup_wizard_icon" msgid="5008028590593710830">"एप्स आइकन दिखाएं"</string>
+    <string name="show_setup_wizard_icon_summary" msgid="4119998322536880213">"लॉन्चर में एप्स आइकन प्रदर्शित करें"</string>
     <string name="app_name" msgid="6320102637491234792">"डिक्‍शनरी प्रदाता"</string>
     <string name="dictionary_provider_name" msgid="3027315045397363079">"डिक्‍शनरी प्रदाता"</string>
     <string name="dictionary_service_name" msgid="6237472350693511448">"डिक्‍शनरी सेवा"</string>
-    <string name="download_description" msgid="6014835283119198591">"डिक्‍शनरी अपडेट जानकारी"</string>
+    <string name="download_description" msgid="6014835283119198591">"शब्दकोश की नई जानकारी"</string>
     <string name="dictionary_settings_title" msgid="8091417676045693313">"एड-ऑन शब्दकोश"</string>
     <string name="dictionary_install_over_metered_network_prompt" msgid="3587517870006332980">"शब्दकोश उपलब्‍ध"</string>
     <string name="dictionary_settings_summary" msgid="5305694987799824349">"डिक्‍शनरी की सेटिंग"</string>
@@ -207,8 +207,8 @@
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"शब्दकोश सेवा से कनेक्ट करने में समस्या"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"डिक्‍शनरी अनुपलब्‍ध"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"रीफ़्रेश करें"</string>
-    <string name="last_update" msgid="730467549913588780">"अंतिम अपडेट"</string>
-    <string name="message_updating" msgid="4457761393932375219">"अपडेट देखे जा रहे हैं"</string>
+    <string name="last_update" msgid="730467549913588780">"अंतिम बार का नई जानकारी"</string>
+    <string name="message_updating" msgid="4457761393932375219">"नई जानकारी देखा जा रहा हैं"</string>
     <string name="message_loading" msgid="8689096636874758814">"लोड हो रही है..."</string>
     <string name="main_dict_description" msgid="3072821352793492143">"मुख्‍य डिक्‍शनरी"</string>
     <string name="cancel" msgid="6830980399865683324">"रद्द करें"</string>
