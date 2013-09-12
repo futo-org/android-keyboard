@@ -267,7 +267,7 @@ public class DictionaryMaker {
     private static FusionDictionary readBinaryFile(final String binaryFilename)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File file = new File(binaryFilename);
-        final DictDecoder dictDecoder = new Ver3DictDecoder(file);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file);
         return dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
     }
 

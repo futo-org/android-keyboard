@@ -25,14 +25,13 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.makedict.DictDecoder;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -173,16 +172,19 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
 
         // Load the dictionary from binary file
         final File dictFile = new File(mContext.getFilesDir(), mFileName);
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(dictFile,
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile,
                 DictDecoder.USE_BYTEARRAY);
+        if (dictDecoder == null) {
+            // This is an expected condition: we don't have a user history dictionary for this
+            // language yet. It will be created sometime later.
+            return;
+        }
+
         try {
             dictDecoder.openDictBuffer();
             UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
-        } catch (FileNotFoundException e) {
-            // This is an expected condition: we don't have a user history dictionary for this
-            // language yet. It will be created sometime later.
         } catch (IOException e) {
-            Log.e(TAG, "IOException on opening a bytebuffer", e);
+            Log.d(TAG, "IOException on opening a bytebuffer", e);
         } finally {
             if (PROFILE_SAVE_RESTORE) {
                 final long diff = System.currentTimeMillis() - now;

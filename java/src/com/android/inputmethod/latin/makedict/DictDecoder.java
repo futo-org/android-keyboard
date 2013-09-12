@@ -118,6 +118,14 @@ public interface DictDecoder {
     public boolean readForwardLinkAndAdvancePosition();
     public boolean hasNextPtNodeArray();
 
+    /**
+     * Opens the dictionary file and makes DictBuffer.
+     */
+    @UsedForTesting
+    public void openDictBuffer() throws FileNotFoundException, IOException;
+    @UsedForTesting
+    public boolean isOpenedDictBuffer();
+
     // Flags for DictionaryBufferFactory.
     public static final int USE_READONLY_BYTEBUFFER = 0x01000000;
     public static final int USE_BYTEARRAY = 0x02000000;

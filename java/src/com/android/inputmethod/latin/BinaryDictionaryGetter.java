@@ -21,9 +21,10 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -228,7 +229,7 @@ final public class BinaryDictionaryGetter {
     private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
         try {
             // Read the version of the file
-            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(f);
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(f);
             final FileHeader header = dictDecoder.readHeader();
 
             final String version = header.mDictionaryOptions.mAttributes.get(VERSION_KEY);
