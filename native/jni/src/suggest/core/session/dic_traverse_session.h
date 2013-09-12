@@ -37,8 +37,12 @@ class DicTraverseSession {
  public:
 
     // A factory method for DicTraverseSession
-    static AK_FORCE_INLINE void *getSessionInstance(JNIEnv *env, jstring localeStr) {
-        return new DicTraverseSession(env, localeStr);
+    static AK_FORCE_INLINE void *getSessionInstance(JNIEnv *env, jstring localeStr,
+            jlong dictSize) {
+        // To deal with the trade-off between accuracy and memory space, large cache is used for
+        // dictionaries larger that the threshold
+        return new DicTraverseSession(env, localeStr,
+                dictSize >= DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION);
     }
 
     static AK_FORCE_INLINE void initSessionInstance(DicTraverseSession *traverseSession,
@@ -54,10 +58,10 @@ class DicTraverseSession {
         delete traverseSession;
     }
 
-    AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr)
+    AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
             : mPrevWordPos(NOT_A_VALID_WORD_POS), mProximityInfo(0),
-              mDictionary(0), mSuggestOptions(0), mDicNodesCache(), mMultiBigramMap(),
-              mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
+              mDictionary(0), mSuggestOptions(0), mDicNodesCache(usesLargeCache),
+              mMultiBigramMap(), mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
@@ -181,6 +185,7 @@ class DicTraverseSession {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicTraverseSession);
     // threshold to start caching
     static const int CACHE_START_INPUT_LENGTH_THRESHOLD;
+    static const int DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION;
     void initializeProximityInfoStates(const int *const inputCodePoints, const int *const inputXs,
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);

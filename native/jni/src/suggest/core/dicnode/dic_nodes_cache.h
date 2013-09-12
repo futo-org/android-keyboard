@@ -31,10 +31,11 @@ class DicNode;
  */
 class DicNodesCache {
  public:
-    AK_FORCE_INLINE DicNodesCache()
-            : mDicNodePriorityQueue0(MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY),
-              mDicNodePriorityQueue1(MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY),
-              mDicNodePriorityQueue2(MAX_DIC_NODE_PRIORITY_QUEUE_CAPACITY),
+    AK_FORCE_INLINE explicit DicNodesCache(const bool usesLargeCapacityCache)
+            : mUsesLargeCapacityCache(usesLargeCapacityCache),
+              mDicNodePriorityQueue0(getCacheCapacity()),
+              mDicNodePriorityQueue1(getCacheCapacity()),
+              mDicNodePriorityQueue2(getCacheCapacity()),
               mDicNodePriorityQueueForTerminal(MAX_RESULTS),
               mActiveDicNodes(&mDicNodePriorityQueue0),
               mNextActiveDicNodes(&mDicNodePriorityQueue1),
@@ -50,7 +51,8 @@ class DicNodesCache {
         // We want to use the max capacity for the current active dic node queue.
         mActiveDicNodes->clearAndResizeToCapacity();
         // nextActiveSize is used to limit the next iteration's active dic node size.
-        mNextActiveDicNodes->clearAndResize(nextActiveSize);
+        const int nextActiveSizeFittingToTheCapacity = min(nextActiveSize, getCacheCapacity());
+        mNextActiveDicNodes->clearAndResize(nextActiveSizeFittingToTheCapacity);
         mTerminalDicNodes->clearAndResize(terminalSize);
         // We want to use the max capacity for the cached dic nodes that will be used for the
         // continuous suggestion.
@@ -162,12 +164,21 @@ class DicNodesCache {
         return tmp;
     }
 
+    AK_FORCE_INLINE int getCacheCapacity() const {
+        return mUsesLargeCapacityCache ?
+                LARGE_PRIORITY_QUEUE_CAPACITY : SMALL_PRIORITY_QUEUE_CAPACITY;
+    }
+
     AK_FORCE_INLINE void resetTemporaryCaches() {
         mActiveDicNodes->clear();
         mNextActiveDicNodes->clear();
         mTerminalDicNodes->clear();
     }
 
+    static const int LARGE_PRIORITY_QUEUE_CAPACITY;
+    static const int SMALL_PRIORITY_QUEUE_CAPACITY;
+
+    const bool mUsesLargeCapacityCache;
     // Instances
     DicNodePriorityQueue mDicNodePriorityQueue0;
     DicNodePriorityQueue mDicNodePriorityQueue1;
