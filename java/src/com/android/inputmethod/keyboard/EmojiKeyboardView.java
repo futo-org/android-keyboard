@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -177,10 +178,12 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mTabHost = (TabHost)findViewById(R.id.emoji_category_tabhost);
         mTabHost.setup();
         addTab(mTabHost, CATEGORY_RECENTS);
-        addTab(mTabHost, CATEGORY_PEOPLE);
-        addTab(mTabHost, CATEGORY_OBJECTS);
-        addTab(mTabHost, CATEGORY_NATURE);
-        addTab(mTabHost, CATEGORY_PLACES);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            addTab(mTabHost, CATEGORY_PEOPLE);
+            addTab(mTabHost, CATEGORY_OBJECTS);
+            addTab(mTabHost, CATEGORY_NATURE);
+            addTab(mTabHost, CATEGORY_PLACES);
+        }
         addTab(mTabHost, CATEGORY_SYMBOLS);
         addTab(mTabHost, CATEGORY_EMOTICONS);
         mTabHost.setOnTabChangedListener(this);
