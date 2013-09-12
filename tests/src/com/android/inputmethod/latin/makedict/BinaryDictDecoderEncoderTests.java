@@ -132,18 +132,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     // Utilities for test
 
     /**
-     * Makes new DictDecoder according to BUFFER_TYPE.
-     */
-    private Ver3DictDecoder getDictDecoder(final File file, final int bufferType) {
-        if (bufferType == USE_BYTE_BUFFER) {
-            return new Ver3DictDecoder(file, DictDecoder.USE_READONLY_BYTEBUFFER);
-        } else  if (bufferType == USE_BYTE_ARRAY) {
-            return new Ver3DictDecoder(file, DictDecoder.USE_BYTEARRAY);
-        }
-        return null;
-    }
-
-    /**
      * Generates a random word.
      */
     private String generateWord(final Random random, final int[] codePointSet) {
@@ -285,9 +273,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         FusionDictionary dict = null;
         try {
-            final Ver3DictDecoder dictDecoder = getDictDecoder(file, bufferType);
-            dictDecoder.openDictBuffer();
-            assertNotNull(dictDecoder.getDictBuffer());
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
             now = System.currentTimeMillis();
             dict = dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
             diff  = System.currentTimeMillis() - now;
@@ -443,9 +429,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         long now = -1, diff = -1;
         try {
-            final Ver3DictDecoder dictDecoder = getDictDecoder(file, bufferType);
-            dictDecoder.openDictBuffer();
-            assertNotNull("Can't get buffer.", dictDecoder.getDictBuffer());
+            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
             now = System.currentTimeMillis();
             dictDecoder.readUnigramsAndBigramsBinary(resultWords, resultFreqs, resultBigrams);
             diff = System.currentTimeMillis() - now;
@@ -531,9 +515,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     // Tests for getTerminalPosition
-    private String getWordFromBinary(final Ver3DictDecoder dictDecoder, final int address) {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        if (dictBuffer.position() != 0) dictBuffer.position(0);
+    private String getWordFromBinary(final DictDecoder dictDecoder, final int address) {
+        if (dictDecoder.getPosition() != 0) dictDecoder.setPosition(0);
 
         FileHeader fileHeader = null;
         try {
@@ -548,7 +531,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 address, fileHeader.mFormatOptions).mWord;
     }
 
-    private long runGetTerminalPosition(final Ver3DictDecoder dictDecoder, final String word,
+    private long runGetTerminalPosition(final DictDecoder dictDecoder, final String word,
             int index, boolean contained) {
         final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
         long diff = -1;
@@ -584,14 +567,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file, DictDecoder.USE_BYTEARRAY);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
         try {
             dictDecoder.openDictBuffer();
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertNotNull("Can't get the buffer", dictDecoder.getDictBuffer());
+        assertTrue("Can't get the buffer", dictDecoder.isOpenedDictBuffer());
 
         try {
             // too long word
@@ -648,7 +631,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertNotNull("Can't get the buffer", dictDecoder.getDictBuffer());
+        assertTrue("Can't get the buffer", dictDecoder.isOpenedDictBuffer());
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,

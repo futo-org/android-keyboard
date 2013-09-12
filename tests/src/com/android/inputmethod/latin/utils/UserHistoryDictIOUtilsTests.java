@@ -143,7 +143,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     }
 
     private void readDictFromFile(final File file, final OnAddWordListener listener) {
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file, DictDecoder.USE_BYTEARRAY);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
         try {
             dictDecoder.openDictBuffer();
         } catch (FileNotFoundException e) {

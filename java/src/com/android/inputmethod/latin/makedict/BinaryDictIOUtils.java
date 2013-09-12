@@ -148,7 +148,7 @@ public final class BinaryDictIOUtils {
      * @throws IOException if the file can't be read.
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
-    /* package */ static void readUnigramsAndBigramsBinary(final Ver3DictDecoder dictDecoder,
+    /* package */ static void readUnigramsAndBigramsBinary(final DictDecoder dictDecoder,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
@@ -169,7 +169,7 @@ public final class BinaryDictIOUtils {
      * @throws UnsupportedFormatException if the format of the file is not recognized.
      */
     @UsedForTesting
-    /* package */ static int getTerminalPosition(final Ver3DictDecoder dictDecoder,
+    /* package */ static int getTerminalPosition(final DictDecoder dictDecoder,
             final String word) throws IOException, UnsupportedFormatException {
         if (word == null) return FormatSpec.NOT_VALID_WORD;
         dictDecoder.setPosition(0);
@@ -519,7 +519,7 @@ public final class BinaryDictIOUtils {
             final File file, final long offset, final long length)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final byte[] buffer = new byte[HEADER_READING_BUFFER_SIZE];
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file,
                 new DictDecoder.DictionaryBufferFactory() {
                     @Override
                     public DictBuffer getDictionaryBuffer(File file)
