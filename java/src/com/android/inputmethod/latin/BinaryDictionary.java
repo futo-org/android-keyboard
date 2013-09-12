@@ -43,6 +43,7 @@ public final class BinaryDictionary extends Dictionary {
 
     private long mNativeDict;
     private final Locale mLocale;
+    private final long mDictSize;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
@@ -62,7 +63,7 @@ public final class BinaryDictionary extends Dictionary {
             if (traverseSession == null) {
                 traverseSession = mDicTraverseSessions.get(traverseSessionId);
                 if (traverseSession == null) {
-                    traverseSession = new DicTraverseSession(mLocale, mNativeDict);
+                    traverseSession = new DicTraverseSession(mLocale, mNativeDict, mDictSize);
                     mDicTraverseSessions.put(traverseSessionId, traverseSession);
                 }
             }
@@ -85,6 +86,7 @@ public final class BinaryDictionary extends Dictionary {
             final boolean isUpdatable) {
         super(dictType);
         mLocale = locale;
+        mDictSize = length;
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length, isUpdatable);
     }
