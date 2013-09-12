@@ -48,8 +48,9 @@ public final class Suggest {
 
     // Session id for
     // {@link #getSuggestedWords(WordComposer,String,ProximityInfo,boolean,int)}.
+    // We are sharing the same ID between typing and gesture to save RAM footprint.
     public static final int SESSION_TYPING = 0;
-    public static final int SESSION_GESTURE = 1;
+    public static final int SESSION_GESTURE = 0;
 
     // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
