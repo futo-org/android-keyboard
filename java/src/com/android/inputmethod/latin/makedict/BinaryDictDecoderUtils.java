@@ -342,13 +342,11 @@ public final class BinaryDictDecoderUtils {
      * @param formatOptions file format options.
      * @return the word with its frequency, as a weighted string.
      */
-    /* package for tests */ static WeightedString getWordAtPosition(
-            final Ver3DictDecoder dictDecoder, final int headerSize, final int pos,
-            final FormatOptions formatOptions) {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
+    /* package for tests */ static WeightedString getWordAtPosition(final DictDecoder dictDecoder,
+            final int headerSize, final int pos, final FormatOptions formatOptions) {
         final WeightedString result;
-        final int originalPos = dictBuffer.position();
-        dictBuffer.position(pos);
+        final int originalPos = dictDecoder.getPosition();
+        dictDecoder.setPosition(pos);
 
         if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
             result = getWordAtPositionWithParentAddress(dictDecoder, pos, formatOptions);
@@ -357,14 +355,13 @@ public final class BinaryDictDecoderUtils {
                     formatOptions);
         }
 
-        dictBuffer.position(originalPos);
+        dictDecoder.setPosition(originalPos);
         return result;
     }
 
     @SuppressWarnings("unused")
-    private static WeightedString getWordAtPositionWithParentAddress(
-            final Ver3DictDecoder dictDecoder, final int pos, final FormatOptions options) {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
+    private static WeightedString getWordAtPositionWithParentAddress(final DictDecoder dictDecoder,
+            final int pos, final FormatOptions options) {
         int currentPos = pos;
         int frequency = Integer.MIN_VALUE;
         final StringBuilder builder = new StringBuilder();
@@ -373,7 +370,7 @@ public final class BinaryDictDecoderUtils {
             PtNodeInfo currentInfo;
             int loopCounter = 0;
             do {
-                dictBuffer.position(currentPos);
+                dictDecoder.setPosition(currentPos);
                 currentInfo = dictDecoder.readPtNode(currentPos, options);
                 if (BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags, options)) {
                     currentPos = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
@@ -392,11 +389,10 @@ public final class BinaryDictDecoderUtils {
     }
 
     private static WeightedString getWordAtPositionWithoutParentAddress(
-            final Ver3DictDecoder dictDecoder, final int headerSize, final int pos,
+            final DictDecoder dictDecoder, final int headerSize, final int pos,
             final FormatOptions options) {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        dictBuffer.position(headerSize);
-        final int count = readPtNodeCount(dictBuffer);
+        dictDecoder.setPosition(headerSize);
+        final int count = dictDecoder.readPtNodeCount();
         int groupPos = headerSize + BinaryDictIOUtils.getPtNodeCountSize(count);
         final StringBuilder builder = new StringBuilder();
         WeightedString result = null;
@@ -414,8 +410,8 @@ public final class BinaryDictDecoderUtils {
                 if (info.mChildrenAddress > pos) {
                     if (null == last) continue;
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                    dictBuffer.position(last.mChildrenAddress);
-                    i = readPtNodeCount(dictBuffer);
+                    dictDecoder.setPosition(last.mChildrenAddress);
+                    i = dictDecoder.readPtNodeCount();
                     groupPos = last.mChildrenAddress + BinaryDictIOUtils.getPtNodeCountSize(i);
                     last = null;
                     continue;
@@ -424,8 +420,8 @@ public final class BinaryDictDecoderUtils {
             }
             if (0 == i && BinaryDictIOUtils.hasChildrenAddress(last.mChildrenAddress)) {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                dictBuffer.position(last.mChildrenAddress);
-                i = readPtNodeCount(dictBuffer);
+                dictDecoder.setPosition(last.mChildrenAddress);
+                i = dictDecoder.readPtNodeCount();
                 groupPos = last.mChildrenAddress + BinaryDictIOUtils.getPtNodeCountSize(i);
                 last = null;
                 continue;
@@ -449,17 +445,16 @@ public final class BinaryDictDecoderUtils {
      * @param options file format options.
      * @return the read node array with all his children already read.
      */
-    private static PtNodeArray readNodeArray(final Ver3DictDecoder dictDecoder,
+    private static PtNodeArray readNodeArray(final DictDecoder dictDecoder,
             final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
             final Map<Integer, PtNode> reversePtNodeMap, final FormatOptions options)
             throws IOException {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         final ArrayList<PtNode> nodeArrayContents = new ArrayList<PtNode>();
-        final int nodeArrayOriginPos = dictBuffer.position();
+        final int nodeArrayOriginPos = dictDecoder.getPosition();
 
         do { // Scan the linked-list node.
-            final int nodeArrayHeadPos = dictBuffer.position();
-            final int count = readPtNodeCount(dictBuffer);
+            final int nodeArrayHeadPos = dictDecoder.getPosition();
+            final int count = dictDecoder.readPtNodeCount();
             int groupOffsetPos = nodeArrayHeadPos + BinaryDictIOUtils.getPtNodeCountSize(count);
             for (int i = count; i > 0; --i) { // Scan the array of PtNode.
                 PtNodeInfo info = dictDecoder.readPtNode(groupOffsetPos, options);
@@ -480,11 +475,11 @@ public final class BinaryDictDecoderUtils {
                 if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
                     PtNodeArray children = reverseNodeArrayMap.get(info.mChildrenAddress);
                     if (null == children) {
-                        final int currentPosition = dictBuffer.position();
-                        dictBuffer.position(info.mChildrenAddress);
+                        final int currentPosition = dictDecoder.getPosition();
+                        dictDecoder.setPosition(info.mChildrenAddress);
                         children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
                                 reversePtNodeMap, options);
-                        dictBuffer.position(currentPosition);
+                        dictDecoder.setPosition(currentPosition);
                     }
                     nodeArrayContents.add(
                             new PtNode(info.mCharacters, shortcutTargets, bigrams,
@@ -503,15 +498,10 @@ public final class BinaryDictDecoderUtils {
 
             // reach the end of the array.
             if (options.mSupportsDynamicUpdate) {
-                final int nextAddress = dictBuffer.readUnsignedInt24();
-                if (nextAddress >= 0 && nextAddress < dictBuffer.limit()) {
-                    dictBuffer.position(nextAddress);
-                } else {
-                    break;
-                }
+                final boolean hasValidForwardLink = dictDecoder.readForwardLinkAndAdvancePosition();
+                if (!hasValidForwardLink) break;
             }
-        } while (options.mSupportsDynamicUpdate &&
-                dictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
+        } while (options.mSupportsDynamicUpdate && dictDecoder.hasNextPtNodeArray());
 
         final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
         nodeArray.mCachedAddressBeforeUpdate = nodeArrayOriginPos;
