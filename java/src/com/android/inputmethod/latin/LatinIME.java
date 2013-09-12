@@ -2671,6 +2671,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
         if (mAppWorkAroundsUtils.isBrokenByRecorrection()) return;
+        // A simple way to test for support from the TextView.
+        if (!isSuggestionsStripVisible()) return;
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
         if (!mSettings.getCurrent().mCurrentLanguageHasSpaces) return;
