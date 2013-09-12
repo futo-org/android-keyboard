@@ -76,18 +76,24 @@
         android:id="@+id/emoji_action_bar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/suggestions_strip_height"
+        android:layout_height="0dip"
+        android:layout_weight="1"
     >
         <ImageButton
             android:id="@+id/emoji_keyboard_alphabet"
             android:layout_width="0dip"
-            android:layout_weight="0.825"
+            android:layout_weight="0.15"
             android:layout_height="match_parent"
             android:src="@drawable/ic_ime_light" />
         <ImageButton
+            android:id="@+id/emoji_keyboard_space"
+            android:layout_width="0dip"
+            android:layout_weight="0.70"
+            android:layout_height="match_parent" />
+        <ImageButton
             android:id="@+id/emoji_keyboard_send"
             android:layout_width="0dip"
-            android:layout_weight="0.125"
+            android:layout_weight="0.15"
             android:layout_height="match_parent"
             android:src="@drawable/sym_keyboard_return_holo" />
     </LinearLayout>
