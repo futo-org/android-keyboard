@@ -26,10 +26,10 @@ import java.util.ArrayDeque;
 import java.util.Random;
 
 /**
- * This is a Keyboard class to host recently used keys.
+ * This is a Keyboard class where you can add keys dynamically shown in a grid layout
  */
 // TODO: Save/restore recent keys from/to preferences.
-public class RecentsKeyboard extends Keyboard {
+public class DynamicGridKeyboard extends Keyboard {
     private static final int TEMPLATE_KEY_CODE_0 = 0x30;
     private static final int TEMPLATE_KEY_CODE_1 = 0x31;
 
@@ -42,7 +42,7 @@ public class RecentsKeyboard extends Keyboard {
 
     private Key[] mCachedRecentKeys;
 
-    public RecentsKeyboard(final Keyboard templateKeyboard) {
+    public DynamicGridKeyboard(final Keyboard templateKeyboard) {
         super(templateKeyboard);
         final Key key0 = getTemplateKey(TEMPLATE_KEY_CODE_0);
         final Key key1 = getTemplateKey(TEMPLATE_KEY_CODE_1);
