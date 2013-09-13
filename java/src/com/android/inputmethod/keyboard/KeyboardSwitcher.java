@@ -314,15 +314,19 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, mLatinIME.getCurrentAutoCapsState());
     }
 
+    public boolean isShowingEmojiKeyboard() {
+        return mEmojiKeyboardView.getVisibility() == View.VISIBLE;
+    }
+
     public boolean isShowingMoreKeysPanel() {
-        if (mEmojiKeyboardView.getVisibility() == View.VISIBLE) {
+        if (isShowingEmojiKeyboard()) {
             return false;
         }
         return mKeyboardView.isShowingMoreKeysPanel();
     }
 
     public View getVisibleKeyboardView() {
-        if (mEmojiKeyboardView.getVisibility() == View.VISIBLE) {
+        if (isShowingEmojiKeyboard()) {
             return mEmojiKeyboardView;
         }
         return mKeyboardView;
