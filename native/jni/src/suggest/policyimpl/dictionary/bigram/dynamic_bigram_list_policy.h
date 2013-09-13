@@ -21,7 +21,9 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -31,43 +33,16 @@ namespace latinime {
  */
 class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    DynamicBigramListPolicy(BufferWithExtendableBuffer *const buffer)
-            : mBuffer(buffer) {}
+    DynamicBigramListPolicy(BufferWithExtendableBuffer *const buffer,
+            const DictionaryShortcutsStructurePolicy *const shortcutPolicy)
+            : mBuffer(buffer), mShortcutPolicy(shortcutPolicy) {}
 
     ~DynamicBigramListPolicy() {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
-            int *const pos) const {
-        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
-        if (usesAdditionalBuffer) {
-            *pos -= mBuffer->getOriginalBufferSize();
-        }
-        const BigramListReadWriteUtils::BigramFlags flags =
-                BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
-        *outBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-                buffer, flags, pos);
-        if (usesAdditionalBuffer && *outBigramPos != NOT_A_VALID_WORD_POS) {
-            *outBigramPos += mBuffer->getOriginalBufferSize();
-        }
-        *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
-        *outHasNext = BigramListReadWriteUtils::hasNext(flags);
-        if (usesAdditionalBuffer) {
-            *pos += mBuffer->getOriginalBufferSize();
-        }
-    }
+            int *const pos) const;
 
-    void skipAllBigrams(int *const pos) const {
-        const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
-        if (usesAdditionalBuffer) {
-            *pos -= mBuffer->getOriginalBufferSize();
-        }
-        BigramListReadWriteUtils::skipExistingBigrams(buffer, pos);
-        if (usesAdditionalBuffer) {
-            *pos += mBuffer->getOriginalBufferSize();
-        }
-    }
+    void skipAllBigrams(int *const pos) const;
 
     // Copy bigrams from the bigram list that starts at fromPos to toPos and advance these
     // positions after bigram lists. This method skips invalid bigram entries.
@@ -81,7 +56,13 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicBigramListPolicy);
 
+    static const int BIGRAM_LINK_COUNT_LIMIT;
+
     BufferWithExtendableBuffer *const mBuffer;
+    const DictionaryShortcutsStructurePolicy *const mShortcutPolicy;
+
+    // Follow bigram link and return the position of bigram target PtNode that is currently valid.
+    int followBigramLinkAndGetCurrentBigramPtNodePos(const int originalBigramPos) const;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_BIGRAM_LIST_POLICY_H

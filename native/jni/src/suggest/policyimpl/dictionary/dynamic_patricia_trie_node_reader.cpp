@@ -62,6 +62,11 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
         mChildrenPos += mBuffer->getOriginalBufferSize();
     }
+    if (mSiblingPos == NOT_A_VALID_WORD_POS && DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
+        mBigramLinkedNodePos = mChildrenPos;
+    } else {
+        mBigramLinkedNodePos = NOT_A_DICT_POS;
+    }
     if (usesAdditionalBuffer) {
         pos += mBuffer->getOriginalBufferSize();
     }

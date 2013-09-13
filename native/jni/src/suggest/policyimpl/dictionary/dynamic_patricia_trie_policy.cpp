@@ -38,7 +38,7 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
     readingHelper.initWithNodeArrayPos(dicNode->getChildrenPos());
     const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
     while (!readingHelper.isEnd()) {
-        childDicNodes->pushLeavingChild(dicNode, nodeReader->getNodePos(),
+        childDicNodes->pushLeavingChild(dicNode, nodeReader->getHeadPos(),
                 nodeReader->getChildrenPos(), nodeReader->getProbability(),
                 nodeReader->isTerminal() && !nodeReader->isDeleted(),
                 nodeReader->hasChildren(), nodeReader->isBlacklisted() || nodeReader->isNotAWord(),
@@ -122,7 +122,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
         // All characters are matched.
         if (length == readingHelper.getTotalCodePointCount()) {
             // Terminal position is found.
-            return nodeReader->getNodePos();
+            return nodeReader->getHeadPos();
         }
         if (!nodeReader->hasChildren()) {
             return NOT_A_VALID_WORD_POS;
