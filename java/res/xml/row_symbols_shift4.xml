@@ -24,8 +24,7 @@
         latin:keyboardLayout="@xml/key_space_symbols" />
     <include latin:keyboardLayout="@xml/keys_comma_period" />
 
-    <Key
-        latin:keyStyle="enterKeyStyle"
-        latin:keyWidth="fillRight" />
+    <include
+        latin:keyboardLayout="@xml/key_f2" />
 
 </merge>
