@@ -95,6 +95,7 @@
         <!-- fa: Persian (Rial and Afgahni)
              hi: Hindi (Indian Rupee)
              iw: Hebrew (New Sheqel)
+             lo: Lao (Kip)
              mn: Mongolian (Tugrik)
              th: Thai (Baht)
              uk: Ukrainian (Hryvnia)
@@ -102,7 +103,7 @@
         <!-- TODO: The currency sign of Turkish Lira was created in 2012 and assigned U+20BA for
              its unicode, although there is no font glyph for it as of November 2012. -->
         <case
-            latin:languageCode="fa|hi|iw|mn|th|uk|vi"
+            latin:languageCode="fa|hi|iw|lo|mn|th|uk|vi"
         >
             <!-- U+00A3: "£" POUND SIGN
                  U+20AC: "€" EURO SIGN

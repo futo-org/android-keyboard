@@ -2056,6 +2056,25 @@ public final class KeyboardTextsSet {
         /* 45 */ "\u0410\u0411\u0412",
     };
 
+    /* Language lo: Lao */
+    private static final String[] LANGUAGE_lo = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        // Label for "switch to alphabetic" key.
+        // U+0E81: "ກ" LAO LETTER KO
+        // U+0E82: "ຂ" LAO LETTER KHO SUNG
+        // U+0E84: "ຄ" LAO LETTER KHO TAM
+        /* 45 */ "\u0E81\u0E82\u0E84",
+        /* 46~ */
+        null, null, null, null, null,
+        /* ~50 */
+        // U+20AD: "₭" KIP SIGN
+        /* 51 */ "\u20AD",
+    };
+
     /* Language lt: Lithuanian */
     private static final String[] LANGUAGE_lt = {
         // U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
@@ -3332,6 +3351,7 @@ public final class KeyboardTextsSet {
         "ka", LANGUAGE_ka, /* Georgian */
         "kk", LANGUAGE_kk, /* Kazakh */
         "ky", LANGUAGE_ky, /* Kirghiz */
+        "lo", LANGUAGE_lo, /* Lao */
         "lt", LANGUAGE_lt, /* Lithuanian */
         "lv", LANGUAGE_lv, /* Latvian */
         "mk", LANGUAGE_mk, /* Macedonian */

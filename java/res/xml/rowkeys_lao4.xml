@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!-- U+20AD: "₭" KIP SIGN -->
+            <Key
+                latin:keyLabel="&#x20AD;" />
+            <Key
+                latin:keyLabel="(" />
+            <!-- U+0EAF: "ຯ" LAO ELLIPSIS -->
+            <Key
+                latin:keyLabel="&#x0EAF;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="\@" />
+            <!-- U+0EB6/U+0EC9: "ຶ້" LAO VOWEL SIGN Y/LAO TONE MAI THO -->
+            <Key
+                latin:keyLabel="&#x0EB6;&#x0EC9;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- U+0EB7/U+0EC9: "ື້" LAO VOWEL SIGN YY/LAO TONE MAI THO -->
+            <Key
+                latin:keyLabel="&#x0EB7;&#x0EC9;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- U+0EC6: "ໆ" LAO KO LA -->
+            <Key
+                latin:keyLabel="&#x0EC6;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EDD: "ໝ" LAO HO MO -->
+            <Key
+                latin:keyLabel="&#x0EDD;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="$" />
+            <Key
+                latin:keyLabel=")" />
+        </case>
+        <default>
+            <!-- U+0E9C: "ຜ" LAO LETTER PHO SUNG -->
+            <Key
+                latin:keyLabel="&#x0E9C;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0E9B: "ປ" LAO LETTER PO -->
+            <Key
+                latin:keyLabel="&#x0E9B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EC1: "ແ" LAO VOWEL SIGN EI -->
+            <Key
+                latin:keyLabel="&#x0EC1;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EAD: "ອ" LAO LETTER O -->
+            <Key
+                latin:keyLabel="&#x0EAD;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EB6: "ຶ" LAO VOWEL SIGN Y -->
+            <Key
+                latin:keyLabel="&#x0EB6;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EB7: "ື" LAO VOWEL SIGN YY -->
+            <Key
+                latin:keyLabel="&#x0EB7;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0E97: "ທ" LAO LETTER THO TAM -->
+            <Key
+                latin:keyLabel="&#x0E97;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EA1: "ມ" LAO LETTER MO -->
+            <Key
+                latin:keyLabel="&#x0EA1;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0EC3: "ໃ" LAO VOWEL SIGN AY -->
+            <Key
+                latin:keyLabel="&#x0EC3;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0E9D: "ຝ" LAO LETTER FO TAM -->
+            <Key
+                latin:keyLabel="&#x0E9D;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>
