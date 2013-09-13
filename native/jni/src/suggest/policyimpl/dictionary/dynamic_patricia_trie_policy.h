@@ -36,8 +36,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer()),
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
                       mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
-              mBigramListPolicy(&mBufferWithExtendableBuffer),
-              mShortcutListPolicy(&mBufferWithExtendableBuffer) {}
+              mShortcutListPolicy(&mBufferWithExtendableBuffer),
+              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy) {}
 
     ~DynamicPatriciaTriePolicy() {
         delete mBuffer;
@@ -91,8 +91,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
     BufferWithExtendableBuffer mBufferWithExtendableBuffer;
-    DynamicBigramListPolicy mBigramListPolicy;
     DynamicShortcutListPolicy mShortcutListPolicy;
+    DynamicBigramListPolicy mBigramListPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H
