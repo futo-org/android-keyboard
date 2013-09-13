@@ -18,6 +18,42 @@
 
 namespace latinime {
 
+const int DynamicBigramListPolicy::BIGRAM_LINK_COUNT_LIMIT = 10000;
+
+void DynamicBigramListPolicy::getNextBigram(int *const outBigramPos, int *const outProbability,
+        bool *const outHasNext, int *const pos) const {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+    const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
+    if (usesAdditionalBuffer) {
+        *pos -= mBuffer->getOriginalBufferSize();
+    }
+    const BigramListReadWriteUtils::BigramFlags flags =
+            BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
+    int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
+            buffer, flags, pos);
+    if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+        originalBigramPos += mBuffer->getOriginalBufferSize();
+    }
+    *outBigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
+    *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
+    *outHasNext = BigramListReadWriteUtils::hasNext(flags);
+    if (usesAdditionalBuffer) {
+        *pos += mBuffer->getOriginalBufferSize();
+    }
+}
+
+void DynamicBigramListPolicy::skipAllBigrams(int *const pos) const {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+    const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
+    if (usesAdditionalBuffer) {
+        *pos -= mBuffer->getOriginalBufferSize();
+    }
+    BigramListReadWriteUtils::skipExistingBigrams(buffer, pos);
+    if (usesAdditionalBuffer) {
+        *pos += mBuffer->getOriginalBufferSize();
+    }
+}
+
 bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
     if (usesAdditionalBuffer) {
@@ -28,15 +64,16 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
         // The buffer address can be changed after calling buffer writing methods.
         const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, fromPos);
-        int bigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
+        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, fromPos);
-        if (bigramPos == NOT_A_VALID_WORD_POS) {
+        if (originalBigramPos == NOT_A_VALID_WORD_POS) {
             // skip invalid bigram entry.
             continue;
         }
         if (usesAdditionalBuffer) {
-            bigramPos += mBuffer->getOriginalBufferSize();
+            originalBigramPos += mBuffer->getOriginalBufferSize();
         }
+        const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
         BigramListReadWriteUtils::BigramFlags newBigramFlags;
         uint32_t newBigramOffset;
         int newBigramOffsetFieldSize;
@@ -133,11 +170,12 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int ta
         if (usesAdditionalBuffer) {
             bigramOffsetFieldPos += mBuffer->getOriginalBufferSize();
         }
-        int bigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
+        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, &pos);
-        if (usesAdditionalBuffer && bigramPos != NOT_A_VALID_WORD_POS) {
-            bigramPos += mBuffer->getOriginalBufferSize();
+        if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+            originalBigramPos += mBuffer->getOriginalBufferSize();
         }
+        const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
         if (bigramPos != targetBigramPos) {
             continue;
         }
@@ -150,6 +188,28 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int ta
         return true;
     } while(BigramListReadWriteUtils::hasNext(flags));
     return false;
+}
+
+int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
+        const int originalBigramPos) const {
+    if (originalBigramPos == NOT_A_VALID_WORD_POS) {
+        return NOT_A_VALID_WORD_POS;
+    }
+    int currentPos = originalBigramPos;
+    DynamicPatriciaTrieNodeReader nodeReader(mBuffer, this /* bigramsPolicy */, mShortcutPolicy);
+    nodeReader.fetchNodeInfoFromBuffer(currentPos);
+    int bigramLinkCount = 0;
+    while (nodeReader.getBigramLinkedNodePos() != NOT_A_DICT_POS) {
+        currentPos = nodeReader.getBigramLinkedNodePos();
+        nodeReader.fetchNodeInfoFromBuffer(currentPos);
+        bigramLinkCount++;
+        if (bigramLinkCount > BIGRAM_LINK_COUNT_LIMIT) {
+            AKLOGI("Bigram link is invalid. start position: %d", bigramPos);
+            ASSERT(false);
+            return NOT_A_VALID_WORD_POS;
+        }
+    }
+    return currentPos;
 }
 
 } // namespace latinime

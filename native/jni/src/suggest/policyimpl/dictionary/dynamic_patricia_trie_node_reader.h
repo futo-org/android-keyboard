@@ -39,11 +39,11 @@ class DynamicPatriciaTrieNodeReader {
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
-              mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS),
-              mHeadPos(NOT_A_DICT_POS), mFlags(0), mParentPos(NOT_A_DICT_POS), mCodePointCount(0),
-              mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
-              mChildrenPosFieldPos(NOT_A_DICT_POS), mChildrenPos(NOT_A_DICT_POS),
-              mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
+              mShortcutsPolicy(shortcutsPolicy), mHeadPos(NOT_A_VALID_WORD_POS), mFlags(0),
+              mParentPos(NOT_A_DICT_POS), mCodePointCount(0), mProbabilityFieldPos(NOT_A_DICT_POS),
+              mProbability(NOT_A_PROBABILITY), mChildrenPosFieldPos(NOT_A_DICT_POS),
+              mChildrenPos(NOT_A_DICT_POS), mBigramLinkedNodePos(NOT_A_DICT_POS),
+              mShortcutPos(NOT_A_DICT_POS),  mBigramPos(NOT_A_DICT_POS),
               mSiblingPos(NOT_A_VALID_WORD_POS) {}
 
     ~DynamicPatriciaTrieNodeReader() {}
@@ -56,13 +56,9 @@ class DynamicPatriciaTrieNodeReader {
 
     AK_FORCE_INLINE void fetchNodeInfoFromBufferAndGetNodeCodePoints(const int nodePos,
             const int maxCodePointCount, int *const outCodePoints) {
-        mNodePos = nodePos;
         mSiblingPos = NOT_A_VALID_WORD_POS;
-        fetchNodeInfoFromBufferAndProcessMovedNode(mNodePos, maxCodePointCount, outCodePoints);
-    }
-
-    AK_FORCE_INLINE int getNodePos() const {
-        return mNodePos;
+        mBigramLinkedNodePos = NOT_A_DICT_POS;
+        fetchNodeInfoFromBufferAndProcessMovedNode(nodePos, maxCodePointCount, outCodePoints);
     }
 
     // HeadPos is different from NodePos when the current PtNode is a moved PtNode.
@@ -119,6 +115,11 @@ class DynamicPatriciaTrieNodeReader {
         return mChildrenPos;
     }
 
+    // Bigram linked node position.
+    AK_FORCE_INLINE int getBigramLinkedNodePos() const {
+        return mBigramLinkedNodePos;
+    }
+
     // Shortcutlist position
     AK_FORCE_INLINE int getShortcutPos() const {
         return mShortcutPos;
@@ -140,7 +141,6 @@ class DynamicPatriciaTrieNodeReader {
     const BufferWithExtendableBuffer *const mBuffer;
     const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
     const DictionaryShortcutsStructurePolicy *const mShortcutsPolicy;
-    int mNodePos;
     int mHeadPos;
     DynamicPatriciaTrieReadingUtils::NodeFlags mFlags;
     int mParentPos;
@@ -149,6 +149,7 @@ class DynamicPatriciaTrieNodeReader {
     int mProbability;
     int mChildrenPosFieldPos;
     int mChildrenPos;
+    int mBigramLinkedNodePos;
     int mShortcutPos;
     int mBigramPos;
     int mSiblingPos;

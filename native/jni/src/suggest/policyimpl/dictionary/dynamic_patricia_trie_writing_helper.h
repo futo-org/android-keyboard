@@ -54,7 +54,7 @@ class DynamicPatriciaTrieWritingHelper {
     DynamicShortcutListPolicy *const mShortcutPolicy;
 
     bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
-            const int movedPos);
+            const int movedPos, const int bigramLinkedNodePos);
 
     bool writePtNodeWithFullInfoToBuffer(const bool isBlacklisted, const bool isNotAWord,
             const int parentPos,  const int *const codePoints, const int codePointCount,
