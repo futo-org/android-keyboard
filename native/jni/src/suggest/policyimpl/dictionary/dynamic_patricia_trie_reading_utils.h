@@ -42,8 +42,7 @@ class DynamicPatriciaTrieReadingUtils {
         return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
     }
 
-    static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer,
-            const NodeFlags flags, int *const pos);
+    static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
     /**
      * Node Flags

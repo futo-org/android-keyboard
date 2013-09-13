@@ -172,6 +172,7 @@ class ByteArrayUtils {
         int codePoint = readCodePointAndAdvancePosition(buffer, pos);
         while (NOT_A_CODE_POINT != codePoint && length < maxLength) {
             codePoint = readCodePointAndAdvancePosition(buffer, pos);
+            length++;
         }
         return length;
     }
