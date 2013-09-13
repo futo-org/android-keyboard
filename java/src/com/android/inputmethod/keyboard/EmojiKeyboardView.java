@@ -37,7 +37,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
-import com.android.inputmethod.keyboard.internal.RecentsKeyboard;
+import com.android.inputmethod.keyboard.internal.DynamicGridKeyboard;
 import com.android.inputmethod.keyboard.internal.ScrollKeyboardView;
 import com.android.inputmethod.keyboard.internal.ScrollViewWithNotifier;
 import com.android.inputmethod.latin.Constants;
@@ -376,7 +376,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     private static class EmojiKeyboardAdapter extends PagerAdapter {
         private final ScrollKeyboardView.OnKeyClickListener mListener;
         private final KeyboardLayoutSet mLayoutSet;
-        private final RecentsKeyboard mRecentsKeyboard;
+        private final DynamicGridKeyboard mRecentsKeyboard;
         private final SparseArray<ScrollKeyboardView> mActiveKeyboardView =
                 CollectionUtils.newSparseArray();
         private final EmojiCategory mEmojiCategory;
@@ -388,7 +388,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
             mEmojiCategory = emojiCategory;
             mListener = listener;
             mLayoutSet = layoutSet;
-            mRecentsKeyboard = new RecentsKeyboard(
+            mRecentsKeyboard = new DynamicGridKeyboard(
                     layoutSet.getKeyboard(KeyboardId.ELEMENT_EMOJI_RECENTS));
         }
 
