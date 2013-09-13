@@ -29,13 +29,13 @@
             <Key
                 latin:keyLabel="&#x0906;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+0919/U+094D/U+0915: "ङ्क" DEVANAGARI LETTER NGA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER KA -->
+            <!-- U+0919/U+094D: "ङ्" DEVANAGARI LETTER NGA/DEVANAGARI SIGN VIRAMA -->
             <Key
-                latin:keyLabel="&#x0919;&#x094D;&#x0915;"
+                latin:keyLabel="&#x0919;&#x094D;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <!-- U+0919/U+094D/U+0917: "ङ्ग" DEVANAGARI LETTER NGA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER GA -->
+            <!-- U+0921/U+094D/U+0921: "ड्ड" DEVANAGARI LETTER DDA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER DDA -->
             <Key
-                latin:keyLabel="&#x0919;&#x094D;&#x0917;"
+                latin:keyLabel="&#x0921;&#x094D;&#x0921;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different

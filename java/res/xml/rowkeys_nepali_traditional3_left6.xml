@@ -25,9 +25,9 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!-- U+0915/U+094D/U+0915: "क्क" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER KA -->
+            <!-- U+0915/U+094D: "क्" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA -->
             <Key
-                latin:keyLabel="&#x0915;&#x094D;&#x0915;"
+                latin:keyLabel="&#x0915;&#x094D;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0939/U+094D/U+092E: "ह्म" DEVANAGARI LETTER HA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER MA -->
             <Key
