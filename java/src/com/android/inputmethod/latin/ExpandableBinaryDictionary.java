@@ -617,4 +617,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
         return holder.get(false, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
     }
+
+    @UsedForTesting
+    public void shutdownExecutorForTests() {
+        getExecutor(mFilename).shutdown();
+    }
+
+    @UsedForTesting
+    public boolean isTerminatedForTests() {
+        return getExecutor(mFilename).isTerminated();
+    }
 }

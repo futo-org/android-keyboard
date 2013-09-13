@@ -46,6 +46,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     };
 
     private static final int MIN_USER_HISTORY_DICTIONARY_FILE_SIZE = 1000;
+    private static final int WAIT_TERMINATING_IN_MILLISECONDS = 100;
 
     @Override
     public void setUp() {
@@ -122,8 +123,14 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                     true /* checksContents */);
         } finally {
             try {
+                final UserHistoryPredictionDictionary dict =
+                        PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+                                testFilenameSuffix, mPrefs);
                 Log.d(TAG, "waiting for writing ...");
-                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
+                dict.shutdownExecutorForTests();
+                while (!dict.isTerminatedForTests()) {
+                    Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
+                }
             } catch (InterruptedException e) {
                 Log.d(TAG, "InterruptedException: " + e);
             }
@@ -146,11 +153,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         final int numberOfWordsInsertedForEachLanguageSwitch = 100;
 
         final File dictFiles[] = new File[numberOfLanguages];
+        final String testFilenameSuffixes[] = new String[numberOfLanguages];
         try {
             final Random random = new Random(123456);
 
             // Create filename suffixes for this test.
-            String testFilenameSuffixes[] = new String[numberOfLanguages];
             for (int i = 0; i < numberOfLanguages; i++) {
                 testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
                 final String fileName = UserHistoryPredictionDictionary.NAME + "." +
@@ -174,7 +181,15 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         } finally {
             try {
                 Log.d(TAG, "waiting for writing ...");
-                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
+                for (int i = 0; i < numberOfLanguages; i++) {
+                    final UserHistoryPredictionDictionary dict =
+                            PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+                                    testFilenameSuffixes[i], mPrefs);
+                    dict.shutdownExecutorForTests();
+                    while (!dict.isTerminatedForTests()) {
+                        Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
+                    }
+                }
             } catch (InterruptedException e) {
                 Log.d(TAG, "InterruptedException: " + e);
             }
