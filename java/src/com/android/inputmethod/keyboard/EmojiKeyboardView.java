@@ -125,7 +125,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 mShownCategories.add(CATEGORY_NATURE);
                 mShownCategories.add(CATEGORY_PLACES);
                 // TODO: Restore last saved category
-                mCurrentCategory = CATEGORY_PLACES;
+                mCurrentCategory = CATEGORY_PEOPLE;
             } else {
                 // TODO: Restore last saved category
                 mCurrentCategory = CATEGORY_SYMBOLS;
@@ -156,7 +156,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
         public int getCurrentCategory() {
             // TODO: Record current category.
-            return CATEGORY_PEOPLE;
+            return mCurrentCategory;
         }
 
         public void setCurrentCategory(int category) {
