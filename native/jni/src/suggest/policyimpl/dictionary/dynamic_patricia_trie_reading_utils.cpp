@@ -29,18 +29,14 @@ const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_MOVED = 0x40;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
 
 /* static */ int DptReadingUtils::readChildrenPositionAndAdvancePosition(
-        const uint8_t *const buffer, const NodeFlags flags, int *const pos) {
-    if ((flags & MASK_MOVED) == FLAG_IS_NOT_MOVED) {
-        const int base = *pos;
-        const int offset = ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
-        if (offset == 0) {
-            // 0 offset means that the node does not have children.
-            return NOT_A_DICT_POS;
-        } else {
-            return base + offset;
-        }
-    } else {
+        const uint8_t *const buffer, int *const pos) {
+    const int base = *pos;
+    const int offset = ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+    if (offset == 0) {
+        // 0 offset means that the node does not have children.
         return NOT_A_DICT_POS;
+    } else {
+        return base + offset;
     }
 }
 
