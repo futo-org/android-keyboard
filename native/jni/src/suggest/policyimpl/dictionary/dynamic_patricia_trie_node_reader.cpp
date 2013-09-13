@@ -28,6 +28,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(nodePos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     int pos = nodePos;
+    mHeadPos = nodePos;
     if (usesAdditionalBuffer) {
         pos -= mBuffer->getOriginalBufferSize();
     }

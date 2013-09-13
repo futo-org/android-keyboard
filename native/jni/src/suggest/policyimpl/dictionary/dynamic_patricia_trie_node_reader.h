@@ -39,8 +39,8 @@ class DynamicPatriciaTrieNodeReader {
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
-              mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS), mFlags(0),
-              mParentPos(NOT_A_DICT_POS),  mCodePointCount(0),
+              mShortcutsPolicy(shortcutsPolicy), mNodePos(NOT_A_VALID_WORD_POS),
+              mHeadPos(NOT_A_DICT_POS), mFlags(0), mParentPos(NOT_A_DICT_POS), mCodePointCount(0),
               mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mChildrenPosFieldPos(NOT_A_DICT_POS), mChildrenPos(NOT_A_DICT_POS),
               mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
@@ -63,6 +63,11 @@ class DynamicPatriciaTrieNodeReader {
 
     AK_FORCE_INLINE int getNodePos() const {
         return mNodePos;
+    }
+
+    // HeadPos is different from NodePos when the current PtNode is a moved PtNode.
+    AK_FORCE_INLINE int getHeadPos() const {
+        return mHeadPos;
     }
 
     // Flags
@@ -136,6 +141,7 @@ class DynamicPatriciaTrieNodeReader {
     const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
     const DictionaryShortcutsStructurePolicy *const mShortcutsPolicy;
     int mNodePos;
+    int mHeadPos;
     DynamicPatriciaTrieReadingUtils::NodeFlags mFlags;
     int mParentPos;
     uint8_t mCodePointCount;

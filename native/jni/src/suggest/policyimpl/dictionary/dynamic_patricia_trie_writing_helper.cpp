@@ -125,6 +125,24 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
             mBuffer, movedPosOffset, &writingPos)) {
         return false;
     }
+    if (originalNode->hasChildren()) {
+        // Update children's parent position.
+        DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
+        const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
+        readingHelper.initWithNodeArrayPos(originalNode->getChildrenPos());
+        while (!readingHelper.isEnd()) {
+            const int childPtNodeWrittenPos = nodeReader->getHeadPos();
+            const int parentOffset = movedPos - childPtNodeWrittenPos;
+            int parentOffsetFieldPos = childPtNodeWrittenPos + 1 /* Flags */;
+            if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
+                    mBuffer, parentOffset, &parentOffsetFieldPos)) {
+                // Parent offset cannot be written because of a bug or a broken dictionary; thus,
+                // we give up to update dictionary.
+                return false;
+            }
+            readingHelper.readNextSiblingNode();
+        }
+    }
     return true;
 }
 
