@@ -31,6 +31,7 @@ public class PrioritizedSerialExecutor {
     private static final int TASK_QUEUE_CAPACITY = 1000;
     private final Queue<Runnable> mTasks;
     private final Queue<Runnable> mPrioritizedTasks;
+    private boolean mIsShutdown;
 
     // The task which is running now.
     private Runnable mActive;
@@ -38,6 +39,7 @@ public class PrioritizedSerialExecutor {
     public PrioritizedSerialExecutor() {
         mTasks = new ArrayDeque<Runnable>(TASK_QUEUE_CAPACITY);
         mPrioritizedTasks = new ArrayDeque<Runnable>(TASK_QUEUE_CAPACITY);
+        mIsShutdown = false;
     }
 
     /**
@@ -56,9 +58,11 @@ public class PrioritizedSerialExecutor {
      */
     public void execute(final Runnable r) {
         synchronized(mLock) {
-            mTasks.offer(r);
-            if (mActive == null) {
-                scheduleNext();
+            if (!mIsShutdown) {
+                mTasks.offer(r);
+                if (mActive == null) {
+                    scheduleNext();
+                }
             }
         }
     }
@@ -69,9 +73,11 @@ public class PrioritizedSerialExecutor {
      */
     public void executePrioritized(final Runnable r) {
         synchronized(mLock) {
-            mPrioritizedTasks.offer(r);
-            if (mActive ==  null) {
-                scheduleNext();
+            if (!mIsShutdown) {
+                mPrioritizedTasks.offer(r);
+                if (mActive ==  null) {
+                    scheduleNext();
+                }
             }
         }
     }
@@ -121,6 +127,21 @@ public class PrioritizedSerialExecutor {
         synchronized(mLock) {
             if (oldTask != null) remove(oldTask);
             execute(newTask);
+        }
+    }
+
+    public void shutdown() {
+        synchronized(mLock) {
+            mIsShutdown = true;
+        }
+    }
+
+    public boolean isTerminated() {
+        synchronized(mLock) {
+            if (!mIsShutdown) {
+                return false;
+            }
+            return mPrioritizedTasks.isEmpty() && mTasks.isEmpty() && mActive == null;
         }
     }
 }
