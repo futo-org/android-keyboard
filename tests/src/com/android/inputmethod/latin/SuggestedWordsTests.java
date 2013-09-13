@@ -35,11 +35,13 @@ public class SuggestedWordsTests extends AndroidTestCase {
         final ArrayList<SuggestedWordInfo> list = CollectionUtils.newArrayList();
         list.add(new SuggestedWordInfo(TYPED_WORD, TYPED_WORD_FREQ,
                 SuggestedWordInfo.KIND_TYPED, null /* sourceDict */,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
             list.add(new SuggestedWordInfo("" + i, 1, SuggestedWordInfo.KIND_CORRECTION,
                     null /* sourceDict */,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         }
 
         final SuggestedWords words = new SuggestedWords(
