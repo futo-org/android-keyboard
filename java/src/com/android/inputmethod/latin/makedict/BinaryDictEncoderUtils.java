@@ -126,8 +126,14 @@ public class BinaryDictEncoderUtils {
      */
     private static int getPtNodeMaximumSize(final PtNode ptNode, final FormatOptions options) {
         int size = getNodeHeaderSize(ptNode, options);
-        // If terminal, one byte for the frequency
-        if (ptNode.isTerminal()) size += FormatSpec.PTNODE_FREQUENCY_SIZE;
+        if (ptNode.isTerminal()) {
+            // If terminal, one byte for the frequency or four bytes for the terminal id.
+            if (options.mHasTerminalId) {
+                size += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
+            } else {
+                size += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            }
+        }
         size += FormatSpec.PTNODE_MAX_ADDRESS_SIZE; // For children address
         size += getShortcutListSize(ptNode.mShortcutTargets);
         if (null != ptNode.mBigrams) {
@@ -345,7 +351,13 @@ public class BinaryDictEncoderUtils {
                 changed = true;
             }
             int nodeSize = getNodeHeaderSize(ptNode, formatOptions);
-            if (ptNode.isTerminal()) nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            if (ptNode.isTerminal()) {
+                if (formatOptions.mHasTerminalId) {
+                    nodeSize += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
+                } else {
+                    nodeSize += FormatSpec.PTNODE_FREQUENCY_SIZE;
+                }
+            }
             if (formatOptions.mSupportsDynamicUpdate) {
                 nodeSize += FormatSpec.SIGNED_CHILDREN_ADDRESS_SIZE;
             } else if (null != ptNode.mChildren) {
@@ -787,7 +799,6 @@ public class BinaryDictEncoderUtils {
                         + FormatSpec.MAX_TERMINAL_FREQUENCY
                         + " : " + ptNode.mFrequency);
             }
-
             dictEncoder.writePtNode(ptNode, parentPosition, formatOptions, dict);
         }
         if (formatOptions.mSupportsDynamicUpdate) {

@@ -111,6 +111,7 @@ public final class FusionDictionary implements Iterable<Word> {
         ArrayList<WeightedString> mShortcutTargets;
         ArrayList<WeightedString> mBigrams;
         int mFrequency; // NOT_A_TERMINAL == mFrequency indicates this is not a terminal.
+        int mTerminalId; // NOT_A_TERMINAL == mTerminalId indicates this is not a terminal.
         PtNodeArray mChildren;
         boolean mIsNotAWord; // Only a shortcut
         boolean mIsBlacklistEntry;
@@ -129,6 +130,7 @@ public final class FusionDictionary implements Iterable<Word> {
                 final boolean isNotAWord, final boolean isBlacklistEntry) {
             mChars = chars;
             mFrequency = frequency;
+            mTerminalId = frequency;
             mShortcutTargets = shortcutTargets;
             mBigrams = bigrams;
             mChildren = null;
@@ -154,6 +156,10 @@ public final class FusionDictionary implements Iterable<Word> {
                 mChildren = new PtNodeArray();
             }
             mChildren.mData.add(n);
+        }
+
+        public int getTerminalId() {
+            return mTerminalId;
         }
 
         public boolean isTerminal() {

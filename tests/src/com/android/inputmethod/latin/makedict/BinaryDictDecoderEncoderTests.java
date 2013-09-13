@@ -25,6 +25,7 @@ import android.util.SparseArray;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -264,6 +265,27 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         return result + ", supportsDynamicUpdate = " + formatOptions.mSupportsDynamicUpdate;
     }
 
+    private DictionaryOptions getDictionaryOptions(final String id, final String version) {
+        final DictionaryOptions options = new DictionaryOptions(new HashMap<String, String>(),
+                false, false);
+        options.mAttributes.put("version", version);
+        options.mAttributes.put("dictionary", id);
+        return options;
+    }
+
+    private File setUpDictionaryFile(final String name, final String version) {
+        File file = null;
+        try {
+            file = new File(getContext().getCacheDir(), name + "." + version
+                    + TEST_DICT_FILE_EXTENSION);
+            file.createNewFile();
+        } catch (IOException e) {
+            // do nothing
+        }
+        assertTrue("Failed to create the dictionary file.", file.exists());
+        return file;
+    }
+
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private long timeReadingAndCheckDict(final File file, final List<String> words,
@@ -292,17 +314,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             final SparseArray<List<Integer>> bigrams, final HashMap<String, List<String>> shortcuts,
             final int bufferType, final FormatSpec.FormatOptions formatOptions,
             final String message) {
-        File file = null;
-        try {
-            file = File.createTempFile("runReadAndWrite", TEST_DICT_FILE_EXTENSION,
-                    getContext().getCacheDir());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException", e);
-        }
-        assertNotNull(file);
+
+        final String dictName = "runReadAndWrite";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final File file = setUpDictionaryFile(dictName, dictVersion);
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
+                getDictionaryOptions(dictName, dictVersion));
         addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
         checkDictionary(dict, words, bigrams, shortcuts);
@@ -454,19 +472,13 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     private String runReadUnigramsAndBigramsBinary(final ArrayList<String> words,
             final SparseArray<List<Integer>> bigrams, final int bufferType,
             final FormatSpec.FormatOptions formatOptions, final String message) {
-        File file = null;
-        try {
-            file = File.createTempFile("runReadUnigrams", TEST_DICT_FILE_EXTENSION,
-                    getContext().getCacheDir());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException", e);
-        }
-        assertNotNull(file);
+        final String dictName = "runReadUnigrams";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final File file = setUpDictionaryFile(dictName, dictVersion);
 
         // making the dictionary from lists of words.
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String, String>(), false, false));
+                getDictionaryOptions(dictName, dictVersion));
         addUnigrams(words.size(), dict, words, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
 
@@ -552,18 +564,12 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testGetTerminalPosition() {
-        File file = null;
-        try {
-            file = File.createTempFile("testGetTerminalPosition", TEST_DICT_FILE_EXTENSION,
-                    getContext().getCacheDir());
-        } catch (IOException e) {
-            // do nothing
-        }
-        assertNotNull(file);
+        final String dictName = "testGetTerminalPosition";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final File file = setUpDictionaryFile(dictName, dictVersion);
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String, String>(), false, false));
+                getDictionaryOptions(dictName, dictVersion));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
@@ -609,14 +615,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     public void testDeleteWord() {
-        File file = null;
-        try {
-            file = File.createTempFile("testDeleteWord", TEST_DICT_FILE_EXTENSION,
-                    getContext().getCacheDir());
-        } catch (IOException e) {
-            // do nothing
-        }
-        assertNotNull(file);
+        final String dictName = "testDeleteWord";
+        final String dictVersion = Long.toString(System.currentTimeMillis());
+        final File file = setUpDictionaryFile(dictName, dictVersion);
 
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 new FusionDictionary.DictionaryOptions(
