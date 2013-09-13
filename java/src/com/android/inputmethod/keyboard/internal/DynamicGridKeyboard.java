@@ -23,7 +23,6 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayDeque;
-import java.util.Random;
 
 /**
  * This is a Keyboard class where you can add keys dynamically shown in a grid layout
@@ -37,12 +36,12 @@ public class DynamicGridKeyboard extends Keyboard {
     private final int mHorizontalStep;
     private final int mVerticalStep;
     private final int mColumnsNum;
-    private final int mMaxRecentKeyCount;
-    private final ArrayDeque<RecentKey> mRecentKeys = CollectionUtils.newArrayDeque();
+    private final int mMaxKeyCount;
+    private final ArrayDeque<GridKey> mGridKeys = CollectionUtils.newArrayDeque();
 
-    private Key[] mCachedRecentKeys;
+    private Key[] mCachedGridKeys;
 
-    public DynamicGridKeyboard(final Keyboard templateKeyboard) {
+    public DynamicGridKeyboard(final Keyboard templateKeyboard, final int maxRows) {
         super(templateKeyboard);
         final Key key0 = getTemplateKey(TEMPLATE_KEY_CODE_0);
         final Key key1 = getTemplateKey(TEMPLATE_KEY_CODE_1);
@@ -50,8 +49,7 @@ public class DynamicGridKeyboard extends Keyboard {
         mHorizontalStep = Math.abs(key1.getX() - key0.getX());
         mVerticalStep = key0.getHeight() + mVerticalGap;
         mColumnsNum = mBaseWidth / mHorizontalStep;
-        final int rowsNum = mBaseHeight / mVerticalStep;
-        mMaxRecentKeyCount = mColumnsNum * rowsNum;
+        mMaxKeyCount = mColumnsNum * maxRows;
     }
 
     private Key getTemplateKey(final int code) {
@@ -63,27 +61,34 @@ public class DynamicGridKeyboard extends Keyboard {
         throw new RuntimeException("Can't find template key: code=" + code);
     }
 
-    private final Random random = new Random();
+    public void addKeyFirst(final Key usedKey) {
+        addKey(usedKey, true);
+    }
 
-    public void addRecentKey(final Key usedKey) {
-        synchronized (mRecentKeys) {
-            mCachedRecentKeys = null;
-            final RecentKey key = (usedKey instanceof RecentKey)
-                    ? (RecentKey)usedKey : new RecentKey(usedKey);
-            while (mRecentKeys.remove(key)) {
+    public void addKeyLast(final Key usedKey) {
+        addKey(usedKey, false);
+    }
+
+    private void addKey(final Key usedKey, final boolean addFirst) {
+        synchronized (mGridKeys) {
+            mCachedGridKeys = null;
+            final GridKey key = new GridKey(usedKey);
+            while (mGridKeys.remove(key)) {
                 // Remove duplicate keys.
             }
-            mRecentKeys.addFirst(key);
-            while (mRecentKeys.size() > mMaxRecentKeyCount) {
-                mRecentKeys.removeLast();
+            if (addFirst) {
+                mGridKeys.addFirst(key);
+            } else {
+                mGridKeys.addLast(key);
+            }
+            while (mGridKeys.size() > mMaxKeyCount) {
+                mGridKeys.removeLast();
             }
             int index = 0;
-            for (final RecentKey recentKey : mRecentKeys) {
+            for (final GridKey gridKey : mGridKeys) {
                 final int keyX = getKeyX(index);
                 final int keyY = getKeyY(index);
-                final int x = keyX+random.nextInt(recentKey.getWidth());
-                final int y = keyY+random.nextInt(recentKey.getHeight());
-                recentKey.updateCorrdinates(keyX, keyY);
+                gridKey.updateCorrdinates(keyX, keyY);
                 index++;
             }
         }
@@ -101,26 +106,26 @@ public class DynamicGridKeyboard extends Keyboard {
 
     @Override
     public Key[] getKeys() {
-        synchronized (mRecentKeys) {
-            if (mCachedRecentKeys != null) {
-                return mCachedRecentKeys;
+        synchronized (mGridKeys) {
+            if (mCachedGridKeys != null) {
+                return mCachedGridKeys;
             }
-            mCachedRecentKeys = mRecentKeys.toArray(new Key[mRecentKeys.size()]);
-            return mCachedRecentKeys;
+            mCachedGridKeys = mGridKeys.toArray(new Key[mGridKeys.size()]);
+            return mCachedGridKeys;
         }
     }
 
     @Override
     public Key[] getNearestKeys(final int x, final int y) {
-        // TODO: Calculate the nearest key index in mRecentKeys from x and y.
+        // TODO: Calculate the nearest key index in mGridKeys from x and y.
         return getKeys();
     }
 
-    static final class RecentKey extends Key {
+    static final class GridKey extends Key {
         private int mCurrentX;
         private int mCurrentY;
 
-        public RecentKey(final Key originalKey) {
+        public GridKey(final Key originalKey) {
             super(originalKey);
         }
 
@@ -151,7 +156,7 @@ public class DynamicGridKeyboard extends Keyboard {
 
         @Override
         public String toString() {
-            return "RecentKey: " + super.toString();
+            return "GridKey: " + super.toString();
         }
     }
 }
