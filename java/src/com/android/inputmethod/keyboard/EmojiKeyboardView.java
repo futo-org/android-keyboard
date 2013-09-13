@@ -26,6 +26,7 @@ import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -61,52 +63,134 @@ import java.util.HashMap;
 public final class EmojiKeyboardView extends LinearLayout implements OnTabChangeListener,
         ViewPager.OnPageChangeListener, View.OnClickListener,
         ScrollKeyboardView.OnKeyClickListener {
+    private static final String TAG = EmojiKeyboardView.class.getSimpleName();
     private final int mKeyBackgroundId;
     private final int mEmojiFunctionalKeyBackgroundId;
+    private final KeyboardLayoutSet mLayoutSet;
     private final ColorStateList mTabLabelColor;
-    private final EmojiKeyboardAdapter mEmojiKeyboardAdapter;
+    private EmojiKeyboardAdapter mEmojiKeyboardAdapter;
 
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
 
     private KeyboardActionListener mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
 
-    private int mCurrentCategory = CATEGORY_UNSPECIFIED;
-    private static final int CATEGORY_UNSPECIFIED = -1;
-    private static final int CATEGORY_RECENTS = 0;
-    private static final int CATEGORY_PEOPLE = 1;
-    private static final int CATEGORY_OBJECTS = 2;
-    private static final int CATEGORY_NATURE = 3;
-    private static final int CATEGORY_PLACES = 4;
-    private static final int CATEGORY_SYMBOLS = 5;
-    private static final int CATEGORY_EMOTICONS = 6;
-    private static final HashMap<String, Integer> sCategoryNameToIdMap =
-            CollectionUtils.newHashMap();
-    private static final String[] sCategoryName = {
-        "recents", "people", "objects", "nature", "places", "symbols", "emoticons"
-    };
-    private static final int[] sCategoryIcon = new int[] {
-        R.drawable.ic_emoji_recent_light,
-        R.drawable.ic_emoji_people_light,
-        R.drawable.ic_emoji_objects_light,
-        R.drawable.ic_emoji_nature_light,
-        R.drawable.ic_emoji_places_light,
-        R.drawable.ic_emoji_symbols_light,
-        0
-    };
-    private static final String[] sCategoryLabel = {
-        null, null, null, null, null, null,
-        ":-)"
-    };
-    private static final int[] sCategoryElementId = {
-        KeyboardId.ELEMENT_EMOJI_RECENTS,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY1,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY2,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY3,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY4,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY5,
-        KeyboardId.ELEMENT_EMOJI_CATEGORY6,
-    };
+    private static class EmojiCategory {
+        private int mCurrentCategory = CATEGORY_UNSPECIFIED;
+        private static final int CATEGORY_UNSPECIFIED = -1;
+        private static final int CATEGORY_RECENTS = 0;
+        private static final int CATEGORY_PEOPLE = 1;
+        private static final int CATEGORY_OBJECTS = 2;
+        private static final int CATEGORY_NATURE = 3;
+        private static final int CATEGORY_PLACES = 4;
+        private static final int CATEGORY_SYMBOLS = 5;
+        private static final int CATEGORY_EMOTICONS = 6;
+        private static final String[] sCategoryName = {
+                "recents",
+                "people",
+                "objects",
+                "nature",
+                "places",
+                "symbols",
+                "emoticons" };
+        private static final int[] sCategoryIcon = new int[] {
+                R.drawable.ic_emoji_recent_light,
+                R.drawable.ic_emoji_people_light,
+                R.drawable.ic_emoji_objects_light,
+                R.drawable.ic_emoji_nature_light,
+                R.drawable.ic_emoji_places_light,
+                R.drawable.ic_emoji_symbols_light,
+                0 };
+        private static final String[] sCategoryLabel =
+                { null, null, null, null, null, null, ":-)" };
+        private static final int[] sCategoryElementId = {
+                KeyboardId.ELEMENT_EMOJI_RECENTS,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY1,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY2,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY3,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY4,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY5,
+                KeyboardId.ELEMENT_EMOJI_CATEGORY6, };
+        private final HashMap<String, Integer> mCategoryNameToIdMap = CollectionUtils.newHashMap();
+        private final ArrayList<Integer> mShownCategories = new ArrayList<Integer>();
+
+        public EmojiCategory() {
+            for (int i = 0; i < sCategoryName.length; ++i) {
+                mCategoryNameToIdMap.put(sCategoryName[i], i);
+            }
+            mShownCategories.add(CATEGORY_RECENTS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                mShownCategories.add(CATEGORY_PEOPLE);
+                mShownCategories.add(CATEGORY_OBJECTS);
+                mShownCategories.add(CATEGORY_NATURE);
+                mShownCategories.add(CATEGORY_PLACES);
+                // TODO: Restore last saved category
+                mCurrentCategory = CATEGORY_PLACES;
+            } else {
+                // TODO: Restore last saved category
+                mCurrentCategory = CATEGORY_SYMBOLS;
+            }
+            mShownCategories.add(CATEGORY_SYMBOLS);
+            mShownCategories.add(CATEGORY_EMOTICONS);
+        }
+
+        public String getCategoryName(int category) {
+            return sCategoryName[category];
+        }
+
+        public int getCategoryId(String name) {
+            return mCategoryNameToIdMap.get(name);
+        }
+
+        public int getCategoryIcon(int category) {
+            return sCategoryIcon[category];
+        }
+
+        public String getCategoryLabel(int category) {
+            return sCategoryLabel[category];
+        }
+
+        public ArrayList<Integer> getShownCategories() {
+            return mShownCategories;
+        }
+
+        public int getCurrentCategory() {
+            // TODO: Record current category.
+            return CATEGORY_PEOPLE;
+        }
+
+        public void setCurrentCategory(int category) {
+            mCurrentCategory = category;
+        }
+
+        public boolean isInRecentTab() {
+            return mCurrentCategory == CATEGORY_RECENTS;
+        }
+
+        public int getTabIdFromCategory(int category) {
+            for (int i = 0; i < mShownCategories.size(); ++i) {
+                if (mShownCategories.get(i) == category) {
+                    return i;
+                }
+            }
+            Log.w(TAG, "category not found: " + category);
+            return 0;
+        }
+
+        public int getRecentTabId() {
+            return getTabIdFromCategory(CATEGORY_RECENTS);
+        }
+
+        public int getCategoryFromTabId(int tabId) {
+            return mShownCategories.get(tabId);
+        }
+
+        public int getElementIdFromTabId(int tabId) {
+            return sCategoryElementId[getCategoryFromTabId(tabId)];
+        }
+    }
+
+    private final EmojiCategory mEmojiCategory = new EmojiCategory();
 
     public EmojiKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.emojiKeyboardViewStyle);
@@ -134,8 +218,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 (int)ResourceUtils.getDefaultKeyboardHeight(res)
                         + res.getDimensionPixelSize(R.dimen.suggestions_strip_height));
         builder.setOptions(false, false, false /* lanuageSwitchKeyEnabled */);
-        final KeyboardLayoutSet layoutSet = builder.build();
-        mEmojiKeyboardAdapter = new EmojiKeyboardAdapter(layoutSet, this);
+        mLayoutSet = builder.build();
         // TODO: Save/restore recent keys from/to preferences.
     }
 
@@ -153,20 +236,19 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     }
 
     private void addTab(final TabHost host, final int category) {
-        final String tabId = sCategoryName[category];
-        sCategoryNameToIdMap.put(tabId, category);
+        final String tabId = mEmojiCategory.getCategoryName(category);
         final TabHost.TabSpec tspec = host.newTabSpec(tabId);
         tspec.setContent(R.id.emoji_keyboard_dummy);
-        if (sCategoryIcon[category] != 0) {
+        if (mEmojiCategory.getCategoryIcon(category) != 0) {
             final ImageView iconView = (ImageView)LayoutInflater.from(getContext()).inflate(
                     R.layout.emoji_keyboard_tab_icon, null);
-            iconView.setImageResource(sCategoryIcon[category]);
+            iconView.setImageResource(mEmojiCategory.getCategoryIcon(category));
             tspec.setIndicator(iconView);
         }
-        if (sCategoryLabel[category] != null) {
+        if (mEmojiCategory.getCategoryLabel(category) != null) {
             final TextView textView = (TextView)LayoutInflater.from(getContext()).inflate(
                     R.layout.emoji_keyboard_tab_label, null);
-            textView.setText(sCategoryLabel[category]);
+            textView.setText(mEmojiCategory.getCategoryLabel(category));
             textView.setTextColor(mTabLabelColor);
             tspec.setIndicator(textView);
         }
@@ -177,17 +259,13 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     protected void onFinishInflate() {
         mTabHost = (TabHost)findViewById(R.id.emoji_category_tabhost);
         mTabHost.setup();
-        addTab(mTabHost, CATEGORY_RECENTS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            addTab(mTabHost, CATEGORY_PEOPLE);
-            addTab(mTabHost, CATEGORY_OBJECTS);
-            addTab(mTabHost, CATEGORY_NATURE);
-            addTab(mTabHost, CATEGORY_PLACES);
+        for (final int i : mEmojiCategory.getShownCategories()) {
+            addTab(mTabHost, i);
         }
-        addTab(mTabHost, CATEGORY_SYMBOLS);
-        addTab(mTabHost, CATEGORY_EMOTICONS);
         mTabHost.setOnTabChangedListener(this);
         mTabHost.getTabWidget().setStripEnabled(true);
+
+        mEmojiKeyboardAdapter = new EmojiKeyboardAdapter(mEmojiCategory, mLayoutSet, this);
 
         mEmojiPager = (ViewPager)findViewById(R.id.emoji_keyboard_pager);
         mEmojiPager.setAdapter(mEmojiKeyboardAdapter);
@@ -197,9 +275,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         final EmojiLayoutParams emojiLp = new EmojiLayoutParams(res);
         emojiLp.setPagerProps(mEmojiPager);
 
-        // TODO: Record current category.
-        final int category = CATEGORY_PEOPLE;
-        setCurrentCategory(category, true /* force */);
+        setCurrentCategory(mEmojiCategory.getCurrentCategory(), true /* force */);
 
         final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
         emojiLp.setActionBarProps(actionBar);
@@ -226,14 +302,14 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     @Override
     public void onTabChanged(final String tabId) {
-        final int category = sCategoryNameToIdMap.get(tabId);
+        final int category = mEmojiCategory.getCategoryId(tabId);
         setCurrentCategory(category, false /* force */);
     }
 
 
     @Override
     public void onPageSelected(final int position) {
-        setCurrentCategory(position, false /* force */);
+        setCurrentCategory(mEmojiCategory.getCategoryFromTabId(position), false /* force */);
     }
 
     @Override
@@ -282,16 +358,17 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     }
 
     private void setCurrentCategory(final int category, final boolean force) {
-        if (mCurrentCategory == category && !force) {
+        if (mEmojiCategory.getCurrentCategory() == category && !force) {
             return;
         }
 
-        mCurrentCategory = category;
-        if (force || mEmojiPager.getCurrentItem() != category) {
-            mEmojiPager.setCurrentItem(category, true /* smoothScroll */);
+        mEmojiCategory.setCurrentCategory(category);
+        final int newTabId = mEmojiCategory.getTabIdFromCategory(category);
+        if (force || mEmojiPager.getCurrentItem() != newTabId) {
+            mEmojiPager.setCurrentItem(newTabId, true /* smoothScroll */);
         }
-        if (force || mTabHost.getCurrentTab() != category) {
-            mTabHost.setCurrentTab(category);
+        if (force || mTabHost.getCurrentTab() != newTabId) {
+            mTabHost.setCurrentTab(newTabId);
         }
         // TODO: Record current category
     }
@@ -302,10 +379,13 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         private final RecentsKeyboard mRecentsKeyboard;
         private final SparseArray<ScrollKeyboardView> mActiveKeyboardView =
                 CollectionUtils.newSparseArray();
-        private int mActivePosition = CATEGORY_UNSPECIFIED;
+        private final EmojiCategory mEmojiCategory;
+        private int mActivePosition = 0;
 
-        public EmojiKeyboardAdapter(final KeyboardLayoutSet layoutSet,
+        public EmojiKeyboardAdapter(final EmojiCategory emojiCategory,
+                final KeyboardLayoutSet layoutSet,
                 final ScrollKeyboardView.OnKeyClickListener listener) {
+            mEmojiCategory = emojiCategory;
             mListener = listener;
             mLayoutSet = layoutSet;
             mRecentsKeyboard = new RecentsKeyboard(
@@ -313,11 +393,12 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         }
 
         public void addRecentKey(final Key key) {
-            if (mActivePosition == CATEGORY_RECENTS) {
+            if (mEmojiCategory.isInRecentTab()) {
                 return;
             }
             mRecentsKeyboard.addRecentKey(key);
-            final KeyboardView recentKeyboardView = mActiveKeyboardView.get(CATEGORY_RECENTS);
+            final KeyboardView recentKeyboardView =
+                    mActiveKeyboardView.get(mEmojiCategory.getRecentTabId());
             if (recentKeyboardView != null) {
                 recentKeyboardView.invalidateAllKeys();
             }
@@ -325,7 +406,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
         @Override
         public int getCount() {
-            return sCategoryName.length;
+            return mEmojiCategory.getShownCategories().size();
         }
 
         @Override
@@ -343,7 +424,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
         @Override
         public Object instantiateItem(final ViewGroup container, final int position) {
-            final int elementId = sCategoryElementId[position];
+            final int elementId = mEmojiCategory.getElementIdFromTabId(position);
             final Keyboard keyboard = (elementId == KeyboardId.ELEMENT_EMOJI_RECENTS)
                     ? mRecentsKeyboard : mLayoutSet.getKeyboard(elementId);
             final LayoutInflater inflater = LayoutInflater.from(container.getContext());
