@@ -295,7 +295,8 @@ public final class SettingsValues {
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
                         Dictionary.DICTIONARY_HARDCODED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
             }
         }
         return new SuggestedWords(puncList,

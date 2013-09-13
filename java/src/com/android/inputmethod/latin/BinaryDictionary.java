@@ -40,6 +40,9 @@ public final class BinaryDictionary extends Dictionary {
     private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
     // Must be equal to MAX_RESULTS in native/jni/src/defines.h
     private static final int MAX_RESULTS = 18;
+    // Required space count for auto commit.
+    // TODO: Remove this heuristic.
+    private static final int SPACE_COUNT_FOR_AUTO_COMMIT = 3;
 
     private long mNativeDict;
     private final Locale mLocale;
@@ -49,6 +52,7 @@ public final class BinaryDictionary extends Dictionary {
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
+    private final int[] mOutputAutoCommitFirstWordConfidence = new int[1]; // Only one result
 
     private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 
@@ -104,7 +108,8 @@ public final class BinaryDictionary extends Dictionary {
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
             int[] suggestOptions, int[] prevWordCodePointArray,
-            int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes);
+            int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
+            int[] outputAutoCommitFirstWordConfidence);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
     private static native void addUnigramWordNative(long dict, int[] word, int probability);
@@ -157,7 +162,7 @@ public final class BinaryDictionary extends Dictionary {
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(), mInputCodePoints,
                 inputSize, 0 /* commitPoint */, mNativeSuggestOptions.getOptions(),
                 prevWordCodePointArray, mOutputCodePoints, mOutputScores, mSpaceIndices,
-                mOutputTypes);
+                mOutputTypes, mOutputAutoCommitFirstWordConfidence);
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;
@@ -181,7 +186,8 @@ public final class BinaryDictionary extends Dictionary {
                 // flags too and pass mOutputTypes[j] instead of kind
                 suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
                         score, kind, this /* sourceDict */,
-                        mSpaceIndices[0] /* indexOfTouchPointOfSecondWord */));
+                        mSpaceIndices[0] /* indexOfTouchPointOfSecondWord */,
+                        mOutputAutoCommitFirstWordConfidence[0]));
             }
         }
         return suggestions;
@@ -253,6 +259,22 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
+    }
+
+    @Override
+    public boolean shouldAutoCommit(final SuggestedWordInfo candidate) {
+        // TODO: actually use the confidence rather than use this completely broken heuristic
+        final String word = candidate.mWord;
+        final int length = word.length();
+        int remainingSpaces = SPACE_COUNT_FOR_AUTO_COMMIT;
+        for (int i = 0; i < length; ++i) {
+            // This is okay because no low-surrogate and no high-surrogate can ever match the
+            // space character, so we don't need to take care of iterating on code points.
+            if (Constants.CODE_SPACE == word.charAt(i)) {
+                if (0 >= --remainingSpaces) return true;
+            }
+        }
+        return false;
     }
 
     @Override

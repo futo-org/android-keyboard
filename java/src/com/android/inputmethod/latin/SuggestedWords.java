@@ -114,7 +114,8 @@ public final class SuggestedWords {
             final SuggestedWordInfo suggestedWordInfo = new SuggestedWordInfo(text.toString(),
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_APP_DEFINED,
                     Dictionary.DICTIONARY_APPLICATION_DEFINED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */);
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
             result.add(suggestedWordInfo);
         }
         return result;
@@ -128,7 +129,8 @@ public final class SuggestedWords {
         final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */));
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int index = 1; index < previousSize; index++) {
@@ -151,6 +153,7 @@ public final class SuggestedWords {
 
     public static final class SuggestedWordInfo {
         public static final int NOT_AN_INDEX = -1;
+        public static final int NOT_A_CONFIDENCE = -1;
         public static final int MAX_SCORE = Integer.MAX_VALUE;
         public static final int KIND_MASK_KIND = 0xFF; // Mask to get only the kind
         public static final int KIND_TYPED = 0; // What user typed
@@ -180,16 +183,30 @@ public final class SuggestedWords {
         // passed to native code to get suggestions for a gesture that corresponds to the first
         // letter of the second word.
         public final int mIndexOfTouchPointOfSecondWord;
+        // For auto-commit. This is a measure of how confident we are that we can commit the
+        // first word of this suggestion.
+        public final int mAutoCommitFirstWordConfidence;
         private String mDebugString = "";
 
+        /**
+         * Create a new suggested word info.
+         * @param word The string to suggest.
+         * @param score A measure of how likely this suggestion is.
+         * @param kind The kind of suggestion, as one of the above KIND_* constants.
+         * @param sourceDict What instance of Dictionary produced this suggestion.
+         * @param indexOfTouchPointOfSecondWord See mIndexOfTouchPointOfSecondWord.
+         * @param autoCommitFirstWordConfidence See mAutoCommitFirstWordConfidence.
+         */
         public SuggestedWordInfo(final String word, final int score, final int kind,
-                final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord) {
+                final Dictionary sourceDict, final int indexOfTouchPointOfSecondWord,
+                final int autoCommitFirstWordConfidence) {
             mWord = word;
             mScore = score;
             mKind = kind;
             mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWord);
             mIndexOfTouchPointOfSecondWord = indexOfTouchPointOfSecondWord;
+            mAutoCommitFirstWordConfidence = autoCommitFirstWordConfidence;
         }
 
         public boolean isEligibleForAutoCommit() {
