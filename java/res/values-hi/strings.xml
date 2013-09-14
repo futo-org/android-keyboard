@@ -31,7 +31,7 @@
     <string name="correction_category" msgid="2236750915056607613">"पाठ सुधार"</string>
     <string name="gesture_typing_category" msgid="497263612130532630">"जेस्चर लिखना"</string>
     <string name="misc_category" msgid="6894192814868233453">"अन्य विकल्प"</string>
-    <string name="advanced_settings" msgid="362895144495591463">"उन्नत सेटिंग"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"अतिरिक्त सेटिंग"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"विशेषज्ञों के लिए विकल्‍प"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"अन्‍य इनपुट पद्धतियों पर जाएं"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"भाषा स्‍विच कुंजी में अन्‍य इनपुट पद्धतियां भी शामिल हैं"</string>
