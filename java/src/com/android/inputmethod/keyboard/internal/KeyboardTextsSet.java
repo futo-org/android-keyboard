@@ -383,7 +383,7 @@ public final class KeyboardTextsSet {
         // Label for "switch to more symbol" modifier key.  Must be short to fit on key!
         /* 124 */ "= \\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
-        /* 125 */ "~ [ {",
+        /* 125 */ "~ [ <",
         // Label for "Tab" key.  Must be short to fit on key!
         /* 126 */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!

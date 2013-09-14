@@ -190,7 +190,7 @@
     <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->
     <string name="label_to_more_symbol_key">= \\ &lt;</string>
     <!-- Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key! -->
-    <string name="label_to_more_symbol_for_tablet_key">~ [ {</string>
+    <string name="label_to_more_symbol_for_tablet_key">~ [ &lt;</string>
     <!-- Label for "Tab" key.  Must be short to fit on key! -->
     <string name="label_tab_key">Tab</string>
     <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
