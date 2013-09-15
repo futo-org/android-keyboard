@@ -2366,6 +2366,63 @@ public final class KeyboardTextsSet {
         /* 47 */ "!text/double_9qm_rqm",
     };
 
+    /* Language ne: Nepali */
+    private static final String[] LANGUAGE_ne = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        // Label for "switch to alphabetic" key.
+        // U+0915: "क" DEVANAGARI LETTER KA
+        // U+0916: "ख" DEVANAGARI LETTER KHA
+        // U+0917: "ग" DEVANAGARI LETTER GA
+        /* 45 */ "\u0915\u0916\u0917",
+        /* 46~ */
+        null, null, null, null, null,
+        /* ~50 */
+        // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
+        /* 51 */ "\u0930\u0941.",
+        /* 52~ */
+        null, null, null, null, null, null, null, null, null, null, null,
+        /* ~62 */
+        // U+0967: "१" DEVANAGARI DIGIT ONE
+        /* 63 */ "\u0967",
+        // U+0968: "२" DEVANAGARI DIGIT TWO
+        /* 64 */ "\u0968",
+        // U+0969: "३" DEVANAGARI DIGIT THREE
+        /* 65 */ "\u0969",
+        // U+096A: "४" DEVANAGARI DIGIT FOUR
+        /* 66 */ "\u096A",
+        // U+096B: "५" DEVANAGARI DIGIT FIVE
+        /* 67 */ "\u096B",
+        // U+096C: "६" DEVANAGARI DIGIT SIX
+        /* 68 */ "\u096C",
+        // U+096D: "७" DEVANAGARI DIGIT SEVEN
+        /* 69 */ "\u096D",
+        // U+096E: "८" DEVANAGARI DIGIT EIGHT
+        /* 70 */ "\u096E",
+        // U+096F: "९" DEVANAGARI DIGIT NINE
+        /* 71 */ "\u096F",
+        // U+0966: "०" DEVANAGARI DIGIT ZERO
+        /* 72 */ "\u0966",
+        // Label for "switch to symbols" key.
+        /* 73 */ "?\u0967\u0968\u0969",
+        // Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
+        // part because it'll be appended by the code.
+        /* 74 */ "\u0967\u0968\u0969",
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language nl: Dutch */
     private static final String[] LANGUAGE_nl = {
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
@@ -3357,6 +3414,7 @@ public final class KeyboardTextsSet {
         "mk", LANGUAGE_mk, /* Macedonian */
         "mn", LANGUAGE_mn, /* Mongolian */
         "nb", LANGUAGE_nb, /* Norwegian Bokmål */
+        "ne", LANGUAGE_ne, /* Nepali */
         "nl", LANGUAGE_nl, /* Dutch */
         "pl", LANGUAGE_pl, /* Polish */
         "pt", LANGUAGE_pt, /* Portuguese */
