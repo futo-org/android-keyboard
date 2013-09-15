@@ -34,7 +34,7 @@
     <string name="advanced_settings" msgid="362895144495591463">"Paramètres avancés"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Options destinées aux experts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Autres modes de saisie"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La touche de sélection de langue couvre d\'autres modes de saisie."</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La touche de sélection de langue couvre d\'autres modes de saisie"</string>
     <string name="show_language_switch_key" msgid="5915478828318774384">"Touche de sélection de langue"</string>
     <string name="show_language_switch_key_summary" msgid="7343403647474265713">"Afficher lorsque plusieurs langues de saisie sont activées"</string>
     <string name="sliding_key_input_preview" msgid="6604262359510068370">"Aff. indicateur saisie gestuelle"</string>
@@ -47,7 +47,7 @@
     <string name="use_contacts_dict" msgid="4435317977804180815">"Proposer noms de contacts"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utiliser des noms de contacts pour les suggestions et corrections"</string>
     <string name="use_double_space_period" msgid="8781529969425082860">"Point et espace"</string>
-    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Appuyez deux fois sur la barre d\'espace pour insérer un point et un espace."</string>
+    <string name="use_double_space_period_summary" msgid="6532892187247952799">"Appuyez deux fois sur la barre d\'espace pour insérer un point et une espace"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majuscules automatiques"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"Majuscule au premier mot de chaque phrase"</string>
     <string name="edit_personal_dictionary" msgid="3996910038952940420">"Dictionnaire personnel"</string>

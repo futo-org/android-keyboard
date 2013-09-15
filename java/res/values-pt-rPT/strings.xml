@@ -134,7 +134,7 @@
     <string name="select_language" msgid="3693815588777926848">"Idiomas de introdução"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Activar comentários do utilizador"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Ativar comentários do utilizador"</string>
     <string name="prefs_description_log" msgid="7525225584555429211">"Envie automaticamente estatísticas de utilização e relatórios de falhas e ajude-nos a melhorar este editor do método de introdução."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglês (RU)"</string>
