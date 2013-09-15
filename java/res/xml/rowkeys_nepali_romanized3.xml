@@ -48,7 +48,7 @@
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0923: "ण" DEVANAGARI LETTER NNA -->
             <Key
-                latin:keyLabel="&#x0936;"
+                latin:keyLabel="&#x0923;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- Because the font rendering system prior to API version 16 can't automatically
                  render dotted circle for incomplete combining letter of some scripts, different
