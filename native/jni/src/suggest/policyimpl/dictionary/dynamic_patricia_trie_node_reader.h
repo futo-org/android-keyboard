@@ -39,12 +39,12 @@ class DynamicPatriciaTrieNodeReader {
             const DictionaryBigramsStructurePolicy *const bigramsPolicy,
             const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
             : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
-              mShortcutsPolicy(shortcutsPolicy), mHeadPos(NOT_A_VALID_WORD_POS), mFlags(0),
+              mShortcutsPolicy(shortcutsPolicy), mHeadPos(NOT_A_DICT_POS), mFlags(0),
               mParentPos(NOT_A_DICT_POS), mCodePointCount(0), mProbabilityFieldPos(NOT_A_DICT_POS),
               mProbability(NOT_A_PROBABILITY), mChildrenPosFieldPos(NOT_A_DICT_POS),
               mChildrenPos(NOT_A_DICT_POS), mBigramLinkedNodePos(NOT_A_DICT_POS),
               mShortcutPos(NOT_A_DICT_POS),  mBigramPos(NOT_A_DICT_POS),
-              mSiblingPos(NOT_A_VALID_WORD_POS) {}
+              mSiblingPos(NOT_A_DICT_POS) {}
 
     ~DynamicPatriciaTrieNodeReader() {}
 
@@ -56,7 +56,7 @@ class DynamicPatriciaTrieNodeReader {
 
     AK_FORCE_INLINE void fetchNodeInfoFromBufferAndGetNodeCodePoints(const int nodePos,
             const int maxCodePointCount, int *const outCodePoints) {
-        mSiblingPos = NOT_A_VALID_WORD_POS;
+        mSiblingPos = NOT_A_DICT_POS;
         mBigramLinkedNodePos = NOT_A_DICT_POS;
         fetchNodeInfoFromBufferAndProcessMovedNode(nodePos, maxCodePointCount, outCodePoints);
     }

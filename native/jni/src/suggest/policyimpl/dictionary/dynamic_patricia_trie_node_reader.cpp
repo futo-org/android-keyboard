@@ -69,7 +69,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
         mChildrenPos += mBuffer->getOriginalBufferSize();
     }
-    if (mSiblingPos == NOT_A_VALID_WORD_POS && DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
+    if (mSiblingPos == NOT_A_DICT_POS && DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
         mBigramLinkedNodePos = mChildrenPos;
     } else {
         mBigramLinkedNodePos = NOT_A_DICT_POS;
@@ -90,7 +90,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
         mBigramPos = NOT_A_DICT_POS;
     }
     // Update siblingPos if needed.
-    if (mSiblingPos == NOT_A_VALID_WORD_POS) {
+    if (mSiblingPos == NOT_A_DICT_POS) {
         // Sibling position is the tail position of current node.
         mSiblingPos = pos;
     }
@@ -102,7 +102,7 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
 }
 
 void DynamicPatriciaTrieNodeReader::invalidatePtNodeInfo() {
-    mHeadPos = NOT_A_VALID_WORD_POS;
+    mHeadPos = NOT_A_DICT_POS;
     mFlags = 0;
     mParentPos = NOT_A_DICT_POS;
     mCodePointCount = 0;
@@ -113,7 +113,7 @@ void DynamicPatriciaTrieNodeReader::invalidatePtNodeInfo() {
     mBigramLinkedNodePos = NOT_A_DICT_POS;
     mShortcutPos = NOT_A_DICT_POS;
     mBigramPos = NOT_A_DICT_POS;
-    mSiblingPos = NOT_A_VALID_WORD_POS;
+    mSiblingPos = NOT_A_DICT_POS;
 }
 
 }

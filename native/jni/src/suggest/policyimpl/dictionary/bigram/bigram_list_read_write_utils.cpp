@@ -70,7 +70,7 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
             break;
     }
     if (offset == 0) {
-        return NOT_A_VALID_WORD_POS;
+        return NOT_A_DICT_POS;
     }
     if (isOffsetNegative(flags)) {
         return origin - offset;

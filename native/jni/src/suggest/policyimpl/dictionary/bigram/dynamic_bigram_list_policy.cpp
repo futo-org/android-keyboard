@@ -31,7 +31,7 @@ void DynamicBigramListPolicy::getNextBigram(int *const outBigramPos, int *const 
             BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
     int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
             buffer, flags, pos);
-    if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+    if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
         originalBigramPos += mBuffer->getOriginalBufferSize();
     }
     *outBigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
@@ -66,7 +66,7 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, fromPos);
         int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, fromPos);
-        if (originalBigramPos == NOT_A_VALID_WORD_POS) {
+        if (originalBigramPos == NOT_A_DICT_POS) {
             // skip invalid bigram entry.
             continue;
         }
@@ -172,7 +172,7 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int ta
         }
         int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, &pos);
-        if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+        if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
         const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
@@ -192,8 +192,8 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int ta
 
 int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
         const int originalBigramPos) const {
-    if (originalBigramPos == NOT_A_VALID_WORD_POS) {
-        return NOT_A_VALID_WORD_POS;
+    if (originalBigramPos == NOT_A_DICT_POS) {
+        return NOT_A_DICT_POS;
     }
     int currentPos = originalBigramPos;
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, this /* bigramsPolicy */, mShortcutPolicy);
@@ -206,7 +206,7 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
         if (bigramLinkCount > BIGRAM_LINK_COUNT_LIMIT) {
             AKLOGI("Bigram link is invalid. start position: %d", bigramPos);
             ASSERT(false);
-            return NOT_A_VALID_WORD_POS;
+            return NOT_A_DICT_POS;
         }
     }
     return currentPos;

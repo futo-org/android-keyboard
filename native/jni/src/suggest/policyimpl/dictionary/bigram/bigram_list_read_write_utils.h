@@ -67,7 +67,7 @@ public:
            const int entryPos, const int targetPos, const int probability, const bool hasNext,
            BigramFlags *const outBigramFlags, uint32_t *const outOffset,
            int *const outOffsetFieldSize) {
-       if (targetPos == NOT_A_VALID_WORD_POS) {
+       if (targetPos == NOT_A_DICT_POS) {
            return false;
        }
        BigramFlags flags = probability & MASK_ATTRIBUTE_PROBABILITY;
