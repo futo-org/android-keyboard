@@ -54,6 +54,7 @@
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
     (kk: Kazakh/east_slavic) # disabled temporarily. waiting for strnig resources.
+    km: Khmer/khmer
     ky: Kyrgyz/east_slavic
     lo: Lao/lao
     lt: Lithuanian/qwerty
@@ -324,6 +325,14 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
     />
     -->
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:subtypeId="0x1365683a"
+            android:imeSubtypeLocale="km"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=khmer,EmojiCapable"
+    />
+            <!-- android:subtypeId="Need this for km" -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:subtypeId="0x2e391c04"

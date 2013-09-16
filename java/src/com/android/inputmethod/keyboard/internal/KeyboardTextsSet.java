@@ -2015,6 +2015,25 @@ public final class KeyboardTextsSet {
         /* 45 */ "\u0410\u0411\u0412",
     };
 
+    /* Language km: Khmer */
+    private static final String[] LANGUAGE_km = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        // Label for "switch to alphabetic" key.
+        // U+1780: "ក" KHMER LETTER KA
+        // U+1781: "ខ" KHMER LETTER KHA
+        // U+1782: "គ" KHMER LETTER KO
+        /* 45 */ "\u1780\u1781\u1782",
+        /* 46~ */
+        null, null, null, null,
+        /* ~49 */
+        // U+17DB: "៛" KHMER CURRENCY SYMBOL RIEL
+        /* 50 */ "\u17DB,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
+    };
+
     /* Language ky: Kirghiz */
     private static final String[] LANGUAGE_ky = {
         /* 0~ */
@@ -3407,6 +3426,7 @@ public final class KeyboardTextsSet {
         "iw", LANGUAGE_iw, /* Hebrew */
         "ka", LANGUAGE_ka, /* Georgian */
         "kk", LANGUAGE_kk, /* Kazakh */
+        "km", LANGUAGE_km, /* Khmer */
         "ky", LANGUAGE_ky, /* Kirghiz */
         "lo", LANGUAGE_lo, /* Lao */
         "lt", LANGUAGE_lt, /* Lithuanian */

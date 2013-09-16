@@ -24,48 +24,32 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.5%p"
+        latin:keyWidth="8.3333%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao1" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
-        </Row>
-    <Row
-        latin:keyWidth="7.5%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/rowkeys_lao2" />
+            latin:keyboardLayout="@xml/rowkeys_khmer1" />
     </Row>
     <Row
-        latin:keyWidth="7.5%p"
+        latin:keyWidth="8.3333%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao3" />
-        <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
+            latin:keyboardLayout="@xml/rowkeys_khmer2" />
     </Row>
     <Row
-        latin:keyWidth="7.5%p"
+        latin:keyWidth="8.3333%p"
+    >
+        <include
+            latin:keyboardLayout="@xml/rowkeys_khmer3" />
+    </Row>
+    <Row
+        latin:keyWidth="8.3333%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p" />
+            latin:keyStyle="shiftKeyStyle" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao4" />
-        <switch>
-            <case
-                latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-            >
-                <Spacer />
-            </case>
-            <default>
-                <include
-                    latin:keyboardLayout="@xml/keys_exclamation_question" />
-            </default>
-        </switch>
+            latin:keyboardLayout="@xml/rowkeys_khmer4" />
+        <Key
+            latin:keyStyle="deleteKeyStyle" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
