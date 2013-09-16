@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/shortcut/shortcut_list_reading_utils.h"
 
+#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
+
 namespace latinime {
 
 // Flag for presence of more attributes
@@ -27,5 +29,23 @@ const ShortcutListReadingUtils::ShortcutFlags
 const int ShortcutListReadingUtils::SHORTCUT_LIST_SIZE_FIELD_SIZE = 2;
 // The numeric value of the shortcut probability that means 'whitelist'.
 const int ShortcutListReadingUtils::WHITELIST_SHORTCUT_PROBABILITY = 15;
+
+/* static */ ShortcutListReadingUtils::ShortcutFlags
+        ShortcutListReadingUtils::getFlagsAndForwardPointer(const uint8_t *const dictRoot,
+                int *const pos) {
+    return ByteArrayUtils::readUint8AndAdvancePosition(dictRoot, pos);
+}
+
+/* static */ int ShortcutListReadingUtils::getShortcutListSizeAndForwardPointer(
+        const uint8_t *const dictRoot, int *const pos) {
+    // readUint16andAdvancePosition() returns an offset *including* the uint16 field itself.
+    return ByteArrayUtils::readUint16AndAdvancePosition(dictRoot, pos)
+            - SHORTCUT_LIST_SIZE_FIELD_SIZE;
+}
+
+/* static */ int ShortcutListReadingUtils::readShortcutTarget(
+        const uint8_t *const dictRoot, const int maxLength,  int *const outWord, int *const pos) {
+    return ByteArrayUtils::readStringAndAdvancePosition(dictRoot, maxLength, outWord, pos);
+}
 
 } // namespace latinime
