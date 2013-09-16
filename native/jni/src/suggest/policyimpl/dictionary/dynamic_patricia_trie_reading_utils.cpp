@@ -28,6 +28,17 @@ const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_NOT_MOVED = 0xC0;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_MOVED = 0x40;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
 
+/* static */ int DptReadingUtils::getForwardLinkPosition(const uint8_t *const buffer,
+        const int pos) {
+    int linkAddressPos = pos;
+    return ByteArrayUtils::readSint24AndAdvancePosition(buffer, &linkAddressPos);
+}
+
+/* static */ int DptReadingUtils::getParentPosAndAdvancePosition(const uint8_t *const buffer,
+        int *const pos) {
+    return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+}
+
 /* static */ int DptReadingUtils::readChildrenPositionAndAdvancePosition(
         const uint8_t *const buffer, int *const pos) {
     const int base = *pos;

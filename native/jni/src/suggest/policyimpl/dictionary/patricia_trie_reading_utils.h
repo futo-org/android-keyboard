@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
@@ -28,62 +27,21 @@ class PatriciaTrieReadingUtils {
  public:
     typedef uint8_t NodeFlags;
 
-    static AK_FORCE_INLINE int getPtNodeArraySizeAndAdvancePosition(
-            const uint8_t *const buffer, int *const pos) {
-        const uint8_t firstByte = ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
-        if (firstByte < 0x80) {
-            return firstByte;
-        } else {
-            return ((firstByte & 0x7F) << 8) ^ ByteArrayUtils::readUint8AndAdvancePosition(
-                    buffer, pos);
-        }
-    }
+    static int getPtNodeArraySizeAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
-    static AK_FORCE_INLINE NodeFlags getFlagsAndAdvancePosition(const uint8_t *const buffer,
-            int *const pos) {
-        return ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
-    }
+    static NodeFlags getFlagsAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
-    static AK_FORCE_INLINE int getCodePointAndAdvancePosition(const uint8_t *const buffer,
-            int *const pos) {
-        return ByteArrayUtils::readCodePointAndAdvancePosition(buffer, pos);
-    }
+    static int getCodePointAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
     // Returns the number of read characters.
-    static AK_FORCE_INLINE int getCharsAndAdvancePosition(const uint8_t *const buffer,
-            const NodeFlags flags, const int maxLength, int *const outBuffer, int *const pos) {
-        int length = 0;
-        if (hasMultipleChars(flags)) {
-            length = ByteArrayUtils::readStringAndAdvancePosition(buffer, maxLength, outBuffer,
-                    pos);
-        } else {
-            if (maxLength > 0) {
-                outBuffer[0] = getCodePointAndAdvancePosition(buffer, pos);
-                length = 1;
-            }
-        }
-        return length;
-    }
+    static int getCharsAndAdvancePosition(const uint8_t *const buffer, const NodeFlags flags,
+            const int maxLength, int *const outBuffer, int *const pos);
 
     // Returns the number of skipped characters.
-    static AK_FORCE_INLINE int skipCharacters(const uint8_t *const buffer, const NodeFlags flags,
-            const int maxLength, int *const pos) {
-        if (hasMultipleChars(flags)) {
-            return ByteArrayUtils::advancePositionToBehindString(buffer, maxLength, pos);
-        } else {
-            if (maxLength > 0) {
-                getCodePointAndAdvancePosition(buffer, pos);
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
+    static int skipCharacters(const uint8_t *const buffer, const NodeFlags flags,
+            const int maxLength, int *const pos);
 
-    static AK_FORCE_INLINE int readProbabilityAndAdvancePosition(const uint8_t *const buffer,
-            int *const pos) {
-        return ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
-    }
+    static int readProbabilityAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
     static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer,
             const NodeFlags flags, int *const pos);

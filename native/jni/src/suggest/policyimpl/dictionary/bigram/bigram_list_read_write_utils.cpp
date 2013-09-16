@@ -38,6 +38,22 @@ const BigramListReadWriteUtils::BigramFlags
         BigramListReadWriteUtils::MASK_ATTRIBUTE_PROBABILITY = 0x0F;
 const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
 
+/* static */ BigramListReadWriteUtils::BigramFlags
+        BigramListReadWriteUtils::getFlagsAndForwardPointer(const uint8_t *const bigramsBuf,
+                int *const pos) {
+    return ByteArrayUtils::readUint8AndAdvancePosition(bigramsBuf, pos);
+}
+
+/* static */ void BigramListReadWriteUtils::skipExistingBigrams(const uint8_t *const bigramsBuf,
+        int *const pos) {
+    BigramFlags flags = getFlagsAndForwardPointer(bigramsBuf, pos);
+    while (hasNext(flags)) {
+        *pos += attributeAddressSize(flags);
+        flags = getFlagsAndForwardPointer(bigramsBuf, pos);
+    }
+    *pos += attributeAddressSize(flags);
+}
+
 /* static */ int BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
         const uint8_t *const bigramsBuf, const BigramFlags flags, int *const pos) {
     int offset = 0;
