@@ -97,6 +97,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_SEND_FEEDBACK = "send_feedback";
     public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
 
+    // Emoji
+    public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
+    public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
+
     private Resources mRes;
     private SharedPreferences mPrefs;
     private SettingsValues mSettingsValues;
@@ -362,5 +366,25 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public byte[] readLastUsedPersonalizationToken() {
         final String tokenStr = mPrefs.getString(PREF_LAST_USED_PERSONALIZATION_TOKEN, null);
         return StringUtils.hexStringToByteArray(tokenStr);
+    }
+
+    public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {
+        prefs.edit().putString(PREF_EMOJI_RECENT_KEYS, str).apply();
+    }
+
+    public static String readEmojiRecentKeys(final SharedPreferences prefs) {
+        return prefs.getString(PREF_EMOJI_RECENT_KEYS, "");
+    }
+
+    public static void writeEmojiCategoryLastTypedId(
+            final SharedPreferences prefs, final int category, final int id) {
+        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + category;
+        prefs.edit().putInt(key, id).apply();
+    }
+
+    public static int readEmojiCategoryLastTypedId(
+            final SharedPreferences prefs, final int category) {
+        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + category;
+        return prefs.getInt(key, 0);
     }
 }
