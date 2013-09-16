@@ -42,6 +42,63 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_NOT_A_WORD = 0x02;
 // Flag for blacklist
 const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
 
+/* static */ int PtReadingUtils::getPtNodeArraySizeAndAdvancePosition(
+        const uint8_t *const buffer, int *const pos) {
+    const uint8_t firstByte = ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
+    if (firstByte < 0x80) {
+        return firstByte;
+    } else {
+        return ((firstByte & 0x7F) << 8) ^ ByteArrayUtils::readUint8AndAdvancePosition(
+                buffer, pos);
+    }
+}
+
+/* static */ PtReadingUtils::NodeFlags PtReadingUtils::getFlagsAndAdvancePosition(
+        const uint8_t *const buffer, int *const pos) {
+    return ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
+}
+
+/* static */ int PtReadingUtils::getCodePointAndAdvancePosition(const uint8_t *const buffer,
+        int *const pos) {
+    return ByteArrayUtils::readCodePointAndAdvancePosition(buffer, pos);
+}
+
+// Returns the number of read characters.
+/* static */ int PtReadingUtils::getCharsAndAdvancePosition(const uint8_t *const buffer,
+        const NodeFlags flags, const int maxLength, int *const outBuffer, int *const pos) {
+    int length = 0;
+    if (hasMultipleChars(flags)) {
+        length = ByteArrayUtils::readStringAndAdvancePosition(buffer, maxLength, outBuffer,
+                pos);
+    } else {
+        if (maxLength > 0) {
+            outBuffer[0] = getCodePointAndAdvancePosition(buffer, pos);
+            length = 1;
+        }
+    }
+    return length;
+}
+
+// Returns the number of skipped characters.
+/* static */ int PtReadingUtils::skipCharacters(const uint8_t *const buffer, const NodeFlags flags,
+        const int maxLength, int *const pos) {
+    if (hasMultipleChars(flags)) {
+        return ByteArrayUtils::advancePositionToBehindString(buffer, maxLength, pos);
+    } else {
+        if (maxLength > 0) {
+            getCodePointAndAdvancePosition(buffer, pos);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
+
+/* static */ int PtReadingUtils::readProbabilityAndAdvancePosition(const uint8_t *const buffer,
+        int *const pos) {
+    return ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
+}
+
 /* static */ int PtReadingUtils::readChildrenPositionAndAdvancePosition(
         const uint8_t *const buffer, const NodeFlags flags, int *const pos) {
     const int base = *pos;

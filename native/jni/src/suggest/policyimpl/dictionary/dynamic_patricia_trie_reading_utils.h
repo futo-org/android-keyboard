@@ -20,7 +20,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
@@ -28,19 +27,13 @@ class DynamicPatriciaTrieReadingUtils {
  public:
     typedef uint8_t NodeFlags;
 
-    static AK_FORCE_INLINE int getForwardLinkPosition(const uint8_t *const buffer, const int pos) {
-        int linkAddressPos = pos;
-        return ByteArrayUtils::readSint24AndAdvancePosition(buffer, &linkAddressPos);
-    }
+    static int getForwardLinkPosition(const uint8_t *const buffer, const int pos);
 
     static AK_FORCE_INLINE bool isValidForwardLinkPosition(const int forwardLinkAddress) {
         return forwardLinkAddress != 0;
     }
 
-    static AK_FORCE_INLINE int getParentPosAndAdvancePosition(const uint8_t *const buffer,
-            int *const pos) {
-        return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
-    }
+    static int getParentPosAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 
     static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 

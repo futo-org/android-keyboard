@@ -21,7 +21,6 @@
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 
 namespace latinime {
 
@@ -29,10 +28,7 @@ class BigramListReadWriteUtils {
 public:
    typedef uint8_t BigramFlags;
 
-   static AK_FORCE_INLINE BigramFlags getFlagsAndForwardPointer(
-           const uint8_t *const bigramsBuf, int *const pos) {
-       return ByteArrayUtils::readUint8AndAdvancePosition(bigramsBuf, pos);
-   }
+   static BigramFlags getFlagsAndForwardPointer(const uint8_t *const bigramsBuf, int *const pos);
 
    static AK_FORCE_INLINE int getProbabilityFromFlags(const BigramFlags flags) {
        return flags & MASK_ATTRIBUTE_PROBABILITY;
@@ -43,15 +39,7 @@ public:
    }
 
    // Bigrams reading methods
-   static AK_FORCE_INLINE void skipExistingBigrams(const uint8_t *const bigramsBuf,
-           int *const pos) {
-       BigramFlags flags = getFlagsAndForwardPointer(bigramsBuf, pos);
-       while (hasNext(flags)) {
-           *pos += attributeAddressSize(flags);
-           flags = getFlagsAndForwardPointer(bigramsBuf, pos);
-       }
-       *pos += attributeAddressSize(flags);
-   }
+   static void skipExistingBigrams(const uint8_t *const bigramsBuf, int *const pos);
 
    static int getBigramAddressAndForwardPointer(const uint8_t *const bigramsBuf,
            const BigramFlags flags, int *const pos);
