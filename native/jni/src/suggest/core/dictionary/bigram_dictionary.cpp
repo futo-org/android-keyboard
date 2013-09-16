@@ -116,7 +116,7 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
-        if (bigramsIt.getBigramPos() == NOT_A_VALID_WORD_POS) {
+        if (bigramsIt.getBigramPos() == NOT_A_DICT_POS) {
             continue;
         }
         const int codePointCount = mDictionaryStructurePolicy->
@@ -146,7 +146,7 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     if (0 >= prevWordLength) return NOT_A_DICT_POS;
     int pos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(prevWord, prevWordLength,
             forceLowerCaseSearch);
-    if (NOT_A_VALID_WORD_POS == pos) return NOT_A_DICT_POS;
+    if (NOT_A_DICT_POS == pos) return NOT_A_DICT_POS;
     return mDictionaryStructurePolicy->getBigramsPositionOfNode(pos);
 }
 
@@ -157,7 +157,7 @@ bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *w
     if (NOT_A_DICT_POS == pos) return false;
     int nextWordPos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
-    if (NOT_A_VALID_WORD_POS == nextWordPos) return false;
+    if (NOT_A_DICT_POS == nextWordPos) return false;
 
     BinaryDictionaryBigramsIterator bigramsIt(
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);

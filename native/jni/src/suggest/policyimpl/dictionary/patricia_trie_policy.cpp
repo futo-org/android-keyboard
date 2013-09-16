@@ -219,7 +219,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 }
 
 // This function gets the position of the terminal node of the exact matching word in the
-// dictionary. If no match is found, it returns NOT_A_VALID_WORD_POS.
+// dictionary. If no match is found, it returns NOT_A_DICT_POS.
 int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     int pos = getRootPosition();
@@ -228,7 +228,7 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
     while (true) {
         // If we already traversed the tree further than the word is long, there means
         // there was no match (or we would have found it).
-        if (wordPos >= length) return NOT_A_VALID_WORD_POS;
+        if (wordPos >= length) return NOT_A_DICT_POS;
         int ptNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(mDictRoot,
                 &pos);
         const int wChar = forceLowerCaseSearch
@@ -236,7 +236,7 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
         while (true) {
             // If there are no more PtNodes in this array, it means we could not
             // find a matching character for this depth, therefore there is no match.
-            if (0 >= ptNodeCount) return NOT_A_VALID_WORD_POS;
+            if (0 >= ptNodeCount) return NOT_A_DICT_POS;
             const int ptNodePos = pos;
             const PatriciaTrieReadingUtils::NodeFlags flags =
                     PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
@@ -245,7 +245,7 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
             if (character == wChar) {
                 // This is the correct PtNode. Only one PtNode may start with the same char within
                 // a PtNode array, so either we found our match in this array, or there is
-                // no match and we can return NOT_A_VALID_WORD_POS. So we will check all the
+                // no match and we can return NOT_A_DICT_POS. So we will check all the
                 // characters in this PtNode indeed does match.
                 if (PatriciaTrieReadingUtils::hasMultipleChars(flags)) {
                     character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(mDictRoot,
@@ -256,8 +256,8 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
                         // character that does not match, as explained above, it means the word is
                         // not in the dictionary (by virtue of this PtNode being the only one to
                         // match the word on the first character, but not matching the whole word).
-                        if (wordPos >= length) return NOT_A_VALID_WORD_POS;
-                        if (inWord[wordPos] != character) return NOT_A_VALID_WORD_POS;
+                        if (wordPos >= length) return NOT_A_DICT_POS;
+                        if (inWord[wordPos] != character) return NOT_A_DICT_POS;
                         character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
                                 mDictRoot, &pos);
                     }
@@ -274,7 +274,7 @@ int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
                     PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(mDictRoot, &pos);
                 }
                 if (!PatriciaTrieReadingUtils::hasChildrenInFlags(flags)) {
-                    return NOT_A_VALID_WORD_POS;
+                    return NOT_A_DICT_POS;
                 }
                 // We have children and we are still shorter than the word we are searching for, so
                 // we need to traverse children. Put the pointer on the children position, and
@@ -320,7 +320,7 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
 }
 
 int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
     int pos = nodePos;
@@ -342,7 +342,7 @@ int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
 }
 
 int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
     int pos = nodePos;
@@ -362,7 +362,7 @@ int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
 }
 
 int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
     int pos = nodePos;

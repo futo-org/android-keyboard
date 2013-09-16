@@ -59,7 +59,7 @@ class DicTraverseSession {
     }
 
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
-            : mPrevWordPos(NOT_A_VALID_WORD_POS), mProximityInfo(0),
+            : mPrevWordPos(NOT_A_DICT_POS), mProximityInfo(0),
               mDictionary(0), mSuggestOptions(0), mDicNodesCache(usesLargeCache),
               mMultiBigramMap(), mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {

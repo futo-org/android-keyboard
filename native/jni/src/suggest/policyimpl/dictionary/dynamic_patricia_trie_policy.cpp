@@ -116,7 +116,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
             if (!readingHelper.isMatchedCodePoint(
                     j, searchCodePoints[matchedCodePointCount + j])) {
                 // Different code point is found. The given word is not included in the dictionary.
-                return NOT_A_VALID_WORD_POS;
+                return NOT_A_DICT_POS;
             }
         }
         // All characters are matched.
@@ -125,14 +125,14 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
             return nodeReader->getHeadPos();
         }
         if (!nodeReader->hasChildren()) {
-            return NOT_A_VALID_WORD_POS;
+            return NOT_A_DICT_POS;
         }
         // Advance to the children nodes.
         readingHelper.readChildNode();
     }
     // If we already traversed the tree further than the word is long, there means
     // there was no match (or we would have found it).
-    return NOT_A_VALID_WORD_POS;
+    return NOT_A_DICT_POS;
 }
 
 int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
@@ -149,7 +149,7 @@ int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
 }
 
 int DynamicPatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
     DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
@@ -162,7 +162,7 @@ int DynamicPatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) 
 }
 
 int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
     DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
@@ -175,7 +175,7 @@ int DynamicPatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) cons
 }
 
 int DynamicPatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_VALID_WORD_POS) {
+    if (nodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
     DynamicPatriciaTrieNodeReader nodeReader(&mBufferWithExtendableBuffer,
@@ -209,12 +209,12 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
     }
     const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
-    if (word0Pos == NOT_A_VALID_WORD_POS) {
+    if (word0Pos == NOT_A_DICT_POS) {
         return false;
     }
     const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
-    if (word1Pos == NOT_A_VALID_WORD_POS) {
+    if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
@@ -230,12 +230,12 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
     }
     const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
-    if (word0Pos == NOT_A_VALID_WORD_POS) {
+    if (word0Pos == NOT_A_DICT_POS) {
         return false;
     }
     const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
-    if (word1Pos == NOT_A_VALID_WORD_POS) {
+    if (word1Pos == NOT_A_DICT_POS) {
         return false;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,

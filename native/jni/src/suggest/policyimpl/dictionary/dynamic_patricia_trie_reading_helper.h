@@ -72,8 +72,7 @@ class DynamicPatriciaTrieReadingHelper {
 
     // Initialize reading state with the head position of a node.
     AK_FORCE_INLINE void initWithNodePos(const int nodePos) {
-        // TODO: Consolidate NOT_A_VALID_WORD_POS and NOT_A_DICT_POS
-        if (nodePos == NOT_A_VALID_WORD_POS || nodePos == NOT_A_DICT_POS) {
+        if (nodePos == NOT_A_DICT_POS) {
             mPos = NOT_A_DICT_POS;
         } else {
             mIsError = false;

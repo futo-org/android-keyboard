@@ -35,13 +35,13 @@ void DicTraverseSession::init(const Dictionary *const dictionary, const int *pre
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
     if (!prevWord) {
-        mPrevWordPos = NOT_A_VALID_WORD_POS;
+        mPrevWordPos = NOT_A_DICT_POS;
         return;
     }
     // TODO: merge following similar calls to getTerminalPosition into one case-insensitive call.
     mPrevWordPos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(
             prevWord, prevWordLength, false /* forceLowerCaseSearch */);
-    if (mPrevWordPos == NOT_A_VALID_WORD_POS) {
+    if (mPrevWordPos == NOT_A_DICT_POS) {
         // Check bigrams for lower-cased previous word if original was not found. Useful for
         // auto-capitalized words like "The [current_word]".
         mPrevWordPos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(
