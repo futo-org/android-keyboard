@@ -16,32 +16,41 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.EmojiKeyboardView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 
 /**
  * This is a Keyboard class where you can add keys dynamically shown in a grid layout
  */
-// TODO: Save/restore recent keys from/to preferences.
 public class DynamicGridKeyboard extends Keyboard {
     private static final int TEMPLATE_KEY_CODE_0 = 0x30;
     private static final int TEMPLATE_KEY_CODE_1 = 0x31;
+    // Recent codes are saved as an integer array, so we use comma as a separater.
+    private static final String RECENT_KEY_SEPARATOR = Constants.STRING_COMMA;
 
+    private final SharedPreferences mPrefs;
     private final int mLeftPadding;
     private final int mHorizontalStep;
     private final int mVerticalStep;
     private final int mColumnsNum;
     private final int mMaxKeyCount;
+    private final boolean mIsRecents;
     private final ArrayDeque<GridKey> mGridKeys = CollectionUtils.newArrayDeque();
 
     private Key[] mCachedGridKeys;
 
-    public DynamicGridKeyboard(final Keyboard templateKeyboard, final int maxKeyCount) {
+    public DynamicGridKeyboard(final SharedPreferences prefs, final Keyboard templateKeyboard,
+            final int maxKeyCount, final int categoryId, final int categoryPageId) {
         super(templateKeyboard);
         final Key key0 = getTemplateKey(TEMPLATE_KEY_CODE_0);
         final Key key1 = getTemplateKey(TEMPLATE_KEY_CODE_1);
@@ -50,6 +59,8 @@ public class DynamicGridKeyboard extends Keyboard {
         mVerticalStep = key0.getHeight() + mVerticalGap;
         mColumnsNum = mBaseWidth / mHorizontalStep;
         mMaxKeyCount = maxKeyCount;
+        mIsRecents = categoryId == EmojiKeyboardView.CATEGORY_ID_RECENTS;
+        mPrefs = prefs;
     }
 
     private Key getTemplateKey(final int code) {
@@ -63,6 +74,9 @@ public class DynamicGridKeyboard extends Keyboard {
 
     public void addKeyFirst(final Key usedKey) {
         addKey(usedKey, true);
+        if (mIsRecents) {
+            saveRecentKeys();
+        }
     }
 
     public void addKeyLast(final Key usedKey) {
@@ -90,6 +104,31 @@ public class DynamicGridKeyboard extends Keyboard {
                 final int keyY = getKeyY(index);
                 gridKey.updateCorrdinates(keyX, keyY);
                 index++;
+            }
+        }
+    }
+
+    private void saveRecentKeys() {
+        final StringBuilder sb = new StringBuilder();
+        for (final Key key : mGridKeys) {
+            sb.append(key.getCode()).append(RECENT_KEY_SEPARATOR);
+        }
+        Settings.writeEmojiRecentKeys(mPrefs, sb.toString());
+    }
+
+    public void loadRecentKeys(Collection<DynamicGridKeyboard> keyboards) {
+        final String str = Settings.readEmojiRecentKeys(mPrefs);
+        for (String s : str.split(RECENT_KEY_SEPARATOR)) {
+            if (TextUtils.isEmpty(s)) {
+                continue;
+            }
+            final int code = Integer.valueOf(s);
+            for (DynamicGridKeyboard kbd : keyboards) {
+                final Key key = kbd.getKey(code);
+                if (key != null) {
+                    addKeyLast(key);
+                    break;
+                }
             }
         }
     }

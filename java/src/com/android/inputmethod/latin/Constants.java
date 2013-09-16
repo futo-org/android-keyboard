@@ -220,7 +220,11 @@ public final class Constants {
         }
     }
 
+    public static final int MAX_INT_BIT_COUNT = 32;
+    public static final String STRING_COMMA = ",";
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }
+
 }
