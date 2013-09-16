@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 public class EmojiLayoutParams {
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
 
+    public final int mEmojiPagerHeight;
+    private final int mEmojiPagerBottomMargin;
     public final int mEmojiKeyboardHeight;
     public final int mEmojiActionBarHeight;
     public final int mKeyVerticalGap;
@@ -49,13 +51,15 @@ public class EmojiLayoutParams {
                 + mKeyVerticalGap;
         mEmojiActionBarHeight = ((int) baseheight) / DEFAULT_KEYBOARD_ROWS
                 - (mKeyVerticalGap - mBottomPadding) / 2;
-        mEmojiKeyboardHeight = defaultKeyboardHeight - mEmojiActionBarHeight;
+        mEmojiPagerHeight = defaultKeyboardHeight - mEmojiActionBarHeight;
+        mEmojiPagerBottomMargin = mKeyVerticalGap / 2;
+        mEmojiKeyboardHeight = mEmojiPagerHeight - mEmojiPagerBottomMargin - 1;
     }
 
     public void setPagerProps(ViewPager vp) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) vp.getLayoutParams();
-        lp.height = mEmojiKeyboardHeight - mKeyVerticalGap / 2;
-        lp.bottomMargin = mKeyVerticalGap / 2;
+        lp.height = mEmojiPagerHeight - mEmojiPagerBottomMargin;
+        lp.bottomMargin = mEmojiPagerBottomMargin;
         vp.setLayoutParams(lp);
     }
 

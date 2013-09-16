@@ -117,6 +117,9 @@
 
     <!-- Emoji keyboard -->
     <fraction name="emoji_keyboard_key_width">14.2857%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">90%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">21</integer>
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>
@@ -124,4 +127,5 @@
     <integer name="user_dictionary_max_word_length" translatable="false">48</integer>
 
     <dimen name="language_on_spacebar_horizontal_margin">1dp</dimen>
+
 </resources>
