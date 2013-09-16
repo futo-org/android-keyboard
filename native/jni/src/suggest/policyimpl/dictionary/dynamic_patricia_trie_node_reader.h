@@ -156,6 +156,8 @@ class DynamicPatriciaTrieNodeReader {
 
     void fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos, const int maxCodePointCount,
             int *const outCodePoints);
+
+    void invalidatePtNodeInfo();
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H */

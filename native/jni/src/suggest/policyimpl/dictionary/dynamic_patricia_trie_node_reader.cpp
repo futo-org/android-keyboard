@@ -25,6 +25,13 @@ namespace latinime {
 
 void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos,
         const int maxCodePointCount, int *const outCodePoints) {
+    if (nodePos < 0 || nodePos >= mBuffer->getTailPosition()) {
+        AKLOGE("Fetching PtNode info form invalid dictionary position: %d, dictionary size: %d",
+                nodePos, mBuffer->getTailPosition());
+        ASSERT(false);
+        invalidatePtNodeInfo();
+        return;
+    }
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(nodePos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     int pos = nodePos;
@@ -92,6 +99,21 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
         // The destination position is stored at the same place as the parent position.
         fetchNodeInfoFromBufferAndProcessMovedNode(mParentPos, maxCodePointCount, outCodePoints);
     }
+}
+
+void DynamicPatriciaTrieNodeReader::invalidatePtNodeInfo() {
+    mHeadPos = NOT_A_VALID_WORD_POS;
+    mFlags = 0;
+    mParentPos = NOT_A_DICT_POS;
+    mCodePointCount = 0;
+    mProbabilityFieldPos = NOT_A_DICT_POS;
+    mProbability = NOT_A_PROBABILITY;
+    mChildrenPosFieldPos = NOT_A_DICT_POS;
+    mChildrenPos = NOT_A_DICT_POS;
+    mBigramLinkedNodePos = NOT_A_DICT_POS;
+    mShortcutPos = NOT_A_DICT_POS;
+    mBigramPos = NOT_A_DICT_POS;
+    mSiblingPos = NOT_A_VALID_WORD_POS;
 }
 
 }
