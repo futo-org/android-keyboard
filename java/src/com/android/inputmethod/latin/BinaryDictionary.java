@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.settings.NativeSuggestOptions;
@@ -47,6 +48,7 @@ public final class BinaryDictionary extends Dictionary {
     private long mNativeDict;
     private final Locale mLocale;
     private final long mDictSize;
+    private final String mDictFilePath;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     private final int[] mOutputCodePoints = new int[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
@@ -91,6 +93,7 @@ public final class BinaryDictionary extends Dictionary {
         super(dictType);
         mLocale = locale;
         mDictSize = length;
+        mDictFilePath = filename;
         mNativeSuggestOptions.setUseFullEditDistance(useFullEditDistance);
         loadDictionary(filename, offset, length, isUpdatable);
     }
@@ -101,6 +104,9 @@ public final class BinaryDictionary extends Dictionary {
 
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
+    private static native void flushNative(long dict, String filePath);
+    private static native boolean needsToRunGCNative(long dict);
+    private static native void flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
     private static native boolean isValidBigramNative(long dict, int[] word0, int[] word1);
@@ -259,6 +265,24 @@ public final class BinaryDictionary extends Dictionary {
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
+    }
+
+    @UsedForTesting
+    public void flush() {
+        if (!isValidDictionary()) return;
+        flushNative(mNativeDict, mDictFilePath);
+    }
+
+    @UsedForTesting
+    public void flushWithGC() {
+        if (!isValidDictionary()) return;
+        flushWithGCNative(mNativeDict, mDictFilePath);
+    }
+
+    @UsedForTesting
+    public boolean needsToRunGC() {
+        if (!isValidDictionary()) return false;
+        return needsToRunGCNative(mNativeDict);
     }
 
     @Override

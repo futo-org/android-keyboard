@@ -85,6 +85,12 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
 
+    void flush(const char *const filePath);
+
+    void flushWithGC(const char *const filePath);
+
+    bool needsToRunGC() const;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
 

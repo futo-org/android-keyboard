@@ -77,6 +77,12 @@ class Dictionary {
     void removeBigramWords(const int *const word0, const int length0, const int *const word1,
             const int length1);
 
+    void flush(const char *const filePath);
+
+    void flushWithGC(const char *const filePath);
+
+    bool needsToRunGC();
+
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy;
     }

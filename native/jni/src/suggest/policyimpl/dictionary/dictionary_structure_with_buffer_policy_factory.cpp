@@ -27,12 +27,12 @@
 namespace latinime {
 
 /* static */ DictionaryStructureWithBufferPolicy *DictionaryStructureWithBufferPolicyFactory
-        ::newDictionaryStructureWithBufferPolicy(const char *const path, const int pathLength,
-                const int bufOffset, const int size, const bool isUpdatable) {
+        ::newDictionaryStructureWithBufferPolicy(const char *const path, const int bufOffset,
+                const int size, const bool isUpdatable) {
     // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
     // impl classes of DictionaryStructureWithBufferPolicy.
-    const MmappedBuffer *const mmapedBuffer = MmappedBuffer::openBuffer(path, pathLength, bufOffset,
-            size, isUpdatable);
+    const MmappedBuffer *const mmapedBuffer = MmappedBuffer::openBuffer(path, bufOffset, size,
+            isUpdatable);
     if (!mmapedBuffer) {
         return 0;
     }

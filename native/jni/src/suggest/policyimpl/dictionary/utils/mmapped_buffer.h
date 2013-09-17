@@ -29,8 +29,8 @@ namespace latinime {
 
 class MmappedBuffer {
  public:
-    static MmappedBuffer* openBuffer(const char *const path, const int pathLength,
-            const int bufferOffset, const int bufferSize, const bool isUpdatable) {
+    static MmappedBuffer* openBuffer(const char *const path, const int bufferOffset,
+            const int bufferSize, const bool isUpdatable) {
         const int openMode = isUpdatable ? O_RDWR : O_RDONLY;
         const int mmapFd = open(path, openMode);
         if (mmapFd < 0) {

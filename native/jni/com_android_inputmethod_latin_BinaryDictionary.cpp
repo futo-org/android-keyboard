@@ -46,8 +46,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     sourceDirChars[sourceDirUtf8Length] = '\0';
     DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPolicy =
             DictionaryStructureWithBufferPolicyFactory::newDictionaryStructureWithBufferPolicy(
-                    sourceDirChars, static_cast<int>(sourceDirUtf8Length),
-                    static_cast<int>(dictOffset), static_cast<int>(dictSize),
+                    sourceDirChars, static_cast<int>(dictOffset), static_cast<int>(dictSize),
                     isUpdatable == JNI_TRUE);
     if (!dictionaryStructureWithBufferPolicy) {
         return 0;
@@ -57,6 +56,35 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring s
     PROF_END(66);
     PROF_CLOSE;
     return reinterpret_cast<jlong>(dictionary);
+}
+
+static void latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dict,
+        jstring filePath) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
+    char filePathChars[filePathUtf8Length + 1];
+    env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
+    filePathChars[filePathUtf8Length] = '\0';
+    dictionary->flush(filePathChars);
+}
+
+static bool latinime_BinaryDictionary_needsToRunGC(JNIEnv *env, jclass clazz,
+        jlong dict) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return false;
+    return dictionary->needsToRunGC();
+}
+
+static void latinime_BinaryDictionary_flushWithGC(JNIEnv *env, jclass clazz, jlong dict,
+        jstring filePath) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) return;
+    const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
+    char filePathChars[filePathUtf8Length + 1];
+    env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
+    filePathChars[filePathUtf8Length] = '\0';
+    dictionary->flushWithGC(filePathChars);
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jclass clazz, jlong dict) {
@@ -251,6 +279,21 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("closeNative"),
         const_cast<char *>("(J)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_close)
+    },
+    {
+        const_cast<char *>("flushNative"),
+        const_cast<char *>("(JLjava/lang/String;)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_flush)
+    },
+    {
+        const_cast<char *>("needsToRunGCNative"),
+        const_cast<char *>("(J)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_needsToRunGC)
+    },
+    {
+        const_cast<char *>("flushWithGCNative"),
+        const_cast<char *>("(JLjava/lang/String;)V"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_flushWithGC)
     },
     {
         const_cast<char *>("getSuggestionsNative"),
