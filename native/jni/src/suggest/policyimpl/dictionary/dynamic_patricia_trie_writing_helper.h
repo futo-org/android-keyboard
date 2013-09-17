@@ -49,6 +49,8 @@ class DynamicPatriciaTrieWritingHelper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
+    static const int CHILDREN_POSITION_FIELD_SIZE;
+
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
