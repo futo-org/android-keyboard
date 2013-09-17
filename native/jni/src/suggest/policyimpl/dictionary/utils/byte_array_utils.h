@@ -135,7 +135,7 @@ class ByteArrayUtils {
     static AK_FORCE_INLINE int readCodePointAndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         const uint8_t firstByte = readUint8(buffer, *pos);
-        if (firstByte < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+        if (firstByte < MINIMUM_ONE_BYTE_CHARACTER_VALUE) {
             if (firstByte == CHARACTER_ARRAY_TERMINATOR) {
                 *pos += 1;
                 return NOT_A_CODE_POINT;
@@ -187,7 +187,8 @@ class ByteArrayUtils {
             const int codePoint = codePoints[i];
             if (codePoint == NOT_A_CODE_POINT || codePoint == CHARACTER_ARRAY_TERMINATOR) {
                 break;
-            } else if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+            } else if (codePoint < MINIMUM_ONE_BYTE_CHARACTER_VALUE
+                    || codePoint > MAXIMUM_ONE_BYTE_CHARACTER_VALUE) {
                 // three bytes character.
                 writeUint24AndAdvancePosition(buffer, codePoint, pos);
             } else {
@@ -207,7 +208,8 @@ class ByteArrayUtils {
             const int codePoint = codePoints[i];
             if (codePoint == NOT_A_CODE_POINT || codePoint == CHARACTER_ARRAY_TERMINATOR) {
                 break;
-            } else if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+            } else if (codePoint < MINIMUM_ONE_BYTE_CHARACTER_VALUE
+                    || codePoint > MAXIMUM_ONE_BYTE_CHARACTER_VALUE) {
                 // three bytes character.
                 byteCount += 3;
             } else {
@@ -225,7 +227,8 @@ class ByteArrayUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ByteArrayUtils);
 
-    static const uint8_t MINIMAL_ONE_BYTE_CHARACTER_VALUE;
+    static const uint8_t MINIMUM_ONE_BYTE_CHARACTER_VALUE;
+    static const uint8_t MAXIMUM_ONE_BYTE_CHARACTER_VALUE;
     static const uint8_t CHARACTER_ARRAY_TERMINATOR;
 
     static AK_FORCE_INLINE void writeUint32AndAdvancePosition(uint8_t *const buffer,
