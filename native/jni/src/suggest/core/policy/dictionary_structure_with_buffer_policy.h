@@ -74,6 +74,12 @@ class DictionaryStructureWithBufferPolicy {
     virtual bool removeBigramWords(const int *const word0, const int length0,
             const int *const word1, const int length1) = 0;
 
+    virtual void flush(const char *const filePath) = 0;
+
+    virtual void flushWithGC(const char *const filePath) = 0;
+
+    virtual bool needsToRunGC() const = 0;
+
  protected:
     DictionaryStructureWithBufferPolicy() {}
 

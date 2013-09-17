@@ -243,4 +243,29 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
     return writingHelper.removeBigramWords(word0Pos, word1Pos);
 }
 
+void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
+    if (!mBuffer->isUpdatable()) {
+        AKLOGI("Warning: flush() is called for non-updatable dictionary.");
+        return;
+    }
+    // TODO: Implement.
+}
+
+void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
+    if (!mBuffer->isUpdatable()) {
+        AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
+        return;
+    }
+    // TODO: Implement.
+}
+
+bool DynamicPatriciaTriePolicy::needsToRunGC() const {
+    if (!mBuffer->isUpdatable()) {
+        AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
+        return false;
+    }
+    // TODO: Implement.
+    return false;
+}
+
 } // namespace latinime
