@@ -533,7 +533,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         final int newCategoryPageId = mEmojiCategory.getPageIdFromCategoryId(categoryId);
         if (force || mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(
                 mEmojiPager.getCurrentItem()).first != categoryId) {
-            mEmojiPager.setCurrentItem(newCategoryPageId, true /* smoothScroll */);
+            mEmojiPager.setCurrentItem(newCategoryPageId, false /* smoothScroll */);
         }
         if (force || mTabHost.getCurrentTab() != newTabId) {
             mTabHost.setCurrentTab(newTabId);
