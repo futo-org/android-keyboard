@@ -76,6 +76,7 @@ public final class SettingsValues {
     public final boolean mGestureTrailEnabled;
     public final boolean mGestureFloatingPreviewTextEnabled;
     public final boolean mSlidingKeyInputPreviewEnabled;
+    public final boolean mPhraseGestureEnabled;
     public final int mKeyLongpressTimeout;
     public final Locale mLocale;
 
@@ -159,6 +160,7 @@ public final class SettingsValues {
         mGestureTrailEnabled = prefs.getBoolean(Settings.PREF_GESTURE_PREVIEW_TRAIL, true);
         mGestureFloatingPreviewTextEnabled = prefs.getBoolean(
                 Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
+        mPhraseGestureEnabled = Settings.readPhraseGestureEnabled(prefs, res);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         final String showSuggestionsSetting = prefs.getString(
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
@@ -211,6 +213,7 @@ public final class SettingsValues {
         mGestureInputEnabled = true;
         mGestureTrailEnabled = true;
         mGestureFloatingPreviewTextEnabled = true;
+        mPhraseGestureEnabled = true;
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = 0;
         mIsInternal = false;
