@@ -23,6 +23,7 @@
     latin:keyWidth="@fraction/emoji_keyboard_key_width"
     latin:keyLetterSize="90%p"
     latin:keyLabelSize="60%p"
+    latin:rowHeight="@fraction/emoji_keyboard_row_height"
 >
     <GridRows
         latin:textsArray="@array/emoji_emoticons"
