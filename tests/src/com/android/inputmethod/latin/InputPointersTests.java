@@ -244,4 +244,20 @@ public class InputPointersTests extends AndroidTestCase {
                     expecteds[i + expectedPos], actuals[i + actualPos]);
         }
     }
+
+    public void testShift() {
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
+        final int limit = 100;
+        final int shiftAmount = 20;
+        for (int i = 0; i < limit; i++) {
+            src.addPointer(i, i * 2, i * 3, i * 4);
+        }
+        src.shift(shiftAmount);
+        for (int i = 0; i < limit - shiftAmount; ++i) {
+            assertEquals("xCoordinates at " + i, i + shiftAmount, src.getXCoordinates()[i]);
+            assertEquals("yCoordinates at " + i, (i + shiftAmount) * 2, src.getYCoordinates()[i]);
+            assertEquals("pointerIds at " + i, (i + shiftAmount) * 3, src.getPointerIds()[i]);
+            assertEquals("times at " + i, (i + shiftAmount) * 4, src.getTimes()[i]);
+        }
+    }
 }

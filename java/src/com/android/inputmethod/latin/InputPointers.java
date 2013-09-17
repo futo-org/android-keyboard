@@ -105,6 +105,17 @@ public final class InputPointers {
         mTimes.append(times, startPos, length);
     }
 
+    /**
+     * Shift to the left by elementCount, discarding elementCount pointers at the start.
+     * @param elementCount how many elements to shift.
+     */
+    public void shift(final int elementCount) {
+        mXCoordinates.shift(elementCount);
+        mYCoordinates.shift(elementCount);
+        mPointerIds.shift(elementCount);
+        mTimes.shift(elementCount);
+    }
+
     public void reset() {
         final int defaultCapacity = mDefaultCapacity;
         mXCoordinates.reset(defaultCapacity);
