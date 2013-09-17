@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Random;
 
 @LargeTest
 public class BinaryDictionaryTests extends AndroidTestCase {
@@ -117,10 +119,46 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         assertEquals(probability, binaryDictionary.getFrequency("aab"));
         assertEquals(probability, binaryDictionary.getFrequency("aac"));
-        assertEquals(probability, binaryDictionary.getFrequency("aac"));
+        assertEquals(probability, binaryDictionary.getFrequency("aa"));
         assertEquals(probability, binaryDictionary.getFrequency("aaaa"));
         assertEquals(probability, binaryDictionary.getFrequency("a"));
         assertEquals(updatedProbability, binaryDictionary.getFrequency("aaa"));
+
+        dictFile.delete();
+    }
+
+    public void testRandomlyAddUnigramWord() {
+        final int wordCount = 1000;
+        final int codePointSetSize = 50;
+        final int seed = 123456789;
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final HashMap<String, Integer> probabilityMap = new HashMap<String, Integer>();
+        // Test a word that isn't contained within the dictionary.
+        final Random random = new Random(seed);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        for (int i = 0; i < wordCount; ++i) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            probabilityMap.put(word, random.nextInt() & 0xFF);
+        }
+        for (String word : probabilityMap.keySet()) {
+            binaryDictionary.addUnigramWord(word, probabilityMap.get(word));
+        }
+        for (String word : probabilityMap.keySet()) {
+            assertEquals(word, (int)probabilityMap.get(word), binaryDictionary.getFrequency(word));
+        }
+        dictFile.delete();
     }
 
     public void testAddBigramWords() {
