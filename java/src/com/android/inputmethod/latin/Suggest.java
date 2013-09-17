@@ -460,7 +460,7 @@ public final class Suggest {
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
 
-    private static SuggestedWordInfo getTransformedSuggestedWordInfo(
+    /* package for test */ static SuggestedWordInfo getTransformedSuggestedWordInfo(
             final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
             final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
         final StringBuilder sb = new StringBuilder(wordInfo.mWord.length());
@@ -471,7 +471,12 @@ public final class Suggest {
         } else {
             sb.append(wordInfo.mWord);
         }
-        for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
+        // Appending quotes is here to help people quote words. However, it's not helpful
+        // when they type words with quotes toward the end like "it's" or "didn't", where
+        // it's more likely the user missed the last character (or didn't type it yet).
+        final int quotesToAppend = trailingSingleQuotesCount
+                - (-1 == wordInfo.mWord.indexOf(Constants.CODE_SINGLE_QUOTE) ? 0 : 1);
+        for (int i = quotesToAppend - 1; i >= 0; --i) {
             sb.appendCodePoint(Constants.CODE_SINGLE_QUOTE);
         }
         return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
