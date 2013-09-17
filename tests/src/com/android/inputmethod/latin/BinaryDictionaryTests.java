@@ -206,6 +206,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         final int bigramCount = 1000;
         final int codePointSetSize = 50;
         final int seed = 11111;
+
         File dictFile = null;
         try {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
@@ -217,7 +218,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-
         final ArrayList<String> words = new ArrayList<String>();
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random(seed);
@@ -247,6 +247,55 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                         binaryDictionary.isValidBigram(words.get(i), words.get(j)));
             }
         }
+
+        dictFile.delete();
+    }
+
+    public void testRemoveBigramWords() {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int unigramProbability = 100;
+        final int bigramProbability = 10;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
+
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "aaa"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "bcc"));
+
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "abb"));
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+
+
+        binaryDictionary.removeBigramWords("aaa", "bcc");
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "bcc"));
+        binaryDictionary.removeBigramWords("abb", "aaa");
+        assertEquals(false, binaryDictionary.isValidBigram("abb", "aaa"));
+        binaryDictionary.removeBigramWords("abb", "bcc");
+        assertEquals(false, binaryDictionary.isValidBigram("abb", "bcc"));
+
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        // Test remove non-existing bigram operation.
+        binaryDictionary.removeBigramWords("aaa", "abb");
+        binaryDictionary.removeBigramWords("bcc", "aaa");
 
         dictFile.delete();
     }
