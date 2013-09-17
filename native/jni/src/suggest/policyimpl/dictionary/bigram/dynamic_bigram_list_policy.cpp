@@ -115,7 +115,7 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramPos,
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
         int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
                 buffer, flags, pos);
-        if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+        if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
         if (followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos) == bigramPos) {
