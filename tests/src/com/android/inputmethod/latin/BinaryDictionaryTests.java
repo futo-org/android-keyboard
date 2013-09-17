@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
@@ -194,6 +195,58 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(false, binaryDictionary.isValidBigram("bcc", "aaa"));
         assertEquals(false, binaryDictionary.isValidBigram("bcc", "bbc"));
         assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
+
+        dictFile.delete();
+    }
+
+    public void testRandomlyAddBigramWords() {
+        // TODO: Add a test to check the frequency of the bigram score which uses current value
+        // calculated in the native code
+        final int wordCount = 100;
+        final int bigramCount = 1000;
+        final int codePointSetSize = 50;
+        final int seed = 11111;
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final ArrayList<String> words = new ArrayList<String>();
+        // Test a word that isn't contained within the dictionary.
+        final Random random = new Random(seed);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final int unigramProbability = 100;
+        final int bigramProbability = 10;
+        for (int i = 0; i < wordCount; ++i) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+            binaryDictionary.addUnigramWord(word, unigramProbability);
+        }
+
+        final boolean[][] bigramRelations = new boolean[wordCount][wordCount];
+        for (int i = 0; i < bigramCount; i++) {
+            final int word0Index = random.nextInt(wordCount);
+            final int word1Index = random.nextInt(wordCount);
+            final String word0 = words.get(word0Index);
+            final String word1 = words.get(word1Index);
+
+            bigramRelations[word0Index][word1Index] = true;
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability);
+        }
+
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = 0; j < words.size(); j++) {
+                assertEquals(bigramRelations[i][j],
+                        binaryDictionary.isValidBigram(words.get(i), words.get(j)));
+            }
+        }
 
         dictFile.delete();
     }
