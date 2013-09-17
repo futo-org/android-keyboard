@@ -112,6 +112,18 @@ void Dictionary::removeBigramWords(const int *const word0, const int length0,
     mDictionaryStructureWithBufferPolicy->removeBigramWords(word0, length0, word1, length1);
 }
 
+void Dictionary::flush(const char *const filePath) {
+    mDictionaryStructureWithBufferPolicy->flush(filePath);
+}
+
+void Dictionary::flushWithGC(const char *const filePath) {
+    mDictionaryStructureWithBufferPolicy->flushWithGC(filePath);
+}
+
+bool Dictionary::needsToRunGC() {
+    return mDictionaryStructureWithBufferPolicy->needsToRunGC();
+}
+
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
     const int BUFFER_SIZE = 16;
     int dictionaryIdCodePointBuffer[BUFFER_SIZE];

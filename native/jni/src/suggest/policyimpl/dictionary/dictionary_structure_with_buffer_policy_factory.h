@@ -27,8 +27,7 @@ namespace latinime {
 class DictionaryStructureWithBufferPolicyFactory {
  public:
     static DictionaryStructureWithBufferPolicy *newDictionaryStructureWithBufferPolicy(
-            const char *const path, const int pathLength, const int bufOffset, const int size,
-            const bool isUpdatable);
+            const char *const path, const int bufOffset, const int size, const bool isUpdatable);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);

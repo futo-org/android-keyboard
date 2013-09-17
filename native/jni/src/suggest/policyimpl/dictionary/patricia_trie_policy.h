@@ -96,6 +96,22 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return false;
     }
 
+    void flush(const char *const filePath) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: flush() is called for non-updatable dictionary.");
+    }
+
+    void flushWithGC(const char *const filePath) {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
+    }
+
+    bool needsToRunGC() const {
+        // This method should not be called for non-updatable dictionary.
+        AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
+        return false;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
