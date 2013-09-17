@@ -26,6 +26,8 @@
 
 namespace latinime {
 
+const int DynamicPatriciaTrieWritingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
+
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
         const int *const wordCodePoints, const int codePointCount, const int probability) {
@@ -79,13 +81,44 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
 
 bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const int word1Pos,
         const int probability) {
+    int mMergedNodeCodePoints[MAX_WORD_LENGTH];
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoFromBuffer(word0Pos);
-    if (nodeReader.isDeleted()) {
+    nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(word0Pos, MAX_WORD_LENGTH,
+            mMergedNodeCodePoints);
+    // Move node to add bigram entry.
+    const int newNodePos = mBuffer->getTailPosition();
+    if (!markNodeAsMovedAndSetPosition(&nodeReader, newNodePos, newNodePos)) {
         return false;
     }
-    // TODO: Implement.
-    return false;
+    int writingPos = newNodePos;
+    // Write a new PtNode using original PtNode's info to the tail of the dictionary.
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(&nodeReader, nodeReader.getParentPos(),
+            mMergedNodeCodePoints, nodeReader.getCodePointCount(), nodeReader.getProbability(),
+            &writingPos)) {
+        return false;
+    }
+    nodeReader.fetchNodeInfoFromBuffer(newNodePos);
+    if (nodeReader.getBigramsPos() != NOT_A_DICT_POS) {
+        // Insert a new bigram entry into the existing bigram list.
+        int bigramListPos = nodeReader.getBigramsPos();
+        return mBigramPolicy->addNewBigramEntryToBigramList(word1Pos, probability, &bigramListPos);
+    } else {
+        // The PtNode doesn't have a bigram list.
+        // First, Write a bigram entry at the tail position of the PtNode.
+        if (!mBigramPolicy->writeNewBigramEntry(word1Pos, probability, &writingPos)) {
+            return false;
+        }
+        // Then, Mark as the PtNode having bigram list in the flags.
+        const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
+                PatriciaTrieReadingUtils::createAndGetFlags(nodeReader.isBlacklisted(),
+                        nodeReader.isNotAWord(), nodeReader.getProbability() != NOT_A_PROBABILITY,
+                        nodeReader.getShortcutPos() != NOT_A_DICT_POS, true /* hasBigrams */,
+                        nodeReader.getCodePointCount() > 1, CHILDREN_POSITION_FIELD_SIZE);
+        writingPos = newNodePos;
+        // Write updated flags into the moved PtNode's flags field.
+        return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, updatedFlags,
+                &writingPos);
+    }
 }
 
 // Remove a bigram relation from word0Pos to word1Pos.

@@ -48,7 +48,10 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     // positions after bigram lists. This method skips invalid bigram entries.
     bool copyAllBigrams(int *const fromPos, int *const toPos);
 
-    bool addBigramEntry(const int bigramPos, const int probability, int *const pos);
+    bool addNewBigramEntryToBigramList(const int bigramPos, const int probability, int *const pos);
+
+    bool writeNewBigramEntry(const int bigramPos, const int probability,
+            int *const writingPos);
 
     // Return if targetBigramPos is found or not.
     bool removeBigram(const int bigramListPos, const int targetBigramPos);

@@ -98,8 +98,8 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
     return true;
 }
 
-bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int probability,
-        int *const pos) {
+bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramPos,
+        const int probability, int *const pos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
     if (usesAdditionalBuffer) {
         *pos -= mBuffer->getOriginalBufferSize();
@@ -113,7 +113,17 @@ bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int prob
         // The buffer address can be changed after calling buffer writing methods.
         const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
-        BigramListReadWriteUtils::getBigramAddressAndForwardPointer(buffer, flags, pos);
+        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
+                buffer, flags, pos);
+        if (usesAdditionalBuffer && originalBigramPos != NOT_A_VALID_WORD_POS) {
+            originalBigramPos += mBuffer->getOriginalBufferSize();
+        }
+        if (followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos) == bigramPos) {
+            // Update this bigram entry.
+            const BigramListReadWriteUtils::BigramFlags updatedFlags =
+                    BigramListReadWriteUtils::setProbabilityInFlags(flags, probability);
+            return mBuffer->writeUintAndAdvancePosition(updatedFlags, 1 /* size */, &entryPos);
+        }
         if (BigramListReadWriteUtils::hasNext(flags)) {
             continue;
         }
@@ -124,33 +134,35 @@ bool DynamicBigramListPolicy::addBigramEntry(const int bigramPos, const int prob
         if (!mBuffer->writeUintAndAdvancePosition(updatedFlags, 1 /* size */, &entryPos)) {
             return false;
         }
-        // Then, add a new entry after the last entry.
-        BigramListReadWriteUtils::BigramFlags newBigramFlags;
-        uint32_t newBigramOffset;
-        int newBigramOffsetFieldSize;
-        if(!BigramListReadWriteUtils::createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
-                *pos, bigramPos, BigramListReadWriteUtils::getProbabilityFromFlags(flags),
-                BigramListReadWriteUtils::hasNext(flags), &newBigramFlags, &newBigramOffset,
-                &newBigramOffsetFieldSize)) {
-            continue;
-        }
-        int newEntryPos = *pos;
         if (usesAdditionalBuffer) {
-            newEntryPos += mBuffer->getOriginalBufferSize();
+            *pos += mBuffer->getOriginalBufferSize();
         }
-        // Write bigram flags.
-        if (!mBuffer->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */,
-                &newEntryPos)) {
-            return false;
-        }
-        // Write bigram positon offset.
-        if (!mBuffer->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
-                &newEntryPos)) {
-            return false;
-        }
+        // Then, add a new entry after the last entry.
+        return writeNewBigramEntry(bigramPos, probability, pos);
     } while(BigramListReadWriteUtils::hasNext(flags));
-    if (usesAdditionalBuffer) {
-        *pos += mBuffer->getOriginalBufferSize();
+    // We return directly from the while loop.
+    ASSERT(false);
+    return false;
+}
+
+bool DynamicBigramListPolicy::writeNewBigramEntry(const int bigramPos, const int probability,
+        int *const writingPos) {
+    BigramListReadWriteUtils::BigramFlags newBigramFlags;
+    uint32_t newBigramOffset;
+    int newBigramOffsetFieldSize;
+    if(!BigramListReadWriteUtils::createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
+            *writingPos, bigramPos, probability, false /* hasNext */, &newBigramFlags,
+            &newBigramOffset, &newBigramOffsetFieldSize)) {
+        return false;
+    }
+    // Write bigram flags.
+    if (!mBuffer->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */, writingPos)) {
+        return false;
+    }
+    // Write bigram positon offset.
+    if (!mBuffer->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
+            writingPos)) {
+        return false;
     }
     return true;
 }
