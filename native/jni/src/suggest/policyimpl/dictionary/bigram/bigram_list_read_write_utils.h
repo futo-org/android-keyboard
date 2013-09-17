@@ -62,6 +62,11 @@ public:
        return flags | FLAG_ATTRIBUTE_HAS_NEXT;
    }
 
+   static AK_FORCE_INLINE BigramFlags setProbabilityInFlags(const BigramFlags flags,
+           const int probability) {
+       return (flags & (~MASK_ATTRIBUTE_PROBABILITY)) | (probability & MASK_ATTRIBUTE_PROBABILITY);
+   }
+
    // Returns true if the bigram entry is valid and put entry values into out*.
    static AK_FORCE_INLINE bool createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
            const int entryPos, const int targetPos, const int probability, const bool hasNext,

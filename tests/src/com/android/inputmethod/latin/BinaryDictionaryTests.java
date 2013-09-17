@@ -122,4 +122,41 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(probability, binaryDictionary.getFrequency("a"));
         assertEquals(updatedProbability, binaryDictionary.getFrequency("aaa"));
     }
+
+    public void testAddBigramWords() {
+        // TODO: Add a test to check the frequency of the bigram score which uses current value
+        // calculated in the native code
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int unigramProbability = 100;
+        final int bigramProbability = 10;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
+
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "abb"));
+        assertEquals(true, binaryDictionary.isValidBigram("aaa", "bcc"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "aaa"));
+        assertEquals(true, binaryDictionary.isValidBigram("abb", "bcc"));
+
+        assertEquals(false, binaryDictionary.isValidBigram("bcc", "aaa"));
+        assertEquals(false, binaryDictionary.isValidBigram("bcc", "bbc"));
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
+
+        dictFile.delete();
+    }
 }
