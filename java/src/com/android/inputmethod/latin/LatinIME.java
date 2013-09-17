@@ -1880,6 +1880,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int indexOfLastSpace = batchInputText.lastIndexOf(Constants.CODE_SPACE) + 1;
             if (0 != indexOfLastSpace) {
                 mConnection.commitText(batchInputText.substring(0, indexOfLastSpace), 1);
+                showSuggestionStrip(suggestedWords.getSuggestedWordsForLastWordOfPhraseGesture());
             }
             final String lastWord = batchInputText.substring(indexOfLastSpace);
             mWordComposer.setBatchInputWord(lastWord);

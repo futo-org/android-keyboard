@@ -276,4 +276,24 @@ public final class SuggestedWords {
                 false /* willAutoCorrect */, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
                 mIsPrediction);
     }
+
+    // Creates a new SuggestedWordInfo from the currently suggested words that removes all but the
+    // last word of all suggestions, separated by a space. This is necessary because when we commit
+    // a multiple-word suggestion, the IME only retains the last word as the composing word, and
+    // we should only suggest replacements for this last word.
+    // TODO: make this work with languages without spaces.
+    public SuggestedWords getSuggestedWordsForLastWordOfPhraseGesture() {
+        final ArrayList<SuggestedWordInfo> newSuggestions = CollectionUtils.newArrayList();
+        for (int i = 0; i < mSuggestedWordInfoList.size(); ++i) {
+            final SuggestedWordInfo info = mSuggestedWordInfoList.get(i);
+            final int indexOfLastSpace = info.mWord.lastIndexOf(Constants.CODE_SPACE) + 1;
+            final String lastWord = info.mWord.substring(indexOfLastSpace);
+            newSuggestions.add(new SuggestedWordInfo(lastWord, info.mScore, info.mKind,
+                    info.mSourceDict, SuggestedWordInfo.NOT_AN_INDEX,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE));
+        }
+        return new SuggestedWords(newSuggestions, mTypedWordValid,
+                mWillAutoCorrect, mIsPunctuationSuggestions, mIsObsoleteSuggestions,
+                mIsPrediction);
+    }
 }
