@@ -87,7 +87,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         Log.e(TAG, "Testing dictionary: seed is " + seed);
         final Random random = new Random(seed);
         sWords.clear();
-        final int[] codePointSet = generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE, random);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
+                random);
         generateWords(maxUnigrams, random, codePointSet);
 
         for (int i = 0; i < sWords.size(); ++i) {
@@ -113,51 +114,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    private int[] generateCodePointSet(final int codePointSetSize, final Random random) {
-        final int[] codePointSet = new int[codePointSetSize];
-        for (int i = codePointSet.length - 1; i >= 0; ) {
-            final int r = Math.abs(random.nextInt());
-            if (r < 0) continue;
-            // Don't insert 0~0x20, but insert any other code point.
-            // Code points are in the range 0~0x10FFFF.
-            final int candidateCodePoint = 0x20 + r % (Character.MAX_CODE_POINT - 0x20);
-            // Code points between MIN_ and MAX_SURROGATE are not valid on their own.
-            if (candidateCodePoint >= Character.MIN_SURROGATE
-                    && candidateCodePoint <= Character.MAX_SURROGATE) continue;
-            codePointSet[i] = candidateCodePoint;
-            --i;
-        }
-        return codePointSet;
-    }
-
-    // Utilities for test
-
-    /**
-     * Generates a random word.
-     */
-    private String generateWord(final Random random, final int[] codePointSet) {
-        StringBuilder builder = new StringBuilder();
-        // 8 * 4 = 32 chars max, but we do it the following way so as to bias the random toward
-        // longer words. This should be closer to natural language, and more importantly, it will
-        // exercise the algorithms in dicttool much more.
-        final int count = 1 + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5)
-                + (Math.abs(random.nextInt()) % 5);
-        while (builder.length() < count) {
-            builder.appendCodePoint(codePointSet[Math.abs(random.nextInt()) % codePointSet.length]);
-        }
-        return builder.toString();
-    }
-
     private void generateWords(final int number, final Random random, final int[] codePointSet) {
         final Set<String> wordSet = CollectionUtils.newHashSet();
         while (wordSet.size() < number) {
-            wordSet.add(generateWord(random, codePointSet));
+            wordSet.add(CodePointUtils.generateWord(random, codePointSet));
         }
         sWords.addAll(wordSet);
     }
@@ -606,9 +566,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random((int)System.currentTimeMillis());
-        final int[] codePointSet = generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE, random);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(DEFAULT_CODE_POINT_SET_SIZE,
+                random);
         for (int i = 0; i < 1000; ++i) {
-            final String word = generateWord(random, codePointSet);
+            final String word = CodePointUtils.generateWord(random, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
             runGetTerminalPosition(dictDecoder, word, i, false);
         }
