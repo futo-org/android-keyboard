@@ -143,7 +143,7 @@ class DicNode {
                 dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(),
                 dicNode->getOutputWordBuf(),
                 dicNode->mDicNodeProperties.getDepth(),
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.mPrevSpacePositions,
+                dicNode->mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
                 mDicNodeState.mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
@@ -321,8 +321,13 @@ class DicNode {
         DUMP_WORD_AND_SCORE("OUTPUT");
     }
 
-    void outputSpacePositionsResult(int *spaceIndices) const {
-        mDicNodeState.mDicNodeStatePrevWord.outputSpacePositions(spaceIndices);
+    int getSecondWordFirstInputIndex(const ProximityInfoState *const pInfoState) const {
+        const int inputIndex = mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex();
+        if (inputIndex == NOT_AN_INDEX) {
+            return NOT_AN_INDEX;
+        } else {
+            return pInfoState->getInputIndexOfSampledPoint(inputIndex);
+        }
     }
 
     bool hasMultipleWords() const {
@@ -573,7 +578,11 @@ class DicNode {
         }
     }
 
-    AK_FORCE_INLINE void updateInputIndexG(DicNode_InputStateG *inputStateG) {
+    AK_FORCE_INLINE void updateInputIndexG(const DicNode_InputStateG *const inputStateG) {
+        if (mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() == 1 && isFirstLetter()) {
+            mDicNodeState.mDicNodeStatePrevWord.setSecondWordFirstInputIndex(
+                    inputStateG->mInputIndex);
+        }
         mDicNodeState.mDicNodeStateInput.updateInputIndexG(inputStateG->mPointerId,
                 inputStateG->mInputIndex, inputStateG->mPrevCodePoint,
                 inputStateG->mTerminalDiffCost, inputStateG->mRawLength);

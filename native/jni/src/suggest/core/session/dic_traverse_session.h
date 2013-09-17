@@ -113,7 +113,9 @@ class DicTraverseSession {
         if (usedPointerCount != 1) {
             return false;
         }
-        *pointerId = usedPointerId;
+        if (pointerId) {
+            *pointerId = usedPointerId;
+        }
         return true;
     }
 
