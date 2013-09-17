@@ -63,4 +63,11 @@
     <dimen name="gesture_floating_preview_text_offset">100dp</dimen>
     <dimen name="gesture_floating_preview_horizontal_padding">32dp</dimen>
     <dimen name="gesture_floating_preview_vertical_padding">21dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">7.69%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">75%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">39</integer>
+
 </resources>
