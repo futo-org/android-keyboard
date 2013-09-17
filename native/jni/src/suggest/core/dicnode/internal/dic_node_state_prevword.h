@@ -22,6 +22,7 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/layout/proximity_info_state.h"
 
 namespace latinime {
 
@@ -29,9 +30,8 @@ class DicNodeStatePrevWord {
  public:
     AK_FORCE_INLINE DicNodeStatePrevWord()
             : mPrevWordCount(0), mPrevWordLength(0), mPrevWordStart(0), mPrevWordProbability(0),
-              mPrevWordNodePos(NOT_A_DICT_POS) {
+              mPrevWordNodePos(NOT_A_DICT_POS), mSecondWordFirstInputIndex(NOT_AN_INDEX) {
         memset(mPrevWord, 0, sizeof(mPrevWord));
-        memset(mPrevSpacePositions, 0, sizeof(mPrevSpacePositions));
     }
 
     virtual ~DicNodeStatePrevWord() {}
@@ -42,7 +42,7 @@ class DicNodeStatePrevWord {
         mPrevWordStart = 0;
         mPrevWordProbability = -1;
         mPrevWordNodePos = NOT_A_DICT_POS;
-        memset(mPrevSpacePositions, 0, sizeof(mPrevSpacePositions));
+        mSecondWordFirstInputIndex = NOT_AN_INDEX;
     }
 
     void init(const int prevWordNodePos) {
@@ -51,7 +51,7 @@ class DicNodeStatePrevWord {
         mPrevWordStart = 0;
         mPrevWordProbability = -1;
         mPrevWordNodePos = prevWordNodePos;
-        memset(mPrevSpacePositions, 0, sizeof(mPrevSpacePositions));
+        mSecondWordFirstInputIndex = NOT_AN_INDEX;
     }
 
     // Init by copy
@@ -61,14 +61,14 @@ class DicNodeStatePrevWord {
         mPrevWordStart = prevWord->mPrevWordStart;
         mPrevWordProbability = prevWord->mPrevWordProbability;
         mPrevWordNodePos = prevWord->mPrevWordNodePos;
+        mSecondWordFirstInputIndex = prevWord->mSecondWordFirstInputIndex;
         memcpy(mPrevWord, prevWord->mPrevWord, prevWord->mPrevWordLength * sizeof(mPrevWord[0]));
-        memcpy(mPrevSpacePositions, prevWord->mPrevSpacePositions, sizeof(mPrevSpacePositions));
     }
 
     void init(const int16_t prevWordCount, const int16_t prevWordProbability,
             const int prevWordNodePos, const int *const src0, const int16_t length0,
-            const int *const src1, const int16_t length1, const int *const prevSpacePositions,
-            const int lastInputIndex) {
+            const int *const src1, const int16_t length1,
+            const int prevWordSecondWordFirstInputIndex, const int lastInputIndex) {
         mPrevWordCount = min(prevWordCount, static_cast<int16_t>(MAX_RESULTS));
         mPrevWordProbability = prevWordProbability;
         mPrevWordNodePos = prevWordNodePos;
@@ -80,8 +80,7 @@ class DicNodeStatePrevWord {
         mPrevWord[twoWordsLen] = KEYCODE_SPACE;
         mPrevWordStart = length0;
         mPrevWordLength = static_cast<int16_t>(twoWordsLen + 1);
-        memcpy(mPrevSpacePositions, prevSpacePositions, sizeof(mPrevSpacePositions));
-        mPrevSpacePositions[mPrevWordCount - 1] = lastInputIndex;
+        mSecondWordFirstInputIndex = prevWordSecondWordFirstInputIndex;
     }
 
     void truncate(const int offset) {
@@ -96,11 +95,12 @@ class DicNodeStatePrevWord {
         mPrevWordLength = newPrevWordLength;
     }
 
-    void outputSpacePositions(int *spaceIndices) const {
-        // Convert uint16_t to int
-        for (int i = 0; i < MAX_RESULTS; i++) {
-            spaceIndices[i] = mPrevSpacePositions[i];
-        }
+    void setSecondWordFirstInputIndex(const int inputIndex) {
+        mSecondWordFirstInputIndex = inputIndex;
+    }
+
+    int getSecondWordFirstInputIndex() const {
+        return mSecondWordFirstInputIndex;
     }
 
     // TODO: remove
@@ -138,8 +138,6 @@ class DicNodeStatePrevWord {
 
     // TODO: Move to private
     int mPrevWord[MAX_WORD_LENGTH];
-    // TODO: Move to private
-    int mPrevSpacePositions[MAX_RESULTS];
 
  private:
     // Caution!!!
@@ -150,6 +148,7 @@ class DicNodeStatePrevWord {
     int16_t mPrevWordStart;
     int16_t mPrevWordProbability;
     int mPrevWordNodePos;
+    int mSecondWordFirstInputIndex;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_STATE_PREVWORD_H

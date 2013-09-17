@@ -55,7 +55,7 @@ class Suggest : public SuggestInterface {
     void createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
             const bool spaceSubstitution) const;
     int outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-            int *outputCodePoints, int *outputIndices, int *outputTypes) const;
+            int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes) const;
     void initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
     void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;

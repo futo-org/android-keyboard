@@ -117,7 +117,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
  * Outputs the final list of suggestions (i.e., terminal nodes).
  */
 int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-        int *outputCodePoints, int *spaceIndices, int *outputTypes) const {
+        int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes) const {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -139,6 +139,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             SCORING->getMostProbableString(traverseSession, terminalSize, languageWeight,
                     &outputCodePoints[0], &outputTypes[0], &frequencies[0]);
     if (hasMostProbableString) {
+        outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
         ++outputWordIndex;
     }
 
@@ -160,6 +161,9 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                             || (traverseSession->getInputSize()
                                     >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
                                             && terminals[0].hasMultipleWords())) : false;
+    // TODO: have partial commit work even with multiple pointers.
+    const bool outputSecondWordFirstLetterInputIndex =
+            traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
             ++terminalIndex) {
@@ -194,18 +198,21 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 terminalDicNode->isExactMatch()
                         || (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
                                 || (isValidWord && SCORING->doesAutoCorrectValidWord()));
-        maxScore = max(maxScore, finalScore);
-
-        // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
-        // Index for top typing suggestion should be 0.
-        if (isValidWord && outputWordIndex == 0) {
-            terminalDicNode->outputSpacePositionsResult(spaceIndices);
+        if (maxScore < finalScore && isValidWord) {
+            maxScore = finalScore;
         }
 
         // Don't output invalid words. However, we still need to submit their shortcuts if any.
         if (isValidWord) {
             outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
             frequencies[outputWordIndex] = finalScore;
+            if (outputSecondWordFirstLetterInputIndex) {
+                outputIndicesToPartialCommit[outputWordIndex] =
+                        terminalDicNode->getSecondWordFirstInputIndex(
+                                traverseSession->getProximityInfoState(0));
+            } else {
+                outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
+            }
             // Populate the outputChars array with the suggested word.
             const int startIndex = outputWordIndex * MAX_WORD_LENGTH;
             terminalDicNode->outputResult(&outputCodePoints[startIndex]);
@@ -220,8 +227,19 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
-            outputWordIndex = ShortcutUtils::outputShortcuts(&shortcutIt, outputWordIndex,
-                    finalScore, outputCodePoints, frequencies, outputTypes, sameAsTyped);
+            const int updatedOutputWordIndex = ShortcutUtils::outputShortcuts(&shortcutIt,
+                    outputWordIndex,  finalScore, outputCodePoints, frequencies, outputTypes,
+                    sameAsTyped);
+            const int secondWordFirstInputIndex = terminalDicNode->getSecondWordFirstInputIndex(
+                    traverseSession->getProximityInfoState(0));
+            for (int i = outputWordIndex; i < updatedOutputWordIndex; ++i) {
+                if (outputSecondWordFirstLetterInputIndex) {
+                    outputIndicesToPartialCommit[i] = secondWordFirstInputIndex;
+                } else {
+                    outputIndicesToPartialCommit[i] = NOT_AN_INDEX;
+                }
+            }
+            outputWordIndex = updatedOutputWordIndex;
         }
         DicNode::managedDelete(terminalDicNode);
     }

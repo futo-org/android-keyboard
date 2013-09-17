@@ -130,6 +130,10 @@ class ProximityInfoState {
         return mSampledInputYs[index];
     }
 
+    int getInputIndexOfSampledPoint(const int sampledIndex) const {
+        return mSampledInputIndice[sampledIndex];
+    }
+
     bool hasSpaceProximity(const int index) const;
 
     int getLengthCache(const int index) const {
