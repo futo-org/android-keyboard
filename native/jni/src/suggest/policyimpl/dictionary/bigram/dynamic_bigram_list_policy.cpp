@@ -54,11 +54,13 @@ void DynamicBigramListPolicy::skipAllBigrams(int *const pos) const {
     }
 }
 
-bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPos) {
+bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPos,
+        int *outBigramsCount) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
     if (usesAdditionalBuffer) {
         *fromPos -= mBuffer->getOriginalBufferSize();
     }
+    *outBigramsCount = 0;
     BigramListReadWriteUtils::BigramFlags flags;
     do {
         // The buffer address can be changed after calling buffer writing methods.
@@ -91,6 +93,7 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
                 toPos)) {
             return false;
         }
+        (*outBigramsCount)++;
     } while(BigramListReadWriteUtils::hasNext(flags));
     if (usesAdditionalBuffer) {
         *fromPos += mBuffer->getOriginalBufferSize();

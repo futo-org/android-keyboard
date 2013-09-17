@@ -125,11 +125,10 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
 bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
     nodeReader.fetchNodeInfoFromBuffer(word0Pos);
-    if (nodeReader.isDeleted() || nodeReader.getBigramsPos() == NOT_A_DICT_POS) {
+    if (nodeReader.getBigramsPos() == NOT_A_DICT_POS) {
         return false;
     }
-    // TODO: Implement.
-    return false;
+    return mBigramPolicy->removeBigram(nodeReader.getBigramsPos(), word1Pos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
@@ -193,13 +192,9 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
         const int originalBigramListPos, const int originalShortcutListPos,
         int *const writingPos) {
     const int nodePos = *writingPos;
-    // Create node flags and write them.
-    const PatriciaTrieReadingUtils::NodeFlags nodeFlags =
-            PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord,
-                    probability != NOT_A_PROBABILITY, originalShortcutListPos != NOT_A_DICT_POS,
-                    originalBigramListPos != NOT_A_DICT_POS, codePointCount > 1,
-                    3 /* childrenPositionFieldSize */);
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, nodeFlags,
+    // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
+    // PtNode writing.
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, 0 /* nodeFlags */,
             writingPos)) {
         return false;
     }
@@ -212,7 +207,7 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
     // Write code points
     if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mBuffer, codePoints,
             codePointCount, writingPos)) {
-        return false;;
+        return false;
     }
     // Write probability when the probability is a valid probability, which means this node is
     // terminal.
@@ -235,11 +230,24 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
         }
     }
     // Copy bigram list when the originalBigramListPos is valid dictionary position.
+    int bigramCount = 0;
     if (originalBigramListPos != NOT_A_DICT_POS) {
         int fromPos = originalBigramListPos;
-        if (!mBigramPolicy->copyAllBigrams(&fromPos, writingPos)) {
+        if (!mBigramPolicy->copyAllBigrams(&fromPos, writingPos, &bigramCount)) {
             return false;
         }
+    }
+    // Create node flags and write them.
+    PatriciaTrieReadingUtils::NodeFlags nodeFlags =
+            PatriciaTrieReadingUtils::createAndGetFlags(isBlacklisted, isNotAWord,
+                    probability != NOT_A_PROBABILITY /* isTerminal */,
+                    originalShortcutListPos != NOT_A_DICT_POS /* hasShortcutTargets */,
+                    bigramCount > 0 /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
+                    CHILDREN_POSITION_FIELD_SIZE);
+    int flagsFieldPos = nodePos;
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, nodeFlags,
+            &flagsFieldPos)) {
+        return false;
     }
     return true;
 }
