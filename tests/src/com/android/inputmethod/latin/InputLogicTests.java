@@ -134,6 +134,13 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("simple auto-correct", EXPECTED_RESULT, mEditText.getText().toString());
     }
 
+    public void testAutoCorrectWithQuote() {
+        final String STRING_TO_TYPE = "didn' ";
+        final String EXPECTED_RESULT = "didn't ";
+        type(STRING_TO_TYPE);
+        assertEquals("auto-correct with quote", EXPECTED_RESULT, mEditText.getText().toString());
+    }
+
     public void testAutoCorrectWithPeriod() {
         final String STRING_TO_TYPE = "tgis.";
         final String EXPECTED_RESULT = "this.";
