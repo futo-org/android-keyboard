@@ -88,4 +88,11 @@
     <dimen name="gesture_floating_preview_horizontal_padding">26dp</dimen>
     <dimen name="gesture_floating_preview_vertical_padding">17dp</dimen>
     <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">10%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">85%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">30</integer>
+
 </resources>
