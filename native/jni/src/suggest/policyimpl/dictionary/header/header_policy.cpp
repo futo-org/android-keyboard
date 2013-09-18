@@ -17,6 +17,8 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 
 #include <cstddef>
+#include <cstdio>
+#include <ctime>
 
 namespace latinime {
 
@@ -36,7 +38,7 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
     }
     std::vector<int> keyCodePointVector;
     insertCharactersIntoVector(key, &keyCodePointVector);
-    HeaderReadingUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyCodePointVector);
+    HeaderReadWriteUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyCodePointVector);
     if (it == mAttributeMap.end()) {
         // The key was not found.
         outValue[0] = '?';
@@ -85,7 +87,7 @@ int HeaderPolicy::readLastUpdatedTime() const {
 bool HeaderPolicy::getAttributeValueAsInt(const char *const key, int *const outValue) const {
     std::vector<int> keyVector;
     insertCharactersIntoVector(key, &keyVector);
-    HeaderReadingUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyVector);
+    HeaderReadWriteUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyVector);
     if (it == mAttributeMap.end()) {
         // The key was not found.
         return false;
@@ -94,10 +96,56 @@ bool HeaderPolicy::getAttributeValueAsInt(const char *const key, int *const outV
     return true;
 }
 
-/* static */ HeaderReadingUtils::AttributeMap HeaderPolicy::createAttributeMapAndReadAllAttributes(
-        const uint8_t *const dictBuf) {
-    HeaderReadingUtils::AttributeMap attributeMap;
-    HeaderReadingUtils::fetchAllHeaderAttributes(dictBuf, &attributeMap);
+bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
+        const bool updatesLastUpdatedTime) const {
+    int writingPos = 0;
+    if (!HeaderReadWriteUtils::writeDictionaryVersion(bufferToWrite, mDictFormatVersion,
+            &writingPos)) {
+        return false;
+    }
+    if (!HeaderReadWriteUtils::writeDictionaryFlags(bufferToWrite, mDictionaryFlags,
+            &writingPos)) {
+        return false;
+    }
+    // Temporarily writes a dummy header size.
+    int headerSizeFieldPos = writingPos;
+    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(bufferToWrite, 0 /* size */,
+            &writingPos)) {
+        return false;
+    }
+    if (updatesLastUpdatedTime) {
+        // Set current time as a last updated time.
+        HeaderReadWriteUtils::AttributeMap attributeMapTowrite(mAttributeMap);
+        std::vector<int> updatedTimekey;
+        insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &updatedTimekey);
+        const time_t currentTime = time(NULL);
+        std::vector<int> updatedTimeValue;
+        char charBuf[LARGEST_INT_DIGIT_COUNT + 1];
+        snprintf(charBuf, LARGEST_INT_DIGIT_COUNT + 1, "%ld", currentTime);
+        insertCharactersIntoVector(charBuf, &updatedTimeValue);
+        attributeMapTowrite[updatedTimekey] = updatedTimeValue;
+        if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
+                &writingPos)) {
+            return false;
+        }
+    } else {
+        if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &mAttributeMap,
+                &writingPos)) {
+            return false;
+        }
+    }
+    // Writes an actual header size.
+    if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(bufferToWrite, writingPos,
+            &headerSizeFieldPos)) {
+        return false;
+    }
+    return true;
+}
+
+/* static */ HeaderReadWriteUtils::AttributeMap
+        HeaderPolicy::createAttributeMapAndReadAllAttributes(const uint8_t *const dictBuf) {
+    HeaderReadWriteUtils::AttributeMap attributeMap;
+    HeaderReadWriteUtils::fetchAllHeaderAttributes(dictBuf, &attributeMap);
     return attributeMap;
 }
 

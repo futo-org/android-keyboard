@@ -20,20 +20,10 @@
 
 namespace latinime {
 
-/**
- * Dictionary size
- */
-// Any file smaller than this is not a dictionary.
-const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 4;
+const uint32_t FormatUtils::MAGIC_NUMBER = 0x9BC13AFE;
 
-/**
- * Format versions
- */
-// 32 bit magic number is stored at the beginning of the dictionary header to reject unsupported
-// or obsolete dictionary formats.
-const uint32_t FormatUtils::HEADER_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
-// Magic number (4 bytes), version (2 bytes), options (2 bytes), header size (4 bytes) = 12
-const int FormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
+// Magic number (4 bytes), version (2 bytes), flags (2 bytes), header size (4 bytes) = 12
+const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
 
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::detectFormatVersion(
         const uint8_t *const dict, const int dictSize) {
@@ -45,16 +35,10 @@ const int FormatUtils::HEADER_VERSION_2_MINIMUM_SIZE = 12;
     }
     const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
     switch (magicNumber) {
-        case HEADER_VERSION_2_MAGIC_NUMBER:
-            // Version 2 header are at least 12 bytes long.
-            // If this header has the version 2 magic number but is less than 12 bytes long,
-            // then it's an unknown format and we need to avoid confidently reading the next bytes.
-            if (dictSize < HEADER_VERSION_2_MINIMUM_SIZE) {
-                return UNKNOWN_VERSION;
-            }
+        case MAGIC_NUMBER:
             // Version 2 header is as follows:
             // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
-            // Version number (2 bytes)
+            // Dictionary format version number (2 bytes)
             // Options (2 bytes)
             // Header size (4 bytes) : integer, big endian
             if (ByteArrayUtils::readUint16(dict, 4) == 2) {

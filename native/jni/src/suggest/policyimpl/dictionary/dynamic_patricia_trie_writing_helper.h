@@ -28,6 +28,7 @@ class DynamicBigramListPolicy;
 class DynamicPatriciaTrieNodeReader;
 class DynamicPatriciaTrieReadingHelper;
 class DynamicShortcutListPolicy;
+class HeaderPolicy;
 
 class DynamicPatriciaTrieWritingHelper {
  public:
@@ -48,8 +49,9 @@ class DynamicPatriciaTrieWritingHelper {
     // Remove a bigram relation from word0Pos to word1Pos.
     bool removeBigramWords(const int word0Pos, const int word1Pos);
 
-    void writeToDictFile(const char *const fileName, const uint8_t *const headerBuf,
-            const int headerSize);
+    void writeToDictFile(const char *const fileName, const HeaderPolicy *const headerPolicy);
+
+    void writeToDictFileWithGC(const char *const fileName, const HeaderPolicy *const headerPolicy);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);

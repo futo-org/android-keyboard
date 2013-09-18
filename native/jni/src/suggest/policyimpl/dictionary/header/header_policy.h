@@ -23,14 +23,17 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/header/header_reading_utils.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
 
 class HeaderPolicy : public DictionaryHeaderStructurePolicy {
  public:
-    explicit HeaderPolicy(const uint8_t *const dictBuf)
-            : mDictBuf(dictBuf), mDictionaryFlags(HeaderReadingUtils::getFlags(dictBuf)),
-              mSize(HeaderReadingUtils::getHeaderSize(dictBuf)),
+    explicit HeaderPolicy(const uint8_t *const dictBuf, const int dictSize)
+            : mDictBuf(dictBuf),
+              mDictFormatVersion(FormatUtils::detectFormatVersion(dictBuf, dictSize)),
+              mDictionaryFlags(HeaderReadWriteUtils::getFlags(dictBuf)),
+              mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(mDictBuf)),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
               mUsesForgettingCurve(readUsesForgettingCurveFlag()),
@@ -43,16 +46,15 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     }
 
     AK_FORCE_INLINE bool supportsDynamicUpdate() const {
-        return HeaderReadingUtils::supportsDynamicUpdate(mDictionaryFlags);
+        return HeaderReadWriteUtils::supportsDynamicUpdate(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresGermanUmlautProcessing() const {
-        return HeaderReadingUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
+        return HeaderReadWriteUtils::requiresGermanUmlautProcessing(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE bool requiresFrenchLigatureProcessing() const {
-        return HeaderReadingUtils::requiresFrenchLigatureProcessing(
-                mDictionaryFlags);
+        return HeaderReadWriteUtils::requiresFrenchLigatureProcessing(mDictionaryFlags);
     }
 
     AK_FORCE_INLINE float getMultiWordCostMultiplier() const {
@@ -70,6 +72,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
+    bool writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
+            const bool updatesLastUpdatedTime) const;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
 
@@ -80,9 +85,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
     const uint8_t *const mDictBuf;
-    const HeaderReadingUtils::DictionaryFlags mDictionaryFlags;
+    const FormatUtils::FORMAT_VERSION mDictFormatVersion;
+    const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
-    HeaderReadingUtils::AttributeMap mAttributeMap;
+    HeaderReadWriteUtils::AttributeMap mAttributeMap;
     const float mMultiWordCostMultiplier;
     const bool mUsesForgettingCurve;
     const int mLastUpdatedTime;
@@ -95,7 +101,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     bool getAttributeValueAsInt(const char *const key, int *const outValue) const;
 
-    static HeaderReadingUtils::AttributeMap createAttributeMapAndReadAllAttributes(
+    static HeaderReadWriteUtils::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);
 
     static int parseIntAttributeValue(const std::vector<int> *const attributeValue);

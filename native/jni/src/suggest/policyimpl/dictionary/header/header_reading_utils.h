@@ -22,10 +22,14 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
 
-class HeaderReadingUtils {
+class BufferWithExtendableBuffer;
+
+// TODO: Change this file name to header_read_write_utils.h.
+class HeaderReadWriteUtils {
  public:
     typedef uint16_t DictionaryFlags;
     typedef std::map<std::vector<int>, std::vector<int> > AttributeMap;
@@ -54,8 +58,20 @@ class HeaderReadingUtils {
     static void fetchAllHeaderAttributes(const uint8_t *const dictBuf,
             AttributeMap *const headerAttributes);
 
+    static bool writeDictionaryVersion(BufferWithExtendableBuffer *const buffer,
+            const FormatUtils::FORMAT_VERSION version, int *const writingPos);
+
+    static bool writeDictionaryFlags(BufferWithExtendableBuffer *const buffer,
+            const DictionaryFlags flags, int *const writingPos);
+
+    static bool writeDictionaryHeaderSize(BufferWithExtendableBuffer *const buffer,
+            const int size, int *const writingPos);
+
+    static bool writeHeaderAttributes(BufferWithExtendableBuffer *const buffer,
+            const AttributeMap *const headerAttributes, int *const writingPos);
+
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadingUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadWriteUtils);
 
     static const int MAX_ATTRIBUTE_KEY_LENGTH;
     static const int MAX_ATTRIBUTE_VALUE_LENGTH;

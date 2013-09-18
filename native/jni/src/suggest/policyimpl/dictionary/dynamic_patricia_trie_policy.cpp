@@ -250,7 +250,7 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
             &mBigramListPolicy, &mShortcutListPolicy);
-    writingHelper.writeToDictFile(filePath, mBuffer->getBuffer(), mHeaderPolicy.getSize());
+    writingHelper.writeToDictFile(filePath, &mHeaderPolicy);
 }
 
 void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {

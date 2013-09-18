@@ -358,8 +358,8 @@ public class BinaryDictionaryTests extends AndroidTestCase {
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
 
-        assertEquals(-1, binaryDictionary.getFrequency("aaa"));
-        assertEquals(-1, binaryDictionary.getFrequency("abcd"));
+        assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("aaa"));
+        assertEquals(Dictionary.NOT_A_PROBABILITY, binaryDictionary.getFrequency("abcd"));
 
         binaryDictionary.addUnigramWord("aaa", probability);
         binaryDictionary.addUnigramWord("abcd", probability);
