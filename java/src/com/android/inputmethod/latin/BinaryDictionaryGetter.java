@@ -286,7 +286,8 @@ final public class BinaryDictionaryGetter {
             }
             if (!dictPackSettings.isWordListActive(wordListId)) continue;
             if (canUse) {
-                fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
+                final AssetFileAddress afa = AssetFileAddress.makeFromFileName(f.getPath());
+                if (null != afa) fileList.add(afa);
             } else {
                 Log.e(TAG, "Found a cached dictionary file but cannot read or use it");
             }
