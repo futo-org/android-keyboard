@@ -169,9 +169,7 @@ public final class Constants {
     public static final int CODE_EXCLAMATION_MARK = '!';
     public static final int CODE_SLASH = '/';
     public static final int CODE_COMMERCIAL_AT = '@';
-    // TODO: Check how this should work for right-to-left languages. It seems to stand
-    // that for rtl languages, a closing parenthesis is a left parenthesis. Is this
-    // managed by the font? Or is it a different char?
+    public static final int CODE_PLUS = '+';
     public static final int CODE_CLOSING_PARENTHESIS = ')';
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
