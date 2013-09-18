@@ -21,6 +21,8 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 @SmallTest
@@ -267,5 +269,15 @@ public class StringUtilsTests extends AndroidTestCase {
         }
         final String bytesStr2 = StringUtils.byteArrayToHexString(bytes2);
         assertTrue(bytesStr.equals(bytesStr2));
+    }
+
+    public void testJsonStringUtils() {
+        final Object[] objs = new Object[] { 1, "aaa", "bbb", 3 };
+        final List<Object> objArray = Arrays.asList(objs);
+        final String str = StringUtils.listToJsonStr(objArray);
+        final List<Object> newObjArray = StringUtils.jsonStrToList(str);
+        for (int i = 0; i < objs.length; ++i) {
+            assertEquals(objs[i], newObjArray.get(i));
+        }
     }
 }
