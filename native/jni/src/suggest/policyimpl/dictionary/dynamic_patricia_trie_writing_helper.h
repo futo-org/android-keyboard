@@ -17,6 +17,8 @@
 #ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 #define LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 
+#include <stdint.h>
+
 #include "defines.h"
 
 namespace latinime {
@@ -46,10 +48,14 @@ class DynamicPatriciaTrieWritingHelper {
     // Remove a bigram relation from word0Pos to word1Pos.
     bool removeBigramWords(const int word0Pos, const int word1Pos);
 
+    void writeToDictFile(const char *const fileName, const uint8_t *const headerBuf,
+            const int headerSize);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
+    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
 
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;

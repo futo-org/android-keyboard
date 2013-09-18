@@ -263,7 +263,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                 Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-
         final int unigramProbability = 100;
         final int bigramProbability = 10;
         binaryDictionary.addUnigramWord("aaa", unigramProbability);
@@ -296,6 +295,56 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         // Test remove non-existing bigram operation.
         binaryDictionary.removeBigramWords("aaa", "abb");
         binaryDictionary.removeBigramWords("bcc", "aaa");
+
+        dictFile.delete();
+    }
+
+    public void testFlushDictionary() {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int probability = 100;
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
+        // Close without flushing.
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        assertEquals(-1, binaryDictionary.getFrequency("aaa"));
+        assertEquals(-1, binaryDictionary.getFrequency("abcd"));
+
+        binaryDictionary.addUnigramWord("aaa", probability);
+        binaryDictionary.addUnigramWord("abcd", probability);
+        binaryDictionary.flush();
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        assertEquals(probability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(probability, binaryDictionary.getFrequency("abcd"));
+        binaryDictionary.addUnigramWord("bcde", probability);
+        binaryDictionary.flush();
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        assertEquals(probability, binaryDictionary.getFrequency("bcde"));
+        binaryDictionary.close();
 
         dictFile.delete();
     }

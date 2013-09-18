@@ -16,6 +16,9 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 
+#include <cstdio>
+#include <cstring>
+
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
@@ -27,6 +30,8 @@
 namespace latinime {
 
 const int DynamicPatriciaTrieWritingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
+const char *const DynamicPatriciaTrieWritingHelper::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
+        ".tmp";
 
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
@@ -129,6 +134,41 @@ bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, con
         return false;
     }
     return mBigramPolicy->removeBigram(nodeReader.getBigramsPos(), word1Pos);
+}
+
+void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileName,
+        const uint8_t *const headerBuf, const int headerSize) {
+    const int tmpFileNameBufSize = strlen(fileName)
+            + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1;
+    char tmpFileName[tmpFileNameBufSize];
+    snprintf(tmpFileName, tmpFileNameBufSize, "%s%s", fileName,
+            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
+    FILE *const file = fopen(tmpFileName, "wb");
+    if (!file) {
+        return;
+    }
+    // Write header.
+    if (fwrite(headerBuf, headerSize, 1, file) < 1) {
+        fclose(file);
+        remove(tmpFileName);
+        return;
+    }
+    // Write data in original buffer.
+    if (fwrite(mBuffer->getBuffer(false /* usesAdditionalBuffer */),
+            mBuffer->getOriginalBufferSize(), 1, file) < 1) {
+        fclose(file);
+        remove(tmpFileName);
+        return;
+    }
+    // Write data in additional buffer.
+    if (fwrite(mBuffer->getBuffer(true /* usesAdditionalBuffer */),
+            mBuffer->getTailPosition() - mBuffer->getOriginalBufferSize(), 1, file) < 1) {
+        fclose(file);
+        remove(tmpFileName);
+        return;
+    }
+    fclose(file);
+    rename(tmpFileName, fileName);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
