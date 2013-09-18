@@ -67,7 +67,7 @@ class Dictionary {
 
     int getProbability(const int *word, int length) const;
 
-    bool isValidBigram(const int *word0, int length0, const int *word1, int length1) const;
+    int getBigramProbability(const int *word0, int length0, const int *word1, int length1) const;
 
     void addUnigramWord(const int *const word, const int length, const int probability);
 

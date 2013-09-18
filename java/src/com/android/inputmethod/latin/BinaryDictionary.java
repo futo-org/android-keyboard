@@ -109,7 +109,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native void flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
-    private static native boolean isValidBigramNative(long dict, int[] word0, int[] word1);
+    private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
@@ -122,6 +122,8 @@ public final class BinaryDictionary extends Dictionary {
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
             int probability);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
+    private static native int calculateProbabilityNative(long dict, int unigramProbability,
+            int bigramProbability);
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
@@ -219,12 +221,12 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public boolean isValidWord(final String word) {
-        return getFrequency(word) >= 0;
+        return getFrequency(word) != NOT_A_PROBABILITY;
     }
 
     @Override
     public int getFrequency(final String word) {
-        if (word == null) return -1;
+        if (word == null) return NOT_A_PROBABILITY;
         int[] codePoints = StringUtils.toCodePointArray(word);
         return getProbabilityNative(mNativeDict, codePoints);
     }
@@ -232,10 +234,14 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
     // calls when checking for changes in an entire dictionary.
     public boolean isValidBigram(final String word0, final String word1) {
-        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) return false;
+        return getBigramProbability(word0, word1) != NOT_A_PROBABILITY;
+    }
+
+    public int getBigramProbability(final String word0, final String word1) {
+        if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) return NOT_A_PROBABILITY;
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
-        return isValidBigramNative(mNativeDict, codePoints0, codePoints1);
+        return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
     // Add a unigram entry to binary dictionary in native code.
@@ -283,6 +289,12 @@ public final class BinaryDictionary extends Dictionary {
     public boolean needsToRunGC() {
         if (!isValidDictionary()) return false;
         return needsToRunGCNative(mNativeDict);
+    }
+
+    @UsedForTesting
+    public int calculateProbability(final int unigramProbability, final int bigramProbability) {
+        if (!isValidDictionary()) return NOT_A_PROBABILITY;
+        return calculateProbabilityNative(mNativeDict, unigramProbability, bigramProbability);
     }
 
     @Override

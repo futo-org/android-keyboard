@@ -188,8 +188,8 @@ static jint latinime_BinaryDictionary_getProbability(JNIEnv *env, jclass clazz, 
     return dictionary->getProbability(codePoints, wordLength);
 }
 
-static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jclass clazz, jlong dict,
-        jintArray word0, jintArray word1) {
+static jint latinime_BinaryDictionary_getBigramProbability(JNIEnv *env, jclass clazz,
+        jlong dict, jintArray word0, jintArray word1) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return JNI_FALSE;
     const jsize word0Length = env->GetArrayLength(word0);
@@ -198,7 +198,8 @@ static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jclass claz
     int word1CodePoints[word1Length];
     env->GetIntArrayRegion(word0, 0, word0Length, word0CodePoints);
     env->GetIntArrayRegion(word1, 0, word1Length, word1CodePoints);
-    return dictionary->isValidBigram(word0CodePoints, word0Length, word1CodePoints, word1Length);
+    return dictionary->getBigramProbability(word0CodePoints, word0Length, word1CodePoints,
+            word1Length);
 }
 
 static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jclass clazz,
@@ -269,6 +270,16 @@ static void latinime_BinaryDictionary_removeBigramWords(JNIEnv *env, jclass claz
             word1Length);
 }
 
+static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jclass clazz,
+        jlong dict, jint unigramProbability, jint bigramProbability) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return NOT_A_PROBABILITY;
+    }
+    return dictionary->getDictionaryStructurePolicy()->getProbability(unigramProbability,
+            bigramProbability);
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("openNative"),
@@ -306,9 +317,9 @@ static const JNINativeMethod sMethods[] = {
         reinterpret_cast<void *>(latinime_BinaryDictionary_getProbability)
     },
     {
-        const_cast<char *>("isValidBigramNative"),
-        const_cast<char *>("(J[I[I)Z"),
-        reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)
+        const_cast<char *>("getBigramProbabilityNative"),
+        const_cast<char *>("(J[I[I)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getBigramProbability)
     },
     {
         const_cast<char *>("calcNormalizedScoreNative"),
@@ -334,6 +345,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("removeBigramWordsNative"),
         const_cast<char *>("(J[I[I)V"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_removeBigramWords)
+    },
+    {
+        const_cast<char *>("calculateProbabilityNative"),
+        const_cast<char *>("(JII)I"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_calculateProbabilityNative)
     }
 };
 
