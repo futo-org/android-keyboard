@@ -76,6 +76,11 @@ public final class Constants {
             public static final String ASCII_CAPABLE = "AsciiCapable";
 
             /**
+             * The subtype extra value used to indicate that the subtype keyboard layout is capable
+             * for typing EMOJI characters.
+             */
+            public static final String EMOJI_CAPABLE = "EmojiCapable";
+            /**
              * The subtype extra value used to indicate that the subtype require network connection
              * to work.
              */
