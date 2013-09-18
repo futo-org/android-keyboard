@@ -29,7 +29,7 @@ class BigramDictionary {
 
     int getPredictions(const int *word, int length, int *outBigramCodePoints,
             int *outBigramProbability, int *outputTypes) const;
-    bool isValidBigram(const int *word1, int length1, const int *word2, int length2) const;
+    int getBigramProbability(const int *word1, int length1, const int *word2, int length2) const;
     ~BigramDictionary();
 
  private:

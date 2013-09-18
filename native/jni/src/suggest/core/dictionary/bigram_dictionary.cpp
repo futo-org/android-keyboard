@@ -150,24 +150,26 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     return mDictionaryStructurePolicy->getBigramsPositionOfNode(pos);
 }
 
-bool BigramDictionary::isValidBigram(const int *word0, int length0, const int *word1,
+int BigramDictionary::getBigramProbability(const int *word0, int length0, const int *word1,
         int length1) const {
     int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
-    if (NOT_A_DICT_POS == pos) return false;
+    if (NOT_A_DICT_POS == pos) return NOT_A_PROBABILITY;
     int nextWordPos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
-    if (NOT_A_DICT_POS == nextWordPos) return false;
+    if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
 
     BinaryDictionaryBigramsIterator bigramsIt(
             mDictionaryStructurePolicy->getBigramsStructurePolicy(), pos);
     while (bigramsIt.hasNext()) {
         bigramsIt.next();
         if (bigramsIt.getBigramPos() == nextWordPos) {
-            return true;
+            return mDictionaryStructurePolicy->getProbability(
+                    mDictionaryStructurePolicy->getUnigramProbabilityOfPtNode(nextWordPos),
+                    bigramsIt.getProbability());
         }
     }
-    return false;
+    return NOT_A_PROBABILITY;
 }
 
 // TODO: Move functions related to bigram to here

@@ -93,8 +93,9 @@ int Dictionary::getProbability(const int *word, int length) const {
     return getDictionaryStructurePolicy()->getUnigramProbabilityOfPtNode(pos);
 }
 
-bool Dictionary::isValidBigram(const int *word0, int length0, const int *word1, int length1) const {
-    return mBigramDictionary->isValidBigram(word0, length0, word1, length1);
+int Dictionary::getBigramProbability(const int *word0, int length0, const int *word1,
+        int length1) const {
+    return mBigramDictionary->getBigramProbability(word0, length0, word1, length1);
 }
 
 void Dictionary::addUnigramWord(const int *const word, const int length, const int probability) {
