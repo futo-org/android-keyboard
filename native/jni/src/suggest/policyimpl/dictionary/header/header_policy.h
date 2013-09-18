@@ -22,7 +22,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/policyimpl/dictionary/header/header_reading_utils.h"
+#include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {

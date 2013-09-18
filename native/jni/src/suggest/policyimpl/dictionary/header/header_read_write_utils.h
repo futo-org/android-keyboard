@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_HEADER_READING_UTILS_H
-#define LATINIME_HEADER_READING_UTILS_H
+#ifndef LATINIME_HEADER_READ_WRITE_UTILS_H
+#define LATINIME_HEADER_READ_WRITE_UTILS_H
 
 #include <map>
 #include <stdint.h>
@@ -28,7 +28,6 @@ namespace latinime {
 
 class BufferWithExtendableBuffer;
 
-// TODO: Change this file name to header_read_write_utils.h.
 class HeaderReadWriteUtils {
  public:
     typedef uint16_t DictionaryFlags;
@@ -91,4 +90,4 @@ class HeaderReadWriteUtils {
     static const DictionaryFlags CONTAINS_BIGRAMS_FLAG;
 };
 }
-#endif /* LATINIME_HEADER_READING_UTILS_H */
+#endif /* LATINIME_HEADER_READ_WRITE_UTILS_H */
