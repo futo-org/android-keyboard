@@ -2685,6 +2685,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return prevWord;
     }
 
+    private boolean isResumableWord(final String word, final SettingsValues settings) {
+        final int firstCodePoint = word.codePointAt(0);
+        return settings.isWordCodePoint(firstCodePoint)
+                && Constants.CODE_SINGLE_QUOTE != firstCodePoint
+                && Constants.CODE_DASH != firstCodePoint;
+    }
+
     /**
      * Check if the cursor is touching a word. If so, restart suggestions on this word, else
      * do nothing.
@@ -2714,6 +2721,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (numberOfCharsInWordBeforeCursor > mLastSelectionStart) return;
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final String typedWord = range.mWord.toString();
+        if (!isResumableWord(typedWord, currentSettings)) return;
         int i = 0;
         for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
             for (final String s : span.getSuggestions()) {
