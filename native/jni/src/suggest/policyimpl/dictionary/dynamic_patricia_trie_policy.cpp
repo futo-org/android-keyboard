@@ -248,7 +248,9 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary.");
         return;
     }
-    // TODO: Implement.
+    DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
+            &mBigramListPolicy, &mShortcutListPolicy);
+    writingHelper.writeToDictFile(filePath, mBuffer->getBuffer(), mHeaderPolicy.getSize());
 }
 
 void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
