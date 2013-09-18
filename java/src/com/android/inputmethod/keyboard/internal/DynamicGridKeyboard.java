@@ -18,25 +18,27 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.EmojiKeyboardView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This is a Keyboard class where you can add keys dynamically shown in a grid layout
  */
 public class DynamicGridKeyboard extends Keyboard {
+    private static final String TAG = DynamicGridKeyboard.class.getSimpleName();
     private static final int TEMPLATE_KEY_CODE_0 = 0x30;
     private static final int TEMPLATE_KEY_CODE_1 = 0x31;
-    // Recent codes are saved as an integer array, so we use comma as a separater.
-    private static final String RECENT_KEY_SEPARATOR = Constants.STRING_COMMA;
 
     private final SharedPreferences mPrefs;
     private final int mLeftPadding;
@@ -84,6 +86,9 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     private void addKey(final Key usedKey, final boolean addFirst) {
+        if (usedKey == null) {
+            return;
+        }
         synchronized (mGridKeys) {
             mCachedGridKeys = null;
             final GridKey key = new GridKey(usedKey);
@@ -109,27 +114,44 @@ public class DynamicGridKeyboard extends Keyboard {
     }
 
     private void saveRecentKeys() {
-        final StringBuilder sb = new StringBuilder();
+        final ArrayList<Object> keys = CollectionUtils.newArrayList();
         for (final Key key : mGridKeys) {
-            sb.append(key.getCode()).append(RECENT_KEY_SEPARATOR);
+            if (key.getOutputText() != null) {
+                keys.add(key.getOutputText());
+            } else {
+                keys.add(key.getCode());
+            }
         }
-        Settings.writeEmojiRecentKeys(mPrefs, sb.toString());
+        final String jsonStr = StringUtils.listToJsonStr(keys);
+        Settings.writeEmojiRecentKeys(mPrefs, jsonStr);
+    }
+
+    private static Key getKey(final Collection<DynamicGridKeyboard> keyboards, final Object o) {
+        for (final DynamicGridKeyboard kbd : keyboards) {
+            if (o instanceof Integer) {
+                final int code = (Integer) o;
+                final Key key = kbd.getKey(code);
+                if (key != null) {
+                    return key;
+                }
+            } else if (o instanceof String) {
+                final String outputText = (String) o;
+                final Key key = kbd.getKeyFromOutputText(outputText);
+                if (key != null) {
+                    return key;
+                }
+            } else {
+                Log.w(TAG, "Invalid object: " + o);
+            }
+        }
+        return null;
     }
 
     public void loadRecentKeys(Collection<DynamicGridKeyboard> keyboards) {
         final String str = Settings.readEmojiRecentKeys(mPrefs);
-        for (String s : str.split(RECENT_KEY_SEPARATOR)) {
-            if (TextUtils.isEmpty(s)) {
-                continue;
-            }
-            final int code = Integer.valueOf(s);
-            for (DynamicGridKeyboard kbd : keyboards) {
-                final Key key = kbd.getKey(code);
-                if (key != null) {
-                    addKeyLast(key);
-                    break;
-                }
-            }
+        final List<Object> keys = StringUtils.jsonStrToList(str);
+        for (final Object o : keys) {
+            addKeyLast(getKey(keyboards, o));
         }
     }
 

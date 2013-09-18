@@ -505,10 +505,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     @Override
     public void onKeyClick(final Key key) {
-        // TODO: Save emoticons to recents
-        if (mEmojiCategory.getCurrentCategoryId() != CATEGORY_ID_EMOTICONS) {
-            mEmojiKeyboardAdapter.addRecentKey(key);
-        }
+        mEmojiKeyboardAdapter.addRecentKey(key);
         mEmojiCategory.saveLastTypedCategoryPage();
         final int code = key.getCode();
         if (code == Constants.CODE_OUTPUT_TEXT) {
