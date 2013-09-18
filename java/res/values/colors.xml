@@ -55,4 +55,6 @@
     <color name="setup_text_action">@android:color/holo_blue_light</color>
     <color name="setup_step_background">@android:color/background_light</color>
     <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
+    <color name="emoji_category_page_id_view_background">#FF000000</color>
+    <color name="emoji_category_page_id_view_foreground">#80FFFFFF</color>
 </resources>
