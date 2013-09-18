@@ -758,8 +758,15 @@ public class BinaryDictEncoderUtils {
             final FormatOptions formatOptions) {
         int positionOfChildrenPosField = ptNode.mCachedAddressAfterUpdate
                 + getNodeHeaderSize(ptNode, formatOptions);
-        if (ptNode.mFrequency >= 0) {
-            positionOfChildrenPosField += FormatSpec.PTNODE_FREQUENCY_SIZE;
+        if (ptNode.isTerminal()) {
+            // A terminal node has either the terminal id or the frequency.
+            // If positionOfChildrenPosField is incorrect, we may crash when jumping to the children
+            // position.
+            if (formatOptions.mHasTerminalId) {
+                positionOfChildrenPosField += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
+            } else {
+                positionOfChildrenPosField += FormatSpec.PTNODE_FREQUENCY_SIZE;
+            }
         }
         return null == ptNode.mChildren ? FormatSpec.NO_CHILDREN_ADDRESS
                 : ptNode.mChildren.mCachedAddressAfterUpdate - positionOfChildrenPosField;
