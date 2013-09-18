@@ -1394,7 +1394,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Constants.CODE_CLOSING_PARENTHESIS
                 || codePoint == Constants.CODE_CLOSING_SQUARE_BRACKET
                 || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET;
+                || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET
+                || codePoint == Constants.CODE_PLUS;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
