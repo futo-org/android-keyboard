@@ -58,7 +58,7 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
         final File file = new File(mContext.getFilesDir(), fileName);
         final File tempFile = new File(mContext.getFilesDir(), tempFileName);
         try {
-            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            final DictEncoder dictEncoder = new Ver3DictEncoder(tempFile);
             writeDictionary(dictEncoder);
             tempFile.renameTo(file);
         } catch (IOException e) {
