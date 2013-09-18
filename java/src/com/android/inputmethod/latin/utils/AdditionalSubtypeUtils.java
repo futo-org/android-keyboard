@@ -25,6 +25,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
@@ -61,8 +62,9 @@ public final class AdditionalSubtypeUtils {
                         IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocaleUtils.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
-                localeString, KEYBOARD_MODE,
-                layoutExtraValue + "," + additionalSubtypeExtraValue, false, false);
+                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue
+                        + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                        + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE, false, false);
     }
 
     public static String getPrefSubtype(final InputMethodSubtype subtype) {
