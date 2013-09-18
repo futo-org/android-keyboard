@@ -34,14 +34,16 @@ class FormatUtils {
         UNKNOWN_VERSION
     };
 
+    // 32 bit magic number is stored at the beginning of the dictionary header to reject
+    // unsupported or obsolete dictionary formats.
+    static const uint32_t MAGIC_NUMBER;
+
     static FORMAT_VERSION detectFormatVersion(const uint8_t *const dict, const int dictSize);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(FormatUtils);
 
     static const int DICTIONARY_MINIMUM_SIZE;
-    static const uint32_t HEADER_VERSION_2_MAGIC_NUMBER;
-    static const int HEADER_VERSION_2_MINIMUM_SIZE;
 };
 } // namespace latinime
 #endif /* LATINIME_FORMAT_UTILS_H */

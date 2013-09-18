@@ -24,6 +24,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 
@@ -137,7 +138,11 @@ bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, con
 }
 
 void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileName,
-        const uint8_t *const headerBuf, const int headerSize) {
+        const HeaderPolicy *const headerPolicy) {
+    BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */)) {
+        return;
+    }
     const int tmpFileNameBufSize = strlen(fileName)
             + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1;
     char tmpFileName[tmpFileNameBufSize];
@@ -148,7 +153,8 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
         return;
     }
     // Write header.
-    if (fwrite(headerBuf, headerSize, 1, file) < 1) {
+    if (fwrite(headerBuffer.getBuffer(true /* usesAdditionalBuffer */),
+            headerBuffer.getTailPosition(), 1, file) < 1) {
         fclose(file);
         remove(tmpFileName);
         return;
