@@ -70,7 +70,7 @@ LATIN_IME_CORE_SRC_FILES := \
         bigram/bigram_list_read_write_utils.cpp \
         bigram/dynamic_bigram_list_policy.cpp \
         header/header_policy.cpp \
-        header/header_reading_utils.cpp \
+        header/header_read_write_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
         dictionary_structure_with_buffer_policy_factory.cpp \
         dynamic_patricia_trie_node_reader.cpp \
