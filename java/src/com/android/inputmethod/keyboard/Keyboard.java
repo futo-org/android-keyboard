@@ -155,6 +155,15 @@ public class Keyboard {
         return mKeys;
     }
 
+    public Key getKeyFromOutputText(final String outputText) {
+        for (final Key key : getKeys()) {
+            if (outputText.equals(key.getOutputText())) {
+                return key;
+            }
+        }
+        return null;
+    }
+
     public Key getKey(final int code) {
         if (code == Constants.CODE_UNSPECIFIED) {
             return null;

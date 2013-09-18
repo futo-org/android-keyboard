@@ -16,16 +16,25 @@
 
 package com.android.inputmethod.latin.utils;
 
-import android.text.TextUtils;
-
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.settings.SettingsValues;
 
+import android.text.TextUtils;
+import android.util.JsonReader;
+import android.util.JsonWriter;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public final class StringUtils {
+    private static final String TAG = StringUtils.class.getSimpleName();
     public static final int CAPITALIZE_NONE = 0;  // No caps, or mixed case
     public static final int CAPITALIZE_FIRST = 1; // First only
     public static final int CAPITALIZE_ALL = 2;   // All caps
@@ -389,5 +398,68 @@ public final class StringUtils {
                     + Character.digit(hexString.charAt(i + 1), 16));
         }
         return bytes;
+    }
+
+    public static List<Object> jsonStrToList(String s) {
+        final ArrayList<Object> retval = CollectionUtils.newArrayList();
+        final JsonReader reader = new JsonReader(new StringReader(s));
+        try {
+            reader.beginArray();
+            while(reader.hasNext()) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    final String name = reader.nextName();
+                    if (name.equals(Integer.class.getSimpleName())) {
+                        retval.add(reader.nextInt());
+                    } else if (name.equals(String.class.getSimpleName())) {
+                        retval.add(reader.nextString());
+                    } else {
+                        Log.w(TAG, "Invalid name: " + name);
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+            }
+            reader.endArray();
+            return retval;
+        } catch (IOException e) {
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+            }
+        }
+        return Collections.<Object>emptyList();
+    }
+
+    public static String listToJsonStr(List<Object> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        final StringWriter sw = new StringWriter();
+        final JsonWriter writer = new JsonWriter(sw);
+        try {
+            writer.beginArray();
+            for (final Object o : list) {
+                writer.beginObject();
+                if (o instanceof Integer) {
+                    writer.name(Integer.class.getSimpleName()).value((Integer)o);
+                } else if (o instanceof String) {
+                    writer.name(String.class.getSimpleName()).value((String)o);
+                }
+                writer.endObject();
+            }
+            writer.endArray();
+            return sw.toString();
+        } catch (IOException e) {
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        return "";
     }
 }
