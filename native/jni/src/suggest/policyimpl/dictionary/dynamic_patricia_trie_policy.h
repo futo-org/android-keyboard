@@ -33,7 +33,7 @@ class DicNodeVector;
 class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     DynamicPatriciaTriePolicy(const MmappedBuffer *const buffer)
-            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer()),
+            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), buffer->getBufferSize()),
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
                       mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
