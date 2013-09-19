@@ -97,8 +97,8 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
         return false;
     }
     int writingPos = newNodePos;
-    // Write a new PtNode using original PtNode's info to the tail of the dictionary.
-    if (!writePtNodeToBufferByCopyingPtNodeInfo(&nodeReader, nodeReader.getParentPos(),
+    // Write a new PtNode using original PtNode's info to the tail of the dictionary in mBuffer.
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, &nodeReader, nodeReader.getParentPos(),
             mMergedNodeCodePoints, nodeReader.getCodePointCount(), nodeReader.getProbability(),
             &writingPos)) {
         return false;
@@ -143,38 +143,20 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */)) {
         return;
     }
-    const int tmpFileNameBufSize = strlen(fileName)
-            + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1;
-    char tmpFileName[tmpFileNameBufSize];
-    snprintf(tmpFileName, tmpFileNameBufSize, "%s%s", fileName,
-            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
-    FILE *const file = fopen(tmpFileName, "wb");
-    if (!file) {
+    flushAllToFile(fileName, &headerBuffer, mBuffer);
+}
+
+void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
+        const char *const fileName, const HeaderPolicy *const headerPolicy) {
+    BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */)) {
         return;
     }
-    // Write header.
-    if (fwrite(headerBuffer.getBuffer(true /* usesAdditionalBuffer */),
-            headerBuffer.getTailPosition(), 1, file) < 1) {
-        fclose(file);
-        remove(tmpFileName);
+    BufferWithExtendableBuffer newDictBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    if (!runGC(rootPtNodeArrayPos, &newDictBuffer)) {
         return;
     }
-    // Write data in original buffer.
-    if (fwrite(mBuffer->getBuffer(false /* usesAdditionalBuffer */),
-            mBuffer->getOriginalBufferSize(), 1, file) < 1) {
-        fclose(file);
-        remove(tmpFileName);
-        return;
-    }
-    // Write data in additional buffer.
-    if (fwrite(mBuffer->getBuffer(true /* usesAdditionalBuffer */),
-            mBuffer->getTailPosition() - mBuffer->getOriginalBufferSize(), 1, file) < 1) {
-        fclose(file);
-        remove(tmpFileName);
-        return;
-    }
-    fclose(file);
-    rename(tmpFileName, fileName);
+    flushAllToFile(fileName, &headerBuffer, &newDictBuffer);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
@@ -232,7 +214,8 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
 }
 
 // Write new PtNode at writingPos.
-bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const bool isBlacklisted,
+bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(
+        BufferWithExtendableBuffer *const bufferToWrite, const bool isBlacklisted,
         const bool isNotAWord, const int parentPos, const int *const codePoints,
         const int codePointCount, const int probability, const int childrenPos,
         const int originalBigramListPos, const int originalShortcutListPos,
@@ -240,38 +223,39 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
     const int nodePos = *writingPos;
     // Write dummy flags. The Node flags are updated with appropriate flags at the last step of the
     // PtNode writing.
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, 0 /* nodeFlags */,
-            writingPos)) {
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(bufferToWrite,
+            0 /* nodeFlags */, writingPos)) {
         return false;
     }
     // Calculate a parent offset and write the offset.
     const int parentOffset = (parentPos != NOT_A_DICT_POS) ? parentPos - nodePos : NOT_A_DICT_POS;
-    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(mBuffer,
+    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(bufferToWrite,
             parentOffset, writingPos)) {
         return false;
     }
     // Write code points
-    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(mBuffer, codePoints,
-            codePointCount, writingPos)) {
+    if (!DynamicPatriciaTrieWritingUtils::writeCodePointsAndAdvancePosition(bufferToWrite,
+            codePoints, codePointCount, writingPos)) {
         return false;
     }
     // Write probability when the probability is a valid probability, which means this node is
     // terminal.
     if (probability != NOT_A_PROBABILITY) {
-        if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
+        if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(bufferToWrite,
                 probability, writingPos)) {
             return false;
         }
     }
     // Write children position
-    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
+    if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(bufferToWrite,
             childrenPos, writingPos)) {
         return false;
     }
     // Copy shortcut list when the originalShortcutListPos is valid dictionary position.
     if (originalShortcutListPos != NOT_A_DICT_POS) {
         int fromPos = originalShortcutListPos;
-        if (!mShortcutPolicy->copyAllShortcutsAndReturnIfSucceededOrNot(&fromPos, writingPos)) {
+        if (!mShortcutPolicy->copyAllShortcutsAndReturnIfSucceededOrNot(bufferToWrite, &fromPos,
+                writingPos)) {
             return false;
         }
     }
@@ -279,7 +263,7 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
     int bigramCount = 0;
     if (originalBigramListPos != NOT_A_DICT_POS) {
         int fromPos = originalBigramListPos;
-        if (!mBigramPolicy->copyAllBigrams(&fromPos, writingPos, &bigramCount)) {
+        if (!mBigramPolicy->copyAllBigrams(bufferToWrite, &fromPos, writingPos, &bigramCount)) {
             return false;
         }
     }
@@ -291,27 +275,29 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(const boo
                     bigramCount > 0 /* hasBigrams */, codePointCount > 1 /* hasMultipleChars */,
                     CHILDREN_POSITION_FIELD_SIZE);
     int flagsFieldPos = nodePos;
-    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, nodeFlags,
+    if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(bufferToWrite, nodeFlags,
             &flagsFieldPos)) {
         return false;
     }
     return true;
 }
 
-bool DynamicPatriciaTrieWritingHelper::writePtNodeToBuffer(const int parentPos,
+bool DynamicPatriciaTrieWritingHelper::writePtNodeToBuffer(
+        BufferWithExtendableBuffer *const bufferToWrite, const int parentPos,
         const int *const codePoints, const int codePointCount, const int probability,
         int *const writingPos) {
-    return writePtNodeWithFullInfoToBuffer(false /* isBlacklisted */, false /* isNotAWord */,
-            parentPos, codePoints, codePointCount, probability,
+    return writePtNodeWithFullInfoToBuffer(bufferToWrite, false /* isBlacklisted */,
+            false /* isNotAWord */, parentPos, codePoints, codePointCount, probability,
             NOT_A_DICT_POS /* childrenPos */, NOT_A_DICT_POS /* originalBigramsPos */,
             NOT_A_DICT_POS /* originalShortcutPos */, writingPos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::writePtNodeToBufferByCopyingPtNodeInfo(
+        BufferWithExtendableBuffer *const bufferToWrite,
         const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
         const int *const codePoints, const int codePointCount, const int probability,
         int *const writingPos) {
-    return writePtNodeWithFullInfoToBuffer(originalNode->isBlacklisted(),
+    return writePtNodeWithFullInfoToBuffer(bufferToWrite, originalNode->isBlacklisted(),
             originalNode->isNotAWord(), parentPos, codePoints, codePointCount, probability,
             originalNode->getChildrenPos(), originalNode->getBigramsPos(),
             originalNode->getShortcutPos(), writingPos);
@@ -345,8 +331,9 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
         if (!markNodeAsMovedAndSetPosition(originalPtNode, movedPos, movedPos)) {
             return false;
         }
-        if (!writePtNodeToBufferByCopyingPtNodeInfo(originalPtNode, originalPtNode->getParentPos(),
-                codePoints, originalPtNode->getCodePointCount(), probability, &movedPos)) {
+        if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, originalPtNode,
+                originalPtNode->getParentPos(), codePoints, originalPtNode->getCodePointCount(),
+                probability, &movedPos)) {
             return false;
         }
     }
@@ -374,8 +361,8 @@ bool DynamicPatriciaTrieWritingHelper::createNewPtNodeArrayWithAChildPtNode(
             1 /* arraySize */, &writingPos)) {
         return false;
     }
-    if (!writePtNodeToBuffer(parentPtNodePos, nodeCodePoints, nodeCodePointCount, probability,
-            &writingPos)) {
+    if (!writePtNodeToBuffer(mBuffer, parentPtNodePos, nodeCodePoints, nodeCodePointCount,
+            probability, &writingPos)) {
         return false;
     }
     if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(mBuffer,
@@ -404,8 +391,9 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Write the 1st part of the reallocating node. The children position will be updated later
     // with actual children position.
     const int newProbability = addsExtraChild ? NOT_A_PROBABILITY : probabilityOfNewPtNode;
-    if (!writePtNodeToBuffer(reallocatingPtNode->getParentPos(), reallocatingPtNodeCodePoints,
-            overlappingCodePointCount, newProbability, &writingPos)) {
+    if (!writePtNodeToBuffer(mBuffer, reallocatingPtNode->getParentPos(),
+            reallocatingPtNodeCodePoints, overlappingCodePointCount, newProbability,
+            &writingPos)) {
         return false;
     }
     const int actualChildrenPos = writingPos;
@@ -417,14 +405,15 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     }
     // Write the 2nd part of the reallocating node.
     const int secondPartOfReallocatedPtNodePos = writingPos;
-    if (!writePtNodeToBufferByCopyingPtNodeInfo(reallocatingPtNode, firstPartOfReallocatedPtNodePos,
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, reallocatingPtNode,
+            firstPartOfReallocatedPtNodePos,
             reallocatingPtNodeCodePoints + overlappingCodePointCount,
             reallocatingPtNode->getCodePointCount() - overlappingCodePointCount,
             reallocatingPtNode->getProbability(), &writingPos)) {
         return false;
     }
     if (addsExtraChild) {
-        if (!writePtNodeToBuffer(firstPartOfReallocatedPtNodePos,
+        if (!writePtNodeToBuffer(mBuffer, firstPartOfReallocatedPtNodePos,
                 newNodeCodePoints + overlappingCodePointCount,
                 newNodeCodePointCount - overlappingCodePointCount, probabilityOfNewPtNode,
                 &writingPos)) {
@@ -450,6 +439,66 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
         return false;
     }
     return true;
+}
+
+// TODO: Create a struct which contains header, body and etc... and use here as an argument.
+void DynamicPatriciaTrieWritingHelper::flushAllToFile(const char *const fileName,
+        BufferWithExtendableBuffer *const dictHeader,
+        BufferWithExtendableBuffer *const dictBody) const {
+    const int tmpFileNameBufSize = strlen(fileName)
+            + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1 /* terminator */;
+    // Name of a temporary file used for writing that is a connected string of original name and
+    // TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE.
+    char tmpFileName[tmpFileNameBufSize];
+    snprintf(tmpFileName, tmpFileNameBufSize, "%s%s", fileName,
+            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
+    FILE *const file = fopen(tmpFileName, "wb");
+    if (!file) {
+        AKLOGI("Dictionary file %s cannnot be opened.", tmpFileName);
+        ASSERT(false);
+        return;
+    }
+    // Write the dictionary header.
+    if (!writeBufferToFilePointer(file, dictHeader)) {
+        remove(tmpFileName);
+        AKLOGI("Dictionary header cannnot be written. size: %d", dictHeader->getTailPosition());
+        ASSERT(false);
+        return;
+    }
+    // Write the dictionary body.
+    if (!writeBufferToFilePointer(file, dictBody)) {
+        remove(tmpFileName);
+        AKLOGI("Dictionary body cannnot be written. size: %d", dictBody->getTailPosition());
+        ASSERT(false);
+        return;
+    }
+    fclose(file);
+    rename(tmpFileName, fileName);
+}
+
+// This closes file pointer when an error is caused and returns whether the writing was succeeded
+// or not.
+bool DynamicPatriciaTrieWritingHelper::writeBufferToFilePointer(FILE *const file,
+        const BufferWithExtendableBuffer *const buffer) const {
+    const int originalBufSize = buffer->getOriginalBufferSize();
+    if (originalBufSize > 0 && fwrite(buffer->getBuffer(false /* usesAdditionalBuffer */),
+            originalBufSize, 1, file) < 1) {
+        fclose(file);
+        return false;
+    }
+    const int additionalBufSize = buffer->getTailPosition() - buffer->getOriginalBufferSize();
+    if (additionalBufSize > 0 && fwrite(buffer->getBuffer(true /* usesAdditionalBuffer */),
+            additionalBufSize, 1, file) < 1) {
+        fclose(file);
+        return false;
+    }
+    return true;
+}
+
+bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
+        BufferWithExtendableBuffer *const bufferToWrite) {
+    // TODO: Implement.
+    return false;
 }
 
 } // namespace latinime

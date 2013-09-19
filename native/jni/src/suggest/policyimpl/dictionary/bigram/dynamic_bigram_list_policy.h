@@ -44,10 +44,11 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     void skipAllBigrams(int *const pos) const;
 
-    // Copy bigrams from the bigram list that starts at fromPos to toPos and advance these
-    // positions after bigram lists. This method skips invalid bigram entries and write the valid
-    // bigram entry count to outBigramsCount.
-    bool copyAllBigrams(int *const fromPos, int *const toPos, int *outBigramsCount);
+    // Copy bigrams from the bigram list that starts at fromPos in mBuffer to toPos in
+    // bufferToWrite and advance these positions after bigram lists. This method skips invalid
+    // bigram entries and write the valid bigram entry count to outBigramsCount.
+    bool copyAllBigrams(BufferWithExtendableBuffer *const bufferToWrite, int *const fromPos,
+            int *const toPos, int *const outBigramsCount) const;
 
     bool addNewBigramEntryToBigramList(const int bigramPos, const int probability, int *const pos);
 
