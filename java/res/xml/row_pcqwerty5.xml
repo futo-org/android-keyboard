@@ -51,13 +51,13 @@
                     latin:keyWidth="11.538%p" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="42.310%p" />
+                    latin:keyWidth="38.464%p" />
                 </case>
             <!-- languageSwitchKeyEnabled="false" -->
             <default>
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="53.848%p" />
+                    latin:keyWidth="50.002%p" />
             </default>
         </switch>
         <Key
@@ -71,9 +71,9 @@
             </case>
             <!-- keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" -->
             <default>
-                <include
-                    latin:keyboardLayout="@xml/key_symbols_period"
-                    latin:backgroundType="functional" />
+                <Key
+                    latin:keyStyle="emojiKeyStyle"
+                    latin:keyWidth="fillRight" />
             </default>
         </switch>
     </Row>

@@ -53,7 +53,7 @@
                     latin:keyXPos="-9.0%p"
                     latin:keyWidth="9.0%p"
                     latin:backgroundType="functional"
-                    latin:keyboardLayout="@xml/key_symbols_period" />
+                    latin:keyboardLayout="@xml/key_f2" />
             </default>
         </switch>
     </Row>
