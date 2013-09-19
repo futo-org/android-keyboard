@@ -42,12 +42,15 @@ public class Ver4DictDecoder extends DictDecoder {
     private static final int FILETYPE_TRIE = 1;
     private static final int FILETYPE_FREQUENCY = 2;
     private static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
+    private static final int FILETYPE_BIGRAM = 4;
 
     private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
     private DictBuffer mDictBuffer;
     private DictBuffer mFrequencyBuffer;
     private DictBuffer mTerminalAddressTableBuffer;
+    private DictBuffer mBigramBuffer;
+    private SparseTable mBigramAddressTable;
 
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
@@ -82,6 +85,9 @@ public class Ver4DictDecoder extends DictDecoder {
         } else if (fileType == FILETYPE_TERMINAL_ADDRESS_TABLE) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        } else if (fileType == FILETYPE_BIGRAM) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.BIGRAM_FILE_EXTENSION);
         } else {
             throw new RuntimeException("Unsupported kind of file : " + fileType);
         }
@@ -94,6 +100,8 @@ public class Ver4DictDecoder extends DictDecoder {
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
+        mBigramBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_BIGRAM));
+        loadBigramAddressSparseTable();
     }
 
     @Override
@@ -116,6 +124,15 @@ public class Ver4DictDecoder extends DictDecoder {
             throw new UnsupportedFormatException("File header has a wrong version : " + version);
         }
         return header;
+    }
+
+    private void loadBigramAddressSparseTable() throws IOException {
+        final File lookupIndexFile = new File(mDictDirectory,
+                mDictDirectory.getName() + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
+        final File contentFile = new File(mDictDirectory,
+                mDictDirectory.getName() + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
+        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, contentFile,
+                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
     protected static class PtNodeReader extends DictDecoder.PtNodeReader {
@@ -191,8 +208,21 @@ public class Ver4DictDecoder extends DictDecoder {
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams,
-                    addressPointer);
+            final int posOfBigrams = mBigramAddressTable.get(terminalId);
+            mBigramBuffer.position(posOfBigrams);
+            while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
+                // remaining bigram entries are ignored.
+                final int bigramFlags = mBigramBuffer.readUnsignedByte();
+                final int targetTerminalId = mBigramBuffer.readUnsignedInt24();
+                mTerminalAddressTableBuffer.position(
+                        targetTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
+                final int targetAddress = mTerminalAddressTableBuffer.readUnsignedInt24();
+                bigrams.add(new PendingAttribute(
+                        bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
+                        targetAddress));
+                if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
+            }
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
                 MakedictLog.d("too many bigrams in a node.");
             }
