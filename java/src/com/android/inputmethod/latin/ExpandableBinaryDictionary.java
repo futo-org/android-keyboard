@@ -311,9 +311,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
             final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final int sessionId) {
         reloadDictionaryIfRequired();
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final AsyncResultHolder<ArrayList<SuggestedWordInfo>> holder =
@@ -321,14 +322,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mFilename).executePrioritized(new Runnable() {
             @Override
             public void run() {
-                final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
-                        mDictionaryWriter.getSuggestions(composer, prevWord, proximityInfo,
-                                blockOffensiveWords, additionalFeaturesOptions);
+                final ArrayList<SuggestedWordInfo> inMemDictSuggestion = composer.isBatchMode() ?
+                        null : mDictionaryWriter.getSuggestionsWithSessionId(composer, prevWord,
+                                proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
+                                sessionId);
                 // TODO: Remove checking mIsUpdatable and use native suggestion.
                 if (mBinaryDictionary != null && !mIsUpdatable) {
                     final ArrayList<SuggestedWordInfo> binarySuggestion =
-                            mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo,
-                                    blockOffensiveWords, additionalFeaturesOptions);
+                            mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
+                                    proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
+                                    sessionId);
                     if (inMemDictSuggestion == null) {
                         holder.set(binarySuggestion);
                     } else if (binarySuggestion == null) {
@@ -342,8 +345,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 }
             }
         });
-
         return holder.get(null, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
+                additionalFeaturesOptions, 0 /* sessionId */);
     }
 
     @Override
