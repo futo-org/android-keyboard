@@ -25,6 +25,7 @@ import android.util.SparseArray;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
@@ -75,6 +76,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             new FormatSpec.FormatOptions(3, false /* supportsDynamicUpdate */);
     private static final FormatSpec.FormatOptions VERSION3_WITH_DYNAMIC_UPDATE =
             new FormatSpec.FormatOptions(3, true /* supportsDynamicUpdate */);
+    private static final FormatSpec.FormatOptions VERSION4_WITHOUT_DYNAMIC_UPDATE =
+            new FormatSpec.FormatOptions(4, false /* supportsDynamicUpdate */);
+    private static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE =
+            new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */);
 
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
@@ -111,6 +116,17 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 final int to = Math.abs(random.nextInt()) % sWords.size();
                 sShortcuts.get(sWords.get(from)).add(sWords.get(to));
             }
+        }
+    }
+
+    private DictEncoder getDictEncoder(final File file, final FormatOptions formatOptions) {
+        if (formatOptions.mVersion == FormatSpec.VERSION4) {
+            return new Ver4DictEncoder(getContext().getCacheDir());
+        } else if (formatOptions.mVersion == 3 || formatOptions.mVersion == 2) {
+            return new Ver3DictEncoder(file);
+        } else {
+            throw new RuntimeException("The format option has a wrong version : "
+                    + formatOptions.mVersion);
         }
     }
 
@@ -165,7 +181,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         long now = -1, diff = -1;
 
         try {
-            final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+            final DictEncoder dictEncoder = getDictEncoder(file, formatOptions);
 
             now = System.currentTimeMillis();
             // If you need to dump the dict to a textual file, uncomment the line below and the
@@ -246,16 +262,28 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         return file;
     }
 
+    private DictDecoder getDictDecoder(final File file, final int bufferType,
+            final FormatOptions formatOptions, final DictionaryOptions dictOptions) {
+        if (formatOptions.mVersion == FormatSpec.VERSION4) {
+            final FileHeader header = new FileHeader(0, dictOptions, formatOptions);
+            return FormatSpec.getDictDecoder(new File(getContext().getCacheDir(),
+                    header.getId() + "." + header.getVersion()), bufferType);
+        } else {
+            return FormatSpec.getDictDecoder(file, bufferType);
+        }
+    }
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private long timeReadingAndCheckDict(final File file, final List<String> words,
             final SparseArray<List<Integer>> bigrams,
-            final HashMap<String, List<String>> shortcutMap, final int bufferType) {
+            final HashMap<String, List<String>> shortcutMap, final int bufferType,
+            final FormatOptions formatOptions, final DictionaryOptions dictOptions) {
         long now, diff = -1;
 
         FusionDictionary dict = null;
         try {
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
+            final DictDecoder dictDecoder = getDictDecoder(file, bufferType, formatOptions,
+                    dictOptions);
             now = System.currentTimeMillis();
             dict = dictDecoder.readDictionaryBinary(null, false /* deleteDictIfBroken */);
             diff  = System.currentTimeMillis() - now;
@@ -286,7 +314,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         checkDictionary(dict, words, bigrams, shortcuts);
 
         final long write = timeWritingDictToFile(file, dict, formatOptions);
-        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts, bufferType);
+        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts, bufferType,
+                formatOptions, dict.mOptions);
 
         return "PROF: read=" + read + "ms, write=" + write + "ms :" + message
                 + " : " + outputOptions(bufferType, formatOptions);
@@ -330,6 +359,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION2);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -342,6 +373,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION2);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -397,7 +430,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final int bufferType) {
+            final SparseArray<List<Integer>> bigrams, final int bufferType,
+            final FormatOptions formatOptions, final DictionaryOptions dictOptions) {
         FileInputStream inStream = null;
 
         final TreeMap<Integer, String> resultWords = CollectionUtils.newTreeMap();
@@ -407,7 +441,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         long now = -1, diff = -1;
         try {
-            final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, bufferType);
+            final DictDecoder dictDecoder = getDictDecoder(file, bufferType, formatOptions,
+                    dictOptions);
             now = System.currentTimeMillis();
             dictDecoder.readUnigramsAndBigramsBinary(resultWords, resultFreqs, resultBigrams);
             diff = System.currentTimeMillis() - now;
@@ -444,9 +479,10 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
         timeWritingDictToFile(file, dict, formatOptions);
 
-        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType);
+        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType,
+                formatOptions, dict.mOptions);
         long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */,
-                bufferType);
+                bufferType, formatOptions, dict.mOptions);
 
         return "readDictionaryBinary=" + fullReading + ", readUnigramsAndBigramsBinary=" + wordMap
                 + " : " + message + " : " + outputOptions(bufferType, formatOptions);
@@ -468,6 +504,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -480,6 +518,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -503,7 +543,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 address, fileHeader.mFormatOptions).mWord;
     }
 
-    private long runGetTerminalPosition(final DictDecoder dictDecoder, final String word,
+    private long checkGetTerminalPosition(final DictDecoder dictDecoder, final String word,
             int index, boolean contained) {
         final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
         long diff = -1;
@@ -523,7 +563,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         return diff;
     }
 
-    public void testGetTerminalPosition() {
+    private void runGetTerminalPosition(final ArrayList<String> words,
+            final SparseArray<List<Integer>> bigrams, final int bufferType,
+            final FormatOptions formatOptions, final String message) {
         final String dictName = "testGetTerminalPosition";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final File file = setUpDictionaryFile(dictName, dictVersion);
@@ -531,16 +573,18 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
                 getDictionaryOptions(dictName, dictVersion));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
-        timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
+        addBigrams(dict, words, bigrams);
+        timeWritingDictToFile(file, dict, formatOptions);
 
-        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file, DictDecoder.USE_BYTEARRAY);
+        final DictDecoder dictDecoder = getDictDecoder(file, DictDecoder.USE_BYTEARRAY,
+                formatOptions, dict.mOptions);
         try {
             dictDecoder.openDictBuffer();
         } catch (IOException e) {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertTrue("Can't get the buffer", dictDecoder.isOpenedDictBuffer());
+        assertTrue("Can't get the buffer", dictDecoder.isDictBufferOpen());
 
         try {
             // too long word
@@ -559,10 +603,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // Test a word that is contained within the dictionary.
         long sum = 0;
         for (int i = 0; i < sWords.size(); ++i) {
-            final long time = runGetTerminalPosition(dictDecoder, sWords.get(i), i, true);
+            final long time = checkGetTerminalPosition(dictDecoder, sWords.get(i), i, true);
             sum += time == -1 ? 0 : time;
         }
-        Log.d(TAG, "per a search : " + (((double)sum) / sWords.size() / 1000000));
+        Log.d(TAG, "per search : " + (((double)sum) / sWords.size() / 1000000) + " : " + message
+                + " : " + outputOptions(bufferType, formatOptions));
 
         // Test a word that isn't contained within the dictionary.
         final Random random = new Random((int)System.currentTimeMillis());
@@ -571,7 +616,32 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 0; i < 1000; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
-            runGetTerminalPosition(dictDecoder, word, i, false);
+            checkGetTerminalPosition(dictDecoder, word, i, false);
+        }
+    }
+
+    private void runGetTerminalPositionTests(final ArrayList<String> results, final int bufferType,
+            final FormatOptions formatOptions) {
+        runGetTerminalPosition(sWords, sEmptyBigrams, bufferType, formatOptions, "unigram");
+    }
+
+    public void testGetTerminalPosition() {
+        final ArrayList<String> results = CollectionUtils.newArrayList();
+
+        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION2);
+        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
+
+        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION2);
+        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
+
+        for (final String result : results) {
+            Log.d(TAG, result);
         }
     }
 
@@ -593,7 +663,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             // ignore
             Log.e(TAG, "IOException while opening the buffer", e);
         }
-        assertTrue("Can't get the buffer", dictDecoder.isOpenedDictBuffer());
+        assertTrue("Can't get the buffer", dictDecoder.isDictBufferOpen());
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,

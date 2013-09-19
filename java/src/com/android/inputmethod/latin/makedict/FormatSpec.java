@@ -360,18 +360,26 @@ public final class FormatSpec {
      * Returns new dictionary decoder.
      *
      * @param dictFile the dictionary file.
-     * @param bufferType the flag indicating buffer type which is used by the dictionary decoder.
+     * @param bufferType The type of buffer, as one of USE_* in DictDecoder.
      * @return new dictionary decoder if the dictionary file exists, otherwise null.
      */
     public static DictDecoder getDictDecoder(final File dictFile, final int bufferType) {
-        if (!dictFile.isFile()) return null;
-        return new Ver3DictDecoder(dictFile, bufferType);
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile, bufferType);
+        } else if (dictFile.isFile()) {
+            return new Ver3DictDecoder(dictFile, bufferType);
+        }
+        return null;
     }
 
     public static DictDecoder getDictDecoder(final File dictFile,
             final DictionaryBufferFactory factory) {
-        if (!dictFile.isFile()) return null;
-        return new Ver3DictDecoder(dictFile, factory);
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile, factory);
+        } else if (dictFile.isFile()) {
+            return new Ver3DictDecoder(dictFile, factory);
+        }
+        return null;
     }
 
     public static DictDecoder getDictDecoder(final File dictFile) {
