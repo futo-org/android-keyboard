@@ -61,7 +61,7 @@ public final class AdditionalSubtypeUtils {
                 StringUtils.appendToCommaSplittableTextIfNotExists(
                         IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocaleUtils.getSubtypeNameId(localeString, keyboardLayoutSetName);
-        return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
+        return new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
                 localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue
                         + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
                         + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE, false, false);

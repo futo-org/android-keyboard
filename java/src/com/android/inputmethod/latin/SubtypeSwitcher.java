@@ -58,7 +58,7 @@ public final class SubtypeSwitcher {
 
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
     private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
-            R.string.subtype_no_language_qwerty, R.drawable.ic_subtype_keyboard,
+            R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
             SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
                     + SubtypeLocaleUtils.QWERTY
                     + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
@@ -68,7 +68,7 @@ public final class SubtypeSwitcher {
     // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
     // Dummy Emoji subtype. See {@link R.xml.method}.
     private static final InputMethodSubtype DUMMY_EMOJI_SUBTYPE = new InputMethodSubtype(
-            R.string.subtype_emoji, R.drawable.ic_subtype_keyboard,
+            R.string.subtype_emoji, R.drawable.ic_ime_switcher_dark,
             SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
                     + SubtypeLocaleUtils.EMOJI + ","
                     + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
