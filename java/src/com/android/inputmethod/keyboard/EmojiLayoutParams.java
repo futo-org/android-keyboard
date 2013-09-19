@@ -30,6 +30,7 @@ public class EmojiLayoutParams {
     public final int mEmojiPagerHeight;
     private final int mEmojiPagerBottomMargin;
     public final int mEmojiKeyboardHeight;
+    private final int mEmojiCategoryPageIdViewHeight;
     public final int mEmojiActionBarHeight;
     public final int mKeyVerticalGap;
     private final int mKeyHorizontalGap;
@@ -47,23 +48,32 @@ public class EmojiLayoutParams {
                 (int) defaultKeyboardHeight, (int) defaultKeyboardHeight);
         mKeyHorizontalGap = (int) (res.getFraction(R.fraction.key_horizontal_gap_ics,
                 defaultKeyboardWidth, defaultKeyboardWidth));
+        mEmojiCategoryPageIdViewHeight =
+                (int) (res.getDimension(R.dimen.emoji_category_page_id_height));
         final int baseheight = defaultKeyboardHeight - mBottomPadding - mTopPadding
                 + mKeyVerticalGap;
         mEmojiActionBarHeight = ((int) baseheight) / DEFAULT_KEYBOARD_ROWS
                 - (mKeyVerticalGap - mBottomPadding) / 2;
-        mEmojiPagerHeight = defaultKeyboardHeight - mEmojiActionBarHeight;
+        mEmojiPagerHeight = defaultKeyboardHeight - mEmojiActionBarHeight
+                - mEmojiCategoryPageIdViewHeight;
         mEmojiPagerBottomMargin = mKeyVerticalGap / 2;
         mEmojiKeyboardHeight = mEmojiPagerHeight - mEmojiPagerBottomMargin - 1;
     }
 
-    public void setPagerProps(ViewPager vp) {
+    public void setPagerProperties(ViewPager vp) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) vp.getLayoutParams();
-        lp.height = mEmojiPagerHeight - mEmojiPagerBottomMargin;
+        lp.height = mEmojiKeyboardHeight;
         lp.bottomMargin = mEmojiPagerBottomMargin;
         vp.setLayoutParams(lp);
     }
 
-    public void setActionBarProps(LinearLayout ll) {
+    public void setCategoryPageIdViewProperties(LinearLayout ll) {
+        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
+        lp.height = mEmojiCategoryPageIdViewHeight;
+        ll.setLayoutParams(lp);
+    }
+
+    public void setActionBarProperties(LinearLayout ll) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
         lp.height = mEmojiActionBarHeight;
         lp.topMargin = 0;
@@ -71,7 +81,7 @@ public class EmojiLayoutParams {
         ll.setLayoutParams(lp);
     }
 
-    public void setKeyProps(ImageView ib) {
+    public void setKeyProperties(ImageView ib) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ib.getLayoutParams();
         lp.leftMargin = mKeyHorizontalGap / 2;
         lp.rightMargin = mKeyHorizontalGap / 2;

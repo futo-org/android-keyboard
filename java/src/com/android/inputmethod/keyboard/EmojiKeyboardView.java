@@ -80,6 +80,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
+    private EmojiCategoryPageIndicatorView mEmojiCategoryPageIndicatorView;
 
     private KeyboardActionListener mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
 
@@ -197,12 +198,24 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
             return mCurrentCategoryId;
         }
 
+        public int getCurrentCategoryPageSize() {
+            return getCategoryPageSize(mCurrentCategoryId);
+        }
+
+        public int getCategoryPageSize(int categoryId) {
+            return mShownCategories.get(categoryId).mPageCount;
+        }
+
         public void setCurrentCategoryId(int categoryId) {
             mCurrentCategoryId = categoryId;
         }
 
         public void setCurrentCategoryPageId(int id) {
             mCurrentCategoryPageId = id;
+        }
+
+        public int getCurrentCategoryPageId() {
+            return mCurrentCategoryPageId;
         }
 
         public void saveLastTypedCategoryPage() {
@@ -435,12 +448,16 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mEmojiPager.setOffscreenPageLimit(0);
         final Resources res = getResources();
         final EmojiLayoutParams emojiLp = new EmojiLayoutParams(res);
-        emojiLp.setPagerProps(mEmojiPager);
+        emojiLp.setPagerProperties(mEmojiPager);
+
+        mEmojiCategoryPageIndicatorView =
+                (EmojiCategoryPageIndicatorView)findViewById(R.id.emoji_category_page_id_view);
+        emojiLp.setCategoryPageIdViewProperties(mEmojiCategoryPageIndicatorView);
 
         setCurrentCategoryId(mEmojiCategory.getCurrentCategoryId(), true /* force */);
 
         final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
-        emojiLp.setActionBarProps(actionBar);
+        emojiLp.setActionBarProperties(actionBar);
 
         // TODO: Implement auto repeat, using View.OnTouchListener?
         final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
@@ -455,7 +472,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         spaceKey.setBackgroundResource(mKeyBackgroundId);
         spaceKey.setTag(Constants.CODE_SPACE);
         spaceKey.setOnClickListener(this);
-        emojiLp.setKeyProps(spaceKey);
+        emojiLp.setKeyProperties(spaceKey);
         final ImageView sendKey = (ImageView)findViewById(R.id.emoji_keyboard_send);
         sendKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         sendKey.setTag(Constants.CODE_ENTER);
@@ -466,6 +483,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     public void onTabChanged(final String tabId) {
         final int categoryId = mEmojiCategory.getCategoryId(tabId);
         setCurrentCategoryId(categoryId, false /* force */);
+        updateEmojiCategoryPageIdView();
     }
 
 
@@ -475,6 +493,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
         setCurrentCategoryId(newPos.first /* categoryId */, false /* force */);
         mEmojiCategory.setCurrentCategoryPageId(newPos.second /* categoryPageId */);
+        updateEmojiCategoryPageIdView();
     }
 
     @Override
@@ -485,7 +504,23 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     @Override
     public void onPageScrolled(final int position, final float positionOffset,
             final int positionOffsetPixels) {
-        // Ignore this message. Only want the actual page selected.
+        final Pair<Integer, Integer> newPos =
+                mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
+        final int newCategoryId = newPos.first;
+        final int newCategorySize = mEmojiCategory.getCategoryPageSize(newCategoryId);
+        final int currentCategoryId = mEmojiCategory.getCurrentCategoryId();
+        final int currentCategoryPageId = mEmojiCategory.getCurrentCategoryPageId();
+        final int currentCategorySize = mEmojiCategory.getCurrentCategoryPageSize();
+        if (newCategoryId == currentCategoryId) {
+            mEmojiCategoryPageIndicatorView.setCategoryPageId(
+                    newCategorySize, newPos.second, positionOffset);
+        } else if (newCategoryId > currentCategoryId) {
+            mEmojiCategoryPageIndicatorView.setCategoryPageId(
+                    currentCategorySize, currentCategoryPageId, positionOffset);
+        } else if (newCategoryId < currentCategoryId) {
+            mEmojiCategoryPageIndicatorView.setCategoryPageId(
+                    currentCategorySize, currentCategoryPageId, positionOffset - 1);
+        }
     }
 
     @Override
@@ -521,6 +556,15 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
+    }
+
+    private void updateEmojiCategoryPageIdView() {
+        if (mEmojiCategoryPageIndicatorView == null) {
+            return;
+        }
+        mEmojiCategoryPageIndicatorView.setCategoryPageId(
+                mEmojiCategory.getCurrentCategoryPageSize(),
+                mEmojiCategory.getCurrentCategoryPageId(), 0.0f /* offset */);
     }
 
     private void setCurrentCategoryId(final int categoryId, final boolean force) {

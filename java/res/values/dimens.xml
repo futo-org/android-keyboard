@@ -113,13 +113,14 @@
     <dimen name="gesture_floating_preview_text_offset">73dp</dimen>
     <dimen name="gesture_floating_preview_horizontal_padding">24dp</dimen>
     <dimen name="gesture_floating_preview_vertical_padding">16dp</dimen>
-    <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">2dp</dimen>
 
     <!-- Emoji keyboard -->
     <fraction name="emoji_keyboard_key_width">14.2857%p</fraction>
     <fraction name="emoji_keyboard_row_height">33%p</fraction>
     <fraction name="emoji_keyboard_key_letter_size">90%p</fraction>
     <integer name="emoji_keyboard_max_key_count">21</integer>
+    <dimen name="emoji_category_page_id_height">3dp</dimen>
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>
