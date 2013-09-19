@@ -46,6 +46,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
+import android.util.Pair;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.view.KeyCharacterMap;
@@ -236,6 +237,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
         private static final int ARG1_SHOW_GESTURE_FLOATING_PREVIEW_TEXT = 2;
+        private static final int ARG2_WITHOUT_TYPED_WORD = 0;
+        private static final int ARG2_WITH_TYPED_WORD = 1;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
@@ -269,7 +272,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
                 if (msg.arg1 == ARG1_NOT_GESTURE_INPUT) {
-                    latinIme.showSuggestionStrip((SuggestedWords) msg.obj);
+                    if (msg.arg2 == ARG2_WITH_TYPED_WORD) {
+                        final Pair<SuggestedWords, String> p =
+                                (Pair<SuggestedWords, String>) msg.obj;
+                        latinIme.showSuggestionStripWithTypedWord(p.first, p.second);
+                    } else {
+                        latinIme.showSuggestionStrip((SuggestedWords) msg.obj);
+                    }
                 } else {
                     latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords) msg.obj,
                             msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
@@ -331,14 +340,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int arg1 = dismissGestureFloatingPreviewText
                     ? ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT
                     : ARG1_SHOW_GESTURE_FLOATING_PREVIEW_TEXT;
-            obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, arg1, 0, suggestedWords)
-                    .sendToTarget();
+            obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, arg1,
+                    ARG2_WITHOUT_TYPED_WORD, suggestedWords).sendToTarget();
         }
 
         public void showSuggestionStrip(final SuggestedWords suggestedWords) {
             removeMessages(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
             obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP,
-                    ARG1_NOT_GESTURE_INPUT, 0, suggestedWords).sendToTarget();
+                    ARG1_NOT_GESTURE_INPUT, ARG2_WITHOUT_TYPED_WORD, suggestedWords).sendToTarget();
+        }
+
+        // TODO: Remove this method.
+        public void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
+                final String typedWord) {
+            removeMessages(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+            obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, ARG1_NOT_GESTURE_INPUT,
+                    ARG2_WITH_TYPED_WORD,
+                    new Pair<SuggestedWords, String>(suggestedWords, typedWord)).sendToTarget();
         }
 
         public void onEndBatchInput(final SuggestedWords suggestedWords) {
@@ -2468,15 +2486,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 false /* isPrediction */);
     }
 
-    private void setAutoCorrection(final SuggestedWords suggestedWords) {
+    private void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
         if (suggestedWords.isEmpty()) return;
         final String autoCorrection;
         if (suggestedWords.mWillAutoCorrect) {
             autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
         } else {
-            autoCorrection = suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD);
+            // We can't use suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD)
+            // because it may differ from mWordComposer.mTypedWord.
+            autoCorrection = typedWord;
         }
         mWordComposer.setAutoCorrection(autoCorrection);
+    }
+
+    private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
+            final String typedWord) {
+      if (suggestedWords.isEmpty()) {
+          clearSuggestionStrip();
+          return;
+      }
+      setAutoCorrection(suggestedWords, typedWord);
+      final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
+      setSuggestedWords(suggestedWords, isAutoCorrection);
+      setAutoCorrectionIndicator(isAutoCorrection);
+      setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
     private void showSuggestionStrip(final SuggestedWords suggestedWords) {
@@ -2484,11 +2517,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             clearSuggestionStrip();
             return;
         }
-        setAutoCorrection(suggestedWords);
-        final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
-        setSuggestedWords(suggestedWords, isAutoCorrection);
-        setAutoCorrectionIndicator(isAutoCorrection);
-        setSuggestionStripShown(isSuggestionsStripVisible());
+        showSuggestionStripWithTypedWord(suggestedWords,
+            suggestedWords.getWord(SuggestedWords.INDEX_OF_TYPED_WORD));
     }
 
     private void commitCurrentAutoCorrection(final String separator) {
@@ -2766,7 +2796,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         // Since there is only one word, willAutoCorrect is false.
                         suggestedWords = suggestedWordsIncludingTypedWord;
                     }
-                    unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords);
+                    // We need to pass typedWord because mWordComposer.mTypedWord may differ from
+                    // typedWord.
+                    unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords,
+                        typedWord);
                 }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
@@ -2775,12 +2808,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     true /* typedWordValid */, false /* willAutoCorrect */,
                     false /* isPunctuationSuggestions */, false /* isObsoleteSuggestions */,
                     false /* isPrediction */);
-            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords);
+            // We need to pass typedWord because mWordComposer.mTypedWord may differ from typedWord.
+            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords, typedWord);
         }
     }
 
     public void unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
-            final SuggestedWords suggestedWords) {
+            final SuggestedWords suggestedWords, final String typedWord) {
         // Note that it's very important here that suggestedWords.mWillAutoCorrect is false.
         // We never want to auto-correct on a resumed suggestion. Please refer to the three places
         // above in restartSuggestionsOnWordTouchedByCursor() where suggestedWords is affected.
@@ -2788,7 +2822,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // the text to adapt it.
         // TODO: remove mIsAutoCorrectionIndicatorOn (see comment on definition)
         mIsAutoCorrectionIndicatorOn = false;
-        mHandler.showSuggestionStrip(suggestedWords);
+        mHandler.showSuggestionStripWithTypedWord(suggestedWords, typedWord);
     }
 
     /**
