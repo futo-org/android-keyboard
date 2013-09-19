@@ -193,7 +193,7 @@ public class DynamicGridKeyboard extends Keyboard {
         public void updateCorrdinates(final int x, final int y) {
             mCurrentX = x;
             mCurrentY = y;
-            getHitBox().offsetTo(x, y);
+            getHitBox().set(x, y, x + getWidth(), y + getHeight());
         }
 
         @Override
