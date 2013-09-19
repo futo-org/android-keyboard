@@ -23,8 +23,8 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.MakedictLog;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictDecoder;
 import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.Ver4DictEncoder;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -45,9 +45,9 @@ import org.xml.sax.SAXException;
 public class DictionaryMaker {
 
     static class Arguments {
-        private static final String OPTION_VERSION_1 = "-1";
         private static final String OPTION_VERSION_2 = "-2";
         private static final String OPTION_VERSION_3 = "-3";
+        private static final String OPTION_VERSION_4 = "-4";
         private static final String OPTION_INPUT_SOURCE = "-s";
         private static final String OPTION_INPUT_BIGRAM_XML = "-b";
         private static final String OPTION_INPUT_SHORTCUT_XML = "-c";
@@ -128,12 +128,12 @@ public class DictionaryMaker {
                     + "| [-s <combined format input]"
                     + "| [-s <binary input>] [-d <binary output>] [-x <xml output>] "
                     + " [-o <combined output>]"
-                    + "[-1] [-2] [-3]\n"
+                    + "[-2] [-3] [-4]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
                     + "  Source can be an XML file, with an optional XML bigrams file, or a\n"
                     + "  binary dictionary file.\n"
-                    + "  Binary version 1 (Ice Cream Sandwich), 2 (Jelly Bean), 3, XML and\n"
+                    + "  Binary version 2 (Jelly Bean), 3, 4, XML and\n"
                     + "  combined format outputs are supported.";
         }
 
@@ -160,8 +160,8 @@ public class DictionaryMaker {
                         // Do nothing, this is the default
                     } else if (OPTION_VERSION_3.equals(arg)) {
                         outputBinaryFormatVersion = 3;
-                    } else if (OPTION_VERSION_1.equals(arg)) {
-                        outputBinaryFormatVersion = 1;
+                    } else if (OPTION_VERSION_4.equals(arg)) {
+                        outputBinaryFormatVersion = 4;
                     } else if (OPTION_HELP.equals(arg)) {
                         displayHelp();
                     } else {
@@ -357,7 +357,12 @@ public class DictionaryMaker {
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
         final FormatSpec.FormatOptions formatOptions = new FormatSpec.FormatOptions(version);
-        final DictEncoder dictEncoder = new Ver3DictEncoder(outputFile);
+        final DictEncoder dictEncoder;
+        if (version == 4) {
+            dictEncoder = new Ver4DictEncoder(outputFile);
+        } else {
+            dictEncoder = new Ver3DictEncoder(outputFile);
+        }
         dictEncoder.writeDictionary(dict, formatOptions);
     }
 
