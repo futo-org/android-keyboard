@@ -98,6 +98,13 @@ public:
            flags |= FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
            *outOffsetFieldSize = 1;
        }
+
+       // Currently, all newly written bigram position fields are 3 bytes to simplify dictionary
+       // writing.
+       // TODO: Remove following 2 lines and optimize memory space.
+       flags = (flags & (~MASK_ATTRIBUTE_ADDRESS_TYPE)) | FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
+       *outOffsetFieldSize = 3;
+
        *outBigramFlags = flags;
        *outOffset = absOffest;
        return true;

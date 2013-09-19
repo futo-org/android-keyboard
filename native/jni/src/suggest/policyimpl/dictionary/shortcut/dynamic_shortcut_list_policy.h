@@ -31,7 +31,7 @@ namespace latinime {
  */
 class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  public:
-    explicit DynamicShortcutListPolicy(BufferWithExtendableBuffer *const buffer)
+    explicit DynamicShortcutListPolicy(const BufferWithExtendableBuffer *const buffer)
             : mBuffer(buffer) {}
 
     ~DynamicShortcutListPolicy() {}
@@ -82,18 +82,20 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         }
     }
 
-    // Copy shortcuts from the shortcut list that starts at fromPos to toPos and advance these
-    // positions after the shortcut lists. This returns whether the copy was succeeded or not.
-    bool copyAllShortcutsAndReturnIfSucceededOrNot(int *const fromPos, int *const toPos) {
+    // Copy shortcuts from the shortcut list that starts at fromPos in mBuffer to toPos in
+    // bufferToWrite and advance these positions after the shortcut lists. This returns whether
+    // the copy was succeeded or not.
+    bool copyAllShortcutsAndReturnIfSucceededOrNot(BufferWithExtendableBuffer *const bufferToWrite,
+            int *const fromPos, int *const toPos) const {
         const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
         if (usesAdditionalBuffer) {
             *fromPos -= mBuffer->getOriginalBufferSize();
         }
         const int shortcutListSize = ShortcutListReadingUtils
-                ::getShortcutListSizeAndForwardPointer(buffer, fromPos);
+                ::getShortcutListSizeAndForwardPointer(mBuffer->getBuffer(usesAdditionalBuffer),
+                        fromPos);
         // Copy shortcut list size.
-        if (!mBuffer->writeUintAndAdvancePosition(
+        if (!bufferToWrite->writeUintAndAdvancePosition(
                 shortcutListSize + ShortcutListReadingUtils::getShortcutListSizeFieldSize(),
                 ShortcutListReadingUtils::getShortcutListSizeFieldSize(), toPos)) {
             return false;
@@ -102,7 +104,7 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         for (int i = 0; i < shortcutListSize; ++i) {
             const uint8_t data = ByteArrayUtils::readUint8AndAdvancePosition(
                     mBuffer->getBuffer(usesAdditionalBuffer), fromPos);
-            if (!mBuffer->writeUintAndAdvancePosition(data, 1 /* size */, toPos)) {
+            if (!bufferToWrite->writeUintAndAdvancePosition(data, 1 /* size */, toPos)) {
                 return false;
             }
         }
@@ -115,7 +117,7 @@ class DynamicShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicShortcutListPolicy);
 
-    BufferWithExtendableBuffer *const mBuffer;
+    const BufferWithExtendableBuffer *const mBuffer;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_SHORTCUT_LIST_POLICY_H
