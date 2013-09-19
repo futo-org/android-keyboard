@@ -62,8 +62,8 @@
     mn: Mongolian/mongolian
     ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
-    ne: Nepali Romanized/nepali_romanized
-    ne: Nepali Traditional/nepali_traditional
+    ne: Nepali Romanized/nepali_romanized  # disabled temporarily
+    ne: Nepali Traditional/nepali_traditional  # disabled temporarily
     nl: Dutch/qwerty
     nl_BE: Dutch Belgium/azerty
     pl: Polish/qwerty
@@ -380,6 +380,7 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
     />
+    <!--
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:subtypeId="0xd80a4cee"
@@ -394,6 +395,7 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable"
     />
+    -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:subtypeId="0x3f9fd91e"
