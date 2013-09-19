@@ -54,8 +54,8 @@ void DynamicBigramListPolicy::skipAllBigrams(int *const pos) const {
     }
 }
 
-bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPos,
-        int *outBigramsCount) {
+bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const bufferToWrite,
+        int *const fromPos, int *const toPos, int *const outBigramsCount) const {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*fromPos);
     if (usesAdditionalBuffer) {
         *fromPos -= mBuffer->getOriginalBufferSize();
@@ -86,10 +86,10 @@ bool DynamicBigramListPolicy::copyAllBigrams(int *const fromPos, int *const toPo
             continue;
         }
         // Write bigram entry. Target buffer is always the additional buffer.
-        if (!mBuffer->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */,toPos)) {
+        if (!bufferToWrite->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */,toPos)) {
             return false;
         }
-        if (!mBuffer->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
+        if (!bufferToWrite->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
                 toPos)) {
             return false;
         }
