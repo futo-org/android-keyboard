@@ -245,8 +245,8 @@ public class ProximityInfo {
         final int threshold = (int) (defaultWidth * SEARCH_DISTANCE);
         final int thresholdSquared = threshold * threshold;
         // Round-up so we don't have any pixels outside the grid
-        final int fullGridWidth = mGridWidth * mCellWidth;
-        final int fullGridHeight = mGridHeight * mCellHeight;
+        final int lastPixelXCoordinate = mGridWidth * mCellWidth - 1;
+        final int lastPixelYCoordinate = mGridHeight * mCellHeight - 1;
 
         // For large layouts, 'neighborsFlatBuffer' is about 80k of memory: gridSize is usually 512,
         // keycount is about 40 and a pointer to a Key is 4 bytes. This contains, for each cell,
@@ -329,22 +329,20 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
             final int yMiddleOfTopCell = topPixelWithinThreshold - yDeltaToGrid + halfCellHeight;
             final int yStart = Math.max(halfCellHeight,
                     yMiddleOfTopCell + (yDeltaToGrid <= halfCellHeight ? 0 : mCellHeight));
-            final int yEnd = Math.min(fullGridHeight, keyY + key.getHeight() + threshold);
+            final int yEnd = Math.min(lastPixelYCoordinate, keyY + key.getHeight() + threshold);
 
             final int leftPixelWithinThreshold = keyX - threshold;
             final int xDeltaToGrid = leftPixelWithinThreshold % mCellWidth;
             final int xMiddleOfLeftCell = leftPixelWithinThreshold - xDeltaToGrid + halfCellWidth;
             final int xStart = Math.max(halfCellWidth,
                     xMiddleOfLeftCell + (xDeltaToGrid <= halfCellWidth ? 0 : mCellWidth));
-            final int xEnd = Math.min(fullGridWidth, keyX + key.getWidth() + threshold);
+            final int xEnd = Math.min(lastPixelXCoordinate, keyX + key.getWidth() + threshold);
 
             int baseIndexOfCurrentRow = (yStart / mCellHeight) * mGridWidth + (xStart / mCellWidth);
             for (int centerY = yStart; centerY <= yEnd; centerY += mCellHeight) {
                 int index = baseIndexOfCurrentRow;
                 for (int centerX = xStart; centerX <= xEnd; centerX += mCellWidth) {
-                    // TODO: Remove "index < neighborCountPerCell.length" below.
-                    if (index < neighborCountPerCell.length
-                            && key.squaredDistanceToEdge(centerX, centerY) < thresholdSquared) {
+                    if (key.squaredDistanceToEdge(centerX, centerY) < thresholdSquared) {
                         neighborsFlatBuffer[index * keyCount + neighborCountPerCell[index]] = key;
                         ++neighborCountPerCell[index];
                     }
