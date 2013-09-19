@@ -498,7 +498,7 @@ public final class BinaryDictDecoderUtils {
 
             // reach the end of the array.
             if (options.mSupportsDynamicUpdate) {
-                final boolean hasValidForwardLink = dictDecoder.readForwardLinkAndAdvancePosition();
+                final boolean hasValidForwardLink = dictDecoder.readAndFollowForwardLink();
                 if (!hasValidForwardLink) break;
             }
         } while (options.mSupportsDynamicUpdate && dictDecoder.hasNextPtNodeArray());
@@ -550,7 +550,7 @@ public final class BinaryDictDecoderUtils {
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    /* package */ static FusionDictionary readDictionaryBinary(final Ver3DictDecoder dictDecoder,
+    /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder,
             final FusionDictionary dict) throws IOException, UnsupportedFormatException {
         // Read header
         final FileHeader fileHeader = dictDecoder.readHeader();
