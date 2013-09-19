@@ -27,7 +27,7 @@
         latin:keyWidth="7.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao1" />
+            latin:keyboardLayout="@xml/rowkeys_khmer1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
@@ -36,13 +36,13 @@
         latin:keyWidth="7.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao2" />
+            latin:keyboardLayout="@xml/rowkeys_khmer2" />
     </Row>
     <Row
         latin:keyWidth="7.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao3" />
+            latin:keyboardLayout="@xml/rowkeys_khmer3" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
@@ -54,7 +54,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_lao4" />
+            latin:keyboardLayout="@xml/rowkeys_khmer4" />
         <switch>
             <case
                 latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"

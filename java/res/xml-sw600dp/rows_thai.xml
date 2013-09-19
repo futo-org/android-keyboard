@@ -59,8 +59,17 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_thai4" />
-        <include
-            latin:keyboardLayout="@xml/keys_exclamation_question" />
+        <switch>
+            <case
+                latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+                <Spacer />
+            </case>
+            <default>
+                <include
+                    latin:keyboardLayout="@xml/keys_exclamation_question" />
+            </default>
+        </switch>
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
