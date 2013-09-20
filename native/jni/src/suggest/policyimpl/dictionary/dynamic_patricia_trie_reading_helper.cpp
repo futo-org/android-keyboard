@@ -23,36 +23,85 @@ namespace latinime {
 // To avoid infinite loop caused by invalid or malicious forward links.
 const int DynamicPatriciaTrieReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 const int DynamicPatriciaTrieReadingHelper::MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
+const size_t DynamicPatriciaTrieReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
+
+bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstManner(
+        TraversingEventListener *const listener) {
+    bool alreadyVisitedChildren = false;
+    // Descend from the root to the root PtNode array.
+    if (!listener->onDescend()) {
+        return false;
+    }
+    while (!isEnd()) {
+        if (!alreadyVisitedChildren) {
+            if (mNodeReader.hasChildren()) {
+                // Move to the first child.
+                if (!listener->onDescend()) {
+                    return false;
+                }
+                pushReadingStateToStack();
+                readChildNode();
+            } else {
+                alreadyVisitedChildren = true;
+            }
+        } else {
+            if (!listener->onVisitingPtNode(&mNodeReader)) {
+                return false;
+            }
+            readNextSiblingNode();
+            if (isEnd()) {
+                // All PtNodes in current linked PtNode arrays have been visited.
+                // Return to the parent.
+                if (!listener->onAscend()) {
+                    return false;
+                }
+                popReadingStateFromStack();
+                alreadyVisitedChildren = true;
+            } else {
+                // Process sibling PtNode.
+                alreadyVisitedChildren = false;
+            }
+        }
+    }
+    // Ascend from the root PtNode array to the root.
+    if (!listener->onAscend()) {
+        return false;
+    }
+    return !isError();
+}
 
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
 void DynamicPatriciaTrieReadingHelper::nextNodeArray() {
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mPos);
+    mReadingState.mPosOfLastPtNodeArrayHead = mReadingState.mPos;
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        mPos -= mBuffer->getOriginalBufferSize();
+        mReadingState.mPos -= mBuffer->getOriginalBufferSize();
     }
-    mNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(dictBuf,
-            &mPos);
+    mReadingState.mNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
+            dictBuf, &mReadingState.mPos);
     if (usesAdditionalBuffer) {
-        mPos += mBuffer->getOriginalBufferSize();
+        mReadingState.mPos += mBuffer->getOriginalBufferSize();
     }
     // Count up nodes and node arrays to avoid infinite loop.
-    mTotalNodeCount += mNodeCount;
-    mNodeArrayCount++;
-    if (mNodeCount < 0 || mTotalNodeCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP
-            || mNodeArrayCount > MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP) {
+    mReadingState.mTotalNodeCount += mReadingState.mNodeCount;
+    mReadingState.mNodeArrayCount++;
+    if (mReadingState.mNodeCount < 0
+            || mReadingState.mTotalNodeCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP
+            || mReadingState.mNodeArrayCount > MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP) {
         // Invalid dictionary.
         AKLOGI("Invalid dictionary. nodeCount: %d, totalNodeCount: %d, MAX_CHILD_COUNT: %d"
                 "nodeArrayCount: %d, MAX_NODE_ARRAY_COUNT: %d",
-                mNodeCount, mTotalNodeCount, MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP,
-                mNodeArrayCount, MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP);
+                mReadingState.mNodeCount, mReadingState.mTotalNodeCount,
+                MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP, mReadingState.mNodeArrayCount,
+                MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP);
         ASSERT(false);
         mIsError = true;
-        mPos = NOT_A_DICT_POS;
+        mReadingState.mPos = NOT_A_DICT_POS;
         return;
     }
-    if (mNodeCount == 0) {
+    if (mReadingState.mNodeCount == 0) {
         // Empty node array. Try following forward link.
         followForwardLink();
     }
@@ -60,24 +109,24 @@ void DynamicPatriciaTrieReadingHelper::nextNodeArray() {
 
 // Follow the forward link and read the next node array if exists.
 void DynamicPatriciaTrieReadingHelper::followForwardLink() {
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mPos);
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        mPos -= mBuffer->getOriginalBufferSize();
+        mReadingState.mPos -= mBuffer->getOriginalBufferSize();
     }
     const int forwardLinkPosition =
-            DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(dictBuf, mPos);
+            DynamicPatriciaTrieReadingUtils::getForwardLinkPosition(dictBuf, mReadingState.mPos);
     if (usesAdditionalBuffer) {
-        mPos += mBuffer->getOriginalBufferSize();
+        mReadingState.mPos += mBuffer->getOriginalBufferSize();
     }
-    mPosOfLastForwardLinkField = mPos;
+    mReadingState.mPosOfLastForwardLinkField = mReadingState.mPos;
     if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.
-        mPos += forwardLinkPosition;
+        mReadingState.mPos += forwardLinkPosition;
         nextNodeArray();
     } else {
         // All node arrays have been read.
-        mPos = NOT_A_DICT_POS;
+        mReadingState.mPos = NOT_A_DICT_POS;
     }
 }
 

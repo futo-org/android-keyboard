@@ -55,6 +55,10 @@ class DynamicPatriciaTrieWritingHelper {
     void writeToDictFileWithGC(const int rootPtNodeArrayPos, const char *const fileName,
             const HeaderPolicy *const headerPolicy);
 
+    // CAVEAT: This method must be called only from inner classes of
+    // DynamicPatriciaTrieGcEventListeners.
+    bool markNodeAsDeleted(const DynamicPatriciaTrieNodeReader *const nodeToUpdate);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
