@@ -88,10 +88,10 @@
     >
         <item name="keyPreviewLayout">@layout/key_preview_ics</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
-        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_holo</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_ics</item>
-        <item name="gestureTrailColor">@color/highlight_color_ics</item>
-        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
+        <item name="gestureTrailColor">@color/highlight_color_holo</item>
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_holo</item>
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="spacebarTextColor">@color/spacebar_text_color_ics</item>
@@ -135,10 +135,10 @@
     >
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
-        <item name="colorTypedWord">@color/typed_word_color_ics</item>
-        <item name="colorAutoCorrect">@color/highlight_color_ics</item>
-        <item name="colorSuggested">@color/suggested_word_color_ics</item>
+        <item name="colorValidTypedWord">@color/typed_word_color_holo</item>
+        <item name="colorTypedWord">@color/typed_word_color_holo</item>
+        <item name="colorAutoCorrect">@color/highlight_color_holo</item>
+        <item name="colorSuggested">@color/suggested_word_color_holo</item>
         <item name="alphaObsoleted">70%</item>
     </style>
     <style name="SuggestionWord.ICS">
