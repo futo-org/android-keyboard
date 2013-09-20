@@ -178,13 +178,15 @@
                  U+17A6: "ឦ" KHMER INDEPENDENT VOWEL QII -->
             <Key
                 latin:keyLabel="&#x17A5;"
-                latin:moreKeys=".,&#x17A6;"
+                latin:keyHintLabel="&#x17A6;"
+                latin:moreKeys=",&#x17A6;,."
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17B2: "ឲ" KHMER INDEPENDENT VOWEL QOO TYPE TWO
                  U+17B1: "ឱ" KHMER INDEPENDENT VOWEL QOO TYPE ONE -->
             <Key
                 latin:keyLabel="&#x17B2;"
-                latin:moreKeys="\\,,&#x17B1;"
+                latin:keyHintLabel="&#x17B1;"
+                latin:moreKeys="&#x17B1;,\\,"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
