@@ -66,7 +66,7 @@
             android:layout_width="0dip"
             android:layout_weight="12.5"
             android:layout_height="match_parent"
-            android:src="@drawable/sym_keyboard_delete_holo" />
+            android:src="@drawable/sym_keyboard_delete_holo_dark" />
     </LinearLayout>
     <android.support.v4.view.ViewPager
         android:id="@+id/emoji_keyboard_pager"
@@ -89,7 +89,7 @@
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_ime_light" />
+            android:src="@drawable/ic_ime_switcher_dark" />
         <ImageButton
             android:id="@+id/emoji_keyboard_space"
             android:layout_width="0dip"
@@ -100,6 +100,6 @@
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:layout_height="match_parent"
-            android:src="@drawable/sym_keyboard_return_holo" />
+            android:src="@drawable/sym_keyboard_return_holo_dark" />
     </LinearLayout>
 </com.android.inputmethod.keyboard.EmojiKeyboardView>
