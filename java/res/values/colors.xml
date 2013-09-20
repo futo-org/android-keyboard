@@ -33,7 +33,7 @@
     <color name="spacebar_text_color_gb">#FFC0C0C0</color>
     <color name="spacebar_text_shadow_color_gb">#80000000</color>
     <color name="gesture_floating_preview_color_gb">#C0000000</color>
-    <!-- Color resources for IceCreamSandwich theme. -->
+    <!-- Color resources for IceCreamSandwich theme. Base color = 33B5E5 -->
     <!-- android:color/holo_blue_light value is #FF33B5E5 -->
     <color name="highlight_color_ics">#FF33B5E5</color>
     <color name="typed_word_color_ics">#D833B5E5</color>
@@ -49,6 +49,11 @@
     <color name="spacebar_text_color_ics">#FFC0C0C0</color>
     <color name="spacebar_text_shadow_color_ics">#80000000</color>
     <color name="gesture_floating_preview_color_ics">#C0000000</color>
+    <!-- Color resources for KLP theme. Base color = F0F0F0 -->
+    <color name="highlight_color_holo">#FFF0F0F0</color>
+    <color name="typed_word_color_holo">#D8F0F0F0</color>
+    <color name="suggested_word_color_holo">#B2F0F0F0</color>
+    <color name="highlight_translucent_color_holo">#99E0E0E0</color>
     <!-- Color resources for setup wizard and tutorial -->
     <color name="setup_background">#FFEBEBEB</color>
     <color name="setup_text_dark">#FF707070</color>
