@@ -26,6 +26,7 @@ import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -445,6 +446,8 @@ public class KeyboardView extends View {
         if (hintLabel != null) {
             paint.setTextSize(key.selectHintTextSize(params));
             paint.setColor(key.selectHintTextColor(params));
+            // TODO: Should add a way to specify type face for hint letters
+            paint.setTypeface(Typeface.DEFAULT_BOLD);
             blendAlpha(paint, params.mAnimAlpha);
             final float hintX, hintY;
             if (key.hasHintLabel()) {
@@ -465,9 +468,13 @@ public class KeyboardView extends View {
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
+                final float keyNumericHintLabelReferenceCharWidth =
+                        TypefaceUtils.getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint);
+                final float keyHintLabelStringWidth =
+                        TypefaceUtils.getStringWidth(hintLabel, paint);
                 hintX = keyWidth - mKeyHintLetterPadding
-                        - TypefaceUtils.getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint)
-                        / 2.0f;
+                        - Math.max(keyNumericHintLabelReferenceCharWidth, keyHintLabelStringWidth)
+                                / 2.0f;
                 hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             }
