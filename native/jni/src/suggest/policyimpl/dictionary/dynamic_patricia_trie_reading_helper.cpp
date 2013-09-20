@@ -25,18 +25,22 @@ const int DynamicPatriciaTrieReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LO
 const int DynamicPatriciaTrieReadingHelper::MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 const size_t DynamicPatriciaTrieReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
 
+// Visits all PtNodes in post-order depth first manner.
+// For example, visits c -> b -> y -> x -> a for the following dictionary:
+// a _ b _ c
+//   \ x _ y
 bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstManner(
         TraversingEventListener *const listener) {
     bool alreadyVisitedChildren = false;
     // Descend from the root to the root PtNode array.
-    if (!listener->onDescend()) {
+    if (!listener->onDescend(getPosOfLastPtNodeArrayHead())) {
         return false;
     }
     while (!isEnd()) {
         if (!alreadyVisitedChildren) {
             if (mNodeReader.hasChildren()) {
                 // Move to the first child.
-                if (!listener->onDescend()) {
+                if (!listener->onDescend(mNodeReader.getChildrenPos())) {
                     return false;
                 }
                 pushReadingStateToStack();
@@ -45,13 +49,16 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
                 alreadyVisitedChildren = true;
             }
         } else {
-            if (!listener->onVisitingPtNode(&mNodeReader)) {
+            if (!listener->onVisitingPtNode(&mNodeReader, mMergedNodeCodePoints)) {
                 return false;
             }
             readNextSiblingNode();
             if (isEnd()) {
                 // All PtNodes in current linked PtNode arrays have been visited.
                 // Return to the parent.
+                if (!listener->onReadingPtNodeArrayTail()) {
+                    return false;
+                }
                 if (!listener->onAscend()) {
                     return false;
                 }
@@ -63,6 +70,75 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
             }
         }
     }
+    // Ascend from the root PtNode array to the root.
+    if (!listener->onAscend()) {
+        return false;
+    }
+    return !isError();
+}
+
+// Visits all PtNodes in PtNode array level pre-order depth first manner, which is the same order
+// that PtNodes are written in the dictionary buffer.
+// For example, visits a -> b -> x -> c -> y for the following dictionary:
+// a _ b _ c
+//   \ x _ y
+bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+        TraversingEventListener *const listener) {
+    bool alreadyVisitedAllPtNodesInArray = false;
+    bool alreadyVisitedChildren = false;
+    // Descend from the root to the root PtNode array.
+    if (!listener->onDescend(getPosOfLastPtNodeArrayHead())) {
+        return false;
+    }
+    pushReadingStateToStack();
+    while (!isEnd()) {
+        if (alreadyVisitedAllPtNodesInArray) {
+            if (alreadyVisitedChildren) {
+                // Move to next sibling PtNode's children.
+                readNextSiblingNode();
+                if (isEnd()) {
+                    // Return to the parent PTNode.
+                    if (!listener->onAscend()) {
+                        return false;
+                    }
+                    popReadingStateFromStack();
+                    alreadyVisitedChildren = true;
+                    alreadyVisitedAllPtNodesInArray = true;
+                } else {
+                    alreadyVisitedChildren = false;
+                }
+            } else {
+                if (mNodeReader.hasChildren()) {
+                    // Move to the first child.
+                    if (!listener->onDescend(mNodeReader.getChildrenPos())) {
+                        return false;
+                    }
+                    pushReadingStateToStack();
+                    readChildNode();
+                    // Push state to return the head of PtNode array.
+                    pushReadingStateToStack();
+                    alreadyVisitedAllPtNodesInArray = false;
+                    alreadyVisitedChildren = false;
+                } else {
+                    alreadyVisitedChildren = true;
+                }
+            }
+        } else {
+            if (!listener->onVisitingPtNode(&mNodeReader, mMergedNodeCodePoints)) {
+                return false;
+            }
+            readNextSiblingNode();
+            if (isEnd()) {
+                if (!listener->onReadingPtNodeArrayTail()) {
+                    return false;
+                }
+                // Return to the head of current PtNode array.
+                popReadingStateFromStack();
+                alreadyVisitedAllPtNodesInArray = true;
+            }
+        }
+    }
+    popReadingStateFromStack();
     // Ascend from the root PtNode array to the root.
     if (!listener->onAscend()) {
         return false;
