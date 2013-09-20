@@ -20,6 +20,7 @@
 #include <cstring>
 
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
@@ -157,6 +158,26 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
         return;
     }
     flushAllToFile(fileName, &headerBuffer, &newDictBuffer);
+}
+
+bool DynamicPatriciaTrieWritingHelper::markNodeAsDeleted(
+        const DynamicPatriciaTrieNodeReader *const nodeToUpdate) {
+    int pos = nodeToUpdate->getHeadPos();
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(pos);
+    const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
+    if (usesAdditionalBuffer) {
+        pos -= mBuffer->getOriginalBufferSize();
+    }
+    // Read original flags
+    const PatriciaTrieReadingUtils::NodeFlags originalFlags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
+    const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
+            DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
+                    true /* isDeleted */);
+    int writingPos = nodeToUpdate->getHeadPos();
+    // Update flags.
+    return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, updatedFlags,
+            &writingPos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
@@ -497,6 +518,16 @@ bool DynamicPatriciaTrieWritingHelper::writeBufferToFilePointer(FILE *const file
 
 bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         BufferWithExtendableBuffer *const bufferToWrite) {
+    DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
+    readingHelper.initWithNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners
+            ::ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted
+                    listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted(
+                            this, mBuffer);
+    if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted)) {
+        return false;
+    }
     // TODO: Implement.
     return false;
 }
