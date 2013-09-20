@@ -58,11 +58,11 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getUnigramProbabilityOfPtNode(const int nodePos) const;
+    int getUnigramProbabilityOfPtNode(const int ptNodePos) const;
 
-    int getShortcutPositionOfNode(const int nodePos) const;
+    int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
-    int getBigramsPositionOfNode(const int nodePos) const;
+    int getBigramsPositionOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;
@@ -121,7 +121,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;
 
-    int createAndGetLeavingChildNode(const DicNode *const dicNode, const int nodePos,
+    int createAndGetLeavingChildNode(const DicNode *const dicNode, const int ptNodePos,
             DicNodeVector *const childDicNodes) const;
 };
 } // namespace latinime

@@ -48,17 +48,17 @@ class DynamicPatriciaTrieNodeReader {
 
     ~DynamicPatriciaTrieNodeReader() {}
 
-    // Reads node information from dictionary buffer and updates members with the information.
-    AK_FORCE_INLINE void fetchNodeInfoFromBuffer(const int nodePos) {
-        fetchNodeInfoFromBufferAndGetNodeCodePoints(nodePos , 0 /* maxCodePointCount */,
-                0 /* outCodePoints */);
+    // Reads PtNode information from dictionary buffer and updates members with the information.
+    AK_FORCE_INLINE void fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) {
+        fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(ptNodePos ,
+                0 /* maxCodePointCount */, 0 /* outCodePoints */);
     }
 
-    AK_FORCE_INLINE void fetchNodeInfoFromBufferAndGetNodeCodePoints(const int nodePos,
-            const int maxCodePointCount, int *const outCodePoints) {
+    AK_FORCE_INLINE void fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(
+            const int ptNodePos, const int maxCodePointCount, int *const outCodePoints) {
         mSiblingPos = NOT_A_DICT_POS;
         mBigramLinkedNodePos = NOT_A_DICT_POS;
-        fetchNodeInfoFromBufferAndProcessMovedNode(nodePos, maxCodePointCount, outCodePoints);
+        fetchPtNodeInfoFromBufferAndProcessMovedPtNode(ptNodePos, maxCodePointCount, outCodePoints);
     }
 
     // HeadPos is different from NodePos when the current PtNode is a moved PtNode.
@@ -154,8 +154,8 @@ class DynamicPatriciaTrieNodeReader {
     int mBigramPos;
     int mSiblingPos;
 
-    void fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos, const int maxCodePointCount,
-            int *const outCodePoints);
+    void fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,
+            const int maxCodePointCount, int *const outCodePoints);
 
     void invalidatePtNodeInfo();
 };

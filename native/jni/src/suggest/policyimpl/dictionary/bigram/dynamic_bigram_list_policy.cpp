@@ -16,41 +16,47 @@
 
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 
+#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
+#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+
 namespace latinime {
 
-const int DynamicBigramListPolicy::BIGRAM_LINK_COUNT_LIMIT = 10000;
+const int DynamicBigramListPolicy::CONTINUING_BIGRAM_LINK_COUNT_LIMIT = 10000;
+const int DynamicBigramListPolicy::BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT = 100000;
 
 void DynamicBigramListPolicy::getNextBigram(int *const outBigramPos, int *const outProbability,
-        bool *const outHasNext, int *const pos) const {
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+        bool *const outHasNext, int *const bigramEntryPos) const {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramEntryPos);
     const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        *pos -= mBuffer->getOriginalBufferSize();
+        *bigramEntryPos -= mBuffer->getOriginalBufferSize();
     }
-    const BigramListReadWriteUtils::BigramFlags flags =
-            BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
-    int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-            buffer, flags, pos);
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int originalBigramPos;
+    BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(buffer, &bigramFlags,
+            &originalBigramPos, bigramEntryPos);
     if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
         originalBigramPos += mBuffer->getOriginalBufferSize();
     }
     *outBigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
-    *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
-    *outHasNext = BigramListReadWriteUtils::hasNext(flags);
+    *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags);
+    *outHasNext = BigramListReadWriteUtils::hasNext(bigramFlags);
     if (usesAdditionalBuffer) {
-        *pos += mBuffer->getOriginalBufferSize();
+        *bigramEntryPos += mBuffer->getOriginalBufferSize();
     }
 }
 
-void DynamicBigramListPolicy::skipAllBigrams(int *const pos) const {
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+void DynamicBigramListPolicy::skipAllBigrams(int *const bigramListPos) const {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
     const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
-        *pos -= mBuffer->getOriginalBufferSize();
+        *bigramListPos -= mBuffer->getOriginalBufferSize();
     }
-    BigramListReadWriteUtils::skipExistingBigrams(buffer, pos);
+    BigramListReadWriteUtils::skipExistingBigrams(buffer, bigramListPos);
     if (usesAdditionalBuffer) {
-        *pos += mBuffer->getOriginalBufferSize();
+        *bigramListPos += mBuffer->getOriginalBufferSize();
     }
 }
 
@@ -61,13 +67,19 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
         *fromPos -= mBuffer->getOriginalBufferSize();
     }
     *outBigramsCount = 0;
-    BigramListReadWriteUtils::BigramFlags flags;
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int bigramEntryCount = 0;
     do {
+        if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
+            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            ASSERT(false);
+            return false;
+        }
         // The buffer address can be changed after calling buffer writing methods.
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
-        flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, fromPos);
-        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-                buffer, flags, fromPos);
+        int originalBigramPos;
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+                mBuffer->getBuffer(usesAdditionalBuffer), &bigramFlags, &originalBigramPos,
+                fromPos);
         if (originalBigramPos == NOT_A_DICT_POS) {
             // skip invalid bigram entry.
             continue;
@@ -76,132 +88,163 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
         const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
-        BigramListReadWriteUtils::BigramFlags newBigramFlags;
-        uint32_t newBigramOffset;
-        int newBigramOffsetFieldSize;
-        if(!BigramListReadWriteUtils::createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
-                *toPos, bigramPos, BigramListReadWriteUtils::getProbabilityFromFlags(flags),
-                BigramListReadWriteUtils::hasNext(flags), &newBigramFlags, &newBigramOffset,
-                &newBigramOffsetFieldSize)) {
-            continue;
-        }
-        // Write bigram entry. Target buffer is always the additional buffer.
-        if (!bufferToWrite->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */,toPos)) {
-            return false;
-        }
-        if (!bufferToWrite->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
-                toPos)) {
+        if (!BigramListReadWriteUtils::createAndWriteBigramEntry(bufferToWrite, bigramPos,
+                BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags),
+                BigramListReadWriteUtils::hasNext(bigramFlags), toPos)) {
             return false;
         }
         (*outBigramsCount)++;
-    } while(BigramListReadWriteUtils::hasNext(flags));
+    } while(BigramListReadWriteUtils::hasNext(bigramFlags));
     if (usesAdditionalBuffer) {
         *fromPos += mBuffer->getOriginalBufferSize();
     }
     return true;
 }
 
-bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramPos,
-        const int probability, int *const pos) {
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*pos);
+// Finding useless bigram entries and remove them. Bigram entry is useless when the target PtNode
+// has been deleted or is not a valid terminal.
+bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
+        int *const bigramListPos) {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
     if (usesAdditionalBuffer) {
-        *pos -= mBuffer->getOriginalBufferSize();
+        *bigramListPos -= mBuffer->getOriginalBufferSize();
     }
-    BigramListReadWriteUtils::BigramFlags flags;
+    DynamicPatriciaTrieNodeReader nodeReader(mBuffer, this /* bigramsPolicy */, mShortcutPolicy);
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int bigramEntryCount = 0;
     do {
-        int entryPos = *pos;
+        if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
+            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            ASSERT(false);
+            return false;
+        }
+        int bigramEntryPos = *bigramListPos;
+        int originalBigramPos;
+        // The buffer address can be changed after calling buffer writing methods.
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+                mBuffer->getBuffer(usesAdditionalBuffer), &bigramFlags, &originalBigramPos,
+                bigramListPos);
+        if (usesAdditionalBuffer) {
+            bigramEntryPos += mBuffer->getOriginalBufferSize();
+        }
+        if (originalBigramPos == NOT_A_DICT_POS) {
+            // This entry has already been removed.
+            continue;
+        }
+        if (usesAdditionalBuffer) {
+            originalBigramPos += mBuffer->getOriginalBufferSize();
+        }
+        const int bigramTargetNodePos =
+                followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
+        nodeReader.fetchNodeInfoInBufferFromPtNodePos(bigramTargetNodePos);
+        // TODO: Update probability for supporting probability decaying.
+        if (nodeReader.isDeleted() || !nodeReader.isTerminal()
+                || bigramTargetNodePos == NOT_A_DICT_POS) {
+            // The target is no longer valid terminal. Invalidate the current bigram entry.
+            if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
+                    NOT_A_DICT_POS /* targetOffset */, &bigramEntryPos)) {
+                return false;
+            }
+        }
+    } while(BigramListReadWriteUtils::hasNext(bigramFlags));
+    return true;
+}
+
+bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTargetPos,
+        const int probability, int *const bigramListPos) {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
+    if (usesAdditionalBuffer) {
+        *bigramListPos -= mBuffer->getOriginalBufferSize();
+    }
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int bigramEntryCount = 0;
+    do {
+        if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
+            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            ASSERT(false);
+            return false;
+        }
+        int entryPos = *bigramListPos;
         if (usesAdditionalBuffer) {
             entryPos += mBuffer->getOriginalBufferSize();
         }
+        int originalBigramPos;
         // The buffer address can be changed after calling buffer writing methods.
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
-        flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, pos);
-        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-                buffer, flags, pos);
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+                mBuffer->getBuffer(usesAdditionalBuffer), &bigramFlags, &originalBigramPos,
+                bigramListPos);
         if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
-        if (followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos) == bigramPos) {
+        if (followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos) == bigramTargetPos) {
             // Update this bigram entry.
             const BigramListReadWriteUtils::BigramFlags updatedFlags =
-                    BigramListReadWriteUtils::setProbabilityInFlags(flags, probability);
-            return mBuffer->writeUintAndAdvancePosition(updatedFlags, 1 /* size */, &entryPos);
+                    BigramListReadWriteUtils::setProbabilityInFlags(bigramFlags, probability);
+            return BigramListReadWriteUtils::writeBigramEntry(mBuffer, updatedFlags,
+                    originalBigramPos, &entryPos);
         }
-        if (BigramListReadWriteUtils::hasNext(flags)) {
+        if (BigramListReadWriteUtils::hasNext(bigramFlags)) {
             continue;
         }
         // The current last entry is found.
         // First, update the flags of the last entry.
         const BigramListReadWriteUtils::BigramFlags updatedFlags =
-                BigramListReadWriteUtils::setHasNextFlag(flags);
-        if (!mBuffer->writeUintAndAdvancePosition(updatedFlags, 1 /* size */, &entryPos)) {
+                BigramListReadWriteUtils::setHasNextFlag(bigramFlags);
+        if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, updatedFlags, originalBigramPos,
+                &entryPos)) {
             return false;
         }
         if (usesAdditionalBuffer) {
-            *pos += mBuffer->getOriginalBufferSize();
+            *bigramListPos += mBuffer->getOriginalBufferSize();
         }
         // Then, add a new entry after the last entry.
-        return writeNewBigramEntry(bigramPos, probability, pos);
-    } while(BigramListReadWriteUtils::hasNext(flags));
+        return writeNewBigramEntry(bigramTargetPos, probability, bigramListPos);
+    } while(BigramListReadWriteUtils::hasNext(bigramFlags));
     // We return directly from the while loop.
     ASSERT(false);
     return false;
 }
 
-bool DynamicBigramListPolicy::writeNewBigramEntry(const int bigramPos, const int probability,
+bool DynamicBigramListPolicy::writeNewBigramEntry(const int bigramTargetPos, const int probability,
         int *const writingPos) {
-    BigramListReadWriteUtils::BigramFlags newBigramFlags;
-    uint32_t newBigramOffset;
-    int newBigramOffsetFieldSize;
-    if(!BigramListReadWriteUtils::createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
-            *writingPos, bigramPos, probability, false /* hasNext */, &newBigramFlags,
-            &newBigramOffset, &newBigramOffsetFieldSize)) {
-        return false;
-    }
-    // Write bigram flags.
-    if (!mBuffer->writeUintAndAdvancePosition(newBigramFlags, 1 /* size */, writingPos)) {
-        return false;
-    }
-    // Write bigram positon offset.
-    if (!mBuffer->writeUintAndAdvancePosition(newBigramOffset, newBigramOffsetFieldSize,
-            writingPos)) {
-        return false;
-    }
-    return true;
+    // hasNext is false because we are adding a new bigram entry at the end of the bigram list.
+    return BigramListReadWriteUtils::createAndWriteBigramEntry(mBuffer, bigramTargetPos,
+            probability, false /* hasNext */, writingPos);
 }
 
-bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int targetBigramPos) {
+bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int bigramTargetPos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(bigramListPos);
     int pos = bigramListPos;
     if (usesAdditionalBuffer) {
         pos -= mBuffer->getOriginalBufferSize();
     }
-    BigramListReadWriteUtils::BigramFlags flags;
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int bigramEntryCount = 0;
     do {
-        // The buffer address can be changed after calling buffer writing methods.
-        const uint8_t *const buffer = mBuffer->getBuffer(usesAdditionalBuffer);
-        flags = BigramListReadWriteUtils::getFlagsAndForwardPointer(buffer, &pos);
-        int bigramOffsetFieldPos = pos;
-        if (usesAdditionalBuffer) {
-            bigramOffsetFieldPos += mBuffer->getOriginalBufferSize();
+        if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
+            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            ASSERT(false);
+            return false;
         }
-        int originalBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-                buffer, flags, &pos);
+        int bigramEntryPos = pos;
+        int originalBigramPos;
+        // The buffer address can be changed after calling buffer writing methods.
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+                mBuffer->getBuffer(usesAdditionalBuffer), &bigramFlags, &originalBigramPos, &pos);
+        if (usesAdditionalBuffer) {
+            bigramEntryPos += mBuffer->getOriginalBufferSize();
+        }
         if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
         const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
-        if (bigramPos != targetBigramPos) {
+        if (bigramPos != bigramTargetPos) {
             continue;
         }
-        // Target entry is found. Write 0 into the bigram pos field to mark the bigram invalid.
-        const int bigramOffsetFieldSize = BigramListReadWriteUtils::attributeAddressSize(flags);
-        if (!mBuffer->writeUintAndAdvancePosition(0 /* data */, bigramOffsetFieldSize,
-                &bigramOffsetFieldPos)) {
-            return false;
-        }
-        return true;
-    } while(BigramListReadWriteUtils::hasNext(flags));
+        // Target entry is found. Write an invalid target position to mark the bigram invalid.
+        return BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
+                NOT_A_DICT_POS /* targetOffset */, &bigramEntryPos);
+    } while(BigramListReadWriteUtils::hasNext(bigramFlags));
     return false;
 }
 
@@ -212,14 +255,14 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
     }
     int currentPos = originalBigramPos;
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, this /* bigramsPolicy */, mShortcutPolicy);
-    nodeReader.fetchNodeInfoFromBuffer(currentPos);
+    nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos);
     int bigramLinkCount = 0;
     while (nodeReader.getBigramLinkedNodePos() != NOT_A_DICT_POS) {
         currentPos = nodeReader.getBigramLinkedNodePos();
-        nodeReader.fetchNodeInfoFromBuffer(currentPos);
+        nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos);
         bigramLinkCount++;
-        if (bigramLinkCount > BIGRAM_LINK_COUNT_LIMIT) {
-            AKLOGI("Bigram link is invalid. start position: %d", bigramPos);
+        if (bigramLinkCount > CONTINUING_BIGRAM_LINK_COUNT_LIMIT) {
+            AKLOGE("Bigram link is invalid. start position: %d", bigramPos);
             ASSERT(false);
             return NOT_A_DICT_POS;
         }

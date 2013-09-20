@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
@@ -66,6 +67,36 @@ class DynamicPatriciaTrieGcEventListeners {
         BufferWithExtendableBuffer *const mBuffer;
         std::vector<int> valueStack;
         int mChildrenValue;
+    };
+
+    // Updates all bigram entries that are held by valid PtNodes. This removes useless bigram
+    // entries.
+    class ListenerForUpdatingBigramProbability
+            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+     public:
+        ListenerForUpdatingBigramProbability(DynamicBigramListPolicy *const bigramPolicy)
+                : mBigramPolicy(bigramPolicy) {}
+
+        bool onAscend() { return true; }
+
+        bool onDescend() { return true; }
+
+        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node) {
+            if (!node->isDeleted()) {
+                int pos = node->getBigramsPos();
+                if (pos != NOT_A_DICT_POS) {
+                    if (!mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&pos)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(ListenerForUpdatingBigramProbability);
+
+        DynamicBigramListPolicy *const mBigramPolicy;
     };
 
  private:

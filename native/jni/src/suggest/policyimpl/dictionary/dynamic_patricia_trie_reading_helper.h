@@ -73,32 +73,32 @@ class DynamicPatriciaTrieReadingHelper {
         return mReadingState.mPos == NOT_A_DICT_POS;
     }
 
-    // Initialize reading state with the head position of a node array.
-    AK_FORCE_INLINE void initWithNodeArrayPos(const int nodeArrayPos) {
-        if (nodeArrayPos == NOT_A_DICT_POS) {
+    // Initialize reading state with the head position of a PtNode array.
+    AK_FORCE_INLINE void initWithPtNodeArrayPos(const int ptNodeArrayPos) {
+        if (ptNodeArrayPos == NOT_A_DICT_POS) {
             mReadingState.mPos = NOT_A_DICT_POS;
         } else {
             mIsError = false;
-            mReadingState.mPos = nodeArrayPos;
+            mReadingState.mPos = ptNodeArrayPos;
             mReadingState.mPrevTotalCodePointCount = 0;
             mReadingState.mTotalNodeCount = 0;
             mReadingState.mNodeArrayCount = 0;
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingStateStack.clear();
-            nextNodeArray();
+            nextPtNodeArray();
             if (!isEnd()) {
-                fetchNodeInfo();
+                fetchPtNodeInfo();
             }
         }
     }
 
     // Initialize reading state with the head position of a node.
-    AK_FORCE_INLINE void initWithNodePos(const int nodePos) {
-        if (nodePos == NOT_A_DICT_POS) {
+    AK_FORCE_INLINE void initWithPtNodePos(const int ptNodePos) {
+        if (ptNodePos == NOT_A_DICT_POS) {
             mReadingState.mPos = NOT_A_DICT_POS;
         } else {
             mIsError = false;
-            mReadingState.mPos = nodePos;
+            mReadingState.mPos = ptNodePos;
             mReadingState.mNodeCount = 1;
             mReadingState.mPrevTotalCodePointCount = 0;
             mReadingState.mTotalNodeCount = 1;
@@ -106,7 +106,7 @@ class DynamicPatriciaTrieReadingHelper {
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingState.mPosOfLastPtNodeArrayHead = NOT_A_DICT_POS;
             mReadingStateStack.clear();
-            fetchNodeInfo();
+            fetchPtNodeInfo();
         }
     }
 
@@ -151,10 +151,10 @@ class DynamicPatriciaTrieReadingHelper {
             // All nodes in the current node array have been read.
             followForwardLink();
             if (!isEnd()) {
-                fetchNodeInfo();
+                fetchPtNodeInfo();
             }
         } else {
-            fetchNodeInfo();
+            fetchPtNodeInfo();
         }
     }
 
@@ -167,9 +167,9 @@ class DynamicPatriciaTrieReadingHelper {
             mReadingState.mPos = mNodeReader.getChildrenPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             // Read children node array.
-            nextNodeArray();
+            nextPtNodeArray();
             if (!isEnd()) {
-                fetchNodeInfo();
+                fetchPtNodeInfo();
             }
         } else {
             mReadingState.mPos = NOT_A_DICT_POS;
@@ -186,7 +186,7 @@ class DynamicPatriciaTrieReadingHelper {
             mReadingState.mPos = mNodeReader.getParentPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingState.mPosOfLastPtNodeArrayHead = NOT_A_DICT_POS;
-            fetchNodeInfo();
+            fetchPtNodeInfo();
         } else {
             mReadingState.mPos = NOT_A_DICT_POS;
         }
@@ -202,7 +202,7 @@ class DynamicPatriciaTrieReadingHelper {
 
     AK_FORCE_INLINE void reloadCurrentPtNodeInfo() {
         if (!isEnd()) {
-            fetchNodeInfo();
+            fetchPtNodeInfo();
         }
     }
 
@@ -240,12 +240,12 @@ class DynamicPatriciaTrieReadingHelper {
     int mMergedNodeCodePoints[MAX_WORD_LENGTH];
     std::vector<ReadingState> mReadingStateStack;
 
-    void nextNodeArray();
+    void nextPtNodeArray();
 
     void followForwardLink();
 
-    AK_FORCE_INLINE void fetchNodeInfo() {
-        mNodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(mReadingState.mPos,
+    AK_FORCE_INLINE void fetchPtNodeInfo() {
+        mNodeReader.fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(mReadingState.mPos,
                 MAX_WORD_LENGTH, mMergedNodeCodePoints);
         if (mNodeReader.getCodePointCount() <= 0) {
             // Empty node is not allowed.
@@ -271,7 +271,7 @@ class DynamicPatriciaTrieReadingHelper {
         } else {
             mReadingState = mReadingStateStack.back();
             mReadingStateStack.pop_back();
-            fetchNodeInfo();
+            fetchPtNodeInfo();
         }
     }
 };
