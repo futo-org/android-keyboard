@@ -40,6 +40,10 @@ public final class TextRange {
         return mWordAtCursorEndIndex - mCursorIndex;
     }
 
+    public int length() {
+        return mWord.length();
+    }
+
     /**
      * Gets the suggestion spans that are put squarely on the word, with the exact start
      * and end of the span matching the boundaries of the word.
