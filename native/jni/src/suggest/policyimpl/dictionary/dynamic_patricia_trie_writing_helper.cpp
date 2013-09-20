@@ -536,6 +536,13 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &listenerForupdatingBigramProbability)) {
         return false;
     }
+
+    // Mapping from positions in mBuffer to positions in bufferToWrite.
+    hash_map_compat<int, int> positionMap;
+    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::ListenerForPlacingAndWritingValidPtNodesToBuffer
+            listenerForPlacingAndWritingLivingPtNodesToBuffer(this, mBuffer, &positionMap);
+
     // TODO: Implement.
     return false;
 }

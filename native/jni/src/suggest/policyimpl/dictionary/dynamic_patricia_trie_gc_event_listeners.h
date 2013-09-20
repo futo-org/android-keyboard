@@ -24,6 +24,8 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -52,12 +54,15 @@ class DynamicPatriciaTrieGcEventListeners {
             return true;
         }
 
-        bool onDescend() {
+        bool onDescend(const int ptNodeArrayPos) {
             valueStack.push_back(0);
             return true;
         }
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node);
+        bool onReadingPtNodeArrayTail() { return true; }
+
+        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints);
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(
@@ -79,9 +84,12 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onAscend() { return true; }
 
-        bool onDescend() { return true; }
+        bool onDescend(const int ptNodeArrayPos) { return true; }
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node) {
+        bool onReadingPtNodeArrayTail() { return true; }
+
+        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints) {
             if (!node->isDeleted()) {
                 int pos = node->getBigramsPos();
                 if (pos != NOT_A_DICT_POS) {
@@ -97,6 +105,40 @@ class DynamicPatriciaTrieGcEventListeners {
         DISALLOW_IMPLICIT_CONSTRUCTORS(ListenerForUpdatingBigramProbability);
 
         DynamicBigramListPolicy *const mBigramPolicy;
+    };
+
+    class ListenerForPlacingAndWritingValidPtNodesToBuffer
+            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+     public:
+        ListenerForPlacingAndWritingValidPtNodesToBuffer(
+                DynamicPatriciaTrieWritingHelper *const writingHelper,
+                BufferWithExtendableBuffer *const bufferToWrite,
+                hash_map_compat<int, int> *const positionMap)
+                : mWritingHelper(writingHelper), mBufferToWrite(bufferToWrite),
+                  mPositionMap(positionMap), mValidPtNodeCount(0),
+                  mPtNodeArraySizeFieldPos(NOT_A_DICT_POS) {};
+
+        bool onAscend() { return true; }
+
+        bool onDescend(const int ptNodeArrayPos);
+
+        bool onReadingPtNodeArrayTail();
+
+        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints);
+
+        hash_map_compat<int, int> *getPositionMap() const {
+            return mPositionMap;
+        }
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(ListenerForPlacingAndWritingValidPtNodesToBuffer);
+
+        DynamicPatriciaTrieWritingHelper *const mWritingHelper;
+        BufferWithExtendableBuffer *const mBufferToWrite;
+        hash_map_compat<int, int> *const mPositionMap;
+        int mValidPtNodeCount;
+        int mPtNodeArraySizeFieldPos;
     };
 
  private:

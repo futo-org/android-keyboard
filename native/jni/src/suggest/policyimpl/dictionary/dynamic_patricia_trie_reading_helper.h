@@ -45,10 +45,14 @@ class DynamicPatriciaTrieReadingHelper {
         virtual bool onAscend() = 0;
 
         // Returns whether the event handling was succeeded or not.
-        virtual bool onDescend() = 0;
+        virtual bool onDescend(const int ptNodeArrayPos) = 0;
 
         // Returns whether the event handling was succeeded or not.
-        virtual bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node) = 0;
+        virtual bool onReadingPtNodeArrayTail() = 0;
+
+        // Returns whether the event handling was succeeded or not.
+        virtual bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints) = 0;
 
      protected:
         TraversingEventListener() {};
@@ -207,6 +211,9 @@ class DynamicPatriciaTrieReadingHelper {
     }
 
     bool traverseAllPtNodesInPostorderDepthFirstManner(TraversingEventListener *const listener);
+
+    bool traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            TraversingEventListener *const listener);
 
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieReadingHelper);

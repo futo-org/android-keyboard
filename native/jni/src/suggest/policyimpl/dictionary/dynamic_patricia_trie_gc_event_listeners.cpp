@@ -20,7 +20,8 @@ namespace latinime {
 
 bool DynamicPatriciaTrieGcEventListeners
         ::ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted
-                ::onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node) {
+                ::onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                        const int *const nodeCodePoints) {
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
     // children.
     bool isUselessPtNode = !node->isTerminal();
@@ -43,6 +44,55 @@ bool DynamicPatriciaTrieGcEventListeners
         valueStack.back() += 1;
     }
     return true;
+}
+
+// Writes dummy PtNode array size when the head of PtNode array is read.
+bool DynamicPatriciaTrieGcEventListeners::ListenerForPlacingAndWritingValidPtNodesToBuffer
+        ::onDescend(const int ptNodeArrayPos) {
+    mValidPtNodeCount = 0;
+    int writingPos = mBufferToWrite->getTailPosition();
+    mPositionMap->insert(hash_map_compat<int, int>::value_type(ptNodeArrayPos,  writingPos));
+    // Writes dummy PtNode array size because arrays can have a forward link or needles PtNodes.
+    // This field will be updated later in onReadingPtNodeArrayTail() with actual PtNode count.
+    mPtNodeArraySizeFieldPos = writingPos;
+    return DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(
+            mBufferToWrite, 0 /* arraySize */, &writingPos);
+}
+
+// Write PtNode array terminal and actual PtNode array size.
+bool DynamicPatriciaTrieGcEventListeners::ListenerForPlacingAndWritingValidPtNodesToBuffer
+        ::onReadingPtNodeArrayTail() {
+    int writingPos = mBufferToWrite->getTailPosition();
+    // Write PtNode array terminal.
+    if (!DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(
+            mBufferToWrite, NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
+        return false;
+    }
+    // Write actual PtNode array size.
+    if (!DynamicPatriciaTrieWritingUtils::writePtNodeArraySizeAndAdvancePosition(
+            mBufferToWrite, mValidPtNodeCount, &mPtNodeArraySizeFieldPos)) {
+        return false;
+    }
+    return true;
+}
+
+// Write valid PtNode to buffer and memorize mapping from the old position to the new position.
+bool DynamicPatriciaTrieGcEventListeners::ListenerForPlacingAndWritingValidPtNodesToBuffer
+        ::onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints) {
+    if (node->isDeleted()) {
+        // Current PtNode is not written in new buffer because it has been deleted.
+        mPositionMap->insert(hash_map_compat<int, int>::value_type(node->getHeadPos(),
+                NOT_A_DICT_POS));
+        return true;
+    }
+    int writingPos = mBufferToWrite->getTailPosition();
+    mPositionMap->insert(hash_map_compat<int, int>::value_type(node->getHeadPos(), writingPos));
+    mValidPtNodeCount++;
+    // Writes current PtNode.
+    return mWritingHelper->writePtNodeToBufferByCopyingPtNodeInfo(mBufferToWrite, node,
+            node->getParentPos(),  nodeCodePoints, node->getCodePointCount(),
+            node->getProbability(), &writingPos);
 }
 
 } // namespace latinime

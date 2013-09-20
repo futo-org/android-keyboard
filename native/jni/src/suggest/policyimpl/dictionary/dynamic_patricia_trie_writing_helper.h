@@ -59,6 +59,13 @@ class DynamicPatriciaTrieWritingHelper {
     // DynamicPatriciaTrieGcEventListeners.
     bool markNodeAsDeleted(const DynamicPatriciaTrieNodeReader *const nodeToUpdate);
 
+    // CAVEAT: This method must be called only from this class or inner classes of
+    // DynamicPatriciaTrieGcEventListeners.
+    bool writePtNodeToBufferByCopyingPtNodeInfo(BufferWithExtendableBuffer *const bufferToWrite,
+            const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
+            const int *const codePoints, const int codePointCount, const int probability,
+            int *const writingPos);
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
@@ -81,11 +88,6 @@ class DynamicPatriciaTrieWritingHelper {
     bool writePtNodeToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
             const int parentPos, const int *const codePoints, const int codePointCount,
             const int probability, int *const writingPos);
-
-    bool writePtNodeToBufferByCopyingPtNodeInfo(BufferWithExtendableBuffer *const bufferToWrite,
-            const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
-            const int *const codePoints, const int codePointCount, const int probability,
-            int *const writingPos);
 
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
