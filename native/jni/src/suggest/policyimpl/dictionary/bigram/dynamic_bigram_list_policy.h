@@ -21,12 +21,11 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
-#include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
+
+class BufferWithExtendableBuffer;
+class DictionaryShortcutsStructurePolicy;
 
 /*
  * This is a dynamic version of BigramListPolicy and supports an additional buffer.
@@ -40,9 +39,9 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     ~DynamicBigramListPolicy() {}
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
-            int *const pos) const;
+            int *const bigramEntryPos) const;
 
-    void skipAllBigrams(int *const pos) const;
+    void skipAllBigrams(int *const bigramListPos) const;
 
     // Copy bigrams from the bigram list that starts at fromPos in mBuffer to toPos in
     // bufferToWrite and advance these positions after bigram lists. This method skips invalid
@@ -50,18 +49,22 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     bool copyAllBigrams(BufferWithExtendableBuffer *const bufferToWrite, int *const fromPos,
             int *const toPos, int *const outBigramsCount) const;
 
-    bool addNewBigramEntryToBigramList(const int bigramPos, const int probability, int *const pos);
+    bool updateAllBigramEntriesAndDeleteUselessEntries(int *const bigramListPos);
 
-    bool writeNewBigramEntry(const int bigramPos, const int probability,
+    bool addNewBigramEntryToBigramList(const int bigramTargetPos, const int probability,
+            int *const bigramListPos);
+
+    bool writeNewBigramEntry(const int bigramTargetPos, const int probability,
             int *const writingPos);
 
     // Return if targetBigramPos is found or not.
-    bool removeBigram(const int bigramListPos, const int targetBigramPos);
+    bool removeBigram(const int bigramListPos, const int bigramTargetPos);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicBigramListPolicy);
 
-    static const int BIGRAM_LINK_COUNT_LIMIT;
+    static const int CONTINUING_BIGRAM_LINK_COUNT_LIMIT;
+    static const int BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT;
 
     BufferWithExtendableBuffer *const mBuffer;
     const DictionaryShortcutsStructurePolicy *const mShortcutPolicy;

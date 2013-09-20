@@ -24,11 +24,15 @@
 
 namespace latinime {
 
+class BufferWithExtendableBuffer;
+
 class BigramListReadWriteUtils {
 public:
    typedef uint8_t BigramFlags;
 
-   static BigramFlags getFlagsAndForwardPointer(const uint8_t *const bigramsBuf, int *const pos);
+   static void getBigramEntryPropertiesAndAdvancePosition(const uint8_t *const bigramsBuf,
+           BigramFlags *const outBigramFlags, int *const outTargetPtNodePos,
+           int *const bigramEntryPos);
 
    static AK_FORCE_INLINE int getProbabilityFromFlags(const BigramFlags flags) {
        return flags & MASK_ATTRIBUTE_PROBABILITY;
@@ -39,10 +43,7 @@ public:
    }
 
    // Bigrams reading methods
-   static void skipExistingBigrams(const uint8_t *const bigramsBuf, int *const pos);
-
-   static int getBigramAddressAndForwardPointer(const uint8_t *const bigramsBuf,
-           const BigramFlags flags, int *const pos);
+   static void skipExistingBigrams(const uint8_t *const bigramsBuf, int *const bigramListPos);
 
    // Returns the size of the bigram position field that is stored in bigram flags.
    static AK_FORCE_INLINE int attributeAddressSize(const BigramFlags flags) {
@@ -67,48 +68,11 @@ public:
        return (flags & (~MASK_ATTRIBUTE_PROBABILITY)) | (probability & MASK_ATTRIBUTE_PROBABILITY);
    }
 
-   // Returns true if the bigram entry is valid and put entry values into out*.
-   static AK_FORCE_INLINE bool createBigramEntryAndGetFlagsAndOffsetAndOffsetFieldSize(
-           const int entryPos, const int targetPos, const int probability, const bool hasNext,
-           BigramFlags *const outBigramFlags, uint32_t *const outOffset,
-           int *const outOffsetFieldSize) {
-       if (targetPos == NOT_A_DICT_POS) {
-           return false;
-       }
-       BigramFlags flags = probability & MASK_ATTRIBUTE_PROBABILITY;
-       if (hasNext) {
-           flags |= FLAG_ATTRIBUTE_HAS_NEXT;
-       }
-       const int targetFieldPos = entryPos + 1;
-       const int offset = targetPos - targetFieldPos;
-       if (offset < 0) {
-           flags |= FLAG_ATTRIBUTE_OFFSET_NEGATIVE;
-       }
-       const uint32_t absOffest = abs(offset);
-       if ((absOffest >> 24) != 0) {
-           // Offset is too large.
-           return false;
-       } else if ((absOffest >> 16) != 0) {
-           flags |= FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
-           *outOffsetFieldSize = 3;
-       } else if ((absOffest >> 8) != 0) {
-           flags |= FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES;
-           *outOffsetFieldSize = 2;
-       } else {
-           flags |= FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE;
-           *outOffsetFieldSize = 1;
-       }
+   static bool createAndWriteBigramEntry(BufferWithExtendableBuffer *const buffer,
+           const int targetPos, const int probability, const bool hasNext, int *const writingPos);
 
-       // Currently, all newly written bigram position fields are 3 bytes to simplify dictionary
-       // writing.
-       // TODO: Remove following 2 lines and optimize memory space.
-       flags = (flags & (~MASK_ATTRIBUTE_ADDRESS_TYPE)) | FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
-       *outOffsetFieldSize = 3;
-
-       *outBigramFlags = flags;
-       *outOffset = absOffest;
-       return true;
-   }
+   static bool writeBigramEntry(BufferWithExtendableBuffer *const buffer, const BigramFlags flags,
+           const int targetOffset, int *const writingPos);
 
 private:
    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramListReadWriteUtils);
@@ -122,9 +86,16 @@ private:
    static const BigramFlags MASK_ATTRIBUTE_PROBABILITY;
    static const int ATTRIBUTE_ADDRESS_SHIFT;
 
+   // Returns true if the bigram entry is valid and put entry flags into out*.
+   static bool createAndGetBigramFlags(const int entryPos, const int targetPos,
+           const int probability, const bool hasNext, BigramFlags *const outBigramFlags);
+
    static AK_FORCE_INLINE bool isOffsetNegative(const BigramFlags flags) {
        return (flags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) != 0;
    }
+
+   static int getBigramAddressAndAdvancePosition(const uint8_t *const bigramsBuf,
+           const BigramFlags flags, int *const pos);
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_READ_WRITE_UTILS_H

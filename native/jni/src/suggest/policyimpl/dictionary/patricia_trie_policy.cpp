@@ -49,7 +49,7 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
 // with a z, it's the last PtNode of the root array, so all children addresses will be smaller
 // than the position we look for, and we have to descend the z node).
 /* Parameters :
- * nodePos: the byte position of the terminal PtNode of the word we are searching for (this is
+ * ptNodePos: the byte position of the terminal PtNode of the word we are searching for (this is
  *   what is stored as the "bigram position" in each bigram)
  * outCodePoints: an array to write the found word, with MAX_WORD_LENGTH size.
  * outUnigramProbability: a pointer to an int to write the probability into.
@@ -57,7 +57,7 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
  */
 // TODO: Split this function to be more readable
 int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
-        const int nodePos, const int maxCodePointCount, int *const outCodePoints,
+        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
     int pos = getRootPosition();
     int wordPos = 0;
@@ -78,7 +78,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
             const int character = PatriciaTrieReadingUtils::getCodePointAndAdvancePosition(
                     mDictRoot, &pos);
-            if (nodePos == startPos) {
+            if (ptNodePos == startPos) {
                 // We found the position. Copy the rest of the code points in the buffer and return
                 // the length.
                 outCodePoints[wordPos] = character;
@@ -121,7 +121,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                 // Here comes the tricky part. First, read the children position.
                 const int childrenPos = PatriciaTrieReadingUtils
                         ::readChildrenPositionAndAdvancePosition(mDictRoot, flags, &currentPos);
-                if (childrenPos > nodePos) {
+                if (childrenPos > ptNodePos) {
                     // If the children pos is greater than the position, it means the previous
                     // PtNode, which position is stored in lastCandidatePtNodePos, was the right
                     // one.
@@ -213,7 +213,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
 
         }
     }
-    // If we have looked through all the PtNodes and found no match, the nodePos is
+    // If we have looked through all the PtNodes and found no match, the ptNodePos is
     // not the position of a terminal in this dictionary.
     return 0;
 }
@@ -319,11 +319,11 @@ int PatriciaTriePolicy::getProbability(const int unigramProbability,
     }
 }
 
-int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
-    if (nodePos == NOT_A_DICT_POS) {
+int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int ptNodePos) const {
+    if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_PROBABILITY;
     }
-    int pos = nodePos;
+    int pos = ptNodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::isTerminal(flags)) {
@@ -341,11 +341,11 @@ int PatriciaTriePolicy::getUnigramProbabilityOfPtNode(const int nodePos) const {
             mDictRoot, &pos), NOT_A_PROBABILITY);
 }
 
-int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_DICT_POS) {
+int PatriciaTriePolicy::getShortcutPositionOfPtNode(const int ptNodePos) const {
+    if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    int pos = nodePos;
+    int pos = ptNodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
@@ -361,11 +361,11 @@ int PatriciaTriePolicy::getShortcutPositionOfNode(const int nodePos) const {
     return pos;
 }
 
-int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
-    if (nodePos == NOT_A_DICT_POS) {
+int PatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) const {
+    if (ptNodePos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    int pos = nodePos;
+    int pos = ptNodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     if (!PatriciaTrieReadingUtils::hasBigrams(flags)) {
@@ -385,8 +385,8 @@ int PatriciaTriePolicy::getBigramsPositionOfNode(const int nodePos) const {
 }
 
 int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNode,
-        const int nodePos, DicNodeVector *childDicNodes) const {
-    int pos = nodePos;
+        const int ptNodePos, DicNodeVector *childDicNodes) const {
+    int pos = ptNodePos;
     const PatriciaTrieReadingUtils::NodeFlags flags =
             PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(mDictRoot, &pos);
     int mergedNodeCodePoints[MAX_WORD_LENGTH];
@@ -404,7 +404,7 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
         getBigramsStructurePolicy()->skipAllBigrams(&pos);
     }
-    childDicNodes->pushLeavingChild(dicNode, nodePos, childrenPos, probability,
+    childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
             PatriciaTrieReadingUtils::isTerminal(flags),
             PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
             PatriciaTrieReadingUtils::isBlacklisted(flags) ||

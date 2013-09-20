@@ -68,7 +68,7 @@ class MultiBigramMap {
 
         void init(const DictionaryStructureWithBufferPolicy *const structurePolicy,
                 const int nodePos) {
-            const int bigramsListPos = structurePolicy->getBigramsPositionOfNode(nodePos);
+            const int bigramsListPos = structurePolicy->getBigramsPositionOfPtNode(nodePos);
             BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
                     bigramsListPos);
             while (bigramsIt.hasNext()) {
@@ -112,7 +112,7 @@ class MultiBigramMap {
             const DictionaryStructureWithBufferPolicy *const structurePolicy, const int nodePos,
             const int nextWordPosition, const int unigramProbability) {
         int bigramProbability = NOT_A_PROBABILITY;
-        const int bigramsListPos = structurePolicy->getBigramsPositionOfNode(nodePos);
+        const int bigramsListPos = structurePolicy->getBigramsPositionOfPtNode(nodePos);
         BinaryDictionaryBigramsIterator bigramsIt(structurePolicy->getBigramsStructurePolicy(),
                 bigramsListPos);
         while (bigramsIt.hasNext()) {
