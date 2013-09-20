@@ -23,26 +23,26 @@
 
 namespace latinime {
 
-void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(const int nodePos,
-        const int maxCodePointCount, int *const outCodePoints) {
-    if (nodePos < 0 || nodePos >= mBuffer->getTailPosition()) {
+void DynamicPatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProcessMovedPtNode(
+        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints) {
+    if (ptNodePos < 0 || ptNodePos >= mBuffer->getTailPosition()) {
         AKLOGE("Fetching PtNode info form invalid dictionary position: %d, dictionary size: %d",
-                nodePos, mBuffer->getTailPosition());
+                ptNodePos, mBuffer->getTailPosition());
         ASSERT(false);
         invalidatePtNodeInfo();
         return;
     }
-    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(nodePos);
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(ptNodePos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
-    int pos = nodePos;
-    mHeadPos = nodePos;
+    int pos = ptNodePos;
+    mHeadPos = ptNodePos;
     if (usesAdditionalBuffer) {
         pos -= mBuffer->getOriginalBufferSize();
     }
     mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const int parentPos =
             DynamicPatriciaTrieReadingUtils::getParentPosAndAdvancePosition(dictBuf, &pos);
-    mParentPos = (parentPos != 0) ? nodePos + parentPos : NOT_A_DICT_POS;
+    mParentPos = (parentPos != 0) ? ptNodePos + parentPos : NOT_A_DICT_POS;
     if (outCodePoints != 0) {
         mCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
                 dictBuf, mFlags, maxCodePointCount, outCodePoints, &pos);
@@ -99,7 +99,8 @@ void DynamicPatriciaTrieNodeReader::fetchNodeInfoFromBufferAndProcessMovedNode(c
     // Read destination node if the read node is a moved node.
     if (DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
         // The destination position is stored at the same place as the parent position.
-        fetchNodeInfoFromBufferAndProcessMovedNode(mParentPos, maxCodePointCount, outCodePoints);
+        fetchPtNodeInfoFromBufferAndProcessMovedPtNode(mParentPos, maxCodePointCount,
+                outCodePoints);
     }
 }
 

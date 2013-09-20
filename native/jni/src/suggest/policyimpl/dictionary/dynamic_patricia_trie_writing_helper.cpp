@@ -90,7 +90,7 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
         const int probability) {
     int mMergedNodeCodePoints[MAX_WORD_LENGTH];
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoFromBufferAndGetNodeCodePoints(word0Pos, MAX_WORD_LENGTH,
+    nodeReader.fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(word0Pos, MAX_WORD_LENGTH,
             mMergedNodeCodePoints);
     // Move node to add bigram entry.
     const int newNodePos = mBuffer->getTailPosition();
@@ -104,7 +104,7 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
             &writingPos)) {
         return false;
     }
-    nodeReader.fetchNodeInfoFromBuffer(newNodePos);
+    nodeReader.fetchNodeInfoInBufferFromPtNodePos(newNodePos);
     if (nodeReader.getBigramsPos() != NOT_A_DICT_POS) {
         // Insert a new bigram entry into the existing bigram list.
         int bigramListPos = nodeReader.getBigramsPos();
@@ -131,7 +131,7 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
 // Remove a bigram relation from word0Pos to word1Pos.
 bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoFromBuffer(word0Pos);
+    nodeReader.fetchNodeInfoInBufferFromPtNodePos(word0Pos);
     if (nodeReader.getBigramsPos() == NOT_A_DICT_POS) {
         return false;
     }
@@ -217,7 +217,7 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
         // Update children's parent position.
         DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
         const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
-        readingHelper.initWithNodeArrayPos(originalNode->getChildrenPos());
+        readingHelper.initWithPtNodeArrayPos(originalNode->getChildrenPos());
         while (!readingHelper.isEnd()) {
             const int childPtNodeWrittenPos = nodeReader->getHeadPos();
             const int parentOffset = movedPos - childPtNodeWrittenPos;
@@ -452,7 +452,7 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     }
     // Load node info. Information of the 1st part will be fetched.
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoFromBuffer(firstPartOfReallocatedPtNodePos);
+    nodeReader.fetchNodeInfoInBufferFromPtNodePos(firstPartOfReallocatedPtNodePos);
     // Update children position.
     int childrenPosFieldPos = nodeReader.getChildrenPosFieldPos();
     if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
@@ -519,13 +519,21 @@ bool DynamicPatriciaTrieWritingHelper::writeBufferToFilePointer(FILE *const file
 bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         BufferWithExtendableBuffer *const bufferToWrite) {
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
-    readingHelper.initWithNodeArrayPos(rootPtNodeArrayPos);
+    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
             ::ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted
                     listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted(
                             this, mBuffer);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted)) {
+        return false;
+    }
+
+    readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::ListenerForUpdatingBigramProbability
+            listenerForupdatingBigramProbability(mBigramPolicy);
+    if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
+            &listenerForupdatingBigramProbability)) {
         return false;
     }
     // TODO: Implement.

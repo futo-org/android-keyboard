@@ -33,10 +33,9 @@ class BigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     void getNextBigram(int *const outBigramPos, int *const outProbability, bool *const outHasNext,
             int *const pos) const {
-        const BigramListReadWriteUtils::BigramFlags flags =
-                BigramListReadWriteUtils::getFlagsAndForwardPointer(mBigramsBuf, pos);
-        *outBigramPos = BigramListReadWriteUtils::getBigramAddressAndForwardPointer(
-                        mBigramsBuf, flags, pos);
+        BigramListReadWriteUtils::BigramFlags flags;
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(mBigramsBuf, &flags,
+                outBigramPos, pos);
         *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(flags);
         *outHasNext = BigramListReadWriteUtils::hasNext(flags);
     }

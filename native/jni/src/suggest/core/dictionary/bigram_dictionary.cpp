@@ -147,7 +147,7 @@ int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const in
     int pos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(prevWord, prevWordLength,
             forceLowerCaseSearch);
     if (NOT_A_DICT_POS == pos) return NOT_A_DICT_POS;
-    return mDictionaryStructurePolicy->getBigramsPositionOfNode(pos);
+    return mDictionaryStructurePolicy->getBigramsPositionOfPtNode(pos);
 }
 
 int BigramDictionary::getBigramProbability(const int *word0, int length0, const int *word1,

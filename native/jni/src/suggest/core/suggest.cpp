@@ -223,7 +223,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             BinaryDictionaryShortcutIterator shortcutIt(
                     traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
                     traverseSession->getDictionaryStructurePolicy()
-                            ->getShortcutPositionOfNode(terminalDicNode->getPos()));
+                            ->getShortcutPositionOfPtNode(terminalDicNode->getPos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);

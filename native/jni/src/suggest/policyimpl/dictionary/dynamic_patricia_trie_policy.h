@@ -51,7 +51,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
             DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
-            const int terminalNodePos, const int maxCodePointCount, int *const outCodePoints,
+            const int terminalPtNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
     int getTerminalNodePositionOfWord(const int *const inWord,
@@ -59,11 +59,11 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
 
-    int getUnigramProbabilityOfPtNode(const int nodePos) const;
+    int getUnigramProbabilityOfPtNode(const int ptNodePos) const;
 
-    int getShortcutPositionOfNode(const int nodePos) const;
+    int getShortcutPositionOfPtNode(const int ptNodePos) const;
 
-    int getBigramsPositionOfNode(const int nodePos) const;
+    int getBigramsPositionOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
         return &mHeaderPolicy;

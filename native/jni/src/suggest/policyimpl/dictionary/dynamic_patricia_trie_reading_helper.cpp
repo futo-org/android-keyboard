@@ -72,7 +72,7 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
 
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
-void DynamicPatriciaTrieReadingHelper::nextNodeArray() {
+void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
     mReadingState.mPosOfLastPtNodeArrayHead = mReadingState.mPos;
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
@@ -123,7 +123,7 @@ void DynamicPatriciaTrieReadingHelper::followForwardLink() {
     if (DynamicPatriciaTrieReadingUtils::isValidForwardLinkPosition(forwardLinkPosition)) {
         // Follow the forward link.
         mReadingState.mPos += forwardLinkPosition;
-        nextNodeArray();
+        nextPtNodeArray();
     } else {
         // All node arrays have been read.
         mReadingState.mPos = NOT_A_DICT_POS;

@@ -52,9 +52,9 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual int getUnigramProbabilityOfPtNode(const int nodePos) const = 0;
 
-    virtual int getShortcutPositionOfNode(const int nodePos) const = 0;
+    virtual int getShortcutPositionOfPtNode(const int nodePos) const = 0;
 
-    virtual int getBigramsPositionOfNode(const int nodePos) const = 0;
+    virtual int getBigramsPositionOfPtNode(const int nodePos) const = 0;
 
     virtual const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const = 0;
 
