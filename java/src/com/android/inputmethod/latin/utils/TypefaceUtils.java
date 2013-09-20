@@ -66,6 +66,11 @@ public final class TypefaceUtils {
         }
     }
 
+    public static float getStringWidth(final String string, final Paint paint) {
+        paint.getTextBounds(string, 0, string.length(), sTextWidthBounds);
+        return sTextWidthBounds.width();
+    }
+
     private static int getCharGeometryCacheKey(final char referenceChar, final Paint paint) {
         final int labelSize = (int)paint.getTextSize();
         final Typeface face = paint.getTypeface();
