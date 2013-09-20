@@ -39,7 +39,7 @@
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+1792: "ធ" KHMER LETTER THO -->
             <Key
-                latin:keyLabel="&#x178C;"
+                latin:keyLabel="&#x1792;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+17A2: "អ" KHMER LETTER QA -->
             <Key
