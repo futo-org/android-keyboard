@@ -233,6 +233,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_RESUME_SUGGESTIONS = 4;
         private static final int MSG_REOPEN_DICTIONARIES = 5;
         private static final int MSG_ON_END_BATCH_INPUT = 6;
+        private static final int MSG_RESET_CACHES = 7;
 
         private static final int ARG1_NOT_GESTURE_INPUT = 0;
         private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
@@ -297,6 +298,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case MSG_ON_END_BATCH_INPUT:
                 latinIme.onEndBatchInputAsyncInternal((SuggestedWords) msg.obj);
                 break;
+            case MSG_RESET_CACHES:
+                latinIme.retryResetCaches(msg.arg1 == 1 /* tryResumeSuggestions */,
+                        msg.arg2 /* remainingTries */);
+                break;
             }
         }
 
@@ -311,6 +316,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void postResumeSuggestions() {
             removeMessages(MSG_RESUME_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_RESUME_SUGGESTIONS), mDelayUpdateSuggestions);
+        }
+
+        public void postResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
+            removeMessages(MSG_RESET_CACHES);
+            sendMessage(obtainMessage(MSG_RESET_CACHES, tryResumeSuggestions ? 1 : 0,
+                    remainingTries, null));
         }
 
         public void cancelUpdateSuggestionStrip() {
@@ -852,7 +863,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // span, so we should reset our state unconditionally, even if restarting is true.
         mEnteredText = null;
         resetComposingState(true /* alsoResetLastComposedWord */);
-        if (isDifferentTextField) mHandler.postResumeSuggestions();
         mDeleteCount = 0;
         mSpaceState = SPACE_STATE_NONE;
         mRecapitalizeStatus.deactivate();
@@ -871,8 +881,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mSuggestedWords = SuggestedWords.EMPTY;
 
-        mConnection.resetCachesUponCursorMove(editorInfo.initialSelStart,
-                false /* shouldFinishComposition */);
+        // Sometimes, while rotating, for some reason the framework tells the app we are not
+        // connected to it and that means we can't refresh the cache. In this case, schedule a
+        // refresh later.
+        if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(editorInfo.initialSelStart,
+                false /* shouldFinishComposition */)) {
+            // We try resetting the caches up to 5 times before giving up.
+            mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
+        } else {
+            if (isDifferentTextField) mHandler.postResumeSuggestions();
+        }
 
         if (isDifferentTextField) {
             mainKeyboardView.closing();
@@ -899,6 +917,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mLastSelectionStart = editorInfo.initialSelStart;
         mLastSelectionEnd = editorInfo.initialSelEnd;
+        // In some cases (namely, after rotation of the device) editorInfo.initialSelStart is lying
+        // so we try using some heuristics to find out about these and fix them.
+        tryFixLyingCursorPosition();
 
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacePeriodTimer();
@@ -916,6 +937,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         initPersonalizationDebugSettings(currentSettingsValues);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+    }
+
+    /**
+     * Try to get the text from the editor to expose lies the framework may have been
+     * telling us. Concretely, when the device rotates, the frameworks tells us about where the
+     * cursor used to be initially in the editor at the time it first received the focus; this
+     * may be completely different from the place it is upon rotation. Since we don't have any
+     * means to get the real value, try at least to ask the text view for some characters and
+     * detect the most damaging cases: when the cursor position is declared to be much smaller
+     * than it really is.
+     */
+    private void tryFixLyingCursorPosition() {
+        final CharSequence textBeforeCursor =
+                mConnection.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        if (null == textBeforeCursor) {
+            mLastSelectionStart = mLastSelectionEnd = NOT_A_CURSOR_POSITION;
+        } else {
+            final int textLength = textBeforeCursor.length();
+            if (textLength > mLastSelectionStart
+                    || (textLength < Constants.EDITOR_CONTENTS_CACHE_SIZE
+                            && mLastSelectionStart < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+                mLastSelectionStart = textLength;
+                // We can't figure out the value of mLastSelectionEnd :(
+                // But at least if it's smaller than mLastSelectionStart something is wrong
+                if (mLastSelectionStart > mLastSelectionEnd) {
+                    mLastSelectionEnd = mLastSelectionStart;
+                }
+            }
+        }
     }
 
     // Initialization of personalization debug settings. This must be called inside
@@ -1072,7 +1122,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // argument as true. But in all cases where we don't reset the entire input state,
                 // we still want to tell the rich input connection about the new cursor position so
                 // that it can update its caches.
-                mConnection.resetCachesUponCursorMove(newSelStart,
+                mConnection.resetCachesUponCursorMoveAndReturnSuccess(newSelStart,
                         false /* shouldFinishComposition */);
             }
 
@@ -1308,7 +1358,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             setSuggestedWords(settingsValues.mSuggestPuncList, false);
         }
-        mConnection.resetCachesUponCursorMove(newCursorPosition, shouldFinishComposition);
+        mConnection.resetCachesUponCursorMoveAndReturnSuccess(newCursorPosition,
+                shouldFinishComposition);
     }
 
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
@@ -2850,6 +2901,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.deleteSurroundingText(length, 0);
         mConnection.setComposingText(word, 1);
         mHandler.postUpdateSuggestionStrip();
+    }
+
+    /**
+     * Retry resetting caches in the rich input connection.
+     *
+     * When the editor can't be accessed we can't reset the caches, so we schedule a retry.
+     * This method handles the retry, and re-schedules a new retry if we still can't access.
+     * We only retry up to 5 times before giving up.
+     *
+     * @param tryResumeSuggestions Whether we should resume suggestions or not.
+     * @param remainingTries How many times we may try again before giving up.
+     */
+    private void retryResetCaches(final boolean tryResumeSuggestions, final int remainingTries) {
+        if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(mLastSelectionStart, false)) {
+            if (0 < remainingTries) {
+                mHandler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
+            }
+            return;
+        }
+        tryFixLyingCursorPosition();
+        if (tryResumeSuggestions) mHandler.postResumeSuggestions();
     }
 
     private void revertCommit() {
