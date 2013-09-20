@@ -22,6 +22,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
@@ -145,8 +146,10 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                     cursor.close();
                 }
             }
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "Contacts DB is having problems");
+        } catch (final SQLiteException e) {
+            Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
+        } catch (final IllegalStateException e) {
+            Log.e(TAG, "Contacts DB is having problems", e);
         }
     }
 
@@ -173,14 +176,18 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private int getContactCount() {
         // TODO: consider switching to a rawQuery("select count(*)...") on the database if
         // performance is a bottleneck.
-        final Cursor cursor = mContext.getContentResolver().query(
-                Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
-        if (cursor != null) {
-            try {
-                return cursor.getCount();
-            } finally {
-                cursor.close();
+        try {
+            final Cursor cursor = mContext.getContentResolver().query(
+                    Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
+            if (cursor != null) {
+                try {
+                    return cursor.getCount();
+                } finally {
+                    cursor.close();
+                }
             }
+        } catch (final SQLiteException e) {
+            Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
         }
         return 0;
     }
