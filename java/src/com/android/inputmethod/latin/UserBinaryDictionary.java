@@ -22,10 +22,12 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.compat.UserDictionaryCompatUtils;
 import com.android.inputmethod.latin.utils.LocaleUtils;
@@ -39,6 +41,7 @@ import java.util.Locale;
  * dictionary file to use it from native code.
  */
 public class UserBinaryDictionary extends ExpandableBinaryDictionary {
+    private static final String TAG = ExpandableBinaryDictionary.class.getSimpleName();
 
     // The user dictionary provider uses an empty string to mean "all languages".
     private static final String USER_DICTIONARY_ALL_LANGUAGES = "";
@@ -168,12 +171,19 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         } else {
             requestArguments = localeElements;
         }
-        final Cursor cursor = mContext.getContentResolver().query(
-                Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
+        Cursor cursor = null;
         try {
+            cursor = mContext.getContentResolver().query(
+                Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
             addWords(cursor);
+        } catch (final SQLiteException e) {
+            Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
         } finally {
-            if (null != cursor) cursor.close();
+            try {
+                if (null != cursor) cursor.close();
+            } catch (final SQLiteException e) {
+                Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
+            }
         }
     }
 
