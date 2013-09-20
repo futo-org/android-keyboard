@@ -233,8 +233,10 @@ public final class RichInputConnection {
         // getCapsMode should be updated to be able to return a "not enough info" result so that
         // we can get more context only when needed.
         if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mExpectedCursorPosition) {
-            mCommittedTextBeforeComposingText.append(
-                    getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
+            final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
+            if (!TextUtils.isEmpty(textBeforeCursor)) {
+                mCommittedTextBeforeComposingText.append(textBeforeCursor);
+            }
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
