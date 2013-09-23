@@ -45,7 +45,8 @@
             <Key
                 latin:keyLabel="&#x17DB;"
                 latin:keyHintLabel="$"
-                latin:moreKeys="$,&#x20AC;" />
+                latin:moreKeys="$,&#x20AC;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+17D6: "៖" KHMER SIGN CAMNUC PII KUUH -->
             <Key
                 latin:keyLabel="%"
