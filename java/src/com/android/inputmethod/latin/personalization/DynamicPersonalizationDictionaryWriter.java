@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.personalization;
 import android.content.Context;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.ActivityManagerCompatUtils;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.AbstractDictionaryWriter;
 import com.android.inputmethod.latin.ExpandableDictionary;
@@ -41,7 +42,8 @@ import java.util.ArrayList;
 public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWriter {
     private static final String TAG = DynamicPersonalizationDictionaryWriter.class.getSimpleName();
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
-    public static final int MAX_HISTORY_BIGRAMS = 10000;
+    public static final int DEFAULT_MAX_HISTORY_BIGRAMS = 10000;
+    public static final int LOW_MEMORY_MAX_HISTORY_BIGRAMS = 2000;
 
     /** Any pair being typed or picked */
     private static final int FREQUENCY_FOR_TYPED = 2;
@@ -53,10 +55,14 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     private final UserHistoryDictionaryBigramList mBigramList =
             new UserHistoryDictionaryBigramList();
     private final ExpandableDictionary mExpandableDictionary;
+    private final int mMaxHistoryBigrams;
 
     public DynamicPersonalizationDictionaryWriter(final Context context, final String dictType) {
         super(context, dictType);
         mExpandableDictionary = new ExpandableDictionary(dictType);
+        final boolean isLowRamDevice = ActivityManagerCompatUtils.isLowRamDevice(context);
+        mMaxHistoryBigrams = isLowRamDevice ?
+                LOW_MEMORY_MAX_HISTORY_BIGRAMS : DEFAULT_MAX_HISTORY_BIGRAMS;
     }
 
     @Override
@@ -72,6 +78,10 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     @Override
     public void addUnigramWord(final String word, final String shortcutTarget, final int frequency,
             final boolean isNotAWord) {
+        if (mBigramList.size() > mMaxHistoryBigrams * 2) {
+            // Too many entries: just stop adding new vocabrary and wait next refresh.
+            return;
+        }
         mExpandableDictionary.addWord(word, shortcutTarget, frequency);
         mBigramList.addBigram(null, word, (byte)frequency);
     }
@@ -79,6 +89,10 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     @Override
     public void addBigramWords(final String word0, final String word1, final int frequency,
             final boolean isValid, final long lastModifiedTime) {
+        if (mBigramList.size() > mMaxHistoryBigrams * 2) {
+            // Too many entries: just stop adding new vocabrary and wait next refresh.
+            return;
+        }
         if (lastModifiedTime > 0) {
             mExpandableDictionary.setBigramAndGetFrequency(word0, word1,
                     new ForgettingCurveParams(frequency, System.currentTimeMillis(),
@@ -102,19 +116,22 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     protected void writeDictionary(final DictEncoder dictEncoder)
             throws IOException, UnsupportedFormatException {
         UserHistoryDictIOUtils.writeDictionary(dictEncoder,
-                new FrequencyProvider(mBigramList, mExpandableDictionary), mBigramList,
-                        FORMAT_OPTIONS);
+                new FrequencyProvider(mBigramList, mExpandableDictionary, mMaxHistoryBigrams),
+                mBigramList, FORMAT_OPTIONS);
     }
 
     private static class FrequencyProvider implements BigramDictionaryInterface {
-        final private UserHistoryDictionaryBigramList mBigramList;
-        final private ExpandableDictionary mExpandableDictionary;
+        private final UserHistoryDictionaryBigramList mBigramList;
+        private final ExpandableDictionary mExpandableDictionary;
+        private final int mMaxHistoryBigrams;
 
         public FrequencyProvider(final UserHistoryDictionaryBigramList bigramList,
-                final ExpandableDictionary expandableDictionary) {
+                final ExpandableDictionary expandableDictionary, final int maxHistoryBigrams) {
             mBigramList = bigramList;
             mExpandableDictionary = expandableDictionary;
+            mMaxHistoryBigrams = maxHistoryBigrams;
         }
+
         @Override
         public int getFrequency(final String word0, final String word1) {
             final int freq;
@@ -130,7 +147,7 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
                     if (prevFc > 0 && prevFc == fc) {
                         freq = fc & 0xFF;
                     } else if (UserHistoryForgettingCurveUtils.
-                            needsToSave(fc, isValid, mBigramList.size() <= MAX_HISTORY_BIGRAMS)) {
+                            needsToSave(fc, isValid, mBigramList.size() <= mMaxHistoryBigrams)) {
                         freq = fc & 0xFF;
                     } else {
                         // Delete this entry
