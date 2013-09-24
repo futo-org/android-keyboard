@@ -60,6 +60,11 @@ public final class CapsModeUtils {
                 || WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED == mode;
     }
 
+    private static boolean isPeriod(final int codePoint) {
+        // TODO: make this a resource.
+        return codePoint == Constants.CODE_PERIOD || codePoint == Constants.CODE_ARMENIAN_PERIOD;
+    }
+
     /**
      * Determine what caps mode should be in effect at the current offset in
      * the text. Only the mode bits set in <var>reqModes</var> will be
@@ -190,7 +195,7 @@ public final class CapsModeUtils {
         if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        if (c != Constants.CODE_PERIOD || j <= 0) {
+        if (!isPeriod(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
 
@@ -240,7 +245,7 @@ public final class CapsModeUtils {
             case WORD:
                 if (Character.isLetter(c)) {
                     state = WORD;
-                } else if (c == Constants.CODE_PERIOD) {
+                } else if (isPeriod(c)) {
                     state = PERIOD;
                 } else {
                     return caps;
@@ -256,7 +261,7 @@ public final class CapsModeUtils {
             case LETTER:
                 if (Character.isLetter(c)) {
                     state = LETTER;
-                } else if (c == Constants.CODE_PERIOD) {
+                } else if (isPeriod(c)) {
                     state = PERIOD;
                 } else {
                     return noCaps;
