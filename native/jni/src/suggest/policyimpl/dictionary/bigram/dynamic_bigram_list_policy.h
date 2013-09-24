@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 
 namespace latinime {
 
@@ -50,6 +51,10 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
             int *const toPos, int *const outBigramsCount) const;
 
     bool updateAllBigramEntriesAndDeleteUselessEntries(int *const bigramListPos);
+
+    bool updateAllBigramTargetPtNodePositions(int *const bigramListPos,
+            const DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap *const
+                    ptNodePositionRelocationMap);
 
     bool addNewBigramEntryToBigramList(const int bigramTargetPos, const int probability,
             int *const bigramListPos);

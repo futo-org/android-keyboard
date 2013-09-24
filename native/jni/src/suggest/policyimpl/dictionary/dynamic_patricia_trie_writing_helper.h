@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -33,6 +34,20 @@ class HeaderPolicy;
 
 class DynamicPatriciaTrieWritingHelper {
  public:
+    typedef hash_map_compat<int, int> PtNodeArrayPositionRelocationMap;
+    typedef hash_map_compat<int, int> PtNodePositionRelocationMap;
+    struct DictPositionRelocationMap {
+     public:
+        DictPositionRelocationMap()
+                : mPtNodeArrayPositionRelocationMap(), mPtNodePositionRelocationMap() {}
+
+        PtNodeArrayPositionRelocationMap mPtNodeArrayPositionRelocationMap;
+        PtNodePositionRelocationMap mPtNodePositionRelocationMap;
+
+     private:
+        DISALLOW_COPY_AND_ASSIGN(DictPositionRelocationMap);
+    };
+
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,
             DynamicBigramListPolicy *const bigramPolicy,
             DynamicShortcutListPolicy *const shortcutPolicy)

@@ -19,6 +19,7 @@
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
@@ -71,7 +72,8 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
     int bigramEntryCount = 0;
     do {
         if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
-            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
+                    bigramEntryCount, BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
             ASSERT(false);
             return false;
         }
@@ -114,7 +116,8 @@ bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
     int bigramEntryCount = 0;
     do {
         if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
-            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
+                    bigramEntryCount, BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
             ASSERT(false);
             return false;
         }
@@ -150,6 +153,54 @@ bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
     return true;
 }
 
+// Updates bigram target PtNode positions in the list after the placing step in GC.
+bool DynamicBigramListPolicy::updateAllBigramTargetPtNodePositions(int *const bigramListPos,
+        const DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap *const
+                ptNodePositionRelocationMap) {
+    const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
+    if (usesAdditionalBuffer) {
+        *bigramListPos -= mBuffer->getOriginalBufferSize();
+    }
+    BigramListReadWriteUtils::BigramFlags bigramFlags;
+    int bigramEntryCount = 0;
+    do {
+        if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
+            AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
+                    bigramEntryCount, BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            ASSERT(false);
+            return false;
+        }
+        int bigramEntryPos = *bigramListPos;
+        if (usesAdditionalBuffer) {
+            bigramEntryPos += mBuffer->getOriginalBufferSize();
+        }
+        int bigramTargetPtNodePos;
+        // The buffer address can be changed after calling buffer writing methods.
+        BigramListReadWriteUtils::getBigramEntryPropertiesAndAdvancePosition(
+                mBuffer->getBuffer(usesAdditionalBuffer), &bigramFlags, &bigramTargetPtNodePos,
+                bigramListPos);
+        if (bigramTargetPtNodePos == NOT_A_DICT_POS) {
+            continue;
+        }
+        if (usesAdditionalBuffer) {
+            bigramTargetPtNodePos += mBuffer->getOriginalBufferSize();
+        }
+
+        DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap::const_iterator it =
+                ptNodePositionRelocationMap->find(bigramTargetPtNodePos);
+        if (it != ptNodePositionRelocationMap->end()) {
+            bigramTargetPtNodePos = it->second;
+        } else {
+            bigramTargetPtNodePos = NOT_A_DICT_POS;
+        }
+        if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
+                bigramTargetPtNodePos, &bigramEntryPos)) {
+            return false;
+        }
+    } while(BigramListReadWriteUtils::hasNext(bigramFlags));
+    return true;
+}
+
 bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTargetPos,
         const int probability, int *const bigramListPos) {
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(*bigramListPos);
@@ -160,7 +211,8 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTarg
     int bigramEntryCount = 0;
     do {
         if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
-            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
+                    bigramEntryCount, BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
             ASSERT(false);
             return false;
         }
@@ -222,7 +274,8 @@ bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int bi
     int bigramEntryCount = 0;
     do {
         if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
-            AKLOGE("Too many bigram entries. %d", BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
+            AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
+                    bigramEntryCount, BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT);
             ASSERT(false);
             return false;
         }

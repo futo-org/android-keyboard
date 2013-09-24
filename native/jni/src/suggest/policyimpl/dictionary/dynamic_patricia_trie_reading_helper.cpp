@@ -59,6 +59,9 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
                 if (!listener->onReadingPtNodeArrayTail()) {
                     return false;
                 }
+                if (mReadingStateStack.size() <= 0) {
+                    break;
+                }
                 if (!listener->onAscend()) {
                     return false;
                 }
@@ -100,6 +103,9 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
                     // Return to the parent PTNode.
                     if (!listener->onAscend()) {
                         return false;
+                    }
+                    if (mReadingStateStack.size() <= 0) {
+                        break;
                     }
                     popReadingStateFromStack();
                     alreadyVisitedChildren = true;
