@@ -74,12 +74,12 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
 
     @Override
     public void close() {
-        // Close only binary dictionary to reuse this dictionary.
-        // super.close();
-        closeBinaryDictionary();
+        if (!ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+            closeBinaryDictionary();
+        }
         // Flush pending writes.
         // TODO: Remove after this class become to use a dynamic binary dictionary.
-        asyncWriteBinaryDictionary();
+        asyncFlashAllBinaryDictionary();
         Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
     }
 
@@ -212,6 +212,6 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
         // Clear the node structure on memory
         clear();
         // Then flush the cleared state of the dictionary on disk.
-        asyncWriteBinaryDictionary();
+        asyncFlashAllBinaryDictionary();
     }
 }
