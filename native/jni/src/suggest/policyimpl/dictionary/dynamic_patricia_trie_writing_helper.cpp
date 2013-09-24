@@ -35,6 +35,8 @@ namespace latinime {
 const int DynamicPatriciaTrieWritingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
 const char *const DynamicPatriciaTrieWritingHelper::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         ".tmp";
+// TODO: Make MAX_DICTIONARY_SIZE 8MB.
+const size_t DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE = 2 * 1024 * 1024;
 
 bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         DynamicPatriciaTrieReadingHelper *const readingHelper,
@@ -154,7 +156,8 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */)) {
         return;
     }
-    BufferWithExtendableBuffer newDictBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    BufferWithExtendableBuffer newDictBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */,
+            MAX_DICTIONARY_SIZE);
     if (!runGC(rootPtNodeArrayPos, &newDictBuffer)) {
         return;
     }

@@ -604,4 +604,50 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         dictFile.delete();
     }
+
+    public void testAddManyUnigramsAndFlushWithGC() {
+        final int flashWithGCIterationCount = 3;
+        final int codePointSetSize = 50;
+        final int seed = 22360679;
+
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+
+        final ArrayList<String> words = new ArrayList<String>();
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        BinaryDictionary binaryDictionary;
+        for (int i = 0; i < flashWithGCIterationCount; i++) {
+            binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                    0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                    Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+            while(!binaryDictionary.needsToRunGC()) {
+                final String word = CodePointUtils.generateWord(random, codePointSet);
+                words.add(word);
+                final int unigramProbability = random.nextInt(0xFF);
+                unigramProbabilities.put(word, unigramProbability);
+                binaryDictionary.addUnigramWord(word, unigramProbability);
+            }
+
+            for (int j = 0; j < words.size(); j++) {
+                final String word = words.get(j);
+                final int unigramProbability = unigramProbabilities.get(word);
+                assertEquals(word, unigramProbability, binaryDictionary.getFrequency(word));
+            }
+
+            binaryDictionary.flushWithGC();
+            binaryDictionary.close();
+        }
+
+        dictFile.delete();
+    }
 }

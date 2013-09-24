@@ -18,9 +18,10 @@
 
 namespace latinime {
 
-const size_t BufferWithExtendableBuffer::INITIAL_ADDITIONAL_BUFFER_SIZE = 16 * 1024;
 const size_t BufferWithExtendableBuffer::MAX_ADDITIONAL_BUFFER_SIZE = 1024 * 1024;
-const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 16 * 1024;
+const int BufferWithExtendableBuffer::NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE = 90;
+// TODO: Needs to allocate larger memory corresponding to the current vector size.
+const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 128 * 1024;
 
 bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data, const int size,
         int *const pos) {
@@ -61,6 +62,16 @@ bool BufferWithExtendableBuffer::writeCodePointsAndAdvancePosition(const int *co
     if (usesAdditionalBuffer) {
         *pos += mOriginalBufferSize;
     }
+    return true;
+}
+
+bool BufferWithExtendableBuffer::extendBuffer() {
+    const size_t sizeAfterExtending =
+            mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
+    if (sizeAfterExtending > mMaxAdditionalBufferSize) {
+        return false;
+    }
+    mAdditionalBuffer.resize(mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP);
     return true;
 }
 

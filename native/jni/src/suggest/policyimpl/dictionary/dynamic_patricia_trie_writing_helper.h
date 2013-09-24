@@ -86,6 +86,7 @@ class DynamicPatriciaTrieWritingHelper {
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
     static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
+    static const size_t MAX_DICTIONARY_SIZE;
 
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
