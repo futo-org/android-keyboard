@@ -206,7 +206,14 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         }
 
         public int getCategoryPageSize(int categoryId) {
-            return mShownCategories.get(categoryId).mPageCount;
+            for (final CategoryProperties prop : mShownCategories) {
+                if (prop.mCategoryId == categoryId) {
+                    return prop.mPageCount;
+                }
+            }
+            Log.w(TAG, "Invalid category id: " + categoryId);
+            // Should not reach here.
+            return 0;
         }
 
         public void setCurrentCategoryId(int categoryId) {
