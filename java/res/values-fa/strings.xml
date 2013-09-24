@@ -165,7 +165,7 @@
     <string name="keyboard_layout_set" msgid="4309233698194565609">"چیدمان"</string>
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"سبک ورودی سفارشی شما باید قبل از شروع به استفاده از آن فعال شود. می‌خواهید اکنون آن را فعال کنید؟"</string>
     <string name="enable" msgid="5031294444630523247">"فعال کردن"</string>
-    <string name="not_now" msgid="6172462888202790482">"اکنون خیر"</string>
+    <string name="not_now" msgid="6172462888202790482">"الآن نه"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"سبک ورودی مشابهی در حال حاضر وجود دارد: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"حالت بررسی قابلیت استفاده"</string>
     <string name="prefs_key_longpress_timeout_settings" msgid="6102240298932897873">"تأخیر فشار طولانی کلید"</string>
@@ -207,7 +207,7 @@
     <string name="dictionary_available" msgid="4728975345815214218">"فرهنگ لغت موجود است"</string>
     <string name="dictionary_downloading" msgid="2982650524622620983">"موارد در حال دانلود فعلی"</string>
     <string name="dictionary_installed" msgid="8081558343559342962">"نصب شده"</string>
-    <string name="dictionary_disabled" msgid="8950383219564621762">"نصب شد، غیرفعال شد"</string>
+    <string name="dictionary_disabled" msgid="8950383219564621762">"نصب‌شده، غیرفعال شد"</string>
     <string name="cannot_connect_to_dict_service" msgid="9216933695765732398">"مشکل اتصال به سرویس فرهنگ لغت"</string>
     <string name="no_dictionaries_available" msgid="8039920716566132611">"هیچ فرهنگ لغتی موجود نیست"</string>
     <string name="check_for_updates_now" msgid="8087688440916388581">"بازخوانی"</string>
