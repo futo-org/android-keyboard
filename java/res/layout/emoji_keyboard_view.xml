@@ -40,7 +40,7 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="@drawable/tab_selected"
                 android:divider="@null"
                 android:tabStripEnabled="true"
@@ -61,11 +61,16 @@
                     android:visibility="gone" />
             </FrameLayout>
         </TabHost>
+        <View
+            android:layout_width="2dip"
+            android:layout_height="match_parent"
+            android:background="@drawable/suggestions_strip_divider" />
         <ImageButton
             android:id="@+id/emoji_keyboard_delete"
             android:layout_width="0dip"
             android:layout_weight="12.5"
             android:layout_height="match_parent"
+            android:background="@color/emoji_key_background_color"
             android:src="@drawable/sym_keyboard_delete_holo_dark" />
     </LinearLayout>
     <android.support.v4.view.ViewPager
