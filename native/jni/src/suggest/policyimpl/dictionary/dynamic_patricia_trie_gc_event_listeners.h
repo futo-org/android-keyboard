@@ -34,16 +34,16 @@ class DynamicPatriciaTrieGcEventListeners {
     // Updates all PtNodes that can be reached from the root. Checks if each PtNode is useless or
     // not and marks useless PtNodes as deleted. Such deleted PtNodes will be discarded in the GC.
     // TODO: Concatenate non-terminal PtNodes.
-    class ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted
+    class TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
         : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted(
+        TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
                 BufferWithExtendableBuffer *const buffer)
                 : mWritingHelper(writingHelper), mBuffer(buffer), valueStack(),
                   mChildrenValue(0) {}
 
-        ~ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted() {};
+        ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
         bool onAscend() {
             if (valueStack.empty()) {
@@ -66,7 +66,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(
-                ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted);
+                TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted);
 
         DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         BufferWithExtendableBuffer *const mBuffer;
@@ -76,10 +76,10 @@ class DynamicPatriciaTrieGcEventListeners {
 
     // Updates all bigram entries that are held by valid PtNodes. This removes useless bigram
     // entries.
-    class ListenerForUpdatingBigramProbability
+    class TraversePolicyToUpdateBigramProbability
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        ListenerForUpdatingBigramProbability(DynamicBigramListPolicy *const bigramPolicy)
+        TraversePolicyToUpdateBigramProbability(DynamicBigramListPolicy *const bigramPolicy)
                 : mBigramPolicy(bigramPolicy) {}
 
         bool onAscend() { return true; }
@@ -102,20 +102,21 @@ class DynamicPatriciaTrieGcEventListeners {
         }
 
      private:
-        DISALLOW_IMPLICIT_CONSTRUCTORS(ListenerForUpdatingBigramProbability);
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateBigramProbability);
 
         DynamicBigramListPolicy *const mBigramPolicy;
     };
 
-    class ListenerForPlacingAndWritingValidPtNodesToBuffer
+    class TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        ListenerForPlacingAndWritingValidPtNodesToBuffer(
+        TraversePolicyToPlaceAndWriteValidPtNodesToBuffer(
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
                 BufferWithExtendableBuffer *const bufferToWrite,
-                hash_map_compat<int, int> *const positionMap)
+                DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
+                        dictPositionRelocationMap)
                 : mWritingHelper(writingHelper), mBufferToWrite(bufferToWrite),
-                  mPositionMap(positionMap), mValidPtNodeCount(0),
+                  mDictPositionRelocationMap(dictPositionRelocationMap), mValidPtNodeCount(0),
                   mPtNodeArraySizeFieldPos(NOT_A_DICT_POS) {};
 
         bool onAscend() { return true; }
@@ -127,18 +128,47 @@ class DynamicPatriciaTrieGcEventListeners {
         bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
                 const int *const nodeCodePoints);
 
-        hash_map_compat<int, int> *getPositionMap() const {
-            return mPositionMap;
-        }
-
      private:
-        DISALLOW_IMPLICIT_CONSTRUCTORS(ListenerForPlacingAndWritingValidPtNodesToBuffer);
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToPlaceAndWriteValidPtNodesToBuffer);
 
         DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         BufferWithExtendableBuffer *const mBufferToWrite;
-        hash_map_compat<int, int> *const mPositionMap;
+        DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
+                mDictPositionRelocationMap;
         int mValidPtNodeCount;
         int mPtNodeArraySizeFieldPos;
+    };
+
+    class TraversePolicyToUpdateAllPositionFields
+            : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
+     public:
+        TraversePolicyToUpdateAllPositionFields(
+                DynamicPatriciaTrieWritingHelper *const writingHelper,
+                DynamicBigramListPolicy *const bigramPolicy,
+                BufferWithExtendableBuffer *const bufferToWrite,
+                const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
+                        dictPositionRelocationMap)
+                : mWritingHelper(writingHelper), mBigramPolicy(bigramPolicy),
+                  mBufferToWrite(bufferToWrite),
+                  mDictPositionRelocationMap(dictPositionRelocationMap) {};
+
+        bool onAscend() { return true; }
+
+        bool onDescend(const int ptNodeArrayPos) { return true; }
+
+        bool onReadingPtNodeArrayTail() { return true; }
+
+        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints);
+
+     private:
+        DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllPositionFields);
+
+        DynamicPatriciaTrieWritingHelper *const mWritingHelper;
+        DynamicBigramListPolicy *const mBigramPolicy;
+        BufferWithExtendableBuffer *const mBufferToWrite;
+        const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
+                mDictPositionRelocationMap;
     };
 
  private:

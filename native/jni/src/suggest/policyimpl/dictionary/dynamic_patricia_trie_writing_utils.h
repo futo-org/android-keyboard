@@ -28,6 +28,8 @@ class BufferWithExtendableBuffer;
 
 class DynamicPatriciaTrieWritingUtils {
  public:
+    static const int NODE_FLAG_FIELD_SIZE;
+
     static bool writeForwardLinkPositionAndAdvancePosition(
             BufferWithExtendableBuffer *const buffer, const int forwardLinkPos,
             int *const forwardLinkFieldPos);
@@ -63,7 +65,6 @@ class DynamicPatriciaTrieWritingUtils {
     static const int MAX_DICT_OFFSET_VALUE;
     static const int MIN_DICT_OFFSET_VALUE;
     static const int DICT_OFFSET_NEGATIVE_FLAG;
-    static const int NODE_FLAG_FIELD_SIZE;
     static const int PROBABILITY_FIELD_SIZE;
 
     static bool writeDictOffset(BufferWithExtendableBuffer *const buffer, const int offset,

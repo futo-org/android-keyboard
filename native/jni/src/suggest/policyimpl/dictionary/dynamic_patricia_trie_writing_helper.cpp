@@ -28,6 +28,7 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
+#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -221,7 +222,8 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
         while (!readingHelper.isEnd()) {
             const int childPtNodeWrittenPos = nodeReader->getHeadPos();
             const int parentOffset = movedPos - childPtNodeWrittenPos;
-            int parentOffsetFieldPos = childPtNodeWrittenPos + 1 /* Flags */;
+            int parentOffsetFieldPos = childPtNodeWrittenPos
+                    + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
             if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
                     mBuffer, parentOffset, &parentOffsetFieldPos)) {
                 // Parent offset cannot be written because of a bug or a broken dictionary; thus,
@@ -521,30 +523,48 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
-            ::ListenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted
-                    listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted(
+            ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+                    traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                             this, mBuffer);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
-            &listenerForUpdatingUnigramProbabilityAndMarkingUselessPtNodesAsDeleted)) {
+            &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
     }
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners::ListenerForUpdatingBigramProbability
-            listenerForupdatingBigramProbability(mBigramPolicy);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
+            traversePolicyToUpdateBigramProbability(mBigramPolicy);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
-            &listenerForupdatingBigramProbability)) {
+            &traversePolicyToUpdateBigramProbability)) {
         return false;
     }
 
     // Mapping from positions in mBuffer to positions in bufferToWrite.
-    hash_map_compat<int, int> positionMap;
+    DictPositionRelocationMap dictPositionRelocationMap;
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
-    DynamicPatriciaTrieGcEventListeners::ListenerForPlacingAndWritingValidPtNodesToBuffer
-            listenerForPlacingAndWritingLivingPtNodesToBuffer(this, mBuffer, &positionMap);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
+            traversePolicyToPlaceAndWriteValidPtNodesToBuffer(this, bufferToWrite,
+                    &dictPositionRelocationMap);
+    if (!readingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            &traversePolicyToPlaceAndWriteValidPtNodesToBuffer)) {
+        return false;
+    }
 
-    // TODO: Implement.
-    return false;
+    // Create policy instance for the GCed dictionary.
+    DynamicShortcutListPolicy newDictShortcutPolicy(bufferToWrite);
+    DynamicBigramListPolicy newDictBigramPolicy(bufferToWrite, &newDictShortcutPolicy);
+    // Create reading helper for the GCed dictionary.
+    DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictBigramPolicy,
+            &newDictShortcutPolicy);
+    newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
+    DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
+            traversePolicyToUpdateAllPositionFields(this, &newDictBigramPolicy, bufferToWrite,
+                    &dictPositionRelocationMap);
+    if (!newDictReadingHelper.traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
+            &traversePolicyToUpdateAllPositionFields)) {
+        return false;
+    }
+    return true;
 }
 
 } // namespace latinime

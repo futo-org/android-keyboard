@@ -101,10 +101,13 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
 /* static */ bool BigramListReadWriteUtils::writeBigramEntry(
         BufferWithExtendableBuffer *const bufferToWrite, const BigramFlags flags,
         const int targetPtNodePos, int *const writingPos) {
-    if (!bufferToWrite->writeUintAndAdvancePosition(flags, 1 /* size */, writingPos)) {
+    const int offset = (targetPtNodePos != NOT_A_DICT_POS) ?
+            targetPtNodePos - (*writingPos + 1) : 0;
+    const BigramFlags flagsToWrite = (offset < 0) ?
+            (flags | FLAG_ATTRIBUTE_OFFSET_NEGATIVE) : flags;
+    if (!bufferToWrite->writeUintAndAdvancePosition(flagsToWrite, 1 /* size */, writingPos)) {
         return false;
     }
-    const int offset = (targetPtNodePos != NOT_A_DICT_POS) ? targetPtNodePos - *writingPos : 0;
     const uint32_t absOffest = abs(offset);
     const int bigramTargetFieldSize = attributeAddressSize(flags);
     return bufferToWrite->writeUintAndAdvancePosition(absOffest, bigramTargetFieldSize,

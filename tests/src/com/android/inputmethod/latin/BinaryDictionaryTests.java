@@ -384,4 +384,51 @@ public class BinaryDictionaryTests extends AndroidTestCase {
 
         dictFile.delete();
     }
+
+    // TODO: Add large tests for BinaryDictionary.flushWithGC().
+    public void testFlushWithGCDictionary() {
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int unigramProbability = 100;
+        final int bigramProbability = 10;
+        binaryDictionary.addUnigramWord("aaa", unigramProbability);
+        binaryDictionary.addUnigramWord("abb", unigramProbability);
+        binaryDictionary.addUnigramWord("bcc", unigramProbability);
+        binaryDictionary.addBigramWords("aaa", "abb", bigramProbability);
+        binaryDictionary.addBigramWords("aaa", "bcc", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "aaa", bigramProbability);
+        binaryDictionary.addBigramWords("abb", "bcc", bigramProbability);
+        binaryDictionary.flushWithGC();
+        binaryDictionary.close();
+
+        binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        final int probability = binaryDictionary.calculateProbability(unigramProbability,
+                bigramProbability);
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("aaa"));
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("abb"));
+        assertEquals(unigramProbability, binaryDictionary.getFrequency("bcc"));
+        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "abb"));
+        assertEquals(probability, binaryDictionary.getBigramProbability("aaa", "bcc"));
+        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "aaa"));
+        assertEquals(probability, binaryDictionary.getBigramProbability("abb", "bcc"));
+        assertEquals(false, binaryDictionary.isValidBigram("bcc", "aaa"));
+        assertEquals(false, binaryDictionary.isValidBigram("bcc", "bbc"));
+        assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
+        binaryDictionary.flushWithGC();
+        binaryDictionary.close();
+
+        dictFile.delete();
+    }
 }
