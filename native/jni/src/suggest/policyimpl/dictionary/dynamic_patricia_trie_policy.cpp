@@ -268,8 +268,8 @@ bool DynamicPatriciaTriePolicy::needsToRunGC() const {
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;
     }
-    // TODO: Implement.
-    return false;
+    // TODO: Implement more properly.
+    return mBufferWithExtendableBuffer.isNearSizeLimit();
 }
 
 } // namespace latinime
