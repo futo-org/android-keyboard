@@ -73,9 +73,6 @@ public final class RichInputConnection {
      * This contains the currently composing text, as LatinIME thinks the TextView is seeing it.
      */
     private final StringBuilder mComposingText = new StringBuilder();
-    // A hint on how many characters to cache from the TextView. A good value of this is given by
-    // how many characters we need to be able to almost always find the caps mode.
-    private static final int DEFAULT_TEXT_CACHE_SIZE = 100;
 
     private final InputMethodService mParent;
     InputConnection mIC;
@@ -93,7 +90,8 @@ public final class RichInputConnection {
         r.token = 1;
         r.flags = 0;
         final ExtractedText et = mIC.getExtractedText(r, 0);
-        final CharSequence beforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
+        final CharSequence beforeCursor = getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
+                0);
         final StringBuilder internal = new StringBuilder().append(mCommittedTextBeforeComposingText)
                 .append(mComposingText);
         if (null == et || null == beforeCursor) return;
@@ -142,19 +140,56 @@ public final class RichInputConnection {
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
-    public void resetCachesUponCursorMove(final int newCursorPosition,
+    /**
+     * Reset the cached text and retrieve it again from the editor.
+     *
+     * This should be called when the cursor moved. It's possible that we can't connect to
+     * the application when doing this; notably, this happens sometimes during rotation, probably
+     * because of a race condition in the framework. In this case, we just can't retrieve the
+     * data, so we empty the cache and note that we don't know the new cursor position, and we
+     * return false so that the caller knows about this and can retry later.
+     *
+     * @param newCursorPosition The new position of the cursor, as received from the system.
+     * @param shouldFinishComposition Whether we should finish the composition in progress.
+     * @return true if we were able to connect to the editor successfully, false otherwise. When
+     *   this method returns false, the caches could not be correctly refreshed so they were only
+     *   reset: the caller should try again later to return to normal operation.
+     */
+    public boolean resetCachesUponCursorMoveAndReturnSuccess(final int newCursorPosition,
             final boolean shouldFinishComposition) {
         mExpectedCursorPosition = newCursorPosition;
         mComposingText.setLength(0);
         mCommittedTextBeforeComposingText.setLength(0);
-        final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
-        if (null != textBeforeCursor) mCommittedTextBeforeComposingText.append(textBeforeCursor);
+        mIC = mParent.getCurrentInputConnection();
+        // Call upon the inputconnection directly since our own method is using the cache, and
+        // we want to refresh it.
+        final CharSequence textBeforeCursor = null == mIC ? null :
+                mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
+        if (null == textBeforeCursor) {
+            // For some reason the app thinks we are not connected to it. This looks like a
+            // framework bug... Fall back to ground state and return false.
+            mExpectedCursorPosition = INVALID_CURSOR_POSITION;
+            Log.e(TAG, "Unable to connect to the editor to retrieve text... will retry later");
+            return false;
+        }
+        mCommittedTextBeforeComposingText.append(textBeforeCursor);
+        final int lengthOfTextBeforeCursor = textBeforeCursor.length();
+        if (lengthOfTextBeforeCursor > newCursorPosition
+                || (lengthOfTextBeforeCursor < Constants.EDITOR_CONTENTS_CACHE_SIZE
+                        && newCursorPosition < Constants.EDITOR_CONTENTS_CACHE_SIZE)) {
+            // newCursorPosition may be lying -- when rotating the device (probably a framework
+            // bug). If we have less chars than we asked for, then we know how many chars we have,
+            // and if we got more than newCursorPosition says, then we know it was lying. In both
+            // cases the length is more reliable
+            mExpectedCursorPosition = lengthOfTextBeforeCursor;
+        }
         if (null != mIC && shouldFinishComposition) {
             mIC.finishComposingText();
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.richInputConnection_finishComposingText();
             }
         }
+        return true;
     }
 
     private void checkBatchEdit() {
@@ -233,7 +268,8 @@ public final class RichInputConnection {
         // getCapsMode should be updated to be able to return a "not enough info" result so that
         // we can get more context only when needed.
         if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mExpectedCursorPosition) {
-            final CharSequence textBeforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
+            final CharSequence textBeforeCursor = getTextBeforeCursor(
+                    Constants.EDITOR_CONTENTS_CACHE_SIZE, 0);
             if (!TextUtils.isEmpty(textBeforeCursor)) {
                 mCommittedTextBeforeComposingText.append(textBeforeCursor);
             }
@@ -364,7 +400,7 @@ public final class RichInputConnection {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         final CharSequence textBeforeCursor =
-                getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE + (end - start), 0);
+                getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE + (end - start), 0);
         mCommittedTextBeforeComposingText.setLength(0);
         if (!TextUtils.isEmpty(textBeforeCursor)) {
             final int indexOfStartOfComposingText =
@@ -406,7 +442,8 @@ public final class RichInputConnection {
         }
         mExpectedCursorPosition = start;
         mCommittedTextBeforeComposingText.setLength(0);
-        mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
+        mCommittedTextBeforeComposingText.append(
+                getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE, 0));
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
@@ -525,9 +562,9 @@ public final class RichInputConnection {
         if (mIC == null || sep == null) {
             return null;
         }
-        final CharSequence before = mIC.getTextBeforeCursor(1000,
+        final CharSequence before = mIC.getTextBeforeCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
                 InputConnection.GET_TEXT_WITH_STYLES);
-        final CharSequence after = mIC.getTextAfterCursor(1000,
+        final CharSequence after = mIC.getTextAfterCursor(Constants.EDITOR_CONTENTS_CACHE_SIZE,
                 InputConnection.GET_TEXT_WITH_STYLES);
         if (before == null || after == null) {
             return null;
