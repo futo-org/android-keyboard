@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -244,11 +245,18 @@ public final class BinaryDictionary extends Dictionary {
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
+    private void runGCIfRequired() {
+        if (needsToRunGCNative(mNativeDict)) {
+            flushWithGC();
+        }
+    }
+
     // Add a unigram entry to binary dictionary in native code.
     public void addUnigramWord(final String word, final int probability) {
         if (TextUtils.isEmpty(word)) {
             return;
         }
+        runGCIfRequired();
         final int[] codePoints = StringUtils.toCodePointArray(word);
         addUnigramWordNative(mNativeDict, codePoints, probability);
     }
@@ -258,6 +266,7 @@ public final class BinaryDictionary extends Dictionary {
         if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
             return;
         }
+        runGCIfRequired();
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability);
@@ -268,24 +277,30 @@ public final class BinaryDictionary extends Dictionary {
         if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
             return;
         }
+        runGCIfRequired();
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    @UsedForTesting
     public void flush() {
         if (!isValidDictionary()) return;
         flushNative(mNativeDict, mDictFilePath);
+        closeNative(mNativeDict);
+        final File dictFile = new File(mDictFilePath);
+        mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
+                dictFile.length(), true /* isUpdatable */);
     }
 
-    @UsedForTesting
     public void flushWithGC() {
         if (!isValidDictionary()) return;
         flushWithGCNative(mNativeDict, mDictFilePath);
+        closeNative(mNativeDict);
+        final File dictFile = new File(mDictFilePath);
+        mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
+                dictFile.length(), true /* isUpdatable */);
     }
 
-    @UsedForTesting
     public boolean needsToRunGC() {
         if (!isValidDictionary()) return false;
         return needsToRunGCNative(mNativeDict);

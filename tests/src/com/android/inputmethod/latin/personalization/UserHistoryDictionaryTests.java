@@ -100,7 +100,11 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
             }
-            for (int i = 0; i < 10 && i < numberOfWords; ++i) {
+            // Limit word count to check when using a Java on memory dictionary.
+            final int wordCountToCheck =
+                    ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
+                            numberOfWords : 10;
+            for (int i = 0; i < wordCountToCheck; ++i) {
                 final String word = words.get(i);
                 // This may fail as long as we use tryLock on inserting the bigram words
                 assertTrue(dict.isInDictionaryForTests(word));
@@ -202,4 +206,41 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             }
         }
     }
+
+    public void testAddManyWords() {
+        File dictFile = null;
+        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
+        final int numberOfWords =
+                ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
+                        10000 : 1000;
+        final Random random = new Random(123456);
+
+        UserHistoryPredictionDictionary dict =
+                PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+                        testFilenameSuffix, mPrefs);
+        try {
+            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
+                    true /* checksContents */);
+            dict.close();
+        } finally {
+            try {
+                Log.d(TAG, "waiting for writing ...");
+                dict.shutdownExecutorForTests();
+                while (!dict.isTerminatedForTests()) {
+                    Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
+                }
+            } catch (InterruptedException e) {
+                Log.d(TAG, "InterruptedException: ", e);
+            }
+            final String fileName = UserHistoryPredictionDictionary.NAME + "." + testFilenameSuffix
+                    + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+            dictFile = new File(getContext().getFilesDir(), fileName);
+            if (dictFile != null) {
+                assertTrue(dictFile.exists());
+                assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
+                dictFile.delete();
+            }
+        }
+    }
+
 }

@@ -22,14 +22,22 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.DynamicPersonalizationDictionaryWriter;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,9 +57,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to print debug output to log */
     private static boolean DEBUG = false;
 
-    // TODO: Remove and enable dynamic update in native code.
+    // TODO: Remove.
     /** Whether to call binary dictionary dynamically updating methods. */
-    private static boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = false;
+    public static boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = true;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
 
@@ -59,6 +67,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * The maximum length of a word in this dictionary.
      */
     protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
+
+    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
+            new FormatSpec.FormatOptions(3 /* version */, true /* supportsDynamicUpdate */);
 
     /**
      * A static map of time recorders, each of which records the time of accesses to a single binary
@@ -154,7 +165,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
             final String dictType, final boolean isDynamicPersonalizationDictionary) {
         if (isDynamicPersonalizationDictionary) {
-            return new DynamicPersonalizationDictionaryWriter(context, dictType);
+            if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                return null;
+            } else {
+                return new DynamicPersonalizationDictionaryWriter(context, dictType);
+            }
         } else {
             return new DictionaryWriter(context, dictType);
         }
@@ -198,7 +213,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     mBinaryDictionary.close();
                     mBinaryDictionary = null;
                 }
-                mDictionaryWriter.close();
+                if (mDictionaryWriter != null) {
+                    mDictionaryWriter.close();
+                }
             }
         });
     }
@@ -220,7 +237,23 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
-                mDictionaryWriter.clear();
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE && mDictionaryWriter == null) {
+                    mBinaryDictionary.close();
+                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                            new FusionDictionary.DictionaryOptions(new HashMap<String,String>(),
+                                    false, false));
+                    final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+                    try {
+                        dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Exception in creating new dictionary file.", e);
+                    } catch (UnsupportedFormatException e) {
+                        Log.e(TAG, "Exception in creating new dictionary file.", e);
+                    }
+                } else {
+                    mDictionaryWriter.clear();
+                }
             }
         });
     }
@@ -257,9 +290,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
                     mBinaryDictionary.addUnigramWord(word, frequency);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
                 }
-                // TODO: Remove.
-                mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
             }
         });
     }
@@ -280,10 +314,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
                     mBinaryDictionary.addBigramWords(word0, word1, frequency);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.addBigramWords(word0, word1, frequency, isValid,
+                            0 /* lastTouchedTime */);
                 }
-                // TODO: Remove.
-                mDictionaryWriter.addBigramWords(word0, word1, frequency, isValid,
-                        0 /* lastTouchedTime */);
             }
         });
     }
@@ -303,9 +338,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
                     mBinaryDictionary.removeBigramWords(word0, word1);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.removeBigramWords(word0, word1);
                 }
-                // TODO: Remove.
-                mDictionaryWriter.removeBigramWords(word0, word1);
             }
         });
     }
@@ -322,26 +358,39 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mFilename).executePrioritized(new Runnable() {
             @Override
             public void run() {
-                final ArrayList<SuggestedWordInfo> inMemDictSuggestion = composer.isBatchMode() ?
-                        null : mDictionaryWriter.getSuggestionsWithSessionId(composer, prevWord,
-                                proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
-                                sessionId);
-                // TODO: Remove checking mIsUpdatable and use native suggestion.
-                if (mBinaryDictionary != null && !mIsUpdatable) {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    if (mBinaryDictionary == null) {
+                        holder.set(null);
+                        return;
+                    }
                     final ArrayList<SuggestedWordInfo> binarySuggestion =
                             mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
                                     proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
                                     sessionId);
-                    if (inMemDictSuggestion == null) {
-                        holder.set(binarySuggestion);
-                    } else if (binarySuggestion == null) {
-                        holder.set(inMemDictSuggestion);
-                    } else {
-                        binarySuggestion.addAll(inMemDictSuggestion);
-                        holder.set(binarySuggestion);
-                    }
+                    holder.set(binarySuggestion);
                 } else {
-                    holder.set(inMemDictSuggestion);
+                    final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
+                            composer.isBatchMode() ? null :
+                                    mDictionaryWriter.getSuggestionsWithSessionId(composer,
+                                            prevWord, proximityInfo, blockOffensiveWords,
+                                            additionalFeaturesOptions, sessionId);
+                    // TODO: Remove checking mIsUpdatable and use native suggestion.
+                    if (mBinaryDictionary != null && !mIsUpdatable) {
+                        final ArrayList<SuggestedWordInfo> binarySuggestion =
+                                mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
+                                        proximityInfo, blockOffensiveWords,
+                                        additionalFeaturesOptions, sessionId);
+                        if (inMemDictSuggestion == null) {
+                            holder.set(binarySuggestion);
+                        } else if (binarySuggestion == null) {
+                            holder.set(inMemDictSuggestion);
+                        } else {
+                            binarySuggestion.addAll(inMemDictSuggestion);
+                            holder.set(binarySuggestion);
+                        }
+                    } else {
+                        holder.set(inMemDictSuggestion);
+                    }
                 }
             }
         });
@@ -411,8 +460,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0, length,
                 true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
 
-        // Ensure all threads accessing the current dictionary have finished before swapping in
-        // the new one.
+        // Ensure all threads accessing the current dictionary have finished before
+        // swapping in the new one.
+        // TODO: Ensure multi-thread assignment of mBinaryDictionary.
         final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;
         getExecutor(mFilename).executePrioritized(new Runnable() {
             @Override
@@ -443,8 +493,33 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (needsToReloadBeforeWriting()) {
             mDictionaryWriter.clear();
             loadDictionaryAsync();
+            mDictionaryWriter.write(mFilename);
+        } else {
+            if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
+                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
+                            new FusionDictionary.DictionaryOptions(new HashMap<String,String>(),
+                                    false, false));
+                    final DictEncoder dictEncoder = new Ver3DictEncoder(file);
+                    try {
+                        dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Exception in creating new dictionary file.", e);
+                    } catch (UnsupportedFormatException e) {
+                        Log.e(TAG, "Exception in creating new dictionary file.", e);
+                    }
+                } else {
+                    if (mBinaryDictionary.needsToRunGC()) {
+                        mBinaryDictionary.flushWithGC();
+                    } else {
+                        mBinaryDictionary.flush();
+                    }
+                }
+            } else {
+                mDictionaryWriter.write(mFilename);
+            }
         }
-        mDictionaryWriter.write(mFilename);
     }
 
     /**
@@ -539,7 +614,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mFilename).executePrioritized(new Runnable() {
             @Override
             public void run() {
-                loadDictionaryAsync();
+                if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    loadDictionaryAsync();
+                }
             }
         });
     }
@@ -547,7 +624,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /**
      * Generate binary dictionary using DictionaryWriter.
      */
-    protected void asyncWriteBinaryDictionary() {
+    protected void asyncFlashAllBinaryDictionary() {
         final Runnable newTask = new Runnable() {
             @Override
             public void run() {
@@ -620,8 +697,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             @Override
             public void run() {
                 if (mDictType == Dictionary.TYPE_USER_HISTORY) {
-                    holder.set(((DynamicPersonalizationDictionaryWriter) mDictionaryWriter)
-                            .isInDictionaryForTests(word));
+                    if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                        holder.set(mBinaryDictionary.isValidWord(word));
+                    } else {
+                        holder.set(((DynamicPersonalizationDictionaryWriter) mDictionaryWriter)
+                                .isInDictionaryForTests(word));
+                    }
                 }
             }
         });
