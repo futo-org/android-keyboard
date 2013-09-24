@@ -49,6 +49,14 @@
                 <include
                     latin:keyboardLayout="@xml/key_nepali_traditional_period" />
             </case>
+            <case
+                latin:languageCode="hy"
+            >
+                <!-- U+0589: "։" ARMENIAN FULL STOP -->
+                <Key
+                    latin:keyLabel="&#x0589;"
+                    latin:keyStyle="punctuationKeyStyle" />
+            </case>
             <default>
                 <Key
                     latin:keyStyle="punctuationKeyStyle" />

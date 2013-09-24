@@ -1769,15 +1769,15 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null,
         /* ~52 */
+        // U+058A: "" ARMENIAN HYPHEN
+        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
+        // U+055D: "՝" ARMENIAN COMMA
         // U+055E: "՞" ARMENIAN QUESTION MARK
-        /* 53 */ "!fixedColumnOrder!4,\u055E,!,\\,,?,:,;,@",
-        /* 54~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null,
-        /* ~107 */
-        /* 108 */ "\u055E,?",
+        // U+0559: "" ARMENIAN MODIFIER LETTER LEFT HALF RING
+        // U+055A: "" ARMENIAN APOSTROPHE
+        // U+055B: "՛" ARMENIAN EMPHASIS MARK
+        // U+055F: "՟" ARMENIAN ABBREVIATION MARK
+        /* 53 */ "!fixedColumnOrder!8,!,?,\\,,.,\u058A,\u055C,\u055D,\u055E,:,;,@,\u0559,\u055A,\u055B,\u055F",
     };
 
     /* Language is: Icelandic */

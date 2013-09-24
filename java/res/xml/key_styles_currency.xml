@@ -103,6 +103,8 @@
              vi: Vietnamese (Dong)  -->
         <!-- TODO: The currency sign of Turkish Lira was created in 2012 and assigned U+20BA for
              its unicode, although there is no font glyph for it as of November 2012. -->
+        <!-- TODO: The currency sign of Armenian Dram was created in 2012 and assigned U+058F for
+             its unicode, although there is no font glyph for it as of September 2013. -->
         <case
             latin:languageCode="fa|hi|iw|lo|mn|ne|th|uk|vi"
         >
