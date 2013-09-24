@@ -28,11 +28,13 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -76,6 +78,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     private final int mEmojiFunctionalKeyBackgroundId;
     private final KeyboardLayoutSet mLayoutSet;
     private final ColorStateList mTabLabelColor;
+    private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
     private EmojiKeyboardAdapter mEmojiKeyboardAdapter;
 
     private TabHost mTabHost;
@@ -395,6 +398,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mLayoutSet = builder.build();
         mEmojiCategory = new EmojiCategory(PreferenceManager.getDefaultSharedPreferences(context),
                 context.getResources(), builder.build());
+        mDeleteKeyOnTouchListener = new DeleteKeyOnTouchListener(context);
     }
 
     @Override
@@ -459,11 +463,9 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         final LinearLayout actionBar = (LinearLayout)findViewById(R.id.emoji_action_bar);
         emojiLp.setActionBarProperties(actionBar);
 
-        // TODO: Implement auto repeat, using View.OnTouchListener?
         final ImageView deleteKey = (ImageView)findViewById(R.id.emoji_keyboard_delete);
-        deleteKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         deleteKey.setTag(Constants.CODE_DELETE);
-        deleteKey.setOnClickListener(this);
+        deleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
         final ImageView alphabetKey = (ImageView)findViewById(R.id.emoji_keyboard_alphabet);
         alphabetKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
         alphabetKey.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
@@ -556,6 +558,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
+        mDeleteKeyOnTouchListener.setKeyboardActionListener(mKeyboardActionListener);
     }
 
     private void updateEmojiCategoryPageIdView() {
@@ -663,6 +666,94 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 mActiveKeyboardView.remove(position);
             }
             container.removeView(keyboardView);
+        }
+    }
+
+    // TODO: Do the same things done in PointerTracker
+    private static class DeleteKeyOnTouchListener implements OnTouchListener {
+        private static final long MAX_REPEAT_COUNT_TIME = 30 * DateUtils.SECOND_IN_MILLIS;
+        private final int mDeleteKeyPressedBackgroundColor;
+        private final long mKeyRepeatStartTimeout;
+        private final long mKeyRepeatInterval;
+
+        public DeleteKeyOnTouchListener(Context context) {
+            final Resources res = context.getResources();
+            mDeleteKeyPressedBackgroundColor =
+                    res.getColor(R.color.emoji_key_pressed_background_color);
+            mKeyRepeatStartTimeout = res.getInteger(R.integer.config_key_repeat_start_timeout);
+            mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
+        }
+
+        private KeyboardActionListener mKeyboardActionListener =
+                KeyboardActionListener.EMPTY_LISTENER;
+        private DummyRepeatKeyRepeatTimer mTimer;
+
+        private synchronized void startRepeat() {
+            if (mTimer != null) {
+                abortRepeat();
+            }
+            mTimer = new DummyRepeatKeyRepeatTimer();
+            mTimer.start();
+        }
+
+        private synchronized void abortRepeat() {
+            mTimer.abort();
+            mTimer = null;
+        }
+
+        // TODO: Remove
+        // This function is mimicking the repeat code in PointerTracker.
+        // Specifically referring to PointerTracker#startRepeatKey and PointerTracker#onKeyRepeat.
+        private class DummyRepeatKeyRepeatTimer extends Thread {
+            public boolean mAborted = false;
+
+            @Override
+            public void run() {
+                int timeCount = 0;
+                while (timeCount < MAX_REPEAT_COUNT_TIME && !mAborted) {
+                    if (timeCount > mKeyRepeatStartTimeout) {
+                        pressDelete();
+                    }
+                    timeCount += mKeyRepeatInterval;
+                    try {
+                        Thread.sleep(mKeyRepeatInterval);
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
+            public void abort() {
+                mAborted = true;
+            }
+        }
+
+        public void pressDelete() {
+            mKeyboardActionListener.onPressKey(
+                    Constants.CODE_DELETE, 0 /* repeatCount */, true /* isSinglePointer */);
+            mKeyboardActionListener.onCodeInput(
+                    Constants.CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE);
+            mKeyboardActionListener.onReleaseKey(
+                    Constants.CODE_DELETE, false /* withSliding */);
+        }
+
+        public void setKeyboardActionListener(KeyboardActionListener listener) {
+            mKeyboardActionListener = listener;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.setBackgroundColor(mDeleteKeyPressedBackgroundColor);
+                    pressDelete();
+                    startRepeat();
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    v.setBackgroundColor(0);
+                    abortRepeat();
+                    return true;
+            }
+            return false;
         }
     }
 }
