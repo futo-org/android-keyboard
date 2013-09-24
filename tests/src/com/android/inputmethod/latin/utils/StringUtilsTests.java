@@ -20,6 +20,11 @@ import com.android.inputmethod.latin.settings.SettingsValues;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.text.style.SuggestionSpan;
+import android.text.style.URLSpan;
+import android.text.SpannableStringBuilder;
+import android.text.Spannable;
+import android.text.Spanned;
 
 import java.util.Arrays;
 import java.util.List;
@@ -278,6 +283,36 @@ public class StringUtilsTests extends AndroidTestCase {
         final List<Object> newObjArray = StringUtils.jsonStrToList(str);
         for (int i = 0; i < objs.length; ++i) {
             assertEquals(objs[i], newObjArray.get(i));
+        }
+    }
+
+    public void testConcatWithSuggestionSpansOnly() {
+        SpannableStringBuilder s = new SpannableStringBuilder("test string\ntest string\n"
+                + "test string\ntest string\ntest string\ntest string\ntest string\ntest string\n"
+                + "test string\ntest string\n");
+        final int N = 10;
+        for (int i = 0; i < N; ++i) {
+            // Put a PARAGRAPH-flagged span that should not be found in the result.
+            s.setSpan(new SuggestionSpan(getContext(),
+                    new String[] {"" + i}, Spannable.SPAN_PARAGRAPH),
+                    i * 12, i * 12 + 12, Spannable.SPAN_PARAGRAPH);
+            // Put a normal suggestion span that should be found in the result.
+            s.setSpan(new SuggestionSpan(getContext(), new String[] {"" + i}, 0), i, i * 2, 0);
+            // Put a URL span than should not be found in the result.
+            s.setSpan(new URLSpan("http://a"), i, i * 2, 0);
+        }
+
+        final CharSequence a = s.subSequence(0, 15);
+        final CharSequence b = s.subSequence(15, s.length());
+        final Spanned result =
+                (Spanned)StringUtils.concatWithNonParagraphSuggestionSpansOnly(a, b);
+
+        Object[] spans = result.getSpans(0, result.length(), SuggestionSpan.class);
+        for (int i = 0; i < spans.length; i++) {
+            final int flags = result.getSpanFlags(spans[i]);
+            assertEquals("Should not find a span with PARAGRAPH flag",
+                    flags & Spannable.SPAN_PARAGRAPH, 0);
+            assertTrue("Should be a SuggestionSpan", spans[i] instanceof SuggestionSpan);
         }
     }
 }

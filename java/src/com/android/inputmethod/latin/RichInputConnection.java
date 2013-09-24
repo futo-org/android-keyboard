@@ -607,8 +607,11 @@ public final class RichInputConnection {
             }
         }
 
-        return new TextRange(TextUtils.concat(before, after), startIndexInBefore,
-                before.length() + endIndexInAfter, before.length());
+        // We don't use TextUtils#concat because it copies all spans without respect to their
+        // nature. If the text includes a PARAGRAPH span and it has been split, then
+        // TextUtils#concat will crash when it tries to concat both sides of it.
+        return new TextRange(StringUtils.concatWithNonParagraphSuggestionSpansOnly(before, after),
+                startIndexInBefore, before.length() + endIndexInAfter, before.length());
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
