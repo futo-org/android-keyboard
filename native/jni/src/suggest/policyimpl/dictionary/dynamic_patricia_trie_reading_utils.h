@@ -27,13 +27,19 @@ class DynamicPatriciaTrieReadingUtils {
  public:
     typedef uint8_t NodeFlags;
 
+    static const int DICT_OFFSET_INVALID;
+    static const int DICT_OFFSET_ZERO_OFFSET;
+
     static int getForwardLinkPosition(const uint8_t *const buffer, const int pos);
 
     static AK_FORCE_INLINE bool isValidForwardLinkPosition(const int forwardLinkAddress) {
         return forwardLinkAddress != 0;
     }
 
-    static int getParentPosAndAdvancePosition(const uint8_t *const buffer, int *const pos);
+    static int getParentPtNodePosOffsetAndAdvancePosition(const uint8_t *const buffer,
+            int *const pos);
+
+    static int getParentPtNodePos(const int parentOffset, const int ptNodePos);
 
     static int readChildrenPositionAndAdvancePosition(const uint8_t *const buffer, int *const pos);
 

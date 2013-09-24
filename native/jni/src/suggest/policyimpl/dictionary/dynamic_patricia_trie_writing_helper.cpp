@@ -203,9 +203,8 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
         return false;
     }
     // Update moved position, which is stored in the parent offset field.
-    const int movedPosOffset = movedPos - originalNode->getHeadPos();
-    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
-            mBuffer, movedPosOffset, &writingPos)) {
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
+            mBuffer, movedPos, originalNode->getHeadPos(), &writingPos)) {
         return false;
     }
     // Update bigram linked node position, which is stored in the children position field.
@@ -220,12 +219,10 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
         const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
         readingHelper.initWithPtNodeArrayPos(originalNode->getChildrenPos());
         while (!readingHelper.isEnd()) {
-            const int childPtNodeWrittenPos = nodeReader->getHeadPos();
-            const int parentOffset = movedPos - childPtNodeWrittenPos;
-            int parentOffsetFieldPos = childPtNodeWrittenPos
+            int parentOffsetFieldPos = nodeReader->getHeadPos()
                     + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
-            if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(
-                    mBuffer, parentOffset, &parentOffsetFieldPos)) {
+            if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
+                    mBuffer, movedPos, nodeReader->getHeadPos(), &parentOffsetFieldPos)) {
                 // Parent offset cannot be written because of a bug or a broken dictionary; thus,
                 // we give up to update dictionary.
                 return false;
@@ -251,9 +248,8 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeWithFullInfoToBuffer(
         return false;
     }
     // Calculate a parent offset and write the offset.
-    const int parentOffset = (parentPos != NOT_A_DICT_POS) ? parentPos - nodePos : NOT_A_DICT_POS;
-    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(bufferToWrite,
-            parentOffset, writingPos)) {
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(bufferToWrite,
+            parentPos, nodePos, writingPos)) {
         return false;
     }
     // Write code points

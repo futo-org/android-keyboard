@@ -70,6 +70,7 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
     *outBigramsCount = 0;
     BigramListReadWriteUtils::BigramFlags bigramFlags;
     int bigramEntryCount = 0;
+    int lastWrittenEntryPos = NOT_A_DICT_POS;
     do {
         if (++bigramEntryCount > BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT) {
             AKLOGE("Too many bigram entries. Entry count: %d, Limit: %d",
@@ -90,6 +91,11 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
             originalBigramPos += mBuffer->getOriginalBufferSize();
         }
         const int bigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
+        if (bigramPos == NOT_A_DICT_POS) {
+            // Target PtNode has been invalidated.
+            continue;
+        }
+        lastWrittenEntryPos = *toPos;
         if (!BigramListReadWriteUtils::createAndWriteBigramEntry(bufferToWrite, bigramPos,
                 BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags),
                 BigramListReadWriteUtils::hasNext(bigramFlags), toPos)) {
@@ -97,6 +103,13 @@ bool DynamicBigramListPolicy::copyAllBigrams(BufferWithExtendableBuffer *const b
         }
         (*outBigramsCount)++;
     } while(BigramListReadWriteUtils::hasNext(bigramFlags));
+    // Makes the last entry the terminal of the list. Updates the flags.
+    if (lastWrittenEntryPos != NOT_A_DICT_POS) {
+        if (!BigramListReadWriteUtils::setHasNextFlag(bufferToWrite, false /* hasNext */,
+                lastWrittenEntryPos)) {
+            return false;
+        }
+    }
     if (usesAdditionalBuffer) {
         *fromPos += mBuffer->getOriginalBufferSize();
     }
@@ -240,10 +253,7 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTarg
         }
         // The current last entry is found.
         // First, update the flags of the last entry.
-        const BigramListReadWriteUtils::BigramFlags updatedFlags =
-                BigramListReadWriteUtils::setHasNextFlag(bigramFlags);
-        if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, updatedFlags, originalBigramPos,
-                &entryPos)) {
+        if (!BigramListReadWriteUtils::setHasNextFlag(mBuffer, true /* hasNext */, entryPos)) {
             return false;
         }
         if (usesAdditionalBuffer) {

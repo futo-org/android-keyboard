@@ -28,24 +28,42 @@ const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_NOT_MOVED = 0xC0;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_MOVED = 0x40;
 const DptReadingUtils::NodeFlags DptReadingUtils::FLAG_IS_DELETED = 0x80;
 
+// TODO: Make DICT_OFFSET_ZERO_OFFSET = 0.
+// Currently, DICT_OFFSET_INVALID is 0 in Java side but offset can be 0 during GC. So, the maximum
+// value of offsets, which is 0x7FFFFF is used to represent 0 offset.
+const int DptReadingUtils::DICT_OFFSET_INVALID = 0;
+const int DptReadingUtils::DICT_OFFSET_ZERO_OFFSET = 0x7FFFFF;
+
 /* static */ int DptReadingUtils::getForwardLinkPosition(const uint8_t *const buffer,
         const int pos) {
     int linkAddressPos = pos;
     return ByteArrayUtils::readSint24AndAdvancePosition(buffer, &linkAddressPos);
 }
 
-/* static */ int DptReadingUtils::getParentPosAndAdvancePosition(const uint8_t *const buffer,
-        int *const pos) {
+/* static */ int DptReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(
+        const uint8_t *const buffer, int *const pos) {
     return ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
+}
+
+/* static */ int DptReadingUtils::getParentPtNodePos(const int parentOffset, const int ptNodePos) {
+    if (parentOffset == DICT_OFFSET_INVALID) {
+        return NOT_A_DICT_POS;
+    } else if (parentOffset == DICT_OFFSET_ZERO_OFFSET) {
+        return ptNodePos;
+    } else {
+        return parentOffset + ptNodePos;
+    }
 }
 
 /* static */ int DptReadingUtils::readChildrenPositionAndAdvancePosition(
         const uint8_t *const buffer, int *const pos) {
     const int base = *pos;
     const int offset = ByteArrayUtils::readSint24AndAdvancePosition(buffer, pos);
-    if (offset == 0) {
-        // 0 offset means that the node does not have children.
+    if (offset == DICT_OFFSET_INVALID) {
+        // The PtNode does not have children.
         return NOT_A_DICT_POS;
+    } else if (offset == DICT_OFFSET_ZERO_OFFSET) {
+        return base;
     } else {
         return base + offset;
     }

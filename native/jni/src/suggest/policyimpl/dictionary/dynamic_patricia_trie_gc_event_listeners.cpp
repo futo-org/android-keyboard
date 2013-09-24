@@ -96,7 +96,7 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToPlaceAndWriteValidPtNo
     mValidPtNodeCount++;
     // Writes current PtNode.
     return mWritingHelper->writePtNodeToBufferByCopyingPtNodeInfo(mBufferToWrite, node,
-            node->getParentPos(),  nodeCodePoints, node->getCodePointCount(),
+            node->getParentPos(), nodeCodePoints, node->getCodePointCount(),
             node->getProbability(), &writingPos);
 }
 
@@ -113,11 +113,9 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionField
         }
     }
     int writingPos = node->getHeadPos() + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
-    const int parentPosOffset = (parentPos != NOT_A_DICT_POS) ?
-            parentPos - node->getHeadPos() : NOT_A_DICT_POS;
     // Write updated parent offset.
-    if (!DynamicPatriciaTrieWritingUtils::writeParentOffsetAndAdvancePosition(mBufferToWrite,
-            parentPosOffset, &writingPos)) {
+    if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(mBufferToWrite,
+            parentPos, node->getHeadPos(), &writingPos)) {
         return false;
     }
 
@@ -139,8 +137,10 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionField
     // Updates bigram target PtNode positions in the bigram list.
     int bigramsPos = node->getBigramsPos();
     if (bigramsPos != NOT_A_DICT_POS) {
-        mBigramPolicy->updateAllBigramTargetPtNodePositions(&bigramsPos,
-                &mDictPositionRelocationMap->mPtNodePositionRelocationMap);
+        if (!mBigramPolicy->updateAllBigramTargetPtNodePositions(&bigramsPos,
+                &mDictPositionRelocationMap->mPtNodePositionRelocationMap)) {
+            return false;
+        }
     }
 
     return true;
