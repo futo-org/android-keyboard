@@ -1769,15 +1769,27 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null,
         /* ~52 */
-        // U+058A: "" ARMENIAN HYPHEN
+        // U+058A: "֊" ARMENIAN HYPHEN
         // U+055C: "՜" ARMENIAN EXCLAMATION MARK
         // U+055D: "՝" ARMENIAN COMMA
         // U+055E: "՞" ARMENIAN QUESTION MARK
-        // U+0559: "" ARMENIAN MODIFIER LETTER LEFT HALF RING
-        // U+055A: "" ARMENIAN APOSTROPHE
+        // U+0559: "ՙ" ARMENIAN MODIFIER LETTER LEFT HALF RING
+        // U+055A: "՚" ARMENIAN APOSTROPHE
         // U+055B: "՛" ARMENIAN EMPHASIS MARK
         // U+055F: "՟" ARMENIAN ABBREVIATION MARK
         /* 53 */ "!fixedColumnOrder!8,!,?,\\,,.,\u058A,\u055C,\u055D,\u055E,:,;,@,\u0559,\u055A,\u055B,\u055F",
+        /* 54~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        /* ~99 */
+        // U+055C: "՜" ARMENIAN EXCLAMATION MARK
+        // U+00A1: "¡" INVERTED EXCLAMATION MARK
+        /* 100 */ "\u055C,\u00A1",
+        // U+055E: "՞" ARMENIAN QUESTION MARK
+        // U+00BF: "¿" INVERTED QUESTION MARK
+        /* 101 */ "\u055E,\u00BF",
     };
 
     /* Language is: Icelandic */
