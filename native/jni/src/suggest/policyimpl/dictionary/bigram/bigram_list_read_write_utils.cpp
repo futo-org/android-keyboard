@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 
+#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
@@ -78,14 +79,34 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
             offset = ByteArrayUtils::readUint24AndAdvancePosition(bigramsBuf, pos);
             break;
     }
-    if (offset == 0) {
+    if (offset == DynamicPatriciaTrieReadingUtils::DICT_OFFSET_INVALID) {
         return NOT_A_DICT_POS;
+    } else if (offset == DynamicPatriciaTrieReadingUtils::DICT_OFFSET_ZERO_OFFSET) {
+        return origin;
     }
     if (isOffsetNegative(flags)) {
         return origin - offset;
     } else {
         return origin + offset;
     }
+}
+
+/* static */ bool BigramListReadWriteUtils::setHasNextFlag(
+        BufferWithExtendableBuffer *const buffer, const bool hasNext, const int entryPos) {
+    const bool usesAdditionalBuffer = buffer->isInAdditionalBuffer(entryPos);
+    int readingPos = entryPos;
+    if (usesAdditionalBuffer) {
+        readingPos -= buffer->getOriginalBufferSize();
+    }
+    BigramFlags bigramFlags = ByteArrayUtils::readUint8AndAdvancePosition(
+            buffer->getBuffer(usesAdditionalBuffer), &readingPos);
+    if (hasNext) {
+        bigramFlags = bigramFlags | FLAG_ATTRIBUTE_HAS_NEXT;
+    } else {
+        bigramFlags = bigramFlags & (~FLAG_ATTRIBUTE_HAS_NEXT);
+    }
+    int writingPos = entryPos;
+    return buffer->writeUintAndAdvancePosition(bigramFlags, 1 /* size */, &writingPos);
 }
 
 /* static */ bool BigramListReadWriteUtils::createAndWriteBigramEntry(
@@ -101,10 +122,9 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
 /* static */ bool BigramListReadWriteUtils::writeBigramEntry(
         BufferWithExtendableBuffer *const bufferToWrite, const BigramFlags flags,
         const int targetPtNodePos, int *const writingPos) {
-    const int offset = (targetPtNodePos != NOT_A_DICT_POS) ?
-            targetPtNodePos - (*writingPos + 1) : 0;
+    const int offset = getBigramTargetOffset(targetPtNodePos, *writingPos);
     const BigramFlags flagsToWrite = (offset < 0) ?
-            (flags | FLAG_ATTRIBUTE_OFFSET_NEGATIVE) : flags;
+            (flags | FLAG_ATTRIBUTE_OFFSET_NEGATIVE) : (flags & ~FLAG_ATTRIBUTE_OFFSET_NEGATIVE);
     if (!bufferToWrite->writeUintAndAdvancePosition(flagsToWrite, 1 /* size */, writingPos)) {
         return false;
     }
@@ -116,14 +136,13 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
 
 // Returns true if the bigram entry is valid and put entry flags into out*.
 /* static */ bool BigramListReadWriteUtils::createAndGetBigramFlags(const int entryPos,
-        const int targetPos, const int probability, const bool hasNext,
+        const int targetPtNodePos, const int probability, const bool hasNext,
         BigramFlags *const outBigramFlags) {
     BigramFlags flags = probability & MASK_ATTRIBUTE_PROBABILITY;
     if (hasNext) {
         flags |= FLAG_ATTRIBUTE_HAS_NEXT;
     }
-    const int targetFieldPos = entryPos + 1;
-    const int offset = (targetPos != NOT_A_DICT_POS) ? targetPos - targetFieldPos : 0;
+    const int offset = getBigramTargetOffset(targetPtNodePos, entryPos);
     if (offset < 0) {
         flags |= FLAG_ATTRIBUTE_OFFSET_NEGATIVE;
     }
@@ -144,6 +163,20 @@ const int BigramListReadWriteUtils::ATTRIBUTE_ADDRESS_SHIFT = 4;
     flags = (flags & (~MASK_ATTRIBUTE_ADDRESS_TYPE)) | FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES;
     *outBigramFlags = flags;
     return true;
+}
+
+/* static */ int BigramListReadWriteUtils::getBigramTargetOffset(const int targetPtNodePos,
+        const int entryPos) {
+    if (targetPtNodePos == NOT_A_DICT_POS) {
+        return DynamicPatriciaTrieReadingUtils::DICT_OFFSET_INVALID;
+    } else {
+        const int offset = targetPtNodePos - (entryPos + 1 /* bigramFlagsField */);
+        if (offset == 0) {
+            return DynamicPatriciaTrieReadingUtils::DICT_OFFSET_ZERO_OFFSET;
+        } else {
+            return offset;
+        }
+    }
 }
 
 } // namespace latinime

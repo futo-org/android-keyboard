@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.DictEncoder;
@@ -385,7 +386,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         dictFile.delete();
     }
 
-    // TODO: Add large tests for BinaryDictionary.flushWithGC().
     public void testFlushWithGCDictionary() {
         File dictFile = null;
         try {
@@ -428,6 +428,179 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         assertEquals(false, binaryDictionary.isValidBigram("aaa", "aaa"));
         binaryDictionary.flushWithGC();
         binaryDictionary.close();
+
+        dictFile.delete();
+    }
+
+    // TODO: Evaluate performance of GC
+    public void testAddBigramWordsAndFlashWithGC() {
+        final int wordCount = 100;
+        final int bigramCount = 1000;
+        final int codePointSetSize = 30;
+        // TODO: Use various seeds such as a current timestamp to make this test more random.
+        final int seed = 314159265;
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        final ArrayList<String> words = new ArrayList<String>();
+        // Test a word that isn't contained within the dictionary.
+        final Random random = new Random(seed);
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final int[] unigramProbabilities = new int[wordCount];
+        for (int i = 0; i < wordCount; ++i) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+            final int unigramProbability = random.nextInt(0xFF);
+            unigramProbabilities[i] = unigramProbability;
+            binaryDictionary.addUnigramWord(word, unigramProbability);
+        }
+
+        final int[][] probabilities = new int[wordCount][wordCount];
+
+        for (int i = 0; i < wordCount; ++i) {
+            for (int j = 0; j < wordCount; ++j) {
+                probabilities[i][j] = Dictionary.NOT_A_PROBABILITY;
+            }
+        }
+
+        for (int i = 0; i < bigramCount; i++) {
+            final int word0Index = random.nextInt(wordCount);
+            final int word1Index = random.nextInt(wordCount);
+            final String word0 = words.get(word0Index);
+            final String word1 = words.get(word1Index);
+            final int bigramProbability = random.nextInt(0xF);
+            probabilities[word0Index][word1Index] = binaryDictionary.calculateProbability(
+                    unigramProbabilities[word1Index], bigramProbability);
+            binaryDictionary.addBigramWords(word0, word1, bigramProbability);
+        }
+
+        binaryDictionary.flushWithGC();
+        binaryDictionary.close();
+        binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = 0; j < words.size(); j++) {
+                assertEquals(probabilities[i][j],
+                        binaryDictionary.getBigramProbability(words.get(i), words.get(j)));
+            }
+        }
+        dictFile.delete();
+    }
+
+    public void testRandomOperetionsAndFlashWithGC() {
+        final int flashWithGCIterationCount = 50;
+        final int operationCountInEachIteration = 200;
+        final int initialUnigramCount = 100;
+        final float addUnigramProb = 0.5f;
+        final float addBigramProb = 0.8f;
+        final float removeBigramProb = 0.2f;
+        final int codePointSetSize = 30;
+        final int seed = 141421356;
+
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        } catch (UnsupportedFormatException e) {
+            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
+        }
+
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+        final ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<Pair<String, String>> bigramWords = new ArrayList<Pair<String,String>>();
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final HashMap<String, Integer> unigramProbabilities = new HashMap<String, Integer>();
+        final HashMap<Pair<String, String>, Integer> bigramProbabilities =
+                new HashMap<Pair<String, String>, Integer>();
+        for (int i = 0; i < initialUnigramCount; ++i) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+            final int unigramProbability = random.nextInt(0xFF);
+            unigramProbabilities.put(word, unigramProbability);
+            binaryDictionary.addUnigramWord(word, unigramProbability);
+        }
+        binaryDictionary.flushWithGC();
+        binaryDictionary.close();
+
+        for (int gcCount = 0; gcCount < flashWithGCIterationCount; gcCount++) {
+            binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                    0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                    Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+            for (int opCount = 0; opCount < operationCountInEachIteration; opCount++) {
+                // Add unigram.
+                if (random.nextFloat() < addUnigramProb) {
+                    final String word = CodePointUtils.generateWord(random, codePointSet);
+                    words.add(word);
+                    final int unigramProbability = random.nextInt(0xFF);
+                    unigramProbabilities.put(word, unigramProbability);
+                    binaryDictionary.addUnigramWord(word, unigramProbability);
+                }
+                // Add bigram.
+                if (random.nextFloat() < addBigramProb && words.size() > 2) {
+                    final int word0Index = random.nextInt(words.size());
+                    int word1Index = random.nextInt(words.size() - 1);
+                    if (word0Index <= word1Index) {
+                        word1Index++;
+                    }
+                    final String word0 = words.get(word0Index);
+                    final String word1 = words.get(word1Index);
+                    final int bigramProbability = random.nextInt(0xF);
+                    final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+                    bigramWords.add(bigram);
+                    bigramProbabilities.put(bigram, bigramProbability);
+                    binaryDictionary.addBigramWords(word0, word1, bigramProbability);
+                }
+                // Remove bigram.
+                if (random.nextFloat() < removeBigramProb && !bigramWords.isEmpty()) {
+                    final int bigramIndex = random.nextInt(bigramWords.size());
+                    final Pair<String, String> bigram = bigramWords.get(bigramIndex);
+                    bigramWords.remove(bigramIndex);
+                    bigramProbabilities.remove(bigram);
+                    binaryDictionary.removeBigramWords(bigram.first, bigram.second);
+                }
+            }
+
+            // Test whether the all unigram operations are collectlly handled.
+            for (int i = 0; i < words.size(); i++) {
+                final String word = words.get(i);
+                final int unigramProbability = unigramProbabilities.get(word);
+                assertEquals(word, unigramProbability, binaryDictionary.getFrequency(word));
+            }
+            // Test whether the all bigram operations are collectlly handled.
+            for (int i = 0; i < bigramWords.size(); i++) {
+                final Pair<String, String> bigram = bigramWords.get(i);
+                final int unigramProbability = unigramProbabilities.get(bigram.second);
+                final int probability;
+                if (bigramProbabilities.containsKey(bigram)) {
+                    final int bigramProbability = bigramProbabilities.get(bigram);
+                    probability = binaryDictionary.calculateProbability(unigramProbability,
+                            bigramProbability);
+                } else {
+                    probability = Dictionary.NOT_A_PROBABILITY;
+                }
+                assertEquals(probability,
+                        binaryDictionary.getBigramProbability(bigram.first, bigram.second));
+            }
+            binaryDictionary.flushWithGC();
+            binaryDictionary.close();
+        }
 
         dictFile.delete();
     }

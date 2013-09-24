@@ -59,9 +59,8 @@ public:
        */
    }
 
-   static AK_FORCE_INLINE BigramFlags setHasNextFlag(const BigramFlags flags) {
-       return flags | FLAG_ATTRIBUTE_HAS_NEXT;
-   }
+   static bool setHasNextFlag(BufferWithExtendableBuffer *const buffer,
+           const bool hasNext, const int entryPos);
 
    static AK_FORCE_INLINE BigramFlags setProbabilityInFlags(const BigramFlags flags,
            const int probability) {
@@ -96,6 +95,8 @@ private:
 
    static int getBigramAddressAndAdvancePosition(const uint8_t *const bigramsBuf,
            const BigramFlags flags, int *const pos);
+
+   static int getBigramTargetOffset(const int targetPtNodePos, const int entryPos);
 };
 } // namespace latinime
 #endif // LATINIME_BIGRAM_LIST_READ_WRITE_UTILS_H

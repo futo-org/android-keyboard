@@ -41,8 +41,8 @@ class DynamicPatriciaTrieWritingUtils {
             const DynamicPatriciaTrieReadingUtils::NodeFlags nodeFlags,
             int *const nodeFlagsFieldPos);
 
-    static bool writeParentOffsetAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
-            const int parentPosition, int *const parentPosFieldPos);
+    static bool writeParentPosOffsetAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
+            const int parentPosition, const int basePos, int *const parentPosFieldPos);
 
     static bool writeCodePointsAndAdvancePosition(BufferWithExtendableBuffer *const buffer,
             const int *const codePoints, const int codePointCount, int *const codePointFieldPos);
@@ -67,8 +67,8 @@ class DynamicPatriciaTrieWritingUtils {
     static const int DICT_OFFSET_NEGATIVE_FLAG;
     static const int PROBABILITY_FIELD_SIZE;
 
-    static bool writeDictOffset(BufferWithExtendableBuffer *const buffer, const int offset,
-            int *const offsetFieldPos);
+    static bool writeDictOffset(BufferWithExtendableBuffer *const buffer, const int targetPos,
+            const int basePos, int *const offsetFieldPos);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_UTILS_H */
