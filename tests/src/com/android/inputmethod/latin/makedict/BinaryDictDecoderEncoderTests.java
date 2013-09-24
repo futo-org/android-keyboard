@@ -494,7 +494,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 formatOptions, "unigram"));
         results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, bufferType,
                 formatOptions, "chain"));
-        results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, bufferType,
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sStarBigrams, bufferType,
                 formatOptions, "star"));
     }
 
