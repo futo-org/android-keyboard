@@ -155,7 +155,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
     private final SlidingKeyInputPreview mSlidingKeyInputPreview;
 
     // Key preview
-    private static final int PREVIEW_ALPHA = 240;
     private final int mKeyPreviewLayoutId;
     private final int mKeyPreviewOffset;
     private final int mKeyPreviewHeight;
@@ -816,7 +815,6 @@ public final class MainKeyboardView extends KeyboardView implements PointerTrack
         if (background != null) {
             final int hasMoreKeys = (key.getMoreKeys() != null) ? STATE_HAS_MOREKEYS : STATE_NORMAL;
             background.setState(KEY_PREVIEW_BACKGROUND_STATE_TABLE[statePosition][hasMoreKeys]);
-            background.setAlpha(PREVIEW_ALPHA);
         }
         ViewLayoutUtils.placeViewAt(
                 previewText, previewX, previewY, previewWidth, previewHeight);
