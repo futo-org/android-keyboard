@@ -138,6 +138,9 @@ public final class Constants {
     public static final int SPELL_CHECKER_COORDINATE = -3;
     public static final int EXTERNAL_KEYBOARD_COORDINATE = -4;
 
+    // A hint on how many characters to cache from the TextView. A good value of this is given by
+    // how many characters we need to be able to almost always find the caps mode.
+    public static final int EDITOR_CONTENTS_CACHE_SIZE = 1024;
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
