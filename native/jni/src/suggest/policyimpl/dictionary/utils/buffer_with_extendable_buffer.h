@@ -32,9 +32,11 @@ namespace latinime {
 // raw pointer but provides several methods that handle boundary checking for writing data.
 class BufferWithExtendableBuffer {
  public:
-    BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize)
+    BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
+            const int maxAdditionalBufferSize = MAX_ADDITIONAL_BUFFER_SIZE)
             : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
-              mAdditionalBuffer(INITIAL_ADDITIONAL_BUFFER_SIZE), mUsedAdditionalBufferSize(0) {}
+              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
+              mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     AK_FORCE_INLINE int getTailPosition() const {
         return mOriginalBufferSize + mUsedAdditionalBufferSize;
@@ -61,6 +63,11 @@ class BufferWithExtendableBuffer {
         return mOriginalBufferSize;
     }
 
+    AK_FORCE_INLINE bool isNearSizeLimit() const {
+        return mAdditionalBuffer.size() >= ((mMaxAdditionalBufferSize
+                * NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE) / 100);
+    }
+
     /**
      * For writing.
      *
@@ -75,28 +82,22 @@ class BufferWithExtendableBuffer {
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
 
-    static const size_t INITIAL_ADDITIONAL_BUFFER_SIZE;
     static const size_t MAX_ADDITIONAL_BUFFER_SIZE;
+    static const int NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE;
     static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
 
     uint8_t *const mOriginalBuffer;
     const int mOriginalBufferSize;
     std::vector<uint8_t> mAdditionalBuffer;
     int mUsedAdditionalBufferSize;
+    const size_t mMaxAdditionalBufferSize;
 
     // Return if the buffer is successfully extended or not.
-    AK_FORCE_INLINE bool extendBuffer() {
-        if (mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP
-                > MAX_ADDITIONAL_BUFFER_SIZE) {
-            return false;
-        }
-        mAdditionalBuffer.resize(mAdditionalBuffer.size() + EXTEND_ADDITIONAL_BUFFER_SIZE_STEP);
-        return true;
-    }
+    bool extendBuffer();
 
     // Returns if it is possible to write size-bytes from pos. When pos is at the tail position of
     // the additional buffer, try extending the buffer.
-    AK_FORCE_INLINE bool checkAndPrepareWriting(const int pos, const int size);
+    bool checkAndPrepareWriting(const int pos, const int size);
 };
 }
 #endif /* LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H */
