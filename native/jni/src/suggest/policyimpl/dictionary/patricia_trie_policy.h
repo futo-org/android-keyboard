@@ -36,6 +36,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     PatriciaTriePolicy(const MmappedBuffer *const buffer)
             : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), buffer->getBufferSize()),
               mDictRoot(mBuffer->getBuffer() + mHeaderPolicy.getSize()),
+              mDictBufferSize(mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
 
     ~PatriciaTriePolicy() {
@@ -118,6 +119,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
     const uint8_t *const mDictRoot;
+    const int mDictBufferSize;
     const BigramListPolicy mBigramListPolicy;
     const ShortcutListPolicy mShortcutListPolicy;
 
