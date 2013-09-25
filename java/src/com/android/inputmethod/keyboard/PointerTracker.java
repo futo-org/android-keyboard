@@ -937,9 +937,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!sShouldHandleGesture) {
             return;
         }
-        // A gesture should start only from a non-modifier key.
+        // A gesture should start only from a non-modifier key. Note that the gesture detection is
+        // disabled when the key is repeating.
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
-                && key != null && !key.isModifier() && !key.isRepeatable();
+                && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
             if (getActivePointerTrackerCount() == 1) {
                 sGestureFirstDownTime = eventTime;
@@ -1422,6 +1423,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (key == null || key.getCode() != code) {
             return;
         }
+        mIsDetectingGesture = false;
         final int nextRepeatCount = repeatCount + 1;
         mTimerProxy.startKeyRepeatTimer(this, nextRepeatCount, sParams.mKeyRepeatInterval);
         callListenerOnPressAndCheckKeyboardLayoutChange(key, repeatCount);
