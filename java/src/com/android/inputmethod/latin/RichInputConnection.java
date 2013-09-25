@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CapsModeUtils;
 import com.android.inputmethod.latin.utils.DebugLogUtils;
+import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.research.ResearchLogger;
@@ -610,8 +611,9 @@ public final class RichInputConnection {
         // We don't use TextUtils#concat because it copies all spans without respect to their
         // nature. If the text includes a PARAGRAPH span and it has been split, then
         // TextUtils#concat will crash when it tries to concat both sides of it.
-        return new TextRange(StringUtils.concatWithNonParagraphSuggestionSpansOnly(before, after),
-                startIndexInBefore, before.length() + endIndexInAfter, before.length());
+        return new TextRange(
+                SpannableStringUtils.concatWithNonParagraphSuggestionSpansOnly(before, after),
+                        startIndexInBefore, before.length() + endIndexInAfter, before.length());
     }
 
     public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
