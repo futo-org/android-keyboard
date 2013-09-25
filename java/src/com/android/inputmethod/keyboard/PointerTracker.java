@@ -346,6 +346,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     // true if this pointer is in a sliding key input from a modifier key,
     // so that further modifier keys should be ignored.
     boolean mIsInSlidingKeyInputFromModifier;
+    // if not a NOT_A_CODE, the key of this code is repeating
+    private int mCurrentRepeatingKeyCode = Constants.NOT_A_CODE;
 
     // true if a sliding key input is allowed.
     private boolean mIsAllowedSlidingKeyInput;
@@ -1248,6 +1250,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         mIsDetectingGesture = false;
         final Key currentKey = mCurrentKey;
         mCurrentKey = null;
+        final int currentRepeatingKeyCode = mCurrentRepeatingKeyCode;
+        mCurrentRepeatingKeyCode = Constants.NOT_A_CODE;
         // Release the last pressed key.
         setReleasedKeyGraphics(currentKey);
 
@@ -1273,8 +1277,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (mIsTrackingForActionDisabled) {
             return;
         }
-        if (currentKey != null && currentKey.isRepeatable() && !isInSlidingKeyInput) {
-            // Repeatable key has been registered in {@link #onDownEventInternal(int,int,long)}.
+        if (currentKey != null && currentKey.isRepeatable()
+                && (currentKey.getCode() == currentRepeatingKeyCode) && !isInSlidingKeyInput) {
             return;
         }
         detectAndSendKey(currentKey, mKeyX, mKeyY, eventTime);
@@ -1413,7 +1417,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
         if (!key.isRepeatable()) return;
         // Don't start key repeat when we are in sliding input mode.
         if (mIsInSlidingKeyInput) return;
-        detectAndSendKey(key, key.getX(), key.getY(), SystemClock.uptimeMillis());
         final int startRepeatCount = 1;
         mTimerProxy.startKeyRepeatTimer(this, startRepeatCount, sParams.mKeyRepeatStartTimeout);
     }
@@ -1421,8 +1424,10 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
     public void onKeyRepeat(final int code, final int repeatCount) {
         final Key key = getKey();
         if (key == null || key.getCode() != code) {
+            mCurrentRepeatingKeyCode = Constants.NOT_A_CODE;
             return;
         }
+        mCurrentRepeatingKeyCode = code;
         mIsDetectingGesture = false;
         final int nextRepeatCount = repeatCount + 1;
         mTimerProxy.startKeyRepeatTimer(this, nextRepeatCount, sParams.mKeyRepeatInterval);
