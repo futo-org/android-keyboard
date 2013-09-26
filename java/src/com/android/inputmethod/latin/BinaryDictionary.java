@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -104,6 +105,8 @@ public final class BinaryDictionary extends Dictionary {
         JniUtils.loadNativeLibrary();
     }
 
+    private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
+            String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
     private static native void flushNative(long dict, String filePath);
@@ -126,6 +129,20 @@ public final class BinaryDictionary extends Dictionary {
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
+
+    @UsedForTesting
+    public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
+            final Map<String, String> attributeMap) {
+        final String[] keyArray = new String[attributeMap.size()];
+        final String[] valueArray = new String[attributeMap.size()];
+        int index = 0;
+        for (final String key : attributeMap.keySet()) {
+            keyArray[index] = key;
+            valueArray[index] = attributeMap.get(key);
+            index++;
+        }
+        return createEmptyDictFileNative(filePath, dictVersion, keyArray, valueArray);
+    }
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,

@@ -26,11 +26,54 @@
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 
 namespace latinime {
 
 class ProximityInfo;
+
+// TODO: Move to makedict.
+static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclass clazz,
+        jstring filePath, jlong dictVersion, jobjectArray attributeKeyStringArray,
+        jobjectArray attributeValueStringArray) {
+    const jsize filePathUtf8Length = env->GetStringUTFLength(filePath);
+    char filePathChars[filePathUtf8Length + 1];
+    env->GetStringUTFRegion(filePath, 0, env->GetStringLength(filePath), filePathChars);
+    filePathChars[filePathUtf8Length] = '\0';
+
+    const int keyCount = env->GetArrayLength(attributeKeyStringArray);
+    const int valueCount = env->GetArrayLength(attributeValueStringArray);
+    if (keyCount != valueCount) {
+        return false;
+    }
+
+    HeaderReadWriteUtils::AttributeMap attributeMap;
+    for (int i = 0; i < keyCount; i++) {
+        jstring keyString = static_cast<jstring>(
+                env->GetObjectArrayElement(attributeKeyStringArray, i));
+        const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
+        char keyChars[keyUtf8Length + 1];
+        env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
+        keyChars[keyUtf8Length] = '\0';
+        HeaderReadWriteUtils::AttributeMap::key_type key;
+        HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
+
+        jstring valueString = static_cast<jstring>(
+                env->GetObjectArrayElement(attributeValueStringArray, i));
+        const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
+        char valueChars[valueUtf8Length + 1];
+        env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
+        valueChars[valueUtf8Length] = '\0';
+        HeaderReadWriteUtils::AttributeMap::mapped_type value;
+        HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
+
+        attributeMap[key] = value;
+    }
+
+    return DictFileWritingUtils::createEmptyDictFile(filePathChars, static_cast<int>(dictVersion),
+            &attributeMap);
+}
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jclass clazz, jstring sourceDir,
         jlong dictOffset, jlong dictSize, jboolean isUpdatable) {
@@ -281,6 +324,11 @@ static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jcl
 }
 
 static const JNINativeMethod sMethods[] = {
+    {
+        const_cast<char *>("createEmptyDictFileNative"),
+        const_cast<char *>("(Ljava/lang/String;J[Ljava/lang/String;[Ljava/lang/String;)Z"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_createEmptyDictFile)
+    },
     {
         const_cast<char *>("openNative"),
         const_cast<char *>("(Ljava/lang/String;JJZ)J"),

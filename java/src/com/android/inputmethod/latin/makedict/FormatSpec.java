@@ -325,6 +325,12 @@ public final class FormatSpec {
         public final int mHeaderSize;
         public final DictionaryOptions mDictionaryOptions;
         public final FormatOptions mFormatOptions;
+        // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
+        // and latinime::HeaderReadWriteUtils.
+        public static final String SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE = "SUPPORTS_DYNAMIC_UPDATE";
+        public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
+        public static final String ATTRIBUTE_VALUE_TRUE = "1";
+
         private static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
         private static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
         private static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
