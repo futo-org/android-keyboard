@@ -25,7 +25,7 @@ namespace latinime {
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
 const char *const HeaderPolicy::USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
-const float HeaderPolicy::DEFAULT_MULTIPLE_WORD_COST_MULTIPLIER = 1.0f;
+const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 
 // Used for logging. Question mark is used to indicate that the key is not found.
@@ -37,7 +37,7 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
         return;
     }
     std::vector<int> keyCodePointVector;
-    insertCharactersIntoVector(key, &keyCodePointVector);
+    HeaderReadWriteUtils::insertCharactersIntoVector(key, &keyCodePointVector);
     HeaderReadWriteUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyCodePointVector);
     if (it == mAttributeMap.end()) {
         // The key was not found.
@@ -53,47 +53,29 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
 }
 
 float HeaderPolicy::readMultipleWordCostMultiplier() const {
-    int attributeValue = 0;
-    if (getAttributeValueAsInt(MULTIPLE_WORDS_DEMOTION_RATE_KEY, &attributeValue)) {
-        if (attributeValue <= 0) {
-            return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
-        }
-        return MULTIPLE_WORD_COST_MULTIPLIER_SCALE / static_cast<float>(attributeValue);
-    } else {
-        return DEFAULT_MULTIPLE_WORD_COST_MULTIPLIER;
+    std::vector<int> keyVector;
+    HeaderReadWriteUtils::insertCharactersIntoVector(MULTIPLE_WORDS_DEMOTION_RATE_KEY, &keyVector);
+    const int demotionRate = HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+            &keyVector, DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE);
+    if (demotionRate <= 0) {
+        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
+    return MULTIPLE_WORD_COST_MULTIPLIER_SCALE / static_cast<float>(demotionRate);
 }
 
 bool HeaderPolicy::readUsesForgettingCurveFlag() const {
-    int attributeValue = 0;
-    if (getAttributeValueAsInt(USES_FORGETTING_CURVE_KEY, &attributeValue)) {
-        return attributeValue != 0;
-    } else {
-        return false;
-    }
-}
-
-// Returns S_INT_MIN when the key is not found or the value is invalid.
-int HeaderPolicy::readLastUpdatedTime() const {
-    int attributeValue = 0;
-    if (getAttributeValueAsInt(LAST_UPDATED_TIME_KEY, &attributeValue)) {
-        return attributeValue;
-    } else {
-        return S_INT_MIN;
-    }
-}
-
-// Returns whether the key is found or not and stores the found value into outValue.
-bool HeaderPolicy::getAttributeValueAsInt(const char *const key, int *const outValue) const {
     std::vector<int> keyVector;
-    insertCharactersIntoVector(key, &keyVector);
-    HeaderReadWriteUtils::AttributeMap::const_iterator it = mAttributeMap.find(keyVector);
-    if (it == mAttributeMap.end()) {
-        // The key was not found.
-        return false;
-    }
-    *outValue = parseIntAttributeValue(&(it->second));
-    return true;
+    HeaderReadWriteUtils::insertCharactersIntoVector(USES_FORGETTING_CURVE_KEY, &keyVector);
+    return HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap, &keyVector,
+            false /* defaultValue */);
+}
+
+// Returns current time when the key is not found or the value is invalid.
+int HeaderPolicy::readLastUpdatedTime() const {
+    std::vector<int> keyVector;
+    HeaderReadWriteUtils::insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &keyVector);
+    return HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap, &keyVector,
+            time(0) /* defaultValue */);
 }
 
 bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
@@ -117,13 +99,8 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
         // Set current time as a last updated time.
         HeaderReadWriteUtils::AttributeMap attributeMapTowrite(mAttributeMap);
         std::vector<int> updatedTimekey;
-        insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &updatedTimekey);
-        const time_t currentTime = time(NULL);
-        std::vector<int> updatedTimeValue;
-        char charBuf[LARGEST_INT_DIGIT_COUNT + 1];
-        snprintf(charBuf, LARGEST_INT_DIGIT_COUNT + 1, "%ld", currentTime);
-        insertCharactersIntoVector(charBuf, &updatedTimeValue);
-        attributeMapTowrite[updatedTimekey] = updatedTimeValue;
+        HeaderReadWriteUtils::insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &updatedTimekey);
+        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, &updatedTimekey, time(0));
         if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
                 &writingPos)) {
             return false;
@@ -147,32 +124,6 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
     HeaderReadWriteUtils::AttributeMap attributeMap;
     HeaderReadWriteUtils::fetchAllHeaderAttributes(dictBuf, &attributeMap);
     return attributeMap;
-}
-
-/* static */ int HeaderPolicy::parseIntAttributeValue(
-        const std::vector<int> *const attributeValue) {
-    int value = 0;
-    bool isNegative = false;
-    for (size_t i = 0; i < attributeValue->size(); ++i) {
-        if (i == 0 && attributeValue->at(i) == '-') {
-            isNegative = true;
-        } else {
-            if (!isdigit(attributeValue->at(i))) {
-                // If not a number, return S_INT_MIN
-                return S_INT_MIN;
-            }
-            value *= 10;
-            value += attributeValue->at(i) - '0';
-        }
-    }
-    return isNegative ? -value : value;
-}
-
-/* static */ void HeaderPolicy::insertCharactersIntoVector(const char *const characters,
-        std::vector<int> *const vector) {
-    for (int i = 0; characters[i]; ++i) {
-        vector->push_back(characters[i]);
-    }
 }
 
 } // namespace latinime
