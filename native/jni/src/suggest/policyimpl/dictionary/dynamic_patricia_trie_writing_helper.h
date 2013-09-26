@@ -17,7 +17,6 @@
 #ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 #define LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H
 
-#include <cstdio>
 #include <stdint.h>
 
 #include "defines.h"
@@ -85,7 +84,6 @@ class DynamicPatriciaTrieWritingHelper {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
-    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
     static const size_t MAX_DICTIONARY_SIZE;
 
     BufferWithExtendableBuffer *const mBuffer;
@@ -123,13 +121,6 @@ class DynamicPatriciaTrieWritingHelper {
             const int *const reallocatingPtNodeCodePoints, const int overlappingCodePointCount,
             const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
-
-    void flushAllToFile(const char *const fileName,
-            BufferWithExtendableBuffer *const dictHeader,
-            BufferWithExtendableBuffer *const dictBody) const;
-
-    bool writeBufferToFilePointer(FILE *const file,
-            const BufferWithExtendableBuffer *const buffer) const;
 
     bool runGC(const int rootPtNodeArrayPos, BufferWithExtendableBuffer *const bufferToWrite);
 };
