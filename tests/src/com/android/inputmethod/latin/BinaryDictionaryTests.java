@@ -21,24 +21,18 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
-import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 @LargeTest
 public class BinaryDictionaryTests extends AndroidTestCase {
-    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(3 /* version */, true /* supportsDynamicUpdate */);
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
 
@@ -52,15 +46,18 @@ public class BinaryDictionaryTests extends AndroidTestCase {
         super.tearDown();
     }
 
-    private File createEmptyDictionaryAndGetFile(final String filename) throws IOException,
-            UnsupportedFormatException {
-        final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
+    private File createEmptyDictionaryAndGetFile(final String filename) throws IOException {
         final File file = File.createTempFile(filename, TEST_DICT_FILE_EXTENSION,
                 getContext().getCacheDir());
-        final DictEncoder dictEncoder = new Ver3DictEncoder(file);
-        dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
-        return file;
+        Map<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        if (BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                3 /* dictVersion */, attributeMap)) {
+            return file;
+        } else {
+            throw new IOException("Empty dictionary cannot be created.");
+        }
     }
 
     public void testIsValidDictionary() {
@@ -69,8 +66,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -95,8 +90,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -139,8 +132,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -169,8 +160,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -240,8 +229,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -294,8 +281,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -342,8 +327,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -392,8 +375,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                 0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
@@ -445,8 +426,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
 
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
@@ -516,8 +495,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
 
         BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
@@ -617,8 +594,6 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
         } catch (IOException e) {
             fail("IOException while writing an initial dictionary : " + e);
-        } catch (UnsupportedFormatException e) {
-            fail("UnsupportedFormatException while writing an initial dictionary : " + e);
         }
 
         final ArrayList<String> words = new ArrayList<String>();
