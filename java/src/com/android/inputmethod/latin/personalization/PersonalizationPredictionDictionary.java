@@ -22,7 +22,7 @@ import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class PersonalizationPredictionDictionary extends DynamicPredictionDictionaryBase {
+public class PersonalizationPredictionDictionary extends DecayingExpandableBinaryDictionaryBase {
     private static final String NAME = PersonalizationPredictionDictionary.class.getSimpleName();
 
     /* package */ PersonalizationPredictionDictionary(final Context context, final String locale,

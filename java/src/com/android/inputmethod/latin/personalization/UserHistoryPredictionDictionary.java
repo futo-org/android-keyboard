@@ -26,7 +26,7 @@ import android.content.SharedPreferences;
  * Locally gathers stats about the words user types and various other signals like auto-correction
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
-public class UserHistoryPredictionDictionary extends DynamicPredictionDictionaryBase {
+public class UserHistoryPredictionDictionary extends DecayingExpandableBinaryDictionaryBase {
     /* package for tests */ static final String NAME =
             UserHistoryPredictionDictionary.class.getSimpleName();
     /* package */ UserHistoryPredictionDictionary(final Context context, final String locale,
