@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 
+#include <cctype>
+#include <cstdio>
 #include <vector>
 
 #include "defines.h"
@@ -43,6 +45,12 @@ const HeaderReadWriteUtils::DictionaryFlags
 const HeaderReadWriteUtils::DictionaryFlags
         HeaderReadWriteUtils::FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
 
+const char *const HeaderReadWriteUtils::SUPPORTS_DYNAMIC_UPDATE_KEY = "SUPPORTS_DYNAMIC_UPDATE";
+const char *const HeaderReadWriteUtils::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
+        "REQUIRES_GERMAN_UMLAUT_PROCESSING";
+const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY =
+        "REQUIRES_FRENCH_LIGATURE_PROCESSING";
+
 /* static */ int HeaderReadWriteUtils::getHeaderSize(const uint8_t *const dictBuf) {
     // See the format of the header in the comment in
     // BinaryDictionaryFormatUtils::detectFormatVersion()
@@ -54,6 +62,28 @@ const HeaderReadWriteUtils::DictionaryFlags
         HeaderReadWriteUtils::getFlags(const uint8_t *const dictBuf) {
     return ByteArrayUtils::readUint16(dictBuf,
             HEADER_MAGIC_NUMBER_SIZE + HEADER_DICTIONARY_VERSION_SIZE);
+}
+
+/* static */ HeaderReadWriteUtils::DictionaryFlags
+        HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
+                const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
+    AttributeMap::key_type key;
+    insertCharactersIntoVector(REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, &key);
+    const bool requiresGermanUmlautProcessing = readBoolAttributeValue(attributeMap, &key,
+            false /* defaultValue */);
+    key.clear();
+    insertCharactersIntoVector(REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY, &key);
+    const bool requiresFrenchLigatureProcessing = readBoolAttributeValue(attributeMap, &key,
+            false /* defaultValue */);
+    key.clear();
+    insertCharactersIntoVector(SUPPORTS_DYNAMIC_UPDATE_KEY, &key);
+    const bool supportsDynamicUpdate = readBoolAttributeValue(attributeMap, &key,
+            false /* defaultValue */);
+    DictionaryFlags dictflags = NO_FLAGS;
+    dictflags |= requiresGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0;
+    dictflags |= requiresFrenchLigatureProcessing ? FRENCH_LIGATURE_PROCESSING_FLAG : 0;
+    dictflags |= supportsDynamicUpdate ? SUPPORTS_DYNAMIC_UPDATE_FLAG : 0;
+    return dictflags;
 }
 
 /* static */ void HeaderReadWriteUtils::fetchAllHeaderAttributes(const uint8_t *const dictBuf,
@@ -126,6 +156,59 @@ const HeaderReadWriteUtils::DictionaryFlags
         }
     }
     return true;
+}
+
+/* static */ void HeaderReadWriteUtils::setBoolAttribute(AttributeMap *const headerAttributes,
+        const AttributeMap::key_type *const key, const bool value) {
+    setIntAttribute(headerAttributes, key, value ? 1 : 0);
+}
+
+/* static */ void HeaderReadWriteUtils::setIntAttribute(AttributeMap *const headerAttributes,
+        const AttributeMap::key_type *const key, const int value) {
+    AttributeMap::mapped_type valueVector;
+    char charBuf[LARGEST_INT_DIGIT_COUNT + 1];
+    snprintf(charBuf, LARGEST_INT_DIGIT_COUNT + 1, "%d", value);
+    insertCharactersIntoVector(charBuf, &valueVector);
+    (*headerAttributes)[*key] = valueVector;
+}
+
+/* static */ bool HeaderReadWriteUtils::readBoolAttributeValue(
+        const AttributeMap *const headerAttributes, const AttributeMap::key_type *const key,
+        const bool defaultValue) {
+    const int intDefaultValue = defaultValue ? 1 : 0;
+    const int intValue = readIntAttributeValue(headerAttributes, key, intDefaultValue);
+    return intValue != 0;
+}
+
+/* static */ int HeaderReadWriteUtils::readIntAttributeValue(
+        const AttributeMap *const headerAttributes, const AttributeMap::key_type *const key,
+        const int defaultValue) {
+    AttributeMap::const_iterator it = headerAttributes->find(*key);
+    if (it != headerAttributes->end()) {
+        int value = 0;
+        bool isNegative = false;
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            if (i == 0 && it->second.at(i) == '-') {
+                isNegative = true;
+            } else {
+                if (!isdigit(it->second.at(i))) {
+                    // If not a number.
+                    return defaultValue;
+                }
+                value *= 10;
+                value += it->second.at(i) - '0';
+            }
+        }
+        return isNegative ? -value : value;
+    }
+    return defaultValue;
+}
+
+/* static */ void HeaderReadWriteUtils::insertCharactersIntoVector(const char *const characters,
+        std::vector<int> *const vector) {
+    for (int i = 0; characters[i]; ++i) {
+        vector->push_back(characters[i]);
+    }
 }
 
 } // namespace latinime
