@@ -325,7 +325,7 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
         nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos);
         bigramLinkCount++;
         if (bigramLinkCount > CONTINUING_BIGRAM_LINK_COUNT_LIMIT) {
-            AKLOGE("Bigram link is invalid. start position: %d", bigramPos);
+            AKLOGE("Bigram link is invalid. start position: %d", originalBigramPos);
             ASSERT(false);
             return NOT_A_DICT_POS;
         }
