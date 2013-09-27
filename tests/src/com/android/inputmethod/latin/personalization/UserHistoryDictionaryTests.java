@@ -84,29 +84,24 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     /**
-     * @param checksContents if true, checks whether written words are actually in the dictionary
+     * @param checkContents if true, checks whether written words are actually in the dictionary
      * or not.
      */
     private void addAndWriteRandomWords(final String testFilenameSuffix, final int numberOfWords,
-            final Random random, final boolean checksContents) {
+            final Random random, final boolean checkContents) {
         final List<String> words = generateWords(numberOfWords, random);
         final UserHistoryPredictionDictionary dict =
                 PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
                         testFilenameSuffix /* locale */, mPrefs);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
-        if (checksContents) {
+        if (checkContents) {
             try {
                 Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
             }
-            // Limit word count to check when using a Java on memory dictionary.
-            final int wordCountToCheck =
-                    ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
-                            numberOfWords : 10;
-            for (int i = 0; i < wordCountToCheck; ++i) {
+            for (int i = 0; i < numberOfWords; ++i) {
                 final String word = words.get(i);
-                // This may fail as long as we use tryLock on inserting the bigram words
                 assertTrue(dict.isInDictionaryForTests(word));
             }
         }

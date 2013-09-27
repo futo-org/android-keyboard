@@ -79,7 +79,7 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     public void addUnigramWord(final String word, final String shortcutTarget, final int frequency,
             final boolean isNotAWord) {
         if (mBigramList.size() > mMaxHistoryBigrams * 2) {
-            // Too many entries: just stop adding new vocabrary and wait next refresh.
+            // Too many entries: just stop adding new vocabulary and wait next refresh.
             return;
         }
         mExpandableDictionary.addWord(word, shortcutTarget, frequency);
@@ -90,7 +90,7 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     public void addBigramWords(final String word0, final String word1, final int frequency,
             final boolean isValid, final long lastModifiedTime) {
         if (mBigramList.size() > mMaxHistoryBigrams * 2) {
-            // Too many entries: just stop adding new vocabrary and wait next refresh.
+            // Too many entries: just stop adding new vocabulary and wait next refresh.
             return;
         }
         if (lastModifiedTime > 0) {
@@ -176,8 +176,8 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     }
 
     @UsedForTesting
-    public boolean isInDictionaryForTests(final String word) {
+    public boolean isInBigramListForTests(final String word) {
         // TODO: Use native method to determine whether the word is in dictionary or not
-        return mBigramList.containsKey(word);
+        return mBigramList.containsKey(word) || mBigramList.getBigrams(null).containsKey(word);
     }
 }
