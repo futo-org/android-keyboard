@@ -42,6 +42,9 @@ bool DynamicPatriciaTrieGcEventListeners
         }
     } else {
         valueStack.back() += 1;
+        if (node->isTerminal()) {
+            mValidUnigramCount += 1;
+        }
     }
     return true;
 }
@@ -137,10 +140,15 @@ bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionField
     // Updates bigram target PtNode positions in the bigram list.
     int bigramsPos = node->getBigramsPos();
     if (bigramsPos != NOT_A_DICT_POS) {
+        int bigramEntryCount;
         if (!mBigramPolicy->updateAllBigramTargetPtNodePositions(&bigramsPos,
-                &mDictPositionRelocationMap->mPtNodePositionRelocationMap)) {
+                &mDictPositionRelocationMap->mPtNodePositionRelocationMap, &bigramEntryCount)) {
             return false;
         }
+        mBigramCount += bigramEntryCount;
+    }
+    if (node->isTerminal()) {
+        mUnigramCount++;
     }
 
     return true;

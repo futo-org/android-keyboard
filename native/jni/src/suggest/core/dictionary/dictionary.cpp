@@ -125,6 +125,11 @@ bool Dictionary::needsToRunGC() {
     return mDictionaryStructureWithBufferPolicy->needsToRunGC();
 }
 
+void Dictionary::getProperty(const char *const query, char *const outResult,
+        const int maxResultLength) const {
+    return mDictionaryStructureWithBufferPolicy->getProperty(query, outResult, maxResultLength);
+}
+
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
     const int BUFFER_SIZE = 16;
     int dictionaryIdCodePointBuffer[BUFFER_SIZE];

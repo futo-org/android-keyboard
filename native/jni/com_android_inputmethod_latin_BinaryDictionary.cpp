@@ -323,6 +323,24 @@ static int latinime_BinaryDictionary_calculateProbabilityNative(JNIEnv *env, jcl
             bigramProbability);
 }
 
+static jstring latinime_BinaryDictionary_getProperty(JNIEnv *env, jclass clazz, jlong dict,
+        jstring query) {
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
+    if (!dictionary) {
+        return env->NewStringUTF("");
+    }
+    const jsize queryUtf8Length = env->GetStringUTFLength(query);
+    char queryChars[queryUtf8Length + 1];
+    env->GetStringUTFRegion(query, 0, env->GetStringLength(query), queryChars);
+    queryChars[queryUtf8Length] = '\0';
+    static const int GET_PROPERTY_RESULT_LENGTH = 100;
+    char resultChars[GET_PROPERTY_RESULT_LENGTH];
+    resultChars[0] = '\0';
+    dictionary->getDictionaryStructurePolicy()->getProperty(queryChars, resultChars,
+            GET_PROPERTY_RESULT_LENGTH);
+    return env->NewStringUTF(resultChars);
+}
+
 static const JNINativeMethod sMethods[] = {
     {
         const_cast<char *>("createEmptyDictFileNative"),
@@ -398,6 +416,11 @@ static const JNINativeMethod sMethods[] = {
         const_cast<char *>("calculateProbabilityNative"),
         const_cast<char *>("(JII)I"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_calculateProbabilityNative)
+    },
+    {
+        const_cast<char *>("getPropertyNative"),
+        const_cast<char *>("(JLjava/lang/String;)Ljava/lang/String;"),
+        reinterpret_cast<void *>(latinime_BinaryDictionary_getProperty)
     }
 };
 
