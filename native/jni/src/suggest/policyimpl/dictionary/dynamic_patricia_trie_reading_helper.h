@@ -240,6 +240,7 @@ class DynamicPatriciaTrieReadingHelper {
     static const int MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP;
     static const size_t MAX_READING_STATE_STACK_SIZE;
 
+    // TODO: Introduce error code to track what caused the error.
     bool mIsError;
     ReadingState mReadingState;
     const BufferWithExtendableBuffer *const mBuffer;
