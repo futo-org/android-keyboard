@@ -16,8 +16,11 @@
 
 package com.android.inputmethod.latin.utils;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An object that executes submitted tasks using a thread.
@@ -27,19 +30,20 @@ public class PrioritizedSerialExecutor {
 
     private final Object mLock = new Object();
 
-    // The default value of capacities of task queues.
-    private static final int TASK_QUEUE_CAPACITY = 1000;
     private final Queue<Runnable> mTasks;
     private final Queue<Runnable> mPrioritizedTasks;
     private boolean mIsShutdown;
+    private final ThreadPoolExecutor mThreadPoolExecutor;
 
     // The task which is running now.
     private Runnable mActive;
 
     public PrioritizedSerialExecutor() {
-        mTasks = new ArrayDeque<Runnable>(TASK_QUEUE_CAPACITY);
-        mPrioritizedTasks = new ArrayDeque<Runnable>(TASK_QUEUE_CAPACITY);
+        mTasks = new ConcurrentLinkedQueue<Runnable>();
+        mPrioritizedTasks = new ConcurrentLinkedQueue<Runnable>();
         mIsShutdown = false;
+        mThreadPoolExecutor = new ThreadPoolExecutor(1 /* corePoolSize */, 1 /* maximumPoolSize */,
+                0 /* keepAliveTime */, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
     }
 
     /**
@@ -59,7 +63,16 @@ public class PrioritizedSerialExecutor {
     public void execute(final Runnable r) {
         synchronized(mLock) {
             if (!mIsShutdown) {
-                mTasks.offer(r);
+                mTasks.offer(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            r.run();
+                        } finally {
+                            scheduleNext();
+                        }
+                    }
+                });
                 if (mActive == null) {
                     scheduleNext();
                 }
@@ -74,45 +87,36 @@ public class PrioritizedSerialExecutor {
     public void executePrioritized(final Runnable r) {
         synchronized(mLock) {
             if (!mIsShutdown) {
-                mPrioritizedTasks.offer(r);
-                if (mActive ==  null) {
+                mPrioritizedTasks.offer(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            r.run();
+                        } finally {
+                            scheduleNext();
+                        }
+                    }
+                });
+                if (mActive == null) {
                     scheduleNext();
                 }
             }
         }
     }
 
-    private boolean fetchNextTasks() {
-        synchronized(mLock) {
-            mActive = mPrioritizedTasks.poll();
-            if (mActive == null) {
-                mActive = mTasks.poll();
-            }
-            return mActive != null;
+    private boolean fetchNextTasksLocked() {
+        mActive = mPrioritizedTasks.poll();
+        if (mActive == null) {
+            mActive = mTasks.poll();
         }
+        return mActive != null;
     }
 
     private void scheduleNext() {
         synchronized(mLock) {
-            if (!fetchNextTasks()) {
-                return;
+            if (fetchNextTasksLocked()) {
+                mThreadPoolExecutor.execute(mActive);
             }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        do {
-                            synchronized(mLock) {
-                                if (mActive != null) {
-                                    mActive.run();
-                                }
-                            }
-                        } while (fetchNextTasks());
-                    } finally {
-                        scheduleNext();
-                    }
-                }
-            }).start();
         }
     }
 
