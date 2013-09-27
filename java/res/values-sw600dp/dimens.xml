@@ -92,7 +92,7 @@
     <!-- Emoji keyboard -->
     <fraction name="emoji_keyboard_key_width">12.5%p</fraction>
     <fraction name="emoji_keyboard_row_height">33%p</fraction>
-    <fraction name="emoji_keyboard_key_letter_size">85%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">76%p</fraction>
     <integer name="emoji_keyboard_max_key_count">24</integer>
 
 </resources>
