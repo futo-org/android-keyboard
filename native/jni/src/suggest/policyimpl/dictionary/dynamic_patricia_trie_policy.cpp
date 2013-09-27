@@ -16,6 +16,9 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
 
+#include <cstdio>
+#include <cstring>
+
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
@@ -27,6 +30,9 @@
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
+
+const char *const DynamicPatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
+const char *const DynamicPatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -198,7 +204,16 @@ bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int 
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
             &mBigramListPolicy, &mShortcutListPolicy);
-    return writingHelper.addUnigramWord(&readingHelper, word, length, probability);
+    bool addedNewUnigram = false;
+    if (writingHelper.addUnigramWord(&readingHelper, word, length, probability,
+            &addedNewUnigram)) {
+        if (addedNewUnigram) {
+            mUnigramCount++;
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
@@ -219,7 +234,15 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
             &mBigramListPolicy, &mShortcutListPolicy);
-    return writingHelper.addBigramWords(word0Pos, word1Pos, probability);
+    bool addedNewBigram = false;
+    if (writingHelper.addBigramWords(word0Pos, word1Pos, probability, &addedNewBigram)) {
+        if (addedNewBigram) {
+            mBigramCount++;
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
@@ -240,7 +263,12 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
             &mBigramListPolicy, &mShortcutListPolicy);
-    return writingHelper.removeBigramWords(word0Pos, word1Pos);
+    if (writingHelper.removeBigramWords(word0Pos, word1Pos)) {
+        mBigramCount--;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
@@ -250,7 +278,7 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
             &mBigramListPolicy, &mShortcutListPolicy);
-    writingHelper.writeToDictFile(filePath, &mHeaderPolicy);
+    writingHelper.writeToDictFile(filePath, &mHeaderPolicy, mUnigramCount, mBigramCount);
 }
 
 void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
@@ -270,6 +298,15 @@ bool DynamicPatriciaTriePolicy::needsToRunGC() const {
     }
     // TODO: Implement more properly.
     return mBufferWithExtendableBuffer.isNearSizeLimit();
+}
+
+void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const outResult,
+        const int maxResultLength) const {
+    if (strncmp(query, UNIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d", mUnigramCount);
+    } else if (strncmp(query, BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d", mBigramCount);
+    }
 }
 
 } // namespace latinime

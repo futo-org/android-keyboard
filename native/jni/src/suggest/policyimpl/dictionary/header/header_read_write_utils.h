@@ -76,16 +76,16 @@ class HeaderReadWriteUtils {
      * Methods for header attributes.
      */
     static void setBoolAttribute(AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const bool value);
+            const char *const key, const bool value);
 
     static void setIntAttribute(AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const int value);
+            const char *const key, const int value);
 
     static bool readBoolAttributeValue(const AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const bool defaultValue);
+            const char *const key, const bool defaultValue);
 
     static int readIntAttributeValue(const AttributeMap *const headerAttributes,
-            const AttributeMap::key_type *const key, const int defaultValue);
+            const char *const key, const int defaultValue);
 
     static void insertCharactersIntoVector(const char *const characters,
             AttributeMap::key_type *const key);
@@ -112,6 +112,12 @@ class HeaderReadWriteUtils {
     static const char *const SUPPORTS_DYNAMIC_UPDATE_KEY;
     static const char *const REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY;
     static const char *const REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY;
+
+    static void setIntAttributeInner(AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const int value);
+
+    static int readIntAttributeValueInner(const AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const int defaultValue);
 };
 }
 #endif /* LATINIME_HEADER_READ_WRITE_UTILS_H */
