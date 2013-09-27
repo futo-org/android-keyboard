@@ -68,18 +68,12 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
 /* static */ HeaderReadWriteUtils::DictionaryFlags
         HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
                 const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
-    AttributeMap::key_type key;
-    insertCharactersIntoVector(REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, &key);
-    const bool requiresGermanUmlautProcessing = readBoolAttributeValue(attributeMap, &key,
-            false /* defaultValue */);
-    key.clear();
-    insertCharactersIntoVector(REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY, &key);
-    const bool requiresFrenchLigatureProcessing = readBoolAttributeValue(attributeMap, &key,
-            false /* defaultValue */);
-    key.clear();
-    insertCharactersIntoVector(SUPPORTS_DYNAMIC_UPDATE_KEY, &key);
-    const bool supportsDynamicUpdate = readBoolAttributeValue(attributeMap, &key,
-            false /* defaultValue */);
+    const bool requiresGermanUmlautProcessing = readBoolAttributeValue(attributeMap,
+            REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY, false /* defaultValue */);
+    const bool requiresFrenchLigatureProcessing = readBoolAttributeValue(attributeMap,
+            REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY, false /* defaultValue */);
+    const bool supportsDynamicUpdate = readBoolAttributeValue(attributeMap,
+            SUPPORTS_DYNAMIC_UPDATE_KEY, false /* defaultValue */);
     DictionaryFlags dictflags = NO_FLAGS;
     dictflags |= requiresGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0;
     dictflags |= requiresFrenchLigatureProcessing ? FRENCH_LIGATURE_PROCESSING_FLAG : 0;
@@ -160,11 +154,18 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
 }
 
 /* static */ void HeaderReadWriteUtils::setBoolAttribute(AttributeMap *const headerAttributes,
-        const AttributeMap::key_type *const key, const bool value) {
+        const char *const key, const bool value) {
     setIntAttribute(headerAttributes, key, value ? 1 : 0);
 }
 
 /* static */ void HeaderReadWriteUtils::setIntAttribute(AttributeMap *const headerAttributes,
+        const char *const key, const int value) {
+    AttributeMap::key_type keyVector;
+    insertCharactersIntoVector(key, &keyVector);
+    setIntAttributeInner(headerAttributes, &keyVector, value);
+}
+
+/* static */ void HeaderReadWriteUtils::setIntAttributeInner(AttributeMap *const headerAttributes,
         const AttributeMap::key_type *const key, const int value) {
     AttributeMap::mapped_type valueVector;
     char charBuf[LARGEST_INT_DIGIT_COUNT + 1];
@@ -174,7 +175,7 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
 }
 
 /* static */ bool HeaderReadWriteUtils::readBoolAttributeValue(
-        const AttributeMap *const headerAttributes, const AttributeMap::key_type *const key,
+        const AttributeMap *const headerAttributes, const char *const key,
         const bool defaultValue) {
     const int intDefaultValue = defaultValue ? 1 : 0;
     const int intValue = readIntAttributeValue(headerAttributes, key, intDefaultValue);
@@ -182,6 +183,14 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
 }
 
 /* static */ int HeaderReadWriteUtils::readIntAttributeValue(
+        const AttributeMap *const headerAttributes, const char *const key,
+        const int defaultValue) {
+    AttributeMap::key_type keyVector;
+    insertCharactersIntoVector(key, &keyVector);
+    return readIntAttributeValueInner(headerAttributes, &keyVector, defaultValue);
+}
+
+/* static */ int HeaderReadWriteUtils::readIntAttributeValueInner(
         const AttributeMap *const headerAttributes, const AttributeMap::key_type *const key,
         const int defaultValue) {
     AttributeMap::const_iterator it = headerAttributes->find(*key);

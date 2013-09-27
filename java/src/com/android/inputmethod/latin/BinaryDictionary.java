@@ -48,6 +48,11 @@ public final class BinaryDictionary extends Dictionary {
     // TODO: Remove this heuristic.
     private static final int SPACE_COUNT_FOR_AUTO_COMMIT = 3;
 
+    @UsedForTesting
+    public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
+    @UsedForTesting
+    public static final String BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
+
     private long mNativeDict;
     private final Locale mLocale;
     private final long mDictSize;
@@ -129,6 +134,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
             int bigramProbability);
+    private static native String getPropertyNative(long dict, String query);
 
     @UsedForTesting
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
@@ -329,6 +335,12 @@ public final class BinaryDictionary extends Dictionary {
     public int calculateProbability(final int unigramProbability, final int bigramProbability) {
         if (!isValidDictionary()) return NOT_A_PROBABILITY;
         return calculateProbabilityNative(mNativeDict, unigramProbability, bigramProbability);
+    }
+
+    @UsedForTesting
+    public String getPropertyForTests(String query) {
+        if (!isValidDictionary()) return "";
+        return getPropertyNative(mNativeDict, query);
     }
 
     @Override
