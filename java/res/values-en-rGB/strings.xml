@@ -77,7 +77,7 @@
     <string name="label_go_key" msgid="1635148082137219148">"Go"</string>
     <string name="label_next_key" msgid="362972844525672568">"Next"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Prev"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Finished"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Done"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Wait"</string>
