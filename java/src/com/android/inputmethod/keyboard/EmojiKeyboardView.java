@@ -718,12 +718,14 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
             @Override
             public void run() {
+                int repeatCount = 1;
                 int timeCount = 0;
                 while (timeCount < MAX_REPEAT_COUNT_TIME && !mAborted) {
                     if (timeCount > mKeyRepeatStartTimeout) {
-                        pressDelete();
+                        pressDelete(repeatCount);
                     }
                     timeCount += mKeyRepeatInterval;
+                    ++repeatCount;
                     try {
                         Thread.sleep(mKeyRepeatInterval);
                     } catch (InterruptedException e) {
@@ -736,9 +738,9 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
             }
         }
 
-        public void pressDelete() {
+        public void pressDelete(int repeatCount) {
             mKeyboardActionListener.onPressKey(
-                    Constants.CODE_DELETE, 0 /* repeatCount */, true /* isSinglePointer */);
+                    Constants.CODE_DELETE, repeatCount, true /* isSinglePointer */);
             mKeyboardActionListener.onCodeInput(
                     Constants.CODE_DELETE, NOT_A_COORDINATE, NOT_A_COORDINATE);
             mKeyboardActionListener.onReleaseKey(
@@ -754,7 +756,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
             switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     v.setBackgroundColor(mDeleteKeyPressedBackgroundColor);
-                    pressDelete();
+                    pressDelete(0 /* repeatCount */);
                     startRepeat();
                     return true;
                 case MotionEvent.ACTION_UP:
