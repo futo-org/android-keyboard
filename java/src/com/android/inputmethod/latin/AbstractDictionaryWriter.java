@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 // TODO: Quit extending Dictionary after implementing dynamic binary dictionary.
 abstract public class AbstractDictionaryWriter extends Dictionary {
@@ -50,16 +51,16 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
 
     abstract public void removeBigramWords(final String word0, final String word1);
 
-    abstract protected void writeDictionary(final DictEncoder dictEncoder)
-            throws IOException, UnsupportedFormatException;
+    abstract protected void writeDictionary(final DictEncoder dictEncoder,
+            final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException;
 
-    public void write(final String fileName) {
+    public void write(final String fileName, final Map<String, String> attributeMap) {
         final String tempFileName = fileName + ".temp";
         final File file = new File(mContext.getFilesDir(), fileName);
         final File tempFile = new File(mContext.getFilesDir(), tempFileName);
         try {
             final DictEncoder dictEncoder = new Ver3DictEncoder(tempFile);
-            writeDictionary(dictEncoder);
+            writeDictionary(dictEncoder, attributeMap);
             tempFile.renameTo(file);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file", e);

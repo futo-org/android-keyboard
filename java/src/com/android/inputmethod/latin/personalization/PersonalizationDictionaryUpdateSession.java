@@ -110,7 +110,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
         if (dictionary == null) {
             return;
         }
-        dictionary.addToPersonalizationPredictionDictionary(word0, word1, isValid);
+        dictionary.addToDictionary(word0, word1, isValid);
     }
 
     // Bulk import
@@ -122,8 +122,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
             return;
         }
         for (final PersonalizationLanguageModelParam lmParam : lmParams) {
-            dictionary.addToPersonalizationPredictionDictionary(
-                    lmParam.mWord0, lmParam.mWord1, lmParam.mIsValid);
+            dictionary.addToDictionary(lmParam.mWord0, lmParam.mWord1, lmParam.mIsValid);
         }
     }
 }
