@@ -236,6 +236,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         HashMap<String, String> attributeMap = new HashMap<String, String>();
         attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
                 SUPPORTS_DYNAMIC_UPDATE);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFilename);
         return attributeMap;
     }
 
@@ -496,7 +497,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (needsToReloadBeforeWriting()) {
             mDictionaryWriter.clear();
             loadDictionaryAsync();
-            mDictionaryWriter.write(mFilename);
+            mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
         } else {
             if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
                 if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
@@ -511,7 +512,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     }
                 }
             } else {
-                mDictionaryWriter.write(mFilename);
+                mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
             }
         }
     }

@@ -81,7 +81,7 @@ import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
-import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
+import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsActivity;
 import com.android.inputmethod.latin.settings.SettingsValues;
@@ -179,7 +179,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean mIsMainDictionaryAvailable;
     private UserBinaryDictionary mUserDictionary;
-    private UserHistoryPredictionDictionary mUserHistoryPredictionDictionary;
+    private UserHistoryDictionary mUserHistoryDictionary;
     private PersonalizationPredictionDictionary mPersonalizationPredictionDictionary;
     private PersonalizationDictionary mPersonalizationDictionary;
     private boolean mIsUserDictionaryAvailable;
@@ -623,9 +623,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mUserHistoryPredictionDictionary = PersonalizationHelper
-                .getUserHistoryPredictionDictionary(this, localeStr, prefs);
-        newSuggest.setUserHistoryPredictionDictionary(mUserHistoryPredictionDictionary);
+        mUserHistoryDictionary = PersonalizationHelper.getUserHistoryDictionary(
+                this, localeStr, prefs);
+        newSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
         mPersonalizationDictionary = PersonalizationHelper
                 .getPersonalizationDictionary(this, localeStr, prefs);
         newSuggest.setPersonalizationDictionary(mPersonalizationDictionary);
@@ -2750,9 +2750,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SettingsValues currentSettings = mSettings.getCurrent();
         if (!currentSettings.mCorrectionEnabled) return null;
 
-        final UserHistoryPredictionDictionary userHistoryPredictionDictionary =
-                mUserHistoryPredictionDictionary;
-        if (userHistoryPredictionDictionary == null) return null;
+        final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
+        if (userHistoryDictionary == null) return null;
 
         final String prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators, 2);
         final String secondWord;
@@ -2766,8 +2765,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int maxFreq = AutoCorrectionUtils.getMaxFrequency(
                 suggest.getUnigramDictionaries(), suggestion);
         if (maxFreq == 0) return null;
-        userHistoryPredictionDictionary
-                .addToPersonalizationPredictionDictionary(prevWord, secondWord, maxFreq > 0);
+        userHistoryDictionary.addToDictionary(prevWord, secondWord, maxFreq > 0);
         return prevWord;
     }
 
@@ -2953,7 +2951,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
-            mUserHistoryPredictionDictionary.cancelAddingUserHistory(previousWord, committedWord);
+            mUserHistoryDictionary.cancelAddingUserHistory(previousWord, committedWord);
         }
         final String stringToCommit = originallyTypedWord + mLastComposedWord.mSeparatorString;
         if (mSettings.getCurrent().mCurrentLanguageHasSpaces) {
