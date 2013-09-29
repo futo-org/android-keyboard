@@ -94,6 +94,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
         attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
                 FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFileName);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_LOCALE_ATTRIBUTE, mLocale);
         return attributeMap;
     }
 
@@ -117,15 +119,14 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     /**
-     * Pair will be added to the personalization prediction dictionary.
+     * Pair will be added to the decaying dictionary.
      *
      * The first word may be null. That means we don't know the context, in other words,
      * it's only a unigram. The first word may also be an empty string : this means start
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public void addToPersonalizationPredictionDictionary(
-            final String word0, final String word1, final boolean isValid) {
+    public void addToDictionary(final String word0, final String word1, final boolean isValid) {
         if (word1.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH ||
                 (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;

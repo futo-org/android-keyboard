@@ -33,6 +33,8 @@
 
 namespace latinime {
 
+const int Dictionary::HEADER_ATTRIBUTE_BUFFER_SIZE = 32;
+
 Dictionary::Dictionary(JNIEnv *env,
         DictionaryStructureWithBufferPolicy *const dictionaryStructureWithBufferPolicy)
         : mDictionaryStructureWithBufferPolicy(dictionaryStructureWithBufferPolicy),
@@ -131,27 +133,27 @@ void Dictionary::getProperty(const char *const query, char *const outResult,
 }
 
 void Dictionary::logDictionaryInfo(JNIEnv *const env) const {
-    const int BUFFER_SIZE = 16;
-    int dictionaryIdCodePointBuffer[BUFFER_SIZE];
-    int versionStringCodePointBuffer[BUFFER_SIZE];
-    int dateStringCodePointBuffer[BUFFER_SIZE];
+    int dictionaryIdCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
+    int versionStringCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
+    int dateStringCodePointBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
     const DictionaryHeaderStructurePolicy *const headerPolicy =
             getDictionaryStructurePolicy()->getHeaderStructurePolicy();
     headerPolicy->readHeaderValueOrQuestionMark("dictionary", dictionaryIdCodePointBuffer,
-            BUFFER_SIZE);
+            HEADER_ATTRIBUTE_BUFFER_SIZE);
     headerPolicy->readHeaderValueOrQuestionMark("version", versionStringCodePointBuffer,
-            BUFFER_SIZE);
-    headerPolicy->readHeaderValueOrQuestionMark("date", dateStringCodePointBuffer, BUFFER_SIZE);
+            HEADER_ATTRIBUTE_BUFFER_SIZE);
+    headerPolicy->readHeaderValueOrQuestionMark("date", dateStringCodePointBuffer,
+            HEADER_ATTRIBUTE_BUFFER_SIZE);
 
-    char dictionaryIdCharBuffer[BUFFER_SIZE];
-    char versionStringCharBuffer[BUFFER_SIZE];
-    char dateStringCharBuffer[BUFFER_SIZE];
-    intArrayToCharArray(dictionaryIdCodePointBuffer, BUFFER_SIZE,
-            dictionaryIdCharBuffer, BUFFER_SIZE);
-    intArrayToCharArray(versionStringCodePointBuffer, BUFFER_SIZE,
-            versionStringCharBuffer, BUFFER_SIZE);
-    intArrayToCharArray(dateStringCodePointBuffer, BUFFER_SIZE,
-            dateStringCharBuffer, BUFFER_SIZE);
+    char dictionaryIdCharBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
+    char versionStringCharBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
+    char dateStringCharBuffer[HEADER_ATTRIBUTE_BUFFER_SIZE];
+    intArrayToCharArray(dictionaryIdCodePointBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE,
+            dictionaryIdCharBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE);
+    intArrayToCharArray(versionStringCodePointBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE,
+            versionStringCharBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE);
+    intArrayToCharArray(dateStringCodePointBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE,
+            dateStringCharBuffer, HEADER_ATTRIBUTE_BUFFER_SIZE);
 
     LogUtils::logToJava(env,
             "Dictionary info: dictionary = %s ; version = %s ; date = %s",
