@@ -17,10 +17,10 @@
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
-#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
 
 namespace latinime {
 
@@ -41,9 +41,14 @@ void DynamicBigramListPolicy::getNextBigram(int *const outBigramPos, int *const 
     if (usesAdditionalBuffer && originalBigramPos != NOT_A_DICT_POS) {
         originalBigramPos += mBuffer->getOriginalBufferSize();
     }
-    *outBigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
     *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags);
     *outHasNext = BigramListReadWriteUtils::hasNext(bigramFlags);
+    if (mIsDecayingDict && !DecayingUtils::isValidBigram(*outProbability)) {
+        // This bigram is too weak to output.
+        *outBigramPos = NOT_A_DICT_POS;
+    } else {
+        *outBigramPos = followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
+    }
     if (usesAdditionalBuffer) {
         *bigramEntryPos += mBuffer->getOriginalBufferSize();
     }
@@ -153,15 +158,21 @@ bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
         const int bigramTargetNodePos =
                 followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
         nodeReader.fetchNodeInfoInBufferFromPtNodePos(bigramTargetNodePos);
-        // TODO: Update probability for supporting probability decaying.
         if (nodeReader.isDeleted() || !nodeReader.isTerminal()
                 || bigramTargetNodePos == NOT_A_DICT_POS) {
             // The target is no longer valid terminal. Invalidate the current bigram entry.
             if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
-                    NOT_A_DICT_POS /* targetOffset */, &bigramEntryPos)) {
+                    NOT_A_DICT_POS /* targetPtNodePos */, &bigramEntryPos)) {
                 return false;
             }
-        } else {
+            continue;
+        }
+        bool isRemoved = false;
+        if (!updateProbabilityForDecay(bigramFlags, bigramTargetNodePos, &bigramEntryPos,
+                &isRemoved)) {
+            return false;
+        }
+        if (!isRemoved) {
             (*outValidBigramEntryCount) += 1;
         }
     } while(BigramListReadWriteUtils::hasNext(bigramFlags));
@@ -247,8 +258,14 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTarg
         if (followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos) == bigramTargetPos) {
             // Update this bigram entry.
             *outAddedNewBigram = false;
+            const int originalProbability = BigramListReadWriteUtils::getProbabilityFromFlags(
+                    bigramFlags);
+            const int probabilityToWrite = mIsDecayingDict ?
+                    DecayingUtils::getUpdatedBigramProbabilityDelta(
+                            originalProbability, probability) : probability;
             const BigramListReadWriteUtils::BigramFlags updatedFlags =
-                    BigramListReadWriteUtils::setProbabilityInFlags(bigramFlags, probability);
+                    BigramListReadWriteUtils::setProbabilityInFlags(bigramFlags,
+                            probabilityToWrite);
             return BigramListReadWriteUtils::writeBigramEntry(mBuffer, updatedFlags,
                     originalBigramPos, &entryPos);
         }
@@ -276,8 +293,11 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTarg
 bool DynamicBigramListPolicy::writeNewBigramEntry(const int bigramTargetPos, const int probability,
         int *const writingPos) {
     // hasNext is false because we are adding a new bigram entry at the end of the bigram list.
+    const int probabilityToWrite = mIsDecayingDict ?
+            DecayingUtils::getUpdatedBigramProbabilityDelta(NOT_A_PROBABILITY, probability) :
+                    probability;
     return BigramListReadWriteUtils::createAndWriteBigramEntry(mBuffer, bigramTargetPos,
-            probability, false /* hasNext */, writingPos);
+            probabilityToWrite, false /* hasNext */, writingPos);
 }
 
 bool DynamicBigramListPolicy::removeBigram(const int bigramListPos, const int bigramTargetPos) {
@@ -337,6 +357,35 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
         }
     }
     return currentPos;
+}
+
+bool DynamicBigramListPolicy::updateProbabilityForDecay(
+        BigramListReadWriteUtils::BigramFlags bigramFlags, const int targetPtNodePos,
+        int *const bigramEntryPos, bool *const outRemoved) const {
+    *outRemoved = false;
+    if (mIsDecayingDict) {
+        // Update bigram probability for decaying.
+        const int newProbability = DecayingUtils::getBigramProbabilityDeltaToSave(
+                BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags));
+        if (DecayingUtils::isValidBigram(newProbability)) {
+            // Write new probability.
+            const BigramListReadWriteUtils::BigramFlags updatedBigramFlags =
+                    BigramListReadWriteUtils::setProbabilityInFlags(
+                            bigramFlags, newProbability);
+            if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, updatedBigramFlags,
+                    targetPtNodePos, bigramEntryPos)) {
+                return false;
+            }
+        } else {
+            // Remove current bigram entry.
+            *outRemoved = true;
+            if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
+                    NOT_A_DICT_POS /* targetPtNodePos */, bigramEntryPos)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 } // namespace latinime
