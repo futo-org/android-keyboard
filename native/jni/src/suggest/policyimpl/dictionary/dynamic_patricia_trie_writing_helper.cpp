@@ -25,6 +25,7 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/hash_map_compat.h"
 
@@ -57,7 +58,9 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
                     wordCodePoints[matchedCodePointCount + j])) {
                 *outAddedNewUnigram = true;
                 return reallocatePtNodeAndAddNewPtNodes(nodeReader,
-                        readingHelper->getMergedNodeCodePoints(), j, probability,
+                        readingHelper->getMergedNodeCodePoints(), j,
+                        getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */,
+                                probability),
                         wordCodePoints + matchedCodePointCount,
                         codePointCount - matchedCodePointCount);
             }
@@ -69,7 +72,8 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         }
         if (!nodeReader->hasChildren()) {
             *outAddedNewUnigram = true;
-            return createChildrenPtNodeArrayAndAChildPtNode(nodeReader, probability,
+            return createChildrenPtNodeArrayAndAChildPtNode(nodeReader,
+                    getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability),
                     wordCodePoints + readingHelper->getTotalCodePointCount(),
                     codePointCount - readingHelper->getTotalCodePointCount());
         }
@@ -86,7 +90,7 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
     return createAndInsertNodeIntoPtNodeArray(parentPos,
             wordCodePoints + readingHelper->getPrevTotalCodePointCount(),
             codePointCount - readingHelper->getPrevTotalCodePointCount(),
-            probability, &pos);
+            getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability), &pos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const int word1Pos,
@@ -351,9 +355,11 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
     if (originalPtNode->isTerminal()) {
         // Overwrites the probability.
         *outAddedNewUnigram = false;
+        const int probabilityToWrite = getUpdatedProbability(originalPtNode->getProbability(),
+                probability);
         int probabilityFieldPos = originalPtNode->getProbabilityFieldPos();
         if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
-                probability, &probabilityFieldPos)) {
+                probabilityToWrite, &probabilityFieldPos)) {
             return false;
         }
     } else {
@@ -365,7 +371,8 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
         }
         if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, originalPtNode,
                 originalPtNode->getParentPos(), codePoints, originalPtNode->getCodePointCount(),
-                probability, &movedPos)) {
+                getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability),
+                &movedPos)) {
             return false;
         }
     }
@@ -481,10 +488,14 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                            this, mBuffer);
+                            this, mBuffer, mIsDecayingDict);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
+    }
+    if (mIsDecayingDict && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+            .getValidUnigramCount() > DecayingUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
+        // TODO: Remove more unigrams.
     }
 
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
@@ -493,6 +504,11 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateBigramProbability)) {
         return false;
+    }
+
+    if (mIsDecayingDict && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
+            > DecayingUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
+        // TODO: Remove more bigrams.
     }
 
     // Mapping from positions in mBuffer to positions in bufferToWrite.
@@ -508,7 +524,8 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     // Create policy instance for the GCed dictionary.
     DynamicShortcutListPolicy newDictShortcutPolicy(bufferToWrite);
-    DynamicBigramListPolicy newDictBigramPolicy(bufferToWrite, &newDictShortcutPolicy);
+    DynamicBigramListPolicy newDictBigramPolicy(bufferToWrite, &newDictShortcutPolicy,
+            mIsDecayingDict);
     // Create reading helper for the GCed dictionary.
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictBigramPolicy,
             &newDictShortcutPolicy);
@@ -523,6 +540,15 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     *outUnigramCount = traversePolicyToUpdateAllPositionFields.getUnigramCount();
     *outBigramCount = traversePolicyToUpdateAllPositionFields.getBigramCount();
     return true;
+}
+
+int DynamicPatriciaTrieWritingHelper::getUpdatedProbability(const int originalProbability,
+        const int newProbability) {
+    if (mIsDecayingDict) {
+        return DecayingUtils::getUpdatedUnigramProbability(originalProbability, newProbability);
+    } else {
+        return newProbability;
+    }
 }
 
 } // namespace latinime
