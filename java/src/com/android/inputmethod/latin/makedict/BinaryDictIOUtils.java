@@ -288,42 +288,6 @@ public final class BinaryDictIOUtils {
         return BinaryDictEncoderUtils.getByteSize(value);
     }
 
-    // TODO: Remove this method.
-    @Deprecated
-    static void skipPtNode(final DictBuffer dictBuffer, final FormatOptions formatOptions) {
-        final int flags = dictBuffer.readUnsignedByte();
-        BinaryDictDecoderUtils.readParentAddress(dictBuffer, formatOptions);
-        skipString(dictBuffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
-        BinaryDictDecoderUtils.readChildrenAddress(dictBuffer, flags, formatOptions);
-        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) dictBuffer.readUnsignedByte();
-        if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
-            final int shortcutsSize = dictBuffer.readUnsignedShort();
-            dictBuffer.position(dictBuffer.position() + shortcutsSize
-                    - FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
-        }
-        if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
-            int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                final int bigramFlags = dictBuffer.readUnsignedByte();
-                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
-                        dictBuffer.readUnsignedByte();
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
-                        dictBuffer.readUnsignedShort();
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
-                        dictBuffer.readUnsignedInt24();
-                        break;
-                }
-                if ((bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT) == 0) break;
-            }
-            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                throw new RuntimeException("Too many bigrams in a PtNode.");
-            }
-        }
-    }
-
     static void skipString(final DictBuffer dictBuffer,
             final boolean hasMultipleChars) {
         if (hasMultipleChars) {

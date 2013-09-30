@@ -657,27 +657,21 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
         timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
 
-        final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file, DictDecoder.USE_BYTEARRAY);
-        try {
-            dictDecoder.openDictBuffer();
-        } catch (IOException e) {
-            // ignore
-            Log.e(TAG, "IOException while opening the buffer", e);
-        }
-        assertTrue("Can't get the buffer", dictDecoder.isDictBufferOpen());
+        final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
+                DictDecoder.USE_WRITABLE_BYTEBUFFER);
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    dictDecoder.getTerminalPosition(sWords.get(0)));
-            DynamicBinaryDictIOUtils.deleteWord(dictDecoder, sWords.get(0));
+                    dictUpdater.getTerminalPosition(sWords.get(0)));
+            dictUpdater.deleteWord(sWords.get(0));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    dictDecoder.getTerminalPosition(sWords.get(0)));
+                    dictUpdater.getTerminalPosition(sWords.get(0)));
 
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
-                    dictDecoder.getTerminalPosition(sWords.get(5)));
-            DynamicBinaryDictIOUtils.deleteWord(dictDecoder, sWords.get(5));
+                    dictUpdater.getTerminalPosition(sWords.get(5)));
+            dictUpdater.deleteWord(sWords.get(5));
             assertEquals(FormatSpec.NOT_VALID_WORD,
-                    dictDecoder.getTerminalPosition(sWords.get(5)));
+                    dictUpdater.getTerminalPosition(sWords.get(5)));
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
