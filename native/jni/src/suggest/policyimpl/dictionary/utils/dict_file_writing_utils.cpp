@@ -96,7 +96,7 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
         fclose(file);
         return false;
     }
-    const int additionalBufSize = buffer->getTailPosition() - buffer->getOriginalBufferSize();
+    const int additionalBufSize = buffer->getUsedAdditionalBufferSize();
     if (additionalBufSize > 0 && fwrite(buffer->getBuffer(true /* usesAdditionalBuffer */),
             additionalBufSize, 1, file) < 1) {
         fclose(file);

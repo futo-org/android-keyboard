@@ -81,7 +81,7 @@ class Dictionary {
 
     void flushWithGC(const char *const filePath);
 
-    bool needsToRunGC();
+    bool needsToRunGC(const bool mindsBlockByGC);
 
     void getProperty(const char *const query, char *const outResult,
             const int maxResultLength) const;

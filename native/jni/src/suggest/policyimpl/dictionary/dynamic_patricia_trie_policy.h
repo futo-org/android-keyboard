@@ -91,7 +91,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     void flushWithGC(const char *const filePath);
 
-    bool needsToRunGC() const;
+    bool needsToRunGC(const bool mindsBlockByGC) const;
 
     void getProperty(const char *const query, char *const outResult,
             const int maxResultLength) const;

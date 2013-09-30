@@ -123,8 +123,8 @@ void Dictionary::flushWithGC(const char *const filePath) {
     mDictionaryStructureWithBufferPolicy->flushWithGC(filePath);
 }
 
-bool Dictionary::needsToRunGC() {
-    return mDictionaryStructureWithBufferPolicy->needsToRunGC();
+bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
+    return mDictionaryStructureWithBufferPolicy->needsToRunGC(mindsBlockByGC);
 }
 
 void Dictionary::getProperty(const char *const query, char *const outResult,

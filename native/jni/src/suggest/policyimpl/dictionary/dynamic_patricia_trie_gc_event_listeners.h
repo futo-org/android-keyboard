@@ -40,22 +40,22 @@ class DynamicPatriciaTrieGcEventListeners {
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
                 BufferWithExtendableBuffer *const buffer)
-                : mWritingHelper(writingHelper), mBuffer(buffer), valueStack(),
+                : mWritingHelper(writingHelper), mBuffer(buffer), mValueStack(),
                   mChildrenValue(0), mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
         bool onAscend() {
-            if (valueStack.empty()) {
+            if (mValueStack.empty()) {
                 return false;
             }
-            mChildrenValue = valueStack.back();
-            valueStack.pop_back();
+            mChildrenValue = mValueStack.back();
+            mValueStack.pop_back();
             return true;
         }
 
         bool onDescend(const int ptNodeArrayPos) {
-            valueStack.push_back(0);
+            mValueStack.push_back(0);
             return true;
         }
 
@@ -74,7 +74,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         BufferWithExtendableBuffer *const mBuffer;
-        std::vector<int> valueStack;
+        std::vector<int> mValueStack;
         int mChildrenValue;
         int mValidUnigramCount;
     };
@@ -94,20 +94,7 @@ class DynamicPatriciaTrieGcEventListeners {
         bool onReadingPtNodeArrayTail() { return true; }
 
         bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints) {
-            if (!node->isDeleted()) {
-                int pos = node->getBigramsPos();
-                if (pos != NOT_A_DICT_POS) {
-                    int bigramEntryCount = 0;
-                    if (!mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&pos,
-                            &bigramEntryCount)) {
-                        return false;
-                    }
-                    mValidBigramEntryCount += bigramEntryCount;
-                }
-            }
-            return true;
-        }
+                const int *const nodeCodePoints);
 
         int getValidBigramEntryCount() const {
             return mValidBigramEntryCount;
