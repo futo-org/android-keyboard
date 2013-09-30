@@ -47,7 +47,7 @@ ErrorType TypingWeighting::getErrorType(const CorrectionType correctionType,
         case CT_TERMINAL_INSERTION:
         case CT_TRANSPOSITION:
             return ET_EDIT_CORRECTION;
-        case CT_NEW_WORD_SPACE_OMITTION:
+        case CT_NEW_WORD_SPACE_OMISSION:
         case CT_NEW_WORD_SPACE_SUBSTITUTION:
             return ET_NEW_WORD;
         case CT_TERMINAL:
