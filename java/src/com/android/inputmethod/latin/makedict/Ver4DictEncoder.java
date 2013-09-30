@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,9 +44,13 @@ public class Ver4DictEncoder implements DictEncoder {
     private byte[] mTrieBuf;
     private int mTriePos;
     private int mHeaderSize;
+    private SparseTable mBigramAddressTable;
     private OutputStream mTrieOutStream;
     private OutputStream mFreqOutStream;
     private OutputStream mTerminalAddressTableOutStream;
+    private OutputStream mBigramOutStream;
+    private File mDictDir;
+    private String mBaseFilename;
 
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
@@ -55,12 +60,14 @@ public class Ver4DictEncoder implements DictEncoder {
     private void openStreams(final FormatOptions formatOptions, final DictionaryOptions dictOptions)
             throws FileNotFoundException, IOException {
         final FileHeader header = new FileHeader(0, dictOptions, formatOptions);
-        final String filename = header.getId() + "." + header.getVersion();
-        final File mDictDir = new File(mDictPlacedDir, filename);
-        final File trieFile = new File(mDictDir, filename + FormatSpec.TRIE_FILE_EXTENSION);
-        final File freqFile = new File(mDictDir, filename + FormatSpec.FREQ_FILE_EXTENSION);
+        mBaseFilename = header.getId() + "." + header.getVersion();
+        mDictDir = new File(mDictPlacedDir, mBaseFilename);
+        final File trieFile = new File(mDictDir, mBaseFilename + FormatSpec.TRIE_FILE_EXTENSION);
+        final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
         final File terminalAddressTableFile = new File(mDictDir,
-                filename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+                mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
+        final File bigramFile = new File(mDictDir,
+                mBaseFilename + FormatSpec.BIGRAM_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
             if (mDictDir.exists()) mDictDir.delete();
             mDictDir.mkdirs();
@@ -71,6 +78,7 @@ public class Ver4DictEncoder implements DictEncoder {
         mTrieOutStream = new FileOutputStream(trieFile);
         mFreqOutStream = new FileOutputStream(freqFile);
         mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
+        mBigramOutStream = new FileOutputStream(bigramFile);
     }
 
     private void close() throws IOException {
@@ -84,10 +92,14 @@ public class Ver4DictEncoder implements DictEncoder {
             if (mTerminalAddressTableOutStream != null) {
                 mTerminalAddressTableOutStream.close();
             }
+            if (mBigramOutStream != null) {
+                mBigramOutStream.close();
+            }
         } finally {
             mTrieOutStream = null;
             mFreqOutStream = null;
             mTerminalAddressTableOutStream = null;
+            mBigramOutStream = null;
         }
     }
 
@@ -123,6 +135,10 @@ public class Ver4DictEncoder implements DictEncoder {
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
         writeTerminalData(flatNodes, terminalCount);
+        mBigramAddressTable = new SparseTable(terminalCount,
+                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
+        writeBigrams(flatNodes, dict);
+        writeBigramAddressSparseTable();
 
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
@@ -230,24 +246,41 @@ public class Ver4DictEncoder implements DictEncoder {
                 shortcutByteSize, FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
     }
 
-    private void writeBigrams(ArrayList<WeightedString> bigrams, FusionDictionary dict) {
-        if (bigrams == null) return;
+    private void writeBigrams(final ArrayList<PtNodeArray> flatNodes, final FusionDictionary dict)
+            throws IOException {
+        final ByteArrayOutputStream bigramBuffer = new ByteArrayOutputStream();
 
-        final Iterator<WeightedString> bigramIterator = bigrams.iterator();
-        while (bigramIterator.hasNext()) {
-            final WeightedString bigram = bigramIterator.next();
-            final PtNode target =
-                    FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
-            final int addressOfBigram = target.mCachedAddressAfterUpdate;
-            final int unigramFrequencyForThisWord = target.mFrequency;
-            final int offset = addressOfBigram
-                    - (mTriePos + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-            int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
-                    offset, bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
-            mTrieBuf[mTriePos++] = (byte) bigramFlags;
-            mTriePos += BinaryDictEncoderUtils.writeChildrenPosition(mTrieBuf,
-                    mTriePos, Math.abs(offset));
+        for (final PtNodeArray nodeArray : flatNodes) {
+            for (final PtNode ptNode : nodeArray.mData) {
+                if (ptNode.mBigrams != null) {
+                    final int startPos = bigramBuffer.size();
+                    mBigramAddressTable.set(ptNode.mTerminalId, startPos);
+                    final Iterator<WeightedString> bigramIterator = ptNode.mBigrams.iterator();
+                    while (bigramIterator.hasNext()) {
+                        final WeightedString bigram = bigramIterator.next();
+                        final PtNode target =
+                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
+                        final int unigramFrequencyForThisWord = target.mFrequency;
+                        final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(
+                                bigramIterator.hasNext(), 0, bigram.mFrequency,
+                                unigramFrequencyForThisWord, bigram.mWord);
+                        BinaryDictEncoderUtils.writeUIntToStream(bigramBuffer, bigramFlags,
+                                FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
+                        BinaryDictEncoderUtils.writeUIntToStream(bigramBuffer, target.mTerminalId,
+                                FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
+                    }
+                }
+            }
         }
+        bigramBuffer.writeTo(mBigramOutStream);
+    }
+
+    private void writeBigramAddressSparseTable() throws IOException {
+        final File lookupIndexFile =
+                new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
+        final File contentFile =
+                new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
+        mBigramAddressTable.writeToFiles(lookupIndexFile, contentFile);
     }
 
     @Override
@@ -267,7 +300,6 @@ public class Ver4DictEncoder implements DictEncoder {
         }
         writeChildrenPosition(ptNode, formatOptions);
         writeShortcuts(ptNode.mShortcutTargets);
-        writeBigrams(ptNode.mBigrams, dict);
     }
 
     private void writeTerminalData(final ArrayList<PtNodeArray> flatNodes,
