@@ -78,7 +78,7 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual void flushWithGC(const char *const filePath) = 0;
 
-    virtual bool needsToRunGC() const = 0;
+    virtual bool needsToRunGC(const bool mindsBlockByGC) const = 0;
 
     virtual void getProperty(const char *const query, char *const outResult,
             const int maxResultLength) const = 0;

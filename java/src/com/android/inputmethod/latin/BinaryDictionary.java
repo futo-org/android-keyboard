@@ -115,7 +115,7 @@ public final class BinaryDictionary extends Dictionary {
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
             boolean isUpdatable);
     private static native void flushNative(long dict, String filePath);
-    private static native boolean needsToRunGCNative(long dict);
+    private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
     private static native void closeNative(long dict);
     private static native int getProbabilityNative(long dict, int[] word);
@@ -270,7 +270,7 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     private void runGCIfRequired() {
-        if (needsToRunGCNative(mNativeDict)) {
+        if (needsToRunGC(true /* mindsBlockByGC */)) {
             flushWithGC();
         }
     }
@@ -326,9 +326,15 @@ public final class BinaryDictionary extends Dictionary {
         reopen();
     }
 
-    public boolean needsToRunGC() {
+    /**
+     * Checks whether GC is needed to run or not.
+     * @param mindsBlockByGC Whether to mind operations blocked by GC. We don't need to care about
+     * the blocking in some situations such as in idle time or just before closing.
+     * @return whether GC is needed to run or not.
+     */
+    public boolean needsToRunGC(final boolean mindsBlockByGC) {
         if (!isValidDictionary()) return false;
-        return needsToRunGCNative(mNativeDict);
+        return needsToRunGCNative(mNativeDict, mindsBlockByGC);
     }
 
     @UsedForTesting

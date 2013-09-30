@@ -36,8 +36,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
-              mUsesForgettingCurve(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
-                      USES_FORGETTING_CURVE_KEY, false /* defaultValue */)),
+              mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+                      IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
               mUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -54,8 +54,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
                       attributeMap)), mSize(0), mAttributeMap(*attributeMap),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
-              mUsesForgettingCurve(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
-                      USES_FORGETTING_CURVE_KEY, false /* defaultValue */)),
+              mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+                      IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0) {}
@@ -82,8 +82,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mMultiWordCostMultiplier;
     }
 
-    AK_FORCE_INLINE bool usesForgettingCurve() const {
-        return mUsesForgettingCurve;
+    AK_FORCE_INLINE bool isDecayingDict() const {
+        return mIsDecayingDict;
     }
 
     AK_FORCE_INLINE int getLastUpdatedTime() const {
@@ -113,7 +113,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
 
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
-    static const char *const USES_FORGETTING_CURVE_KEY;
+    static const char *const IS_DECAYING_DICT_KEY;
     static const char *const LAST_UPDATED_TIME_KEY;
     static const char *const UNIGRAM_COUNT_KEY;
     static const char *const BIGRAM_COUNT_KEY;
@@ -126,7 +126,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const int mSize;
     HeaderReadWriteUtils::AttributeMap mAttributeMap;
     const float mMultiWordCostMultiplier;
-    const bool mUsesForgettingCurve;
+    const bool mIsDecayingDict;
     const int mLastUpdatedTime;
     const int mUnigramCount;
     const int mBigramCount;
