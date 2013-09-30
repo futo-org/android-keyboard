@@ -31,7 +31,8 @@ class DicNodeStateScoring {
               mDigraphIndex(DigraphUtils::NOT_A_DIGRAPH_INDEX),
               mEditCorrectionCount(0), mProximityCorrectionCount(0),
               mNormalizedCompoundDistance(0.0f), mSpatialDistance(0.0f), mLanguageDistance(0.0f),
-              mRawLength(0.0f), mExactMatch(true) {
+              mRawLength(0.0f), mExactMatch(true),
+              mNormalizedCompoundDistanceAfterFirstWord(MAX_VALUE_FOR_WEIGHTING) {
     }
 
     virtual ~DicNodeStateScoring() {}
@@ -45,6 +46,7 @@ class DicNodeStateScoring {
         mRawLength = 0.0f;
         mDoubleLetterLevel = NOT_A_DOUBLE_LETTER;
         mDigraphIndex = DigraphUtils::NOT_A_DIGRAPH_INDEX;
+        mNormalizedCompoundDistanceAfterFirstWord = MAX_VALUE_FOR_WEIGHTING;
         mExactMatch = true;
     }
 
@@ -58,6 +60,8 @@ class DicNodeStateScoring {
         mDoubleLetterLevel = scoring->mDoubleLetterLevel;
         mDigraphIndex = scoring->mDigraphIndex;
         mExactMatch = scoring->mExactMatch;
+        mNormalizedCompoundDistanceAfterFirstWord =
+                scoring->mNormalizedCompoundDistanceAfterFirstWord;
     }
 
     void addCost(const float spatialCost, const float languageCost, const bool doNormalization,
@@ -86,6 +90,17 @@ class DicNodeStateScoring {
         }
     }
 
+    // Saves the current normalized distance for space-aware gestures.
+    // See getNormalizedCompoundDistanceAfterFirstWord for details.
+    void saveNormalizedCompoundDistanceAfterFirstWordIfNoneYet() {
+        // We get called here after each word. We only want to store the distance after
+        // the first word, so if we already have a distance we skip saving -- hence "IfNoneYet"
+        // in the method name.
+        if (mNormalizedCompoundDistanceAfterFirstWord >= MAX_VALUE_FOR_WEIGHTING) {
+            mNormalizedCompoundDistanceAfterFirstWord = getNormalizedCompoundDistance();
+        }
+    }
+
     void addRawLength(const float rawLength) {
         mRawLength += rawLength;
     }
@@ -100,6 +115,13 @@ class DicNodeStateScoring {
 
     float getNormalizedCompoundDistance() const {
         return mNormalizedCompoundDistance;
+    }
+
+    // For space-aware gestures, we store the normalized distance at the char index
+    // that ends the first word of the suggestion. We call this the distance after
+    // first word.
+    float getNormalizedCompoundDistanceAfterFirstWord() const {
+        return mNormalizedCompoundDistanceAfterFirstWord;
     }
 
     float getSpatialDistance() const {
@@ -178,6 +200,7 @@ class DicNodeStateScoring {
     float mLanguageDistance;
     float mRawLength;
     bool mExactMatch;
+    float mNormalizedCompoundDistanceAfterFirstWord;
 
     AK_FORCE_INLINE void addDistance(float spatialDistance, float languageDistance,
             bool doNormalization, int inputSize, int totalInputIndex) {

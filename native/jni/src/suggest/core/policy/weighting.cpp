@@ -38,7 +38,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_SUBSTITUTION:
         PROF_SUBSTITUTION(node->mProfiler);
         return;
-    case CT_NEW_WORD_SPACE_OMITTION:
+    case CT_NEW_WORD_SPACE_OMISSION:
         PROF_NEW_WORD(node->mProfiler);
         return;
     case CT_MATCH:
@@ -93,6 +93,11 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     }
     dicNode->addCost(spatialCost, languageCost, weighting->needsToNormalizeCompoundDistance(),
             inputSize, errorType);
+    if (CT_NEW_WORD_SPACE_OMISSION == correctionType) {
+        // When we are on a terminal, we save the current distance for evaluating
+        // when to auto-commit partial suggestions.
+        dicNode->saveNormalizedCompoundDistanceAfterFirstWordIfNoneYet();
+    }
 }
 
 /* static */ float Weighting::getSpatialCost(const Weighting *const weighting,
@@ -108,7 +113,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
     case CT_SUBSTITUTION:
         // only used for typing
         return weighting->getSubstitutionCost();
-    case CT_NEW_WORD_SPACE_OMITTION:
+    case CT_NEW_WORD_SPACE_OMISSION:
         return weighting->getNewWordSpatialCost(traverseSession, dicNode, inputStateG);
     case CT_MATCH:
         return weighting->getMatchedCost(traverseSession, dicNode, inputStateG);
@@ -138,7 +143,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
         return 0.0f;
     case CT_SUBSTITUTION:
         return 0.0f;
-    case CT_NEW_WORD_SPACE_OMITTION:
+    case CT_NEW_WORD_SPACE_OMISSION:
         return weighting->getNewWordBigramLanguageCost(
                 traverseSession, parentDicNode, multiBigramMap);
     case CT_MATCH:
@@ -173,7 +178,7 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             return 0; /* 0 because CT_MATCH will be called */
         case CT_SUBSTITUTION:
             return 0; /* 0 because CT_MATCH will be called */
-        case CT_NEW_WORD_SPACE_OMITTION:
+        case CT_NEW_WORD_SPACE_OMISSION:
             return 0;
         case CT_MATCH:
             return 1;
