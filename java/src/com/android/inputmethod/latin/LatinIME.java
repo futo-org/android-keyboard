@@ -2557,6 +2557,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void showSuggestionStripWithTypedWord(final SuggestedWords suggestedWords,
             final String typedWord) {
       if (suggestedWords.isEmpty()) {
+          // No auto-correction is available, clear the cached values.
+          AccessibilityUtils.getInstance().setAutoCorrection(null, null);
           clearSuggestionStrip();
           return;
       }
@@ -2565,6 +2567,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
       setSuggestedWords(suggestedWords, isAutoCorrection);
       setAutoCorrectionIndicator(isAutoCorrection);
       setSuggestionStripShown(isSuggestionsStripVisible());
+      // An auto-correction is available, cache it in accessibility code so
+      // we can be speak it if the user touches a key that will insert it.
+      AccessibilityUtils.getInstance().setAutoCorrection(suggestedWords, typedWord);
     }
 
     private void showSuggestionStrip(final SuggestedWords suggestedWords) {
