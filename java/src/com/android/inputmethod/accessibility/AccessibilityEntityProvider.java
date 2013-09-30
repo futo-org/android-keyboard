@@ -35,6 +35,8 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.CoordinateUtils;
 
@@ -285,9 +287,15 @@ public final class AccessibilityEntityProvider extends AccessibilityNodeProvider
     private String getKeyDescription(final Key key) {
         final EditorInfo editorInfo = mInputMethodService.getCurrentInputEditorInfo();
         final boolean shouldObscure = mAccessibilityUtils.shouldObscureInput(editorInfo);
-        final String keyDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
+        final SettingsValues currentSettings = Settings.getInstance().getCurrent();
+        final String keyCodeDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
                 mKeyboardView.getContext(), mKeyboardView.getKeyboard(), key, shouldObscure);
-        return keyDescription;
+        if (currentSettings.isWordSeparator(key.getCode())) {
+            return mAccessibilityUtils.getAutoCorrectionDescription(
+                    keyCodeDescription, shouldObscure);
+        } else {
+            return keyCodeDescription;
+        }
     }
 
     /**
