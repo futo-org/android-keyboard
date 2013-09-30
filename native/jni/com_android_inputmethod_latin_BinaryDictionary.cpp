@@ -142,7 +142,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
         jintArray inputCodePointsArray, jint inputSize, jint commitPoint, jintArray suggestOptions,
         jintArray prevWordCodePointsForBigrams, jintArray outputCodePointsArray,
         jintArray scoresArray, jintArray spaceIndicesArray, jintArray outputTypesArray,
-        jintArray outputAutoCommitFirstWordConfidence) {
+        jintArray outputAutoCommitFirstWordConfidenceArray) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
@@ -196,17 +196,23 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     int spaceIndices[spaceIndicesLength];
     const jsize outputTypesLength = env->GetArrayLength(outputTypesArray);
     int outputTypes[outputTypesLength];
+    const jsize outputAutoCommitFirstWordConfidenceLength =
+            env->GetArrayLength(outputAutoCommitFirstWordConfidenceArray);
+    // We only use the first result, as obviously we will only ever autocommit the first one
+    ASSERT(outputAutoCommitFirstWordConfidenceLength == 1);
+    int outputAutoCommitFirstWordConfidence[outputAutoCommitFirstWordConfidenceLength];
     memset(outputCodePoints, 0, sizeof(outputCodePoints));
     memset(scores, 0, sizeof(scores));
     memset(spaceIndices, 0, sizeof(spaceIndices));
     memset(outputTypes, 0, sizeof(outputTypes));
+    memset(outputAutoCommitFirstWordConfidence, 0, sizeof(outputAutoCommitFirstWordConfidence));
 
     int count;
     if (givenSuggestOptions.isGesture() || inputSize > 0) {
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, inputSize, prevWordCodePoints,
                 prevWordCodePointsLength, commitPoint, &givenSuggestOptions, outputCodePoints,
-                scores, spaceIndices, outputTypes);
+                scores, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
     } else {
         count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
                 outputCodePoints, scores, outputTypes);
@@ -217,6 +223,8 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jclass clazz, j
     env->SetIntArrayRegion(scoresArray, 0, scoresLength, scores);
     env->SetIntArrayRegion(spaceIndicesArray, 0, spaceIndicesLength, spaceIndices);
     env->SetIntArrayRegion(outputTypesArray, 0, outputTypesLength, outputTypes);
+    env->SetIntArrayRegion(outputAutoCommitFirstWordConfidenceArray, 0,
+            outputAutoCommitFirstWordConfidenceLength, outputAutoCommitFirstWordConfidence);
 
     return count;
 }

@@ -49,7 +49,7 @@ const float Suggest::AUTOCORRECT_CLASSIFICATION_THRESHOLD = 0.33f;
 int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int commitPoint, int *outWords, int *frequencies, int *outputIndices,
-        int *outputTypes) const {
+        int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     PROF_OPEN;
     PROF_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
@@ -70,7 +70,8 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     }
     PROF_END(1);
     PROF_START(2);
-    const int size = outputSuggestions(tSession, frequencies, outWords, outputIndices, outputTypes);
+    const int size = outputSuggestions(tSession, frequencies, outWords, outputIndices, outputTypes,
+            outputAutoCommitFirstWordConfidence);
     PROF_END(2);
     PROF_CLOSE;
     return size;
@@ -117,7 +118,8 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
  * Outputs the final list of suggestions (i.e., terminal nodes).
  */
 int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-        int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes) const {
+        int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
+        int *outputAutoCommitFirstWordConfidence) const {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -164,6 +166,8 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
     // TODO: have partial commit work even with multiple pointers.
     const bool outputSecondWordFirstLetterInputIndex =
             traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
+    outputAutoCommitFirstWordConfidence[0] = computeFirstWordConfidence();
+
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
             ++terminalIndex) {
@@ -249,6 +253,11 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
                 &outputCodePoints[0], &frequencies[0]);
     }
     return outputWordIndex;
+}
+
+int Suggest::computeFirstWordConfidence() const {
+    // TODO: implement this.
+    return NOT_A_FIRST_WORD_CONFIDENCE;
 }
 
 /**
