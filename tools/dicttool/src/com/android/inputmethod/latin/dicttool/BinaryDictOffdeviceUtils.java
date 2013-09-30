@@ -80,17 +80,17 @@ public final class BinaryDictOffdeviceUtils {
     }
 
     /**
-     * Returns a decrypted/uncompressed binary dictionary.
+     * Returns a decrypted/uncompressed dictionary.
      *
-     * This will decrypt/uncompress any number of times as necessary until it finds the binary
+     * This will decrypt/uncompress any number of times as necessary until it finds the
      * dictionary signature, and copy the decoded file to a temporary place.
-     * If this is not a binary dictionary, the method returns null.
+     * If this is not a dictionary, the method returns null.
      */
-    public static DecoderChainSpec getRawBinaryDictionaryOrNull(final File src) {
-        return getRawBinaryDictionaryOrNullInternal(new DecoderChainSpec(), src, 0);
+    public static DecoderChainSpec getRawDictionaryOrNull(final File src) {
+        return getRawDictionaryOrNullInternal(new DecoderChainSpec(), src, 0);
     }
 
-    private static DecoderChainSpec getRawBinaryDictionaryOrNullInternal(
+    private static DecoderChainSpec getRawDictionaryOrNullInternal(
             final DecoderChainSpec spec, final File src, final int depth) {
         // Unfortunately the decoding scheme we use can consider any data to be encrypted
         // and will product some output, meaning it's not possible to reliably detect encrypted
@@ -98,7 +98,8 @@ public final class BinaryDictOffdeviceUtils {
         // over and over, ending in a stack overflow. Hence we limit the depth at which we try
         // decoding the file.
         if (depth > MAX_DECODE_DEPTH) return null;
-        if (BinaryDictDecoderUtils.isBinaryDictionary(src)) {
+        if (BinaryDictDecoderUtils.isBinaryDictionary(src)
+                || CombinedInputOutput.isCombinedDictionary(src.getAbsolutePath())) {
             spec.mFile = src;
             return spec;
         }
@@ -106,7 +107,7 @@ public final class BinaryDictOffdeviceUtils {
         final File uncompressedFile = tryGetUncompressedFile(src);
         if (null != uncompressedFile) {
             final DecoderChainSpec newSpec =
-                    getRawBinaryDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
+                    getRawDictionaryOrNullInternal(spec, uncompressedFile, depth + 1);
             if (null == newSpec) return null;
             return newSpec.addStep(COMPRESSION);
         }
@@ -114,7 +115,7 @@ public final class BinaryDictOffdeviceUtils {
         final File decryptedFile = tryGetDecryptedFile(src);
         if (null != decryptedFile) {
             final DecoderChainSpec newSpec =
-                    getRawBinaryDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
+                    getRawDictionaryOrNullInternal(spec, decryptedFile, depth + 1);
             if (null == newSpec) return null;
             return newSpec.addStep(ENCRYPTION);
         }
@@ -175,15 +176,16 @@ public final class BinaryDictOffdeviceUtils {
                 return XmlDictInputOutput.readDictionaryXml(
                         new BufferedInputStream(new FileInputStream(file)),
                         null /* shortcuts */, null /* bigrams */);
-            } else if (CombinedInputOutput.isCombinedDictionary(filename)) {
-                if (report) System.out.println("Format : Combined format");
-                return CombinedInputOutput.readDictionaryCombined(
-                        new BufferedInputStream(new FileInputStream(file)));
             } else {
-                final DecoderChainSpec decodedSpec = getRawBinaryDictionaryOrNull(file);
+                final DecoderChainSpec decodedSpec = getRawDictionaryOrNull(file);
                 if (null == decodedSpec) {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
+                } else if (CombinedInputOutput.isCombinedDictionary(
+                        decodedSpec.mFile.getAbsolutePath())){
+                    if (report) System.out.println("Format : Combined format");
+                    return CombinedInputOutput.readDictionaryCombined(
+                            new BufferedInputStream(new FileInputStream(decodedSpec.mFile)));
                 } else {
                     final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodedSpec.mFile,
                             DictDecoder.USE_BYTEARRAY);

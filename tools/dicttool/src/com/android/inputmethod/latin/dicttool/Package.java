@@ -79,7 +79,7 @@ public class Package {
                 throw new RuntimeException("Too many/too few arguments for command " + COMMAND);
             }
             final BinaryDictOffdeviceUtils.DecoderChainSpec decodedSpec =
-                    BinaryDictOffdeviceUtils.getRawBinaryDictionaryOrNull(new File(mArgs[0]));
+                    BinaryDictOffdeviceUtils.getRawDictionaryOrNull(new File(mArgs[0]));
             if (null == decodedSpec) {
                 System.out.println(mArgs[0] + " does not seem to be a dictionary");
                 return;
