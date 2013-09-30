@@ -39,9 +39,9 @@ class DynamicPatriciaTrieGcEventListeners {
      public:
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
-                BufferWithExtendableBuffer *const buffer)
-                : mWritingHelper(writingHelper), mBuffer(buffer), mValueStack(),
-                  mChildrenValue(0), mValidUnigramCount(0) {}
+                BufferWithExtendableBuffer *const buffer, const bool isDecayingDict)
+                : mWritingHelper(writingHelper), mBuffer(buffer), mIsDecayingDict(isDecayingDict),
+                  mValueStack(), mChildrenValue(0), mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
@@ -74,6 +74,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         BufferWithExtendableBuffer *const mBuffer;
+        const int mIsDecayingDict;
         std::vector<int> mValueStack;
         int mChildrenValue;
         int mValidUnigramCount;

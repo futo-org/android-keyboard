@@ -16,6 +16,8 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
 
+#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
+
 namespace latinime {
 
 bool DynamicPatriciaTrieGcEventListeners
@@ -25,6 +27,19 @@ bool DynamicPatriciaTrieGcEventListeners
     // PtNode is useless when the PtNode is not a terminal and doesn't have any not useless
     // children.
     bool isUselessPtNode = !node->isTerminal();
+    if (node->isTerminal() && mIsDecayingDict) {
+        const int newProbability =
+                DecayingUtils::getUnigramProbabilityToSave(node->getProbability());
+        int writingPos = node->getProbabilityFieldPos();
+        // Update probability.
+        if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(
+                mBuffer, newProbability, &writingPos)) {
+            return false;
+        }
+        if (!DecayingUtils::isValidUnigram(newProbability)) {
+            isUselessPtNode = false;
+        }
+    }
     if (mChildrenValue > 0) {
         isUselessPtNode = false;
     } else if (node->isTerminal()) {
