@@ -48,14 +48,17 @@ class Suggest : public SuggestInterface {
     AK_FORCE_INLINE virtual ~Suggest() {}
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *inputCodePoints, int inputSize, int commitPoint,
-            int *outWords, int *frequencies, int *outputIndices, int *outputTypes) const;
+            int *outWords, int *frequencies, int *outputIndices, int *outputTypes,
+            int *outputAutoCommitFirstWordConfidence) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Suggest);
     void createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
             const bool spaceSubstitution) const;
     int outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-            int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes) const;
+            int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
+            int *outputAutoCommitFirstWordConfidence) const;
+    int computeFirstWordConfidence() const;
     void initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
     void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;

@@ -55,14 +55,14 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
         const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
-        int *spaceIndices, int *outputTypes) const {
+        int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
     int result = 0;
     if (suggestOptions->isGesture()) {
         DicTraverseSession::initSessionInstance(
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mGestureSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint, outWords,
-                frequencies, spaceIndices, outputTypes);
+                frequencies, spaceIndices, outputTypes, outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
             DUMP_RESULT(outWords, frequencies);
         }
@@ -72,7 +72,8 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession 
                 traverseSession, this, prevWordCodePoints, prevWordLength, suggestOptions);
         result = mTypingSuggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
                 ycoordinates, times, pointerIds, inputCodePoints, inputSize, commitPoint,
-                outWords, frequencies, spaceIndices, outputTypes);
+                outWords, frequencies, spaceIndices, outputTypes,
+                outputAutoCommitFirstWordConfidence);
         if (DEBUG_DICT) {
             DUMP_RESULT(outWords, frequencies);
         }

@@ -60,7 +60,7 @@ class Dictionary {
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
             int inputSize, int *prevWordCodePoints, int prevWordLength, int commitPoint,
             const SuggestOptions *const suggestOptions, int *outWords, int *frequencies,
-            int *spaceIndices, int *outputTypes) const;
+            int *spaceIndices, int *outputTypes, int *outputAutoCommitFirstWordConfidence) const;
 
     int getBigrams(const int *word, int length, int *outWords, int *frequencies,
             int *outputTypes) const;
