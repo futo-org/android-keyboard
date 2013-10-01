@@ -288,6 +288,8 @@ public final class BinaryDictIOUtils {
         return BinaryDictEncoderUtils.getByteSize(value);
     }
 
+    // TODO: Remove this method.
+    @Deprecated
     static void skipPtNode(final DictBuffer dictBuffer, final FormatOptions formatOptions) {
         final int flags = dictBuffer.readUnsignedByte();
         BinaryDictDecoderUtils.readParentAddress(dictBuffer, formatOptions);
