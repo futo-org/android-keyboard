@@ -81,8 +81,8 @@
     <string name="keylabel_for_tablet_comma">"&#x060C;"</string>
     <string name="keyhintlabel_for_tablet_comma">"!"</string>
     <string name="more_keys_for_tablet_comma">"!,\\,"</string>
-    <string name="keyhintlabel_for_tablet_period">"&#x061F;"</string>
-    <string name="more_keys_for_tablet_period">"&#x061F;,\?"</string>
+    <string name="keyhintlabel_for_period">"&#x061F;"</string>
+    <string name="more_keys_for_period">"&#x061F;,\?"</string>
     <string name="keylabel_for_apostrophe">&#x060C;</string>
     <string name="keyhintlabel_for_apostrophe">&#x061F;</string>
     <string name="more_keys_for_apostrophe">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,/,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;"</string>
