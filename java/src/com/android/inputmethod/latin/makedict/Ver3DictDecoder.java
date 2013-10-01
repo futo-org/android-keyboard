@@ -231,4 +231,40 @@ public class Ver3DictDecoder extends DictDecoder {
     public boolean hasNextPtNodeArray() {
         return mDictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS;
     }
+
+    @Override
+    public void skipPtNode(final FormatOptions formatOptions) {
+        final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
+        PtNodeReader.readParentAddress(mDictBuffer, formatOptions);
+        BinaryDictIOUtils.skipString(mDictBuffer,
+                (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        PtNodeReader.readChildrenAddress(mDictBuffer, flags, formatOptions);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) PtNodeReader.readFrequency(mDictBuffer);
+        if ((flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS) != 0) {
+            final int shortcutsSize = mDictBuffer.readUnsignedShort();
+            mDictBuffer.position(mDictBuffer.position() + shortcutsSize
+                    - FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
+        }
+        if ((flags & FormatSpec.FLAG_HAS_BIGRAMS) != 0) {
+            int bigramCount = 0;
+            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                final int bigramFlags = mDictBuffer.readUnsignedByte();
+                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
+                        mDictBuffer.readUnsignedByte();
+                        break;
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
+                        mDictBuffer.readUnsignedShort();
+                        break;
+                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
+                        mDictBuffer.readUnsignedInt24();
+                        break;
+                }
+                if ((bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT) == 0) break;
+            }
+            if (bigramCount >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                throw new RuntimeException("Too many bigrams in a PtNode.");
+            }
+        }
+    }
 }

@@ -293,4 +293,14 @@ public class Ver4DictDecoder extends DictDecoder {
     public boolean hasNextPtNodeArray() {
         return mDictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS;
     }
+
+    @Override
+    public void skipPtNode(final FormatOptions formatOptions) {
+        final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
+        PtNodeReader.readParentAddress(mDictBuffer, formatOptions);
+        BinaryDictIOUtils.skipString(mDictBuffer,
+                (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
+        if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) PtNodeReader.readTerminalId(mDictBuffer);
+        PtNodeReader.readChildrenAddress(mDictBuffer, flags, formatOptions);
+    }
 }
