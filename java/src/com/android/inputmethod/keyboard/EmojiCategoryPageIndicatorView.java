@@ -50,8 +50,9 @@ public class EmojiCategoryPageIndicatorView extends LinearLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mCategoryPageSize == 0) {
-            // If the category is not set yet, just clear and return.
+        if (mCategoryPageSize <= 1) {
+            // If the category is not set yet or contains only one category,
+            // just clear and return.
             canvas.drawColor(0);
             return;
         }
