@@ -73,11 +73,11 @@ class ProximityInfoParams {
     static const float SKIP_CORNER_PROBABILITY;
     static const float SPEED_MARGIN;
     static const float CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION;
-    static const float SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION;
-    static const float MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION;
-    static const float SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION;
-    static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION;
-    static const float MIN_STANDERD_DIVIATION;
+    static const float SPEEDxANGLE_WEIGHT_FOR_STANDARD_DEVIATION;
+    static const float MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION;
+    static const float SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION;
+    static const float MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION;
+    static const float MIN_STANDARD_DEVIATION;
     static const float PREV_DISTANCE_WEIGHT;
     static const float NEXT_DISTANCE_WEIGHT;
 

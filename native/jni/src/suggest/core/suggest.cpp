@@ -395,7 +395,7 @@ void Suggest::processTerminalDicNode(
     if (!dicNode->isTerminalWordNode()) {
         return;
     }
-    if (dicNode->shouldBeFilterdBySafetyNetForBigram()) {
+    if (dicNode->shouldBeFilteredBySafetyNetForBigram()) {
         return;
     }
     // Create a non-cached node here.
