@@ -166,7 +166,11 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
     // TODO: have partial commit work even with multiple pointers.
     const bool outputSecondWordFirstLetterInputIndex =
             traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
-    outputAutoCommitFirstWordConfidence[0] = computeFirstWordConfidence();
+    if (terminalSize > 0) {
+        // If we have no suggestions, don't write this
+        outputAutoCommitFirstWordConfidence[0] =
+                computeFirstWordConfidence(&terminals[0]);
+    }
 
     // Output suggestion results here
     for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
@@ -255,9 +259,55 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
     return outputWordIndex;
 }
 
-int Suggest::computeFirstWordConfidence() const {
-    // TODO: implement this.
-    return NOT_A_FIRST_WORD_CONFIDENCE;
+int Suggest::computeFirstWordConfidence(const DicNode *const terminalDicNode) const {
+    // Get the number of spaces in the first suggestion
+    const int spaceCount = terminalDicNode->getTotalNodeSpaceCount();
+    // Get the number of characters in the first suggestion
+    const int length = terminalDicNode->getTotalNodeCodePointCount();
+    // Get the distance for the first word of the suggestion
+    const float distance = terminalDicNode->getNormalizedCompoundDistanceAfterFirstWord();
+
+    // Arbitrarily, we give a score whose useful values range from 0 to 1,000,000.
+    // 1,000,000 will be the cutoff to auto-commit. It's fine if the number is under 0 or
+    // above 1,000,000 : under 0 just means it's very bad to commit, and above 1,000,000 means
+    // we are very confident.
+    // Expected space count is 1 ~ 5
+    static const int MIN_EXPECTED_SPACE_COUNT = 1;
+    static const int MAX_EXPECTED_SPACE_COUNT = 5;
+    // Expected length is about 4 ~ 30
+    static const int MIN_EXPECTED_LENGTH = 4;
+    static const int MAX_EXPECTED_LENGTH = 30;
+    // Expected distance is about 0.2 ~ 2.0, but consider 0.0 ~ 2.0
+    static const float MIN_EXPECTED_DISTANCE = 0.0;
+    static const float MAX_EXPECTED_DISTANCE = 2.0;
+    // This is not strict: it's where most stuff will be falling, but it's still fine if it's
+    // outside these values. We want to output a value that reflects all of these. Each factor
+    // contributes a bit.
+
+    // We need at least a space.
+    if (spaceCount < 1) return NOT_A_FIRST_WORD_CONFIDENCE;
+
+    // The smaller the edit distance, the higher the contribution. MIN_EXPECTED_DISTANCE means 0
+    // contribution, while MAX_EXPECTED_DISTANCE means full contribution according to the
+    // weight of the distance. Clamp to avoid overflows.
+    const float clampedDistance = distance < MIN_EXPECTED_DISTANCE ? MIN_EXPECTED_DISTANCE
+            : distance > MAX_EXPECTED_DISTANCE ? MAX_EXPECTED_DISTANCE : distance;
+    const int distanceContribution = DISTANCE_WEIGHT_FOR_AUTO_COMMIT
+            * (MAX_EXPECTED_DISTANCE - clampedDistance)
+            / (MAX_EXPECTED_DISTANCE - MIN_EXPECTED_DISTANCE);
+    // The larger the suggestion length, the larger the contribution. MIN_EXPECTED_LENGTH is no
+    // contribution, MAX_EXPECTED_LENGTH is full contribution according to the weight of the
+    // length. Length is guaranteed to be between 1 and 48, so we don't need to clamp.
+    const int lengthContribution = LENGTH_WEIGHT_FOR_AUTO_COMMIT
+            * (length - MIN_EXPECTED_LENGTH) / (MAX_EXPECTED_LENGTH - MIN_EXPECTED_LENGTH);
+    // The more spaces, the larger the contribution. MIN_EXPECTED_SPACE_COUNT space is no
+    // contribution, MAX_EXPECTED_SPACE_COUNT spaces is full contribution according to the
+    // weight of the space count.
+    const int spaceContribution = SPACE_COUNT_WEIGHT_FOR_AUTO_COMMIT
+            * (spaceCount - MIN_EXPECTED_SPACE_COUNT)
+            / (MAX_EXPECTED_SPACE_COUNT - MIN_EXPECTED_SPACE_COUNT);
+
+    return distanceContribution + lengthContribution + spaceContribution;
 }
 
 /**
