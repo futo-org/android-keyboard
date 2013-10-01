@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -436,17 +437,24 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final String label;
                 final int code;
                 final String outputText;
+                final int supportedMinSdkVersion;
                 if (codesArrayId != 0) {
                     final String codeArraySpec = array[i];
                     label = CodesArrayParser.parseLabel(codeArraySpec);
                     code = CodesArrayParser.parseCode(codeArraySpec);
                     outputText = CodesArrayParser.parseOutputText(codeArraySpec);
+                    supportedMinSdkVersion =
+                            CodesArrayParser.getMinSupportSdkVersion(codeArraySpec);
                 } else {
                     final String textArraySpec = array[i];
                     // TODO: Utilize KeySpecParser or write more generic TextsArrayParser.
                     label = textArraySpec;
                     code = Constants.CODE_OUTPUT_TEXT;
                     outputText = textArraySpec + (char)Constants.CODE_SPACE;
+                    supportedMinSdkVersion = 0;
+                }
+                if (Build.VERSION.SDK_INT < supportedMinSdkVersion) {
+                    continue;
                 }
                 final int x = (int)row.getKeyX(null);
                 final int y = row.getKeyY();
