@@ -271,7 +271,7 @@ class DicNode {
         return isTerminalNodes && currentNodeDepth > 0 && currentNodeDepth == terminalNodeDepth;
     }
 
-    bool shouldBeFilterdBySafetyNetForBigram() const {
+    bool shouldBeFilteredBySafetyNetForBigram() const {
         const uint16_t currentDepth = getNodeCodePointCount();
         const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
                 - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
