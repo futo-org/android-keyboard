@@ -727,7 +727,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                         holder.set(mBinaryDictionary.isValidWord(word));
                     } else {
                         holder.set(((DynamicPersonalizationDictionaryWriter) mDictionaryWriter)
-                                .isInDictionaryForTests(word));
+                                .isInBigramListForTests(word));
                     }
                 }
             }
