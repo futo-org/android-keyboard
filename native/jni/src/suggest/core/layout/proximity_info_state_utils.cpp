@@ -708,13 +708,13 @@ namespace latinime {
         const float inputCharProbability = 1.0f - skipProbability;
 
         const float speedxAngleRate = min(speedRate * currentAngle / M_PI_F
-                * ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION,
-                        ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION);
+                * ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DEVIATION,
+                        ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION);
         const float speedxNearestKeyDistanceRate = min(speedRate * nearestKeyDistance
-                * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION,
-                        ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION);
+                * ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION,
+                        ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION);
         const float sigma = speedxAngleRate + speedxNearestKeyDistanceRate
-                + ProximityInfoParams::MIN_STANDERD_DIVIATION;
+                + ProximityInfoParams::MIN_STANDARD_DEVIATION;
 
         ProximityInfoUtils::NormalDistribution
                 distribution(ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION, sigma);
