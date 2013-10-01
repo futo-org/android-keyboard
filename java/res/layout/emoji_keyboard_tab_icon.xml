@@ -23,4 +23,5 @@
     android:layout_weight="1.0"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:scaleType="center"
 />
