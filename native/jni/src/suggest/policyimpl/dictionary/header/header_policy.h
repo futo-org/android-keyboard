@@ -40,6 +40,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+              mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      LAST_DECAYED_TIME_KEY, time(0) /* defaultValue */)),
               mUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       UNIGRAM_COUNT_KEY, 0 /* defaultValue */)),
               mBigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
@@ -57,6 +59,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mIsDecayingDict(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
                       IS_DECAYING_DICT_KEY, false /* defaultValue */)),
               mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+              mLastDecayedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
                       LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
               mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0) {}
 
@@ -90,6 +94,10 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mLastUpdatedTime;
     }
 
+    AK_FORCE_INLINE int getLastDecayedTime() const {
+        return mLastDecayedTime;
+    }
+
     AK_FORCE_INLINE int getUnigramCount() const {
         return mUnigramCount;
     }
@@ -106,8 +114,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             int *outValue, int outValueSize) const;
 
     bool writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-            const bool updatesLastUpdatedTime, const int unigramCount,
-            const int bigramCount, const int extendedRegionSize) const;
+            const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
+            const int unigramCount, const int bigramCount, const int extendedRegionSize) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
@@ -115,6 +123,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const char *const IS_DECAYING_DICT_KEY;
     static const char *const LAST_UPDATED_TIME_KEY;
+    static const char *const LAST_DECAYED_TIME_KEY;
     static const char *const UNIGRAM_COUNT_KEY;
     static const char *const BIGRAM_COUNT_KEY;
     static const char *const EXTENDED_REGION_SIZE_KEY;
@@ -128,6 +137,7 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const float mMultiWordCostMultiplier;
     const bool mIsDecayingDict;
     const int mLastUpdatedTime;
+    const int mLastDecayedTime;
     const int mUnigramCount;
     const int mBigramCount;
     const int mExtendedRegionSize;

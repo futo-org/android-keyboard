@@ -51,9 +51,9 @@ class DynamicPatriciaTrieWritingHelper {
 
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,
             DynamicBigramListPolicy *const bigramPolicy,
-            DynamicShortcutListPolicy *const shortcutPolicy, const bool isDecayingDict)
+            DynamicShortcutListPolicy *const shortcutPolicy, const bool needsToDecay)
             : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
-              mIsDecayingDict(isDecayingDict) {}
+              mNeedsToDecay(needsToDecay) {}
 
     ~DynamicPatriciaTrieWritingHelper() {}
 
@@ -94,7 +94,7 @@ class DynamicPatriciaTrieWritingHelper {
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
-    const bool mIsDecayingDict;
+    const bool mNeedsToDecay;
 
     bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
             const int movedPos, const int bigramLinkedNodePos);

@@ -40,7 +40,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
-              mBigramCount(mHeaderPolicy.getBigramCount()) {}
+              mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
 
     ~DynamicPatriciaTriePolicy() {
         delete mBuffer;
@@ -95,16 +95,17 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     bool needsToRunGC(const bool mindsBlockByGC) const;
 
     void getProperty(const char *const query, char *const outResult,
-            const int maxResultLength) const;
+            const int maxResultLength);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
 
-    static const char*const UNIGRAM_COUNT_QUERY;
-    static const char*const BIGRAM_COUNT_QUERY;
+    static const char *const UNIGRAM_COUNT_QUERY;
+    static const char *const BIGRAM_COUNT_QUERY;
+    static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
     static const int MAX_DICT_EXTENDED_REGION_SIZE;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
-    static const int MIN_SECONDS_TO_REQUIRE_GC_WHEN_WRITING;
+    static const int DECAY_INTERVAL_FOR_DECAYING_DICTS;
 
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
@@ -113,6 +114,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     DynamicBigramListPolicy mBigramListPolicy;
     int mUnigramCount;
     int mBigramCount;
+    int mNeedsToDecayForTesting;
+
+    bool needsToDecay() const;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H
