@@ -391,4 +391,6 @@ public abstract class DictDecoder {
             return readLength;
         }
     }
+
+    public abstract void skipPtNode(final FormatOptions formatOptions);
 }
