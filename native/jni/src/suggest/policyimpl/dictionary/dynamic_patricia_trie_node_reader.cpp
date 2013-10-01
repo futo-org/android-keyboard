@@ -26,7 +26,8 @@ namespace latinime {
 void DynamicPatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProcessMovedPtNode(
         const int ptNodePos, const int maxCodePointCount, int *const outCodePoints) {
     if (ptNodePos < 0 || ptNodePos >= mBuffer->getTailPosition()) {
-        AKLOGE("Fetching PtNode info form invalid dictionary position: %d, dictionary size: %d",
+        // Reading invalid position because of bug or broken dictionary.
+        AKLOGE("Fetching PtNode info from invalid dictionary position: %d, dictionary size: %d",
                 ptNodePos, mBuffer->getTailPosition());
         ASSERT(false);
         invalidatePtNodeInfo();
