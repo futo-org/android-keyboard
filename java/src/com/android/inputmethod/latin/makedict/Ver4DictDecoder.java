@@ -48,7 +48,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
 
     private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
-    private DictBuffer mDictBuffer;
+    protected DictBuffer mDictBuffer;
     private DictBuffer mFrequencyBuffer;
     private DictBuffer mTerminalAddressTableBuffer;
     private DictBuffer mBigramBuffer;
