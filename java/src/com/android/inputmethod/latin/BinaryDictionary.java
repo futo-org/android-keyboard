@@ -269,18 +269,11 @@ public final class BinaryDictionary extends Dictionary {
         return getBigramProbabilityNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    private void runGCIfRequired() {
-        if (needsToRunGC(true /* mindsBlockByGC */)) {
-            flushWithGC();
-        }
-    }
-
     // Add a unigram entry to binary dictionary in native code.
     public void addUnigramWord(final String word, final int probability) {
         if (TextUtils.isEmpty(word)) {
             return;
         }
-        runGCIfRequired();
         final int[] codePoints = StringUtils.toCodePointArray(word);
         addUnigramWordNative(mNativeDict, codePoints, probability);
     }
@@ -290,7 +283,6 @@ public final class BinaryDictionary extends Dictionary {
         if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
             return;
         }
-        runGCIfRequired();
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         addBigramWordsNative(mNativeDict, codePoints0, codePoints1, probability);
@@ -301,7 +293,6 @@ public final class BinaryDictionary extends Dictionary {
         if (TextUtils.isEmpty(word0) || TextUtils.isEmpty(word1)) {
             return;
         }
-        runGCIfRequired();
         final int[] codePoints0 = StringUtils.toCodePointArray(word0);
         final int[] codePoints1 = StringUtils.toCodePointArray(word1);
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
