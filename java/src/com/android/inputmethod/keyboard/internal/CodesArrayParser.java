@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.Constants;
 
+import android.text.TextUtils;
+
 /**
  * The string parser of codesArray specification for <GridRows />. The attribute codesArray is an
  * array of string.
@@ -34,7 +36,7 @@ import com.android.inputmethod.latin.Constants;
 public final class CodesArrayParser {
     // Constants for parsing.
     private static final char COMMA = ',';
-    private static final char VERTICAL_BAR = '|';
+    private static final String VERTICAL_BAR_STRING = "\\|";
     private static final String COMMA_STRING = ",";
     private static final int BASE_HEX = 16;
 
@@ -43,8 +45,11 @@ public final class CodesArrayParser {
     }
 
     private static String getLabelSpec(final String codesArraySpec) {
-        final int pos = codesArraySpec.indexOf(VERTICAL_BAR);
-        return (pos < 0) ? codesArraySpec : codesArraySpec.substring(0, pos);
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        if (strs.length <= 1) {
+            return codesArraySpec;
+        }
+        return strs[0];
     }
 
     public static String parseLabel(final String codesArraySpec) {
@@ -58,8 +63,25 @@ public final class CodesArrayParser {
     }
 
     private static String getCodeSpec(final String codesArraySpec) {
-        final int pos = codesArraySpec.indexOf(VERTICAL_BAR);
-        return (pos < 0) ? codesArraySpec : codesArraySpec.substring(pos + 1);
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        if (strs.length <= 1) {
+            return codesArraySpec;
+        }
+        return TextUtils.isEmpty(strs[1]) ? strs[0] : strs[1];
+    }
+
+    // codesArraySpec consists of:
+    // <label>|<code0>,<code1>,...|<minSupportSdkVersion>
+    public static int getMinSupportSdkVersion(final String codesArraySpec) {
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_STRING, -1);
+        if (strs.length <= 2) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(strs[2]);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public static int parseCode(final String codesArraySpec) {
