@@ -23,6 +23,7 @@ const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WOR
 // TODO: Change attribute string to "IS_DECAYING_DICT".
 const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
+const char *const HeaderPolicy::LAST_DECAYED_TIME_KEY = "LAST_DECAYED_TIME";
 const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
 const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
 const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
@@ -63,8 +64,8 @@ float HeaderPolicy::readMultipleWordCostMultiplier() const {
 }
 
 bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-        const bool updatesLastUpdatedTime, const int unigramCount, const int bigramCount,
-        const int extendedRegionSize) const {
+        const bool updatesLastUpdatedTime, const bool updatesLastDecayedTime,
+        const int unigramCount, const int bigramCount, const int extendedRegionSize) const {
     int writingPos = 0;
     if (!HeaderReadWriteUtils::writeDictionaryVersion(bufferToWrite, mDictFormatVersion,
             &writingPos)) {
@@ -88,6 +89,11 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
     if (updatesLastUpdatedTime) {
         // Set current time as a last updated time.
         HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_UPDATED_TIME_KEY,
+                time(0));
+    }
+    if (updatesLastDecayedTime) {
+        // Set current time as a last updated time.
+        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_DECAYED_TIME_KEY,
                 time(0));
     }
     if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,

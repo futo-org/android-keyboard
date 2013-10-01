@@ -129,7 +129,7 @@ bool Dictionary::needsToRunGC(const bool mindsBlockByGC) {
 }
 
 void Dictionary::getProperty(const char *const query, char *const outResult,
-        const int maxResultLength) const {
+        const int maxResultLength) {
     return mDictionaryStructureWithBufferPolicy->getProperty(query, outResult, maxResultLength);
 }
 

@@ -44,7 +44,8 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
     HeaderPolicy headerPolicy(FormatUtils::VERSION_3, attributeMap);
     headerPolicy.writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
-            0 /* unigramCount */, 0 /* bigramCount */, 0 /* extendedRegionSize */);
+            true /* updatesLastDecayedTime */, 0 /* unigramCount */, 0 /* bigramCount */,
+            0 /* extendedRegionSize */);
     BufferWithExtendableBuffer bodyBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
     if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(&bodyBuffer, 0 /* rootPos */)) {
         return false;
