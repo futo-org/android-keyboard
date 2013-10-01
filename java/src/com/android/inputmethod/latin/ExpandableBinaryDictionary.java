@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -72,14 +73,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             new FormatSpec.FormatOptions(3 /* version */, true /* supportsDynamicUpdate */);
 
     /**
-     * A static map of time recorders, each of which records the time of accesses to a single binary
-     * dictionary file. The key for this map is the filename and the value is the shared dictionary
-     * time recorder associated with that filename.
+     * A static map of update controllers, each of which records the time of accesses to a single
+     * binary dictionary file and tracks whether the file is regenerating. The key for this map is
+     * the filename and the value is the shared dictionary time recorder associated with that
+     * filename.
      */
-    private static volatile ConcurrentHashMap<String, DictionaryTimeRecorder>
-            sFilenameDictionaryTimeRecorderMap = CollectionUtils.newConcurrentHashMap();
+    private static final ConcurrentHashMap<String, DictionaryUpdateController>
+            sFilenameDictionaryUpdateControllerMap = CollectionUtils.newConcurrentHashMap();
 
-    private static volatile ConcurrentHashMap<String, PrioritizedSerialExecutor>
+    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor>
             sFilenameExecutorMap = CollectionUtils.newConcurrentHashMap();
 
     /** The application context. */
@@ -106,13 +108,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private final boolean mIsUpdatable;
 
     // TODO: remove, once dynamic operations is serialized
-    /** Records access to the shared binary dictionary file across multiple instances. */
-    private final DictionaryTimeRecorder mFilenameDictionaryTimeRecorder;
+    /** Controls updating the shared binary dictionary file across multiple instances. */
+    private final DictionaryUpdateController mFilenameDictionaryUpdateController;
 
     // TODO: remove, once dynamic operations is serialized
-    /** Records access to the local binary dictionary for this instance. */
-    private final DictionaryTimeRecorder mPerInstanceDictionaryTimeRecorder =
-            new DictionaryTimeRecorder();
+    /** Controls updating the local binary dictionary for this instance. */
+    private final DictionaryUpdateController mPerInstanceDictionaryUpdateController =
+            new DictionaryUpdateController();
 
     /* A extension for a binary dictionary file. */
     public static final String DICT_FILE_EXTENSION = ".dict";
@@ -134,15 +136,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected abstract boolean hasContentChanged();
 
     /**
-     * Gets the dictionary time recorder for the given filename.
+     * Gets the dictionary update controller for the given filename.
      */
-    private static DictionaryTimeRecorder getDictionaryTimeRecorder(
+    private static DictionaryUpdateController getDictionaryUpdateController(
             String filename) {
-        DictionaryTimeRecorder recorder = sFilenameDictionaryTimeRecorderMap.get(filename);
+        DictionaryUpdateController recorder = sFilenameDictionaryUpdateControllerMap.get(filename);
         if (recorder == null) {
-            synchronized(sFilenameDictionaryTimeRecorderMap) {
-                recorder = new DictionaryTimeRecorder();
-                sFilenameDictionaryTimeRecorderMap.put(filename, recorder);
+            synchronized(sFilenameDictionaryUpdateControllerMap) {
+                recorder = new DictionaryUpdateController();
+                sFilenameDictionaryUpdateControllerMap.put(filename, recorder);
             }
         }
         return recorder;
@@ -192,7 +194,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mContext = context;
         mIsUpdatable = isUpdatable;
         mBinaryDictionary = null;
-        mFilenameDictionaryTimeRecorder = getDictionaryTimeRecorder(filename);
+        mFilenameDictionaryUpdateController = getDictionaryUpdateController(filename);
         // Currently, only dynamic personalization dictionary is updatable.
         mDictionaryWriter = getDictionaryWriter(context, dictType, isUpdatable);
     }
@@ -352,6 +354,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
             final int sessionId) {
         reloadDictionaryIfRequired();
+        if (isRegenerating()) {
+            return null;
+        }
         final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         final AsyncResultHolder<ArrayList<SuggestedWordInfo>> holder =
                 new AsyncResultHolder<ArrayList<SuggestedWordInfo>>();
@@ -412,6 +417,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     protected boolean isValidWordInner(final String word) {
+        if (isRegenerating()) {
+            return false;
+        }
         final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
         getExecutor(mFilename).executePrioritized(new Runnable() {
             @Override
@@ -437,7 +445,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * dictionary exists, this method will generate one.
      */
     protected void loadDictionary() {
-        mPerInstanceDictionaryTimeRecorder.mLastUpdateRequestTime = SystemClock.uptimeMillis();
+        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = SystemClock.uptimeMillis();
         reloadDictionaryIfRequired();
     }
 
@@ -448,8 +456,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private void loadBinaryDictionary() {
         if (DEBUG) {
             Log.d(TAG, "Loading binary dictionary: " + mFilename + " request="
-                    + mFilenameDictionaryTimeRecorder.mLastUpdateRequestTime + " update="
-                    + mFilenameDictionaryTimeRecorder.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateRequestTime + " update="
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
 
         final File file = new File(mContext.getFilesDir(), mFilename);
@@ -487,8 +495,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private void writeBinaryDictionary() {
         if (DEBUG) {
             Log.d(TAG, "Generating binary dictionary: " + mFilename + " request="
-                    + mFilenameDictionaryTimeRecorder.mLastUpdateRequestTime + " update="
-                    + mFilenameDictionaryTimeRecorder.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateRequestTime + " update="
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
         if (needsToReloadBeforeWriting()) {
             mDictionaryWriter.clear();
@@ -531,11 +539,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected void setRequiresReload(final boolean requiresRebuild) {
         final long time = SystemClock.uptimeMillis();
-        mPerInstanceDictionaryTimeRecorder.mLastUpdateRequestTime = time;
-        mFilenameDictionaryTimeRecorder.mLastUpdateRequestTime = time;
+        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = time;
+        mFilenameDictionaryUpdateController.mLastUpdateRequestTime = time;
         if (DEBUG) {
             Log.d(TAG, "Reload request: " + mFilename + ": request=" + time + " update="
-                    + mFilenameDictionaryTimeRecorder.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
     }
 
@@ -544,14 +552,26 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     public final void reloadDictionaryIfRequired() {
         if (!isReloadRequired()) return;
-        reloadDictionary();
+        if (setIsRegeneratingIfNotRegenerating()) {
+            reloadDictionary();
+        }
     }
 
     /**
      * Returns whether a dictionary reload is required.
      */
     private boolean isReloadRequired() {
-        return mBinaryDictionary == null || mPerInstanceDictionaryTimeRecorder.isOutOfDate();
+        return mBinaryDictionary == null || mPerInstanceDictionaryUpdateController.isOutOfDate();
+    }
+
+    private boolean isRegenerating() {
+        return mFilenameDictionaryUpdateController.mIsRegenerating.get();
+    }
+
+    // Returns whether the dictionary can be regenerated.
+    private boolean setIsRegeneratingIfNotRegenerating() {
+        return mFilenameDictionaryUpdateController.mIsRegenerating.compareAndSet(
+                false /* expect */ , true /* update */);
     }
 
     /**
@@ -564,39 +584,44 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
-                final long time = SystemClock.uptimeMillis();
-                final boolean dictionaryFileExists = dictionaryFileExists();
-                if (mFilenameDictionaryTimeRecorder.isOutOfDate() || !dictionaryFileExists) {
-                    // If the shared dictionary file does not exist or is out of date, the first
-                    // instance that acquires the lock will generate a new one.
-                    if (hasContentChanged() || !dictionaryFileExists) {
-                        // If the source content has changed or the dictionary does not exist,
-                        // rebuild the binary dictionary. Empty dictionaries are supported (in the
-                        // case where loadDictionaryAsync() adds nothing) in order to provide a
-                        // uniform framework.
-                        mFilenameDictionaryTimeRecorder.mLastUpdateTime = time;
+                try {
+                    final long time = SystemClock.uptimeMillis();
+                    final boolean dictionaryFileExists = dictionaryFileExists();
+                    if (mFilenameDictionaryUpdateController.isOutOfDate()
+                            || !dictionaryFileExists) {
+                        // If the shared dictionary file does not exist or is out of date, the
+                        // first instance that acquires the lock will generate a new one.
+                        if (hasContentChanged() || !dictionaryFileExists) {
+                            // If the source content has changed or the dictionary does not exist,
+                            // rebuild the binary dictionary. Empty dictionaries are supported (in
+                            // the case where loadDictionaryAsync() adds nothing) in order to
+                            // provide a uniform framework.
+                            mFilenameDictionaryUpdateController.mLastUpdateTime = time;
+                            writeBinaryDictionary();
+                            loadBinaryDictionary();
+                        } else {
+                            // If not, the reload request was unnecessary so revert
+                            // LastUpdateRequestTime to LastUpdateTime.
+                            mFilenameDictionaryUpdateController.mLastUpdateRequestTime =
+                                    mFilenameDictionaryUpdateController.mLastUpdateTime;
+                        }
+                    } else if (mBinaryDictionary == null ||
+                            mPerInstanceDictionaryUpdateController.mLastUpdateTime
+                                    < mFilenameDictionaryUpdateController.mLastUpdateTime) {
+                        // Otherwise, if the local dictionary is older than the shared dictionary,
+                        // load the shared dictionary.
+                        loadBinaryDictionary();
+                    }
+                    if (mBinaryDictionary != null && !mBinaryDictionary.isValidDictionary()) {
+                        // Binary dictionary is not valid. Regenerate the dictionary file.
+                        mFilenameDictionaryUpdateController.mLastUpdateTime = time;
                         writeBinaryDictionary();
                         loadBinaryDictionary();
-                    } else {
-                        // If not, the reload request was unnecessary so revert
-                        // LastUpdateRequestTime to LastUpdateTime.
-                        mFilenameDictionaryTimeRecorder.mLastUpdateRequestTime =
-                                mFilenameDictionaryTimeRecorder.mLastUpdateTime;
                     }
-                } else if (mBinaryDictionary == null ||
-                        mPerInstanceDictionaryTimeRecorder.mLastUpdateTime
-                                < mFilenameDictionaryTimeRecorder.mLastUpdateTime) {
-                    // Otherwise, if the local dictionary is older than the shared dictionary, load
-                    // the shared dictionary.
-                    loadBinaryDictionary();
+                    mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
+                } finally {
+                    mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
                 }
-                if (mBinaryDictionary != null && !mBinaryDictionary.isValidDictionary()) {
-                    // Binary dictionary is not valid. Regenerate the dictionary file.
-                    mFilenameDictionaryTimeRecorder.mLastUpdateTime = time;
-                    writeBinaryDictionary();
-                    loadBinaryDictionary();
-                }
-                mPerInstanceDictionaryTimeRecorder.mLastUpdateTime = time;
             }
         });
     }
@@ -636,14 +661,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Time recorder for tracking whether the dictionary is out of date.
+     * For tracking whether the dictionary is out of date and the dictionary is regenerating.
      * Can be shared across multiple dictionary instances that access the same filename.
      */
-    private static class DictionaryTimeRecorder {
-        private volatile long mLastUpdateTime = 0;
-        private volatile long mLastUpdateRequestTime = 0;
+    private static class DictionaryUpdateController {
+        public volatile long mLastUpdateTime = 0;
+        public volatile long mLastUpdateRequestTime = 0;
+        public volatile AtomicBoolean mIsRegenerating = new AtomicBoolean();
 
-        private boolean isOutOfDate() {
+        public boolean isOutOfDate() {
             return (mLastUpdateRequestTime > mLastUpdateTime);
         }
     }
