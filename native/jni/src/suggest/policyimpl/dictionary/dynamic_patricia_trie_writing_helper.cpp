@@ -153,7 +153,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize() +
             mBuffer->getUsedAdditionalBufferSize();
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */,
-            unigramCount, bigramCount, extendedRegionSize)) {
+            false /* updatesLastDecayedTime */, unigramCount, bigramCount, extendedRegionSize)) {
         return;
     }
     DictFileWritingUtils::flushAllHeaderAndBodyToFile(fileName, &headerBuffer, mBuffer);
@@ -170,7 +170,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
     }
     BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
-            unigramCount, bigramCount, 0 /* extendedRegionSize */)) {
+            mNeedsToDecay, unigramCount, bigramCount, 0 /* extendedRegionSize */)) {
         return;
     }
     DictFileWritingUtils::flushAllHeaderAndBodyToFile(fileName, &headerBuffer, &newDictBuffer);
@@ -488,12 +488,12 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                            this, mBuffer, mIsDecayingDict);
+                            this, mBuffer, mNeedsToDecay);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
     }
-    if (mIsDecayingDict && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
+    if (mNeedsToDecay && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
             .getValidUnigramCount() > DecayingUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more unigrams.
     }
@@ -506,7 +506,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
 
-    if (mIsDecayingDict && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
+    if (mNeedsToDecay && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
             > DecayingUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more bigrams.
     }
@@ -525,7 +525,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     // Create policy instance for the GCed dictionary.
     DynamicShortcutListPolicy newDictShortcutPolicy(bufferToWrite);
     DynamicBigramListPolicy newDictBigramPolicy(bufferToWrite, &newDictShortcutPolicy,
-            mIsDecayingDict);
+            mNeedsToDecay);
     // Create reading helper for the GCed dictionary.
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictBigramPolicy,
             &newDictShortcutPolicy);
@@ -544,7 +544,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
 int DynamicPatriciaTrieWritingHelper::getUpdatedProbability(const int originalProbability,
         const int newProbability) {
-    if (mIsDecayingDict) {
+    if (mNeedsToDecay) {
         return DecayingUtils::getUpdatedUnigramProbability(originalProbability, newProbability);
     } else {
         return newProbability;

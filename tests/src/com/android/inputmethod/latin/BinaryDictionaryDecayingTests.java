@@ -32,6 +32,11 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
     private static final String TEST_LOCALE = "test";
 
+    // Note that these are corresponding definitions in native code in
+    // latinime::DynamicPatriciaTriePolicy.
+    private static final String SET_NEEDS_TO_DECAY_FOR_TESTING_KEY =
+            "SET_NEEDS_TO_DECAY_FOR_TESTING";
+
     private static final int DUMMY_PROBABILITY = 0;
 
     @Override
@@ -45,6 +50,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
+        binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
         binaryDictionary.flushWithGC();
     }
 
@@ -53,6 +59,7 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         // typed in 32 GCs are removed.
         final int count = 32;
         for (int i = 0; i < count; i++) {
+            binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
             binaryDictionary.flushWithGC();
         }
     }

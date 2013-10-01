@@ -114,7 +114,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     }
 
     void getProperty(const char *const query, char *const outResult,
-            const int maxResultLength) const {
+            const int maxResultLength) {
         // getProperty is not supported for this class.
         if (maxResultLength > 0) {
             outResult[0] = '\0';
