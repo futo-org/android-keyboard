@@ -84,6 +84,10 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"連接耳機即可聽取系統朗讀密碼按鍵。"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"目前文字為 %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"未輸入文字"</string>
+    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"按鍵代碼 %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift 鍵"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift 鍵已開啟 (輕按即可停用)"</string>
