@@ -131,7 +131,7 @@ public class Ver4DictDecoder extends DictDecoder {
                 mDictDirectory.getName() + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
         final File contentFile = new File(mDictDirectory,
                 mDictDirectory.getName() + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
-        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, contentFile,
+        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, new File[] { contentFile },
                 FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
@@ -208,7 +208,7 @@ public class Ver4DictDecoder extends DictDecoder {
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            final int posOfBigrams = mBigramAddressTable.get(terminalId);
+            final int posOfBigrams = mBigramAddressTable.get(0 /* contentTableIndex */, terminalId);
             mBigramBuffer.position(posOfBigrams);
             while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
                 // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
