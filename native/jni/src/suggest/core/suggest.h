@@ -58,7 +58,7 @@ class Suggest : public SuggestInterface {
     int outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
             int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
             int *outputAutoCommitFirstWordConfidence) const;
-    int computeFirstWordConfidence() const;
+    int computeFirstWordConfidence(const DicNode *const terminalDicNode) const;
     void initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
     void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
