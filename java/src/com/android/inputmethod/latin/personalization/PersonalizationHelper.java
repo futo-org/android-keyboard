@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
-
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
 
@@ -59,6 +58,18 @@ public class PersonalizationHelper {
             final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale, sp);
             sLangUserHistoryDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
             return dict;
+        }
+    }
+
+    public static void tryDecayingAllOpeningUserHistoryDictionary() {
+        for (final ConcurrentHashMap.Entry<String, SoftReference<UserHistoryDictionary>> entry
+                : sLangUserHistoryDictCache.entrySet()) {
+            if (entry.getValue() != null) {
+                final UserHistoryDictionary dict = entry.getValue().get();
+                if (dict != null) {
+                    dict.decayIfNeeded();
+                }
+            }
         }
     }
 

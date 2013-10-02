@@ -77,6 +77,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.latin.personalization.DictionaryDecayBroadcastReciever;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionarySessionRegister;
 import com.android.inputmethod.latin.personalization.PersonalizationHelper;
@@ -566,6 +567,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter newDictFilter = new IntentFilter();
         newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
+
+        DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
 
         mInputUpdater = new InputUpdater(this);
     }
