@@ -24,6 +24,8 @@ import android.preference.PreferenceActivity;
  * Preference screen.
  */
 public final class DictionarySettingsActivity extends PreferenceActivity {
+    private static final String DEFAULT_FRAGMENT = DictionarySettingsFragment.class.getName();
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +34,17 @@ public final class DictionarySettingsActivity extends PreferenceActivity {
     @Override
     public Intent getIntent() {
         final Intent modIntent = new Intent(super.getIntent());
-        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, DictionarySettingsFragment.class.getName());
+        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
         modIntent.putExtra(EXTRA_NO_HEADERS, true);
         // Important note : the original intent should contain a String extra with the key
         // DictionarySettingsFragment.DICT_SETTINGS_FRAGMENT_CLIENT_ID_ARGUMENT so that the
         // fragment can know who the client is.
         return modIntent;
+    }
+
+    // TODO: Uncomment the override annotation once we start using SDK version 19.
+    // @Override
+    public boolean isValidFragment(String fragmentName) {
+        return fragmentName.equals(DEFAULT_FRAGMENT);
     }
 }

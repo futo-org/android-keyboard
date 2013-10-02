@@ -32,4 +32,10 @@ public final class SettingsActivity extends PreferenceActivity {
         intent.putExtra(EXTRA_NO_HEADERS, true);
         return intent;
     }
+
+    // TODO: Uncomment the override annotation once we start using SDK version 19.
+    // @Override
+    public boolean isValidFragment(String fragmentName) {
+        return fragmentName.equals(DEFAULT_FRAGMENT);
+    }
 }
