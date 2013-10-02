@@ -21,7 +21,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +34,6 @@ import java.util.Random;
 @LargeTest
 public class SparseTableTests extends AndroidTestCase {
     private static final String TAG = SparseTableTests.class.getSimpleName();
-
-    private static final int[] SMALL_INDEX = { SparseTable.NOT_EXIST, 0 };
-    private static final int[] BIG_INDEX = { SparseTable.NOT_EXIST, 1, 2, 3, 4, 5, 6, 7};
 
     private final Random mRandom;
     private final ArrayList<Integer> mRandomIndex;
@@ -59,26 +55,15 @@ public class SparseTableTests extends AndroidTestCase {
         }
     }
 
-    public void testInitializeWithArray() {
-        final SparseTable table = new SparseTable(SMALL_INDEX, BIG_INDEX, BLOCK_SIZE);
-        for (int i = 0; i < 8; ++i) {
-            assertEquals(SparseTable.NOT_EXIST, table.get(i));
-        }
-        assertEquals(SparseTable.NOT_EXIST, table.get(8));
-        for (int i = 9; i < 16; ++i) {
-            assertEquals(i - 8, table.get(i));
-        }
-    }
-
     public void testSet() {
-        final SparseTable table = new SparseTable(16, BLOCK_SIZE);
-        table.set(3, 6);
-        table.set(8, 16);
+        final SparseTable table = new SparseTable(16, BLOCK_SIZE, 1);
+        table.set(0, 3, 6);
+        table.set(0, 8, 16);
         for (int i = 0; i < 16; ++i) {
             if (i == 3 || i == 8) {
-                assertEquals(i * 2, table.get(i));
+                assertEquals(i * 2, table.get(0, i));
             } else {
-                assertEquals(SparseTable.NOT_EXIST, table.get(i));
+                assertEquals(SparseTable.NOT_EXIST, table.get(0, i));
             }
         }
     }
@@ -94,11 +79,11 @@ public class SparseTableTests extends AndroidTestCase {
     }
 
     private void runTestRandomSet() {
-        final SparseTable table = new SparseTable(DEFAULT_SIZE, BLOCK_SIZE);
+        final SparseTable table = new SparseTable(DEFAULT_SIZE, BLOCK_SIZE, 1);
         int elementCount = 0;
         for (int i = 0; i < DEFAULT_SIZE; ++i) {
             if (mRandomIndex.get(i) != SparseTable.NOT_EXIST) {
-                table.set(i, mRandomIndex.get(i));
+                table.set(0, i, mRandomIndex.get(i));
                 elementCount++;
             }
         }
@@ -107,7 +92,7 @@ public class SparseTableTests extends AndroidTestCase {
               + table.getContentTableSize());
         Log.d(TAG, "the table has " + elementCount + " elements");
         for (int i = 0; i < DEFAULT_SIZE; ++i) {
-            assertEquals(table.get(i), (int)mRandomIndex.get(i));
+            assertEquals(table.get(0, i), (int)mRandomIndex.get(i));
         }
 
         // flush and reload
@@ -120,16 +105,13 @@ public class SparseTableTests extends AndroidTestCase {
             final File contentFile = File.createTempFile("testRandomSet", ".big");
             lookupOutStream = new FileOutputStream(lookupIndexFile);
             contentOutStream = new FileOutputStream(contentFile);
-            table.write(lookupOutStream, contentOutStream);
-            lookupInStream = new FileInputStream(lookupIndexFile);
-            contentInStream = new FileInputStream(contentFile);
-            final byte[] lookupArray = new byte[(int) lookupIndexFile.length()];
-            final byte[] contentArray = new byte[(int) contentFile.length()];
-            lookupInStream.read(lookupArray);
-            contentInStream.read(contentArray);
-            final SparseTable newTable = new SparseTable(lookupArray, contentArray, BLOCK_SIZE);
+            table.write(lookupOutStream, new OutputStream[] { contentOutStream });
+            lookupOutStream.flush();
+            contentOutStream.flush();
+            final SparseTable newTable = SparseTable.readFromFiles(lookupIndexFile,
+                    new File[] { contentFile }, BLOCK_SIZE);
             for (int i = 0; i < DEFAULT_SIZE; ++i) {
-                assertEquals(table.get(i), newTable.get(i));
+                assertEquals(table.get(0, i), newTable.get(0, i));
             }
         } catch (IOException e) {
             Log.d(TAG, "IOException while flushing and realoding", e);
@@ -155,6 +137,62 @@ public class SparseTableTests extends AndroidTestCase {
         for (int i = 0; i <= 100; i += 10) {
             generateRandomIndex(DEFAULT_SIZE, i);
             runTestRandomSet();
+        }
+    }
+
+    public void testMultipleContents() {
+        final int numOfContents = 5;
+        generateRandomIndex(DEFAULT_SIZE, 20);
+        final SparseTable table = new SparseTable(DEFAULT_SIZE, BLOCK_SIZE, numOfContents);
+        for (int i = 0; i < mRandomIndex.size(); ++i) {
+            if (mRandomIndex.get(i) != SparseTable.NOT_EXIST) {
+                for (int j = 0; j < numOfContents; ++j) {
+                    table.set(j, i, mRandomIndex.get(i));
+                }
+            }
+        }
+
+        OutputStream lookupOutStream = null;
+        OutputStream[] contentsOutStream = new OutputStream[numOfContents];
+        try {
+            final File lookupIndexFile = File.createTempFile("testMultipleContents", "small");
+            lookupOutStream = new FileOutputStream(lookupIndexFile);
+            final File[] contentFiles = new File[numOfContents];
+            for (int i = 0; i < numOfContents; ++i) {
+                contentFiles[i] = File.createTempFile("testMultipleContents", "big" + i);
+                contentsOutStream[i] = new FileOutputStream(contentFiles[i]);
+            }
+            table.write(lookupOutStream, contentsOutStream);
+            lookupOutStream.flush();
+            for (int i = 0; i < numOfContents; ++i) {
+                contentsOutStream[i].flush();
+            }
+            final SparseTable newTable = SparseTable.readFromFiles(lookupIndexFile, contentFiles,
+                    BLOCK_SIZE);
+            for (int i = 0; i < numOfContents; ++i) {
+                for (int j = 0; j < DEFAULT_SIZE; ++j) {
+                    assertEquals(table.get(i, j), newTable.get(i, j));
+                }
+            }
+        } catch (IOException e) {
+            Log.d(TAG, "IOException while flushing and reloading", e);
+        } finally {
+            if (lookupOutStream != null) {
+                try {
+                    lookupOutStream.close();
+                } catch (IOException e) {
+                    Log.d(TAG, "IOException while closing the stream", e);
+                }
+            }
+            for (int i = 0; i < numOfContents; ++i) {
+                if (contentsOutStream[i] != null) {
+                    try {
+                        contentsOutStream[i].close();
+                    } catch (IOException e) {
+                        Log.d(TAG, "IOException while closing the stream.", e);
+                    }
+                }
+            }
         }
     }
 }
