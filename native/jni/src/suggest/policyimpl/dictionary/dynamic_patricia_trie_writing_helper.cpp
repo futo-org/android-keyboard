@@ -545,7 +545,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 int DynamicPatriciaTrieWritingHelper::getUpdatedProbability(const int originalProbability,
         const int newProbability) {
     if (mNeedsToDecay) {
-        return ForgettingCurveUtils::getUpdatedUnigramProbability(originalProbability,
+        return ForgettingCurveUtils::getUpdatedEncodedProbability(originalProbability,
                 newProbability);
     } else {
         return newProbability;
