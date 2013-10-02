@@ -224,7 +224,8 @@ public class Ver4DictDecoder extends DictDecoder {
                 if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
             }
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                MakedictLog.d("too many bigrams in a node.");
+                throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()
+                        + " but max is " + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
             }
         } else {
             bigrams = null;
