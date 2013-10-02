@@ -17,6 +17,8 @@
 #ifndef LATINIME_FORGETTING_CURVE_UTILS_H
 #define LATINIME_FORGETTING_CURVE_UTILS_H
 
+#include <vector>
+
 #include "defines.h"
 
 namespace latinime {
@@ -44,16 +46,32 @@ class ForgettingCurveUtils {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
 
+    class ProbabilityTable {
+     public:
+        ProbabilityTable();
+
+        int getProbability(const int encodedProbability) const {
+            if (encodedProbability < 0 || encodedProbability > static_cast<int>(mTable.size())) {
+                return NOT_A_PROBABILITY;
+            }
+            return mTable[encodedProbability];
+        }
+
+     private:
+        DISALLOW_COPY_AND_ASSIGN(ProbabilityTable);
+
+        std::vector<int> mTable;
+    };
+
     static const int MAX_COMPUTED_PROBABILITY;
     static const int MAX_ENCODED_PROBABILITY;
     static const int MIN_VALID_ENCODED_PROBABILITY;
     static const int ENCODED_PROBABILITY_STEP;
-
     static const float MIN_PROBABILITY_TO_DECAY;
 
-    static int decodeUnigramProbability(const int encodedProbability);
+    static const ProbabilityTable sProbabilityTable;
 
-    static int decodeBigramProbability(const int encodedProbability);
+    static int decodeProbability(const int encodedProbability);
 
     static int backoff(const int unigramProbability);
 };
