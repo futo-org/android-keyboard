@@ -29,14 +29,14 @@ bool DynamicPatriciaTrieGcEventListeners
     bool isUselessPtNode = !node->isTerminal();
     if (node->isTerminal() && mIsDecayingDict) {
         const int newProbability =
-                ForgettingCurveUtils::getUnigramProbabilityToSave(node->getProbability());
+                ForgettingCurveUtils::getEncodedProbabilityToSave(node->getProbability());
         int writingPos = node->getProbabilityFieldPos();
         // Update probability.
         if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(
                 mBuffer, newProbability, &writingPos)) {
             return false;
         }
-        if (!ForgettingCurveUtils::isValidUnigram(newProbability)) {
+        if (!ForgettingCurveUtils::isValidEncodedProbability(newProbability)) {
             isUselessPtNode = false;
         }
     }

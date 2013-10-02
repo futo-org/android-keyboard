@@ -50,14 +50,18 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
-        binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
-        binaryDictionary.flushWithGC();
+        // Entries having low probability would be suppressed once in 2 GCs.
+        final int count = 2;
+        for (int i = 0; i < count; i++) {
+            binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
+            binaryDictionary.flushWithGC();
+        }
     }
 
     private void forcePassingLongTime(final BinaryDictionary binaryDictionary) {
         // Currently, probabilities are decayed when GC is run. All entries that have never been
-        // typed in 32 GCs are removed.
-        final int count = 32;
+        // typed in 128 GCs would be removed.
+        final int count = 128;
         for (int i = 0; i < count; i++) {
             binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
             binaryDictionary.flushWithGC();
