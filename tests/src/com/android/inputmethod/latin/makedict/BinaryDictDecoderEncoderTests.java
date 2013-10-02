@@ -104,7 +104,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
 
         sStarBigrams.put(0, new ArrayList<Integer>());
-        for (int i = 1; i < sWords.size(); ++i) {
+        // MAX - 1 because we added one above already
+        final int maxBigrams = Math.min(sWords.size(), FormatSpec.MAX_BIGRAMS_IN_A_PTNODE - 1);
+        for (int i = 1; i < maxBigrams; ++i) {
             sStarBigrams.get(0).add(i);
         }
 
