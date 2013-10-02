@@ -16,7 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
 
-#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -29,14 +29,14 @@ bool DynamicPatriciaTrieGcEventListeners
     bool isUselessPtNode = !node->isTerminal();
     if (node->isTerminal() && mIsDecayingDict) {
         const int newProbability =
-                DecayingUtils::getUnigramProbabilityToSave(node->getProbability());
+                ForgettingCurveUtils::getUnigramProbabilityToSave(node->getProbability());
         int writingPos = node->getProbabilityFieldPos();
         // Update probability.
         if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(
                 mBuffer, newProbability, &writingPos)) {
             return false;
         }
-        if (!DecayingUtils::isValidUnigram(newProbability)) {
+        if (!ForgettingCurveUtils::isValidUnigram(newProbability)) {
             isUselessPtNode = false;
         }
     }
