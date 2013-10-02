@@ -23,7 +23,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -69,7 +68,7 @@ public class SparseTableTests extends AndroidTestCase {
     }
 
     private void generateRandomIndex(final int size, final int prop) {
-        for (int i = 0; i < DEFAULT_SIZE; ++i) {
+        for (int i = 0; i < size; ++i) {
             if (mRandom.nextInt(100) < prop) {
                 mRandomIndex.set(i, mRandom.nextInt());
             } else {
@@ -98,8 +97,6 @@ public class SparseTableTests extends AndroidTestCase {
         // flush and reload
         OutputStream lookupOutStream = null;
         OutputStream contentOutStream = null;
-        InputStream lookupInStream = null;
-        InputStream contentInStream = null;
         try {
             final File lookupIndexFile = File.createTempFile("testRandomSet", ".small");
             final File contentFile = File.createTempFile("testRandomSet", ".big");
