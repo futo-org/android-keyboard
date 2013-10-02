@@ -178,6 +178,8 @@ public final class KeyboardState {
             if (!state.mIsAlphabetShiftLocked) {
                 setShifted(state.mShiftMode);
             }
+            // TODO: is this the right place to do this? Should we do this in setShift* instead?
+            mSwitchActions.requestUpdatingShiftState();
         } else {
             mPrevMainKeyboardWasShiftLocked = state.mIsAlphabetShiftLocked;
         }

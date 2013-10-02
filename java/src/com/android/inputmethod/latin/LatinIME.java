@@ -2929,6 +2929,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         tryFixLyingCursorPosition();
+        mKeyboardSwitcher.updateShiftState();
         if (tryResumeSuggestions) mHandler.postResumeSuggestions();
     }
 
