@@ -92,7 +92,6 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
 }
 
 /* static */ int ForgettingCurveUtils::decodeProbability(const int encodedProbability) {
-    const int probability = encodedProbability - MIN_VALID_ENCODED_PROBABILITY;
     if (encodedProbability < MIN_VALID_ENCODED_PROBABILITY) {
         return NOT_A_PROBABILITY;
     } else {
