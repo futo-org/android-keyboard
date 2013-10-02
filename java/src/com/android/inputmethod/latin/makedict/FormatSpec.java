@@ -266,14 +266,27 @@ public final class FormatSpec {
     // tat = Terminal Address Table
     static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
     static final String BIGRAM_FILE_EXTENSION = ".bigram";
+    static final String SHORTCUT_FILE_EXTENSION = ".shortcut";
     static final String LOOKUP_TABLE_FILE_SUFFIX = "_lookup";
     static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
     static final int FREQUENCY_AND_FLAGS_SIZE = 2;
     static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
+
+    // With the English main dictionary as of October 2013, the size of bigram address table is
+    // is 584KB with the block size being 4.
+    // This is 91% of that of full address table.
     static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
     static final int BIGRAM_CONTENT_COUNT = 1;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
     static final String BIGRAM_FREQ_CONTENT_ID = "_freq";
+
+    static final int SHORTCUT_CONTENT_COUNT = 1;
+    static final int SHORTCUT_CONTENT_INDEX = 0;
+    // With the English main dictionary as of October 2013, the size of shortcut address table is
+    // 29KB with the block size being 64.
+    // This is only 4.4% of that of full address table.
+    static final int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
+    static final String SHORTCUT_CONTENT_ID = "_shortcut";
 
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     static final int NO_PARENT_ADDRESS = 0;
