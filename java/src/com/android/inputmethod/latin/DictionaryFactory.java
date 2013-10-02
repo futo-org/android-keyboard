@@ -51,7 +51,7 @@ public final class DictionaryFactory {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
             return new DictionaryCollection(Dictionary.TYPE_MAIN,
-                    createReadOnlyBinaryDictionary(context, locale));
+                    createBinaryDictionary(context, locale));
         }
 
         final LinkedList<Dictionary> dictList = CollectionUtils.newLinkedList();
@@ -59,11 +59,11 @@ public final class DictionaryFactory {
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context);
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
-                final ReadOnlyBinaryDictionary readOnlyBinaryDictionary =
-                        new ReadOnlyBinaryDictionary(f.mFilename, f.mOffset, f.mLength,
-                                useFullEditDistance, locale, Dictionary.TYPE_MAIN);
-                if (readOnlyBinaryDictionary.isValidDictionary()) {
-                    dictList.add(readOnlyBinaryDictionary);
+                final BinaryDictionary binaryDictionary = new BinaryDictionary(f.mFilename,
+                        f.mOffset, f.mLength, useFullEditDistance, locale, Dictionary.TYPE_MAIN,
+                        false /* isUpdatable */);
+                if (binaryDictionary.isValidDictionary()) {
+                    dictList.add(binaryDictionary);
                 }
             }
         }
@@ -89,12 +89,12 @@ public final class DictionaryFactory {
     }
 
     /**
-     * Initializes a read-only binary dictionary from a raw resource file
+     * Initializes a dictionary from a raw resource file
      * @param context application context for reading resources
      * @param locale the locale to use for the resource
-     * @return an initialized instance of ReadOnlyBinaryDictionary
+     * @return an initialized instance of BinaryDictionary
      */
-    protected static ReadOnlyBinaryDictionary createReadOnlyBinaryDictionary(final Context context,
+    protected static BinaryDictionary createBinaryDictionary(final Context context,
             final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
@@ -113,8 +113,9 @@ public final class DictionaryFactory {
                 Log.e(TAG, "sourceDir is not a file: " + sourceDir);
                 return null;
             }
-            return new ReadOnlyBinaryDictionary(sourceDir, afd.getStartOffset(), afd.getLength(),
-                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN);
+            return new BinaryDictionary(sourceDir, afd.getStartOffset(), afd.getLength(),
+                    false /* useFullEditDistance */, locale, Dictionary.TYPE_MAIN,
+                    false /* isUpdatable */);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource");
             return null;
@@ -141,10 +142,10 @@ public final class DictionaryFactory {
         final DictionaryCollection dictionaryCollection =
                 new DictionaryCollection(Dictionary.TYPE_MAIN);
         for (final AssetFileAddress address : dictionaryList) {
-            final ReadOnlyBinaryDictionary readOnlyBinaryDictionary = new ReadOnlyBinaryDictionary(
-                    address.mFilename, address.mOffset, address.mLength, useFullEditDistance,
-                    locale, Dictionary.TYPE_MAIN);
-            dictionaryCollection.addDictionary(readOnlyBinaryDictionary);
+            final BinaryDictionary binaryDictionary = new BinaryDictionary(address.mFilename,
+                    address.mOffset, address.mLength, useFullEditDistance, locale,
+                    Dictionary.TYPE_MAIN, false /* isUpdatable */);
+            dictionaryCollection.addDictionary(binaryDictionary);
         }
         return dictionaryCollection;
     }
