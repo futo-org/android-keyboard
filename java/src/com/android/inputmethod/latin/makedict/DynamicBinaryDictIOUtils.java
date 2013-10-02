@@ -59,7 +59,7 @@ public final class DynamicBinaryDictIOUtils {
             throws IOException, UnsupportedFormatException {
         final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
         dictBuffer.position(0);
-        final FileHeader header = dictDecoder.readHeader();
+        dictDecoder.readHeader();
         final int wordPosition = dictDecoder.getTerminalPosition(word);
         if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
 
@@ -142,8 +142,7 @@ public final class DynamicBinaryDictIOUtils {
         final int originalPosition = dictBuffer.position();
         dictBuffer.position(ptNodeOriginAddress);
         final int flags = dictBuffer.readUnsignedByte();
-        final int parentAddress = BinaryDictDecoderUtils.readParentAddress(dictBuffer,
-                formatOptions);
+        BinaryDictDecoderUtils.readParentAddress(dictBuffer, formatOptions);
         BinaryDictIOUtils.skipString(dictBuffer, (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS) != 0);
         if ((flags & FormatSpec.FLAG_IS_TERMINAL) != 0) dictBuffer.readUnsignedByte();
         final int childrenOffset = newChildrenAddress == FormatSpec.NO_CHILDREN_ADDRESS

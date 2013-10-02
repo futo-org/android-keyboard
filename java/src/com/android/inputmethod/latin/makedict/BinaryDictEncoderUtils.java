@@ -278,7 +278,6 @@ public class BinaryDictEncoderUtils {
         // For future reference, the code to remove duplicate is a simple : list.remove(node);
         list.add(ptNodeArray);
         final ArrayList<PtNode> branches = ptNodeArray.mData;
-        final int nodeSize = branches.size();
         for (PtNode ptNode : branches) {
             if (null != ptNode.mChildren) flattenTreeInner(list, ptNode.mChildren);
         }
@@ -427,9 +426,6 @@ public class BinaryDictEncoderUtils {
                         nodeCountSize + nodeArrayOffset + nodeffset;
                 nodeffset += ptNode.mCachedSize;
             }
-            final int nodeSize = nodeCountSize + nodeffset
-                    + (formatOptions.mSupportsDynamicUpdate
-                            ? FormatSpec.FORWARD_LINK_ADDRESS_SIZE : 0);
             nodeArrayOffset += nodeArray.mCachedSize;
         }
         return nodeArrayOffset;
@@ -653,8 +649,8 @@ public class BinaryDictEncoderUtils {
         return flags;
     }
 
-    /* package */ static byte makePtNodeFlags(final PtNode node, final int ptNodeAddress,
-            final int childrenOffset, final FormatOptions formatOptions) {
+    /* package */ static byte makePtNodeFlags(final PtNode node, final int childrenOffset,
+            final FormatOptions formatOptions) {
         return (byte) makePtNodeFlags(node.mChars.length > 1, node.mFrequency >= 0,
                 getByteSize(childrenOffset),
                 node.mShortcutTargets != null && !node.mShortcutTargets.isEmpty(),
