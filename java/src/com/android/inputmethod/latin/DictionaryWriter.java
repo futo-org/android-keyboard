@@ -31,6 +31,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An in memory dictionary for memorizing entries and writing a binary dictionary.
@@ -84,8 +85,11 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     }
 
     @Override
-    protected void writeDictionary(final DictEncoder dictEncoder)
-            throws IOException, UnsupportedFormatException {
+    protected void writeDictionary(final DictEncoder dictEncoder,
+            final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException {
+        for (final Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            mFusionDictionary.addOptionAttribute(entry.getKey(), entry.getValue());
+        }
         dictEncoder.writeDictionary(mFusionDictionary, FORMAT_OPTIONS);
     }
 

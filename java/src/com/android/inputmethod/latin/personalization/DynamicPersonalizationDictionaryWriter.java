@@ -36,6 +36,7 @@ import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils.Forge
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 // Currently this class is used to implement dynamic prodiction dictionary.
 // TODO: Move to native code.
@@ -113,8 +114,8 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     }
 
     @Override
-    protected void writeDictionary(final DictEncoder dictEncoder)
-            throws IOException, UnsupportedFormatException {
+    protected void writeDictionary(final DictEncoder dictEncoder,
+            final Map<String, String> attributeMap) throws IOException, UnsupportedFormatException {
         UserHistoryDictIOUtils.writeDictionary(dictEncoder,
                 new FrequencyProvider(mBigramList, mExpandableDictionary, mMaxHistoryBigrams),
                 mBigramList, FORMAT_OPTIONS);

@@ -331,9 +331,9 @@ public final class FormatSpec {
         public static final String USES_FORGETTING_CURVE_ATTRIBUTE = "USES_FORGETTING_CURVE";
         public static final String ATTRIBUTE_VALUE_TRUE = "1";
 
-        private static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
-        private static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
-        private static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
+        public static final String DICTIONARY_VERSION_ATTRIBUTE = "version";
+        public static final String DICTIONARY_LOCALE_ATTRIBUTE = "locale";
+        public static final String DICTIONARY_ID_ATTRIBUTE = "dictionary";
         private static final String DICTIONARY_DESCRIPTION_ATTRIBUTE = "description";
         public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
                 final FormatOptions formatOptions) {

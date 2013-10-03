@@ -95,6 +95,8 @@ class Dictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
 
+    static const int HEADER_ATTRIBUTE_BUFFER_SIZE;
+
     DictionaryStructureWithBufferPolicy *const mDictionaryStructureWithBufferPolicy;
     const BigramDictionary *const mBigramDictionary;
     const SuggestInterface *const mGestureSuggest;

@@ -26,7 +26,7 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.personalization.PersonalizationDictionary;
 import com.android.inputmethod.latin.personalization.PersonalizationPredictionDictionary;
-import com.android.inputmethod.latin.personalization.UserHistoryPredictionDictionary;
+import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.utils.AutoCorrectionUtils;
 import com.android.inputmethod.latin.utils.BoundedTreeSet;
@@ -190,10 +190,8 @@ public final class Suggest {
         addOrReplaceDictionaryInternal(Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
-    public void setUserHistoryPredictionDictionary(
-            final UserHistoryPredictionDictionary userHistoryPredictionDictionary) {
-        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY,
-                userHistoryPredictionDictionary);
+    public void setUserHistoryDictionary(final UserHistoryDictionary userHistoryDictionary) {
+        addOrReplaceDictionaryInternal(Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
     }
 
     public void setPersonalizationPredictionDictionary(
