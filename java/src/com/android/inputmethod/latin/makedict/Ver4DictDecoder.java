@@ -41,11 +41,13 @@ public class Ver4DictDecoder extends DictDecoder {
 
     private static final int FILETYPE_TRIE = 1;
     private static final int FILETYPE_FREQUENCY = 2;
+    private static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
 
     private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
     private DictBuffer mDictBuffer;
     private DictBuffer mFrequencyBuffer;
+    private DictBuffer mTerminalAddressTableBuffer;
 
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
@@ -77,6 +79,9 @@ public class Ver4DictDecoder extends DictDecoder {
         } else if (fileType == FILETYPE_FREQUENCY) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.FREQ_FILE_EXTENSION);
+        } else if (fileType == FILETYPE_TERMINAL_ADDRESS_TABLE) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
         } else {
             throw new RuntimeException("Unsupported kind of file : " + fileType);
         }
@@ -87,6 +92,8 @@ public class Ver4DictDecoder extends DictDecoder {
         final String filename = mDictDirectory.getName();
         mDictBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_TRIE));
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
+        mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
+                getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
     }
 
     @Override
