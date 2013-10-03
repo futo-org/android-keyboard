@@ -291,7 +291,7 @@ void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
     writingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy);
 }
 
-bool DynamicPatriciaTriePolicy::needsToRunGC() const {
+bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
     if (!mBuffer->isUpdatable()) {
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;

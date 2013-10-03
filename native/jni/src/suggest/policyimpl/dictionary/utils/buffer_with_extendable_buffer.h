@@ -42,6 +42,10 @@ class BufferWithExtendableBuffer {
         return mOriginalBufferSize + mUsedAdditionalBufferSize;
     }
 
+    AK_FORCE_INLINE int getUsedAdditionalBufferSize() const {
+        return mUsedAdditionalBufferSize;
+    }
+
     /**
      * For reading.
      */

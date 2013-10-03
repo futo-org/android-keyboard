@@ -147,7 +147,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
         const HeaderPolicy *const headerPolicy, const int unigramCount, const int bigramCount) {
     BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize() +
-            mBuffer->getTailPosition() - mBuffer->getOriginalBufferSize();
+            mBuffer->getUsedAdditionalBufferSize();
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */,
             unigramCount, bigramCount, extendedRegionSize)) {
         return;

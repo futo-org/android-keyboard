@@ -41,9 +41,26 @@ bool DynamicPatriciaTrieGcEventListeners
             return false;
         }
     } else {
-        valueStack.back() += 1;
+        mValueStack.back() += 1;
         if (node->isTerminal()) {
             mValidUnigramCount += 1;
+        }
+    }
+    return true;
+}
+
+bool DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateBigramProbability
+        ::onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
+                const int *const nodeCodePoints) {
+    if (!node->isDeleted()) {
+        int pos = node->getBigramsPos();
+        if (pos != NOT_A_DICT_POS) {
+            int bigramEntryCount = 0;
+            if (!mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&pos,
+                    &bigramEntryCount)) {
+                return false;
+            }
+            mValidBigramEntryCount += bigramEntryCount;
         }
     }
     return true;

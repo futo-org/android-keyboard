@@ -505,7 +505,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
                 } else {
-                    if (mBinaryDictionary.needsToRunGC()) {
+                    if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
                         mBinaryDictionary.flushWithGC();
                     } else {
                         mBinaryDictionary.flush();

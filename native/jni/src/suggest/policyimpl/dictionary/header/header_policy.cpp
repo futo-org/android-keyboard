@@ -20,7 +20,8 @@ namespace latinime {
 
 // Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
-const char *const HeaderPolicy::USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
+// TODO: Change attribute string to "IS_DECAYING_DICT".
+const char *const HeaderPolicy::IS_DECAYING_DICT_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
 const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
 const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";

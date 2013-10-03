@@ -107,7 +107,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
     }
 
-    bool needsToRunGC() const {
+    bool needsToRunGC(const bool mindsBlockByGC) const {
         // This method should not be called for non-updatable dictionary.
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;

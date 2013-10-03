@@ -113,10 +113,10 @@ static void latinime_BinaryDictionary_flush(JNIEnv *env, jclass clazz, jlong dic
 }
 
 static bool latinime_BinaryDictionary_needsToRunGC(JNIEnv *env, jclass clazz,
-        jlong dict) {
+        jlong dict, jboolean mindsBlockByGC) {
     Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return false;
-    return dictionary->needsToRunGC();
+    return dictionary->needsToRunGC(mindsBlockByGC == JNI_TRUE);
 }
 
 static void latinime_BinaryDictionary_flushWithGC(JNIEnv *env, jclass clazz, jlong dict,
@@ -364,7 +364,7 @@ static const JNINativeMethod sMethods[] = {
     },
     {
         const_cast<char *>("needsToRunGCNative"),
-        const_cast<char *>("(J)Z"),
+        const_cast<char *>("(JZ)Z"),
         reinterpret_cast<void *>(latinime_BinaryDictionary_needsToRunGC)
     },
     {
