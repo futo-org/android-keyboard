@@ -22,12 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.makedict.DictEncoder;
 import com.android.inputmethod.latin.makedict.FormatSpec;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 import com.android.inputmethod.latin.personalization.DynamicPersonalizationDictionaryWriter;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
@@ -35,9 +30,9 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 import com.android.inputmethod.latin.utils.PrioritizedSerialExecutor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -69,8 +64,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
 
-    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
-            new FormatSpec.FormatOptions(3 /* version */, true /* supportsDynamicUpdate */);
+    private static final int DICTIONARY_FORMAT_VERSION = 3;
+
+    private static final String SUPPORTS_DYNAMIC_UPDATE =
+            FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE;
 
     /**
      * A static map of update controllers, each of which records the time of accesses to a single
@@ -235,6 +232,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         });
     }
 
+    protected Map<String, String> getHeaderAttributeMap() {
+        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                SUPPORTS_DYNAMIC_UPDATE);
+        return attributeMap;
+    }
+
     protected void clear() {
         getExecutor(mFilename).execute(new Runnable() {
             @Override
@@ -242,17 +246,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE && mDictionaryWriter == null) {
                     mBinaryDictionary.close();
                     final File file = new File(mContext.getFilesDir(), mFilename);
-                    final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                            new FusionDictionary.DictionaryOptions(new HashMap<String,String>(),
-                                    false, false));
-                    final DictEncoder dictEncoder = new Ver3DictEncoder(file);
-                    try {
-                        dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Exception in creating new dictionary file.", e);
-                    } catch (UnsupportedFormatException e) {
-                        Log.e(TAG, "Exception in creating new dictionary file.", e);
-                    }
+                    BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                            DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
                 } else {
                     mDictionaryWriter.clear();
                 }
@@ -506,17 +501,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
                 if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
                     final File file = new File(mContext.getFilesDir(), mFilename);
-                    final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                            new FusionDictionary.DictionaryOptions(new HashMap<String,String>(),
-                                    false, false));
-                    final DictEncoder dictEncoder = new Ver3DictEncoder(file);
-                    try {
-                        dictEncoder.writeDictionary(dict, FORMAT_OPTIONS);
-                    } catch (IOException e) {
-                        Log.e(TAG, "Exception in creating new dictionary file.", e);
-                    } catch (UnsupportedFormatException e) {
-                        Log.e(TAG, "Exception in creating new dictionary file.", e);
-                    }
+                    BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                            DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
                 } else {
                     if (mBinaryDictionary.needsToRunGC()) {
                         mBinaryDictionary.flushWithGC();

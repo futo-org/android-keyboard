@@ -46,7 +46,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
 
     // TODO: Use a dynamic binary dictionary instead
     public WeakReference<PersonalizationDictionary> mDictionary;
-    public WeakReference<DynamicPredictionDictionaryBase> mPredictionDictionary;
+    public WeakReference<DecayingExpandableBinaryDictionaryBase> mPredictionDictionary;
     public final String mSystemLocale;
     public PersonalizationDictionaryUpdateSession(String locale) {
         mSystemLocale = locale;
@@ -60,15 +60,16 @@ public abstract class PersonalizationDictionaryUpdateSession {
         mDictionary = new WeakReference<PersonalizationDictionary>(dictionary);
     }
 
-    public void setPredictionDictionary(DynamicPredictionDictionaryBase dictionary) {
-        mPredictionDictionary = new WeakReference<DynamicPredictionDictionaryBase>(dictionary);
+    public void setPredictionDictionary(DecayingExpandableBinaryDictionaryBase dictionary) {
+        mPredictionDictionary =
+                new WeakReference<DecayingExpandableBinaryDictionaryBase>(dictionary);
     }
 
     protected PersonalizationDictionary getDictionary() {
         return mDictionary == null ? null : mDictionary.get();
     }
 
-    protected DynamicPredictionDictionaryBase getPredictionDictionary() {
+    protected DecayingExpandableBinaryDictionaryBase getPredictionDictionary() {
         return mPredictionDictionary == null ? null : mPredictionDictionary.get();
     }
 
@@ -81,7 +82,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     private void unsetPredictionDictionary() {
-        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }
@@ -89,7 +90,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     }
 
     public void clearAndFlushPredictionDictionary(Context context) {
-        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }
@@ -105,7 +106,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     // TODO: Support multi locale to add bigram
     public void addBigramToPersonalizationDictionary(String word0, String word1, boolean isValid,
             int frequency) {
-        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }
@@ -116,7 +117,7 @@ public abstract class PersonalizationDictionaryUpdateSession {
     // TODO: Support multi locale to add bigram
     public void addBigramsToPersonalizationDictionary(
             final ArrayList<PersonalizationLanguageModelParam> lmParams) {
-        final DynamicPredictionDictionaryBase dictionary = getPredictionDictionary();
+        final DecayingExpandableBinaryDictionaryBase dictionary = getPredictionDictionary();
         if (dictionary == null) {
             return;
         }

@@ -45,6 +45,7 @@ const HeaderReadWriteUtils::DictionaryFlags
 const HeaderReadWriteUtils::DictionaryFlags
         HeaderReadWriteUtils::FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
 
+// Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
 const char *const HeaderReadWriteUtils::SUPPORTS_DYNAMIC_UPDATE_KEY = "SUPPORTS_DYNAMIC_UPDATE";
 const char *const HeaderReadWriteUtils::REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY =
         "REQUIRES_GERMAN_UMLAUT_PROCESSING";
