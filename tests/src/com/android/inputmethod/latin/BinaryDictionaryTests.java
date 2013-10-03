@@ -606,7 +606,7 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
                     0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
                     Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
-            while(!binaryDictionary.needsToRunGC()) {
+            while(!binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
                 final String word = CodePointUtils.generateWord(random, codePointSet);
                 words.add(word);
                 final int unigramProbability = random.nextInt(0xFF);
