@@ -315,7 +315,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public boolean isShowingEmojiKeyboard() {
-        return mEmojiKeyboardView.getVisibility() == View.VISIBLE;
+        return mEmojiKeyboardView != null && mEmojiKeyboardView.getVisibility() == View.VISIBLE;
     }
 
     public boolean isShowingMoreKeysPanel() {
