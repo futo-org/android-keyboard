@@ -660,47 +660,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
-    /**
-     * Dynamically adds a word unigram to the dictionary for testing with blocking-lock.
-     */
-    @UsedForTesting
-    protected void addWordDynamicallyForTests(final String word, final String shortcutTarget,
-            final int frequency, final boolean isNotAWord) {
-        getExecutor(mFilename).executePrioritized(new Runnable() {
-            @Override
-            public void run() {
-                addWordDynamically(word, shortcutTarget, frequency, isNotAWord);
-            }
-        });
-    }
-
-    /**
-     * Dynamically adds a word bigram in the dictionary for testing with blocking-lock.
-     */
-    @UsedForTesting
-    protected void addBigramDynamicallyForTests(final String word0, final String word1,
-            final int frequency, final boolean isValid) {
-        getExecutor(mFilename).executePrioritized(new Runnable() {
-            @Override
-            public void run() {
-                addBigramDynamically(word0, word1, frequency, isValid);
-            }
-        });
-    }
-
-    /**
-     * Dynamically remove a word bigram in the dictionary for testing with blocking-lock.
-     */
-    @UsedForTesting
-    protected void removeBigramDynamicallyForTests(final String word0, final String word1) {
-        getExecutor(mFilename).executePrioritized(new Runnable() {
-            @Override
-            public void run() {
-                removeBigramDynamically(word0, word1);
-            }
-        });
-    }
-
     // TODO: Implement native binary methods once the dynamic dictionary implementation is done.
     @UsedForTesting
     public boolean isInDictionaryForTests(final String word) {
