@@ -185,7 +185,7 @@ public final class BinaryDictOffdeviceUtils {
                     crash(filename, new RuntimeException(
                             filename + " does not seem to be a dictionary file"));
                 } else {
-                    final DictDecoder dictDecoder = FormatSpec.getDictDecoder(file,
+                    final DictDecoder dictDecoder = FormatSpec.getDictDecoder(decodedSpec.mFile,
                             DictDecoder.USE_BYTEARRAY);
                     if (report) {
                         System.out.println("Format : Binary dictionary format");
