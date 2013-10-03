@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -620,6 +621,59 @@ public class BinaryDictionaryTests extends AndroidTestCase {
             }
 
             binaryDictionary.flushWithGC();
+            binaryDictionary.close();
+        }
+
+        dictFile.delete();
+    }
+
+    public void testUnigramAndBigramCount() {
+        final int flashWithGCIterationCount = 10;
+        final int codePointSetSize = 50;
+        final int unigramCountPerIteration = 1000;
+        final int bigramCountPerIteration = 2000;
+        final int seed = 1123581321;
+
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+
+        final ArrayList<String> words = new ArrayList<String>();
+        final HashSet<Pair<String, String>> bigrams = new HashSet<Pair<String, String>>();
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+
+        BinaryDictionary binaryDictionary;
+        for (int i = 0; i < flashWithGCIterationCount; i++) {
+            binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                    0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                    Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+            for (int j = 0; j < unigramCountPerIteration; j++) {
+                final String word = CodePointUtils.generateWord(random, codePointSet);
+                words.add(word);
+                final int unigramProbability = random.nextInt(0xFF);
+                binaryDictionary.addUnigramWord(word, unigramProbability);
+            }
+            for (int j = 0; j < bigramCountPerIteration; j++) {
+                final String word0 = words.get(random.nextInt(words.size()));
+                final String word1 = words.get(random.nextInt(words.size()));
+                bigrams.add(new Pair<String, String>(word0, word1));
+                final int bigramProbability = random.nextInt(0xF);
+                binaryDictionary.addBigramWords(word0, word1, bigramProbability);
+            }
+            assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
+                    binaryDictionary.getPropertyForTests(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+            assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
+                    binaryDictionary.getPropertyForTests(BinaryDictionary.BIGRAM_COUNT_QUERY)));
+            binaryDictionary.flushWithGC();
+            assertEquals(new HashSet<String>(words).size(), Integer.parseInt(
+                    binaryDictionary.getPropertyForTests(BinaryDictionary.UNIGRAM_COUNT_QUERY)));
+            assertEquals(new HashSet<Pair<String, String>>(bigrams).size(), Integer.parseInt(
+                    binaryDictionary.getPropertyForTests(BinaryDictionary.BIGRAM_COUNT_QUERY)));
             binaryDictionary.close();
         }
 
