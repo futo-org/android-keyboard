@@ -225,6 +225,26 @@ public class BinaryDictEncoderUtils {
         return position;
     }
 
+    static void writeUIntToStream(final OutputStream stream, final int value, final int size)
+            throws IOException {
+        switch(size) {
+            case 4:
+                stream.write((value >> 24) & 0xFF);
+                /* fall through */
+            case 3:
+                stream.write((value >> 16) & 0xFF);
+                /* fall through */
+            case 2:
+                stream.write((value >> 8) & 0xFF);
+                /* fall through */
+            case 1:
+                stream.write(value & 0xFF);
+                break;
+            default:
+                /* nop */
+        }
+    }
+
     // End utility methods
 
     // This method is responsible for finding a nice ordering of the nodes that favors run-time
