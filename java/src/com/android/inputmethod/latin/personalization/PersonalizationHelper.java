@@ -30,7 +30,7 @@ public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final ConcurrentHashMap<String, SoftReference<UserHistoryPredictionDictionary>>
+    private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
             sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
 
     private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
@@ -41,25 +41,23 @@ public class PersonalizationHelper {
                     sLangPersonalizationPredictionDictCache =
                             CollectionUtils.newConcurrentHashMap();
 
-    public static UserHistoryPredictionDictionary getUserHistoryPredictionDictionary(
+    public static UserHistoryDictionary getUserHistoryDictionary(
             final Context context, final String locale, final SharedPreferences sp) {
         synchronized (sLangUserHistoryDictCache) {
             if (sLangUserHistoryDictCache.containsKey(locale)) {
-                final SoftReference<UserHistoryPredictionDictionary> ref =
+                final SoftReference<UserHistoryDictionary> ref =
                         sLangUserHistoryDictCache.get(locale);
-                final UserHistoryPredictionDictionary dict = ref == null ? null : ref.get();
+                final UserHistoryDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
-                        Log.w(TAG, "Use cached UserHistoryPredictionDictionary for " + locale);
+                        Log.w(TAG, "Use cached UserHistoryDictionary for " + locale);
                     }
                     dict.reloadDictionaryIfRequired();
                     return dict;
                 }
             }
-            final UserHistoryPredictionDictionary dict =
-                    new UserHistoryPredictionDictionary(context, locale, sp);
-            sLangUserHistoryDictCache.put(
-                    locale, new SoftReference<UserHistoryPredictionDictionary>(dict));
+            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale, sp);
+            sLangUserHistoryDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
             return dict;
         }
     }

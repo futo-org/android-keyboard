@@ -75,10 +75,10 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         return new ArrayList<String>(wordSet);
     }
 
-    private void addToDict(final UserHistoryPredictionDictionary dict, final List<String> words) {
+    private void addToDict(final UserHistoryDictionary dict, final List<String> words) {
         String prevWord = null;
         for (String word : words) {
-            dict.addToPersonalizationPredictionDictionary(prevWord, word, true);
+            dict.addToDictionary(prevWord, word, true);
             prevWord = word;
         }
     }
@@ -90,8 +90,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     private void addAndWriteRandomWords(final String testFilenameSuffix, final int numberOfWords,
             final Random random, final boolean checkContents) {
         final List<String> words = generateWords(numberOfWords, random);
-        final UserHistoryPredictionDictionary dict =
-                PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+        final UserHistoryDictionary dict =
+                PersonalizationHelper.getUserHistoryDictionary(getContext(),
                         testFilenameSuffix /* locale */, mPrefs);
         // Add random words to the user history dictionary.
         addToDict(dict, words);
@@ -122,8 +122,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                     true /* checksContents */);
         } finally {
             try {
-                final UserHistoryPredictionDictionary dict =
-                        PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+                final UserHistoryDictionary dict =
+                        PersonalizationHelper.getUserHistoryDictionary(getContext(),
                                 testFilenameSuffix, mPrefs);
                 Log.d(TAG, "waiting for writing ...");
                 dict.shutdownExecutorForTests();
@@ -134,7 +134,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 Log.d(TAG, "InterruptedException: " + e);
             }
 
-            final String fileName = UserHistoryPredictionDictionary.NAME + "." + testFilenameSuffix
+            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
                     + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
             dictFile = new File(getContext().getFilesDir(), fileName);
 
@@ -159,7 +159,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             // Create filename suffixes for this test.
             for (int i = 0; i < numberOfLanguages; i++) {
                 testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
-                final String fileName = UserHistoryPredictionDictionary.NAME + "." +
+                final String fileName = UserHistoryDictionary.NAME + "." +
                         testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
             }
@@ -181,8 +181,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             try {
                 Log.d(TAG, "waiting for writing ...");
                 for (int i = 0; i < numberOfLanguages; i++) {
-                    final UserHistoryPredictionDictionary dict =
-                            PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+                    final UserHistoryDictionary dict =
+                            PersonalizationHelper.getUserHistoryDictionary(getContext(),
                                     testFilenameSuffixes[i], mPrefs);
                     dict.shutdownExecutorForTests();
                     while (!dict.isTerminatedForTests()) {
@@ -210,8 +210,8 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                         10000 : 1000;
         final Random random = new Random(123456);
 
-        UserHistoryPredictionDictionary dict =
-                PersonalizationHelper.getUserHistoryPredictionDictionary(getContext(),
+        UserHistoryDictionary dict =
+                PersonalizationHelper.getUserHistoryDictionary(getContext(),
                         testFilenameSuffix, mPrefs);
         try {
             addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
@@ -227,7 +227,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             } catch (InterruptedException e) {
                 Log.d(TAG, "InterruptedException: ", e);
             }
-            final String fileName = UserHistoryPredictionDictionary.NAME + "." + testFilenameSuffix
+            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
                     + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
             dictFile = new File(getContext().getFilesDir(), fileName);
             if (dictFile != null) {
