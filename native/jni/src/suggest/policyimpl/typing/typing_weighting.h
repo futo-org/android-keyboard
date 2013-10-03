@@ -74,7 +74,8 @@ class TypingWeighting : public Weighting {
         // Note: min() required since length can be MAX_POINT_TO_KEY_LENGTH for characters not on
         // the keyboard (like accented letters)
         const float normalizedSquaredLength = traverseSession->getProximityInfoState(0)
-                ->getPointToKeyLength(pointIndex, dicNode->getNodeCodePoint());
+                ->getPointToKeyLength(pointIndex,
+                        CharUtils::toBaseLowerCase(dicNode->getNodeCodePoint()));
         const float normalizedDistance = TouchPositionCorrectionUtils::getSweetSpotFactor(
                 traverseSession->isTouchPositionCorrectionEnabled(), normalizedSquaredLength);
         const float weightedDistance = ScoringParams::DISTANCE_WEIGHT_LENGTH * normalizedDistance;
@@ -113,10 +114,10 @@ class TypingWeighting : public Weighting {
         const int16_t parentPointIndex = parentDicNode->getInputIndex(0);
         const int prevCodePoint = parentDicNode->getNodeCodePoint();
         const float distance1 = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
-                parentPointIndex + 1, prevCodePoint);
+                parentPointIndex + 1, CharUtils::toBaseLowerCase(prevCodePoint));
         const int codePoint = dicNode->getNodeCodePoint();
         const float distance2 = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
-                parentPointIndex, codePoint);
+                parentPointIndex, CharUtils::toBaseLowerCase(codePoint));
         const float distance = distance1 + distance2;
         const float weightedLengthDistance =
                 distance * ScoringParams::DISTANCE_WEIGHT_LENGTH;
@@ -133,7 +134,7 @@ class TypingWeighting : public Weighting {
         const bool existsAdjacentProximityChars = traverseSession->getProximityInfoState(0)
                 ->existsAdjacentProximityChars(insertedPointIndex);
         const float dist = traverseSession->getProximityInfoState(0)->getPointToKeyLength(
-                insertedPointIndex + 1, dicNode->getNodeCodePoint());
+                insertedPointIndex + 1, CharUtils::toBaseLowerCase(dicNode->getNodeCodePoint()));
         const float weightedDistance = dist * ScoringParams::DISTANCE_WEIGHT_LENGTH;
         const bool singleChar = dicNode->getNodeCodePointCount() == 1;
         float cost = (singleChar ? ScoringParams::INSERTION_COST_FIRST_CHAR : 0.0f);
