@@ -263,7 +263,7 @@ class DynamicPatriciaTrieReadingHelper {
 
     AK_FORCE_INLINE void pushReadingStateToStack() {
         if (mReadingStateStack.size() > MAX_READING_STATE_STACK_SIZE) {
-            AKLOGI("Reading state stack overflow. Max size: %d", MAX_READING_STATE_STACK_SIZE);
+            AKLOGI("Reading state stack overflow. Max size: %zd", MAX_READING_STATE_STACK_SIZE);
             ASSERT(false);
             mIsError = true;
             mReadingState.mPos = NOT_A_DICT_POS;

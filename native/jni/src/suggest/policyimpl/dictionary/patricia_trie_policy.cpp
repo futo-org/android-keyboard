@@ -416,6 +416,11 @@ int PatriciaTriePolicy::createAndGetLeavingChildNode(const DicNode *const dicNod
     if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
         getBigramsStructurePolicy()->skipAllBigrams(&pos);
     }
+    if (mergedNodeCodePointCount <= 0) {
+        AKLOGE("Empty PtNode is not allowed. Code point count: %d", mergedNodeCodePointCount);
+        ASSERT(false);
+        return pos;
+    }
     childDicNodes->pushLeavingChild(dicNode, ptNodePos, childrenPos, probability,
             PatriciaTrieReadingUtils::isTerminal(flags),
             PatriciaTrieReadingUtils::hasChildrenInFlags(flags),
