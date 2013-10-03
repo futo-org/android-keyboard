@@ -64,7 +64,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         // Test for an actually compressed dictionary and its contents
         final BinaryDictOffdeviceUtils.DecoderChainSpec decodeSpec =
-                BinaryDictOffdeviceUtils.getRawBinaryDictionaryOrNull(dst);
+                BinaryDictOffdeviceUtils.getRawDictionaryOrNull(dst);
         for (final String step : decodeSpec.mDecoderSpec) {
             assertEquals("Wrong decode spec", BinaryDictOffdeviceUtils.COMPRESSION, step);
         }
@@ -90,7 +90,7 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         // Test that a random data file actually fails
         assertNull("Wrongly identified data file",
-                BinaryDictOffdeviceUtils.getRawBinaryDictionaryOrNull(dst));
+                BinaryDictOffdeviceUtils.getRawDictionaryOrNull(dst));
 
         final File gzDst = File.createTempFile("testGetRawDict", ".tmp");
         gzDst.deleteOnExit();
@@ -103,6 +103,6 @@ public class BinaryDictOffdeviceUtilsTests extends TestCase {
 
         // Test that a compressed random data file actually fails
         assertNull("Wrongly identified data file",
-                BinaryDictOffdeviceUtils.getRawBinaryDictionaryOrNull(gzDst));
+                BinaryDictOffdeviceUtils.getRawDictionaryOrNull(gzDst));
     }
 }
