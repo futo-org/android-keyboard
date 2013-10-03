@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.SettingsSecureCompatUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 
 public final class AccessibilityUtils {
@@ -47,6 +49,12 @@ public final class AccessibilityUtils {
     private Context mContext;
     private AccessibilityManager mAccessibilityManager;
     private AudioManager mAudioManager;
+
+    /** The most recent auto-correction. */
+    private String mAutoCorrectionWord;
+
+    /** The most recent typed word for auto-correction. */
+    private String mTypedWord;
 
     /*
      * Setting this constant to {@code false} will disable all keyboard
@@ -139,6 +147,51 @@ public final class AccessibilityUtils {
 
         // Don't speak if the IME is connected to a password field.
         return InputTypeUtils.isPasswordInputType(editorInfo.inputType);
+    }
+
+    /**
+     * Sets the current auto-correction word and typed word. These may be used
+     * to provide the user with a spoken description of what auto-correction
+     * will occur when a key is typed.
+     *
+     * @param suggestedWords the list of suggested auto-correction words
+     * @param typedWord the currently typed word
+     */
+    public void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
+        if (suggestedWords != null && suggestedWords.mWillAutoCorrect) {
+            mAutoCorrectionWord = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
+            mTypedWord = typedWord;
+        } else {
+            mAutoCorrectionWord = null;
+            mTypedWord = null;
+        }
+    }
+
+    /**
+     * Obtains a description for an auto-correction key, taking into account the
+     * currently typed word and auto-correction.
+     *
+     * @param keyCodeDescription spoken description of the key that will insert
+     *            an auto-correction
+     * @param shouldObscure whether the key should be obscured
+     * @return a description including a description of the auto-correction, if
+     *         needed
+     */
+    public String getAutoCorrectionDescription(
+            final String keyCodeDescription, final boolean shouldObscure) {
+        if (!TextUtils.isEmpty(mAutoCorrectionWord)) {
+            if (!TextUtils.equals(mAutoCorrectionWord, mTypedWord)) {
+                if (shouldObscure) {
+                    // This should never happen, but just in case...
+                    return mContext.getString(R.string.spoken_auto_correct_obscured,
+                            keyCodeDescription);
+                }
+                return mContext.getString(R.string.spoken_auto_correct, keyCodeDescription,
+                        mTypedWord, mAutoCorrectionWord);
+            }
+        }
+
+        return keyCodeDescription;
     }
 
     /**
