@@ -80,6 +80,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
             new FormatSpec.FormatOptions(4, false /* supportsDynamicUpdate */);
     private static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE =
             new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */);
+    private static final FormatSpec.FormatOptions VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP =
+            new FormatSpec.FormatOptions(4, true /* supportsDynamicUpdate */,
+                    true /* hasTimestamp */);
 
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
@@ -363,6 +366,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -377,6 +381,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -508,6 +513,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER,
+                VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -522,6 +529,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY,
+                VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -634,12 +643,14 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
         runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION2);
         runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
         runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
         runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
         runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE_AND_TIMESTAMP);
 
         for (final String result : results) {
             Log.d(TAG, result);

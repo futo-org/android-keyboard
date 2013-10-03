@@ -153,8 +153,12 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         final File contentFile = new File(mDictDirectory, mDictDirectory.getName()
                 + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
                 + FormatSpec.SHORTCUT_CONTENT_ID);
+        final File timestampsFile = new File(mDictDirectory, mDictDirectory.getName()
+                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
+                + FormatSpec.SHORTCUT_CONTENT_ID);
         mShortcutAddressTable = SparseTable.readFromFiles(lookupIndexFile,
-                new File[] { contentFile }, FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
+                new File[] { contentFile, timestampsFile },
+                FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
     protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
