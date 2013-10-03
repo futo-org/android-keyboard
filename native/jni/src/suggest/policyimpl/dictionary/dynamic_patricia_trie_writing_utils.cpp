@@ -36,6 +36,16 @@ const int DynamicPatriciaTrieWritingUtils::DICT_OFFSET_NEGATIVE_FLAG = 0x800000;
 const int DynamicPatriciaTrieWritingUtils::PROBABILITY_FIELD_SIZE = 1;
 const int DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE = 1;
 
+/* static */ bool DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(
+        BufferWithExtendableBuffer *const buffer, const int rootPos) {
+    int writingPos = rootPos;
+    if (!writePtNodeArraySizeAndAdvancePosition(buffer, 0 /* arraySize */, &writingPos)) {
+        return false;
+    }
+    return writeForwardLinkPositionAndAdvancePosition(buffer, NOT_A_DICT_POS /* forwardLinkPos */,
+            &writingPos);
+}
+
 /* static */ bool DynamicPatriciaTrieWritingUtils::writeForwardLinkPositionAndAdvancePosition(
         BufferWithExtendableBuffer *const buffer, const int forwardLinkPos,
         int *const forwardLinkFieldPos) {

@@ -16,9 +16,6 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 
-#include <cstdio>
-#include <cstring>
-
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
@@ -28,13 +25,12 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
+#include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
 
 const int DynamicPatriciaTrieWritingHelper::CHILDREN_POSITION_FIELD_SIZE = 3;
-const char *const DynamicPatriciaTrieWritingHelper::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
-        ".tmp";
 // TODO: Make MAX_DICTIONARY_SIZE 8MB.
 const size_t DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE = 2 * 1024 * 1024;
 
@@ -147,7 +143,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */)) {
         return;
     }
-    flushAllToFile(fileName, &headerBuffer, mBuffer);
+    DictFileWritingUtils::flushAllHeaderAndBodyToFile(fileName, &headerBuffer, mBuffer);
 }
 
 void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
@@ -161,7 +157,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
     if (!runGC(rootPtNodeArrayPos, &newDictBuffer)) {
         return;
     }
-    flushAllToFile(fileName, &headerBuffer, &newDictBuffer);
+    DictFileWritingUtils::flushAllHeaderAndBodyToFile(fileName, &headerBuffer, &newDictBuffer);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsDeleted(
@@ -458,60 +454,6 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     int childrenPosFieldPos = nodeReader.getChildrenPosFieldPos();
     if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
             actualChildrenPos, &childrenPosFieldPos)) {
-        return false;
-    }
-    return true;
-}
-
-// TODO: Create a struct which contains header, body and etc... and use here as an argument.
-void DynamicPatriciaTrieWritingHelper::flushAllToFile(const char *const fileName,
-        BufferWithExtendableBuffer *const dictHeader,
-        BufferWithExtendableBuffer *const dictBody) const {
-    const int tmpFileNameBufSize = strlen(fileName)
-            + strlen(TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE) + 1 /* terminator */;
-    // Name of a temporary file used for writing that is a connected string of original name and
-    // TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE.
-    char tmpFileName[tmpFileNameBufSize];
-    snprintf(tmpFileName, tmpFileNameBufSize, "%s%s", fileName,
-            TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE);
-    FILE *const file = fopen(tmpFileName, "wb");
-    if (!file) {
-        AKLOGI("Dictionary file %s cannnot be opened.", tmpFileName);
-        ASSERT(false);
-        return;
-    }
-    // Write the dictionary header.
-    if (!writeBufferToFilePointer(file, dictHeader)) {
-        remove(tmpFileName);
-        AKLOGI("Dictionary header cannnot be written. size: %d", dictHeader->getTailPosition());
-        ASSERT(false);
-        return;
-    }
-    // Write the dictionary body.
-    if (!writeBufferToFilePointer(file, dictBody)) {
-        remove(tmpFileName);
-        AKLOGI("Dictionary body cannnot be written. size: %d", dictBody->getTailPosition());
-        ASSERT(false);
-        return;
-    }
-    fclose(file);
-    rename(tmpFileName, fileName);
-}
-
-// This closes file pointer when an error is caused and returns whether the writing was succeeded
-// or not.
-bool DynamicPatriciaTrieWritingHelper::writeBufferToFilePointer(FILE *const file,
-        const BufferWithExtendableBuffer *const buffer) const {
-    const int originalBufSize = buffer->getOriginalBufferSize();
-    if (originalBufSize > 0 && fwrite(buffer->getBuffer(false /* usesAdditionalBuffer */),
-            originalBufSize, 1, file) < 1) {
-        fclose(file);
-        return false;
-    }
-    const int additionalBufSize = buffer->getTailPosition() - buffer->getOriginalBufferSize();
-    if (additionalBufSize > 0 && fwrite(buffer->getBuffer(true /* usesAdditionalBuffer */),
-            additionalBufSize, 1, file) < 1) {
-        fclose(file);
         return false;
     }
     return true;
