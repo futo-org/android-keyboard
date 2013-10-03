@@ -35,6 +35,7 @@ import java.util.Locale;
 /**
  * Implements a static, compacted, binary dictionary of standard words.
  */
+// TODO: All methods which should be locked need to have a suffix "Locked".
 public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
@@ -283,22 +284,23 @@ public final class BinaryDictionary extends Dictionary {
         removeBigramWordsNative(mNativeDict, codePoints0, codePoints1);
     }
 
-    public void flush() {
-        if (!isValidDictionary()) return;
-        flushNative(mNativeDict, mDictFilePath);
-        closeNative(mNativeDict);
+    private void reopen() {
+        close();
         final File dictFile = new File(mDictFilePath);
         mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
                 dictFile.length(), true /* isUpdatable */);
     }
 
+    public void flush() {
+        if (!isValidDictionary()) return;
+        flushNative(mNativeDict, mDictFilePath);
+        reopen();
+    }
+
     public void flushWithGC() {
         if (!isValidDictionary()) return;
         flushWithGCNative(mNativeDict, mDictFilePath);
-        closeNative(mNativeDict);
-        final File dictFile = new File(mDictFilePath);
-        mNativeDict = openNative(dictFile.getAbsolutePath(), 0 /* startOffset */,
-                dictFile.length(), true /* isUpdatable */);
+        reopen();
     }
 
     public boolean needsToRunGC() {
@@ -338,21 +340,23 @@ public final class BinaryDictionary extends Dictionary {
                     traverseSession.close();
                 }
             }
+            mDicTraverseSessions.clear();
         }
-        closeInternal();
+        closeInternalLocked();
     }
 
-    private synchronized void closeInternal() {
+    private synchronized void closeInternalLocked() {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;
         }
     }
 
+    // TODO: Manage BinaryDictionary instances without using WeakReference or something.
     @Override
     protected void finalize() throws Throwable {
         try {
-            closeInternal();
+            closeInternalLocked();
         } finally {
             super.finalize();
         }
