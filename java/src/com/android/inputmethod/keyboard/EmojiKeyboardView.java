@@ -153,7 +153,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
                 mCategoryNameToIdMap.put(sCategoryName[i], i);
             }
             addShownCategoryId(CATEGORY_ID_RECENTS);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 addShownCategoryId(CATEGORY_ID_PEOPLE);
                 addShownCategoryId(CATEGORY_ID_OBJECTS);
                 addShownCategoryId(CATEGORY_ID_NATURE);
