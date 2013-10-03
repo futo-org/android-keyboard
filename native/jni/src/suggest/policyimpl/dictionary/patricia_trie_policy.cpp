@@ -31,9 +31,21 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         return;
     }
     int nextPos = dicNode->getChildrenPos();
+    if (nextPos < 0 || nextPos >= mDictBufferSize) {
+        AKLOGE("Children PtNode array position is invalid. pos: %d, dict size: %d",
+                nextPos, mDictBufferSize);
+        ASSERT(false);
+        return;
+    }
     const int childCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
             mDictRoot, &nextPos);
     for (int i = 0; i < childCount; i++) {
+        if (nextPos < 0 || nextPos >= mDictBufferSize) {
+            AKLOGE("Child PtNode position is invalid. pos: %d, dict size: %d, childCount: %d / %d",
+                    nextPos, mDictBufferSize, i, childCount);
+            ASSERT(false);
+            return;
+        }
         nextPos = createAndGetLeavingChildNode(dicNode, nextPos, childDicNodes);
     }
 }
