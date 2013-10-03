@@ -34,12 +34,15 @@ import com.android.inputmethod.latin.utils.UserHistoryDictIOUtils.OnAddWordListe
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class is a base class of a dictionary for the personalized prediction language model.
+ * This class is a base class of a dictionary that supports decaying for the personalized language
+ * model.
  */
-public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDictionary {
-    private static final String TAG = DynamicPredictionDictionaryBase.class.getSimpleName();
+public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableBinaryDictionary {
+    private static final String TAG = DecayingExpandableBinaryDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
     private static final boolean DBG_STRESS_TEST = false;
     private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
@@ -60,8 +63,9 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
     // Should always be false except when we use this class for test
     @UsedForTesting boolean mIsTest = false;
 
-    /* package */ DynamicPredictionDictionaryBase(final Context context, final String locale,
-            final SharedPreferences sp, final String dictionaryType, final String fileName) {
+    /* package */ DecayingExpandableBinaryDictionaryBase(final Context context,
+            final String locale, final SharedPreferences sp, final String dictionaryType,
+            final String fileName) {
         super(context, fileName, dictionaryType, true);
         mLocale = locale;
         mFileName = fileName;
@@ -81,6 +85,16 @@ public abstract class DynamicPredictionDictionaryBase extends ExpandableBinaryDi
         // TODO: Remove after this class become to use a dynamic binary dictionary.
         asyncFlashAllBinaryDictionary();
         Settings.writeLastUserHistoryWriteTime(mPrefs, mLocale);
+    }
+
+    @Override
+    protected Map<String, String> getHeaderAttributeMap() {
+        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        attributeMap.put(FormatSpec.FileHeader.USES_FORGETTING_CURVE_ATTRIBUTE,
+                FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE);
+        return attributeMap;
     }
 
     @Override
