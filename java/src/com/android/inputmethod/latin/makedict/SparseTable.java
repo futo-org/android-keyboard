@@ -18,6 +18,9 @@ package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -146,5 +149,46 @@ public class SparseTable {
         for (final int index : mContentTable) {
             BinaryDictEncoderUtils.writeUIntToStream(contentOutStream, index, 4);
         }
+    }
+
+    @UsedForTesting
+    public void writeToFiles(final File lookupTableFile, final File contentFile)
+            throws IOException {
+      FileOutputStream lookupTableOutStream = null;
+      FileOutputStream contentOutStream = null;
+        try {
+            lookupTableOutStream = new FileOutputStream(lookupTableFile);
+            contentOutStream = new FileOutputStream(contentFile);
+            write(lookupTableOutStream, contentOutStream);
+        } finally {
+            if (lookupTableOutStream != null) {
+                lookupTableOutStream.close();
+            }
+            if (contentOutStream != null) {
+                contentOutStream.close();
+            }
+        }
+    }
+
+    private static byte[] readFileToByteArray(final File file) throws IOException {
+        final byte[] contents = new byte[(int) file.length()];
+        FileInputStream inStream = null;
+        try {
+            inStream = new FileInputStream(file);
+            inStream.read(contents);
+        } finally {
+            if (inStream != null) {
+                inStream.close();
+            }
+        }
+        return contents;
+    }
+
+    @UsedForTesting
+    public static SparseTable readFromFiles(final File lookupTableFile, final File contentFile,
+            final int blockSize) throws IOException {
+        final byte[] lookupTable = readFileToByteArray(lookupTableFile);
+        final byte[] content = readFileToByteArray(contentFile);
+        return new SparseTable(lookupTable, content, blockSize);
     }
 }

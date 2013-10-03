@@ -385,12 +385,14 @@ public class BinaryDictEncoderUtils {
                         nodeSize + size, ptNode.mChildren));
             }
             nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
-            if (null != ptNode.mBigrams) {
-                for (WeightedString bigram : ptNode.mBigrams) {
-                    final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
-                            nodeSize + size + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE,
-                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
-                    nodeSize += getByteSize(offset) + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
+            if (formatOptions.mVersion < FormatSpec.FIRST_VERSION_WITH_TERMINAL_ID) {
+                if (null != ptNode.mBigrams) {
+                    for (WeightedString bigram : ptNode.mBigrams) {
+                        final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
+                                nodeSize + size + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE,
+                                FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord));
+                        nodeSize += getByteSize(offset) + FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE;
+                    }
                 }
             }
             ptNode.mCachedSize = nodeSize;
