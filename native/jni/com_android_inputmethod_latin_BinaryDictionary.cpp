@@ -67,7 +67,6 @@ static jboolean latinime_BinaryDictionary_createEmptyDictFile(JNIEnv *env, jclas
         valueChars[valueUtf8Length] = '\0';
         HeaderReadWriteUtils::AttributeMap::mapped_type value;
         HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
-
         attributeMap[key] = value;
     }
 
