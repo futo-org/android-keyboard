@@ -1521,7 +1521,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSubtypeState.switchSubtype(token, mRichImm);
     }
 
-    private void sendDownUpKeyEventForBackwardCompatibility(final int code) {
+    private void sendDownUpKeyEvent(final int code) {
         final long eventTime = SystemClock.uptimeMillis();
         mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
@@ -1538,7 +1538,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (code >= '0' && code <= '9') {
-            sendDownUpKeyEventForBackwardCompatibility(code - '0' + KeyEvent.KEYCODE_0);
+            sendDownUpKeyEvent(code - '0' + KeyEvent.KEYCODE_0);
             return;
         }
 
@@ -1547,7 +1547,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
-            sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_ENTER);
+            sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
         } else {
             final String text = new String(new int[] { code }, 0, 1);
             mConnection.commitText(text, text.length());
@@ -2104,12 +2104,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
                 final int lengthToDelete = Character.isSupplementaryCodePoint(
                         mConnection.getCodePointBeforeCursor()) ? 2 : 1;
-                if (mAppWorkAroundsUtils.isBeforeJellyBean()) {
-                    // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
-                    // a hardware keyboard event on pressing enter or delete. This is bad for many
-                    // reasons (there are race conditions with commits) but some applications are
-                    // relying on this behavior so we continue to support it for older apps.
-                    sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
+                if (mAppWorkAroundsUtils.isBeforeJellyBean() ||
+                        currentSettings.mInputAttributes.isTypeNull()) {
+                    // There are two possible reasons to send a key event: either the field has
+                    // type TYPE_NULL, in which case the keyboard should send events, or we are
+                    // running in backward compatibility mode. Before Jelly bean, the keyboard
+                    // would simulate a hardware keyboard event on pressing enter or delete. This
+                    // is bad for many reasons (there are race conditions with commits) but some
+                    // applications are relying on this behavior so we continue to support it for
+                    // older apps, so we retain this behavior if the app has target SDK < JellyBean.
+                    sendDownUpKeyEvent(KeyEvent.KEYCODE_DEL);
                 } else {
                     mConnection.deleteSurroundingText(lengthToDelete, 0);
                 }

@@ -103,6 +103,10 @@ public final class InputAttributes {
         }
     }
 
+    public boolean isTypeNull() {
+        return InputType.TYPE_NULL == mInputType;
+    }
+
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return editorInfo.inputType == mInputType;
     }
