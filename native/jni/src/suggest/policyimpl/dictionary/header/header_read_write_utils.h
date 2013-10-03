@@ -54,6 +54,9 @@ class HeaderReadWriteUtils {
                 + HEADER_SIZE_FIELD_SIZE;
     }
 
+    static DictionaryFlags createAndGetDictionaryFlagsUsingAttributeMap(
+            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+
     static void fetchAllHeaderAttributes(const uint8_t *const dictBuf,
             AttributeMap *const headerAttributes);
 
@@ -68,6 +71,24 @@ class HeaderReadWriteUtils {
 
     static bool writeHeaderAttributes(BufferWithExtendableBuffer *const buffer,
             const AttributeMap *const headerAttributes, int *const writingPos);
+
+    /**
+     * Methods for header attributes.
+     */
+    static void setBoolAttribute(AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const bool value);
+
+    static void setIntAttribute(AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const int value);
+
+    static bool readBoolAttributeValue(const AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const bool defaultValue);
+
+    static int readIntAttributeValue(const AttributeMap *const headerAttributes,
+            const AttributeMap::key_type *const key, const int defaultValue);
+
+    static void insertCharactersIntoVector(const char *const characters,
+            AttributeMap::key_type *const key);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderReadWriteUtils);
@@ -87,7 +108,10 @@ class HeaderReadWriteUtils {
     static const DictionaryFlags GERMAN_UMLAUT_PROCESSING_FLAG;
     static const DictionaryFlags SUPPORTS_DYNAMIC_UPDATE_FLAG;
     static const DictionaryFlags FRENCH_LIGATURE_PROCESSING_FLAG;
-    static const DictionaryFlags CONTAINS_BIGRAMS_FLAG;
+
+    static const char *const SUPPORTS_DYNAMIC_UPDATE_KEY;
+    static const char *const REQUIRES_GERMAN_UMLAUT_PROCESSING_KEY;
+    static const char *const REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY;
 };
 }
 #endif /* LATINIME_HEADER_READ_WRITE_UTILS_H */

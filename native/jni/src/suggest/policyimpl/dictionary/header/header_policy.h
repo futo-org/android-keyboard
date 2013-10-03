@@ -17,7 +17,6 @@
 #ifndef LATINIME_HEADER_POLICY_H
 #define LATINIME_HEADER_POLICY_H
 
-#include <cctype>
 #include <stdint.h>
 
 #include "defines.h"
@@ -29,13 +28,23 @@ namespace latinime {
 
 class HeaderPolicy : public DictionaryHeaderStructurePolicy {
  public:
-    explicit HeaderPolicy(const uint8_t *const dictBuf, const int dictSize)
-            : mDictBuf(dictBuf),
-              mDictFormatVersion(FormatUtils::detectFormatVersion(dictBuf, dictSize)),
+    // Reads information from existing dictionary buffer.
+    HeaderPolicy(const uint8_t *const dictBuf, const int dictSize)
+            : mDictFormatVersion(FormatUtils::detectFormatVersion(dictBuf, dictSize)),
               mDictionaryFlags(HeaderReadWriteUtils::getFlags(dictBuf)),
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
-              mAttributeMap(createAttributeMapAndReadAllAttributes(mDictBuf)),
+              mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
+              mUsesForgettingCurve(readUsesForgettingCurveFlag()),
+              mLastUpdatedTime(readLastUpdatedTime()) {}
+
+    // Constructs header information using an attribute map.
+    HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
+            const HeaderReadWriteUtils::AttributeMap *const attributeMap)
+            : mDictFormatVersion(dictFormatVersion),
+              mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
+                      attributeMap)), mSize(0), mAttributeMap(*attributeMap),
+              mMultiWordCostMultiplier(readUsesForgettingCurveFlag()),
               mUsesForgettingCurve(readUsesForgettingCurveFlag()),
               mLastUpdatedTime(readLastUpdatedTime()) {}
 
@@ -81,10 +90,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const char *const USES_FORGETTING_CURVE_KEY;
     static const char *const LAST_UPDATED_TIME_KEY;
-    static const float DEFAULT_MULTIPLE_WORD_COST_MULTIPLIER;
+    static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
-    const uint8_t *const mDictBuf;
     const FormatUtils::FORMAT_VERSION mDictFormatVersion;
     const HeaderReadWriteUtils::DictionaryFlags mDictionaryFlags;
     const int mSize;
@@ -99,15 +107,8 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
 
     int readLastUpdatedTime() const;
 
-    bool getAttributeValueAsInt(const char *const key, int *const outValue) const;
-
     static HeaderReadWriteUtils::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);
-
-    static int parseIntAttributeValue(const std::vector<int> *const attributeValue);
-
-    static void insertCharactersIntoVector(
-            const char *const characters, std::vector<int> *const vector);
 };
 } // namespace latinime
 #endif /* LATINIME_HEADER_POLICY_H */
