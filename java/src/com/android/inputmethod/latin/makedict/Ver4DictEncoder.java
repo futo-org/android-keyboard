@@ -41,10 +41,11 @@ import java.util.Iterator;
 public class Ver4DictEncoder implements DictEncoder {
     private final File mDictPlacedDir;
     private byte[] mTrieBuf;
-    private byte[] mFreqBuf;
     private int mTriePos;
+    private int mHeaderSize;
     private OutputStream mTrieOutStream;
     private OutputStream mFreqOutStream;
+    private OutputStream mTerminalAddressTableOutStream;
 
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
@@ -58,14 +59,18 @@ public class Ver4DictEncoder implements DictEncoder {
         final File mDictDir = new File(mDictPlacedDir, filename);
         final File trieFile = new File(mDictDir, filename + FormatSpec.TRIE_FILE_EXTENSION);
         final File freqFile = new File(mDictDir, filename + FormatSpec.FREQ_FILE_EXTENSION);
+        final File terminalAddressTableFile = new File(mDictDir,
+                filename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
             if (mDictDir.exists()) mDictDir.delete();
             mDictDir.mkdirs();
         }
         if (!trieFile.exists()) trieFile.createNewFile();
         if (!freqFile.exists()) freqFile.createNewFile();
+        if (!terminalAddressTableFile.exists()) terminalAddressTableFile.createNewFile();
         mTrieOutStream = new FileOutputStream(trieFile);
         mFreqOutStream = new FileOutputStream(freqFile);
+        mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
     }
 
     private void close() throws IOException {
@@ -76,9 +81,13 @@ public class Ver4DictEncoder implements DictEncoder {
             if (mFreqOutStream != null) {
                 mFreqOutStream.close();
             }
+            if (mTerminalAddressTableOutStream != null) {
+                mTerminalAddressTableOutStream.close();
+            }
         } finally {
             mTrieOutStream = null;
             mFreqOutStream = null;
+            mTerminalAddressTableOutStream = null;
         }
     }
 
@@ -97,7 +106,8 @@ public class Ver4DictEncoder implements DictEncoder {
             openStreams(formatOptions, dict.mOptions);
         }
 
-        BinaryDictEncoderUtils.writeDictionaryHeader(mTrieOutStream, dict, formatOptions);
+        mHeaderSize = BinaryDictEncoderUtils.writeDictionaryHeader(mTrieOutStream, dict,
+                formatOptions);
 
         MakedictLog.i("Flattening the tree...");
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
@@ -112,10 +122,11 @@ public class Ver4DictEncoder implements DictEncoder {
         BinaryDictEncoderUtils.computeAddresses(dict, flatNodes, formatOptions);
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
+        writeTerminalData(flatNodes, terminalCount);
+
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
         mTrieBuf = new byte[bufferSize];
-        mFreqBuf = new byte[terminalCount * FormatSpec.FREQUENCY_AND_FLAGS_SIZE];
 
         MakedictLog.i("Writing file...");
         for (PtNodeArray nodeArray : flatNodes) {
@@ -126,7 +137,6 @@ public class Ver4DictEncoder implements DictEncoder {
             MakedictLog.i("has " + terminalCount + " terminals.");
         }
         mTrieOutStream.write(mTrieBuf);
-        mFreqOutStream.write(mFreqBuf);
 
         MakedictLog.i("Done");
         close();
@@ -183,12 +193,6 @@ public class Ver4DictEncoder implements DictEncoder {
     private void writeTerminalId(final int terminalId) {
         mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos, terminalId,
                 FormatSpec.PTNODE_TERMINAL_ID_SIZE);
-    }
-
-    private void writeFrequency(final int frequency, final int terminalId) {
-        final int freqPos = terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE;
-        BinaryDictEncoderUtils.writeUIntToBuffer(mFreqBuf, freqPos, frequency,
-                FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
     }
 
     private void writeChildrenPosition(PtNode ptNode, FormatOptions formatOptions) {
@@ -260,10 +264,31 @@ public class Ver4DictEncoder implements DictEncoder {
         writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
         if (ptNode.isTerminal()) {
             writeTerminalId(ptNode.mTerminalId);
-            writeFrequency(ptNode.mFrequency, ptNode.mTerminalId);
         }
         writeChildrenPosition(ptNode, formatOptions);
         writeShortcuts(ptNode.mShortcutTargets);
         writeBigrams(ptNode.mBigrams, dict);
+    }
+
+    private void writeTerminalData(final ArrayList<PtNodeArray> flatNodes,
+          final int terminalCount) throws IOException {
+        final byte[] freqBuf = new byte[terminalCount * FormatSpec.FREQUENCY_AND_FLAGS_SIZE];
+        final byte[] terminalAddressTableBuf =
+                new byte[terminalCount * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE];
+        for (final PtNodeArray nodeArray : flatNodes) {
+            for (final PtNode ptNode : nodeArray.mData) {
+                if (ptNode.isTerminal()) {
+                    BinaryDictEncoderUtils.writeUIntToBuffer(freqBuf,
+                            ptNode.mTerminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE,
+                            ptNode.mFrequency, FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
+                    BinaryDictEncoderUtils.writeUIntToBuffer(terminalAddressTableBuf,
+                            ptNode.mTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE,
+                            ptNode.mCachedAddressAfterUpdate + mHeaderSize,
+                            FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
+                }
+            }
+        }
+        mFreqOutStream.write(freqBuf);
+        mTerminalAddressTableOutStream.write(terminalAddressTableBuf);
     }
 }

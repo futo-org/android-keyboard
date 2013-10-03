@@ -882,8 +882,9 @@ public class BinaryDictEncoderUtils {
      * @param destination the stream to write the file header to.
      * @param dict the dictionary to write.
      * @param formatOptions file format options.
+     * @return the size of the header.
      */
-    /* package */ static void writeDictionaryHeader(final OutputStream destination,
+    /* package */ static int writeDictionaryHeader(final OutputStream destination,
             final FusionDictionary dict, final FormatOptions formatOptions)
                     throws IOException, UnsupportedFormatException {
         final int version = formatOptions.mVersion;
@@ -932,5 +933,6 @@ public class BinaryDictEncoderUtils {
         destination.write(bytes);
 
         headerBuffer.close();
+        return size;
     }
 }
