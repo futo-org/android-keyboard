@@ -139,6 +139,8 @@ public class Key implements Comparable<Key> {
 
     private final OptionalAttributes mOptionalAttributes;
 
+    private static final int DEFAULT_TEXT_COLOR = 0xFFFFFFFF;
+
     private static final class OptionalAttributes {
         /** Text to output when pressed. This can be multiple characters, like ".com" */
         public final String mOutputText;
@@ -602,7 +604,22 @@ public class Key implements Comparable<Key> {
     }
 
     public final int selectTextColor(final KeyDrawParams params) {
-        return isShiftedLetterActivated() ? params.mTextInactivatedColor : params.mTextColor;
+        if (isShiftedLetterActivated()) {
+            return params.mTextInactivatedColor;
+        }
+        if (params.mTextColorStateList == null) {
+            return DEFAULT_TEXT_COLOR;
+        }
+        final int[] state;
+        // TODO: Hack!!!!!!!! Consider having a new attribute for the functional text labels.
+        // Currently, we distinguish "input key" from "functional key" by checking the
+        // length of the label( > 1) and "functional" attributes (= true).
+        if (mLabel != null && mLabel.length() > 1) {
+            state = getCurrentDrawableState();
+        } else {
+            state = KEY_STATE_NORMAL;
+        }
+        return params.mTextColorStateList.getColorForState(state, DEFAULT_TEXT_COLOR);
     }
 
     public final int selectHintTextSize(final KeyDrawParams params) {

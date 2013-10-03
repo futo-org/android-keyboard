@@ -39,7 +39,6 @@
     <color name="typed_word_color_ics">#D833B5E5</color>
     <color name="suggested_word_color_ics">#B233B5E5</color>
     <color name="highlight_translucent_color_ics">#9933B5E5</color>
-    <color name="key_text_color_ics">@android:color/white</color>
     <color name="key_text_shadow_color_ics">@android:color/transparent</color>
     <color name="key_text_inactivated_color_ics">#66E0E4E5</color>
     <color name="key_hint_letter_color_ics">#80000000</color>
@@ -66,4 +65,7 @@
     <!-- TODO: Color which should be included in the theme -->
     <color name="emoji_key_background_color">#00000000</color>
     <color name="emoji_key_pressed_background_color">#30FFFFFF</color>
+
+    <color name="key_text_color_normal_ics">@android:color/white</color>
+    <color name="key_text_color_functional_ics">@android:color/white</color>
 </resources>
