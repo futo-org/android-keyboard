@@ -30,6 +30,8 @@ class DynamicPatriciaTrieWritingUtils {
  public:
     static const int NODE_FLAG_FIELD_SIZE;
 
+    static bool writeEmptyDictionary(BufferWithExtendableBuffer *const buffer, const int rootPos);
+
     static bool writeForwardLinkPositionAndAdvancePosition(
             BufferWithExtendableBuffer *const buffer, const int forwardLinkPos,
             int *const forwardLinkFieldPos);
