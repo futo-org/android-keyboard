@@ -71,8 +71,17 @@ const PtReadingUtils::NodeFlags PtReadingUtils::FLAG_IS_BLACKLISTED = 0x01;
         length = ByteArrayUtils::readStringAndAdvancePosition(buffer, maxLength, outBuffer,
                 pos);
     } else {
-        if (maxLength > 0) {
-            outBuffer[0] = getCodePointAndAdvancePosition(buffer, pos);
+        const int codePoint = getCodePointAndAdvancePosition(buffer, pos);
+        if (codePoint == NOT_A_CODE_POINT) {
+            // CAVEAT: codePoint == NOT_A_CODE_POINT means the code point is
+            // CHARACTER_ARRAY_TERMINATOR. The code point must not be CHARACTER_ARRAY_TERMINATOR
+            // when the PtNode has a single code point.
+            length = 0;
+            AKLOGE("codePoint is NOT_A_CODE_POINT. pos: %d, codePoint: 0x%x, buffer[pos - 1]: 0x%x",
+                    *pos - 1, codePoint, buffer[*pos - 1]);
+            ASSERT(false);
+        } else if (maxLength > 0) {
+            outBuffer[0] = codePoint;
             length = 1;
         }
     }
