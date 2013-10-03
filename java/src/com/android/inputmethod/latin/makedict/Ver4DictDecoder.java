@@ -42,7 +42,7 @@ public class Ver4DictDecoder extends DictDecoder {
     private static final int FILETYPE_TRIE = 1;
     private static final int FILETYPE_FREQUENCY = 2;
     private static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
-    private static final int FILETYPE_BIGRAM = 4;
+    private static final int FILETYPE_BIGRAM_FREQ = 4;
 
     private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
@@ -85,9 +85,10 @@ public class Ver4DictDecoder extends DictDecoder {
         } else if (fileType == FILETYPE_TERMINAL_ADDRESS_TABLE) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
-        } else if (fileType == FILETYPE_BIGRAM) {
+        } else if (fileType == FILETYPE_BIGRAM_FREQ) {
             return new File(mDictDirectory,
-                    mDictDirectory.getName() + FormatSpec.BIGRAM_FILE_EXTENSION);
+                    mDictDirectory.getName() + FormatSpec.BIGRAM_FILE_EXTENSION
+                            + FormatSpec.BIGRAM_FREQ_CONTENT_ID);
         } else {
             throw new RuntimeException("Unsupported kind of file : " + fileType);
         }
@@ -99,7 +100,7 @@ public class Ver4DictDecoder extends DictDecoder {
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
-        mBigramBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_BIGRAM));
+        mBigramBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_BIGRAM_FREQ));
         loadBigramAddressSparseTable();
     }
 
@@ -126,11 +127,12 @@ public class Ver4DictDecoder extends DictDecoder {
     }
 
     private void loadBigramAddressSparseTable() throws IOException {
-        final File lookupIndexFile = new File(mDictDirectory,
-                mDictDirectory.getName() + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
-        final File contentFile = new File(mDictDirectory,
-                mDictDirectory.getName() + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
-        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, new File[] { contentFile },
+        final File lookupIndexFile = new File(mDictDirectory, mDictDirectory.getName()
+                + FormatSpec.BIGRAM_FILE_EXTENSION + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
+        final File freqsFile = new File(mDictDirectory, mDictDirectory.getName()
+                + FormatSpec.BIGRAM_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
+                + FormatSpec.BIGRAM_FREQ_CONTENT_ID);
+        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, new File[] { freqsFile },
                 FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
