@@ -38,10 +38,10 @@
         INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.mPrevWord, \
                 mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf, \
                 NELEMS(prevWordCharBuf)); \
-        AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d,,", header, \
+        AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d, %5f,", header, \
                 getSpatialDistanceForScoring(), getLanguageDistanceForScoring(), \
                 getNormalizedCompoundDistance(), getRawLength(), prevWordCharBuf, charBuf, \
-                getInputIndex(0)); \
+                getInputIndex(0), getNormalizedCompoundDistanceAfterFirstWord()); \
         } while (0)
 #else
 #define LOGI_SHOW_ADD_COST_PROP
@@ -434,6 +434,13 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getLanguageDistance();
     }
 
+    // For space-aware gestures, we store the normalized distance at the char index
+    // that ends the first word of the suggestion. We call this the distance after
+    // first word.
+    float getNormalizedCompoundDistanceAfterFirstWord() const {
+        return mDicNodeState.mDicNodeStateScoring.getNormalizedCompoundDistanceAfterFirstWord();
+    }
+
     float getLanguageDistanceRatePerWordForScoring() const {
         const float langDist = getLanguageDistanceForScoring();
         const float totalWordCount =
@@ -563,6 +570,12 @@ class DicNode {
         }
         mDicNodeState.mDicNodeStateScoring.addCost(spatialCost, languageCost, doNormalization,
                 inputSize, getTotalInputIndex(), errorType);
+    }
+
+    // Saves the current normalized compound distance for space-aware gestures.
+    // See getNormalizedCompoundDistanceAfterFirstWord for details.
+    AK_FORCE_INLINE void saveNormalizedCompoundDistanceAfterFirstWordIfNoneYet() {
+        mDicNodeState.mDicNodeStateScoring.saveNormalizedCompoundDistanceAfterFirstWordIfNoneYet();
     }
 
     // Caveat: Must not be called outside Weighting

@@ -574,7 +574,7 @@ void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode
     DicNodeUtils::initAsRootWithPreviousWord(
             traverseSession->getDictionaryStructurePolicy(), dicNode, &newDicNode);
     const CorrectionType correctionType = spaceSubstitution ?
-            CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMITTION;
+            CT_NEW_WORD_SPACE_SUBSTITUTION : CT_NEW_WORD_SPACE_OMISSION;
     Weighting::addCostAndForwardInputIndex(WEIGHTING, correctionType, traverseSession, dicNode,
             &newDicNode, traverseSession->getMultiBigramMap());
     if (newDicNode.getCompoundDistance() < static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
