@@ -77,7 +77,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newParentAddress the absolute address of the parent.
      * @param formatOptions file format options.
      */
-    public static void updateParentAddress(final DictBuffer dictBuffer,
+    private static void updateParentAddress(final DictBuffer dictBuffer,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
         final int originalPosition = dictBuffer.position();
@@ -109,7 +109,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newParentAddress the address to be written.
      * @param formatOptions file format options.
      */
-    public static void updateParentAddresses(final DictBuffer dictBuffer,
+    private static void updateParentAddresses(final DictBuffer dictBuffer,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
         final int originalPosition = dictBuffer.position();
@@ -136,7 +136,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param newChildrenAddress the absolute address of the child.
      * @param formatOptions file format options.
      */
-    public static void updateChildrenAddress(final DictBuffer dictBuffer,
+    private static void updateChildrenAddress(final DictBuffer dictBuffer,
             final int ptNodeOriginAddress, final int newChildrenAddress,
             final FormatOptions formatOptions) {
         final int originalPosition = dictBuffer.position();
