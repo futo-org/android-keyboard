@@ -155,6 +155,15 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
 // Read node array size and process empty node arrays. Nodes and arrays are counted up in this
 // method to avoid an infinite loop.
 void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
+    if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
+        // Reading invalid position because of a bug or a broken dictionary.
+        AKLOGE("Reading PtNode array info from invalid dictionary position: %d, dict size: %d",
+                mReadingState.mPos, mBuffer->getTailPosition());
+        ASSERT(false);
+        mIsError = true;
+        mReadingState.mPos = NOT_A_DICT_POS;
+        return;
+    }
     mReadingState.mPosOfLastPtNodeArrayHead = mReadingState.mPos;
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
@@ -191,6 +200,15 @@ void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
 
 // Follow the forward link and read the next node array if exists.
 void DynamicPatriciaTrieReadingHelper::followForwardLink() {
+    if (mReadingState.mPos < 0 || mReadingState.mPos >= mBuffer->getTailPosition()) {
+        // Reading invalid position because of bug or broken dictionary.
+        AKLOGE("Reading forward link from invalid dictionary position: %d, dict size: %d",
+                mReadingState.mPos, mBuffer->getTailPosition());
+        ASSERT(false);
+        mIsError = true;
+        mReadingState.mPos = NOT_A_DICT_POS;
+        return;
+    }
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
