@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.makedict.DictDecoder;
@@ -49,6 +50,9 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     /** Any pair being typed or picked */
     public static final int FREQUENCY_FOR_TYPED = 2;
+
+    public static final int FREQUENCY_FOR_WORDS_IN_DICTS = FREQUENCY_FOR_TYPED;
+    public static final int FREQUENCY_FOR_WORDS_NOT_IN_DICTS = Dictionary.NOT_A_PROBABILITY;
 
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
@@ -131,14 +135,17 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
                 (word0 != null && word0.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH)) {
             return;
         }
-        addWordDynamically(word1, null /* the "shortcut" parameter is null */, FREQUENCY_FOR_TYPED,
+        final int frequency = ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
+                (isValid ? FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS) :
+                        FREQUENCY_FOR_TYPED;
+        addWordDynamically(word1, null /* the "shortcut" parameter is null */, frequency,
                 false /* isNotAWord */);
         // Do not insert a word as a bigram of itself
         if (word1.equals(word0)) {
             return;
         }
         if (null != word0) {
-            addBigramDynamically(word0, word1, FREQUENCY_FOR_TYPED, isValid);
+            addBigramDynamically(word0, word1, frequency, isValid);
         }
     }
 

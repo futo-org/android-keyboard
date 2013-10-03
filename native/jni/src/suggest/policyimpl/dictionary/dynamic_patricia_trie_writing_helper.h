@@ -47,10 +47,13 @@ class DynamicPatriciaTrieWritingHelper {
         DISALLOW_COPY_AND_ASSIGN(DictPositionRelocationMap);
     };
 
+    static const size_t MAX_DICTIONARY_SIZE;
+
     DynamicPatriciaTrieWritingHelper(BufferWithExtendableBuffer *const buffer,
             DynamicBigramListPolicy *const bigramPolicy,
-            DynamicShortcutListPolicy *const shortcutPolicy)
-            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy) {}
+            DynamicShortcutListPolicy *const shortcutPolicy, const bool isDecayingDict)
+            : mBuffer(buffer), mBigramPolicy(bigramPolicy), mShortcutPolicy(shortcutPolicy),
+              mIsDecayingDict(isDecayingDict) {}
 
     ~DynamicPatriciaTrieWritingHelper() {}
 
@@ -87,11 +90,11 @@ class DynamicPatriciaTrieWritingHelper {
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTrieWritingHelper);
 
     static const int CHILDREN_POSITION_FIELD_SIZE;
-    static const size_t MAX_DICTIONARY_SIZE;
 
     BufferWithExtendableBuffer *const mBuffer;
     DynamicBigramListPolicy *const mBigramPolicy;
     DynamicShortcutListPolicy *const mShortcutPolicy;
+    const bool mIsDecayingDict;
 
     bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
             const int movedPos, const int bigramLinkedNodePos);
@@ -127,6 +130,8 @@ class DynamicPatriciaTrieWritingHelper {
 
     bool runGC(const int rootPtNodeArrayPos, BufferWithExtendableBuffer *const bufferToWrite,
             int *const outUnigramCount, int *const outBigramCount);
+
+    int getUpdatedProbability(const int originalProbability, const int newProbability);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */

@@ -85,6 +85,7 @@ LATIN_IME_CORE_SRC_FILES := \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \
+        decaying_utils.cpp \
         dict_file_writing_utils.cpp \
         format_utils.cpp) \
     suggest/policyimpl/gesture/gesture_suggest_policy_factory.cpp \

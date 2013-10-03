@@ -18,6 +18,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
@@ -27,12 +28,17 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
 
 const char *const DynamicPatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
 const char *const DynamicPatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
+const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 1024 * 1024;
+const int DynamicPatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
+        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - 1024;
+const int DynamicPatriciaTriePolicy::MIN_SECONDS_TO_REQUIRE_GC_WHEN_WRITING = 2 * 60 * 60;
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -143,14 +149,17 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
 
 int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
-    // TODO: check mHeaderPolicy.usesForgettingCurve();
-    if (unigramProbability == NOT_A_PROBABILITY) {
-        return NOT_A_PROBABILITY;
-    } else if (bigramProbability == NOT_A_PROBABILITY) {
-        return ProbabilityUtils::backoff(unigramProbability);
+    if (mHeaderPolicy.isDecayingDict()) {
+        return DecayingUtils::getProbability(unigramProbability, bigramProbability);
     } else {
-        return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
-                bigramProbability);
+        if (unigramProbability == NOT_A_PROBABILITY) {
+            return NOT_A_PROBABILITY;
+        } else if (bigramProbability == NOT_A_PROBABILITY) {
+            return ProbabilityUtils::backoff(unigramProbability);
+        } else {
+            return ProbabilityUtils::computeProbabilityForBigram(unigramProbability,
+                    bigramProbability);
+        }
     }
 }
 
@@ -199,11 +208,16 @@ bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int 
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
     }
+    if (mBufferWithExtendableBuffer.getTailPosition()
+            >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+        AKLOGE("The dictionary is too large to dynamically update.");
+        return false;
+    }
     DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
             getBigramsStructurePolicy(), getShortcutsStructurePolicy());
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &mBigramListPolicy, &mShortcutListPolicy);
+            &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     bool addedNewUnigram = false;
     if (writingHelper.addUnigramWord(&readingHelper, word, length, probability,
             &addedNewUnigram)) {
@@ -222,6 +236,11 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
+    if (mBufferWithExtendableBuffer.getTailPosition()
+            >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+        AKLOGE("The dictionary is too large to dynamically update.");
+        return false;
+    }
     const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
     if (word0Pos == NOT_A_DICT_POS) {
@@ -233,7 +252,7 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
         return false;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &mBigramListPolicy, &mShortcutListPolicy);
+            &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     bool addedNewBigram = false;
     if (writingHelper.addBigramWords(word0Pos, word1Pos, probability, &addedNewBigram)) {
         if (addedNewBigram) {
@@ -251,6 +270,11 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
         AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
         return false;
     }
+    if (mBufferWithExtendableBuffer.getTailPosition()
+            >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS) {
+        AKLOGE("The dictionary is too large to dynamically update.");
+        return false;
+    }
     const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
     if (word0Pos == NOT_A_DICT_POS) {
@@ -262,7 +286,7 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
         return false;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &mBigramListPolicy, &mShortcutListPolicy);
+            &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     if (writingHelper.removeBigramWords(word0Pos, word1Pos)) {
         mBigramCount--;
         return true;
@@ -277,7 +301,7 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
         return;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &mBigramListPolicy, &mShortcutListPolicy);
+            &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     writingHelper.writeToDictFile(filePath, &mHeaderPolicy, mUnigramCount, mBigramCount);
 }
 
@@ -287,7 +311,7 @@ void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
         return;
     }
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &mBigramListPolicy, &mShortcutListPolicy);
+            &mBigramListPolicy, &mShortcutListPolicy, mHeaderPolicy.isDecayingDict());
     writingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy);
 }
 
@@ -296,8 +320,33 @@ bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;
     }
-    // TODO: Implement more properly.
-    return mBufferWithExtendableBuffer.isNearSizeLimit();
+    if (mBufferWithExtendableBuffer.isNearSizeLimit()) {
+        // Additional buffer size is near the limit.
+        return true;
+    } else if (mHeaderPolicy.getExtendedRegionSize()
+            + mBufferWithExtendableBuffer.getUsedAdditionalBufferSize()
+                    > MAX_DICT_EXTENDED_REGION_SIZE) {
+        // Total extended region size exceeds the limit.
+        return true;
+    } else if (mBufferWithExtendableBuffer.getTailPosition()
+            >= MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS
+                    && mBufferWithExtendableBuffer.getUsedAdditionalBufferSize() > 0) {
+        // Needs to reduce dictionary size.
+        return true;
+    } else if (mHeaderPolicy.isDecayingDict()) {
+        if (mUnigramCount >= DecayingUtils::MAX_UNIGRAM_COUNT) {
+            // Unigram count exceeds the limit.
+            return true;
+        } else if (mBigramCount >= DecayingUtils::MAX_BIGRAM_COUNT) {
+            // Bigram count exceeds the limit.
+            return true;
+        } else if (mindsBlockByGC && mHeaderPolicy.getLastUpdatedTime()
+                + MIN_SECONDS_TO_REQUIRE_GC_WHEN_WRITING < time(0)) {
+            // Time to update probabilities for decaying.
+            return true;
+        }
+    }
+    return false;
 }
 
 void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const outResult,

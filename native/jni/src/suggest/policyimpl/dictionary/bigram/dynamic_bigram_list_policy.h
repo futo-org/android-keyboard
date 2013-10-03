@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
+#include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 
 namespace latinime {
@@ -34,8 +35,9 @@ class DictionaryShortcutsStructurePolicy;
 class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
     DynamicBigramListPolicy(BufferWithExtendableBuffer *const buffer,
-            const DictionaryShortcutsStructurePolicy *const shortcutPolicy)
-            : mBuffer(buffer), mShortcutPolicy(shortcutPolicy) {}
+            const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
+            const bool isDecayingDict)
+            : mBuffer(buffer), mShortcutPolicy(shortcutPolicy), mIsDecayingDict(isDecayingDict) {}
 
     ~DynamicBigramListPolicy() {}
 
@@ -74,9 +76,13 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
 
     BufferWithExtendableBuffer *const mBuffer;
     const DictionaryShortcutsStructurePolicy *const mShortcutPolicy;
+    const bool mIsDecayingDict;
 
     // Follow bigram link and return the position of bigram target PtNode that is currently valid.
     int followBigramLinkAndGetCurrentBigramPtNodePos(const int originalBigramPos) const;
+
+    bool updateProbabilityForDecay(BigramListReadWriteUtils::BigramFlags bigramFlags,
+            const int targetPtNodePos, int *const bigramEntryPos, bool *const outRemoved) const;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_BIGRAM_LIST_POLICY_H

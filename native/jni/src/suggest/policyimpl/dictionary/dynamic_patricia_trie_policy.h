@@ -37,7 +37,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
                       mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
-              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy),
+              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy,
+                      mHeaderPolicy.isDecayingDict()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()) {}
 
@@ -101,6 +102,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     static const char*const UNIGRAM_COUNT_QUERY;
     static const char*const BIGRAM_COUNT_QUERY;
+    static const int MAX_DICT_EXTENDED_REGION_SIZE;
+    static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
+    static const int MIN_SECONDS_TO_REQUIRE_GC_WHEN_WRITING;
 
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
