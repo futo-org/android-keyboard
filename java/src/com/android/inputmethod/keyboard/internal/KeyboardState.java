@@ -585,7 +585,7 @@ public final class KeyboardState {
         }
     }
 
-    private static boolean isSpaceCharacter(final int c) {
+    private static boolean isSpaceOrEnter(final int c) {
         return c == Constants.CODE_SPACE || c == Constants.CODE_ENTER;
     }
 
@@ -614,7 +614,12 @@ public final class KeyboardState {
             }
             break;
         case SWITCH_STATE_SYMBOL_BEGIN:
-            if (!isSpaceCharacter(code) && (Constants.isLetterCode(code)
+            if (mIsEmojiMode) {
+                // When in the Emoji keyboard, we don't want to switch back to the main layout even
+                // after the user hits an emoji letter followed by an enter or a space.
+                break;
+            }
+            if (!isSpaceOrEnter(code) && (Constants.isLetterCode(code)
                     || code == Constants.CODE_OUTPUT_TEXT)) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
@@ -622,7 +627,7 @@ public final class KeyboardState {
         case SWITCH_STATE_SYMBOL:
             // Switch back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter.
-            if (isSpaceCharacter(code)) {
+            if (isSpaceOrEnter(code)) {
                 toggleAlphabetAndSymbols();
                 mPrevSymbolsKeyboardWasShifted = false;
             }
