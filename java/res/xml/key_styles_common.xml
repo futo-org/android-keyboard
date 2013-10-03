@@ -121,6 +121,27 @@
         latin:keyIcon="!icon/emoji_key"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
+    <!-- Overriding EnterKeyStyle here -->
+    <switch>
+        <!-- Shift + Enter in textMultiLine field. -->
+        <case
+            latin:isMultiLine="true"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="shiftEnterKeyStyle" />
+        </case>
+        <!-- Smiley in textShortMessage field.
+             Overrides common enter key style. -->
+        <case
+            latin:mode="im"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="emojiKeyStyle" />
+        </case>
+    </switch>
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="!code/key_tab"
