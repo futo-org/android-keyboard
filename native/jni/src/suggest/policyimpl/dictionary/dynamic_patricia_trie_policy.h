@@ -37,7 +37,9 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
                       mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
-              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy) {}
+              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy),
+              mUnigramCount(mHeaderPolicy.getUnigramCount()),
+              mBigramCount(mHeaderPolicy.getBigramCount()) {}
 
     ~DynamicPatriciaTriePolicy() {
         delete mBuffer;
@@ -91,14 +93,22 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     bool needsToRunGC() const;
 
+    void getProperty(const char *const query, char *const outResult,
+            const int maxResultLength) const;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DynamicPatriciaTriePolicy);
+
+    static const char*const UNIGRAM_COUNT_QUERY;
+    static const char*const BIGRAM_COUNT_QUERY;
 
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
     BufferWithExtendableBuffer mBufferWithExtendableBuffer;
     DynamicShortcutListPolicy mShortcutListPolicy;
     DynamicBigramListPolicy mBigramListPolicy;
+    int mUnigramCount;
+    int mBigramCount;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H

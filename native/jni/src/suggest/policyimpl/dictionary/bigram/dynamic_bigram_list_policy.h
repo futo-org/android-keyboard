@@ -50,19 +50,20 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     bool copyAllBigrams(BufferWithExtendableBuffer *const bufferToWrite, int *const fromPos,
             int *const toPos, int *const outBigramsCount) const;
 
-    bool updateAllBigramEntriesAndDeleteUselessEntries(int *const bigramListPos);
+    bool updateAllBigramEntriesAndDeleteUselessEntries(int *const bigramListPos,
+            int *const outBigramEntryCount);
 
     bool updateAllBigramTargetPtNodePositions(int *const bigramListPos,
             const DynamicPatriciaTrieWritingHelper::PtNodePositionRelocationMap *const
-                    ptNodePositionRelocationMap);
+                    ptNodePositionRelocationMap, int *const outValidBigramEntryCount);
 
     bool addNewBigramEntryToBigramList(const int bigramTargetPos, const int probability,
-            int *const bigramListPos);
+            int *const bigramListPos, bool *const outAddedNewBigram);
 
     bool writeNewBigramEntry(const int bigramTargetPos, const int probability,
             int *const writingPos);
 
-    // Return if targetBigramPos is found or not.
+    // Return whether or not targetBigramPos is found.
     bool removeBigram(const int bigramListPos, const int bigramTargetPos);
 
  private:

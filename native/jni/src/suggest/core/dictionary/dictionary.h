@@ -83,6 +83,9 @@ class Dictionary {
 
     bool needsToRunGC();
 
+    void getProperty(const char *const query, char *const outResult,
+            const int maxResultLength) const;
+
     const DictionaryStructureWithBufferPolicy *getDictionaryStructurePolicy() const {
         return mDictionaryStructureWithBufferPolicy;
     }

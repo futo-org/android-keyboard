@@ -16,17 +16,15 @@
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 
-#include <cstddef>
-#include <cstdio>
-#include <ctime>
-
 namespace latinime {
-
 
 // Note that these are corresponding definitions in Java side in FormatSpec.FileHeader.
 const char *const HeaderPolicy::MULTIPLE_WORDS_DEMOTION_RATE_KEY = "MULTIPLE_WORDS_DEMOTION_RATE";
 const char *const HeaderPolicy::USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
 const char *const HeaderPolicy::LAST_UPDATED_TIME_KEY = "date";
+const char *const HeaderPolicy::UNIGRAM_COUNT_KEY = "UNIGRAM_COUNT";
+const char *const HeaderPolicy::BIGRAM_COUNT_KEY = "BIGRAM_COUNT";
+const char *const HeaderPolicy::EXTENDED_REGION_SIZE_KEY = "EXTENDED_REGION_SIZE";
 const int HeaderPolicy::DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE = 100;
 const float HeaderPolicy::MULTIPLE_WORD_COST_MULTIPLIER_SCALE = 100.0f;
 
@@ -55,33 +53,17 @@ void HeaderPolicy::readHeaderValueOrQuestionMark(const char *const key, int *out
 }
 
 float HeaderPolicy::readMultipleWordCostMultiplier() const {
-    std::vector<int> keyVector;
-    HeaderReadWriteUtils::insertCharactersIntoVector(MULTIPLE_WORDS_DEMOTION_RATE_KEY, &keyVector);
     const int demotionRate = HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
-            &keyVector, DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE);
+            MULTIPLE_WORDS_DEMOTION_RATE_KEY, DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE);
     if (demotionRate <= 0) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
     return MULTIPLE_WORD_COST_MULTIPLIER_SCALE / static_cast<float>(demotionRate);
 }
 
-bool HeaderPolicy::readUsesForgettingCurveFlag() const {
-    std::vector<int> keyVector;
-    HeaderReadWriteUtils::insertCharactersIntoVector(USES_FORGETTING_CURVE_KEY, &keyVector);
-    return HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap, &keyVector,
-            false /* defaultValue */);
-}
-
-// Returns current time when the key is not found or the value is invalid.
-int HeaderPolicy::readLastUpdatedTime() const {
-    std::vector<int> keyVector;
-    HeaderReadWriteUtils::insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &keyVector);
-    return HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap, &keyVector,
-            time(0) /* defaultValue */);
-}
-
 bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-        const bool updatesLastUpdatedTime) const {
+        const bool updatesLastUpdatedTime, const int unigramCount, const int bigramCount,
+        const int extendedRegionSize) const {
     int writingPos = 0;
     if (!HeaderReadWriteUtils::writeDictionaryVersion(bufferToWrite, mDictFormatVersion,
             &writingPos)) {
@@ -97,21 +79,19 @@ bool HeaderPolicy::writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferT
             &writingPos)) {
         return false;
     }
+    HeaderReadWriteUtils::AttributeMap attributeMapTowrite(mAttributeMap);
+    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, UNIGRAM_COUNT_KEY, unigramCount);
+    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, BIGRAM_COUNT_KEY, bigramCount);
+    HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, EXTENDED_REGION_SIZE_KEY,
+            extendedRegionSize);
     if (updatesLastUpdatedTime) {
         // Set current time as a last updated time.
-        HeaderReadWriteUtils::AttributeMap attributeMapTowrite(mAttributeMap);
-        std::vector<int> updatedTimekey;
-        HeaderReadWriteUtils::insertCharactersIntoVector(LAST_UPDATED_TIME_KEY, &updatedTimekey);
-        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, &updatedTimekey, time(0));
-        if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
-                &writingPos)) {
-            return false;
-        }
-    } else {
-        if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &mAttributeMap,
-                &writingPos)) {
-            return false;
-        }
+        HeaderReadWriteUtils::setIntAttribute(&attributeMapTowrite, LAST_UPDATED_TIME_KEY,
+                time(0));
+    }
+    if (!HeaderReadWriteUtils::writeHeaderAttributes(bufferToWrite, &attributeMapTowrite,
+            &writingPos)) {
+        return false;
     }
     // Writes an actual header size.
     if (!HeaderReadWriteUtils::writeDictionaryHeaderSize(bufferToWrite, writingPos,

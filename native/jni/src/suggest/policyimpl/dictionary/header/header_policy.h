@@ -17,6 +17,7 @@
 #ifndef LATINIME_HEADER_POLICY_H
 #define LATINIME_HEADER_POLICY_H
 
+#include <ctime>
 #include <stdint.h>
 
 #include "defines.h"
@@ -35,8 +36,16 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
               mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
-              mUsesForgettingCurve(readUsesForgettingCurveFlag()),
-              mLastUpdatedTime(readLastUpdatedTime()) {}
+              mUsesForgettingCurve(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+                      USES_FORGETTING_CURVE_KEY, false /* defaultValue */)),
+              mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+              mUnigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      UNIGRAM_COUNT_KEY, 0 /* defaultValue */)),
+              mBigramCount(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      BIGRAM_COUNT_KEY, 0 /* defaultValue */)),
+              mExtendedRegionSize(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      EXTENDED_REGION_SIZE_KEY, 0 /* defaultValue */)) {}
 
     // Constructs header information using an attribute map.
     HeaderPolicy(const FormatUtils::FORMAT_VERSION dictFormatVersion,
@@ -44,9 +53,12 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
             : mDictFormatVersion(dictFormatVersion),
               mDictionaryFlags(HeaderReadWriteUtils::createAndGetDictionaryFlagsUsingAttributeMap(
                       attributeMap)), mSize(0), mAttributeMap(*attributeMap),
-              mMultiWordCostMultiplier(readUsesForgettingCurveFlag()),
-              mUsesForgettingCurve(readUsesForgettingCurveFlag()),
-              mLastUpdatedTime(readLastUpdatedTime()) {}
+              mMultiWordCostMultiplier(readMultipleWordCostMultiplier()),
+              mUsesForgettingCurve(HeaderReadWriteUtils::readBoolAttributeValue(&mAttributeMap,
+                      USES_FORGETTING_CURVE_KEY, false /* defaultValue */)),
+              mLastUpdatedTime(HeaderReadWriteUtils::readIntAttributeValue(&mAttributeMap,
+                      LAST_UPDATED_TIME_KEY, time(0) /* defaultValue */)),
+              mUnigramCount(0), mBigramCount(0), mExtendedRegionSize(0) {}
 
     ~HeaderPolicy() {}
 
@@ -78,11 +90,24 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
         return mLastUpdatedTime;
     }
 
+    AK_FORCE_INLINE int getUnigramCount() const {
+        return mUnigramCount;
+    }
+
+    AK_FORCE_INLINE int getBigramCount() const {
+        return mBigramCount;
+    }
+
+    AK_FORCE_INLINE int getExtendedRegionSize() const {
+        return mExtendedRegionSize;
+    }
+
     void readHeaderValueOrQuestionMark(const char *const key,
             int *outValue, int outValueSize) const;
 
     bool writeHeaderToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
-            const bool updatesLastUpdatedTime) const;
+            const bool updatesLastUpdatedTime, const int unigramCount,
+            const int bigramCount, const int extendedRegionSize) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(HeaderPolicy);
@@ -90,6 +115,9 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     static const char *const MULTIPLE_WORDS_DEMOTION_RATE_KEY;
     static const char *const USES_FORGETTING_CURVE_KEY;
     static const char *const LAST_UPDATED_TIME_KEY;
+    static const char *const UNIGRAM_COUNT_KEY;
+    static const char *const BIGRAM_COUNT_KEY;
+    static const char *const EXTENDED_REGION_SIZE_KEY;
     static const int DEFAULT_MULTIPLE_WORDS_DEMOTION_RATE;
     static const float MULTIPLE_WORD_COST_MULTIPLIER_SCALE;
 
@@ -100,12 +128,11 @@ class HeaderPolicy : public DictionaryHeaderStructurePolicy {
     const float mMultiWordCostMultiplier;
     const bool mUsesForgettingCurve;
     const int mLastUpdatedTime;
+    const int mUnigramCount;
+    const int mBigramCount;
+    const int mExtendedRegionSize;
 
     float readMultipleWordCostMultiplier() const;
-
-    bool readUsesForgettingCurveFlag() const;
-
-    int readLastUpdatedTime() const;
 
     static HeaderReadWriteUtils::AttributeMap createAttributeMapAndReadAllAttributes(
             const uint8_t *const dictBuf);

@@ -41,7 +41,7 @@ class DynamicPatriciaTrieGcEventListeners {
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
                 BufferWithExtendableBuffer *const buffer)
                 : mWritingHelper(writingHelper), mBuffer(buffer), valueStack(),
-                  mChildrenValue(0) {}
+                  mChildrenValue(0), mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
@@ -64,6 +64,10 @@ class DynamicPatriciaTrieGcEventListeners {
         bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
                 const int *const nodeCodePoints);
 
+        int getValidUnigramCount() const {
+            return mValidUnigramCount;
+        }
+
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(
                 TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted);
@@ -72,6 +76,7 @@ class DynamicPatriciaTrieGcEventListeners {
         BufferWithExtendableBuffer *const mBuffer;
         std::vector<int> valueStack;
         int mChildrenValue;
+        int mValidUnigramCount;
     };
 
     // Updates all bigram entries that are held by valid PtNodes. This removes useless bigram
@@ -80,7 +85,7 @@ class DynamicPatriciaTrieGcEventListeners {
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateBigramProbability(DynamicBigramListPolicy *const bigramPolicy)
-                : mBigramPolicy(bigramPolicy) {}
+                : mBigramPolicy(bigramPolicy), mValidBigramEntryCount(0) {}
 
         bool onAscend() { return true; }
 
@@ -93,18 +98,26 @@ class DynamicPatriciaTrieGcEventListeners {
             if (!node->isDeleted()) {
                 int pos = node->getBigramsPos();
                 if (pos != NOT_A_DICT_POS) {
-                    if (!mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&pos)) {
+                    int bigramEntryCount = 0;
+                    if (!mBigramPolicy->updateAllBigramEntriesAndDeleteUselessEntries(&pos,
+                            &bigramEntryCount)) {
                         return false;
                     }
+                    mValidBigramEntryCount += bigramEntryCount;
                 }
             }
             return true;
+        }
+
+        int getValidBigramEntryCount() const {
+            return mValidBigramEntryCount;
         }
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateBigramProbability);
 
         DynamicBigramListPolicy *const mBigramPolicy;
+        int mValidBigramEntryCount;
     };
 
     class TraversePolicyToPlaceAndWriteValidPtNodesToBuffer
@@ -150,7 +163,8 @@ class DynamicPatriciaTrieGcEventListeners {
                         dictPositionRelocationMap)
                 : mWritingHelper(writingHelper), mBigramPolicy(bigramPolicy),
                   mBufferToWrite(bufferToWrite),
-                  mDictPositionRelocationMap(dictPositionRelocationMap) {};
+                  mDictPositionRelocationMap(dictPositionRelocationMap), mUnigramCount(0),
+                  mBigramCount(0) {};
 
         bool onAscend() { return true; }
 
@@ -161,6 +175,14 @@ class DynamicPatriciaTrieGcEventListeners {
         bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
                 const int *const nodeCodePoints);
 
+        int getUnigramCount() const {
+            return mUnigramCount;
+        }
+
+        int getBigramCount() const {
+            return mBigramCount;
+        }
+
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToUpdateAllPositionFields);
 
@@ -169,6 +191,8 @@ class DynamicPatriciaTrieGcEventListeners {
         BufferWithExtendableBuffer *const mBufferToWrite;
         const DynamicPatriciaTrieWritingHelper::DictPositionRelocationMap *const
                 mDictPositionRelocationMap;
+        int mUnigramCount;
+        int mBigramCount;
     };
 
  private:

@@ -56,15 +56,18 @@ class DynamicPatriciaTrieWritingHelper {
 
     // Add a word to the dictionary. If the word already exists, update the probability.
     bool addUnigramWord(DynamicPatriciaTrieReadingHelper *const readingHelper,
-            const int *const wordCodePoints, const int codePointCount, const int probability);
+            const int *const wordCodePoints, const int codePointCount, const int probability,
+            bool *const outAddedNewUnigram);
 
     // Add a bigram relation from word0Pos to word1Pos.
-    bool addBigramWords(const int word0Pos, const int word1Pos, const int probability);
+    bool addBigramWords(const int word0Pos, const int word1Pos, const int probability,
+            bool *const outAddedNewBigram);
 
     // Remove a bigram relation from word0Pos to word1Pos.
     bool removeBigramWords(const int word0Pos, const int word1Pos);
 
-    void writeToDictFile(const char *const fileName, const HeaderPolicy *const headerPolicy);
+    void writeToDictFile(const char *const fileName, const HeaderPolicy *const headerPolicy,
+            const int unigramCount, const int bigramCount);
 
     void writeToDictFileWithGC(const int rootPtNodeArrayPos, const char *const fileName,
             const HeaderPolicy *const headerPolicy);
@@ -107,7 +110,7 @@ class DynamicPatriciaTrieWritingHelper {
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
 
     bool setPtNodeProbability(const DynamicPatriciaTrieNodeReader *const originalNode,
-            const int probability, const int *const codePoints);
+            const int probability, const int *const codePoints, bool *const outAddedNewUnigram);
 
     bool createChildrenPtNodeArrayAndAChildPtNode(
             const DynamicPatriciaTrieNodeReader *const parentNode, const int probability,
@@ -122,7 +125,8 @@ class DynamicPatriciaTrieWritingHelper {
             const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
 
-    bool runGC(const int rootPtNodeArrayPos, BufferWithExtendableBuffer *const bufferToWrite);
+    bool runGC(const int rootPtNodeArrayPos, BufferWithExtendableBuffer *const bufferToWrite,
+            int *const outUnigramCount, int *const outBigramCount);
 };
 } // namespace latinime
 #endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_WRITING_HELPER_H */
