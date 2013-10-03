@@ -84,10 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Priključite slušalice da biste čuli tipke zaporke izgovorene naglas."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Trenutačni tekst je %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nije unesen tekst"</string>
-    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5381764628886369268">"<xliff:g id="KEY">%1$s</xliff:g> ispravlja <xliff:g id="ORIGINAL">%2$s</xliff:g> u <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="1186884531440481089">"<xliff:g id="KEY">%1$s</xliff:g> ima samoispravljanje"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Kôd tipke %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Uključena tipka Shift (dotaknite da onemogućite)"</string>
