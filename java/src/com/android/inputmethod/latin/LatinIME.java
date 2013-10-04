@@ -1438,11 +1438,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!settingsValues.mCorrectionEnabled) return false;
         if (!settingsValues.mUseDoubleSpacePeriod) return false;
         if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
-        final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
-        if (lastThree != null && lastThree.length() == 3
-                && canBeFollowedByDoubleSpacePeriod(lastThree.charAt(0))
-                && lastThree.charAt(1) == Constants.CODE_SPACE
-                && lastThree.charAt(2) == Constants.CODE_SPACE) {
+        // We only do this when we see two spaces and an accepted code point before the cursor.
+        // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
+        final CharSequence lastThree = mConnection.getTextBeforeCursor(4, 0);
+        if (null == lastThree) return false;
+        final int length = lastThree.length();
+        if (length < 3) return false;
+        if (lastThree.charAt(length - 1) != Constants.CODE_SPACE) return false;
+        if (lastThree.charAt(length - 2) != Constants.CODE_SPACE) return false;
+        // We know there are spaces in pos -1 and -2, and we have at least three chars.
+        // If we have only three chars, isSurrogatePairs can't return true as charAt(1) is a space,
+        // so this is fine.
+        final int firstCodePoint =
+                Character.isSurrogatePair(lastThree.charAt(0), lastThree.charAt(1)) ?
+                        Character.codePointAt(lastThree, 0) : lastThree.charAt(length - 3);
+        if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
             mHandler.cancelDoubleSpacePeriodTimer();
             mConnection.deleteSurroundingText(2, 0);
             final String textToInsert = ". ";
@@ -1467,7 +1477,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Constants.CODE_CLOSING_SQUARE_BRACKET
                 || codePoint == Constants.CODE_CLOSING_CURLY_BRACKET
                 || codePoint == Constants.CODE_CLOSING_ANGLE_BRACKET
-                || codePoint == Constants.CODE_PLUS;
+                || codePoint == Constants.CODE_PLUS
+                || Character.getType(codePoint) == Character.OTHER_SYMBOL;
     }
 
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
