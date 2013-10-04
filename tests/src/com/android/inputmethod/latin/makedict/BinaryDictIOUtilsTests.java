@@ -46,6 +46,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
     private static final int VERSION3 = 3;
+    private static final int VERSION4 = 4;
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
