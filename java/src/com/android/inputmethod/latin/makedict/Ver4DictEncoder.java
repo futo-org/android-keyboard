@@ -45,6 +45,7 @@ public class Ver4DictEncoder implements DictEncoder {
     private int mHeaderSize;
     private OutputStream mTrieOutStream;
     private OutputStream mFreqOutStream;
+    private OutputStream mUnigramTimestampOutStream;
     private OutputStream mTerminalAddressTableOutStream;
     private File mDictDir;
     private String mBaseFilename;
@@ -238,18 +239,20 @@ public class Ver4DictEncoder implements DictEncoder {
         mDictDir = new File(mDictPlacedDir, mBaseFilename);
         final File trieFile = new File(mDictDir, mBaseFilename + FormatSpec.TRIE_FILE_EXTENSION);
         final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
+        final File timestampFile = new File(mDictDir,
+                mBaseFilename + FormatSpec.UNIGRAM_TIMESTAMP_FILE_EXTENSION);
         final File terminalAddressTableFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
             if (mDictDir.exists()) mDictDir.delete();
             mDictDir.mkdirs();
         }
-        if (!trieFile.exists()) trieFile.createNewFile();
-        if (!freqFile.exists()) freqFile.createNewFile();
-        if (!terminalAddressTableFile.exists()) terminalAddressTableFile.createNewFile();
         mTrieOutStream = new FileOutputStream(trieFile);
         mFreqOutStream = new FileOutputStream(freqFile);
         mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
+        if (formatOptions.mHasTimestamp) {
+            mUnigramTimestampOutStream = new FileOutputStream(timestampFile);
+        }
     }
 
     private void close() throws IOException {
@@ -262,6 +265,9 @@ public class Ver4DictEncoder implements DictEncoder {
             }
             if (mTerminalAddressTableOutStream != null) {
                 mTerminalAddressTableOutStream.close();
+            }
+            if (mUnigramTimestampOutStream != null) {
+                mUnigramTimestampOutStream.close();
             }
         } finally {
             mTrieOutStream = null;
@@ -302,6 +308,9 @@ public class Ver4DictEncoder implements DictEncoder {
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
         writeTerminalData(flatNodes, terminalCount);
+        if (formatOptions.mHasTimestamp) {
+            initUnigramTimestamps(terminalCount);
+        }
         mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir,
                 formatOptions.mHasTimestamp);
         writeBigrams(flatNodes, dict);
@@ -453,5 +462,12 @@ public class Ver4DictEncoder implements DictEncoder {
         }
         mFreqOutStream.write(freqBuf);
         mTerminalAddressTableOutStream.write(terminalAddressTableBuf);
+    }
+
+    private void initUnigramTimestamps(final int terminalCount) throws IOException {
+        // Initial value of time stamps for each word is 0.
+        final byte[] unigramTimestampBuf =
+                new byte[terminalCount * FormatSpec.UNIGRAM_TIMESTAMP_SIZE];
+        mUnigramTimestampOutStream.write(unigramTimestampBuf);
     }
 }
