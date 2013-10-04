@@ -128,8 +128,9 @@ class DynamicPatriciaTrieWritingHelper {
             const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
 
-    bool runGC(const int rootPtNodeArrayPos, BufferWithExtendableBuffer *const bufferToWrite,
-            int *const outUnigramCount, int *const outBigramCount);
+    bool runGC(const int rootPtNodeArrayPos, const HeaderPolicy *const headerPolicy,
+            BufferWithExtendableBuffer *const bufferToWrite, int *const outUnigramCount,
+            int *const outBigramCount);
 
     int getUpdatedProbability(const int originalProbability, const int newProbability);
 };

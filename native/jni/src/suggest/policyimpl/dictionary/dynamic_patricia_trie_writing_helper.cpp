@@ -165,7 +165,10 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
             MAX_DICTIONARY_SIZE);
     int unigramCount = 0;
     int bigramCount = 0;
-    if (!runGC(rootPtNodeArrayPos, &newDictBuffer, &unigramCount, &bigramCount)) {
+    if (mNeedsToDecay) {
+        ForgettingCurveUtils::sTimeKeeper.setCurrentTime();
+    }
+    if (!runGC(rootPtNodeArrayPos, headerPolicy, &newDictBuffer, &unigramCount, &bigramCount)) {
         return;
     }
     BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
@@ -481,14 +484,14 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
 }
 
 bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
-        BufferWithExtendableBuffer *const bufferToWrite, int *const outUnigramCount,
-        int *const outBigramCount) {
+        const HeaderPolicy *const headerPolicy, BufferWithExtendableBuffer *const bufferToWrite,
+        int *const outUnigramCount, int *const outBigramCount) {
     DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
                     traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
-                            this, mBuffer, mNeedsToDecay);
+                            headerPolicy, this, mBuffer, mNeedsToDecay);
     if (!readingHelper.traverseAllPtNodesInPostorderDepthFirstManner(
             &traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted)) {
         return false;
@@ -505,7 +508,6 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
             &traversePolicyToUpdateBigramProbability)) {
         return false;
     }
-
     if (mNeedsToDecay && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
             > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more bigrams.
@@ -524,7 +526,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 
     // Create policy instance for the GCed dictionary.
     DynamicShortcutListPolicy newDictShortcutPolicy(bufferToWrite);
-    DynamicBigramListPolicy newDictBigramPolicy(bufferToWrite, &newDictShortcutPolicy,
+    DynamicBigramListPolicy newDictBigramPolicy(headerPolicy, bufferToWrite, &newDictShortcutPolicy,
             mNeedsToDecay);
     // Create reading helper for the GCed dictionary.
     DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictBigramPolicy,

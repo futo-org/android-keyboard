@@ -50,8 +50,8 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
     }
 
     private void forcePassingShortTime(final BinaryDictionary binaryDictionary) {
-        // Entries having low probability would be suppressed once in 2 GCs.
-        final int count = 2;
+        // Entries having low probability would be suppressed once in 3 GCs.
+        final int count = 3;
         for (int i = 0; i < count; i++) {
             binaryDictionary.getPropertyForTests(SET_NEEDS_TO_DECAY_FOR_TESTING_KEY);
             binaryDictionary.flushWithGC();
