@@ -29,6 +29,8 @@
 
 namespace latinime {
 
+class DictionaryHeaderStructurePolicy;
+
 class DynamicPatriciaTrieGcEventListeners {
  public:
     // Updates all PtNodes that can be reached from the root. Checks if each PtNode is useless or
@@ -38,10 +40,12 @@ class DynamicPatriciaTrieGcEventListeners {
         : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
         TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted(
+                const DictionaryHeaderStructurePolicy *const headerPolicy,
                 DynamicPatriciaTrieWritingHelper *const writingHelper,
                 BufferWithExtendableBuffer *const buffer, const bool isDecayingDict)
-                : mWritingHelper(writingHelper), mBuffer(buffer), mIsDecayingDict(isDecayingDict),
-                  mValueStack(), mChildrenValue(0), mValidUnigramCount(0) {}
+                : mHeaderPolicy(headerPolicy), mWritingHelper(writingHelper), mBuffer(buffer),
+                  mIsDecayingDict(isDecayingDict), mValueStack(), mChildrenValue(0),
+                  mValidUnigramCount(0) {}
 
         ~TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted() {};
 
@@ -72,9 +76,10 @@ class DynamicPatriciaTrieGcEventListeners {
         DISALLOW_IMPLICIT_CONSTRUCTORS(
                 TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted);
 
+        const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
         DynamicPatriciaTrieWritingHelper *const mWritingHelper;
         BufferWithExtendableBuffer *const mBuffer;
-        const int mIsDecayingDict;
+        const bool mIsDecayingDict;
         std::vector<int> mValueStack;
         int mChildrenValue;
         int mValidUnigramCount;
@@ -85,7 +90,8 @@ class DynamicPatriciaTrieGcEventListeners {
     class TraversePolicyToUpdateBigramProbability
             : public DynamicPatriciaTrieReadingHelper::TraversingEventListener {
      public:
-        TraversePolicyToUpdateBigramProbability(DynamicBigramListPolicy *const bigramPolicy)
+        TraversePolicyToUpdateBigramProbability(
+                DynamicBigramListPolicy *const bigramPolicy)
                 : mBigramPolicy(bigramPolicy), mValidBigramEntryCount(0) {}
 
         bool onAscend() { return true; }
