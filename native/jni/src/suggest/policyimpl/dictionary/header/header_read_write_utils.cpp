@@ -139,6 +139,9 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
         int *const writingPos) {
     for (AttributeMap::const_iterator it = headerAttributes->begin();
             it != headerAttributes->end(); ++it) {
+        if (it->first.empty() || it->second.empty()) {
+            continue;
+        }
         // Write a key.
         if (!buffer->writeCodePointsAndAdvancePosition(&(it->first.at(0)), it->first.size(),
                 true /* writesTerminator */, writingPos)) {

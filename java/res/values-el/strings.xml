@@ -84,6 +84,10 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Συνδέστε ένα σετ ακουστικών για να ακούσετε τα πλήκτρα του κωδικού πρόσβασης να εκφωνούνται δυνατά."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Το τρέχον κείμενο είναι %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Δεν υπάρχει κείμενο"</string>
+    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Κωδικός πλήκτρου %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Το Shift είναι ενεργοποιημένο (πατήστε για απενεργοποίηση)"</string>

@@ -77,13 +77,17 @@
     <string name="label_go_key" msgid="1635148082137219148">"Go"</string>
     <string name="label_next_key" msgid="362972844525672568">"Next"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Prev"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Finished"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Done"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Wait"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"Plug in a headset to hear password keys spoken aloud."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Current text is %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"No text entered"</string>
+    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
+    <skip />
+    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
+    <skip />
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Key code %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift on (tap to disable)"</string>
