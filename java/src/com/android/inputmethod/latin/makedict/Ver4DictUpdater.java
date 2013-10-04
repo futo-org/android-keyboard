@@ -20,63 +20,40 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
- * An implementation of DictUpdater for version 3 binary dictionary.
+ * An implementation of DictUpdater for version 4 binary dictionary.
  */
 @UsedForTesting
-public class Ver3DictUpdater extends Ver3DictDecoder implements DictUpdater {
-    private OutputStream mOutStream;
+public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
 
     @UsedForTesting
-    public Ver3DictUpdater(final File dictFile, final int factoryType) {
+    public Ver4DictUpdater(final File dictDirectory, final int factoryType) {
         // DictUpdater must have an updatable DictBuffer.
-        super(dictFile, ((factoryType & MASK_DICTBUFFER) == USE_BYTEARRAY)
+        super(dictDirectory, ((factoryType & MASK_DICTBUFFER) == USE_BYTEARRAY)
                 ? USE_BYTEARRAY : USE_WRITABLE_BYTEBUFFER);
-        mOutStream = null;
     }
 
-    private void openStreamAndBuffer() throws FileNotFoundException, IOException {
-        super.openDictBuffer();
-        mOutStream = new FileOutputStream(mDictionaryBinaryFile, true /* append */);
-    }
-
-    private void close() throws IOException {
-        if (mOutStream != null) {
-            mOutStream.close();
-            mOutStream = null;
-        }
-    }
-
-    @Override @UsedForTesting
+    @Override
     public void deleteWord(final String word) throws IOException, UnsupportedFormatException {
-        if (mOutStream == null) openStreamAndBuffer();
-        mDictBuffer.position(0);
+        if (mDictBuffer == null) openDictBuffer();
         readHeader();
         final int wordPos = getTerminalPosition(word);
         if (wordPos != FormatSpec.NOT_VALID_WORD) {
             mDictBuffer.position(wordPos);
-            final int flags = mDictBuffer.readUnsignedByte();
+            final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
             mDictBuffer.position(wordPos);
             mDictBuffer.put((byte) DynamicBinaryDictIOUtils.markAsDeleted(flags));
         }
-        close();
     }
 
-    @Override @UsedForTesting
+    @Override
     public void insertWord(final String word, final int frequency,
-            final ArrayList<WeightedString> bigramStrings,
-            final ArrayList<WeightedString> shortcuts,
-            final boolean isNotAWord, final boolean isBlackListEntry)
-                    throws IOException, UnsupportedFormatException {
-        if (mOutStream == null) openStreamAndBuffer();
-        DynamicBinaryDictIOUtils.insertWord(this, mOutStream, word, frequency, bigramStrings,
-                shortcuts, isNotAWord, isBlackListEntry);
-        close();
+        final ArrayList<WeightedString> bigramStrings, final ArrayList<WeightedString> shortcuts,
+        final boolean isNotAWord, final boolean isBlackListEntry)
+                throws IOException, UnsupportedFormatException {
+        // TODO: Implement this method.
     }
 }
