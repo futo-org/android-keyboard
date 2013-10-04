@@ -68,5 +68,7 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/row_symbols4" />
+        <include
+            latin:keyboardLayout="@xml/key_f2" />
     </Row>
 </merge>
