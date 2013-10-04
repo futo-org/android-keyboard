@@ -49,6 +49,7 @@ public class Ver4DictEncoder implements DictEncoder {
     private File mDictDir;
     private String mBaseFilename;
     private BigramContentWriter mBigramWriter;
+    private ShortcutContentWriter mShortcutWriter;
 
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
@@ -152,6 +153,39 @@ public class Ver4DictEncoder implements DictEncoder {
         }
     }
 
+    private static class ShortcutContentWriter extends SparseTableContentWriter {
+        public ShortcutContentWriter(final String name, final int initialCapacity,
+                final File baseDir) {
+            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION, FormatSpec.SHORTCUT_CONTENT_COUNT,
+                    initialCapacity, FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    new String[] { name + FormatSpec.SHORTCUT_FILE_EXTENSION },
+                    new String[] { FormatSpec.SHORTCUT_CONTENT_ID });
+        }
+
+        public void writeShortcutForOneWord(final int terminalId,
+                final Iterator<WeightedString> shortcutIterator) throws IOException {
+            write(FormatSpec.SHORTCUT_CONTENT_INDEX, terminalId,
+                    new SparseTableContentWriterInterface() {
+                        @Override
+                        public void write(final OutputStream outStream) throws IOException {
+                            writeShortcutForOneWordInternal(outStream, shortcutIterator);
+                        }
+                    });
+        }
+
+        private void writeShortcutForOneWordInternal(final OutputStream outStream,
+                final Iterator<WeightedString> shortcutIterator) throws IOException {
+            while (shortcutIterator.hasNext()) {
+                final WeightedString target = shortcutIterator.next();
+                final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
+                        shortcutIterator.hasNext(), target.mFrequency);
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, shortcutFlags,
+                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
+                CharEncoding.writeString(outStream, target.mWord);
+            }
+        }
+    }
+
     private void openStreams(final FormatOptions formatOptions, final DictionaryOptions dictOptions)
             throws FileNotFoundException, IOException {
         final FileHeader header = new FileHeader(0, dictOptions, formatOptions);
@@ -225,6 +259,8 @@ public class Ver4DictEncoder implements DictEncoder {
         writeTerminalData(flatNodes, terminalCount);
         mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir);
         writeBigrams(flatNodes, dict);
+        mShortcutWriter = new ShortcutContentWriter(mBaseFilename, terminalCount, mDictDir);
+        writeShortcuts(flatNodes);
 
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
@@ -306,29 +342,6 @@ public class Ver4DictEncoder implements DictEncoder {
         }
     }
 
-    private void writeShortcuts(ArrayList<WeightedString> shortcuts) {
-        if (null == shortcuts || shortcuts.isEmpty()) return;
-
-        final int indexOfShortcutByteSize = mTriePos;
-        mTriePos += FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE;
-        final Iterator<WeightedString> shortcutIterator = shortcuts.iterator();
-        while (shortcutIterator.hasNext()) {
-            final WeightedString target = shortcutIterator.next();
-            final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
-                    shortcutIterator.hasNext(), target.mFrequency);
-            mTrieBuf[mTriePos++] = (byte)shortcutFlags;
-            final int shortcutShift = CharEncoding.writeString(mTrieBuf, mTriePos,
-                    target.mWord);
-            mTriePos += shortcutShift;
-        }
-        final int shortcutByteSize = mTriePos - indexOfShortcutByteSize;
-        if (shortcutByteSize > FormatSpec.MAX_SHORTCUT_LIST_SIZE_IN_A_PTNODE) {
-            throw new RuntimeException("Shortcut list too large : " + shortcutByteSize);
-        }
-        BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, indexOfShortcutByteSize,
-                shortcutByteSize, FormatSpec.PTNODE_SHORTCUT_LIST_SIZE_SIZE);
-    }
-
     private void writeBigrams(final ArrayList<PtNodeArray> flatNodes, final FusionDictionary dict)
             throws IOException {
         mBigramWriter.openStreams();
@@ -341,6 +354,19 @@ public class Ver4DictEncoder implements DictEncoder {
             }
         }
         mBigramWriter.closeStreams();
+    }
+
+    private void writeShortcuts(final ArrayList<PtNodeArray> flatNodes) throws IOException {
+        mShortcutWriter.openStreams();
+        for (final PtNodeArray nodeArray : flatNodes) {
+            for (final PtNode ptNode : nodeArray.mData) {
+                if (ptNode.mShortcutTargets != null && !ptNode.mShortcutTargets.isEmpty()) {
+                    mShortcutWriter.writeShortcutForOneWord(ptNode.mTerminalId,
+                            ptNode.mShortcutTargets.iterator());
+                }
+            }
+        }
+        mShortcutWriter.closeStreams();
     }
 
     @Override
@@ -359,7 +385,6 @@ public class Ver4DictEncoder implements DictEncoder {
             writeTerminalId(ptNode.mTerminalId);
         }
         writeChildrenPosition(ptNode, formatOptions);
-        writeShortcuts(ptNode.mShortcutTargets);
     }
 
     private void writeTerminalData(final ArrayList<PtNodeArray> flatNodes,
