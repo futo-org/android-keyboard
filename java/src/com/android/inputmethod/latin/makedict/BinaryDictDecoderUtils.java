@@ -23,11 +23,11 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -219,14 +219,14 @@ public final class BinaryDictDecoderUtils {
         }
 
         /**
-         * Writes a string with our character format to a ByteArrayOutputStream.
+         * Writes a string with our character format to an OutputStream.
          *
          * This will also write the terminator byte.
          *
-         * @param buffer the ByteArrayOutputStream to write to.
+         * @param buffer the OutputStream to write to.
          * @param word the string to write.
          */
-        static void writeString(final ByteArrayOutputStream buffer, final String word) {
+        static void writeString(final OutputStream buffer, final String word) throws IOException {
             final int length = word.length();
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
                 final int codePoint = word.codePointAt(i);

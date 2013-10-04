@@ -23,6 +23,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.util.Log;
 
@@ -43,6 +44,7 @@ public class Ver4DictDecoder extends DictDecoder {
     private static final int FILETYPE_FREQUENCY = 2;
     private static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
     private static final int FILETYPE_BIGRAM_FREQ = 4;
+    private static final int FILETYPE_SHORTCUT = 5;
 
     private final File mDictDirectory;
     private final DictionaryBufferFactory mBufferFactory;
@@ -50,7 +52,9 @@ public class Ver4DictDecoder extends DictDecoder {
     private DictBuffer mFrequencyBuffer;
     private DictBuffer mTerminalAddressTableBuffer;
     private DictBuffer mBigramBuffer;
+    private DictBuffer mShortcutBuffer;
     private SparseTable mBigramAddressTable;
+    private SparseTable mShortcutAddressTable;
 
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
@@ -89,6 +93,10 @@ public class Ver4DictDecoder extends DictDecoder {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.BIGRAM_FILE_EXTENSION
                             + FormatSpec.BIGRAM_FREQ_CONTENT_ID);
+        } else if (fileType == FILETYPE_SHORTCUT) {
+            return new File(mDictDirectory,
+                    mDictDirectory.getName() + FormatSpec.SHORTCUT_FILE_EXTENSION
+                            + FormatSpec.SHORTCUT_CONTENT_ID);
         } else {
             throw new RuntimeException("Unsupported kind of file : " + fileType);
         }
@@ -102,6 +110,8 @@ public class Ver4DictDecoder extends DictDecoder {
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
         mBigramBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_BIGRAM_FREQ));
         loadBigramAddressSparseTable();
+        mShortcutBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_SHORTCUT));
+        loadShortcutAddressSparseTable();
     }
 
     @Override
@@ -136,6 +146,18 @@ public class Ver4DictDecoder extends DictDecoder {
                 FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
+    // TODO: Let's have something like SparseTableContentsReader in this class.
+    private void loadShortcutAddressSparseTable() throws IOException {
+        final File lookupIndexFile = new File(mDictDirectory, mDictDirectory.getName()
+                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
+        final File contentFile = new File(mDictDirectory, mDictDirectory.getName()
+                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
+                + FormatSpec.SHORTCUT_CONTENT_ID);
+        mShortcutAddressTable = SparseTable.readFromFiles(lookupIndexFile,
+                new File[] { contentFile }, FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
+    }
+
+
     protected static class PtNodeReader extends DictDecoder.PtNodeReader {
         protected static int readFrequency(final DictBuffer frequencyBuffer, final int terminalId) {
             frequencyBuffer.position(terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE + 1);
@@ -145,6 +167,23 @@ public class Ver4DictDecoder extends DictDecoder {
         protected static int readTerminalId(final DictBuffer dictBuffer) {
             return dictBuffer.readInt();
         }
+    }
+
+    private ArrayList<WeightedString> readShortcuts(final int terminalId) {
+        if (mShortcutAddressTable.get(0, terminalId) == SparseTable.NOT_EXIST) return null;
+
+        final ArrayList<WeightedString> ret = CollectionUtils.newArrayList();
+        final int posOfShortcuts = mShortcutAddressTable.get(FormatSpec.SHORTCUT_CONTENT_INDEX,
+                terminalId);
+        mShortcutBuffer.position(posOfShortcuts);
+        while (true) {
+            final int flags = mShortcutBuffer.readUnsignedByte();
+            final String word = CharEncoding.readString(mShortcutBuffer);
+            ret.add(new WeightedString(word,
+                    flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
+            if (0 == (flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
+        }
+        return ret;
     }
 
     // TODO: Make this buffer thread safe.
@@ -197,14 +236,7 @@ public class Ver4DictDecoder extends DictDecoder {
             childrenAddress += addressPointer;
         }
         addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
-        final ArrayList<WeightedString> shortcutTargets;
-        if (0 != (flags & FormatSpec.FLAG_HAS_SHORTCUT_TARGETS)) {
-            // readShortcut will add shortcuts to shortcutTargets.
-            shortcutTargets = new ArrayList<WeightedString>();
-            addressPointer += PtNodeReader.readShortcut(mDictBuffer, shortcutTargets);
-        } else {
-            shortcutTargets = null;
-        }
+        final ArrayList<WeightedString> shortcutTargets = readShortcuts(terminalId);
 
         final ArrayList<PendingAttribute> bigrams;
         if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
