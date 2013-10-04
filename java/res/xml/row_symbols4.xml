@@ -39,8 +39,4 @@
     <include latin:keyboardLayout="@xml/key_space_symbols" />
     <include latin:keyboardLayout="@xml/keys_comma_period" />
 
-    <Key
-        latin:keyStyle="emojiKeyStyle"
-        latin:keyWidth="fillRight" />
-
 </merge>
