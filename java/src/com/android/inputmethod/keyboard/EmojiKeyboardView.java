@@ -580,8 +580,16 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
     }
 
     private void setCurrentCategoryId(final int categoryId, final boolean force) {
-        if (mEmojiCategory.getCurrentCategoryId() == categoryId && !force) {
+        final int oldCategoryId = mEmojiCategory.getCurrentCategoryId();
+        if (oldCategoryId == categoryId && !force) {
             return;
+        }
+
+        if (oldCategoryId == CATEGORY_ID_RECENTS) {
+            // Needs to save pending updates for recent keys when we get out of the recents
+            // category because we don't want to move the recent emojis around while the user
+            // is in the recents category.
+            mEmojiKeyboardAdapter.flushPendingRecentKeys();
         }
 
         mEmojiCategory.setCurrentCategoryId(categoryId);
@@ -612,8 +620,18 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
             mRecentsKeyboard = mEmojiCategory.getKeyboard(CATEGORY_ID_RECENTS, 0);
         }
 
+        public void flushPendingRecentKeys() {
+            mRecentsKeyboard.flushPendingRecentKeys();
+            final KeyboardView recentKeyboardView =
+                    mActiveKeyboardView.get(mEmojiCategory.getRecentTabId());
+            if (recentKeyboardView != null) {
+                recentKeyboardView.invalidateAllKeys();
+            }
+        }
+
         public void addRecentKey(final Key key) {
             if (mEmojiCategory.isInRecentTab()) {
+                mRecentsKeyboard.addPendingKey(key);
                 return;
             }
             mRecentsKeyboard.addKeyFirst(key);
