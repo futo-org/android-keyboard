@@ -35,6 +35,7 @@ import java.util.TreeMap;
 /**
  * An interface of binary dictionary decoders.
  */
+// TODO: Straighten out responsibility for the buffer's file pointer.
 public interface DictDecoder {
 
     /**

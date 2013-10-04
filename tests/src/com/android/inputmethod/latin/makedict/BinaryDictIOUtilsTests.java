@@ -248,6 +248,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "abcd"));
         insertAndCheckWord(file, "abcde", 10, false, null, null, formatOptions);
+        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
 
         insertAndCheckWord(file, "abcdefghijklmn", 10, false, null, null, formatOptions);
         checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
@@ -257,12 +258,26 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
         // update the existing word.
         insertAndCheckWord(file, "abcdabcd", 15, true, null, null, formatOptions);
+        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
 
-        // split 1
+        // Testing splitOnly
         insertAndCheckWord(file, "ab", 20, false, null, null, formatOptions);
+        checkReverseLookup(file, "ab", getWordPosition(file, "ab"));
+        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
+        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
+        checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
 
-        // split 2
+        // Testing splitAndBranch
         insertAndCheckWord(file, "ami", 30, false, null, null, formatOptions);
+        checkReverseLookup(file, "ami", getWordPosition(file, "ami"));
+        checkReverseLookup(file, "ab", getWordPosition(file, "ab"));
+        checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
+        checkReverseLookup(file, "abcde", getWordPosition(file, "abcde"));
+        checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
+        checkReverseLookup(file, "ami", getWordPosition(file, "ami"));
+
+        insertAndCheckWord(file, "abcdefzzzz", 40, false, null, null, formatOptions);
+        checkReverseLookup(file, "abcdefzzzz", getWordPosition(file, "abcdefzzzz"));
 
         deleteWord(file, "ami", formatOptions);
         assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "ami"));
@@ -275,6 +290,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     public void testInsertWord() {
         runTestInsertWord(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
+        runTestInsertWord(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
     }
 
     private void runTestInsertWordWithBigrams(final FormatOptions formatOptions) {
@@ -314,6 +330,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     public void testInsertWordWithBigrams() {
         runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
+        // TODO: Add a test for version 4.
+        // runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
     }
 
     private void runTestRandomWords(final FormatOptions formatOptions) {
@@ -353,7 +371,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
         }
 
-        Log.d(TAG, "Test version " + formatOptions);
+        Log.d(TAG, "Test version " + formatOptions.mVersion);
         Log.d(TAG, "max = " + ((double)maxTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "min = " + ((double)minTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "avg = " + ((double)sum/mMaxUnigrams/1000000) + " ms.");
@@ -361,5 +379,6 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     public void testRandomWords() {
         runTestRandomWords(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
+        runTestRandomWords(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
     }
 }
