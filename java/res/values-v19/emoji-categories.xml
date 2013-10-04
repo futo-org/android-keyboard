@@ -214,7 +214,7 @@
         <item>fe835|0038,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>fe836|0039,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>fe837|0030,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
-        <item>1f51f</item>
+        <item>1f51f||99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>fe82c|0023,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>1f51d</item>
         <item>1f519</item>
