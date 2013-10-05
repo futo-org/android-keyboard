@@ -86,10 +86,8 @@
     <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
     <skip />
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"متنی وارد نشده است"</string>
-    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5381764628886369268">"<xliff:g id="KEY">%1$s</xliff:g>، ‏<xliff:g id="ORIGINAL">%2$s</xliff:g> را به <xliff:g id="CORRECTED">%3$s</xliff:g> تصحیح می‌کند"</string>
+    <string name="spoken_auto_correct_obscured" msgid="1186884531440481089">"<xliff:g id="KEY">%1$s</xliff:g> دارای تصحیح خودکار استj"</string>
     <!-- String.format failed for translation -->
     <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
     <skip />

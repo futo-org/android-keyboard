@@ -62,7 +62,7 @@
     <string name="prefs_block_potentially_offensive_summary" msgid="2371835479734991364">"Non suggerire parole potenzialmente offensive"</string>
     <string name="auto_correction" msgid="7630720885194996950">"Correzione automatica"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Barra spaziatrice/punteggiatura correggono parole con errori"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Off"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Media"</string>
     <string name="auto_correction_threshold_mode_aggressive" msgid="7319007299148899623">"Molto elevata"</string>
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"Massima"</string>
@@ -84,10 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Collega gli auricolari per ascoltare la pronuncia dei tasti premuti per la password."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Il testo attuale è %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nessun testo inserito"</string>
-    <!-- no translation found for spoken_auto_correct (5381764628886369268) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (1186884531440481089) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="5381764628886369268">"<xliff:g id="KEY">%1$s</xliff:g> corregge <xliff:g id="ORIGINAL">%2$s</xliff:g> con <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="1186884531440481089">"<xliff:g id="KEY">%1$s</xliff:g> ha la funzione di correzione automatica"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Codice tasto %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Maiuscolo"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Maiuscolo attivo (tocca per disattivare)"</string>
@@ -128,7 +126,7 @@
     <string name="voice_input" msgid="3583258583521397548">"Tasto input vocale"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Su tastiera principale"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Su tastiera simboli"</string>
-    <string name="voice_input_modes_off" msgid="3745699748218082014">"Non attivo"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"OFF"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Microfono su tastiera principale"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Microfono su tastiera simboli"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Input vocale disatt."</string>
