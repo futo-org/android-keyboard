@@ -84,8 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"የይለፍቃል ቁልፎች ጮክ በለው ሲነገሩ ለመስማት የጆሮ ማዳመጫ ሰካ::"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"የአሁኑ ፅሁፍ %s ነው"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"ምንም ፅሁፍ አልገባም"</string>
-    <string name="spoken_auto_correct" msgid="5381764628886369268">"<xliff:g id="KEY">%1$s</xliff:g> <xliff:g id="ORIGINAL">%2$s</xliff:g>ን ወደ <xliff:g id="CORRECTED">%3$s</xliff:g> ያርመዋል"</string>
-    <string name="spoken_auto_correct_obscured" msgid="1186884531440481089">"<xliff:g id="KEY">%1$s</xliff:g> ራስ-አርም አለው"</string>
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g>ን ወደ <xliff:g id="CORRECTED">%3$s</xliff:g> ያርመዋል"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> ራስ-ሰር እርማትን ያከናውናል"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"የቁልፍ ኮድ%d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"ቀይር"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"ቅያር በርቷል (ለማሰናክል ንካ)"</string>
