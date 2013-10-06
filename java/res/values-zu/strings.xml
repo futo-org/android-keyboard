@@ -84,10 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Plaka ku-headset ukuze uzwe okhiye bephasiwedi ezindlebeni zakho bezwakala kakhulu."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Umbhalo wamanje ngu %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Awukho umbhalo ofakiwe"</string>
-    <!-- no translation found for spoken_auto_correct (8005997889020109763) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"I-<xliff:g id="KEY">%1$s</xliff:g> ilungisa i-<xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ibe yi-<xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"I-<xliff:g id="KEY">%1$s</xliff:g> yenza ukulungiswa kokuzenzakalela"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Ikhodi yokhiye %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"U-Shift uvuliwe (thepha ukuwuvimbela)"</string>
