@@ -102,6 +102,8 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
     static const char *const UNIGRAM_COUNT_QUERY;
     static const char *const BIGRAM_COUNT_QUERY;
+    static const char *const MAX_UNIGRAM_COUNT_QUERY;
+    static const char *const MAX_BIGRAM_COUNT_QUERY;
     static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
     static const int MAX_DICT_EXTENDED_REGION_SIZE;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;

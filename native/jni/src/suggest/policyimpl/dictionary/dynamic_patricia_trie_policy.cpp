@@ -37,6 +37,8 @@ namespace latinime {
 // BinaryDictionaryDecayingTests.
 const char *const DynamicPatriciaTriePolicy::UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
 const char *const DynamicPatriciaTriePolicy::BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
+const char *const DynamicPatriciaTriePolicy::MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM_COUNT";
+const char *const DynamicPatriciaTriePolicy::MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 const char *const DynamicPatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY =
         "SET_NEEDS_TO_DECAY_FOR_TESTING";
 const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 1024 * 1024;
@@ -355,6 +357,14 @@ void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const
         snprintf(outResult, maxResultLength, "%d", mUnigramCount);
     } else if (strncmp(query, BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
         snprintf(outResult, maxResultLength, "%d", mBigramCount);
+    } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d",
+                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
+                        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE);
+    } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
+        snprintf(outResult, maxResultLength, "%d",
+                mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
+                        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE);
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, maxResultLength) == 0) {
         mNeedsToDecayForTesting = true;
     }
