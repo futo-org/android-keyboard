@@ -589,7 +589,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             // Needs to save pending updates for recent keys when we get out of the recents
             // category because we don't want to move the recent emojis around while the user
             // is in the recents category.
-            mEmojiKeyboardAdapter.flushPendingRecentKeys();
+            mEmojiPalettesAdapter.flushPendingRecentKeys();
         }
 
         mEmojiCategory.setCurrentCategoryId(categoryId);
