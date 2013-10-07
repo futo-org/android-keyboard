@@ -413,7 +413,6 @@
         </attr>
         <attr name="navigateNext" format="boolean" />
         <attr name="navigatePrevious" format="boolean" />
-        <attr name="navigateEmoji" format="boolean" />
         <attr name="passwordInput" format="boolean" />
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
