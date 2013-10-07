@@ -286,14 +286,16 @@ public final class Suggest {
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
                 || suggestionsSet.isEmpty() || wordComposer.hasDigits()
-                || wordComposer.isMostlyCaps() || wordComposer.isResumed()
-                || !hasMainDictionary()) {
+                || wordComposer.isMostlyCaps() || wordComposer.isResumed() || !hasMainDictionary()
+                || SuggestedWordInfo.KIND_SHORTCUT == suggestionsSet.first().mKind) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user
             // types in English with no dictionary and has a "Will" in their contact list, "will"
             // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
             // auto-correct.
+            // Also, shortcuts should never auto-correct unless they are whitelist entries.
+            // TODO: we may want to have shortcut-only entries auto-correct in the future.
             hasAutoCorrection = false;
         } else {
             hasAutoCorrection = AutoCorrectionUtils.suggestionExceedsAutoCorrectionThreshold(
