@@ -20,7 +20,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.EmojiKeyboardView;
+import com.android.inputmethod.keyboard.EmojiPalettesView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.settings.Settings;
@@ -63,7 +63,7 @@ public class DynamicGridKeyboard extends Keyboard {
         mVerticalStep = key0.getHeight() + mVerticalGap;
         mColumnsNum = mBaseWidth / mHorizontalStep;
         mMaxKeyCount = maxKeyCount;
-        mIsRecents = categoryId == EmojiKeyboardView.CATEGORY_ID_RECENTS;
+        mIsRecents = categoryId == EmojiPalettesView.CATEGORY_ID_RECENTS;
         mPrefs = prefs;
     }
 

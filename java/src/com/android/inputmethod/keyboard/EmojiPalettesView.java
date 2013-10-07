@@ -60,8 +60,8 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * View class to implement Emoji keyboards.
- * The Emoji keyboard consists of group of views {@link R.layout#emoji_keyboard_view}.
+ * View class to implement Emoji palettes.
+ * The Emoji keyboard consists of group of views {@link R.layout#emoji_palettes_view}.
  * <ol>
  * <li> Emoji category tabs.
  * <li> Delete button.
@@ -70,16 +70,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ol>
  * Because of the above reasons, this class doesn't extend {@link KeyboardView}.
  */
-public final class EmojiKeyboardView extends LinearLayout implements OnTabChangeListener,
+public final class EmojiPalettesView extends LinearLayout implements OnTabChangeListener,
         ViewPager.OnPageChangeListener, View.OnClickListener,
         ScrollKeyboardView.OnKeyClickListener {
-    private static final String TAG = EmojiKeyboardView.class.getSimpleName();
+    private static final String TAG = EmojiPalettesView.class.getSimpleName();
     private final int mKeyBackgroundId;
     private final int mEmojiFunctionalKeyBackgroundId;
     private final KeyboardLayoutSet mLayoutSet;
     private final ColorStateList mTabLabelColor;
     private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
-    private EmojiKeyboardAdapter mEmojiKeyboardAdapter;
+    private EmojiPalettesAdapter mEmojiPalettesAdapter;
 
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
@@ -378,11 +378,11 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     private final EmojiCategory mEmojiCategory;
 
-    public EmojiKeyboardView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, R.attr.emojiKeyboardViewStyle);
+    public EmojiPalettesView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.emojiPalettesViewStyle);
     }
 
-    public EmojiKeyboardView(final Context context, final AttributeSet attrs, final int defStyle) {
+    public EmojiPalettesView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
@@ -391,11 +391,11 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mEmojiFunctionalKeyBackgroundId = keyboardViewAttr.getResourceId(
                 R.styleable.KeyboardView_keyBackgroundEmojiFunctional, 0);
         keyboardViewAttr.recycle();
-        final TypedArray emojiKeyboardViewAttr = context.obtainStyledAttributes(attrs,
-                R.styleable.EmojiKeyboardView, defStyle, R.style.EmojiKeyboardView);
-        mTabLabelColor = emojiKeyboardViewAttr.getColorStateList(
-                R.styleable.EmojiKeyboardView_emojiTabLabelColor);
-        emojiKeyboardViewAttr.recycle();
+        final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
+                R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
+        mTabLabelColor = emojiPalettesViewAttr.getColorStateList(
+                R.styleable.EmojiPalettesView_emojiTabLabelColor);
+        emojiPalettesViewAttr.recycle();
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 context, null /* editorInfo */);
         final Resources res = context.getResources();
@@ -453,10 +453,10 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         mTabHost.setOnTabChangedListener(this);
         mTabHost.getTabWidget().setStripEnabled(true);
 
-        mEmojiKeyboardAdapter = new EmojiKeyboardAdapter(mEmojiCategory, mLayoutSet, this);
+        mEmojiPalettesAdapter = new EmojiPalettesAdapter(mEmojiCategory, mLayoutSet, this);
 
         mEmojiPager = (ViewPager)findViewById(R.id.emoji_keyboard_pager);
-        mEmojiPager.setAdapter(mEmojiKeyboardAdapter);
+        mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setOnPageChangeListener(this);
         mEmojiPager.setOffscreenPageLimit(0);
         final Resources res = getResources();
@@ -551,7 +551,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
     @Override
     public void onKeyClick(final Key key) {
-        mEmojiKeyboardAdapter.addRecentKey(key);
+        mEmojiPalettesAdapter.addRecentKey(key);
         mEmojiCategory.saveLastTypedCategoryPage();
         final int code = key.getCode();
         if (code == Constants.CODE_OUTPUT_TEXT) {
@@ -604,7 +604,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         }
     }
 
-    private static class EmojiKeyboardAdapter extends PagerAdapter {
+    private static class EmojiPalettesAdapter extends PagerAdapter {
         private final ScrollKeyboardView.OnKeyClickListener mListener;
         private final DynamicGridKeyboard mRecentsKeyboard;
         private final SparseArray<ScrollKeyboardView> mActiveKeyboardView =
@@ -612,7 +612,7 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
         private final EmojiCategory mEmojiCategory;
         private int mActivePosition = 0;
 
-        public EmojiKeyboardAdapter(final EmojiCategory emojiCategory,
+        public EmojiPalettesAdapter(final EmojiCategory emojiCategory,
                 final KeyboardLayoutSet layoutSet,
                 final ScrollKeyboardView.OnKeyClickListener listener) {
             mEmojiCategory = emojiCategory;
@@ -662,6 +662,12 @@ public final class EmojiKeyboardView extends LinearLayout implements OnTabChange
 
         @Override
         public Object instantiateItem(final ViewGroup container, final int position) {
+            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardView.get(position);
+            if (oldKeyboardView != null) {
+                oldKeyboardView.deallocateMemory();
+                // This may be redundant but wanted to be safer..
+                mActiveKeyboardView.remove(position);
+            }
             final Keyboard keyboard =
                     mEmojiCategory.getKeyboardFromPagePosition(position);
             final LayoutInflater inflater = LayoutInflater.from(container.getContext());

@@ -68,7 +68,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
     private MainKeyboardView mKeyboardView;
-    private EmojiKeyboardView mEmojiKeyboardView;
+    private EmojiPalettesView mEmojiPalettesView;
     private LatinIME mLatinIME;
     private Resources mResources;
 
@@ -169,7 +169,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setKeyboard(final Keyboard keyboard) {
-        // Make {@link MainKeyboardView} visible and hide {@link EmojiKeyboardView}.
+        // Make {@link MainKeyboardView} visible and hide {@link EmojiPalettesView}.
         setMainKeyboardFrame();
         final MainKeyboardView keyboardView = mKeyboardView;
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
@@ -259,14 +259,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private void setMainKeyboardFrame() {
         mMainKeyboardFrame.setVisibility(View.VISIBLE);
-        mEmojiKeyboardView.setVisibility(View.GONE);
+        mEmojiPalettesView.setVisibility(View.GONE);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
         mMainKeyboardFrame.setVisibility(View.GONE);
-        mEmojiKeyboardView.setVisibility(View.VISIBLE);
+        mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -315,7 +315,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public boolean isShowingEmojiKeyboard() {
-        return mEmojiKeyboardView != null && mEmojiKeyboardView.getVisibility() == View.VISIBLE;
+        return mEmojiPalettesView != null && mEmojiPalettesView.getVisibility() == View.VISIBLE;
     }
 
     public boolean isShowingMoreKeysPanel() {
@@ -327,7 +327,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public View getVisibleKeyboardView() {
         if (isShowingEmojiKeyboard()) {
-            return mEmojiKeyboardView;
+            return mEmojiPalettesView;
         }
         return mKeyboardView;
     }
@@ -345,15 +345,15 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
-        mEmojiKeyboardView = (EmojiKeyboardView)mCurrentInputView.findViewById(
+        mEmojiPalettesView = (EmojiPalettesView)mCurrentInputView.findViewById(
                 R.id.emoji_keyboard_view);
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
-        mEmojiKeyboardView.setHardwareAcceleratedDrawingEnabled(
+        mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
                 isHardwareAcceleratedDrawingEnabled);
-        mEmojiKeyboardView.setKeyboardActionListener(mLatinIME);
+        mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.
