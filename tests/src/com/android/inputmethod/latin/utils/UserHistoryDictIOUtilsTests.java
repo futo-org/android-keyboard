@@ -196,8 +196,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         final UserHistoryDictionaryBigramList resultList = new UserHistoryDictionaryBigramList();
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
-            public void setUnigram(final String word,
-                    final String shortcutTarget, final int frequency) {
+            public void setUnigram(final String word, final String shortcutTarget,
+                    final int frequency, final int shortcutFreq) {
                 Log.d(TAG, "in: setUnigram: " + word + "," + frequency);
                 resultList.addBigram(null, word, (byte)frequency);
             }
@@ -220,8 +220,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
         final UserHistoryDictionaryBigramList resultList2 = new UserHistoryDictionaryBigramList();
         final OnAddWordListener listener2 = new OnAddWordListener() {
             @Override
-            public void setUnigram(final String word,
-                    final String shortcutTarget, final int frequency) {
+            public void setUnigram(final String word, final String shortcutTarget,
+                    final int frequency, final int shortcutFreq) {
                 Log.d(TAG, "in: setUnigram: " + word + "," + frequency);
                 resultList2.addBigram(null, word, (byte)frequency);
             }

@@ -26,13 +26,16 @@ import android.test.suitebuilder.annotation.SmallTest;
 public class ExpandableDictionaryTests extends AndroidTestCase {
 
     private final static int UNIGRAM_FREQ = 50;
+    // See UserBinaryDictionary for more information about this variable.
+    // For tests, its actual value does not matter.
+    private final static int SHORTCUT_FREQ = 14;
 
     public void testAddWordAndGetWordFrequency() {
         final ExpandableDictionary dict = new ExpandableDictionary(Dictionary.TYPE_USER);
 
         // Add words
-        dict.addWord("abcde", "abcde", UNIGRAM_FREQ);
-        dict.addWord("abcef", null, UNIGRAM_FREQ + 1);
+        dict.addWord("abcde", "abcde", UNIGRAM_FREQ, SHORTCUT_FREQ);
+        dict.addWord("abcef", null, UNIGRAM_FREQ + 1, 0);
 
         // Check words
         assertFalse(dict.isValidWord("abcde"));
@@ -40,16 +43,16 @@ public class ExpandableDictionaryTests extends AndroidTestCase {
         assertTrue(dict.isValidWord("abcef"));
         assertEquals(UNIGRAM_FREQ+1, dict.getWordFrequency("abcef"));
 
-        dict.addWord("abc", null, UNIGRAM_FREQ + 2);
+        dict.addWord("abc", null, UNIGRAM_FREQ + 2, 0);
         assertTrue(dict.isValidWord("abc"));
         assertEquals(UNIGRAM_FREQ + 2, dict.getWordFrequency("abc"));
 
         // Add existing word with lower frequency
-        dict.addWord("abc", null, UNIGRAM_FREQ);
+        dict.addWord("abc", null, UNIGRAM_FREQ, 0);
         assertEquals(UNIGRAM_FREQ + 2, dict.getWordFrequency("abc"));
 
         // Add existing word with higher frequency
-        dict.addWord("abc", null, UNIGRAM_FREQ + 3);
+        dict.addWord("abc", null, UNIGRAM_FREQ + 3, 0);
         assertEquals(UNIGRAM_FREQ + 3, dict.getWordFrequency("abc"));
     }
 }

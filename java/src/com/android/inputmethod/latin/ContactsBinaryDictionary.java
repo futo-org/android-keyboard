@@ -127,7 +127,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (DEBUG) {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
-            super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
+            super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS, 0 /* shortcutFreq */,
                     false /* isNotAWord */);
         }
     }
@@ -213,7 +213,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                         Log.d(TAG, "addName " + name + ", " + word + ", " + prevWord);
                     }
                     super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
-                            false /* isNotAWord */);
+                            0 /* shortcutFreq */, false /* isNotAWord */);
                     if (!TextUtils.isEmpty(prevWord)) {
                         if (mUseFirstLastBigrams) {
                             super.addBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
