@@ -904,12 +904,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Sometimes, while rotating, for some reason the framework tells the app we are not
         // connected to it and that means we can't refresh the cache. In this case, schedule a
         // refresh later.
+        final boolean canReachInputConnection;
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(editorInfo.initialSelStart,
                 false /* shouldFinishComposition */)) {
             // We try resetting the caches up to 5 times before giving up.
             mHandler.postResetCaches(isDifferentTextField, 5 /* remainingTries */);
+            canReachInputConnection = false;
         } else {
-            if (isDifferentTextField) mHandler.postResumeSuggestions();
+            if (isDifferentTextField) {
+                mHandler.postResumeSuggestions();
+            }
+            canReachInputConnection = true;
         }
 
         if (isDifferentTextField) {
@@ -921,7 +926,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 suggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
             }
 
-            switcher.loadKeyboard(editorInfo, currentSettingsValues);
+            if (canReachInputConnection) {
+                // If we can't reach the input connection, we don't want to call loadKeyboard yet.
+                // It will be done in #retryResetCaches.
+                switcher.loadKeyboard(editorInfo, currentSettingsValues);
+            }
         } else if (restarting) {
             // TODO: Come up with a more comprehensive way to reset the keyboard layout when
             // a keyboard layout set doesn't get reloaded in this method.
@@ -2955,11 +2964,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mConnection.resetCachesUponCursorMoveAndReturnSuccess(mLastSelectionStart, false)) {
             if (0 < remainingTries) {
                 mHandler.postResetCaches(tryResumeSuggestions, remainingTries - 1);
+                return;
             }
-            return;
+            // If remainingTries is 0, we should stop waiting for new tries, but it's still
+            // better to load the keyboard (less things will be broken).
         }
         tryFixLyingCursorPosition();
-        mKeyboardSwitcher.updateShiftState();
+        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettings.getCurrent());
         if (tryResumeSuggestions) mHandler.postResumeSuggestions();
     }
 
