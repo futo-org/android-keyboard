@@ -204,10 +204,20 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         return AndroidSpellCheckerSessionFactory.newInstance(this);
     }
 
-    public static SuggestionsInfo getNotInDictEmptySuggestions() {
-        return new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
+    /**
+     * Returns an empty SuggestionsInfo with flags signaling the word is not in the dictionary.
+     * @param reportAsTypo whether this should include the flag LOOKS_LIKE_TYPO, for red underline.
+     * @return the empty SuggestionsInfo with the appropriate flags set.
+     */
+    public static SuggestionsInfo getNotInDictEmptySuggestions(final boolean reportAsTypo) {
+        return new SuggestionsInfo(reportAsTypo ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0,
+                EMPTY_STRING_ARRAY);
     }
 
+    /**
+     * Returns an empty suggestionInfo with flags signaling the word is in the dictionary.
+     * @return the empty SuggestionsInfo with the appropriate flags set.
+     */
     public static SuggestionsInfo getInDictEmptySuggestions() {
         return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
                 EMPTY_STRING_ARRAY);
