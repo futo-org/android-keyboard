@@ -484,10 +484,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         spaceKey.setTag(Constants.CODE_SPACE);
         spaceKey.setOnClickListener(this);
         emojiLp.setKeyProperties(spaceKey);
-        final ImageView sendKey = (ImageView)findViewById(R.id.emoji_keyboard_send);
-        sendKey.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
-        sendKey.setTag(Constants.CODE_ENTER);
-        sendKey.setOnClickListener(this);
+        final ImageView alphabetKey2 = (ImageView)findViewById(R.id.emoji_keyboard_alphabet2);
+        alphabetKey2.setBackgroundResource(mEmojiFunctionalKeyBackgroundId);
+        alphabetKey2.setTag(Constants.CODE_SWITCH_ALPHA_SYMBOL);
+        alphabetKey2.setOnClickListener(this);
     }
 
     @Override

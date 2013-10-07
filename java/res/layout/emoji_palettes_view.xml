@@ -101,10 +101,10 @@
             android:layout_weight="0.70"
             android:layout_height="match_parent" />
         <ImageButton
-            android:id="@+id/emoji_keyboard_send"
+            android:id="@+id/emoji_keyboard_alphabet2"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:layout_height="match_parent"
-            android:src="@drawable/sym_keyboard_return_holo_dark" />
+            android:src="@drawable/ic_ime_switcher_dark" />
     </LinearLayout>
 </com.android.inputmethod.keyboard.EmojiPalettesView>
