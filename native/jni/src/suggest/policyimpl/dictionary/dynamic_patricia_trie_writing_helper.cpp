@@ -240,7 +240,8 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
             int parentOffsetFieldPos = nodeReader->getHeadPos()
                     + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
             if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
-                    mBuffer, movedPos, nodeReader->getHeadPos(), &parentOffsetFieldPos)) {
+                    mBuffer, bigramLinkedNodePos, nodeReader->getHeadPos(),
+                    &parentOffsetFieldPos)) {
                 // Parent offset cannot be written because of a bug or a broken dictionary; thus,
                 // we give up to update dictionary.
                 return false;
