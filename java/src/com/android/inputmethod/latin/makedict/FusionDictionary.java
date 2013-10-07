@@ -367,10 +367,11 @@ public final class FusionDictionary implements Iterable<Word> {
      * Helper method to convert a String to an int array.
      */
     static int[] getCodePoints(final String word) {
-        // TODO: this is a copy-paste of the contents of StringUtils.toCodePointArray,
+        // TODO: this is a copy-paste of the old contents of StringUtils.toCodePointArray,
         // which is not visible from the makedict package. Factor this code.
+        final int length = word.length();
+        if (length <= 0) return new int[] {};
         final char[] characters = word.toCharArray();
-        final int length = characters.length;
         final int[] codePoints = new int[Character.codePointCount(characters, 0, length)];
         int codePoint = Character.codePointAt(characters, 0);
         int dsti = 0;
