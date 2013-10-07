@@ -808,6 +808,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @SuppressWarnings("deprecation")
     private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
+        mRichImm.clearSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
         // If we are starting input in a different text field from before, we'll have to reload
@@ -1049,7 +1050,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
         if (mWordComposer.isComposingWord()) mConnection.finishComposingText();
         resetComposingState(true /* alsoResetLastComposedWord */);
-        mRichImm.clearSubtypeCaches();
         // Notify ResearchLogger
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onFinishInputViewInternal(finishingInput, mLastSelectionStart,
