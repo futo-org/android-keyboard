@@ -52,6 +52,10 @@ public final class BinaryDictionary extends Dictionary {
     public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
     @UsedForTesting
     public static final String BIGRAM_COUNT_QUERY = "BIGRAM_COUNT";
+    @UsedForTesting
+    public static final String MAX_UNIGRAM_COUNT_QUERY = "MAX_UNIGRAM_COUNT";
+    @UsedForTesting
+    public static final String MAX_BIGRAM_COUNT_QUERY = "MAX_BIGRAM_COUNT";
 
     private long mNativeDict;
     private final Locale mLocale;

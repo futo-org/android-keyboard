@@ -93,6 +93,12 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
     if (!listener->onDescend(getPosOfLastPtNodeArrayHead())) {
         return false;
     }
+    if (isEnd()) {
+        // Empty dictionary. Needs to notify the listener of the tail of empty PtNode array.
+        if (!listener->onReadingPtNodeArrayTail()) {
+            return false;
+        }
+    }
     pushReadingStateToStack();
     while (!isEnd()) {
         if (alreadyVisitedAllPtNodesInArray) {
