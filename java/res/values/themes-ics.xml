@@ -23,7 +23,7 @@
         <item name="keyboardStyle">@style/Keyboard.ICS</item>
         <item name="keyboardViewStyle">@style/KeyboardView.ICS</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
-        <item name="emojiKeyboardViewStyle">@style/EmojiKeyboardView.ICS</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
         <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.ICS</item>
@@ -97,10 +97,10 @@
         <item name="spacebarTextColor">@color/spacebar_text_color_ics</item>
         <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_ics</item>
     </style>
-    <!-- Though {@link EmojiKeyboardView} doesn't extend {@link KeyboardView}, some views inside it,
+    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
-        name="EmojiKeyboardView.ICS"
+        name="EmojiPalettesView.ICS"
         parent="KeyboardView.ICS"
     >
         <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_ics</item>

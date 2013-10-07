@@ -56,5 +56,5 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     <include
-        layout="@layout/emoji_keyboard_view" />
+        layout="@layout/emoji_palettes_view" />
 </com.android.inputmethod.latin.InputView>
