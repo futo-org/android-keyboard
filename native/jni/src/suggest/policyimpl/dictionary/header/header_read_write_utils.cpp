@@ -118,6 +118,9 @@ const char *const HeaderReadWriteUtils::REQUIRES_FRENCH_LIGATURE_PROCESSING_KEY 
         case FormatUtils::VERSION_3:
             return buffer->writeUintAndAdvancePosition(3 /* data */,
                     HEADER_DICTIONARY_VERSION_SIZE, writingPos);
+        case FormatUtils::VERSION_4:
+            return buffer->writeUintAndAdvancePosition(4 /* data */,
+                    HEADER_DICTIONARY_VERSION_SIZE, writingPos);
         default:
             return false;
     }

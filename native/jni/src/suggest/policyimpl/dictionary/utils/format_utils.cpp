@@ -45,6 +45,8 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
                 return VERSION_2;
             } else if (ByteArrayUtils::readUint16(dict, 4) == 3) {
                 return VERSION_3;
+            } else if (ByteArrayUtils::readUint16(dict, 4) == 4) {
+                return VERSION_4;
             } else {
                 return UNKNOWN_VERSION;
             }

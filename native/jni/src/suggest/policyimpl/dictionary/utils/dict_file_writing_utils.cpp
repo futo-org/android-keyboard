@@ -33,6 +33,9 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
     switch (dictVersion) {
         case 3:
             return createEmptyV3DictFile(filePath, attributeMap);
+        case 4:
+            // TODO: Support version 4 dictionary format.
+            return false;
         default:
             // Only version 3 dictionary is supported for now.
             return false;
