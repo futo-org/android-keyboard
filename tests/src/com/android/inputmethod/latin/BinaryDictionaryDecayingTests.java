@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Pair;
 
 import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
@@ -124,11 +125,16 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
         binaryDictionary.addBigramWords("a", "c", DUMMY_PROBABILITY);
         assertTrue(binaryDictionary.isValidBigram("a", "c"));
 
+        // Add bigrams of not valid unigrams.
+        binaryDictionary.addBigramWords("x", "y", Dictionary.NOT_A_PROBABILITY);
+        assertFalse(binaryDictionary.isValidBigram("x", "y"));
+        binaryDictionary.addBigramWords("x", "y", DUMMY_PROBABILITY);
+        assertFalse(binaryDictionary.isValidBigram("x", "y"));
+
         binaryDictionary.close();
         dictFile.delete();
     }
 
-    // TODO: Add large tests.
     public void testDecayingProbability() {
         File dictFile = null;
         try {
@@ -232,5 +238,71 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) > 0);
         assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
                 BinaryDictionary.UNIGRAM_COUNT_QUERY)) <= maxUnigramCount);
+    }
+
+    public void testAddManyBigramsToDecayingDict() {
+        final int unigramCount = 5000;
+        final int bigramCount = 30000;
+        final int bigramTypedCount = 100000;
+        final int codePointSetSize = 50;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final ArrayList<String> words = new ArrayList<String>();
+        final ArrayList<Pair<String, String>> bigrams = new ArrayList<Pair<String, String>>();
+
+        for (int i = 0; i < unigramCount; ++i) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+        }
+        for (int i = 0; i < bigramCount; ++i) {
+            final int word0Index = random.nextInt(words.size());
+            int word1Index = random.nextInt(words.size() - 1);
+            if (word1Index >= word0Index) {
+                word1Index += 1;
+            }
+            final String word0 = words.get(word0Index);
+            final String word1 = words.get(word1Index);
+            final Pair<String, String> bigram = new Pair<String, String>(word0, word1);
+            bigrams.add(bigram);
+        }
+
+        final int maxBigramCount = Integer.parseInt(
+                binaryDictionary.getPropertyForTests(BinaryDictionary.MAX_BIGRAM_COUNT_QUERY));
+        for (int i = 0; i < bigramTypedCount; ++i) {
+            final Pair<String, String> bigram = bigrams.get(random.nextInt(bigrams.size()));
+            binaryDictionary.addUnigramWord(bigram.first, DUMMY_PROBABILITY);
+            binaryDictionary.addUnigramWord(bigram.second, DUMMY_PROBABILITY);
+            binaryDictionary.addBigramWords(bigram.first, bigram.second, DUMMY_PROBABILITY);
+
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                final int bigramCountBeforeGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.BIGRAM_COUNT_QUERY));
+                while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                    binaryDictionary.flushWithGC();
+                }
+                final int bigramCountAfterGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.BIGRAM_COUNT_QUERY));
+                assertTrue(bigramCountBeforeGC > bigramCountAfterGC);
+            }
+        }
+
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.BIGRAM_COUNT_QUERY)) > 0);
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.BIGRAM_COUNT_QUERY)) <= maxBigramCount);
     }
 }
