@@ -30,8 +30,9 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.latin.R;
 
 /**
- * This is an extended {@link KeyboardView} class that hosts a scroll keyboard.
+ * This is an extended {@link KeyboardView} class that hosts a vertical scroll keyboard.
  * Multi-touch unsupported. No {@link PointerTracker}s. No gesture support.
+ * TODO: Vertical scroll capability should be removed from this class because it's no longer used.
  */
 // TODO: Implement key popup preview.
 public final class ScrollKeyboardView extends KeyboardView implements
