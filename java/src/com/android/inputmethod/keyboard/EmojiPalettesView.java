@@ -459,6 +459,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setOnPageChangeListener(this);
         mEmojiPager.setOffscreenPageLimit(0);
+        mEmojiPager.setPersistentDrawingCache(ViewPager.PERSISTENT_NO_CACHE);
         final Resources res = getResources();
         final EmojiLayoutParams emojiLp = new EmojiLayoutParams(res);
         emojiLp.setPagerProperties(mEmojiPager);
@@ -607,7 +608,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private static class EmojiPalettesAdapter extends PagerAdapter {
         private final ScrollKeyboardView.OnKeyClickListener mListener;
         private final DynamicGridKeyboard mRecentsKeyboard;
-        private final SparseArray<ScrollKeyboardView> mActiveKeyboardView =
+        private final SparseArray<ScrollKeyboardView> mActiveKeyboardViews =
                 CollectionUtils.newSparseArray();
         private final EmojiCategory mEmojiCategory;
         private int mActivePosition = 0;
@@ -623,7 +624,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         public void flushPendingRecentKeys() {
             mRecentsKeyboard.flushPendingRecentKeys();
             final KeyboardView recentKeyboardView =
-                    mActiveKeyboardView.get(mEmojiCategory.getRecentTabId());
+                    mActiveKeyboardViews.get(mEmojiCategory.getRecentTabId());
             if (recentKeyboardView != null) {
                 recentKeyboardView.invalidateAllKeys();
             }
@@ -636,7 +637,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             }
             mRecentsKeyboard.addKeyFirst(key);
             final KeyboardView recentKeyboardView =
-                    mActiveKeyboardView.get(mEmojiCategory.getRecentTabId());
+                    mActiveKeyboardViews.get(mEmojiCategory.getRecentTabId());
             if (recentKeyboardView != null) {
                 recentKeyboardView.invalidateAllKeys();
             }
@@ -652,7 +653,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             if (mActivePosition == position) {
                 return;
             }
-            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardView.get(mActivePosition);
+            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardViews.get(mActivePosition);
             if (oldKeyboardView != null) {
                 oldKeyboardView.releaseCurrentKey();
                 oldKeyboardView.deallocateMemory();
@@ -662,11 +663,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         @Override
         public Object instantiateItem(final ViewGroup container, final int position) {
-            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardView.get(position);
+            final ScrollKeyboardView oldKeyboardView = mActiveKeyboardViews.get(position);
             if (oldKeyboardView != null) {
                 oldKeyboardView.deallocateMemory();
                 // This may be redundant but wanted to be safer..
-                mActiveKeyboardView.remove(position);
+                mActiveKeyboardViews.remove(position);
             }
             final Keyboard keyboard =
                     mEmojiCategory.getKeyboardFromPagePosition(position);
@@ -681,7 +682,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                     R.id.emoji_keyboard_scroller);
             keyboardView.setScrollView(scrollView);
             container.addView(view);
-            mActiveKeyboardView.put(position, keyboardView);
+            mActiveKeyboardViews.put(position, keyboardView);
             return view;
         }
 
@@ -693,12 +694,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         @Override
         public void destroyItem(final ViewGroup container, final int position,
                 final Object object) {
-            final ScrollKeyboardView keyboardView = mActiveKeyboardView.get(position);
+            ScrollKeyboardView keyboardView = mActiveKeyboardViews.get(position);
             if (keyboardView != null) {
                 keyboardView.deallocateMemory();
-                mActiveKeyboardView.remove(position);
+                mActiveKeyboardViews.remove(position);
             }
             container.removeView(keyboardView);
+            keyboardView = null;
         }
     }
 
