@@ -238,12 +238,16 @@ public class InputTestsBase extends ServiceTestCase<LatinIMEForTests> {
     }
 
     protected void changeLanguage(final String locale) {
+        changeLanguageWithoutWait(locale);
+        waitForDictionaryToBeLoaded();
+    }
+
+    protected void changeLanguageWithoutWait(final String locale) {
         mEditText.mCurrentLocale = LocaleUtils.constructLocaleFromString(locale);
         SubtypeSwitcher.getInstance().forceLocale(mEditText.mCurrentLocale);
         mLatinIME.loadKeyboard();
         runMessages();
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
-        waitForDictionaryToBeLoaded();
     }
 
     protected void changeKeyboardLocaleAndDictLocale(final String keyboardLocale,
