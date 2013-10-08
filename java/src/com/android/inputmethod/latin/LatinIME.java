@@ -1050,11 +1050,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         mKeyboardSwitcher.onFinishInputView();
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView != null) {
-            mainKeyboardView.cancelAllOngoingEvents();
-            mainKeyboardView.deallocateMemory();
-        }
+        mKeyboardSwitcher.deallocateMemory();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
