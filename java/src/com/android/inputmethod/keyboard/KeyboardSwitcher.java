@@ -260,12 +260,14 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private void setMainKeyboardFrame() {
         mMainKeyboardFrame.setVisibility(View.VISIBLE);
         mEmojiPalettesView.setVisibility(View.GONE);
+        mEmojiPalettesView.stopEmojiPalettes();
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
         mMainKeyboardFrame.setVisibility(View.GONE);
+        mEmojiPalettesView.startEmojiPalettes();
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
@@ -334,6 +336,16 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public MainKeyboardView getMainKeyboardView() {
         return mKeyboardView;
+    }
+
+    public void deallocateMemory() {
+        if (mKeyboardView != null) {
+            mKeyboardView.cancelAllOngoingEvents();
+            mKeyboardView.deallocateMemory();
+        }
+        if (mEmojiPalettesView != null) {
+            mEmojiPalettesView.stopEmojiPalettes();
+        }
     }
 
     public View onCreateInputView(final boolean isHardwareAcceleratedDrawingEnabled) {
