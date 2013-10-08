@@ -694,13 +694,16 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         @Override
         public void destroyItem(final ViewGroup container, final int position,
                 final Object object) {
-            ScrollKeyboardView keyboardView = mActiveKeyboardViews.get(position);
+            final ScrollKeyboardView keyboardView = mActiveKeyboardViews.get(position);
             if (keyboardView != null) {
                 keyboardView.deallocateMemory();
                 mActiveKeyboardViews.remove(position);
             }
-            container.removeView(keyboardView);
-            keyboardView = null;
+            if (object instanceof View) {
+                container.removeView((View)object);
+            } else {
+                Log.w(TAG, "Warning!!! Emoji palette may be leaking. " + object);
+            }
         }
     }
 
