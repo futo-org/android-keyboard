@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
@@ -57,6 +58,7 @@ public final class SettingsValues {
     public final int[] mWordConnectors;
     public final SuggestedWords mSuggestPuncList;
     public final String mWordSeparators;
+    public final int mSentenceSeparator;
     public final CharSequence mHintToSaveText;
     public final boolean mCurrentLanguageHasSpaces;
 
@@ -120,6 +122,7 @@ public final class SettingsValues {
                 R.string.suggested_punctuations));
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = res.getString(R.string.symbols_word_separators);
+        mSentenceSeparator = res.getInteger(R.integer.sentence_separator);
         mHintToSaveText = res.getText(R.string.hint_add_to_dictionary);
         mCurrentLanguageHasSpaces = res.getBoolean(R.bool.current_language_has_spaces);
 
@@ -187,6 +190,7 @@ public final class SettingsValues {
         Arrays.sort(mSymbolsFollowedBySpace);
         mWordConnectors = new int[] { '\'', '-' };
         Arrays.sort(mWordConnectors);
+        mSentenceSeparator = Constants.CODE_PERIOD;
         final String[] suggestPuncsSpec = new String[] { "!", "?", ",", ":", ";" };
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mWordSeparators = "&\t \n()[]{}*&<>+=|.,;:!?/_\"";
