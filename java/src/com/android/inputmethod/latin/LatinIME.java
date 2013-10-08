@@ -926,10 +926,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 suggest.setAutoCorrectionThreshold(currentSettingsValues.mAutoCorrectionThreshold);
             }
 
-            if (canReachInputConnection) {
-                // If we can't reach the input connection, we don't want to call loadKeyboard yet.
-                // It will be done in #retryResetCaches.
-                switcher.loadKeyboard(editorInfo, currentSettingsValues);
+            switcher.loadKeyboard(editorInfo, currentSettingsValues);
+            if (!canReachInputConnection) {
+                // If we can't reach the input connection, we will call loadKeyboard again later,
+                // so we need to save its state now. The call will be done in #retryResetCaches.
+                switcher.saveKeyboardState();
             }
         } else if (restarting) {
             // TODO: Come up with a more comprehensive way to reset the keyboard layout when
