@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.settings;
 
+import com.android.inputmethod.latin.utils.FragmentUtils;
+
 import android.content.Intent;
 import android.preference.PreferenceActivity;
 
@@ -36,6 +38,6 @@ public final class SettingsActivity extends PreferenceActivity {
     // TODO: Uncomment the override annotation once we start using SDK version 19.
     // @Override
     public boolean isValidFragment(String fragmentName) {
-        return fragmentName.equals(DEFAULT_FRAGMENT);
+        return FragmentUtils.isValidFragment(fragmentName);
     }
 }
