@@ -2307,6 +2307,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mLastSelectionEnd = mRecapitalizeStatus.getNewCursorEnd();
             }
         }
+        mConnection.finishComposingText();
         mRecapitalizeStatus.rotate();
         final int numCharsDeleted = mLastSelectionEnd - mLastSelectionStart;
         mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
