@@ -25,6 +25,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 
@@ -143,12 +144,17 @@ public final class AdditionalSubtypeUtils {
         // from the current users. So, you should be really careful to change it.
         final int subtypeId = getInputMethodSubtypeId(nameId, localeString, layoutExtraValue,
                 additionalSubtypeExtraValue);
-        // TODO: Use InputMethodSubtypeBuilder once we use SDK version 19.
-        return new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
-                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue
-                        + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-                        + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE, false, false,
-                        subtypeId);
+        final String extraValue;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            extraValue = layoutExtraValue + "," + additionalSubtypeExtraValue
+                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                    + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE;
+        } else {
+            extraValue = layoutExtraValue + "," + additionalSubtypeExtraValue;
+        }
+        return InputMethodSubtypeCompatUtils.newInputMethodSubtype(nameId,
+                R.drawable.ic_ime_switcher_dark, localeString, KEYBOARD_MODE, extraValue,
+                false, false, subtypeId);
     }
 
     private static int getInputMethodSubtypeId(int nameId, String localeString,
