@@ -184,12 +184,12 @@ public class DynamicGridKeyboard extends Keyboard {
 
     private int getKeyY0(final int index) {
         final int row = index / mColumnsNum;
-        return row * mVerticalStep;
+        return row * mVerticalStep + mVerticalGap / 2;
     }
 
     private int getKeyY1(final int index) {
         final int row = index / mColumnsNum + 1;
-        return row * mVerticalStep;
+        return row * mVerticalStep + mVerticalGap / 2;
     }
 
     @Override
