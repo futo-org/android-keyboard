@@ -20,7 +20,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
-#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
 
@@ -43,7 +43,7 @@ void DynamicBigramListPolicy::getNextBigram(int *const outBigramPos, int *const 
     }
     *outProbability = BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags);
     *outHasNext = BigramListReadWriteUtils::hasNext(bigramFlags);
-    if (mIsDecayingDict && !DecayingUtils::isValidBigram(*outProbability)) {
+    if (mIsDecayingDict && !ForgettingCurveUtils::isValidBigram(*outProbability)) {
         // This bigram is too weak to output.
         *outBigramPos = NOT_A_DICT_POS;
     } else {
@@ -261,7 +261,7 @@ bool DynamicBigramListPolicy::addNewBigramEntryToBigramList(const int bigramTarg
             const int originalProbability = BigramListReadWriteUtils::getProbabilityFromFlags(
                     bigramFlags);
             const int probabilityToWrite = mIsDecayingDict ?
-                    DecayingUtils::getUpdatedBigramProbabilityDelta(
+                    ForgettingCurveUtils::getUpdatedBigramProbabilityDelta(
                             originalProbability, probability) : probability;
             const BigramListReadWriteUtils::BigramFlags updatedFlags =
                     BigramListReadWriteUtils::setProbabilityInFlags(bigramFlags,
@@ -294,7 +294,7 @@ bool DynamicBigramListPolicy::writeNewBigramEntry(const int bigramTargetPos, con
         int *const writingPos) {
     // hasNext is false because we are adding a new bigram entry at the end of the bigram list.
     const int probabilityToWrite = mIsDecayingDict ?
-            DecayingUtils::getUpdatedBigramProbabilityDelta(NOT_A_PROBABILITY, probability) :
+            ForgettingCurveUtils::getUpdatedBigramProbabilityDelta(NOT_A_PROBABILITY, probability) :
                     probability;
     return BigramListReadWriteUtils::createAndWriteBigramEntry(mBuffer, bigramTargetPos,
             probabilityToWrite, false /* hasNext */, writingPos);
@@ -365,9 +365,9 @@ bool DynamicBigramListPolicy::updateProbabilityForDecay(
     *outRemoved = false;
     if (mIsDecayingDict) {
         // Update bigram probability for decaying.
-        const int newProbability = DecayingUtils::getBigramProbabilityDeltaToSave(
+        const int newProbability = ForgettingCurveUtils::getBigramProbabilityDeltaToSave(
                 BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags));
-        if (DecayingUtils::isValidBigram(newProbability)) {
+        if (ForgettingCurveUtils::isValidBigram(newProbability)) {
             // Write new probability.
             const BigramListReadWriteUtils::BigramFlags updatedBigramFlags =
                     BigramListReadWriteUtils::setProbabilityInFlags(

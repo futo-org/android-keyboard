@@ -25,8 +25,8 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
-#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "utils/hash_map_compat.h"
 
 namespace latinime {
@@ -494,7 +494,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         return false;
     }
     if (mNeedsToDecay && traversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
-            .getValidUnigramCount() > DecayingUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
+            .getValidUnigramCount() > ForgettingCurveUtils::MAX_UNIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more unigrams.
     }
 
@@ -507,7 +507,7 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     }
 
     if (mNeedsToDecay && traversePolicyToUpdateBigramProbability.getValidBigramEntryCount()
-            > DecayingUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
+            > ForgettingCurveUtils::MAX_BIGRAM_COUNT_AFTER_GC) {
         // TODO: Remove more bigrams.
     }
 
@@ -545,7 +545,8 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
 int DynamicPatriciaTrieWritingHelper::getUpdatedProbability(const int originalProbability,
         const int newProbability) {
     if (mNeedsToDecay) {
-        return DecayingUtils::getUpdatedUnigramProbability(originalProbability, newProbability);
+        return ForgettingCurveUtils::getUpdatedUnigramProbability(originalProbability,
+                newProbability);
     } else {
         return newProbability;
     }
