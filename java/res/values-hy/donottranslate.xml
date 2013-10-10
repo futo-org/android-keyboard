@@ -26,4 +26,7 @@
     <!-- Symbols that separate words. Adding armenian period and comma. -->
     <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
     <string name="symbols_word_separators">"&#x0009;&#x0020;\n"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"&#x0589;&#x055D;</string>
+    <!-- The sentence separator code point, for capitalization -->
+    <!-- U+0589: "։" ARMENIAN FULL STOP   ; 589h = 1417d -->
+    <integer name="sentence_separator">1417</integer>
 </resources>

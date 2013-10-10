@@ -1411,14 +1411,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from the KeyboardSwitcher which needs to know auto caps state to display
     // the right layout.
     public int getCurrentAutoCapsState() {
-        if (!mSettings.getCurrent().mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        if (!currentSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
         final int inputType = ei.inputType;
         // Warning: this depends on mSpaceState, which may not be the most current value. If
         // mSpaceState gets updated later, whoever called this may need to be told about it.
-        return mConnection.getCursorCapsMode(inputType, mSubtypeSwitcher.getCurrentSubtypeLocale(),
+        return mConnection.getCursorCapsMode(inputType, currentSettingsValues,
                 SPACE_STATE_PHANTOM == mSpaceState);
     }
 
@@ -1459,9 +1460,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean maybeDoubleSpacePeriod() {
-        final SettingsValues settingsValues = mSettings.getCurrent();
-        if (!settingsValues.mCorrectionEnabled) return false;
-        if (!settingsValues.mUseDoubleSpacePeriod) return false;
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        if (!currentSettingsValues.mCorrectionEnabled) return false;
+        if (!currentSettingsValues.mUseDoubleSpacePeriod) return false;
         if (!mHandler.isAcceptingDoubleSpacePeriod()) return false;
         // We only do this when we see two spaces and an accepted code point before the cursor.
         // The code point may be a surrogate pair but the two spaces may not, so we need 4 chars.
@@ -1480,7 +1481,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (canBeFollowedByDoubleSpacePeriod(firstCodePoint)) {
             mHandler.cancelDoubleSpacePeriodTimer();
             mConnection.deleteSurroundingText(2, 0);
-            final String textToInsert = ". ";
+            final String textToInsert = new String(
+                    new int[] { currentSettingsValues.mSentenceSeparator, Constants.CODE_SPACE },
+                    0, 2);
             mConnection.commitText(textToInsert, 1);
             if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
                 ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert,

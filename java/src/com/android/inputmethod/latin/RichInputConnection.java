@@ -245,11 +245,11 @@ public final class RichInputConnection {
      * American English, it's just the most common set of rules for English).
      *
      * @param inputType a mask of the caps modes to test for.
-     * @param locale what language should be considered.
+     * @param settingsValues the values of the settings to use for locale and separators.
      * @param hasSpaceBefore if we should consider there should be a space after the string.
      * @return the caps modes that should be on as a set of bits
      */
-    public int getCursorCapsMode(final int inputType, final Locale locale,
+    public int getCursorCapsMode(final int inputType, final SettingsValues settingsValues,
             final boolean hasSpaceBefore) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
@@ -277,8 +277,8 @@ public final class RichInputConnection {
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
-        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale,
-                hasSpaceBefore);
+        return CapsModeUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType,
+                settingsValues, hasSpaceBefore);
     }
 
     public int getCodePointBeforeCursor() {
