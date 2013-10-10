@@ -20,7 +20,7 @@
 #include <cstring>
 
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 

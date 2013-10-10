@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_gc_event_listeners.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
-#include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"

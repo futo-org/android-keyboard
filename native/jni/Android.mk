@@ -72,16 +72,18 @@ LATIN_IME_CORE_SRC_FILES := \
         header/header_policy.cpp \
         header/header_read_write_utils.cpp \
         shortcut/shortcut_list_reading_utils.cpp \
-        dictionary_structure_with_buffer_policy_factory.cpp \
+        structure/dictionary_structure_with_buffer_policy_factory.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/structure/v2/, \
+        patricia_trie_policy.cpp \
+        patricia_trie_reading_utils.cpp) \
+    $(addprefix suggest/policyimpl/dictionary/structure/v3/, \
         dynamic_patricia_trie_gc_event_listeners.cpp \
         dynamic_patricia_trie_node_reader.cpp \
         dynamic_patricia_trie_policy.cpp \
         dynamic_patricia_trie_reading_helper.cpp \
         dynamic_patricia_trie_reading_utils.cpp \
         dynamic_patricia_trie_writing_helper.cpp \
-        dynamic_patricia_trie_writing_utils.cpp \
-        patricia_trie_policy.cpp \
-        patricia_trie_reading_utils.cpp) \
+        dynamic_patricia_trie_writing_utils.cpp) \
     $(addprefix suggest/policyimpl/dictionary/utils/, \
         buffer_with_extendable_buffer.cpp \
         byte_array_utils.cpp \

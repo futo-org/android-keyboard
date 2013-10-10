@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_utils.h"
 
 #include <cstddef>
 #include <cstdlib>
