@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DECAYING_UTILS_H
-#define LATINIME_DECAYING_UTILS_H
+#ifndef LATINIME_FORGETTING_CURVE_UTILS_H
+#define LATINIME_FORGETTING_CURVE_UTILS_H
 
 #include "defines.h"
 
@@ -25,7 +25,7 @@ namespace latinime {
 // required to introduced to each terminal PtNode and bigram entry.
 // TODO: Quit using bigram probability to indicate the delta.
 // TODO: Quit using bigram probability delta.
-class DecayingUtils {
+class ForgettingCurveUtils {
  public:
     static const int MAX_UNIGRAM_COUNT;
     static const int MAX_UNIGRAM_COUNT_AFTER_GC;
@@ -50,7 +50,7 @@ class DecayingUtils {
     static int getBigramProbabilityDeltaToSave(const int encodedProbabilityDelta);
 
  private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(DecayingUtils);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
 
     static const int MAX_COMPUTED_PROBABILITY;
     static const int MAX_UNIGRAM_PROBABILITY;
@@ -67,4 +67,4 @@ class DecayingUtils {
     static int getDecayedProbability(const int rawProbability);
 };
 } // namespace latinime
-#endif /* LATINIME_DECAYING_UTILS_H */
+#endif /* LATINIME_FORGETTING_CURVE_UTILS_H */

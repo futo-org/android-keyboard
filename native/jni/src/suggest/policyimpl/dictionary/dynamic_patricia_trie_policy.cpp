@@ -28,7 +28,7 @@
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/utils/decaying_utils.h"
+#include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
@@ -154,7 +154,7 @@ int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const in
 int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
         const int bigramProbability) const {
     if (mHeaderPolicy.isDecayingDict()) {
-        return DecayingUtils::getProbability(unigramProbability, bigramProbability);
+        return ForgettingCurveUtils::getProbability(unigramProbability, bigramProbability);
     } else {
         if (unigramProbability == NOT_A_PROBABILITY) {
             return NOT_A_PROBABILITY;
@@ -344,10 +344,10 @@ bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
         // Needs to reduce dictionary size.
         return true;
     } else if (mHeaderPolicy.isDecayingDict()) {
-        if (mUnigramCount >= DecayingUtils::MAX_UNIGRAM_COUNT) {
+        if (mUnigramCount >= ForgettingCurveUtils::MAX_UNIGRAM_COUNT) {
             // Unigram count exceeds the limit.
             return true;
-        } else if (mBigramCount >= DecayingUtils::MAX_BIGRAM_COUNT) {
+        } else if (mBigramCount >= ForgettingCurveUtils::MAX_BIGRAM_COUNT) {
             // Bigram count exceeds the limit.
             return true;
         } else if (mindsBlockByGC && needsToDecay()) {
