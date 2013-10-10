@@ -39,7 +39,7 @@ bool DynamicPatriciaTrieGcEventListeners
             return false;
         }
         if (!ForgettingCurveUtils::isValidEncodedProbability(newProbability)) {
-            isUselessPtNode = false;
+            isUselessPtNode = true;
         }
     }
     if (mChildrenValue > 0) {

@@ -93,8 +93,7 @@ void ForgettingCurveUtils::TimeKeeper::setCurrentTime() {
     for (int i = 0; i < decayIterationCount; ++i) {
         const float currentRate = static_cast<float>(currentEncodedProbability)
                 / static_cast<float>(MAX_ENCODED_PROBABILITY);
-        const float thresholdToDecay = MIN_PROBABILITY_TO_DECAY
-                + (1.0f - MIN_PROBABILITY_TO_DECAY) * currentRate;
+        const float thresholdToDecay = (1.0f - MIN_PROBABILITY_TO_DECAY) * currentRate;
         const float randValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
         if (thresholdToDecay < randValue) {
             currentEncodedProbability = max(currentEncodedProbability - ENCODED_PROBABILITY_STEP,

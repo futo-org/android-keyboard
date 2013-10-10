@@ -19,13 +19,16 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.android.inputmethod.latin.makedict.CodePointUtils;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 @LargeTest
 public class BinaryDictionaryDecayingTests extends AndroidTestCase {
@@ -178,5 +181,56 @@ public class BinaryDictionaryDecayingTests extends AndroidTestCase {
 
         binaryDictionary.close();
         dictFile.delete();
+    }
+
+    public void testAddManyUnigramsToDecayingDict() {
+        final int unigramCount = 30000;
+        final int unigramTypedCount = 100000;
+        final int codePointSetSize = 50;
+        final long seed = System.currentTimeMillis();
+        final Random random = new Random(seed);
+
+        File dictFile = null;
+        try {
+            dictFile = createEmptyDictionaryAndGetFile("TestBinaryDictionary");
+        } catch (IOException e) {
+            fail("IOException while writing an initial dictionary : " + e);
+        }
+        BinaryDictionary binaryDictionary = new BinaryDictionary(dictFile.getAbsolutePath(),
+                0 /* offset */, dictFile.length(), true /* useFullEditDistance */,
+                Locale.getDefault(), TEST_LOCALE, true /* isUpdatable */);
+
+        final int[] codePointSet = CodePointUtils.generateCodePointSet(codePointSetSize, random);
+        final ArrayList<String> words = new ArrayList<String>();
+
+        for (int i = 0; i < unigramCount; i++) {
+            final String word = CodePointUtils.generateWord(random, codePointSet);
+            words.add(word);
+        }
+
+        final int maxUnigramCount = Integer.parseInt(
+                binaryDictionary.getPropertyForTests(BinaryDictionary.MAX_UNIGRAM_COUNT_QUERY));
+        for (int i = 0; i < unigramTypedCount; i++) {
+            final String word = words.get(random.nextInt(words.size()));
+            binaryDictionary.addUnigramWord(word, DUMMY_PROBABILITY);
+
+            if (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                final int unigramCountBeforeGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.UNIGRAM_COUNT_QUERY));
+                while (binaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+                    binaryDictionary.flushWithGC();
+                }
+                final int unigramCountAfterGC =
+                        Integer.parseInt(binaryDictionary.getPropertyForTests(
+                                BinaryDictionary.UNIGRAM_COUNT_QUERY));
+                assertTrue(unigramCountBeforeGC > unigramCountAfterGC);
+            }
+        }
+
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.UNIGRAM_COUNT_QUERY)) > 0);
+        assertTrue(Integer.parseInt(binaryDictionary.getPropertyForTests(
+                BinaryDictionary.UNIGRAM_COUNT_QUERY)) <= maxUnigramCount);
     }
 }
