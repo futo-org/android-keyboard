@@ -212,7 +212,6 @@ public class SparseTable {
     @UsedForTesting
     public static SparseTable readFromFiles(final File lookupTableFile, final File[] contentFiles,
             final int blockSize) throws IOException {
-        final byte[] lookupTable = readFileToByteArray(lookupTableFile);
         final ArrayList<ArrayList<Integer>> contentTables =
                 new ArrayList<ArrayList<Integer>>(contentFiles.length);
         for (int i = 0; i < contentFiles.length; ++i) {

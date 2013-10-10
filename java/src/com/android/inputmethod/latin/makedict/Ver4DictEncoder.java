@@ -181,12 +181,10 @@ public class Ver4DictEncoder implements DictEncoder {
                 countSize);
     }
 
-    private void writePtNodeFlags(final PtNode ptNode, final int parentAddress,
-            final FormatOptions formatOptions) {
+    private void writePtNodeFlags(final PtNode ptNode, final FormatOptions formatOptions) {
         final int childrenPos = BinaryDictEncoderUtils.getChildrenPosition(ptNode, formatOptions);
         mTriePos = BinaryDictEncoderUtils.writeUIntToBuffer(mTrieBuf, mTriePos,
-                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, mTriePos, childrenPos,
-                        formatOptions),
+                BinaryDictEncoderUtils.makePtNodeFlags(ptNode, childrenPos, formatOptions),
                 FormatSpec.PTNODE_FLAGS_SIZE);
     }
 
@@ -292,7 +290,7 @@ public class Ver4DictEncoder implements DictEncoder {
     @Override
     public void writePtNode(final PtNode ptNode, final int parentPosition,
             final FormatOptions formatOptions, final FusionDictionary dict) {
-        writePtNodeFlags(ptNode, parentPosition, formatOptions);
+        writePtNodeFlags(ptNode, formatOptions);
         writeParentPosition(parentPosition, ptNode, formatOptions);
         writeCharacters(ptNode.mChars, ptNode.hasSeveralChars());
         if (ptNode.isTerminal()) {

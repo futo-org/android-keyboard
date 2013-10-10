@@ -95,7 +95,6 @@ public class Ver4DictDecoder extends DictDecoder {
 
     @Override
     public void openDictBuffer() throws FileNotFoundException, IOException {
-        final String filename = mDictDirectory.getName();
         mDictBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_TRIE));
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(

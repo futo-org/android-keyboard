@@ -295,7 +295,6 @@ public final class BinaryDictDecoderUtils {
                 return address;
             }
         }
-        int address;
         switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
             case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
                 return dictBuffer.readUnsignedByte();
