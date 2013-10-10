@@ -24,7 +24,6 @@ namespace latinime {
 // TODO: Check the elapsed time and decrease the probability depending on the time. Time field is
 // required to introduced to each terminal PtNode and bigram entry.
 // TODO: Quit using bigram probability to indicate the delta.
-// TODO: Quit using bigram probability delta.
 class ForgettingCurveUtils {
  public:
     static const int MAX_UNIGRAM_COUNT;
@@ -33,38 +32,30 @@ class ForgettingCurveUtils {
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
 
     static int getProbability(const int encodedUnigramProbability,
-            const int encodedBigramProbabilityDelta);
+            const int encodedBigramProbability);
 
-    static int getUpdatedUnigramProbability(const int originalEncodedProbability,
+    static int getUpdatedEncodedProbability(const int originalEncodedProbability,
             const int newProbability);
 
-    static int getUpdatedBigramProbabilityDelta(const int originalEncodedProbabilityDelta,
-            const int newProbability);
+    static int isValidEncodedProbability(const int encodedProbability);
 
-    static int isValidUnigram(const int encodedUnigramProbability);
-
-    static int isValidBigram(const int encodedProbabilityDelta);
-
-    static int getUnigramProbabilityToSave(const int encodedProbability);
-
-    static int getBigramProbabilityDeltaToSave(const int encodedProbabilityDelta);
+    static int getEncodedProbabilityToSave(const int encodedProbability);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
 
     static const int MAX_COMPUTED_PROBABILITY;
-    static const int MAX_UNIGRAM_PROBABILITY;
-    static const int MIN_VALID_UNIGRAM_PROBABILITY;
-    static const int UNIGRAM_PROBABILITY_STEP;
-    static const int MAX_BIGRAM_PROBABILITY_DELTA;
-    static const int MIN_VALID_BIGRAM_PROBABILITY_DELTA;
-    static const int BIGRAM_PROBABILITY_DELTA_STEP;
+    static const int MAX_ENCODED_PROBABILITY;
+    static const int MIN_VALID_ENCODED_PROBABILITY;
+    static const int ENCODED_PROBABILITY_STEP;
+
+    static const float MIN_PROBABILITY_TO_DECAY;
 
     static int decodeUnigramProbability(const int encodedProbability);
 
-    static int decodeBigramProbabilityDelta(const int encodedProbability);
+    static int decodeBigramProbability(const int encodedProbability);
 
-    static int getDecayedProbability(const int rawProbability);
+    static int backoff(const int unigramProbability);
 };
 } // namespace latinime
 #endif /* LATINIME_FORGETTING_CURVE_UTILS_H */
