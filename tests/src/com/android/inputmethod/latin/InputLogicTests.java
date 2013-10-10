@@ -179,10 +179,17 @@ public class InputLogicTests extends InputTestsBase {
     }
 
     public void testDoubleSpace() {
-        final String STRING_TO_TYPE = "this  ";
-        final String EXPECTED_RESULT = "this. ";
-        type(STRING_TO_TYPE);
-        assertEquals("double space make a period", EXPECTED_RESULT, mEditText.getText().toString());
+        // U+1F607 is an emoji
+        final String[] STRINGS_TO_TYPE =
+                new String[] { "this   ", "a+  ", "\u1F607  ", "..  ", ")  ", "(  ", "%  " };
+        final String[] EXPECTED_RESULTS =
+                new String[] { "this.  ", "a+. ", "\u1F607. ", "..  ", "). ", "(  ", "%  " };
+        for (int i = 0; i < STRINGS_TO_TYPE.length; ++i) {
+            mEditText.setText("");
+            type(STRINGS_TO_TYPE[i]);
+            assertEquals("double space processing", EXPECTED_RESULTS[i],
+                    mEditText.getText().toString());
+        }
     }
 
     public void testCancelDoubleSpace() {
