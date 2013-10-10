@@ -69,13 +69,13 @@ const float ProximityInfoParams::STRAIGHT_ANGLE_THRESHOLD = M_PI_F * 15.0f / 180
 const float ProximityInfoParams::SKIP_CORNER_PROBABILITY = 0.4f;
 const float ProximityInfoParams::SPEED_MARGIN = 0.1f;
 const float ProximityInfoParams::CENTER_VALUE_OF_NORMALIZED_DISTRIBUTION = 0.0f;
-// TODO: The variance is critical for accuracy; thus, adjusting these parameter by machine
+// TODO: The variance is critical for accuracy; thus, adjusting these parameters by machine
 // learning or something would be efficient.
-const float ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DIVIATION = 0.3f;
-const float ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDERD_DIVIATION = 0.25f;
-const float ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DIVIATION = 0.5f;
-const float ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDERD_DIVIATION = 0.15f;
-const float ProximityInfoParams::MIN_STANDERD_DIVIATION = 0.37f;
+const float ProximityInfoParams::SPEEDxANGLE_WEIGHT_FOR_STANDARD_DEVIATION = 0.3f;
+const float ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION = 0.25f;
+const float ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION = 0.5f;
+const float ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION = 0.15f;
+const float ProximityInfoParams::MIN_STANDARD_DEVIATION = 0.37f;
 const float ProximityInfoParams::PREV_DISTANCE_WEIGHT = 0.5f;
 const float ProximityInfoParams::NEXT_DISTANCE_WEIGHT = 0.6f;
 
