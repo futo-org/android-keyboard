@@ -251,6 +251,7 @@ public final class KeyboardTextsSet {
         /* 146 */ "more_keys_for_single_quote",
         /* 147 */ "more_keys_for_double_quote",
         /* 148 */ "more_keys_for_tablet_double_quote",
+        /* 149 */ "emoji_key_as_more_key",
     };
 
     private static final String EMPTY = "";
@@ -439,6 +440,7 @@ public final class KeyboardTextsSet {
         /* 146 */ "!fixedColumnOrder!5,!text/single_quotes,!text/single_angle_quotes",
         /* 147 */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
         /* 148 */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
+        /* 149 */ "!icon/emoji_key|!code/key_emoji",
     };
 
     /* Language af: Afrikaans */

@@ -23,9 +23,11 @@
 >
     <!-- Navigate more keys style -->
     <switch>
+        <!-- navigateEmoji="false" -->
         <case
             latin:imeAction="actionNext"
             latin:navigatePrevious="true"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
@@ -35,6 +37,7 @@
         <case
             latin:imeAction="actionNext"
             latin:navigatePrevious="false"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle" />
@@ -42,6 +45,7 @@
         <case
             latin:imeAction="actionPrevious"
             latin:navigateNext="true"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
@@ -51,6 +55,7 @@
         <case
             latin:imeAction="actionPrevious"
             latin:navigateNext="false"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle" />
@@ -59,6 +64,7 @@
         <case
             latin:navigateNext="true"
             latin:navigatePrevious="true"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
@@ -68,6 +74,7 @@
         <case
             latin:navigateNext="true"
             latin:navigatePrevious="false"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
@@ -77,13 +84,100 @@
         <case
             latin:navigateNext="false"
             latin:navigatePrevious="true"
+            latin:navigateEmoji="false"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
                 latin:moreKeys="!text/action_previous_as_more_key" />
         </case>
-        <!-- naviagteNext="false" and navigatePrevious="false" -->
+        <case
+            latin:navigateNext="false"
+            latin:navigatePrevious="false"
+            latin:navigateEmoji="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </case>
+        <!-- navigateEmoji="true" -->
+        <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="true"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/emoji_key_as_more_key,!text/action_previous_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="false"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:moreKeys="!text/emoji_key_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="true"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/emoji_key_as_more_key,!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="false"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:moreKeys="!text/emoji_key_as_more_key" />
+        </case>
+        <!-- imeAction!="actionNext" and imeAction!="actionPrevious" -->
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="true"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!3,!needsDividers!,!text/emoji_key_as_more_key,!text/action_previous_as_more_key,!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="false"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/emoji_key_as_more_key,!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="false"
+            latin:navigatePrevious="true"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/emoji_key_as_more_key,!text/action_previous_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="false"
+            latin:navigatePrevious="false"
+            latin:navigateEmoji="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:moreKeys="!text/emoji_key_as_more_key" />
+        </case>
         <default>
             <key-style
                 latin:styleName="navigateMoreKeysStyle" />
