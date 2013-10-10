@@ -61,10 +61,8 @@ public final class AdditionalSubtypeUtils {
                 StringUtils.appendToCommaSplittableTextIfNotExists(
                         IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocaleUtils.getSubtypeNameId(localeString, keyboardLayoutSetName);
-        return new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
-                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue
-                        + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
-                        + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE, false, false);
+        return buildInputMethodSubtype(
+                nameId, localeString, layoutExtraValue, additionalSubtypeExtraValue);
     }
 
     public static String getPrefSubtype(final InputMethodSubtype subtype) {
@@ -136,5 +134,28 @@ public final class AdditionalSubtypeUtils {
             sb.append(prefSubtype);
         }
         return sb.toString();
+    }
+
+    private static InputMethodSubtype buildInputMethodSubtype(int nameId, String localeString,
+            String layoutExtraValue, String additionalSubtypeExtraValue) {
+        // CAVEAT! If you want to change subtypeId after changing the extra values,
+        // you must change "getInputMethodSubtypeId". But it will remove the additional keyboard
+        // from the current users. So, you should be really careful to change it.
+        final int subtypeId = getInputMethodSubtypeId(nameId, localeString, layoutExtraValue,
+                additionalSubtypeExtraValue);
+        // TODO: Use InputMethodSubtypeBuilder once we use SDK version 19.
+        return new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
+                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue
+                        + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                        + "," + Constants.Subtype.ExtraValue.EMOJI_CAPABLE, false, false,
+                        subtypeId);
+    }
+
+    private static int getInputMethodSubtypeId(int nameId, String localeString,
+            String layoutExtraValue, String additionalSubtypeExtraValue) {
+        // TODO: Use InputMethodSubtypeBuilder once we use SDK version 19.
+        return (new InputMethodSubtype(nameId, R.drawable.ic_ime_switcher_dark,
+                localeString, KEYBOARD_MODE, layoutExtraValue + "," + additionalSubtypeExtraValue,
+                        false, false)).hashCode();
     }
 }
