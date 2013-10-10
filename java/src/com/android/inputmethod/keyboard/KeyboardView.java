@@ -243,6 +243,8 @@ public class KeyboardView extends View {
     }
 
     private void freeOffscreenBuffer() {
+        mOffscreenCanvas.setBitmap(null);
+        mOffscreenCanvas.setMatrix(null);
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;
