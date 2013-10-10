@@ -605,8 +605,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void initSuggest() {
-        final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        final String localeStr = subtypeLocale.toString();
+        final Locale switcherSubtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        final String switcherLocaleStr = switcherSubtypeLocale.toString();
+        final Locale subtypeLocale;
+        final String localeStr;
+        if (TextUtils.isEmpty(switcherLocaleStr)) {
+            // This happens in very rare corner cases - for example, immediately after a switch
+            // to LatinIME has been requested, about a frame later another switch happens. In this
+            // case, we are about to go down but we still don't know it, however the system tells
+            // us there is no current subtype so the locale is the empty string. Take the best
+            // possible guess instead -- it's bound to have no consequences, and we have no way
+            // of knowing anyway.
+            Log.e(TAG, "System is reporting no current subtype.");
+            subtypeLocale = getResources().getConfiguration().locale;
+            localeStr = subtypeLocale.toString();
+        } else {
+            subtypeLocale = switcherSubtypeLocale;
+            localeStr = switcherLocaleStr;
+        }
 
         final Suggest newSuggest = new Suggest(this /* Context */, subtypeLocale,
                 this /* SuggestInitializationListener */);
