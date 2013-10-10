@@ -17,11 +17,9 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.ByteArrayDictBuffer;
 
 import java.io.File;
@@ -32,50 +30,17 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 /**
- * The base class of binary dictionary decoders.
+ * An interface of binary dictionary decoders.
  */
-public abstract class DictDecoder {
-
-    protected FileHeader readHeader(final DictBuffer dictBuffer)
-            throws IOException, UnsupportedFormatException {
-        if (dictBuffer == null) {
-            openDictBuffer();
-        }
-
-        final int version = HeaderReader.readVersion(dictBuffer);
-        if (version < FormatSpec.MINIMUM_SUPPORTED_VERSION
-                || version > FormatSpec.MAXIMUM_SUPPORTED_VERSION) {
-            throw new UnsupportedFormatException("Unsupported version : " + version);
-        }
-        // TODO: Remove this field.
-        final int optionsFlags = HeaderReader.readOptionFlags(dictBuffer);
-
-        final int headerSize = HeaderReader.readHeaderSize(dictBuffer);
-
-        if (headerSize < 0) {
-            throw new UnsupportedFormatException("header size can't be negative.");
-        }
-
-        final HashMap<String, String> attributes = HeaderReader.readAttributes(dictBuffer,
-                headerSize);
-
-        final FileHeader header = new FileHeader(headerSize,
-                new FusionDictionary.DictionaryOptions(attributes,
-                        0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
-                        0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
-                        new FormatOptions(version,
-                                0 != (optionsFlags & FormatSpec.SUPPORTS_DYNAMIC_UPDATE)));
-        return header;
-    }
+public interface DictDecoder {
 
     /**
      * Reads and returns the file header.
      */
-    public abstract FileHeader readHeader() throws IOException, UnsupportedFormatException;
+    public FileHeader readHeader() throws IOException, UnsupportedFormatException;
 
     /**
      * Reads PtNode from nodeAddress.
@@ -83,7 +48,7 @@ public abstract class DictDecoder {
      * @param formatOptions the format options.
      * @return PtNodeInfo.
      */
-    public abstract PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
+    public PtNodeInfo readPtNode(final int ptNodePos, final FormatOptions formatOptions);
 
     /**
      * Reads a buffer and returns the memory representation of the dictionary.
@@ -98,7 +63,7 @@ public abstract class DictDecoder {
      * @return the created (or merged) dictionary.
      */
     @UsedForTesting
-    public abstract FusionDictionary readDictionaryBinary(final FusionDictionary dict,
+    public FusionDictionary readDictionaryBinary(final FusionDictionary dict,
             final boolean deleteDictIfBroken)
                     throws FileNotFoundException, IOException, UnsupportedFormatException;
 
@@ -113,12 +78,7 @@ public abstract class DictDecoder {
      */
     @UsedForTesting
     public int getTerminalPosition(final String word)
-            throws IOException, UnsupportedFormatException {
-        if (!isDictBufferOpen()) {
-            openDictBuffer();
-        }
-        return BinaryDictIOUtils.getTerminalPosition(this, word);
-    }
+            throws IOException, UnsupportedFormatException;
 
     /**
      * Reads unigrams and bigrams from the binary file.
@@ -134,47 +94,42 @@ public abstract class DictDecoder {
     public void readUnigramsAndBigramsBinary(final TreeMap<Integer, String> words,
             final TreeMap<Integer, Integer> frequencies,
             final TreeMap<Integer, ArrayList<PendingAttribute>> bigrams)
-            throws IOException, UnsupportedFormatException {
-        if (!isDictBufferOpen()) {
-            openDictBuffer();
-        }
-        BinaryDictIOUtils.readUnigramsAndBigramsBinary(this, words, frequencies, bigrams);
-    }
+                throws IOException, UnsupportedFormatException;
 
     /**
      * Sets the position of the buffer to the given value.
      *
      * @param newPos the new position
      */
-    public abstract void setPosition(final int newPos);
+    public void setPosition(final int newPos);
 
     /**
      * Gets the position of the buffer.
      *
      * @return the position
      */
-    public abstract int getPosition();
+    public int getPosition();
 
     /**
      * Reads and returns the PtNode count out of a buffer and forwards the pointer.
      */
-    public abstract int readPtNodeCount();
+    public int readPtNodeCount();
 
     /**
      * Reads the forward link and advances the position.
      *
      * @return true if this method moves the file pointer, false otherwise.
      */
-    public abstract boolean readAndFollowForwardLink();
-    public abstract boolean hasNextPtNodeArray();
+    public boolean readAndFollowForwardLink();
+    public boolean hasNextPtNodeArray();
 
     /**
      * Opens the dictionary file and makes DictBuffer.
      */
     @UsedForTesting
-    public abstract void openDictBuffer() throws FileNotFoundException, IOException;
+    public void openDictBuffer() throws FileNotFoundException, IOException;
     @UsedForTesting
-    public abstract boolean isDictBufferOpen();
+    public boolean isDictBufferOpen();
 
     // Constants for DictionaryBufferFactory.
     public static final int USE_READONLY_BYTEBUFFER = 0x01000000;
@@ -272,125 +227,5 @@ public abstract class DictDecoder {
         }
     }
 
-    /**
-     * A utility class for reading a file header.
-     */
-    protected static class HeaderReader {
-        protected static int readVersion(final DictBuffer dictBuffer)
-                throws IOException, UnsupportedFormatException {
-            return BinaryDictDecoderUtils.checkFormatVersion(dictBuffer);
-        }
-
-        protected static int readOptionFlags(final DictBuffer dictBuffer) {
-            return dictBuffer.readUnsignedShort();
-        }
-
-        protected static int readHeaderSize(final DictBuffer dictBuffer) {
-            return dictBuffer.readInt();
-        }
-
-        protected static HashMap<String, String> readAttributes(final DictBuffer dictBuffer,
-                final int headerSize) {
-            final HashMap<String, String> attributes = new HashMap<String, String>();
-            while (dictBuffer.position() < headerSize) {
-                // We can avoid an infinite loop here since dictBuffer.position() is always
-                // increased by calling CharEncoding.readString.
-                final String key = CharEncoding.readString(dictBuffer);
-                final String value = CharEncoding.readString(dictBuffer);
-                attributes.put(key, value);
-            }
-            dictBuffer.position(headerSize);
-            return attributes;
-        }
-    }
-
-    /**
-     * A utility class for reading a PtNode.
-     */
-    protected static class PtNodeReader {
-        protected static int readPtNodeOptionFlags(final DictBuffer dictBuffer) {
-            return dictBuffer.readUnsignedByte();
-        }
-
-        protected static int readParentAddress(final DictBuffer dictBuffer,
-                final FormatOptions formatOptions) {
-            if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-                return BinaryDictDecoderUtils.readSInt24(dictBuffer);
-            } else {
-                return FormatSpec.NO_PARENT_ADDRESS;
-            }
-        }
-
-        protected static int readChildrenAddress(final DictBuffer dictBuffer, final int optionFlags,
-                final FormatOptions formatOptions) {
-            if (BinaryDictIOUtils.supportsDynamicUpdate(formatOptions)) {
-                final int address = BinaryDictDecoderUtils.readSInt24(dictBuffer);
-                if (address == 0) return FormatSpec.NO_CHILDREN_ADDRESS;
-                return address;
-            } else {
-                switch (optionFlags & FormatSpec.MASK_CHILDREN_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE:
-                        return dictBuffer.readUnsignedByte();
-                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES:
-                        return dictBuffer.readUnsignedShort();
-                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES:
-                        return dictBuffer.readUnsignedInt24();
-                    case FormatSpec.FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS:
-                    default:
-                        return FormatSpec.NO_CHILDREN_ADDRESS;
-                }
-            }
-        }
-
-        // Reads shortcuts and returns the read length.
-        protected static int readShortcut(final DictBuffer dictBuffer,
-                final ArrayList<WeightedString> shortcutTargets) {
-            final int pointerBefore = dictBuffer.position();
-            dictBuffer.readUnsignedShort(); // skip the size
-            while (true) {
-                final int targetFlags = dictBuffer.readUnsignedByte();
-                final String word = CharEncoding.readString(dictBuffer);
-                shortcutTargets.add(new WeightedString(word,
-                        targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
-                if (0 == (targetFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
-            }
-            return dictBuffer.position() - pointerBefore;
-        }
-
-        protected static int readBigramAddresses(final DictBuffer dictBuffer,
-                final ArrayList<PendingAttribute> bigrams, final int baseAddress) {
-            int readLength = 0;
-            int bigramCount = 0;
-            while (bigramCount++ < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                final int bigramFlags = dictBuffer.readUnsignedByte();
-                ++readLength;
-                final int sign = 0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE)
-                        ? 1 : -1;
-                int bigramAddress = baseAddress + readLength;
-                switch (bigramFlags & FormatSpec.MASK_BIGRAM_ATTR_ADDRESS_TYPE) {
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_ONEBYTE:
-                        bigramAddress += sign * dictBuffer.readUnsignedByte();
-                        readLength += 1;
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_TWOBYTES:
-                        bigramAddress += sign * dictBuffer.readUnsignedShort();
-                        readLength += 2;
-                        break;
-                    case FormatSpec.FLAG_BIGRAM_ATTR_ADDRESS_TYPE_THREEBYTES:
-                        bigramAddress += sign * dictBuffer.readUnsignedInt24();
-                        readLength += 3;
-                        break;
-                    default:
-                        throw new RuntimeException("Has bigrams with no address");
-                }
-                bigrams.add(new PendingAttribute(
-                        bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
-                        bigramAddress));
-                if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
-            }
-            return readLength;
-        }
-    }
-
-    public abstract void skipPtNode(final FormatOptions formatOptions);
+    public void skipPtNode(final FormatOptions formatOptions);
 }
