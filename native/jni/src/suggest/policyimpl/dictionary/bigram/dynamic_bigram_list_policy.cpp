@@ -360,13 +360,13 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
 }
 
 bool DynamicBigramListPolicy::updateProbabilityForDecay(
-        BigramListReadWriteUtils::BigramFlags bigramFlags, const int targetPtNodePos,
+        const BigramListReadWriteUtils::BigramFlags bigramFlags, const int targetPtNodePos,
         int *const bigramEntryPos, bool *const outRemoved) const {
     *outRemoved = false;
     if (mIsDecayingDict) {
         // Update bigram probability for decaying.
         const int newProbability = ForgettingCurveUtils::getEncodedProbabilityToSave(
-                BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags));
+                BigramListReadWriteUtils::getProbabilityFromFlags(bigramFlags), mHeaderPolicy);
         if (ForgettingCurveUtils::isValidEncodedProbability(newProbability)) {
             // Write new probability.
             const BigramListReadWriteUtils::BigramFlags updatedBigramFlags =

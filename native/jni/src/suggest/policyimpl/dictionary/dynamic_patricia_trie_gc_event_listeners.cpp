@@ -16,6 +16,7 @@
 
 #include "suggest/policyimpl/dictionary/dynamic_patricia_trie_gc_event_listeners.h"
 
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
 namespace latinime {
@@ -29,7 +30,8 @@ bool DynamicPatriciaTrieGcEventListeners
     bool isUselessPtNode = !node->isTerminal();
     if (node->isTerminal() && mIsDecayingDict) {
         const int newProbability =
-                ForgettingCurveUtils::getEncodedProbabilityToSave(node->getProbability());
+                ForgettingCurveUtils::getEncodedProbabilityToSave(node->getProbability(),
+                        mHeaderPolicy);
         int writingPos = node->getProbabilityFieldPos();
         // Update probability.
         if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(

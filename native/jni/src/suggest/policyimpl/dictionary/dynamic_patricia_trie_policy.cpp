@@ -42,7 +42,6 @@ const char *const DynamicPatriciaTriePolicy::SET_NEEDS_TO_DECAY_FOR_TESTING_QUER
 const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 1024 * 1024;
 const int DynamicPatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - 1024;
-const int DynamicPatriciaTriePolicy::DECAY_INTERVAL_FOR_DECAYING_DICTS = 2 * 60 * 60;
 
 void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
@@ -314,15 +313,15 @@ void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
-    const bool runGCwithDecay = needsToDecay();
-    DynamicBigramListPolicy bigramListPolicyForGC(&mBufferWithExtendableBuffer,
-            &mShortcutListPolicy, runGCwithDecay);
+    const bool needsToDecay = mHeaderPolicy.isDecayingDict()
+            && (mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
+                    false /* mindsBlockByDecay */, mUnigramCount, mBigramCount, &mHeaderPolicy));
+    DynamicBigramListPolicy bigramListPolicyForGC(&mHeaderPolicy, &mBufferWithExtendableBuffer,
+            &mShortcutListPolicy, needsToDecay);
     DynamicPatriciaTrieWritingHelper writingHelper(&mBufferWithExtendableBuffer,
-            &bigramListPolicyForGC, &mShortcutListPolicy, runGCwithDecay);
+            &bigramListPolicyForGC, &mShortcutListPolicy, needsToDecay);
     writingHelper.writeToDictFileWithGC(getRootPosition(), filePath, &mHeaderPolicy);
-    if (runGCwithDecay) {
-        mNeedsToDecayForTesting = false;
-    }
+    mNeedsToDecayForTesting = false;
 }
 
 bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
@@ -344,16 +343,8 @@ bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
         // Needs to reduce dictionary size.
         return true;
     } else if (mHeaderPolicy.isDecayingDict()) {
-        if (mUnigramCount >= ForgettingCurveUtils::MAX_UNIGRAM_COUNT) {
-            // Unigram count exceeds the limit.
-            return true;
-        } else if (mBigramCount >= ForgettingCurveUtils::MAX_BIGRAM_COUNT) {
-            // Bigram count exceeds the limit.
-            return true;
-        } else if (mindsBlockByGC && needsToDecay()) {
-            // Time to update probabilities for decaying.
-            return true;
-        }
+        return mNeedsToDecayForTesting || ForgettingCurveUtils::needsToDecay(
+                mindsBlockByGC, mUnigramCount, mBigramCount, &mHeaderPolicy);
     }
     return false;
 }
@@ -367,11 +358,6 @@ void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, maxResultLength) == 0) {
         mNeedsToDecayForTesting = true;
     }
-}
-
-bool DynamicPatriciaTriePolicy::needsToDecay() const {
-    return mHeaderPolicy.isDecayingDict() && (mNeedsToDecayForTesting
-            || mHeaderPolicy.getLastDecayedTime() + DECAY_INTERVAL_FOR_DECAYING_DICTS < time(0));
 }
 
 } // namespace latinime

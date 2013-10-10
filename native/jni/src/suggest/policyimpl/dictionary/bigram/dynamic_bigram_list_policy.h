@@ -27,6 +27,7 @@
 namespace latinime {
 
 class BufferWithExtendableBuffer;
+class DictionaryHeaderStructurePolicy;
 class DictionaryShortcutsStructurePolicy;
 
 /*
@@ -34,10 +35,12 @@ class DictionaryShortcutsStructurePolicy;
  */
 class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
  public:
-    DynamicBigramListPolicy(BufferWithExtendableBuffer *const buffer,
+    DynamicBigramListPolicy(const DictionaryHeaderStructurePolicy *const headerPolicy,
+            BufferWithExtendableBuffer *const buffer,
             const DictionaryShortcutsStructurePolicy *const shortcutPolicy,
             const bool isDecayingDict)
-            : mBuffer(buffer), mShortcutPolicy(shortcutPolicy), mIsDecayingDict(isDecayingDict) {}
+            : mHeaderPolicy(headerPolicy), mBuffer(buffer), mShortcutPolicy(shortcutPolicy),
+              mIsDecayingDict(isDecayingDict) {}
 
     ~DynamicBigramListPolicy() {}
 
@@ -74,6 +77,7 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     static const int CONTINUING_BIGRAM_LINK_COUNT_LIMIT;
     static const int BIGRAM_ENTRY_COUNT_IN_A_BIGRAM_LIST_LIMIT;
 
+    const DictionaryHeaderStructurePolicy *const mHeaderPolicy;
     BufferWithExtendableBuffer *const mBuffer;
     const DictionaryShortcutsStructurePolicy *const mShortcutPolicy;
     const bool mIsDecayingDict;
@@ -81,7 +85,7 @@ class DynamicBigramListPolicy : public DictionaryBigramsStructurePolicy {
     // Follow bigram link and return the position of bigram target PtNode that is currently valid.
     int followBigramLinkAndGetCurrentBigramPtNodePos(const int originalBigramPos) const;
 
-    bool updateProbabilityForDecay(BigramListReadWriteUtils::BigramFlags bigramFlags,
+    bool updateProbabilityForDecay(const BigramListReadWriteUtils::BigramFlags bigramFlags,
             const int targetPtNodePos, int *const bigramEntryPos, bool *const outRemoved) const;
 };
 } // namespace latinime

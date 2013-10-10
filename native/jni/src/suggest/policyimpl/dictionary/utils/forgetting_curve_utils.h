@@ -23,15 +23,31 @@
 
 namespace latinime {
 
+class DictionaryHeaderStructurePolicy;
+
 // TODO: Check the elapsed time and decrease the probability depending on the time. Time field is
 // required to introduced to each terminal PtNode and bigram entry.
 // TODO: Quit using bigram probability to indicate the delta.
 class ForgettingCurveUtils {
  public:
+    class TimeKeeper {
+     public:
+        TimeKeeper() : mCurrentTime(0) {}
+        void setCurrentTime();
+        int peekCurrentTime() const { return mCurrentTime; };
+
+     private:
+        DISALLOW_COPY_AND_ASSIGN(TimeKeeper);
+
+        int mCurrentTime;
+    };
+
     static const int MAX_UNIGRAM_COUNT;
     static const int MAX_UNIGRAM_COUNT_AFTER_GC;
     static const int MAX_BIGRAM_COUNT;
     static const int MAX_BIGRAM_COUNT_AFTER_GC;
+
+    static TimeKeeper sTimeKeeper;
 
     static int getProbability(const int encodedUnigramProbability,
             const int encodedBigramProbability);
@@ -41,7 +57,11 @@ class ForgettingCurveUtils {
 
     static int isValidEncodedProbability(const int encodedProbability);
 
-    static int getEncodedProbabilityToSave(const int encodedProbability);
+    static int getEncodedProbabilityToSave(const int encodedProbability,
+            const DictionaryHeaderStructurePolicy *const headerPolicy);
+
+    static bool needsToDecay(const bool mindsBlockByDecay, const int unigramCount,
+            const int bigramCount, const DictionaryHeaderStructurePolicy *const headerPolicy);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ForgettingCurveUtils);
@@ -68,6 +88,7 @@ class ForgettingCurveUtils {
     static const int MIN_VALID_ENCODED_PROBABILITY;
     static const int ENCODED_PROBABILITY_STEP;
     static const float MIN_PROBABILITY_TO_DECAY;
+    static const int DECAY_INTERVAL_SECONDS;
 
     static const ProbabilityTable sProbabilityTable;
 

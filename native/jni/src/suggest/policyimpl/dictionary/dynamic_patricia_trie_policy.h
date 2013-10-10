@@ -37,7 +37,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
                       mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
-              mBigramListPolicy(&mBufferWithExtendableBuffer, &mShortcutListPolicy,
+              mBigramListPolicy(&mHeaderPolicy, &mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
@@ -105,7 +105,6 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     static const char *const SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY;
     static const int MAX_DICT_EXTENDED_REGION_SIZE;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
-    static const int DECAY_INTERVAL_FOR_DECAYING_DICTS;
 
     const MmappedBuffer *const mBuffer;
     const HeaderPolicy mHeaderPolicy;
@@ -115,8 +114,6 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int mUnigramCount;
     int mBigramCount;
     int mNeedsToDecayForTesting;
-
-    bool needsToDecay() const;
 };
 } // namespace latinime
 #endif // LATINIME_DYNAMIC_PATRICIA_TRIE_POLICY_H

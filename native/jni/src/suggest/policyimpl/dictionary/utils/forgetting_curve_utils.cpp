@@ -15,10 +15,12 @@
  */
 
 #include <cmath>
+#include <ctime>
 #include <stdlib.h>
 
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 
+#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {
@@ -35,8 +37,14 @@ const int ForgettingCurveUtils::ENCODED_PROBABILITY_STEP = 1;
 // Currently, we try to decay each uni/bigram once every 2 hours. Accordingly, the expected
 // duration of the decay is approximately 66hours.
 const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
+const int ForgettingCurveUtils::DECAY_INTERVAL_SECONDS = 2 * 60 * 60;
 
 const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
+ForgettingCurveUtils::TimeKeeper ForgettingCurveUtils::sTimeKeeper;
+
+void ForgettingCurveUtils::TimeKeeper::setCurrentTime() {
+    mCurrentTime = time(0);
+}
 
 /* static */ int ForgettingCurveUtils::getProbability(const int encodedUnigramProbability,
         const int encodedBigramProbability) {
@@ -76,19 +84,44 @@ const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityT
     return encodedProbability >= MIN_VALID_ENCODED_PROBABILITY;
 }
 
-/* static */ int ForgettingCurveUtils::getEncodedProbabilityToSave(const int encodedProbability) {
-    const int currentEncodedProbability = max(min(encodedProbability, MAX_ENCODED_PROBABILITY), 0);
+/* static */ int ForgettingCurveUtils::getEncodedProbabilityToSave(const int encodedProbability,
+        const DictionaryHeaderStructurePolicy *const headerPolicy) {
+    const int elapsedTime = sTimeKeeper.peekCurrentTime() - headerPolicy->getLastDecayedTime();
+    const int decayIterationCount = max(elapsedTime / DECAY_INTERVAL_SECONDS, 1);
+    int currentEncodedProbability = max(min(encodedProbability, MAX_ENCODED_PROBABILITY), 0);
     // TODO: Implement the decay in more proper way.
-    const float currentRate = static_cast<float>(currentEncodedProbability)
-            / static_cast<float>(MAX_ENCODED_PROBABILITY);
-    const float thresholdToDecay = MIN_PROBABILITY_TO_DECAY
-            + (1.0f - MIN_PROBABILITY_TO_DECAY) * (1.0f - currentRate);
-    const float randValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-    if (thresholdToDecay < randValue) {
-        return max(currentEncodedProbability - ENCODED_PROBABILITY_STEP, 0);
-    } else {
-        return currentEncodedProbability;
+    for (int i = 0; i < decayIterationCount; ++i) {
+        const float currentRate = static_cast<float>(currentEncodedProbability)
+                / static_cast<float>(MAX_ENCODED_PROBABILITY);
+        const float thresholdToDecay = MIN_PROBABILITY_TO_DECAY
+                + (1.0f - MIN_PROBABILITY_TO_DECAY) * currentRate;
+        const float randValue = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+        if (thresholdToDecay < randValue) {
+            currentEncodedProbability = max(currentEncodedProbability - ENCODED_PROBABILITY_STEP,
+                    0);
+        }
     }
+    return currentEncodedProbability;
+}
+
+/* static */ bool ForgettingCurveUtils::needsToDecay(const bool mindsBlockByDecay,
+        const int unigramCount, const int bigramCount,
+        const DictionaryHeaderStructurePolicy *const headerPolicy) {
+    if (unigramCount >= ForgettingCurveUtils::MAX_UNIGRAM_COUNT) {
+        // Unigram count exceeds the limit.
+        return true;
+    } else if (bigramCount >= ForgettingCurveUtils::MAX_BIGRAM_COUNT) {
+        // Bigram count exceeds the limit.
+        return true;
+    }
+    if (mindsBlockByDecay) {
+        return false;
+    }
+    if (headerPolicy->getLastDecayedTime() + DECAY_INTERVAL_SECONDS < time(0)) {
+        // Time to decay.
+        return true;
+    }
+    return false;
 }
 
 /* static */ int ForgettingCurveUtils::decodeProbability(const int encodedProbability) {
