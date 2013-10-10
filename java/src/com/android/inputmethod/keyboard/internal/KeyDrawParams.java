@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 
 import com.android.inputmethod.latin.utils.ResourceUtils;
@@ -32,7 +33,7 @@ public final class KeyDrawParams {
     public int mHintLabelSize;
     public int mPreviewTextSize;
 
-    public int mTextColor;
+    public ColorStateList mTextColorStateList;
     public int mTextInactivatedColor;
     public int mTextShadowColor;
     public int mHintLetterColor;
@@ -57,7 +58,7 @@ public final class KeyDrawParams {
         mHintLabelSize = copyFrom.mHintLabelSize;
         mPreviewTextSize = copyFrom.mPreviewTextSize;
 
-        mTextColor = copyFrom.mTextColor;
+        mTextColorStateList = copyFrom.mTextColorStateList;
         mTextInactivatedColor = copyFrom.mTextInactivatedColor;
         mTextShadowColor = copyFrom.mTextShadowColor;
         mHintLetterColor = copyFrom.mHintLetterColor;
@@ -89,8 +90,8 @@ public final class KeyDrawParams {
                 attr.mShiftedLetterHintRatio, mShiftedLetterHintSize);
         mHintLabelSize = selectTextSize(keyHeight, attr.mHintLabelRatio, mHintLabelSize);
         mPreviewTextSize = selectTextSize(keyHeight, attr.mPreviewTextRatio, mPreviewTextSize);
-
-        mTextColor = selectColor(attr.mTextColor, mTextColor);
+        mTextColorStateList =
+                attr.mTextColorStateList != null ? attr.mTextColorStateList : mTextColorStateList;
         mTextInactivatedColor = selectColor(attr.mTextInactivatedColor, mTextInactivatedColor);
         mTextShadowColor = selectColor(attr.mTextShadowColor, mTextShadowColor);
         mHintLetterColor = selectColor(attr.mHintLetterColor, mHintLetterColor);

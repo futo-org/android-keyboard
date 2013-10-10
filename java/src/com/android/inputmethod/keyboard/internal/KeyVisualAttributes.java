@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.SparseIntArray;
@@ -37,7 +38,7 @@ public final class KeyVisualAttributes {
     public final float mHintLabelRatio;
     public final float mPreviewTextRatio;
 
-    public final int mTextColor;
+    public final ColorStateList mTextColorStateList;
     public final int mTextInactivatedColor;
     public final int mTextShadowColor;
     public final int mHintLetterColor;
@@ -115,7 +116,7 @@ public final class KeyVisualAttributes {
         mPreviewTextRatio = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyPreviewTextRatio);
 
-        mTextColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyTextColor, 0);
+        mTextColorStateList = keyAttr.getColorStateList(R.styleable.Keyboard_Key_keyTextColor);
         mTextInactivatedColor = keyAttr.getColor(
                 R.styleable.Keyboard_Key_keyTextInactivatedColor, 0);
         mTextShadowColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyTextShadowColor, 0);
