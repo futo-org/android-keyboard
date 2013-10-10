@@ -204,18 +204,18 @@
         name="emoji_symbols"
         format="string"
     >
-        <item>fe82e|0031,20e3</item>
-        <item>fe82f|0032,20e3</item>
-        <item>fe830|0033,20e3</item>
-        <item>fe831|0034,20e3</item>
-        <item>fe832|0035,20e3</item>
-        <item>fe833|0036,20e3</item>
-        <item>fe834|0037,20e3</item>
-        <item>fe835|0038,20e3</item>
-        <item>fe836|0039,20e3</item>
-        <item>fe837|0030,20e3</item>
+        <item>fe82e|0031,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe82f|0032,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe830|0033,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe831|0034,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe832|0035,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe833|0036,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe834|0037,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe835|0038,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe836|0039,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe837|0030,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>1f51f</item>
-        <item>fe82c|0023,20e3</item>
+        <item>fe82c|0023,20e3|99</item> <!-- TODO: fix support min sdk version (99) -->
         <item>1f51d</item>
         <item>1f519</item>
         <item>1f51b</item>
@@ -875,16 +875,16 @@
         <item>1f48e</item>
         <item>1f490</item>
         <item>1f492</item>
-        <item>fe4e5|1f1ef,1f1f5</item>
-        <item>fe4e6|1f1fa,1f1f8</item>
-        <item>fe4e7|1f1eb,1f1f7</item>
-        <item>fe4e8|1f1e9,1f1ea</item>
-        <item>fe4e9|1f1ee,1f1f9</item>
-        <item>fe4ea|1f1ec,1f1e7</item>
-        <item>fe4eb|1f1ea,1f1f8</item>
-        <item>fe4ec|1f1f7,1f1fa</item>
-        <item>fe4ed|1f1e8,1f1f3</item>
-        <item>fe4ee|1f1f0,1f1f7</item>
+        <item>fe4e5|1f1ef,1f1f5|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4e6|1f1fa,1f1f8|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4e7|1f1eb,1f1f7|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4e8|1f1e9,1f1ea|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4e9|1f1ee,1f1f9|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4ea|1f1ec,1f1e7|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4eb|1f1ea,1f1f8|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4ec|1f1f7,1f1fa|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4ed|1f1e8,1f1f3|99</item> <!-- TODO: fix support min sdk version (99) -->
+        <item>fe4ee|1f1f0,1f1f7|99</item> <!-- TODO: fix support min sdk version (99) -->
     </array>
     <array
         name="emoji_emoticons"
