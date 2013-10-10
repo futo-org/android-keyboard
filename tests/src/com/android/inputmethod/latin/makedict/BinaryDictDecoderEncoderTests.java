@@ -660,6 +660,8 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         final DictUpdater dictUpdater;
         if (formatOptions.mVersion == 3) {
             dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+        } else if (formatOptions.mVersion == 4) {
+            dictUpdater = new Ver4DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
         } else {
             throw new RuntimeException("DictUpdater for version " + formatOptions.mVersion
                     + " doesn't exist.");
@@ -684,5 +686,6 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
 
     public void testDeleteWord() {
         runTestDeleteWord(VERSION3_WITH_DYNAMIC_UPDATE);
+        runTestDeleteWord(VERSION4_WITH_DYNAMIC_UPDATE);
     }
 }
