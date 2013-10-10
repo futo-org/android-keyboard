@@ -266,11 +266,14 @@ public final class FormatSpec {
     // tat = Terminal Address Table
     static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
     static final String BIGRAM_FILE_EXTENSION = ".bigram";
-    static final String BIGRAM_LOOKUP_TABLE_FILE_EXTENSION = ".bigram_lookup";
-    static final String BIGRAM_ADDRESS_TABLE_FILE_EXTENSION = ".bigram_index";
+    static final String LOOKUP_TABLE_FILE_SUFFIX = "_lookup";
+    static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
     static final int FREQUENCY_AND_FLAGS_SIZE = 2;
     static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
     static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
+    static final int BIGRAM_CONTENT_COUNT = 1;
+    static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
+    static final String BIGRAM_FREQ_CONTENT_ID = "_freq";
 
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     static final int NO_PARENT_ADDRESS = 0;
