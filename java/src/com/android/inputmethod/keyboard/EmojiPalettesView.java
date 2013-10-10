@@ -84,6 +84,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private TabHost mTabHost;
     private ViewPager mEmojiPager;
+    private int mCurrentPagerPosition = 0;
     private EmojiCategoryPageIndicatorView mEmojiCategoryPageIndicatorView;
 
     private KeyboardActionListener mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
@@ -507,6 +508,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         setCurrentCategoryId(newPos.first /* categoryId */, false /* force */);
         mEmojiCategory.setCurrentCategoryPageId(newPos.second /* categoryPageId */);
         updateEmojiCategoryPageIdView();
+        mCurrentPagerPosition = position;
     }
 
     @Override
@@ -569,15 +571,17 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     public void startEmojiPalettes() {
         if (DEBUG_PAGER) {
-            Log.d(TAG, "allocate emoji palettes memory");
+            Log.d(TAG, "allocate emoji palettes memory " + mCurrentPagerPosition);
         }
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
+        mEmojiPager.setCurrentItem(mCurrentPagerPosition);
     }
 
     public void stopEmojiPalettes() {
         if (DEBUG_PAGER) {
             Log.d(TAG, "deallocate emoji palettes memory");
         }
+        mEmojiPalettesAdapter.flushPendingRecentKeys();
         mEmojiPager.setAdapter(null);
     }
 
