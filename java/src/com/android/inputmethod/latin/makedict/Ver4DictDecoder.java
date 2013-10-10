@@ -37,7 +37,7 @@ import java.util.Arrays;
  * An implementation of binary dictionary decoder for version 4 binary dictionary.
  */
 @UsedForTesting
-public class Ver4DictDecoder extends DictDecoder {
+public class Ver4DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver4DictDecoder.class.getSimpleName();
 
     private static final int FILETYPE_TRIE = 1;
@@ -157,8 +157,7 @@ public class Ver4DictDecoder extends DictDecoder {
                 new File[] { contentFile }, FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
-
-    protected static class PtNodeReader extends DictDecoder.PtNodeReader {
+    protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
         protected static int readFrequency(final DictBuffer frequencyBuffer, final int terminalId) {
             frequencyBuffer.position(terminalId * FormatSpec.FREQUENCY_AND_FLAGS_SIZE + 1);
             return frequencyBuffer.readUnsignedByte();

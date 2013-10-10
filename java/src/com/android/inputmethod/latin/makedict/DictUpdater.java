@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  * An interface of a binary dictionary updater.
  */
-public interface DictUpdater {
+public interface DictUpdater extends DictDecoder {
 
     /**
      * Deletes the word from the binary dictionary.

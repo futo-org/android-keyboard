@@ -37,7 +37,7 @@ import java.util.Arrays;
  * An implementation of DictDecoder for version 3 binary dictionary.
  */
 @UsedForTesting
-public class Ver3DictDecoder extends DictDecoder {
+public class Ver3DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver3DictDecoder.class.getSimpleName();
 
     static {
@@ -47,7 +47,7 @@ public class Ver3DictDecoder extends DictDecoder {
     // TODO: implement something sensical instead of just a phony method
     private static native int doNothing();
 
-    protected static class PtNodeReader extends DictDecoder.PtNodeReader {
+    protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
         private static int readFrequency(final DictBuffer dictBuffer) {
             return dictBuffer.readUnsignedByte();
         }
