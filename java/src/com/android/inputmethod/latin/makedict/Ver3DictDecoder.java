@@ -53,9 +53,9 @@ public class Ver3DictDecoder extends DictDecoder {
         }
     }
 
-    private final File mDictionaryBinaryFile;
+    protected final File mDictionaryBinaryFile;
     private final DictionaryBufferFactory mBufferFactory;
-    private DictBuffer mDictBuffer;
+    protected DictBuffer mDictBuffer;
 
     /* package */ Ver3DictDecoder(final File file, final int factoryFlag) {
         mDictionaryBinaryFile = file;

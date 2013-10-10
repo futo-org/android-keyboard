@@ -42,44 +42,22 @@ public final class DynamicBinaryDictIOUtils {
         // This utility class is not publicly instantiable.
     }
 
-    private static int markAsDeleted(final int flags) {
+    /* package */ static int markAsDeleted(final int flags) {
         return (flags & (~FormatSpec.MASK_CHILDREN_ADDRESS_TYPE)) | FormatSpec.FLAG_IS_DELETED;
-    }
-
-    /**
-     * Delete the word from the binary file.
-     *
-     * @param dictDecoder the dict decoder.
-     * @param word the word we delete
-     * @throws IOException
-     * @throws UnsupportedFormatException
-     */
-    @UsedForTesting
-    public static void deleteWord(final Ver3DictDecoder dictDecoder, final String word)
-            throws IOException, UnsupportedFormatException {
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
-        dictBuffer.position(0);
-        dictDecoder.readHeader();
-        final int wordPosition = dictDecoder.getTerminalPosition(word);
-        if (wordPosition == FormatSpec.NOT_VALID_WORD) return;
-
-        dictBuffer.position(wordPosition);
-        final int flags = dictBuffer.readUnsignedByte();
-        dictBuffer.position(wordPosition);
-        dictBuffer.put((byte)markAsDeleted(flags));
     }
 
     /**
      * Update a parent address in a PtNode that is referred to by ptNodeOriginAddress.
      *
-     * @param dictBuffer the DictBuffer to write.
+     * @param dictUpdater the DictUpdater to write.
      * @param ptNodeOriginAddress the address of the PtNode.
      * @param newParentAddress the absolute address of the parent.
      * @param formatOptions file format options.
      */
-    private static void updateParentAddress(final DictBuffer dictBuffer,
+    private static void updateParentAddress(final Ver3DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
+        final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
         final int originalPosition = dictBuffer.position();
         dictBuffer.position(ptNodeOriginAddress);
         if (!formatOptions.mSupportsDynamicUpdate) {
@@ -104,41 +82,41 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Update parent addresses in a node array stored at ptNodeOriginAddress.
      *
-     * @param dictBuffer the DictBuffer to be modified.
+     * @param dictUpdater the DictUpdater to be modified.
      * @param ptNodeOriginAddress the address of the node array to update.
      * @param newParentAddress the address to be written.
      * @param formatOptions file format options.
      */
-    private static void updateParentAddresses(final DictBuffer dictBuffer,
+    private static void updateParentAddresses(final Ver3DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newParentAddress,
             final FormatOptions formatOptions) {
-        final int originalPosition = dictBuffer.position();
-        dictBuffer.position(ptNodeOriginAddress);
+        final int originalPosition = dictUpdater.getPosition();
+        dictUpdater.setPosition(ptNodeOriginAddress);
         do {
-            final int count = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+            final int count = dictUpdater.readPtNodeCount();
             for (int i = 0; i < count; ++i) {
-                updateParentAddress(dictBuffer, dictBuffer.position(), newParentAddress,
+                updateParentAddress(dictUpdater, dictUpdater.getPosition(), newParentAddress,
                         formatOptions);
-                BinaryDictIOUtils.skipPtNode(dictBuffer, formatOptions);
+                dictUpdater.skipPtNode(formatOptions);
             }
-            final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
-            dictBuffer.position(forwardLinkAddress);
-        } while (formatOptions.mSupportsDynamicUpdate
-                && dictBuffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
-        dictBuffer.position(originalPosition);
+            if (!dictUpdater.readAndFollowForwardLink()) break;
+            if (dictUpdater.getPosition() == FormatSpec.NO_FORWARD_LINK_ADDRESS) break;
+        } while (formatOptions.mSupportsDynamicUpdate);
+        dictUpdater.setPosition(originalPosition);
     }
 
     /**
      * Update a children address in a PtNode that is addressed by ptNodeOriginAddress.
      *
-     * @param dictBuffer the DictBuffer to write.
+     * @param dictUpdater the DictUpdater to write.
      * @param ptNodeOriginAddress the address of the PtNode.
      * @param newChildrenAddress the absolute address of the child.
      * @param formatOptions file format options.
      */
-    private static void updateChildrenAddress(final DictBuffer dictBuffer,
+    private static void updateChildrenAddress(final Ver3DictUpdater dictUpdater,
             final int ptNodeOriginAddress, final int newChildrenAddress,
             final FormatOptions formatOptions) {
+        final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
         final int originalPosition = dictBuffer.position();
         dictBuffer.position(ptNodeOriginAddress);
         final int flags = dictBuffer.readUnsignedByte();
@@ -155,31 +133,33 @@ public final class DynamicBinaryDictIOUtils {
      * Helper method to move a PtNode to the tail of the file.
      */
     private static int movePtNode(final OutputStream destination,
-            final DictBuffer dictBuffer, final PtNodeInfo info,
+            final Ver3DictUpdater dictUpdater, final PtNodeInfo info,
             final int nodeArrayOriginAddress, final int oldNodeAddress,
             final FormatOptions formatOptions) throws IOException {
-        updateParentAddress(dictBuffer, oldNodeAddress, dictBuffer.limit() + 1, formatOptions);
+        final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
+        updateParentAddress(dictUpdater, oldNodeAddress, dictBuffer.limit() + 1, formatOptions);
         dictBuffer.position(oldNodeAddress);
         final int currentFlags = dictBuffer.readUnsignedByte();
         dictBuffer.position(oldNodeAddress);
         dictBuffer.put((byte)(FormatSpec.FLAG_IS_MOVED | (currentFlags
                 & (~FormatSpec.MASK_MOVE_AND_DELETE_FLAG))));
         int size = FormatSpec.PTNODE_FLAGS_SIZE;
-        updateForwardLink(dictBuffer, nodeArrayOriginAddress, dictBuffer.limit(), formatOptions);
+        updateForwardLink(dictUpdater, nodeArrayOriginAddress, dictBuffer.limit(), formatOptions);
         size += BinaryDictIOUtils.writeNodes(destination, new PtNodeInfo[] { info });
         return size;
     }
 
     @SuppressWarnings("unused")
-    private static void updateForwardLink(final DictBuffer dictBuffer,
+    private static void updateForwardLink(final Ver3DictUpdater dictUpdater,
             final int nodeArrayOriginAddress, final int newNodeArrayAddress,
             final FormatOptions formatOptions) {
-        dictBuffer.position(nodeArrayOriginAddress);
+        final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
+        dictUpdater.setPosition(nodeArrayOriginAddress);
         int jumpCount = 0;
         while (jumpCount++ < MAX_JUMPS) {
-            final int count = BinaryDictDecoderUtils.readPtNodeCount(dictBuffer);
+            final int count = dictUpdater.readPtNodeCount();
             for (int i = 0; i < count; ++i) {
-                BinaryDictIOUtils.skipPtNode(dictBuffer, formatOptions);
+                dictUpdater.readPtNode(dictUpdater.getPosition(), formatOptions);
             }
             final int forwardLinkAddress = dictBuffer.readUnsignedInt24();
             if (forwardLinkAddress == FormatSpec.NO_FORWARD_LINK_ADDRESS) {
@@ -207,7 +187,7 @@ public final class DynamicBinaryDictIOUtils {
      * @param shortcutTargets the shortcut targets for this PtNode.
      * @param bigrams the bigrams for this PtNode.
      * @param destination the stream representing the tail of the file.
-     * @param dictBuffer the DictBuffer representing the (constant-size) body of the file.
+     * @param dictUpdater the DictUpdater.
      * @param oldPtNodeArrayOrigin the origin of the old PtNode array this PtNode was a part of.
      * @param oldPtNodeOrigin the old origin where this PtNode used to be stored.
      * @param formatOptions format options for this dictionary.
@@ -218,7 +198,7 @@ public final class DynamicBinaryDictIOUtils {
             final int length, final int flags, final int frequency, final int parentAddress,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams, final OutputStream destination,
-            final DictBuffer dictBuffer, final int oldPtNodeArrayOrigin,
+            final Ver3DictUpdater dictUpdater, final int oldPtNodeArrayOrigin,
             final int oldPtNodeOrigin, final FormatOptions formatOptions) throws IOException {
         int size = 0;
         final int newPtNodeOrigin = fileEndAddress + 1;
@@ -231,7 +211,7 @@ public final class DynamicBinaryDictIOUtils {
                 flags, writtenCharacters, frequency, parentAddress,
                 fileEndAddress + 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE, shortcutTargets,
                 bigrams);
-        movePtNode(destination, dictBuffer, newInfo, oldPtNodeArrayOrigin, oldPtNodeOrigin,
+        movePtNode(destination, dictUpdater, newInfo, oldPtNodeArrayOrigin, oldPtNodeOrigin,
                 formatOptions);
         return 1 + size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
     }
@@ -239,7 +219,7 @@ public final class DynamicBinaryDictIOUtils {
     /**
      * Insert a word into a binary dictionary.
      *
-     * @param dictDecoder the dict decoder.
+     * @param dictUpdater the dict updater.
      * @param destination a stream to the underlying file, with the pointer at the end of the file.
      * @param word the word to insert.
      * @param frequency the frequency of the new word.
@@ -252,17 +232,17 @@ public final class DynamicBinaryDictIOUtils {
     // TODO: Support batch insertion.
     // TODO: Remove @UsedForTesting once UserHistoryDictionary is implemented by BinaryDictionary.
     @UsedForTesting
-    public static void insertWord(final Ver3DictDecoder dictDecoder,
+    public static void insertWord(final Ver3DictUpdater dictUpdater,
             final OutputStream destination, final String word, final int frequency,
             final ArrayList<WeightedString> bigramStrings,
             final ArrayList<WeightedString> shortcuts, final boolean isNotAWord,
             final boolean isBlackListEntry)
                     throws IOException, UnsupportedFormatException {
         final ArrayList<PendingAttribute> bigrams = new ArrayList<PendingAttribute>();
-        final DictBuffer dictBuffer = dictDecoder.getDictBuffer();
+        final DictBuffer dictBuffer = dictUpdater.getDictBuffer();
         if (bigramStrings != null) {
             for (final WeightedString bigram : bigramStrings) {
-                int position = dictDecoder.getTerminalPosition(bigram.mWord);
+                int position = dictUpdater.getTerminalPosition(bigram.mWord);
                 if (position == FormatSpec.NOT_VALID_WORD) {
                     // TODO: figure out what is the correct thing to do here.
                 } else {
@@ -277,7 +257,7 @@ public final class DynamicBinaryDictIOUtils {
 
         // find the insert position of the word.
         if (dictBuffer.position() != 0) dictBuffer.position(0);
-        final FileHeader fileHeader = dictDecoder.readHeader();
+        final FileHeader fileHeader = dictUpdater.readHeader();
 
         int wordPos = 0, address = dictBuffer.position(), nodeOriginAddress = dictBuffer.position();
         final int[] codePoints = FusionDictionary.getCodePoints(word);
@@ -292,7 +272,7 @@ public final class DynamicBinaryDictIOUtils {
 
             for (int i = 0; i < ptNodeCount; ++i) {
                 address = dictBuffer.position();
-                final PtNodeInfo currentInfo = dictDecoder.readPtNode(address,
+                final PtNodeInfo currentInfo = dictUpdater.readPtNode(address,
                         fileHeader.mFormatOptions);
                 final boolean isMovedNode = BinaryDictIOUtils.isMovedPtNode(currentInfo.mFlags,
                         fileHeader.mFormatOptions);
@@ -318,12 +298,12 @@ public final class DynamicBinaryDictIOUtils {
                                 false /* isBlackListEntry */, fileHeader.mFormatOptions);
                         int written = movePtNode(newNodeAddress, currentInfo.mCharacters, p, flags,
                                 frequency, nodeParentAddress, shortcuts, bigrams, destination,
-                                dictBuffer, nodeOriginAddress, address, fileHeader.mFormatOptions);
+                                dictUpdater, nodeOriginAddress, address, fileHeader.mFormatOptions);
 
                         final int[] characters2 = Arrays.copyOfRange(currentInfo.mCharacters, p,
                                 currentInfo.mCharacters.length);
                         if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-                            updateParentAddresses(dictBuffer, currentInfo.mChildrenAddress,
+                            updateParentAddresses(dictUpdater, currentInfo.mChildrenAddress,
                                     newNodeAddress + written + 1, fileHeader.mFormatOptions);
                         }
                         final PtNodeInfo newInfo2 = new PtNodeInfo(
@@ -359,13 +339,13 @@ public final class DynamicBinaryDictIOUtils {
                                     fileHeader.mFormatOptions);
                             int written = movePtNode(newNodeAddress, currentInfo.mCharacters, p,
                                     prefixFlags, -1 /* frequency */, nodeParentAddress, null, null,
-                                    destination, dictBuffer, nodeOriginAddress, address,
+                                    destination, dictUpdater, nodeOriginAddress, address,
                                     fileHeader.mFormatOptions);
 
                             final int[] suffixCharacters = Arrays.copyOfRange(
                                     currentInfo.mCharacters, p, currentInfo.mCharacters.length);
                             if (currentInfo.mChildrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-                                updateParentAddresses(dictBuffer, currentInfo.mChildrenAddress,
+                                updateParentAddresses(dictUpdater, currentInfo.mChildrenAddress,
                                         newNodeAddress + written + 1, fileHeader.mFormatOptions);
                             }
                             final int suffixFlags = BinaryDictEncoderUtils.makePtNodeFlags(
@@ -416,7 +396,7 @@ public final class DynamicBinaryDictIOUtils {
                                 -1 /* endAddress */, flags, currentInfo.mCharacters, frequency,
                                 nodeParentAddress, currentInfo.mChildrenAddress, shortcuts,
                                 bigrams);
-                        movePtNode(destination, dictBuffer, newInfo, nodeOriginAddress, address,
+                        movePtNode(destination, dictUpdater, newInfo, nodeOriginAddress, address,
                                 fileHeader.mFormatOptions);
                         return;
                     }
@@ -435,7 +415,7 @@ public final class DynamicBinaryDictIOUtils {
                          * ab - cd - e
                          */
                         final int newNodeArrayAddress = dictBuffer.limit();
-                        updateChildrenAddress(dictBuffer, address, newNodeArrayAddress,
+                        updateChildrenAddress(dictUpdater, address, newNodeArrayAddress,
                                 fileHeader.mFormatOptions);
                         final int newNodeAddress = newNodeArrayAddress + 1;
                         final boolean hasMultipleChars = (wordLen - wordPos) > 1;
