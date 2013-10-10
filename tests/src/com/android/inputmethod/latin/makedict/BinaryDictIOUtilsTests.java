@@ -27,9 +27,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.utils.CollectionUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -186,46 +184,31 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
             final ArrayList<WeightedString> shortcuts) {
-        BufferedOutputStream outStream = null;
         long amountOfTime = -1;
         try {
-            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+            final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
                     DictDecoder.USE_WRITABLE_BYTEBUFFER);
-            dictDecoder.openDictBuffer();
-            outStream = new BufferedOutputStream(new FileOutputStream(file, true));
 
             if (!exist) {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
             }
             final long now = System.nanoTime();
-            DynamicBinaryDictIOUtils.insertWord(dictDecoder, outStream, word, frequency, bigrams,
-                    shortcuts, false, false);
+            dictUpdater.insertWord(word, frequency, bigrams, shortcuts, false, false);
             amountOfTime = System.nanoTime() - now;
-            outStream.flush();
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
-            outStream.close();
         } catch (IOException e) {
             Log.e(TAG, "Raised an IOException while inserting a word", e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Raised an UnsupportedFormatException error while inserting a word", e);
-        } finally {
-            if (outStream != null) {
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to close the output stream", e);
-                }
-            }
         }
         return amountOfTime;
     }
 
     private void deleteWord(final File file, final String word) {
         try {
-            final Ver3DictDecoder dictDecoder = new Ver3DictDecoder(file,
+            final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
                     DictDecoder.USE_WRITABLE_BYTEBUFFER);
-            dictDecoder.openDictBuffer();
-            DynamicBinaryDictIOUtils.deleteWord(dictDecoder, word);
+            dictUpdater.deleteWord(word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
