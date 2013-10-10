@@ -62,7 +62,8 @@ public final class BinaryDictionary extends Dictionary {
     private final int[] mSpaceIndices = new int[MAX_RESULTS];
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
-    private final int[] mOutputAutoCommitFirstWordConfidence = new int[MAX_RESULTS];
+    // Only one result is ever used
+    private final int[] mOutputAutoCommitFirstWordConfidence = new int[1];
 
     private final NativeSuggestOptions mNativeSuggestOptions = new NativeSuggestOptions();
 

@@ -298,6 +298,9 @@ static inline void prof_out(void) {
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
 #define NOT_A_DICT_POS (S_INT_MIN)
+// A special value to mean the first word confidence makes no sense in this case,
+// e.g. this is not a multi-word suggestion.
+#define NOT_A_FIRST_WORD_CONFIDENCE (S_INT_MIN)
 
 #define KEYCODE_SPACE ' '
 #define KEYCODE_SINGLE_QUOTE '\''
