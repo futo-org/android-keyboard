@@ -273,6 +273,24 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 lastModifiedTime);
     }
 
+    private void runGCIfRequired() {
+        if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
+        if (mBinaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+            if (setIsRegeneratingIfNotRegenerating()) {
+                getExecutor(mFilename).execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mBinaryDictionary.flushWithGC();
+                        } finally {
+                            mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
     /**
      * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
      */
@@ -282,7 +300,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
             return;
         }
-
+        runGCIfRequired();
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
@@ -306,7 +324,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-
+        runGCIfRequired();
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
@@ -330,7 +348,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-
+        runGCIfRequired();
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
