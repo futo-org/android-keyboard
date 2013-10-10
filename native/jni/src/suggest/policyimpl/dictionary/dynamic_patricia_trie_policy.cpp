@@ -360,11 +360,11 @@ void DynamicPatriciaTriePolicy::getProperty(const char *const query, char *const
     } else if (strncmp(query, MAX_UNIGRAM_COUNT_QUERY, maxResultLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_UNIGRAM_COUNT :
-                        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE);
+                        static_cast<int>(DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, MAX_BIGRAM_COUNT_QUERY, maxResultLength) == 0) {
         snprintf(outResult, maxResultLength, "%d",
                 mHeaderPolicy.isDecayingDict() ? ForgettingCurveUtils::MAX_BIGRAM_COUNT :
-                        DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE);
+                        static_cast<int>(DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE));
     } else if (strncmp(query, SET_NEEDS_TO_DECAY_FOR_TESTING_QUERY, maxResultLength) == 0) {
         mNeedsToDecayForTesting = true;
     }
