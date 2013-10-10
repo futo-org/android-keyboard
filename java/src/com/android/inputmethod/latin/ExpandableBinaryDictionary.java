@@ -273,9 +273,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 lastModifiedTime);
     }
 
-    private void runGCIfRequired() {
+    protected void runGCIfRequired(final boolean mindsBlockByGC) {
         if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
-        if (mBinaryDictionary.needsToRunGC(true /* mindsBlockByGC */)) {
+        if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
             if (setIsRegeneratingIfNotRegenerating()) {
                 getExecutor(mFilename).execute(new Runnable() {
                     @Override
@@ -300,7 +300,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
             return;
         }
-        runGCIfRequired();
+        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
@@ -324,7 +324,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-        runGCIfRequired();
+        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
@@ -348,7 +348,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-        runGCIfRequired();
+        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {

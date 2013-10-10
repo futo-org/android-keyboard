@@ -236,4 +236,8 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         // Then flush the cleared state of the dictionary on disk.
         asyncFlashAllBinaryDictionary();
     }
+
+    /* package */ void decayIfNeeded() {
+        runGCIfRequired(false /* mindsBlockByGC */);
+    }
 }
