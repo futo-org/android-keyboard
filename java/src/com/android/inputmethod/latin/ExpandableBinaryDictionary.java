@@ -249,6 +249,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     final File file = new File(mContext.getFilesDir(), mFilename);
                     BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
                             DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                    mBinaryDictionary = new BinaryDictionary(
+                            file.getAbsolutePath(), 0 /* offset */, file.length(),
+                            true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
                 } else {
                     mDictionaryWriter.clear();
                 }
@@ -273,11 +276,26 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 lastModifiedTime);
     }
 
+    /**
+     * Check whether GC is needed and run GC if required.
+     */
     protected void runGCIfRequired(final boolean mindsBlockByGC) {
         if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                runGCIfRequiredInternalLocked(mindsBlockByGC);
+            }
+        });
+    }
+
+    private void runGCIfRequiredInternalLocked(final boolean mindsBlockByGC) {
+        if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
+        // Calls to needsToRunGC() need to be serialized.
         if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
             if (setIsRegeneratingIfNotRegenerating()) {
-                getExecutor(mFilename).execute(new Runnable() {
+                // Run GC after currently existing time sensitive operations.
+                getExecutor(mFilename).executePrioritized(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -300,11 +318,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
             return;
         }
-        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
                     mBinaryDictionary.addUnigramWord(word, frequency);
                 } else {
                     // TODO: Remove.
@@ -324,11 +342,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
                     mBinaryDictionary.addBigramWords(word0, word1, frequency);
                 } else {
                     // TODO: Remove.
@@ -348,11 +366,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     + mFilename);
             return;
         }
-        runGCIfRequired(true /* mindsBlockByGC */);
         getExecutor(mFilename).execute(new Runnable() {
             @Override
             public void run() {
                 if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
                     mBinaryDictionary.removeBigramWords(word0, word1);
                 } else {
                     // TODO: Remove.
@@ -479,8 +497,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         final long length = file.length();
 
         // Build the new binary dictionary
-        final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0, length,
-                true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
+        final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0 /* offset */,
+                length, true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
 
         // Ensure all threads accessing the current dictionary have finished before
         // swapping in the new one.

@@ -230,6 +230,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         mSessions.remove(session);
     }
 
+    @UsedForTesting
     public void clearAndFlushDictionary() {
         // Clear the node structure on memory
         clear();
