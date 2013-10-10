@@ -42,7 +42,6 @@ public class DynamicGridKeyboard extends Keyboard {
     private final Object mLock = new Object();
 
     private final SharedPreferences mPrefs;
-    private final int mLeftPadding;
     private final int mHorizontalStep;
     private final int mVerticalStep;
     private final int mColumnsNum;
@@ -58,7 +57,6 @@ public class DynamicGridKeyboard extends Keyboard {
         super(templateKeyboard);
         final Key key0 = getTemplateKey(TEMPLATE_KEY_CODE_0);
         final Key key1 = getTemplateKey(TEMPLATE_KEY_CODE_1);
-        mLeftPadding = key0.getX();
         mHorizontalStep = Math.abs(key1.getX() - key0.getX());
         mVerticalStep = key0.getHeight() + mVerticalGap;
         mColumnsNum = mBaseWidth / mHorizontalStep;
@@ -122,9 +120,11 @@ public class DynamicGridKeyboard extends Keyboard {
             }
             int index = 0;
             for (final GridKey gridKey : mGridKeys) {
-                final int keyX = getKeyX(index);
-                final int keyY = getKeyY(index);
-                gridKey.updateCorrdinates(keyX, keyY);
+                final int keyX0 = getKeyX0(index);
+                final int keyY0 = getKeyY0(index);
+                final int keyX1 = getKeyX1(index);
+                final int keyY1 = getKeyY1(index);
+                gridKey.updateCorrdinates(keyX0, keyY0, keyX1, keyY1);
                 index++;
             }
         }
@@ -172,14 +172,24 @@ public class DynamicGridKeyboard extends Keyboard {
         }
     }
 
-    private int getKeyX(final int index) {
+    private int getKeyX0(final int index) {
         final int column = index % mColumnsNum;
-        return column * mHorizontalStep + mLeftPadding;
+        return column * mHorizontalStep;
     }
 
-    private int getKeyY(final int index) {
+    private int getKeyX1(final int index) {
+        final int column = index % mColumnsNum + 1;
+        return column * mHorizontalStep;
+    }
+
+    private int getKeyY0(final int index) {
         final int row = index / mColumnsNum;
-        return row * mVerticalStep + mTopPadding;
+        return row * mVerticalStep;
+    }
+
+    private int getKeyY1(final int index) {
+        final int row = index / mColumnsNum + 1;
+        return row * mVerticalStep;
     }
 
     @Override
@@ -207,10 +217,10 @@ public class DynamicGridKeyboard extends Keyboard {
             super(originalKey);
         }
 
-        public void updateCorrdinates(final int x, final int y) {
-            mCurrentX = x;
-            mCurrentY = y;
-            getHitBox().set(x, y, x + getWidth(), y + getHeight());
+        public void updateCorrdinates(final int x0, final int y0, final int x1, final int y1) {
+            mCurrentX = x0;
+            mCurrentY = y0;
+            getHitBox().set(x0, y0, x1, y1);
         }
 
         @Override
