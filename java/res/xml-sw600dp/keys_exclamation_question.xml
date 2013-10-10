@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="\?" />
-    <Key
         latin:keyLabel="!" />
+    <Key
+        latin:keyLabel="\?" />
 </merge>
