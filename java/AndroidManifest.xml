@@ -110,6 +110,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever">
+            <intent-filter>
+                <action android:name="com.android.inputmethod.latin.personalization.DICT_DECAY" />
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".DictionaryPackInstallBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
