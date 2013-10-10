@@ -383,8 +383,8 @@ public class BinaryDictEncoderUtils {
                 nodeSize += getByteSize(getOffsetToTargetNodeArrayDuringUpdate(ptNodeArray,
                         nodeSize + size, ptNode.mChildren));
             }
-            nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
             if (formatOptions.mVersion < FormatSpec.FIRST_VERSION_WITH_TERMINAL_ID) {
+                nodeSize += getShortcutListSize(ptNode.mShortcutTargets);
                 if (null != ptNode.mBigrams) {
                     for (WeightedString bigram : ptNode.mBigrams) {
                         final int offset = getOffsetToTargetPtNodeDuringUpdate(ptNodeArray,
