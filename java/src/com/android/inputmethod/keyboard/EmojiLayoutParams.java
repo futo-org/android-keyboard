@@ -75,9 +75,7 @@ public class EmojiLayoutParams {
 
     public void setActionBarProperties(LinearLayout ll) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) ll.getLayoutParams();
-        lp.height = mEmojiActionBarHeight;
-        lp.topMargin = 0;
-        lp.bottomMargin = mBottomPadding;
+        lp.height = mEmojiActionBarHeight - mBottomPadding;
         ll.setLayoutParams(lp);
     }
 

@@ -155,7 +155,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void saveKeyboardState() {
-        if (getKeyboard() != null) {
+        if (getKeyboard() != null || isShowingEmojiKeyboard()) {
             mState.onSaveKeyboardState();
         }
     }
