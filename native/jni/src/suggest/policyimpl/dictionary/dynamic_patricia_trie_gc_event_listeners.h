@@ -60,6 +60,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onDescend(const int ptNodeArrayPos) {
             mValueStack.push_back(0);
+            mChildrenValue = 0;
             return true;
         }
 

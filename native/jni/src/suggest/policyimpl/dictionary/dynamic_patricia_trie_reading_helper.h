@@ -279,7 +279,9 @@ class DynamicPatriciaTrieReadingHelper {
         } else {
             mReadingState = mReadingStateStack.back();
             mReadingStateStack.pop_back();
-            fetchPtNodeInfo();
+            if (!isEnd()) {
+                fetchPtNodeInfo();
+            }
         }
     }
 };
