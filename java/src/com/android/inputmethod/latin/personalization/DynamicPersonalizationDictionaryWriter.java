@@ -75,15 +75,21 @@ public class DynamicPersonalizationDictionaryWriter extends AbstractDictionaryWr
     /**
      * Adds a word unigram to the fusion dictionary. Call updateBinaryDictionary when all changes
      * are done to update the binary dictionary.
+     * @param word The word to add.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     * @param isNotAWord true if this is not a word, i.e. shortcut only.
      */
     @Override
     public void addUnigramWord(final String word, final String shortcutTarget, final int frequency,
-            final boolean isNotAWord) {
+            final int shortcutFreq, final boolean isNotAWord) {
         if (mBigramList.size() > mMaxHistoryBigrams * 2) {
             // Too many entries: just stop adding new vocabulary and wait next refresh.
             return;
         }
-        mExpandableDictionary.addWord(word, shortcutTarget, frequency);
+        mExpandableDictionary.addWord(word, shortcutTarget, frequency, shortcutFreq);
         mBigramList.addBigram(null, word, (byte)frequency);
     }
 

@@ -47,6 +47,9 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private static final String USER_DICTIONARY_ALL_LANGUAGES = "";
     private static final int HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY = 250;
     private static final int LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY = 160;
+    // Shortcut frequency is 0~15, with 15 = whitelist. We don't want user dictionary entries
+    // to auto-correct, so we set this to the highest frequency that won't, i.e. 14.
+    private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
 
     // TODO: use Words.SHORTCUT when we target JellyBean or above
     final static String SHORTCUT = "shortcut";
@@ -243,10 +246,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, adjustedFrequency, false /* isNotAWord */);
+                    super.addWord(word, null, adjustedFrequency, 0 /* shortcutFreq */,
+                            false /* isNotAWord */);
                 }
                 if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, adjustedFrequency, true /* isNotAWord */);
+                    super.addWord(shortcut, word, adjustedFrequency, USER_DICT_SHORTCUT_FREQUENCY,
+                            true /* isNotAWord */);
                 }
                 cursor.moveToNext();
             }

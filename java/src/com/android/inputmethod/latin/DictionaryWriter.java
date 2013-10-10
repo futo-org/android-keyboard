@@ -62,13 +62,13 @@ public class DictionaryWriter extends AbstractDictionaryWriter {
     // considering performance regression.
     @Override
     public void addUnigramWord(final String word, final String shortcutTarget, final int frequency,
-            final boolean isNotAWord) {
+            final int shortcutFreq, final boolean isNotAWord) {
         if (shortcutTarget == null) {
             mFusionDictionary.add(word, frequency, null, isNotAWord);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
             final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
-            shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
+            shortcutTargets.add(new WeightedString(shortcutTarget, shortcutFreq));
             mFusionDictionary.add(word, frequency, shortcutTargets, isNotAWord);
         }
     }

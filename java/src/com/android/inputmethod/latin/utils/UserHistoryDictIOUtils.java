@@ -49,7 +49,16 @@ public final class UserHistoryDictIOUtils {
     private static final String LAST_UPDATED_TIME_KEY = "date";
 
     public interface OnAddWordListener {
-        public void setUnigram(final String word, final String shortcutTarget, final int frequency);
+        /**
+         * Callback to be notified when a word is added to the dictionary.
+         * @param word The added word.
+         * @param shortcutTarget A shortcut target for this word, or null if none.
+         * @param frequency The frequency for this word.
+         * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist).
+         *   Unspecified if shortcutTarget is null - do not rely on its value.
+         */
+        public void setUnigram(final String word, final String shortcutTarget, final int frequency,
+                final int shortcutFreq);
         public void setBigram(final String word1, final String word2, final int frequency);
     }
 
@@ -153,7 +162,7 @@ public final class UserHistoryDictIOUtils {
         for (Entry<Integer, String> entry : unigrams.entrySet()) {
             final String word1 = entry.getValue();
             final int unigramFrequency = frequencies.get(entry.getKey());
-            to.setUnigram(word1, null, unigramFrequency);
+            to.setUnigram(word1, null /* shortcutTarget */, unigramFrequency, 0 /* shortcutFreq */);
             final ArrayList<PendingAttribute> attrList = bigrams.get(entry.getKey());
             if (attrList != null) {
                 for (final PendingAttribute attr : attrList) {

@@ -41,8 +41,17 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
 
     abstract public void clear();
 
+    /**
+     * Add a unigram with an optional shortcut to the dictionary.
+     * @param word The word to add.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     * @param isNotAWord true if this is not a word, i.e. shortcut only.
+     */
     abstract public void addUnigramWord(final String word, final String shortcutTarget,
-            final int frequency, final boolean isNotAWord);
+            final int frequency, final int shortcutFreq, final boolean isNotAWord);
 
     // TODO: Remove lastModifiedTime after making binary dictionary support forgetting curve.
     abstract public void addBigramWords(final String word0, final String word1,

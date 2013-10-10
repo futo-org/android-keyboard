@@ -261,10 +261,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /**
      * Adds a word unigram to the dictionary. Used for loading a dictionary.
+     * @param word The word to add.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     * @param isNotAWord true if this is not a word, i.e. shortcut only.
      */
     protected void addWord(final String word, final String shortcutTarget,
-            final int frequency, final boolean isNotAWord) {
-        mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
+            final int frequency, final int shortcutFreq, final boolean isNotAWord) {
+        mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, shortcutFreq, isNotAWord);
     }
 
     /**
@@ -313,7 +319,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
      */
     protected void addWordDynamically(final String word, final String shortcutTarget,
-            final int frequency, final boolean isNotAWord) {
+            final int frequency, final int shortcutFreq, final boolean isNotAWord) {
         if (!mIsUpdatable) {
             Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
             return;
@@ -326,7 +332,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                     mBinaryDictionary.addUnigramWord(word, frequency);
                 } else {
                     // TODO: Remove.
-                    mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, isNotAWord);
+                    mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, shortcutFreq,
+                            isNotAWord);
                 }
             }
         });

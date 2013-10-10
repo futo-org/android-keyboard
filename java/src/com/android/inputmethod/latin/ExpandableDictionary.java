@@ -156,15 +156,36 @@ public class ExpandableDictionary extends Dictionary {
         return Constants.DICTIONARY_MAX_WORD_LENGTH;
     }
 
-    public void addWord(final String word, final String shortcutTarget, final int frequency) {
+    /**
+     * Add a word with an optional shortcut to the dictionary.
+     * @param word The word to add.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     */
+    public void addWord(final String word, final String shortcutTarget, final int frequency,
+            final int shortcutFreq) {
         if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
             return;
         }
-        addWordRec(mRoots, word, 0, shortcutTarget, frequency, null);
+        addWordRec(mRoots, word, 0, shortcutTarget, frequency, shortcutFreq, null);
     }
 
+    /**
+     * Add a word, recursively searching for its correct place in the trie tree.
+     * @param children The node to recursively search for addition. Initially, the root of the tree.
+     * @param word The word to add.
+     * @param depth The current depth in the tree.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     * @param parentNode The parent node, for up linking. Initially null, as the root has no parent.
+     */
     private void addWordRec(final NodeArray children, final String word, final int depth,
-            final String shortcutTarget, final int frequency, final Node parentNode) {
+            final String shortcutTarget, final int frequency, final int shortcutFreq,
+            final Node parentNode) {
         final int wordLength = word.length();
         if (wordLength <= depth) return;
         final char c = word.charAt(depth);
@@ -204,7 +225,8 @@ public class ExpandableDictionary extends Dictionary {
         if (childNode.mChildren == null) {
             childNode.mChildren = new NodeArray();
         }
-        addWordRec(childNode.mChildren, word, depth + 1, shortcutTarget, frequency, childNode);
+        addWordRec(childNode.mChildren, word, depth + 1, shortcutTarget, frequency, shortcutFreq,
+                childNode);
     }
 
     @Override
