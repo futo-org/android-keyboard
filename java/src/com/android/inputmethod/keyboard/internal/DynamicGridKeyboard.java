@@ -39,6 +39,7 @@ public class DynamicGridKeyboard extends Keyboard {
     private static final String TAG = DynamicGridKeyboard.class.getSimpleName();
     private static final int TEMPLATE_KEY_CODE_0 = 0x30;
     private static final int TEMPLATE_KEY_CODE_1 = 0x31;
+    private final Object mLock = new Object();
 
     private final SharedPreferences mPrefs;
     private final int mLeftPadding;
@@ -48,6 +49,7 @@ public class DynamicGridKeyboard extends Keyboard {
     private final int mMaxKeyCount;
     private final boolean mIsRecents;
     private final ArrayDeque<GridKey> mGridKeys = CollectionUtils.newArrayDeque();
+    private final ArrayDeque<Key> mPendingKeys = CollectionUtils.newArrayDeque();
 
     private Key[] mCachedGridKeys;
 
@@ -74,6 +76,21 @@ public class DynamicGridKeyboard extends Keyboard {
         throw new RuntimeException("Can't find template key: code=" + code);
     }
 
+    public void addPendingKey(final Key usedKey) {
+        synchronized (mLock) {
+            mPendingKeys.addLast(usedKey);
+        }
+    }
+
+    public void flushPendingRecentKeys() {
+        synchronized (mLock) {
+            while (!mPendingKeys.isEmpty()) {
+                addKey(mPendingKeys.pollFirst(), true);
+            }
+            saveRecentKeys();
+        }
+    }
+
     public void addKeyFirst(final Key usedKey) {
         addKey(usedKey, true);
         if (mIsRecents) {
@@ -89,7 +106,7 @@ public class DynamicGridKeyboard extends Keyboard {
         if (usedKey == null) {
             return;
         }
-        synchronized (mGridKeys) {
+        synchronized (mLock) {
             mCachedGridKeys = null;
             final GridKey key = new GridKey(usedKey);
             while (mGridKeys.remove(key)) {
@@ -167,7 +184,7 @@ public class DynamicGridKeyboard extends Keyboard {
 
     @Override
     public Key[] getKeys() {
-        synchronized (mGridKeys) {
+        synchronized (mLock) {
             if (mCachedGridKeys != null) {
                 return mCachedGridKeys;
             }
