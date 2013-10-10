@@ -74,6 +74,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         ViewPager.OnPageChangeListener, View.OnClickListener,
         ScrollKeyboardView.OnKeyClickListener {
     private static final String TAG = EmojiPalettesView.class.getSimpleName();
+    private static final boolean DEBUG_PAGER = false;
     private final int mKeyBackgroundId;
     private final int mEmojiFunctionalKeyBackgroundId;
     private final KeyboardLayoutSet mLayoutSet;
@@ -566,6 +567,20 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // TODO:
     }
 
+    public void startEmojiPalettes() {
+        if (DEBUG_PAGER) {
+            Log.d(TAG, "allocate emoji palettes memory");
+        }
+        mEmojiPager.setAdapter(mEmojiPalettesAdapter);
+    }
+
+    public void stopEmojiPalettes() {
+        if (DEBUG_PAGER) {
+            Log.d(TAG, "deallocate emoji palettes memory");
+        }
+        mEmojiPager.setAdapter(null);
+    }
+
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         mDeleteKeyOnTouchListener.setKeyboardActionListener(mKeyboardActionListener);
@@ -663,6 +678,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         @Override
         public Object instantiateItem(final ViewGroup container, final int position) {
+            if (DEBUG_PAGER) {
+                Log.d(TAG, "instantiate item: " + position);
+            }
             final ScrollKeyboardView oldKeyboardView = mActiveKeyboardViews.get(position);
             if (oldKeyboardView != null) {
                 oldKeyboardView.deallocateMemory();
@@ -694,6 +712,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         @Override
         public void destroyItem(final ViewGroup container, final int position,
                 final Object object) {
+            if (DEBUG_PAGER) {
+                Log.d(TAG, "destroy item: " + position + ", " + object.getClass().getSimpleName());
+            }
             final ScrollKeyboardView keyboardView = mActiveKeyboardViews.get(position);
             if (keyboardView != null) {
                 keyboardView.deallocateMemory();
