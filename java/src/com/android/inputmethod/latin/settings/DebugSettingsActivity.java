@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.FragmentUtils;
 
 public final class DebugSettingsActivity extends PreferenceActivity {
     private static final String DEFAULT_FRAGMENT = DebugSettings.class.getName();
@@ -42,6 +43,6 @@ public final class DebugSettingsActivity extends PreferenceActivity {
     // TODO: Uncomment the override annotation once we start using SDK version 19.
     // @Override
     public boolean isValidFragment(String fragmentName) {
-        return fragmentName.equals(DEFAULT_FRAGMENT);
+        return FragmentUtils.isValidFragment(fragmentName);
     }
 }
