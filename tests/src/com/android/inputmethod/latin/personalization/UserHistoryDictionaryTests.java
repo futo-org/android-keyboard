@@ -109,35 +109,54 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
         dict.close();
     }
 
+    /**
+     * Clear all entries in the user history dictionary.
+     * @param testFilenameSuffix file name suffix used for testing.
+     */
+    private void clearHistory(final String testFilenameSuffix) {
+        final UserHistoryDictionary dict =
+                PersonalizationHelper.getUserHistoryDictionary(getContext(),
+                        testFilenameSuffix /* locale */, mPrefs);
+        dict.clearAndFlushDictionary();
+        dict.close();
+    }
+
+    /**
+     * Shut down executer and wait until all operations of user history are done.
+     * @param testFilenameSuffix file name suffix used for testing.
+     */
+    private void waitForWriting(final String testFilenameSuffix) {
+        try {
+            final UserHistoryDictionary dict =
+                    PersonalizationHelper.getUserHistoryDictionary(getContext(),
+                            testFilenameSuffix, mPrefs);
+            dict.shutdownExecutorForTests();
+            while (!dict.isTerminatedForTests()) {
+                Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
+            }
+        } catch (InterruptedException e) {
+            Log.d(TAG, "InterruptedException: ", e);
+        }
+    }
+
     public void testRandomWords() {
-        File dictFile = null;
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
         final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
+        final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
+                + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+
         final int numberOfWords = 1000;
         final Random random = new Random(123456);
 
         try {
+            clearHistory(testFilenameSuffix);
             addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
                     true /* checksContents */);
         } finally {
-            try {
-                final UserHistoryDictionary dict =
-                        PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                                testFilenameSuffix, mPrefs);
-                Log.d(TAG, "waiting for writing ...");
-                dict.shutdownExecutorForTests();
-                while (!dict.isTerminatedForTests()) {
-                    Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
-                }
-            } catch (InterruptedException e) {
-                Log.d(TAG, "InterruptedException: " + e);
-            }
-
-            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
-                    + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
-            dictFile = new File(getContext().getFilesDir(), fileName);
-
+            Log.d(TAG, "waiting for writing ...");
+            waitForWriting(testFilenameSuffix);
+            final File dictFile = new File(getContext().getFilesDir(), fileName);
             if (dictFile != null) {
                 assertTrue(dictFile.exists());
                 assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
@@ -162,6 +181,7 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
                 final String fileName = UserHistoryDictionary.NAME + "." +
                         testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
                 dictFiles[i] = new File(getContext().getFilesDir(), fileName);
+                clearHistory(testFilenameSuffixes[i]);
             }
 
             final long start = System.currentTimeMillis();
@@ -178,19 +198,9 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
             Log.d(TAG, "testStressTestForSwitchingLanguageAndAddingWords took "
                     + (end - start) + " ms");
         } finally {
-            try {
-                Log.d(TAG, "waiting for writing ...");
-                for (int i = 0; i < numberOfLanguages; i++) {
-                    final UserHistoryDictionary dict =
-                            PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                                    testFilenameSuffixes[i], mPrefs);
-                    dict.shutdownExecutorForTests();
-                    while (!dict.isTerminatedForTests()) {
-                        Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
-                    }
-                }
-            } catch (InterruptedException e) {
-                Log.d(TAG, "InterruptedException: " + e);
+            Log.d(TAG, "waiting for writing ...");
+            for (int i = 0; i < numberOfLanguages; i++) {
+                waitForWriting(testFilenameSuffixes[i]);
             }
             for (final File file : dictFiles) {
                 if (file != null) {
@@ -203,33 +213,21 @@ public class UserHistoryDictionaryTests extends AndroidTestCase {
     }
 
     public void testAddManyWords() {
-        File dictFile = null;
         final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
         final int numberOfWords =
                 ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
                         10000 : 1000;
         final Random random = new Random(123456);
-
-        UserHistoryDictionary dict =
-                PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix, mPrefs);
+        clearHistory(testFilenameSuffix);
         try {
             addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
                     true /* checksContents */);
-            dict.close();
         } finally {
-            try {
-                Log.d(TAG, "waiting for writing ...");
-                dict.shutdownExecutorForTests();
-                while (!dict.isTerminatedForTests()) {
-                    Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
-                }
-            } catch (InterruptedException e) {
-                Log.d(TAG, "InterruptedException: ", e);
-            }
+            Log.d(TAG, "waiting for writing ...");
+            waitForWriting(testFilenameSuffix);
             final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
                     + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
-            dictFile = new File(getContext().getFilesDir(), fileName);
+            final File dictFile = new File(getContext().getFilesDir(), fileName);
             if (dictFile != null) {
                 assertTrue(dictFile.exists());
                 assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
