@@ -44,9 +44,9 @@ public final class BinaryDictionary extends Dictionary {
     private static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
     // Must be equal to MAX_RESULTS in native/jni/src/defines.h
     private static final int MAX_RESULTS = 18;
-    // Required space count for auto commit.
-    // TODO: Remove this heuristic.
-    private static final int SPACE_COUNT_FOR_AUTO_COMMIT = 3;
+    // The cutoff returned by native for auto-commit confidence.
+    // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
+    private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
 
     @UsedForTesting
     public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
@@ -343,18 +343,7 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public boolean shouldAutoCommit(final SuggestedWordInfo candidate) {
-        // TODO: actually use the confidence rather than use this completely broken heuristic
-        final String word = candidate.mWord;
-        final int length = word.length();
-        int remainingSpaces = SPACE_COUNT_FOR_AUTO_COMMIT;
-        for (int i = 0; i < length; ++i) {
-            // This is okay because no low-surrogate and no high-surrogate can ever match the
-            // space character, so we don't need to take care of iterating on code points.
-            if (Constants.CODE_SPACE == word.charAt(i)) {
-                if (0 >= --remainingSpaces) return true;
-            }
-        }
-        return false;
+        return candidate.mAutoCommitFirstWordConfidence > CONFIDENCE_TO_AUTO_COMMIT;
     }
 
     @Override
