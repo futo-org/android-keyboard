@@ -45,6 +45,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     private static final String TEST_DICT_FILE_EXTENSION = ".testDict";
 
+    private static final int VERSION3 = 3;
+
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -183,11 +185,16 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
     // return amount of time to insert a word
     private long insertAndCheckWord(final File file, final String word, final int frequency,
             final boolean exist, final ArrayList<WeightedString> bigrams,
-            final ArrayList<WeightedString> shortcuts) {
+            final ArrayList<WeightedString> shortcuts, final int formatVersion) {
         long amountOfTime = -1;
         try {
-            final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
-                    DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            final DictUpdater dictUpdater;
+            if (formatVersion == VERSION3) {
+                dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            } else {
+                throw new RuntimeException("DictUpdater for version " + formatVersion + " doesn't"
+                        + " exist.");
+            }
 
             if (!exist) {
                 assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
@@ -204,10 +211,15 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         return amountOfTime;
     }
 
-    private void deleteWord(final File file, final String word) {
+    private void deleteWord(final File file, final String word, final int formatVersion) {
         try {
-            final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
-                    DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            final DictUpdater dictUpdater;
+            if (formatVersion == VERSION3) {
+                dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+            } else {
+                throw new RuntimeException("DictUpdater for version " + formatVersion + " doesn't"
+                        + " exist.");
+            }
             dictUpdater.deleteWord(word);
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
@@ -229,7 +241,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
     }
 
-    public void testInsertWord() {
+    private void runTestInsertWord(final int formatVersion) {
         File file = null;
         try {
             file = File.createTempFile("testInsertWord", TEST_DICT_FILE_EXTENSION,
@@ -253,33 +265,37 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         }
 
         MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "abcd"));
-        insertAndCheckWord(file, "abcde", 10, false, null, null);
+        insertAndCheckWord(file, "abcde", 10, false, null, null, formatVersion);
 
-        insertAndCheckWord(file, "abcdefghijklmn", 10, false, null, null);
+        insertAndCheckWord(file, "abcdefghijklmn", 10, false, null, null, formatVersion);
         checkReverseLookup(file, "abcdefghijklmn", getWordPosition(file, "abcdefghijklmn"));
 
-        insertAndCheckWord(file, "abcdabcd", 10, false, null, null);
+        insertAndCheckWord(file, "abcdabcd", 10, false, null, null, formatVersion);
         checkReverseLookup(file, "abcdabcd", getWordPosition(file, "abcdabcd"));
 
         // update the existing word.
-        insertAndCheckWord(file, "abcdabcd", 15, true, null, null);
+        insertAndCheckWord(file, "abcdabcd", 15, true, null, null, formatVersion);
 
         // split 1
-        insertAndCheckWord(file, "ab", 20, false, null, null);
+        insertAndCheckWord(file, "ab", 20, false, null, null, formatVersion);
 
         // split 2
-        insertAndCheckWord(file, "ami", 30, false, null, null);
+        insertAndCheckWord(file, "ami", 30, false, null, null, formatVersion);
 
-        deleteWord(file, "ami");
+        deleteWord(file, "ami", formatVersion);
         assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "ami"));
 
-        insertAndCheckWord(file, "abcdabfg", 30, false, null, null);
+        insertAndCheckWord(file, "abcdabfg", 30, false, null, null, formatVersion);
 
-        deleteWord(file, "abcd");
+        deleteWord(file, "abcd", formatVersion);
         assertEquals(FormatSpec.NOT_VALID_WORD, getWordPosition(file, "abcd"));
     }
 
-    public void testInsertWordWithBigrams() {
+    public void testInsertWord() {
+        runTestInsertWord(VERSION3);
+    }
+
+    private void runTestInsertWordWithBigrams(final int formatVersion) {
         File file = null;
         try {
             file = File.createTempFile("testInsertWordWithBigrams", TEST_DICT_FILE_EXTENSION,
@@ -306,8 +322,8 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         final ArrayList<WeightedString> banana = new ArrayList<WeightedString>();
         banana.add(new WeightedString("banana", 10));
 
-        insertAndCheckWord(file, "banana", 0, false, null, null);
-        insertAndCheckWord(file, "recursive", 60, true, banana, null);
+        insertAndCheckWord(file, "banana", 0, false, null, null, formatVersion);
+        insertAndCheckWord(file, "recursive", 60, true, banana, null, formatVersion);
 
         final PtNodeInfo info = findWordFromFile(file, "recursive");
         int bananaPos = getWordPosition(file, "banana");
@@ -316,7 +332,11 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         assertEquals(info.mBigrams.get(0).mAddress, bananaPos);
     }
 
-    public void testRandomWords() {
+    public void testInsertWordWithBigrams() {
+        runTestInsertWordWithBigrams(VERSION3);
+    }
+
+    private void runTestRandomWords(final int formatVersion) {
         File file = null;
         try {
             file = File.createTempFile("testRandomWord", TEST_DICT_FILE_EXTENSION,
@@ -345,7 +365,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
         int cnt = 0;
         for (final String word : sWords) {
             final long diff = insertAndCheckWord(file, word,
-                    cnt % FormatSpec.MAX_TERMINAL_FREQUENCY, false, null, null);
+                    cnt % FormatSpec.MAX_TERMINAL_FREQUENCY, false, null, null, formatVersion);
             maxTimeToInsert = Math.max(maxTimeToInsert, diff);
             minTimeToInsert = Math.min(minTimeToInsert, diff);
             sum += diff;
@@ -356,8 +376,13 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD, getWordPosition(file, word));
         }
 
+        Log.d(TAG, "Test version " + formatVersion);
         Log.d(TAG, "max = " + ((double)maxTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "min = " + ((double)minTimeToInsert/1000000) + " ms.");
         Log.d(TAG, "avg = " + ((double)sum/mMaxUnigrams/1000000) + " ms.");
+    }
+
+    public void testRandomWords() {
+        runTestRandomWords(VERSION3);
     }
 }
