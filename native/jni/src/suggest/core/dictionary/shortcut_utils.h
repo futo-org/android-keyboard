@@ -44,7 +44,7 @@ class ShortcutUtils {
                 shortcutScore = finalScore;
                 // Protection against int underflow
                 shortcutScore = max(S_INT_MIN + 1, shortcutScore) - 1;
-                kind = Dictionary::KIND_CORRECTION;
+                kind = Dictionary::KIND_SHORTCUT;
             }
             outputTypes[outputWordIndex] = kind;
             frequencies[outputWordIndex] = shortcutScore;
