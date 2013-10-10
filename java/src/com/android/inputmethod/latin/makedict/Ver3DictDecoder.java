@@ -169,7 +169,8 @@ public class Ver3DictDecoder extends DictDecoder {
             addressPointer += PtNodeReader.readBigramAddresses(mDictBuffer, bigrams, 
                     addressPointer);
             if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                MakedictLog.d("too many bigrams in a PtNode.");
+                throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()
+                        + " but max is " + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
             }
         } else {
             bigrams = null;
