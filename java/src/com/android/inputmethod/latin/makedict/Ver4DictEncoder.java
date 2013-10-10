@@ -136,7 +136,7 @@ public class Ver4DictEncoder implements DictEncoder {
 
         writeTerminalData(flatNodes, terminalCount);
         mBigramAddressTable = new SparseTable(terminalCount,
-                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
+                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, 1 /* contentTableCount */);
         writeBigrams(flatNodes, dict);
         writeBigramAddressSparseTable();
 
@@ -231,8 +231,7 @@ public class Ver4DictEncoder implements DictEncoder {
         while (shortcutIterator.hasNext()) {
             final WeightedString target = shortcutIterator.next();
             final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
-                    shortcutIterator.hasNext(),
-                    target.mFrequency);
+                    shortcutIterator.hasNext(), target.mFrequency);
             mTrieBuf[mTriePos++] = (byte)shortcutFlags;
             final int shortcutShift = CharEncoding.writeString(mTrieBuf, mTriePos,
                     target.mWord);
@@ -254,7 +253,8 @@ public class Ver4DictEncoder implements DictEncoder {
             for (final PtNode ptNode : nodeArray.mData) {
                 if (ptNode.mBigrams != null) {
                     final int startPos = bigramBuffer.size();
-                    mBigramAddressTable.set(ptNode.mTerminalId, startPos);
+                    mBigramAddressTable.set(0 /* contentTableIndex */, ptNode.mTerminalId,
+                            startPos);
                     final Iterator<WeightedString> bigramIterator = ptNode.mBigrams.iterator();
                     while (bigramIterator.hasNext()) {
                         final WeightedString bigram = bigramIterator.next();
@@ -280,7 +280,7 @@ public class Ver4DictEncoder implements DictEncoder {
                 new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
         final File contentFile =
                 new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
-        mBigramAddressTable.writeToFiles(lookupIndexFile, contentFile);
+        mBigramAddressTable.writeToFiles(lookupIndexFile, new File[] { contentFile });
     }
 
     @Override
