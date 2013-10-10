@@ -38,4 +38,10 @@ public final class DebugSettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(R.string.english_ime_debug_settings);
     }
+
+    // TODO: Uncomment the override annotation once we start using SDK version 19.
+    // @Override
+    public boolean isValidFragment(String fragmentName) {
+        return fragmentName.equals(DEFAULT_FRAGMENT);
+    }
 }
