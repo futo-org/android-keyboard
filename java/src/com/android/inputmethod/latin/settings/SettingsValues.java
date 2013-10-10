@@ -45,8 +45,9 @@ import java.util.Locale;
  */
 public final class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
-    // "floatNegativeInfinity" is a special marker string for Float.NEGATIVE_INFINITE
-    // currently used for auto-correction
+    // "floatMaxValue" and "floatNegativeInfinity" are special marker strings for
+    // Float.NEGATIVE_INFINITE and Float.MAX_VALUE. Currently used for auto-correction settings.
+    private static final String FLOAT_MAX_VALUE_MARKER_STRING = "floatMaxValue";
     private static final String FLOAT_NEGATIVE_INFINITY_MARKER_STRING = "floatNegativeInfinity";
 
     // From resources:
@@ -343,24 +344,28 @@ public final class SettingsValues {
         final String[] autoCorrectionThresholdValues = res.getStringArray(
                 R.array.auto_correction_threshold_values);
         // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
-        float autoCorrectionThreshold = Float.MAX_VALUE;
+        final float autoCorrectionThreshold;
         try {
             final int arrayIndex = Integer.valueOf(currentAutoCorrectionSetting);
             if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
                 final String val = autoCorrectionThresholdValues[arrayIndex];
-                if (FLOAT_NEGATIVE_INFINITY_MARKER_STRING.equals(val)) {
+                if (FLOAT_MAX_VALUE_MARKER_STRING.equals(val)) {
+                    autoCorrectionThreshold = Float.MAX_VALUE;
+                } else if (FLOAT_NEGATIVE_INFINITY_MARKER_STRING.equals(val)) {
                     autoCorrectionThreshold = Float.NEGATIVE_INFINITY;
                 } else {
                     autoCorrectionThreshold = Float.parseFloat(val);
                 }
+            } else {
+                autoCorrectionThreshold = Float.MAX_VALUE;
             }
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             // Whenever the threshold settings are correct, never come here.
-            autoCorrectionThreshold = Float.MAX_VALUE;
             Log.w(TAG, "Cannot load auto correction threshold setting."
                     + " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting
                     + ", autoCorrectionThresholdValues: "
                     + Arrays.toString(autoCorrectionThresholdValues), e);
+            return Float.MAX_VALUE;
         }
         return autoCorrectionThreshold;
     }

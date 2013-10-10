@@ -103,7 +103,7 @@
      -->
     <string-array name="auto_correction_threshold_values" translatable="false">
         <!-- Off, When auto correction setting is Off, this value is not used. -->
-        <item></item>
+        <item>floatMaxValue</item>
         <!-- Modest : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
         <item>0.185</item>
