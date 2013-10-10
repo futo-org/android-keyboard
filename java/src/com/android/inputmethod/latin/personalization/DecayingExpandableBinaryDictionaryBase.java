@@ -138,7 +138,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         final int frequency = ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
                 (isValid ? FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS) :
                         FREQUENCY_FOR_TYPED;
-        addWordDynamically(word1, null /* the "shortcut" parameter is null */, frequency,
+        addWordDynamically(word1, null /* shortcutTarget */, frequency, 0 /* shortcutFreq */,
                 false /* isNotAWord */);
         // Do not insert a word as a bigram of itself
         if (word1.equals(word0)) {
@@ -171,11 +171,11 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
         final OnAddWordListener listener = new OnAddWordListener() {
             @Override
             public void setUnigram(final String word, final String shortcutTarget,
-                    final int frequency) {
+                    final int frequency, final int shortcutFreq) {
                 if (DBG_SAVE_RESTORE) {
                     Log.d(TAG, "load unigram: " + word + "," + frequency);
                 }
-                addWord(word, shortcutTarget, frequency, false /* isNotAWord */);
+                addWord(word, shortcutTarget, frequency, shortcutFreq, false /* isNotAWord */);
                 ++profTotalCount[0];
             }
 
