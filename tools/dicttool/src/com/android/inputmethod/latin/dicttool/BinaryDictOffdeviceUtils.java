@@ -183,7 +183,11 @@ public final class BinaryDictOffdeviceUtils {
                             filename + " does not seem to be a dictionary file"));
                 } else if (CombinedInputOutput.isCombinedDictionary(
                         decodedSpec.mFile.getAbsolutePath())){
-                    if (report) System.out.println("Format : Combined format");
+                    if (report) {
+                        System.out.println("Format : Combined format");
+                        System.out.println("Packaging : " + decodedSpec.describeChain());
+                        System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
+                    }
                     return CombinedInputOutput.readDictionaryCombined(
                             new BufferedInputStream(new FileInputStream(decodedSpec.mFile)));
                 } else {
