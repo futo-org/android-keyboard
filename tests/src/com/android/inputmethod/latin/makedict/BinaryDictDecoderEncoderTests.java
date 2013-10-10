@@ -546,8 +546,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     }
 
     private long checkGetTerminalPosition(final DictDecoder dictDecoder, final String word,
-            int index, boolean contained) {
-        final int expectedFrequency = (UNIGRAM_FREQ + index) % 255;
+            final boolean contained) {
         long diff = -1;
         int position = -1;
         try {
@@ -605,7 +604,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         // Test a word that is contained within the dictionary.
         long sum = 0;
         for (int i = 0; i < sWords.size(); ++i) {
-            final long time = checkGetTerminalPosition(dictDecoder, sWords.get(i), i, true);
+            final long time = checkGetTerminalPosition(dictDecoder, sWords.get(i), true);
             sum += time == -1 ? 0 : time;
         }
         Log.d(TAG, "per search : " + (((double)sum) / sWords.size() / 1000000) + " : " + message
@@ -618,11 +617,11 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         for (int i = 0; i < 1000; ++i) {
             final String word = CodePointUtils.generateWord(random, codePointSet);
             if (sWords.indexOf(word) != -1) continue;
-            checkGetTerminalPosition(dictDecoder, word, i, false);
+            checkGetTerminalPosition(dictDecoder, word, false);
         }
     }
 
-    private void runGetTerminalPositionTests(final ArrayList<String> results, final int bufferType,
+    private void runGetTerminalPositionTests(final int bufferType,
             final FormatOptions formatOptions) {
         runGetTerminalPosition(sWords, sEmptyBigrams, bufferType, formatOptions, "unigram");
     }
@@ -630,17 +629,17 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
     public void testGetTerminalPosition() {
         final ArrayList<String> results = CollectionUtils.newArrayList();
 
-        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION2);
-        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION2);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION3_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_ARRAY, VERSION4_WITH_DYNAMIC_UPDATE);
 
-        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION2);
-        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
-        runGetTerminalPositionTests(results, USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION2);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION3_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION3_WITH_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION4_WITHOUT_DYNAMIC_UPDATE);
+        runGetTerminalPositionTests(USE_BYTE_BUFFER, VERSION4_WITH_DYNAMIC_UPDATE);
 
         for (final String result : results) {
             Log.d(TAG, result);
