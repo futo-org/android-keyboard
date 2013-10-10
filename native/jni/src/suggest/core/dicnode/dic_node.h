@@ -321,6 +321,16 @@ class DicNode {
         DUMP_WORD_AND_SCORE("OUTPUT");
     }
 
+    // "Total" in this context (and other methods in this class) means the whole suggestion. When
+    // this represents a multi-word suggestion, the referenced PtNode (in mDicNodeState) is only
+    // the one that corresponds to the last word of the suggestion, and all the previous words
+    // are concatenated together in mPrevWord - which contains a space at the end.
+    int getTotalNodeSpaceCount() const {
+        if (isFirstWord()) return 0;
+        return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
+                mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength());
+    }
+
     int getSecondWordFirstInputIndex(const ProximityInfoState *const pInfoState) const {
         const int inputIndex = mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex();
         if (inputIndex == NOT_AN_INDEX) {

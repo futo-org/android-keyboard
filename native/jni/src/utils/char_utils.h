@@ -75,6 +75,16 @@ class CharUtils {
         return c;
     }
 
+    static AK_FORCE_INLINE int getSpaceCount(const int *const codePointBuffer, const int length) {
+        int spaceCount = 0;
+        for (int i = 0; i < length; ++i) {
+            if (codePointBuffer[i] == KEYCODE_SPACE) {
+                ++spaceCount;
+            }
+        }
+        return spaceCount;
+    }
+
     static unsigned short latin_tolower(const unsigned short c);
 
  private:
