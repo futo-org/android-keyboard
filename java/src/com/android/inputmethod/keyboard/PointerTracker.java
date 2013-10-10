@@ -823,14 +823,16 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             final int size = sAggregratedPointers.getPointerSize();
             if (size > sLastRecognitionPointSize
                     && stroke.hasRecognitionTimePast(eventTime, sLastRecognitionTime)) {
-                sLastRecognitionPointSize = size;
-                sLastRecognitionTime = eventTime;
                 if (DEBUG_LISTENER) {
                     Log.d(TAG, String.format("[%d] onUpdateBatchInput: batchPoints=%d", mPointerId,
                             size));
                 }
                 mTimerProxy.startUpdateBatchInputTimer(this);
                 mListener.onUpdateBatchInput(sAggregratedPointers);
+                // The listener may change the size of the pointers (when auto-committing
+                // for example), so we need to get the size from the pointers again.
+                sLastRecognitionPointSize = sAggregratedPointers.getPointerSize();
+                sLastRecognitionTime = eventTime;
             }
         }
     }
