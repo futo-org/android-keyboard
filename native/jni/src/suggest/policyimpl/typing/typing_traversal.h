@@ -101,7 +101,7 @@ class TypingTraversal : public Traversal {
         }
         const int16_t pointIndex = dicNode->getInputIndex(0);
         return pointIndex <= inputSize && !dicNode->isTotalInputSizeExceedingLimit()
-                && !dicNode->shouldBeFilterdBySafetyNetForBigram();
+                && !dicNode->shouldBeFilteredBySafetyNetForBigram();
     }
 
     AK_FORCE_INLINE bool shouldDepthLevelCache(
