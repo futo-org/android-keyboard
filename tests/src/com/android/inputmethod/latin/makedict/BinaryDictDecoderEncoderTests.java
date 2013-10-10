@@ -646,7 +646,7 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         }
     }
 
-    public void testDeleteWord() {
+    private void runTestDeleteWord(final FormatOptions formatOptions) {
         final String dictName = "testDeleteWord";
         final String dictVersion = Long.toString(System.currentTimeMillis());
         final File file = setUpDictionaryFile(dictName, dictVersion);
@@ -655,10 +655,15 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String, String>(), false, false));
         addUnigrams(sWords.size(), dict, sWords, null /* shortcutMap */);
-        timeWritingDictToFile(file, dict, VERSION3_WITH_DYNAMIC_UPDATE);
+        timeWritingDictToFile(file, dict, formatOptions);
 
-        final Ver3DictUpdater dictUpdater = new Ver3DictUpdater(file,
-                DictDecoder.USE_WRITABLE_BYTEBUFFER);
+        final DictUpdater dictUpdater;
+        if (formatOptions.mVersion == 3) {
+            dictUpdater = new Ver3DictUpdater(file, DictDecoder.USE_WRITABLE_BYTEBUFFER);
+        } else {
+            throw new RuntimeException("DictUpdater for version " + formatOptions.mVersion
+                    + " doesn't exist.");
+        }
 
         try {
             MoreAsserts.assertNotEqual(FormatSpec.NOT_VALID_WORD,
@@ -675,5 +680,9 @@ public class BinaryDictDecoderEncoderTests extends AndroidTestCase {
         } catch (IOException e) {
         } catch (UnsupportedFormatException e) {
         }
+    }
+
+    public void testDeleteWord() {
+        runTestDeleteWord(VERSION3_WITH_DYNAMIC_UPDATE);
     }
 }
