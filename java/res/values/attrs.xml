@@ -26,8 +26,8 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- MainKeyboardView style -->
         <attr name="mainKeyboardViewStyle" format="reference" />
-        <!-- EmojiKeyboardView style -->
-        <attr name="emojiKeyboardViewStyle" format="reference" />
+        <!-- EmojiPalettesView style -->
+        <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
@@ -167,7 +167,7 @@
         <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="EmojiKeyboardView">
+    <declare-styleable name="EmojiPalettesView">
         <attr name="emojiTabLabelColor" format="reference" />
     </declare-styleable>
 

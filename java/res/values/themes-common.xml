@@ -104,10 +104,10 @@
     <style
         name="MainKeyboardView"
         parent="KeyboardView" />
-    <!-- Though {@link EmojiKeyboardView} doesn't extend {@link KeyboardView}, some views inside it,
+    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
-        name="EmojiKeyboardView"
+        name="EmojiPalettesView"
         parent="KeyboardView"
     >
         <item name="emojiTabLabelColor">@color/emoji_tab_label_color_ics</item>

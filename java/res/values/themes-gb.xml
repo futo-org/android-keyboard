@@ -23,7 +23,7 @@
         <item name="keyboardStyle">@style/Keyboard.GB</item>
         <item name="keyboardViewStyle">@style/KeyboardView.GB</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.GB</item>
-        <item name="emojiKeyboardViewStyle">@style/EmojiKeyboardView.GB</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.GB</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.GB</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.GB</item>
         <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.GB</item>
@@ -96,10 +96,10 @@
         <item name="spacebarTextColor">@color/spacebar_text_color_gb</item>
         <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_gb</item>
     </style>
-    <!-- Though {@link EmojiKeyboardView} doesn't extend {@link KeyboardView}, some views inside it,
+    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
-        name="EmojiKeyboardView.GB"
+        name="EmojiPalettesView.GB"
         parent="KeyboardView.GB"
     >
         <item name="keyBackground">@drawable/btn_keyboard_key_functional_gb</item>
