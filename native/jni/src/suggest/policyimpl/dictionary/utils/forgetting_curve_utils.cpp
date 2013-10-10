@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <cmath>
 #include <stdlib.h>
 
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
@@ -35,15 +36,17 @@ const int ForgettingCurveUtils::ENCODED_PROBABILITY_STEP = 1;
 // duration of the decay is approximately 66hours.
 const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
 
+const ForgettingCurveUtils::ProbabilityTable ForgettingCurveUtils::sProbabilityTable;
+
 /* static */ int ForgettingCurveUtils::getProbability(const int encodedUnigramProbability,
         const int encodedBigramProbability) {
     if (encodedUnigramProbability == NOT_A_PROBABILITY) {
         return NOT_A_PROBABILITY;
     } else if (encodedBigramProbability == NOT_A_PROBABILITY) {
-        return backoff(decodeUnigramProbability(encodedUnigramProbability));
+        return backoff(decodeProbability(encodedUnigramProbability));
     } else {
-        const int unigramProbability = decodeUnigramProbability(encodedUnigramProbability);
-        const int bigramProbability = decodeBigramProbability(encodedBigramProbability);
+        const int unigramProbability = decodeProbability(encodedUnigramProbability);
+        const int bigramProbability = decodeProbability(encodedBigramProbability);
         return min(max(unigramProbability, bigramProbability), MAX_COMPUTED_PROBABILITY);
     }
 }
@@ -88,21 +91,12 @@ const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
     }
 }
 
-/* static */ int ForgettingCurveUtils::decodeUnigramProbability(const int encodedProbability) {
+/* static */ int ForgettingCurveUtils::decodeProbability(const int encodedProbability) {
     const int probability = encodedProbability - MIN_VALID_ENCODED_PROBABILITY;
-    if (probability < 0) {
+    if (encodedProbability < MIN_VALID_ENCODED_PROBABILITY) {
         return NOT_A_PROBABILITY;
     } else {
-        return min(probability, MAX_ENCODED_PROBABILITY) * 8;
-    }
-}
-
-/* static */ int ForgettingCurveUtils::decodeBigramProbability(const int encodedProbability) {
-    const int probability = encodedProbability - MIN_VALID_ENCODED_PROBABILITY;
-    if (probability < 0) {
-        return NOT_A_PROBABILITY;
-    } else {
-        return min(probability, MAX_ENCODED_PROBABILITY) * 8;
+        return min(sProbabilityTable.getProbability(encodedProbability), MAX_ENCODED_PROBABILITY);
     }
 }
 
@@ -112,6 +106,18 @@ const float ForgettingCurveUtils::MIN_PROBABILITY_TO_DECAY = 0.03f;
         return NOT_A_PROBABILITY;
     } else {
         return max(unigramProbability - 8, 0);
+    }
+}
+
+ForgettingCurveUtils::ProbabilityTable::ProbabilityTable() : mTable() {
+    // Table entry is as follows:
+    // 1, 1, 1, 2, 3, 5, 6, 9, 13, 18, 25, 34, 48, 66, 91, 127.
+    // Note that first MIN_VALID_ENCODED_PROBABILITY values are not used.
+    mTable.resize(MAX_ENCODED_PROBABILITY + 1);
+    for (int i = 0; i <= MAX_ENCODED_PROBABILITY; ++i) {
+        const int probability = static_cast<int>(powf(static_cast<float>(MAX_COMPUTED_PROBABILITY),
+                static_cast<float>(i) / static_cast<float>(MAX_ENCODED_PROBABILITY)));
+         mTable[i] = min(MAX_COMPUTED_PROBABILITY, max(0, probability));
     }
 }
 
