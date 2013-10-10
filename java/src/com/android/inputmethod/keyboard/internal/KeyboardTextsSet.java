@@ -2895,33 +2895,69 @@ public final class KeyboardTextsSet {
 
     /* Language sv: Swedish */
     private static final String[] LANGUAGE_sv = {
-        /* 0 */ null,
+        // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
+        // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+        // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+        // U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
+        // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
+        /* 0 */ "\u00E1,\u00E0,\u00E2,\u0105,\u00E3",
         // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
         // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
         // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
         // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
         // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
         /* 1 */ "\u00E9,\u00E8,\u00EA,\u00EB,\u0119",
-        /* 2 */ null,
-        // U+0153: "œ" LATIN SMALL LIGATURE OE
-        // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
-        // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+        // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
+        // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
+        // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+        // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+        /* 2 */ "\u00ED,\u00EC,\u00EE,\u00EF",
         // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+        // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+        // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
-        /* 3 */ "\u0153,\u00F4,\u00F2,\u00F3,\u00F5,\u014D",
+        /* 3 */ "\u00F3,\u00F2,\u00F4,\u00F5,\u014D",
         // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
-        // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
-        // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
         // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
+        // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
+        // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
         // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
-        /* 4 */ "\u00FC,\u00FB,\u00F9,\u00FA,\u016B",
-        // U+00DF: "ß" LATIN SMALL LETTER SHARP S
+        /* 4 */ "\u00FC,\u00FA,\u00F9,\u00FB,\u016B",
         // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
         // U+0161: "š" LATIN SMALL LETTER S WITH CARON
-        /* 5 */ "\u00DF,\u015B,\u0161",
-        /* 6~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA
+        // U+00DF: "ß" LATIN SMALL LETTER SHARP S
+        /* 5 */ "\u015B,\u0161,\u015F,\u00DF",
+        // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        // U+0148: "ň" LATIN SMALL LETTER N WITH CARON
+        /* 6 */ "\u0144,\u00F1,\u0148",
+        // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+        // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+        // U+010D: "č" LATIN SMALL LETTER C WITH CARON
+        /* 7 */ "\u00E7,\u0107,\u010D",
+        // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
+        // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
+        // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+        /* 8 */ "\u00FD,\u00FF,\u00FC",
+        // U+00F0: "ð" LATIN SMALL LETTER ETH
+        // U+010F: "ď" LATIN SMALL LETTER D WITH CARON
+        /* 9 */ "\u00F0,\u010F",
+        // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
+        /* 10 */ "\u0159",
+        // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
+        // U+00FE: "þ" LATIN SMALL LETTER THORN
+        /* 11 */ "\u0165,\u00FE",
+        // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
+        // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
+        // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
+        /* 12 */ "\u017A,\u017E,\u017C",
+        /* 13 */ null,
+        // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
+        /* 14 */ "\u0142",
+        /* 15~ */
+        null, null, null, null, null,
         /* ~19 */
         // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
         /* 20 */ "\u00E5",
@@ -2930,7 +2966,8 @@ public final class KeyboardTextsSet {
         // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
         /* 22 */ "\u00E4",
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
-        /* 23 */ "\u00F8",
+        // U+0153: "œ" LATIN SMALL LIGATURE OE
+        /* 23 */ "\u00F8,\u0153",
         // U+00E6: "æ" LATIN SMALL LETTER AE
         /* 24 */ "\u00E6",
         /* 25~ */
