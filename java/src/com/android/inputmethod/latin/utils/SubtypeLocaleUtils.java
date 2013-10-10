@@ -197,9 +197,7 @@ public final class SubtypeLocaleUtils {
     //  es_US spanish F  Español (EE.UU.)        exception
     //  fr    azerty  F  Français
     //  fr_CA qwerty  F  Français (Canada)
-    //  fr_CH swiss   F  Français (Suisse)
     //  de    qwertz  F  Deutsch
-    //  de_CH swiss   T  Deutsch (Schweiz)
     //  zz    qwerty  F  No language (QWERTY)    in system locale
     //  fr    qwertz  T  Français (QWERTZ)
     //  de    qwerty  T  Deutsch (QWERTY)
@@ -300,9 +298,7 @@ public final class SubtypeLocaleUtils {
     //  es_US spanish F  Es  Español   Español (EE.UU.)       exception
     //  fr    azerty  F  Fr  Français  Français
     //  fr_CA qwerty  F  Fr  Français  Français (Canada)
-    //  fr_CH swiss   F  Fr  Français  Français (Suisse)
     //  de    qwertz  F  De  Deutsch   Deutsch
-    //  de_CH swiss   T  De  Deutsch   Deutsch (Schweiz)
     //  zz    qwerty  F      QWERTY    QWERTY
     //  fr    qwertz  T  Fr  Français  Français
     //  de    qwerty  T  De  Deutsch   Deutsch

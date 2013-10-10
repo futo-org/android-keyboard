@@ -32,7 +32,6 @@
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
-    de_CH: German Switzerland/swiss
     el: Greek/greek
     en_US: English United States/qwerty
     en_GB: English Great Britain/qwerty
@@ -45,7 +44,6 @@
     fi: Finnish/nordic
     fr: French/azerty
     fr_CA: French Canada/qwerty
-    fr_CH: French Switzerland/swiss
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
@@ -183,13 +181,6 @@
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
-            android:subtypeId="0x7acfd0aa"
-            android:imeSubtypeLocale="de_CH"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-    />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_generic"
             android:subtypeId="0x0e7802d3"
             android:imeSubtypeLocale="el"
             android:imeSubtypeMode="keyboard"
@@ -259,13 +250,6 @@
             android:imeSubtypeLocale="fr_CA"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
-    />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/subtype_generic"
-            android:subtypeId="0xeadc55f5"
-            android:imeSubtypeLocale="fr_CH"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=swiss,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"

@@ -63,12 +63,6 @@
     <string name="keylabel_for_south_slavic_row3_8"></string>
     <string name="more_keys_for_cyrillic_ie"></string>
     <string name="more_keys_for_cyrillic_i"></string>
-    <string name="keylabel_for_swiss_row1_11"></string>
-    <string name="keylabel_for_swiss_row2_10"></string>
-    <string name="keylabel_for_swiss_row2_11"></string>
-    <string name="more_keys_for_swiss_row1_11"></string>
-    <string name="more_keys_for_swiss_row2_10"></string>
-    <string name="more_keys_for_swiss_row2_11"></string>
     <!-- Label for "switch to alphabetic" key. -->
     <string name="label_to_alpha_key">ABC</string>
     <string name="single_quotes">!text/single_lqm_rqm</string>

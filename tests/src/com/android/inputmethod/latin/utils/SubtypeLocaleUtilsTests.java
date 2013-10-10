@@ -41,9 +41,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     InputMethodSubtype ES_US;
     InputMethodSubtype FR;
     InputMethodSubtype FR_CA;
-    InputMethodSubtype FR_CH;
     InputMethodSubtype DE;
-    InputMethodSubtype DE_CH;
     InputMethodSubtype ZZ;
     InputMethodSubtype DE_QWERTY;
     InputMethodSubtype FR_QWERTZ;
@@ -72,12 +70,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                 Locale.FRENCH.toString(), "azerty");
         FR_CA = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.CANADA_FRENCH.toString(), "qwerty");
-        FR_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "fr_CH", "swiss");
         DE = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 Locale.GERMAN.toString(), "qwertz");
-        DE_CH = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
-                "de_CH", "swiss");
         ZZ = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
                 SubtypeLocaleUtils.NO_LANGUAGE, "qwerty");
         DE_QWERTY = AdditionalSubtypeUtils.createAdditionalSubtype(
@@ -118,9 +112,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
         assertEquals("es_US", "spanish", SubtypeLocaleUtils.getKeyboardLayoutSetName(ES_US));
         assertEquals("fr   ", "azerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR));
         assertEquals("fr_CA", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR_CA));
-        assertEquals("fr_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(FR_CH));
         assertEquals("de   ", "qwertz", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE));
-        assertEquals("de_CH", "swiss", SubtypeLocaleUtils.getKeyboardLayoutSetName(DE_CH));
         assertEquals("zz   ", "qwerty", SubtypeLocaleUtils.getKeyboardLayoutSetName(ZZ));
     }
 
@@ -133,9 +125,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  es_US spanish F  Spanish (US)            exception
     //  fr    azerty  F  French
     //  fr_CA qwerty  F  French (Canada)
-    //  fr_CH swiss   F  French (Switzerland)
     //  de    qwertz  F  German
-    //  de_CH swiss   F  German (Switzerland)
     //  zz    qwerty  F  Alphabet (QWERTY)
     //  fr    qwertz  T  French (QWERTZ)
     //  de    qwerty  T  German (QWERTY)
@@ -158,12 +148,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR));
                 assertEquals("fr_CA", "French (Canada)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CA));
-                assertEquals("fr_CH", "French (Switzerland)",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CH));
                 assertEquals("de   ", "German",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
-                assertEquals("de_CH", "German (Switzerland)",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
                 assertEquals("zz   ", "Alphabet (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
@@ -203,9 +189,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  es_US spanish F  Espagnol (États-Unis)            exception
     //  fr    azerty  F  Français
     //  fr_CA qwerty  F  Français (Canada)
-    //  fr_CH swiss   F  Français (Suisse)
     //  de    qwertz  F  Allemand
-    //  de_CH swiss   F  Allemand (Suisse)
     //  zz    qwerty  F  Aucune langue (QWERTY)
     //  fr    qwertz  T  Français (QWERTZ)
     //  de    qwerty  T  Allemand (QWERTY)
@@ -228,12 +212,8 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR));
                 assertEquals("fr_CA", "Français (Canada)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CA));
-                assertEquals("fr_CH", "Français (Suisse)",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(FR_CH));
                 assertEquals("de   ", "Allemand",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE));
-                assertEquals("de_CH", "Allemand (Suisse)",
-                        SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(DE_CH));
                 assertEquals("zz   ", "Alphabet latin (QWERTY)",
                         SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(ZZ));
                 return null;
@@ -320,9 +300,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
     //  es_US spanish F  Es  Español   Español (EE.UU.)       exception
     //  fr    azerty  F  Fr  Français  Français
     //  fr_CA qwerty  F  Fr  Français  Français (Canada)
-    //  fr_CH swiss   F  Fr  Français  Français (Suisse)
     //  de    qwertz  F  De  Deutsch   Deutsch
-    //  de_CH swiss   F  De  Deutsch   Deutsch (Schweiz)
     //  zz    qwerty  F      QWERTY    QWERTY
     //  fr    qwertz  T  Fr  Français  Français
     //  de    qwerty  T  De  Deutsch   Deutsch
@@ -339,11 +317,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
             assertEquals("fr   ", "Français",     SubtypeLocaleUtils.getFullDisplayName(FR));
             assertEquals("fr_CA", "Français (Canada)",
                     SubtypeLocaleUtils.getFullDisplayName(FR_CA));
-            assertEquals("fr_CH", "Français (Suisse)",
-                    SubtypeLocaleUtils.getFullDisplayName(FR_CH));
             assertEquals("de   ", "Deutsch",      SubtypeLocaleUtils.getFullDisplayName(DE));
-            assertEquals("de_CH", "Deutsch (Schweiz)",
-                    SubtypeLocaleUtils.getFullDisplayName(DE_CH));
             assertEquals("zz   ", "QWERTY",       SubtypeLocaleUtils.getFullDisplayName(ZZ));
 
             assertEquals("en_US", "English",  SubtypeLocaleUtils.getMiddleDisplayName(EN_US));
@@ -351,9 +325,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
             assertEquals("es_US", "Español",  SubtypeLocaleUtils.getMiddleDisplayName(ES_US));
             assertEquals("fr   ", "Français", SubtypeLocaleUtils.getMiddleDisplayName(FR));
             assertEquals("fr_CA", "Français", SubtypeLocaleUtils.getMiddleDisplayName(FR_CA));
-            assertEquals("fr_CH", "Français", SubtypeLocaleUtils.getMiddleDisplayName(FR_CH));
             assertEquals("de   ", "Deutsch",  SubtypeLocaleUtils.getMiddleDisplayName(DE));
-            assertEquals("de_CH", "Deutsch",  SubtypeLocaleUtils.getMiddleDisplayName(DE_CH));
             assertEquals("zz   ", "QWERTY",   SubtypeLocaleUtils.getMiddleDisplayName(ZZ));
 
             assertEquals("en_US", "En", SubtypeLocaleUtils.getShortDisplayName(EN_US));
@@ -361,9 +333,7 @@ public class SubtypeLocaleUtilsTests extends AndroidTestCase {
             assertEquals("es_US", "Es", SubtypeLocaleUtils.getShortDisplayName(ES_US));
             assertEquals("fr   ", "Fr", SubtypeLocaleUtils.getShortDisplayName(FR));
             assertEquals("fr_CA", "Fr", SubtypeLocaleUtils.getShortDisplayName(FR_CA));
-            assertEquals("fr_CH", "Fr", SubtypeLocaleUtils.getShortDisplayName(FR_CH));
             assertEquals("de   ", "De", SubtypeLocaleUtils.getShortDisplayName(DE));
-            assertEquals("de_CH", "De", SubtypeLocaleUtils.getShortDisplayName(DE_CH));
             assertEquals("zz   ", "",   SubtypeLocaleUtils.getShortDisplayName(ZZ));
             return null;
         }
