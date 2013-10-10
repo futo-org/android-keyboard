@@ -174,6 +174,7 @@ public final class Constants {
     public static final int CODE_SLASH = '/';
     public static final int CODE_COMMERCIAL_AT = '@';
     public static final int CODE_PLUS = '+';
+    public static final int CODE_PERCENT = '%';
     public static final int CODE_CLOSING_PARENTHESIS = ')';
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
