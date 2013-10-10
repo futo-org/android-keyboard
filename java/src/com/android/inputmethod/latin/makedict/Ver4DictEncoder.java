@@ -26,7 +26,6 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -44,17 +43,113 @@ public class Ver4DictEncoder implements DictEncoder {
     private byte[] mTrieBuf;
     private int mTriePos;
     private int mHeaderSize;
-    private SparseTable mBigramAddressTable;
     private OutputStream mTrieOutStream;
     private OutputStream mFreqOutStream;
     private OutputStream mTerminalAddressTableOutStream;
-    private OutputStream mBigramOutStream;
     private File mDictDir;
     private String mBaseFilename;
+    private BigramContentWriter mBigramWriter;
 
     @UsedForTesting
     public Ver4DictEncoder(final File dictPlacedDir) {
         mDictPlacedDir = dictPlacedDir;
+    }
+
+    private interface SparseTableContentWriterInterface {
+        public void write(final OutputStream outStream) throws IOException;
+    }
+
+    private static class SparseTableContentWriter {
+        private final int mContentCount;
+        private final SparseTable mSparseTable;
+        private final File mLookupTableFile;
+        protected final File mBaseDir;
+        private final File[] mAddressTableFiles;
+        private final File[] mContentFiles;
+        protected final OutputStream[] mContentOutStreams;
+
+        public SparseTableContentWriter(final String name, final int contentCount,
+                final int initialCapacity, final int blockSize, final File baseDir,
+                final String[] contentFilenames, final String[] contentIds) {
+            if (contentFilenames.length != contentIds.length) {
+                throw new RuntimeException("The length of contentFilenames and the length of"
+                        + " contentIds are different " + contentFilenames.length + ", "
+                        + contentIds.length);
+            }
+            mContentCount = contentCount;
+            mSparseTable = new SparseTable(initialCapacity, blockSize, contentCount);
+            mLookupTableFile = new File(baseDir, name + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
+            mAddressTableFiles = new File[mContentCount];
+            mContentFiles = new File[mContentCount];
+            mBaseDir = baseDir;
+            for (int i = 0; i < mContentCount; ++i) {
+                mAddressTableFiles[i] = new File(mBaseDir,
+                        name + FormatSpec.CONTENT_TABLE_FILE_SUFFIX + contentIds[i]);
+                mContentFiles[i] = new File(mBaseDir, contentFilenames[i] + contentIds[i]);
+            }
+            mContentOutStreams = new OutputStream[mContentCount];
+        }
+
+        public void openStreams() throws FileNotFoundException {
+            for (int i = 0; i < mContentCount; ++i) {
+                mContentOutStreams[i] = new FileOutputStream(mContentFiles[i]);
+            }
+        }
+
+        protected void write(final int contentIndex, final int index,
+                final SparseTableContentWriterInterface writer) throws IOException {
+            mSparseTable.set(contentIndex, index, (int) mContentFiles[contentIndex].length());
+            writer.write(mContentOutStreams[contentIndex]);
+            mContentOutStreams[contentIndex].flush();
+        }
+
+        public void closeStreams() throws IOException {
+            mSparseTable.writeToFiles(mLookupTableFile, mAddressTableFiles);
+            for (int i = 0; i < mContentCount; ++i) {
+                mContentOutStreams[i].close();
+            }
+        }
+    }
+
+    private static class BigramContentWriter extends SparseTableContentWriter {
+
+        public BigramContentWriter(final String name, final int initialCapacity,
+                final File baseDir) {
+            super(name + FormatSpec.BIGRAM_FILE_EXTENSION, FormatSpec.BIGRAM_CONTENT_COUNT,
+                    initialCapacity, FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION },
+                    new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID });
+        }
+
+        public void writeBigramsForOneWord(final int terminalId,
+                final Iterator<WeightedString> bigramIterator, final FusionDictionary dict)
+                        throws IOException {
+            write(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
+                    new SparseTableContentWriterInterface() {
+                        @Override
+                        public void write(final OutputStream outStream) throws IOException {
+                            writeBigramsForOneWordInternal(outStream, bigramIterator, dict);
+                        }
+            });
+        }
+
+        private void writeBigramsForOneWordInternal(final OutputStream outStream,
+                final Iterator<WeightedString> bigramIterator, final FusionDictionary dict)
+                        throws IOException {
+            while (bigramIterator.hasNext()) {
+                final WeightedString bigram = bigramIterator.next();
+                final PtNode target =
+                        FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
+                final int unigramFrequencyForThisWord = target.mFrequency;
+                final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(
+                        bigramIterator.hasNext(), 0, bigram.mFrequency,
+                        unigramFrequencyForThisWord, bigram.mWord);
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, bigramFlags,
+                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, target.mTerminalId,
+                        FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
+            }
+        }
     }
 
     private void openStreams(final FormatOptions formatOptions, final DictionaryOptions dictOptions)
@@ -66,8 +161,6 @@ public class Ver4DictEncoder implements DictEncoder {
         final File freqFile = new File(mDictDir, mBaseFilename + FormatSpec.FREQ_FILE_EXTENSION);
         final File terminalAddressTableFile = new File(mDictDir,
                 mBaseFilename + FormatSpec.TERMINAL_ADDRESS_TABLE_FILE_EXTENSION);
-        final File bigramFile = new File(mDictDir,
-                mBaseFilename + FormatSpec.BIGRAM_FILE_EXTENSION);
         if (!mDictDir.isDirectory()) {
             if (mDictDir.exists()) mDictDir.delete();
             mDictDir.mkdirs();
@@ -78,7 +171,6 @@ public class Ver4DictEncoder implements DictEncoder {
         mTrieOutStream = new FileOutputStream(trieFile);
         mFreqOutStream = new FileOutputStream(freqFile);
         mTerminalAddressTableOutStream = new FileOutputStream(terminalAddressTableFile);
-        mBigramOutStream = new FileOutputStream(bigramFile);
     }
 
     private void close() throws IOException {
@@ -92,14 +184,10 @@ public class Ver4DictEncoder implements DictEncoder {
             if (mTerminalAddressTableOutStream != null) {
                 mTerminalAddressTableOutStream.close();
             }
-            if (mBigramOutStream != null) {
-                mBigramOutStream.close();
-            }
         } finally {
             mTrieOutStream = null;
             mFreqOutStream = null;
             mTerminalAddressTableOutStream = null;
-            mBigramOutStream = null;
         }
     }
 
@@ -135,10 +223,8 @@ public class Ver4DictEncoder implements DictEncoder {
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
         writeTerminalData(flatNodes, terminalCount);
-        mBigramAddressTable = new SparseTable(terminalCount,
-                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, 1 /* contentTableCount */);
+        mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir);
         writeBigrams(flatNodes, dict);
-        writeBigramAddressSparseTable();
 
         final PtNodeArray lastNodeArray = flatNodes.get(flatNodes.size() - 1);
         final int bufferSize = lastNodeArray.mCachedAddressAfterUpdate + lastNodeArray.mCachedSize;
@@ -245,40 +331,16 @@ public class Ver4DictEncoder implements DictEncoder {
 
     private void writeBigrams(final ArrayList<PtNodeArray> flatNodes, final FusionDictionary dict)
             throws IOException {
-        final ByteArrayOutputStream bigramBuffer = new ByteArrayOutputStream();
-
+        mBigramWriter.openStreams();
         for (final PtNodeArray nodeArray : flatNodes) {
             for (final PtNode ptNode : nodeArray.mData) {
                 if (ptNode.mBigrams != null) {
-                    final int startPos = bigramBuffer.size();
-                    mBigramAddressTable.set(0 /* contentTableIndex */, ptNode.mTerminalId,
-                            startPos);
-                    final Iterator<WeightedString> bigramIterator = ptNode.mBigrams.iterator();
-                    while (bigramIterator.hasNext()) {
-                        final WeightedString bigram = bigramIterator.next();
-                        final PtNode target =
-                            FusionDictionary.findWordInTree(dict.mRootNodeArray, bigram.mWord);
-                        final int unigramFrequencyForThisWord = target.mFrequency;
-                        final int bigramFlags = BinaryDictEncoderUtils.makeBigramFlags(
-                                bigramIterator.hasNext(), 0, bigram.mFrequency,
-                                unigramFrequencyForThisWord, bigram.mWord);
-                        BinaryDictEncoderUtils.writeUIntToStream(bigramBuffer, bigramFlags,
-                                FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
-                        BinaryDictEncoderUtils.writeUIntToStream(bigramBuffer, target.mTerminalId,
-                                FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
-                    }
+                    mBigramWriter.writeBigramsForOneWord(ptNode.mTerminalId,
+                            ptNode.mBigrams.iterator(), dict);
                 }
             }
         }
-        bigramBuffer.writeTo(mBigramOutStream);
-    }
-
-    private void writeBigramAddressSparseTable() throws IOException {
-        final File lookupIndexFile =
-                new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_LOOKUP_TABLE_FILE_EXTENSION);
-        final File contentFile =
-                new File(mDictDir, mBaseFilename + FormatSpec.BIGRAM_ADDRESS_TABLE_FILE_EXTENSION);
-        mBigramAddressTable.writeToFiles(lookupIndexFile, new File[] { contentFile });
+        mBigramWriter.closeStreams();
     }
 
     @Override
