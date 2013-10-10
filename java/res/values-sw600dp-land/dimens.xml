@@ -66,7 +66,7 @@
     <!-- Emoji keyboard -->
     <fraction name="emoji_keyboard_key_width">10%p</fraction>
     <fraction name="emoji_keyboard_row_height">33%p</fraction>
-    <fraction name="emoji_keyboard_key_letter_size">85%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">70%p</fraction>
     <integer name="emoji_keyboard_max_key_count">30</integer>
 
 </resources>
