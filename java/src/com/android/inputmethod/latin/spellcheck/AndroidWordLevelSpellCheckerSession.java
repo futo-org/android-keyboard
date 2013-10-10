@@ -161,6 +161,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         }
     }
 
+    private static final int CHECKABILITY_CHECKABLE = 0;
+    private static final int CHECKABILITY_TOO_MANY_NON_LETTERS = 1;
+    private static final int CHECKABILITY_CONTAINS_PERIOD = 2;
+    private static final int CHECKABILITY_EMAIL_OR_URL = 3;
+    private static final int CHECKABILITY_FIRST_LETTER_UNCHECKABLE = 4;
+    private static final int CHECKABILITY_TOO_SHORT = 5;
     /**
      * Finds out whether a particular string should be filtered out of spell checking.
      *
@@ -171,10 +177,10 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
      *
      * @param text the string to evaluate.
      * @param script the identifier for the script this spell checker recognizes
-     * @return true if we should filter this text out, false otherwise
+     * @return one of the FILTER_OUT_* constants above.
      */
-    private static boolean shouldFilterOut(final String text, final int script) {
-        if (TextUtils.isEmpty(text) || text.length() <= 1) return true;
+    private static int getCheckabilityInScript(final String text, final int script) {
+        if (TextUtils.isEmpty(text) || text.length() <= 1) return CHECKABILITY_TOO_SHORT;
 
         // TODO: check if an equivalent processing can't be done more quickly with a
         // compiled regexp.
@@ -182,7 +188,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         final int firstCodePoint = text.codePointAt(0);
         // Filter out words that don't start with a letter or an apostrophe
         if (!isLetterCheckableByLanguage(firstCodePoint, script)
-                && '\'' != firstCodePoint) return true;
+                && '\'' != firstCodePoint) return CHECKABILITY_FIRST_LETTER_UNCHECKABLE;
 
         // Filter contents
         final int length = text.length();
@@ -193,13 +199,21 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             // Any word containing a SLASH is probably either an ad-hoc combination of two
             // words or a URI - in either case we don't want to spell check that
             if (Constants.CODE_COMMERCIAL_AT == codePoint || Constants.CODE_SLASH == codePoint) {
-                return true;
+                return CHECKABILITY_EMAIL_OR_URL;
+            }
+            // If the string contains a period, native returns strange suggestions (it seems
+            // to return suggestions for everything up to the period only and to ignore the
+            // rest), so we suppress lookup if there is a period.
+            // TODO: investigate why native returns these suggestions and remove this code.
+            if (Constants.CODE_PERIOD == codePoint) {
+                return CHECKABILITY_CONTAINS_PERIOD;
             }
             if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
         }
         // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
         // in this word are letters
-        return (letterCount * 4 < length * 3);
+        return (letterCount * 4 < length * 3)
+                ? CHECKABILITY_TOO_MANY_NON_LETTERS : CHECKABILITY_CHECKABLE;
     }
 
     /**
@@ -256,16 +270,20 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
             }
 
-            if (shouldFilterOut(inText, mScript)) {
+            final int checkability = getCheckabilityInScript(inText, mScript);
+            if (CHECKABILITY_CHECKABLE != checkability) {
                 DictAndKeyboard dictInfo = null;
                 try {
                     dictInfo = mDictionaryPool.pollWithDefaultTimeout();
                     if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                        return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
+                        return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                                false /* reportAsTypo */);
                     }
                     return dictInfo.mDictionary.isValidWord(inText)
                             ? AndroidSpellCheckerService.getInDictEmptySuggestions()
-                            : AndroidSpellCheckerService.getNotInDictEmptySuggestions();
+                            : AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                                    CHECKABILITY_CONTAINS_PERIOD == checkability
+                                    /* reportAsTypo */);
                 } finally {
                     if (null != dictInfo) {
                         if (!mDictionaryPool.offer(dictInfo)) {
@@ -290,7 +308,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             try {
                 dictInfo = mDictionaryPool.pollWithDefaultTimeout();
                 if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                    return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
+                    return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                            false /* reportAsTypo */);
                 }
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
@@ -351,7 +370,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 throw e;
             } else {
                 Log.e(TAG, "Exception while spellcheking", e);
-                return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
+                return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                        false /* reportAsTypo */);
             }
         }
     }
