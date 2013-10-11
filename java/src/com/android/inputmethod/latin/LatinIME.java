@@ -1261,9 +1261,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
         if (onEvaluateInputViewShown() && mSuggestionStripView != null) {
-            final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-            final boolean inputViewShown = (mainKeyboardView != null)
-                    ? mainKeyboardView.isShown() : false;
+            final boolean inputViewShown = mKeyboardSwitcher.isShowingMainKeyboardOrEmojiPalettes();
             final boolean shouldShowSuggestions = shown
                     && (needsInputViewShown ? inputViewShown : true);
             if (isFullscreenMode()) {
@@ -1329,7 +1327,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (visibleKeyboardView.isShown()) {
             // Note that the height of Emoji layout is the same as the height of the main keyboard
             // and the suggestion strip
-            if (mKeyboardSwitcher.isShowingEmojiKeyboard()
+            if (mKeyboardSwitcher.isShowingEmojiPalettes()
                     || mSuggestionStripView.getVisibility() == View.VISIBLE) {
                 visibleTopY -= suggestionsHeight;
             }
