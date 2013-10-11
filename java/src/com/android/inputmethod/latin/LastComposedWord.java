@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.utils.StringUtils;
-
 import android.text.TextUtils;
 
 /**
@@ -84,9 +82,5 @@ public final class LastComposedWord {
 
     private boolean didCommitTypedWord() {
         return TextUtils.equals(mTypedWord, mCommittedWord);
-    }
-
-    public static int getSeparatorLength(final String separatorString) {
-        return StringUtils.codePointCount(separatorString);
     }
 }
