@@ -69,16 +69,16 @@ public class Ver4DictEncoder implements DictEncoder {
         private final File[] mContentFiles;
         protected final OutputStream[] mContentOutStreams;
 
-        public SparseTableContentWriter(final String name, final int contentCount,
-                final int initialCapacity, final int blockSize, final File baseDir,
-                final String[] contentFilenames, final String[] contentIds) {
+        public SparseTableContentWriter(final String name, final int initialCapacity,
+                final int blockSize, final File baseDir, final String[] contentFilenames,
+                final String[] contentIds) {
             if (contentFilenames.length != contentIds.length) {
                 throw new RuntimeException("The length of contentFilenames and the length of"
                         + " contentIds are different " + contentFilenames.length + ", "
                         + contentIds.length);
             }
-            mContentCount = contentCount;
-            mSparseTable = new SparseTable(initialCapacity, blockSize, contentCount);
+            mContentCount = contentFilenames.length;
+            mSparseTable = new SparseTable(initialCapacity, blockSize, mContentCount);
             mLookupTableFile = new File(baseDir, name + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
             mAddressTableFiles = new File[mContentCount];
             mContentFiles = new File[mContentCount];
@@ -113,16 +113,40 @@ public class Ver4DictEncoder implements DictEncoder {
     }
 
     private static class BigramContentWriter extends SparseTableContentWriter {
+        private final boolean mWriteTimestamp;
 
         public BigramContentWriter(final String name, final int initialCapacity,
-                final File baseDir) {
-            super(name + FormatSpec.BIGRAM_FILE_EXTENSION, FormatSpec.BIGRAM_CONTENT_COUNT,
-                    initialCapacity, FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
-                    new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION },
-                    new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID });
+                final File baseDir, final boolean writeTimestamp) {
+            super(name + FormatSpec.BIGRAM_FILE_EXTENSION, initialCapacity,
+                    FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    getContentFilenames(name, writeTimestamp), getContentIds(writeTimestamp));
+            mWriteTimestamp = writeTimestamp;
         }
 
-        public void writeBigramsForOneWord(final int terminalId,
+        private static String[] getContentFilenames(final String name,
+                final boolean writeTimestamp) {
+            final String[] contentFilenames;
+            if (writeTimestamp) {
+                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION,
+                        name + FormatSpec.BIGRAM_FILE_EXTENSION };
+            } else {
+                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION };
+            }
+            return contentFilenames;
+        }
+
+        private static String[] getContentIds(final boolean writeTimestamp) {
+            final String[] contentIds;
+            if (writeTimestamp) {
+                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID,
+                        FormatSpec.BIGRAM_TIMESTAMP_CONTENT_ID };
+            } else {
+                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID };
+            }
+            return contentIds;
+        }
+
+        public void writeBigramsForOneWord(final int terminalId, final int bigramCount,
                 final Iterator<WeightedString> bigramIterator, final FusionDictionary dict)
                         throws IOException {
             write(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
@@ -130,8 +154,16 @@ public class Ver4DictEncoder implements DictEncoder {
                         @Override
                         public void write(final OutputStream outStream) throws IOException {
                             writeBigramsForOneWordInternal(outStream, bigramIterator, dict);
-                        }
-            });
+                        }});
+            if (mWriteTimestamp) {
+                write(FormatSpec.BIGRAM_TIMESTAMP_CONTENT_INDEX, terminalId,
+                        new SparseTableContentWriterInterface() {
+                            @Override
+                            public void write(final OutputStream outStream) throws IOException {
+                                initBigramTimestampsCountersAndLevelsForOneWordInternal(outStream,
+                                        bigramCount);
+                            }});
+            }
         }
 
         private void writeBigramsForOneWordInternal(final OutputStream outStream,
@@ -151,13 +183,26 @@ public class Ver4DictEncoder implements DictEncoder {
                         FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
             }
         }
+
+        private void initBigramTimestampsCountersAndLevelsForOneWordInternal(
+                final OutputStream outStream, final int bigramCount) throws IOException {
+            for (int i = 0; i < bigramCount; ++i) {
+                // TODO: Figure out what initial values should be.
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
+                        FormatSpec.BIGRAM_TIMESTAMP_SIZE);
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
+                        FormatSpec.BIGRAM_COUNTER_SIZE);
+                BinaryDictEncoderUtils.writeUIntToStream(outStream, 0 /* value */,
+                        FormatSpec.BIGRAM_LEVEL_SIZE);
+            }
+        }
     }
 
     private static class ShortcutContentWriter extends SparseTableContentWriter {
         public ShortcutContentWriter(final String name, final int initialCapacity,
                 final File baseDir) {
-            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION, FormatSpec.SHORTCUT_CONTENT_COUNT,
-                    initialCapacity, FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION, initialCapacity,
+                    FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
                     new String[] { name + FormatSpec.SHORTCUT_FILE_EXTENSION },
                     new String[] { FormatSpec.SHORTCUT_CONTENT_ID });
         }
@@ -257,7 +302,8 @@ public class Ver4DictEncoder implements DictEncoder {
         if (MakedictLog.DBG) BinaryDictEncoderUtils.checkFlatPtNodeArrayList(flatNodes);
 
         writeTerminalData(flatNodes, terminalCount);
-        mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir);
+        mBigramWriter = new BigramContentWriter(mBaseFilename, terminalCount, mDictDir,
+                formatOptions.mHasTimestamp);
         writeBigrams(flatNodes, dict);
         mShortcutWriter = new ShortcutContentWriter(mBaseFilename, terminalCount, mDictDir);
         writeShortcuts(flatNodes);
@@ -348,7 +394,7 @@ public class Ver4DictEncoder implements DictEncoder {
         for (final PtNodeArray nodeArray : flatNodes) {
             for (final PtNode ptNode : nodeArray.mData) {
                 if (ptNode.mBigrams != null) {
-                    mBigramWriter.writeBigramsForOneWord(ptNode.mTerminalId,
+                    mBigramWriter.writeBigramsForOneWord(ptNode.mTerminalId, ptNode.mBigrams.size(),
                             ptNode.mBigrams.iterator(), dict);
                 }
             }
