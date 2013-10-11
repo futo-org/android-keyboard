@@ -213,7 +213,6 @@ public final class FormatSpec {
     static final int SUPPORTS_DYNAMIC_UPDATE = 0x2;
     static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     static final int CONTAINS_BIGRAMS_FLAG = 0x8;
-    // TODO: Implement timestamps for unigram.
     static final int CONTAINS_TIMESTAMP_FLAG = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
@@ -267,6 +266,7 @@ public final class FormatSpec {
     // These values are used only by version 4 or later.
     static final String TRIE_FILE_EXTENSION = ".trie";
     static final String FREQ_FILE_EXTENSION = ".freq";
+    static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
     static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
     static final String BIGRAM_FILE_EXTENSION = ".bigram";
@@ -275,6 +275,7 @@ public final class FormatSpec {
     static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
     static final int FREQUENCY_AND_FLAGS_SIZE = 2;
     static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
+    static final int UNIGRAM_TIMESTAMP_SIZE = 4;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
     // is 584KB with the block size being 4.
