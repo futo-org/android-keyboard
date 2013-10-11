@@ -155,7 +155,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void saveKeyboardState() {
-        if (getKeyboard() != null || isShowingEmojiKeyboard()) {
+        if (getKeyboard() != null || isShowingEmojiPalettes()) {
             mState.onSaveKeyboardState();
         }
     }
@@ -316,19 +316,23 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, mLatinIME.getCurrentAutoCapsState());
     }
 
-    public boolean isShowingEmojiKeyboard() {
-        return mEmojiPalettesView != null && mEmojiPalettesView.getVisibility() == View.VISIBLE;
+    private boolean isShowingMainKeyboard() {
+        return null != mKeyboardView && mKeyboardView.isShown();
+    }
+
+    public boolean isShowingEmojiPalettes() {
+        return mEmojiPalettesView != null && mEmojiPalettesView.isShown();
     }
 
     public boolean isShowingMoreKeysPanel() {
-        if (isShowingEmojiKeyboard()) {
+        if (isShowingEmojiPalettes()) {
             return false;
         }
         return mKeyboardView.isShowingMoreKeysPanel();
     }
 
     public View getVisibleKeyboardView() {
-        if (isShowingEmojiKeyboard()) {
+        if (isShowingEmojiPalettes()) {
             return mEmojiPalettesView;
         }
         return mKeyboardView;
@@ -346,6 +350,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (mEmojiPalettesView != null) {
             mEmojiPalettesView.stopEmojiPalettes();
         }
+    }
+
+    public boolean isShowingMainKeyboardOrEmojiPalettes() {
+        return isShowingMainKeyboard() || isShowingEmojiPalettes();
     }
 
     public View onCreateInputView(final boolean isHardwareAcceleratedDrawingEnabled) {
