@@ -302,18 +302,19 @@ final class SuggestionStripLayoutHelper {
         final int countInStrip = mSuggestionsCountInStrip;
         setupWordViewsTextAndColor(suggestedWords, countInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
-        final int stripWidth = placerView.getWidth();
-        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
+        final int availableStripWidth = placerView.getWidth()
+                - placerView.getPaddingRight() - placerView.getPaddingLeft();
+        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, availableStripWidth);
         if (getTextScaleX(centerWordView.getText(), centerWidth, centerWordView.getPaint())
                 < MIN_TEXT_XSCALE) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
             mMoreSuggestionsAvailable = (suggestedWords.size() > 1);
-            layoutWord(mCenterPositionInStrip, stripWidth);
+            layoutWord(mCenterPositionInStrip, availableStripWidth - mPadding);
             stripView.addView(centerWordView);
             setLayoutWeight(centerWordView, 1.0f, ViewGroup.LayoutParams.MATCH_PARENT);
             if (SuggestionStripView.DBG) {
-                layoutDebugInfo(mCenterPositionInStrip, placerView, stripWidth);
+                layoutDebugInfo(mCenterPositionInStrip, placerView, availableStripWidth);
             }
             return;
         }
@@ -328,7 +329,7 @@ final class SuggestionStripLayoutHelper {
                 x += divider.getMeasuredWidth();
             }
 
-            final int width = getSuggestionWidth(positionInStrip, stripWidth);
+            final int width = getSuggestionWidth(positionInStrip, availableStripWidth);
             final TextView wordView = layoutWord(positionInStrip, width);
             stripView.addView(wordView);
             setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
@@ -373,9 +374,9 @@ final class SuggestionStripLayoutHelper {
         // Disable this suggestion if the suggestion is null or empty.
         wordView.setEnabled(!TextUtils.isEmpty(word));
         final CharSequence text = getEllipsizedText(word, width, wordView.getPaint());
-        final float scaleX = wordView.getTextScaleX();
+        final float scaleX = getTextScaleX(word, width, wordView.getPaint());
         wordView.setText(text); // TextView.setText() resets text scale x to 1.0.
-        wordView.setTextScaleX(scaleX);
+        wordView.setTextScaleX(Math.max(scaleX, MIN_TEXT_XSCALE));
         return wordView;
     }
 
@@ -545,8 +546,24 @@ final class SuggestionStripLayoutHelper {
 
         // Note that TextUtils.ellipsize() use text-x-scale as 1.0 if ellipsize is needed. To
         // get squeezed and ellipsized text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
-        final CharSequence ellipsized = TextUtils.ellipsize(
-                text, paint, maxWidth / MIN_TEXT_XSCALE, TextUtils.TruncateAt.MIDDLE);
+        final float upscaledWidth = maxWidth / MIN_TEXT_XSCALE;
+        CharSequence ellipsized = TextUtils.ellipsize(
+                text, paint, upscaledWidth, TextUtils.TruncateAt.MIDDLE);
+        // For an unknown reason, ellipsized seems to return a text that does indeed fit inside the
+        // passed width according to paint.measureText, but not according to paint.getTextWidths.
+        // But when rendered, the text seems to actually take up as many pixels as returned by
+        // paint.getTextWidths, hence problem.
+        // To save this case, we compare the measured size of the new text, and if it's too much,
+        // try it again removing the difference. This may still give a text too long by one or
+        // two pixels so we take an additional 2 pixels cushion and call it a day.
+        // TODO: figure out why getTextWidths and measureText don't agree with each other, and
+        // remove the following code.
+        final float ellipsizedTextWidth = getTextWidth(ellipsized, paint);
+        if (upscaledWidth <= ellipsizedTextWidth) {
+            ellipsized = TextUtils.ellipsize(
+                    text, paint, upscaledWidth - (ellipsizedTextWidth - upscaledWidth) - 2,
+                    TextUtils.TruncateAt.MIDDLE);
+        }
         paint.setTextScaleX(MIN_TEXT_XSCALE);
         return ellipsized;
     }
