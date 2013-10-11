@@ -84,10 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Anslut hörlurar om du vill att lösenordet ska läsas upp."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Nuvarande text är %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ingen text har angetts"</string>
-    <!-- no translation found for spoken_auto_correct (8005997889020109763) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"Om du trycker på <xliff:g id="KEY">%1$s</xliff:g> rättas <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> till <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"Om du trycker på <xliff:g id="KEY">%1$s</xliff:g> utförs autokorrigering"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Nyckelkod %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Skift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Skift på (knacka lätt för att inaktivera)"</string>
