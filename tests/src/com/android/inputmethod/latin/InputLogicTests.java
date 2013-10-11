@@ -183,7 +183,7 @@ public class InputLogicTests extends InputTestsBase {
         final String[] STRINGS_TO_TYPE =
                 new String[] { "this   ", "a+  ", "\u1F607  ", "..  ", ")  ", "(  ", "%  " };
         final String[] EXPECTED_RESULTS =
-                new String[] { "this.  ", "a+. ", "\u1F607. ", "..  ", "). ", "(  ", "%  " };
+                new String[] { "this.  ", "a+. ", "\u1F607. ", "..  ", "). ", "(  ", "%. " };
         for (int i = 0; i < STRINGS_TO_TYPE.length; ++i) {
             mEditText.setText("");
             type(STRINGS_TO_TYPE[i]);
