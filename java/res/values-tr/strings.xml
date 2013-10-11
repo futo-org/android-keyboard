@@ -84,10 +84,8 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Şifre tuşlarının sesli okunmasını dinlemek için mikrofonlu kulaklık takın."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Mevcut metin: %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Hiç metin girilmedi"</string>
-    <!-- no translation found for spoken_auto_correct (8005997889020109763) -->
-    <skip />
-    <!-- no translation found for spoken_auto_correct_obscured (6276420476908833791) -->
-    <skip />
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> tuşu <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> kelimesini <xliff:g id="CORRECTED">%3$s</xliff:g> olarak düzeltir"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> tuşu otomatik düzeltme gerçekleştirir"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tuş kodu: %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Üst Karakter"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Üst karakter açık (devre dışı bırakmak için hafifçe vurun)"</string>
