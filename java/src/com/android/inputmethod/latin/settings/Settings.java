@@ -101,6 +101,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
+    public static final String PREF_LAST_SHOWN_EMOJI_CATEGORY_ID = "last_shown_emoji_category_id";
 
     private Resources mRes;
     private SharedPreferences mPrefs;
@@ -383,15 +384,25 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return prefs.getString(PREF_EMOJI_RECENT_KEYS, "");
     }
 
-    public static void writeEmojiCategoryLastTypedId(
-            final SharedPreferences prefs, final int category, final int id) {
-        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + category;
-        prefs.edit().putInt(key, id).apply();
+    public static void writeLastTypedEmojiCategoryPageId(
+            final SharedPreferences prefs, final int categoryId, final int categoryPageId) {
+        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + categoryId;
+        prefs.edit().putInt(key, categoryPageId).apply();
     }
 
-    public static int readEmojiCategoryLastTypedId(
-            final SharedPreferences prefs, final int category) {
-        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + category;
+    public static int readLastTypedEmojiCategoryPageId(
+            final SharedPreferences prefs, final int categoryId) {
+        final String key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + categoryId;
         return prefs.getInt(key, 0);
+    }
+
+    public static void writeLastShownEmojiCategoryId(
+            final SharedPreferences prefs, final int categoryId) {
+        prefs.edit().putInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_ID, categoryId).apply();
+    }
+
+    public static int readLastShownEmojiCategoryId(
+            final SharedPreferences prefs, final int defValue) {
+        return prefs.getInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_ID, defValue);
     }
 }

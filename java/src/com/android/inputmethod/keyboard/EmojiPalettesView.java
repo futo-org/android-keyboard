@@ -162,9 +162,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                 addShownCategoryId(CATEGORY_ID_OBJECTS);
                 addShownCategoryId(CATEGORY_ID_NATURE);
                 addShownCategoryId(CATEGORY_ID_PLACES);
-                mCurrentCategoryId = CATEGORY_ID_PEOPLE;
+                mCurrentCategoryId =
+                        Settings.readLastShownEmojiCategoryId(mPrefs, CATEGORY_ID_PEOPLE);
             } else {
-                mCurrentCategoryId = CATEGORY_ID_SYMBOLS;
+                mCurrentCategoryId =
+                        Settings.readLastShownEmojiCategoryId(mPrefs, CATEGORY_ID_SYMBOLS);
             }
             addShownCategoryId(CATEGORY_ID_SYMBOLS);
             addShownCategoryId(CATEGORY_ID_EMOTICONS);
@@ -222,6 +224,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
         public void setCurrentCategoryId(int categoryId) {
             mCurrentCategoryId = categoryId;
+            Settings.writeLastShownEmojiCategoryId(mPrefs, categoryId);
         }
 
         public void setCurrentCategoryPageId(int id) {
@@ -233,7 +236,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
 
         public void saveLastTypedCategoryPage() {
-            Settings.writeEmojiCategoryLastTypedId(
+            Settings.writeLastTypedEmojiCategoryPageId(
                     mPrefs, mCurrentCategoryId, mCurrentCategoryPageId);
         }
 
@@ -254,7 +257,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         // Returns the view pager's page position for the categoryId
         public int getPageIdFromCategoryId(int categoryId) {
             final int lastSavedCategoryPageId =
-                    Settings.readEmojiCategoryLastTypedId(mPrefs, categoryId);
+                    Settings.readLastTypedEmojiCategoryPageId(mPrefs, categoryId);
             int sum = 0;
             for (int i = 0; i < mShownCategories.size(); ++i) {
                 final CategoryProperties props = mShownCategories.get(i);
