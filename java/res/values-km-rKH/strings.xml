@@ -85,7 +85,7 @@
     <string name="spoken_current_text_is" msgid="2485723011272583845">"អត្ថបទ​បច្ចុប្បន្ន​គឺ %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"គ្មាន​អត្ថបទ​​​បាន​បញ្ចូល"</string>
     <string name="spoken_auto_correct" msgid="8005997889020109763">"<xliff:g id="KEY">%1$s</xliff:g> កែ <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> ទៅ <xliff:g id="CORRECTED">%3$s</xliff:g>"</string>
-    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> អនុវត្តការ​កែ​ដោយស្វ័យប្រវត្តិ"</string>
+    <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"<xliff:g id="KEY">%1$s</xliff:g> អនុវត្ត​ការ​កែ​ដោយស្វ័យប្រវត្តិ"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"កូដ​គ្រាប់​ចុច %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"បើក Shift (​ប៉ះ​ដើម្បី​បិទ)"</string>
