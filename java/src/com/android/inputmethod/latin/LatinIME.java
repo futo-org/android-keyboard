@@ -1711,7 +1711,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSpaceState = SPACE_STATE_NONE;
         final boolean didAutoCorrect;
         final SettingsValues settingsValues = mSettings.getCurrent();
-        if (settingsValues.isWordSeparator(primaryCode)) {
+        if (settingsValues.isWordSeparator(primaryCode)
+                || Character.getType(primaryCode) == Character.OTHER_SYMBOL) {
             didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
         } else {
             didAutoCorrect = false;
@@ -2978,8 +2979,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final String committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
-        final int separatorLength = LastComposedWord.getSeparatorLength(
-                mLastComposedWord.mSeparatorString);
+        // We want java chars, not codepoints for the following.
+        final int separatorLength = mLastComposedWord.mSeparatorString.length();
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
         if (DEBUG) {
