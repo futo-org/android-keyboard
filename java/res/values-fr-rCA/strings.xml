@@ -84,7 +84,7 @@
     <string name="spoken_use_headphones" msgid="896961781287283493">"Branchez des écouteurs pour entendre l\'énoncé à haute voix des touches lors de la saisie du mot de passe."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Le texte actuel est %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Aucun texte saisi"</string>
-    <string name="spoken_auto_correct" msgid="8005997889020109763">"La touche <xliff:g id="KEY">%1$s</xliff:g> permet de corriger« <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> » par « <xliff:g id="CORRECTED">%3$s</xliff:g> »"</string>
+    <string name="spoken_auto_correct" msgid="8005997889020109763">"La touche <xliff:g id="KEY">%1$s</xliff:g> permet de corriger « <xliff:g id="ORIGINAL_WORD">%2$s</xliff:g> » par « <xliff:g id="CORRECTED">%3$s</xliff:g> »"</string>
     <string name="spoken_auto_correct_obscured" msgid="6276420476908833791">"La touche <xliff:g id="KEY">%1$s</xliff:g> permet d\'activer la correction automatique"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Code touche %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Maj"</string>
