@@ -99,6 +99,7 @@ import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.LatinImeLoggerUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.android.inputmethod.latin.utils.UserHistoryForgettingCurveUtils;
@@ -1586,8 +1587,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
         } else {
-            final String text = new String(new int[] { code }, 0, 1);
-            mConnection.commitText(text, text.length());
+            mConnection.commitText(StringUtils.newSingleCodePointString(code), 1);
         }
     }
 
@@ -2335,11 +2335,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isComposingWord()) { // May have changed since we stored wasComposing
             if (currentSettings.mCorrectionEnabled) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
-                        : new String(new int[] { primaryCode }, 0, 1);
+                        : StringUtils.newSingleCodePointString(primaryCode);
                 commitCurrentAutoCorrection(separator);
                 didAutoCorrect = true;
             } else {
-                commitTyped(new String(new int[]{primaryCode}, 0, 1));
+                commitTyped(StringUtils.newSingleCodePointString(primaryCode));
             }
         }
 
