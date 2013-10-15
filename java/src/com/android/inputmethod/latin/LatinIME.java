@@ -1622,8 +1622,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         case Constants.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
             handleBackspace(spaceState);
-            mDeleteCount++;
-            mExpectingUpdateSelection = true;
             LatinImeLogger.logOnDelete(x, y);
             break;
         case Constants.CODE_SHIFT:
@@ -2051,6 +2049,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void handleBackspace(final int spaceState) {
+        // We revert these in this method if the deletion doesn't happen.
+        mDeleteCount++;
+        mExpectingUpdateSelection = true;
+
         // In many cases, we may have to put the keyboard in auto-shift state again. However
         // we want to wait a few milliseconds before doing it to avoid the keyboard flashing
         // during key repeat.
@@ -2140,8 +2142,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                final int lengthToDelete = Character.isSupplementaryCodePoint(
-                        mConnection.getCodePointBeforeCursor()) ? 2 : 1;
+                final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
+                if (codePointBeforeCursor == Constants.NOT_A_CODE) {
+                    // Nothing to delete before the cursor. We have to revert the deletion states
+                    // that were updated at the beginning of this method.
+                    mDeleteCount--;
+                    mExpectingUpdateSelection = false;
+                    return;
+                }
+                final int lengthToDelete =
+                        Character.isSupplementaryCodePoint(codePointBeforeCursor) ? 2 : 1;
                 if (mAppWorkAroundsUtils.isBeforeJellyBean() ||
                         currentSettings.mInputAttributes.isTypeNull()) {
                     // There are two possible reasons to send a key event: either the field has
@@ -2160,12 +2170,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             true /* shouldUncommitLogUnit */);
                 }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
-                            mConnection.getCodePointBeforeCursor()) ? 2 : 1;
-                    mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
-                    if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-                        ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
-                                true /* shouldUncommitLogUnit */);
+                    final int codePointBeforeCursorToDeleteAgain =
+                            mConnection.getCodePointBeforeCursor();
+                    if (codePointBeforeCursorToDeleteAgain != Constants.NOT_A_CODE) {
+                        final int lengthToDeleteAgain = Character.isSupplementaryCodePoint(
+                                codePointBeforeCursorToDeleteAgain) ? 2 : 1;
+                        mConnection.deleteSurroundingText(lengthToDeleteAgain, 0);
+                        if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
+                            ResearchLogger.latinIME_handleBackspace(lengthToDeleteAgain,
+                                    true /* shouldUncommitLogUnit */);
+                        }
                     }
                 }
             }
