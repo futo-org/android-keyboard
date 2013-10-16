@@ -2030,7 +2030,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void handleBackspace(final int spaceState) {
-        // We revert this in this method if the deletion doesn't happen.
         mDeleteCount++;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
@@ -2124,9 +2123,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
                 final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
                 if (codePointBeforeCursor == Constants.NOT_A_CODE) {
-                    // Nothing to delete before the cursor. We have to revert the deletion count
-                    // that was updated at the beginning of this method.
-                    mDeleteCount--;
+                    // Nothing to delete before the cursor.
                     return;
                 }
                 final int lengthToDelete =
