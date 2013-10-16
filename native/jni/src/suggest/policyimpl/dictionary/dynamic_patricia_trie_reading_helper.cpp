@@ -22,7 +22,7 @@ namespace latinime {
 
 // To avoid infinite loop caused by invalid or malicious forward links.
 const int DynamicPatriciaTrieReadingHelper::MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
-const int DynamicPatriciaTrieReadingHelper::MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
+const int DynamicPatriciaTrieReadingHelper::MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP = 100000;
 const size_t DynamicPatriciaTrieReadingHelper::MAX_READING_STATE_STACK_SIZE = MAX_WORD_LENGTH;
 
 // Visits all PtNodes in post-order depth first manner.
@@ -170,35 +170,41 @@ void DynamicPatriciaTrieReadingHelper::nextPtNodeArray() {
         mReadingState.mPos = NOT_A_DICT_POS;
         return;
     }
-    mReadingState.mPosOfLastPtNodeArrayHead = mReadingState.mPos;
+    mReadingState.mPosOfThisPtNodeArrayHead = mReadingState.mPos;
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(mReadingState.mPos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
         mReadingState.mPos -= mBuffer->getOriginalBufferSize();
     }
-    mReadingState.mNodeCount = PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(
-            dictBuf, &mReadingState.mPos);
+    mReadingState.mRemainingPtNodeCountInThisArray =
+            PatriciaTrieReadingUtils::getPtNodeArraySizeAndAdvancePosition(dictBuf,
+                    &mReadingState.mPos);
     if (usesAdditionalBuffer) {
         mReadingState.mPos += mBuffer->getOriginalBufferSize();
     }
     // Count up nodes and node arrays to avoid infinite loop.
-    mReadingState.mTotalNodeCount += mReadingState.mNodeCount;
-    mReadingState.mNodeArrayCount++;
-    if (mReadingState.mNodeCount < 0
-            || mReadingState.mTotalNodeCount > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP
-            || mReadingState.mNodeArrayCount > MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP) {
+    mReadingState.mTotalPtNodeIndexInThisArrayChain +=
+            mReadingState.mRemainingPtNodeCountInThisArray;
+    mReadingState.mPtNodeArrayIndexInThisArrayChain++;
+    if (mReadingState.mRemainingPtNodeCountInThisArray < 0
+            || mReadingState.mTotalPtNodeIndexInThisArrayChain
+                    > MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP
+            || mReadingState.mPtNodeArrayIndexInThisArrayChain
+                    > MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP) {
         // Invalid dictionary.
         AKLOGI("Invalid dictionary. nodeCount: %d, totalNodeCount: %d, MAX_CHILD_COUNT: %d"
                 "nodeArrayCount: %d, MAX_NODE_ARRAY_COUNT: %d",
-                mReadingState.mNodeCount, mReadingState.mTotalNodeCount,
-                MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP, mReadingState.mNodeArrayCount,
-                MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP);
+                mReadingState.mRemainingPtNodeCountInThisArray,
+                mReadingState.mTotalPtNodeIndexInThisArrayChain,
+                MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP,
+                mReadingState.mPtNodeArrayIndexInThisArrayChain,
+                MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP);
         ASSERT(false);
         mIsError = true;
         mReadingState.mPos = NOT_A_DICT_POS;
         return;
     }
-    if (mReadingState.mNodeCount == 0) {
+    if (mReadingState.mRemainingPtNodeCountInThisArray == 0) {
         // Empty node array. Try following forward link.
         followForwardLink();
     }
