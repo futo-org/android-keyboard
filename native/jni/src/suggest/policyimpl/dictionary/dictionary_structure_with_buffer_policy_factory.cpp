@@ -42,6 +42,9 @@ namespace latinime {
             return new PatriciaTriePolicy(mmapedBuffer);
         case FormatUtils::VERSION_3:
             return new DynamicPatriciaTriePolicy(mmapedBuffer);
+        case FormatUtils::VERSION_4:
+            // TODO: Support version 4 dictionary format.
+            // Fall through.
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number");
             delete mmapedBuffer;
