@@ -43,7 +43,7 @@ public interface DictDecoder {
     public FileHeader readHeader() throws IOException, UnsupportedFormatException;
 
     /**
-     * Reads PtNode from nodeAddress.
+     * Reads PtNode from ptNodePos.
      * @param ptNodePos the position of PtNode.
      * @param formatOptions the format options.
      * @return PtNodeInfo.
