@@ -24,7 +24,7 @@
     keyboard_locale: script_name/keyboard_layout_set
     af: Afrikaans/qwerty
     ar: Arabic/arabic
-    az: Azerbaijani/qwerty
+    (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
@@ -53,7 +53,7 @@
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
-    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for strnig resources.
+    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
     km: Khmer/khmer
     ky: Kyrgyz/east_slavic
     lo: Lao/lao
@@ -63,8 +63,8 @@
     mn: Mongolian/mongolian
     ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
-    ne: Nepali Romanized/nepali_romanized  # disabled temporarily
-    ne: Nepali Traditional/nepali_traditional  # disabled temporarily
+    (ne: Nepali Romanized/nepali_romanized)  # disabled temporarily
+    (ne: Nepali Traditional/nepali_traditional)  # disabled temporarily
     nl: Dutch/qwerty
     nl_BE: Dutch Belgium/azerty
     pl: Polish/qwerty
@@ -123,6 +123,7 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
     />
+    <!--
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x70b0f974"
@@ -130,6 +131,7 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
     />
+    -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1dc3a859"
