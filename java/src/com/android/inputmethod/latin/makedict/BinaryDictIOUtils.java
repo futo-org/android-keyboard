@@ -301,35 +301,6 @@ public final class BinaryDictIOUtils {
     }
 
     /**
-     * Write a string to a stream.
-     *
-     * @param destination the stream to write.
-     * @param word the string to be written.
-     * @return the size written, in bytes.
-     * @throws IOException
-     */
-    private static int writeString(final OutputStream destination, final String word)
-            throws IOException {
-        int size = 0;
-        final int length = word.length();
-        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
-            final int codePoint = word.codePointAt(i);
-            if (CharEncoding.getCharSize(codePoint) == 1) {
-                destination.write((byte)codePoint);
-                size++;
-            } else {
-                destination.write((byte)(0xFF & (codePoint >> 16)));
-                destination.write((byte)(0xFF & (codePoint >> 8)));
-                destination.write((byte)(0xFF & codePoint));
-                size += 3;
-            }
-        }
-        destination.write((byte)FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
-        size += FormatSpec.PTNODE_TERMINATOR_SIZE;
-        return size;
-    }
-
-    /**
      * Write a PtNode to an output stream from a PtNodeInfo.
      * A PtNode is an in-memory representation of a node in the patricia trie.
      * A PtNode info is a container for low-level information about how the
@@ -387,7 +358,7 @@ public final class BinaryDictIOUtils {
                 destination.write((byte)BinaryDictEncoderUtils.makeShortcutFlags(
                         shortcutIterator.hasNext(), target.mFrequency));
                 size++;
-                size += writeString(destination, target.mWord);
+                size += CharEncoding.writeString(destination, target.mWord);
             }
         }
 
