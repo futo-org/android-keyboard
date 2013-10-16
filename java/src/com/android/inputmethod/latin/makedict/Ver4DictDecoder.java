@@ -51,9 +51,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     protected DictBuffer mDictBuffer;
     private DictBuffer mFrequencyBuffer;
     private DictBuffer mTerminalAddressTableBuffer;
-    private DictBuffer mBigramBuffer;
     private DictBuffer mShortcutBuffer;
-    private SparseTable mBigramAddressTable;
+    private BigramContentReader mBigramReader;
     private SparseTable mShortcutAddressTable;
 
     @UsedForTesting
@@ -108,8 +107,9 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mFrequencyBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_FREQUENCY));
         mTerminalAddressTableBuffer = mBufferFactory.getDictionaryBuffer(
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE));
-        mBigramBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_BIGRAM_FREQ));
-        loadBigramAddressSparseTable();
+        mBigramReader = new BigramContentReader(mDictDirectory.getName(),
+                mDictDirectory, mBufferFactory, false);
+        mBigramReader.openBuffers();
         mShortcutBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_SHORTCUT));
         loadShortcutAddressSparseTable();
     }
@@ -136,16 +136,6 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         return header;
     }
 
-    private void loadBigramAddressSparseTable() throws IOException {
-        final File lookupIndexFile = new File(mDictDirectory, mDictDirectory.getName()
-                + FormatSpec.BIGRAM_FILE_EXTENSION + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
-        final File freqsFile = new File(mDictDirectory, mDictDirectory.getName()
-                + FormatSpec.BIGRAM_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
-                + FormatSpec.BIGRAM_FREQ_CONTENT_ID);
-        mBigramAddressTable = SparseTable.readFromFiles(lookupIndexFile, new File[] { freqsFile },
-                FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE);
-    }
-
     // TODO: Let's have something like SparseTableContentsReader in this class.
     private void loadShortcutAddressSparseTable() throws IOException {
         final File lookupIndexFile = new File(mDictDirectory, mDictDirectory.getName()
@@ -159,6 +149,77 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mShortcutAddressTable = SparseTable.readFromFiles(lookupIndexFile,
                 new File[] { contentFile, timestampsFile },
                 FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
+    }
+
+    /**
+     * An auxiliary class for reading bigrams.
+     */
+    protected static class BigramContentReader extends SparseTableContentReader {
+        private final boolean mHasTimestamp;
+
+        public BigramContentReader(final String name, final File baseDir,
+                final DictionaryBufferFactory factory, final boolean hasTimestamp) {
+            super(name + FormatSpec.BIGRAM_FILE_EXTENSION,
+                    FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    getContentFilenames(name, hasTimestamp), getContentIds(hasTimestamp), factory);
+            mHasTimestamp = hasTimestamp;
+        }
+
+        // TODO: Consolidate this method and BigramContentWriter.getContentFilenames.
+        private static String[] getContentFilenames(final String name, final boolean hasTimestamp) {
+            final String[] contentFilenames;
+            if (hasTimestamp) {
+                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION,
+                        name + FormatSpec.BIGRAM_FILE_EXTENSION };
+            } else {
+                contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION };
+            }
+            return contentFilenames;
+        }
+
+        // TODO: Consolidate this method and BigramContentWriter.getContentIds.
+        private static String[] getContentIds(final boolean hasTimestamp) {
+            final String[] contentIds;
+            if (hasTimestamp) {
+                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID,
+                        FormatSpec.BIGRAM_TIMESTAMP_CONTENT_ID };
+            } else {
+                contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID };
+            }
+            return contentIds;
+        }
+
+        public ArrayList<PendingAttribute> readTargetsAndFrequencies(final int terminalId,
+                final DictBuffer terminalAddressTableBuffer) {
+            final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
+            read(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
+                    new SparseTableContentReaderInterface() {
+                @Override
+                public void read(final DictBuffer buffer) {
+                    while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                        // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
+                        // remaining bigram entries are ignored.
+                        final int bigramFlags = buffer.readUnsignedByte();
+                        final int targetTerminalId = buffer.readUnsignedInt24();
+                        terminalAddressTableBuffer.position(
+                                targetTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
+                        final int targetAddress = terminalAddressTableBuffer.readUnsignedInt24();
+                        bigrams.add(new PendingAttribute(
+                                bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
+                                targetAddress));
+                        if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) {
+                            break;
+                        }
+                    }
+                    if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                        throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()
+                                + " but max is " + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
+                    }
+                }
+            });
+            if (bigrams.isEmpty()) return null;
+            return bigrams;
+        }
     }
 
     protected static class PtNodeReader extends AbstractDictDecoder.PtNodeReader {
@@ -240,32 +301,10 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         }
         addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
         final ArrayList<WeightedString> shortcutTargets = readShortcuts(terminalId);
+        final ArrayList<PendingAttribute> bigrams =
+                mBigramReader.readTargetsAndFrequencies(terminalId,
+                        mTerminalAddressTableBuffer);
 
-        final ArrayList<PendingAttribute> bigrams;
-        if (0 != (flags & FormatSpec.FLAG_HAS_BIGRAMS)) {
-            bigrams = new ArrayList<PendingAttribute>();
-            final int posOfBigrams = mBigramAddressTable.get(0 /* contentTableIndex */, terminalId);
-            mBigramBuffer.position(posOfBigrams);
-            while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
-                // remaining bigram entries are ignored.
-                final int bigramFlags = mBigramBuffer.readUnsignedByte();
-                final int targetTerminalId = mBigramBuffer.readUnsignedInt24();
-                mTerminalAddressTableBuffer.position(
-                        targetTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
-                final int targetAddress = mTerminalAddressTableBuffer.readUnsignedInt24();
-                bigrams.add(new PendingAttribute(
-                        bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
-                        targetAddress));
-                if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
-            }
-            if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()
-                        + " but max is " + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
-            }
-        } else {
-            bigrams = null;
-        }
         return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, frequency,
                 parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
