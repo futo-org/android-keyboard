@@ -57,62 +57,6 @@ public class Ver4DictEncoder implements DictEncoder {
         mDictPlacedDir = dictPlacedDir;
     }
 
-    private interface SparseTableContentWriterInterface {
-        public void write(final OutputStream outStream) throws IOException;
-    }
-
-    private static class SparseTableContentWriter {
-        private final int mContentCount;
-        private final SparseTable mSparseTable;
-        private final File mLookupTableFile;
-        protected final File mBaseDir;
-        private final File[] mAddressTableFiles;
-        private final File[] mContentFiles;
-        protected final OutputStream[] mContentOutStreams;
-
-        public SparseTableContentWriter(final String name, final int initialCapacity,
-                final int blockSize, final File baseDir, final String[] contentFilenames,
-                final String[] contentIds) {
-            if (contentFilenames.length != contentIds.length) {
-                throw new RuntimeException("The length of contentFilenames and the length of"
-                        + " contentIds are different " + contentFilenames.length + ", "
-                        + contentIds.length);
-            }
-            mContentCount = contentFilenames.length;
-            mSparseTable = new SparseTable(initialCapacity, blockSize, mContentCount);
-            mLookupTableFile = new File(baseDir, name + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
-            mAddressTableFiles = new File[mContentCount];
-            mContentFiles = new File[mContentCount];
-            mBaseDir = baseDir;
-            for (int i = 0; i < mContentCount; ++i) {
-                mAddressTableFiles[i] = new File(mBaseDir,
-                        name + FormatSpec.CONTENT_TABLE_FILE_SUFFIX + contentIds[i]);
-                mContentFiles[i] = new File(mBaseDir, contentFilenames[i] + contentIds[i]);
-            }
-            mContentOutStreams = new OutputStream[mContentCount];
-        }
-
-        public void openStreams() throws FileNotFoundException {
-            for (int i = 0; i < mContentCount; ++i) {
-                mContentOutStreams[i] = new FileOutputStream(mContentFiles[i]);
-            }
-        }
-
-        protected void write(final int contentIndex, final int index,
-                final SparseTableContentWriterInterface writer) throws IOException {
-            mSparseTable.set(contentIndex, index, (int) mContentFiles[contentIndex].length());
-            writer.write(mContentOutStreams[contentIndex]);
-            mContentOutStreams[contentIndex].flush();
-        }
-
-        public void closeStreams() throws IOException {
-            mSparseTable.writeToFiles(mLookupTableFile, mAddressTableFiles);
-            for (int i = 0; i < mContentCount; ++i) {
-                mContentOutStreams[i].close();
-            }
-        }
-    }
-
     private static class BigramContentWriter extends SparseTableContentWriter {
         private final boolean mWriteTimestamp;
 
