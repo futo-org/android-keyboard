@@ -318,7 +318,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
 
     @Override
     public boolean readAndFollowForwardLink() {
-        final int nextAddress = mDictBuffer.readUnsignedInt24();
+        final int forwardLinkPos = mDictBuffer.position();
+        final int nextAddress = forwardLinkPos + BinaryDictDecoderUtils.readSInt24(mDictBuffer);
         if (nextAddress >= 0 && nextAddress < mDictBuffer.limit()) {
             mDictBuffer.position(nextAddress);
             return true;
