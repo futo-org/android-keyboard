@@ -1081,16 +1081,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ", ce=" + composingSpanEnd);
         }
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
-            final boolean expectingUpdateSelectionFromLogger =
-                    ResearchLogger.getAndClearLatinIMEExpectingUpdateSelection();
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
-                    composingSpanEnd, mExpectingUpdateSelection,
-                    expectingUpdateSelectionFromLogger, mConnection);
-            if (expectingUpdateSelectionFromLogger) {
-                // TODO: Investigate. Quitting now sounds wrong - we won't do the resetting work
-                return;
-            }
+                    composingSpanEnd, mExpectingUpdateSelection, mConnection);
         }
 
         final boolean selectionChanged = mLastSelectionStart != newSelStart
