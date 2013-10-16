@@ -24,7 +24,7 @@
     keyboard_locale: script_name/keyboard_layout_set
     af: Afrikaans/qwerty
     ar: Arabic/arabic
-    (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for strnig resources.
+    (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
@@ -55,7 +55,7 @@
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
-    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for strnig resources.
+    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
     km: Khmer/khmer
     ky: Kyrgyz/east_slavic
     lo: Lao/lao
