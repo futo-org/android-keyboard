@@ -31,6 +31,7 @@ class FormatUtils {
     enum FORMAT_VERSION {
         VERSION_2,
         VERSION_3,
+        VERSION_4,
         UNKNOWN_VERSION
     };
 
