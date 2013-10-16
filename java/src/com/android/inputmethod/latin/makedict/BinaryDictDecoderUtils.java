@@ -225,20 +225,26 @@ public final class BinaryDictDecoderUtils {
          *
          * @param buffer the OutputStream to write to.
          * @param word the string to write.
+         * @return the size written, in bytes.
          */
-        static void writeString(final OutputStream buffer, final String word) throws IOException {
+        static int writeString(final OutputStream buffer, final String word) throws IOException {
             final int length = word.length();
+            int written = 0;
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
                 final int codePoint = word.codePointAt(i);
-                if (1 == getCharSize(codePoint)) {
+                final int charSize = getCharSize(codePoint);
+                if (1 == charSize) {
                     buffer.write((byte) codePoint);
                 } else {
                     buffer.write((byte) (0xFF & (codePoint >> 16)));
                     buffer.write((byte) (0xFF & (codePoint >> 8)));
                     buffer.write((byte) (0xFF & codePoint));
                 }
+                written += charSize;
             }
             buffer.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+            written += FormatSpec.PTNODE_TERMINATOR_SIZE;
+            return written;
         }
 
         /**
