@@ -15,12 +15,12 @@
  */
 
 
-#include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 
 namespace latinime {

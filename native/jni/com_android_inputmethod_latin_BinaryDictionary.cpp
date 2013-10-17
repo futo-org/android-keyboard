@@ -25,7 +25,7 @@
 #include "jni_common.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/suggest_options.h"
-#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
+#include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 #include "suggest/policyimpl/dictionary/utils/dict_file_writing_utils.h"
 #include "utils/autocorrection_threshold_utils.h"
 

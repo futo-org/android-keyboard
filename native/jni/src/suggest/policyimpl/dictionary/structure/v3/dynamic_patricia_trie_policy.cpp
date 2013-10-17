@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_policy.h"
 
 #include <cstdio>
 #include <cstring>
@@ -23,11 +23,11 @@
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
-#include "suggest/policyimpl/dictionary/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 #include "suggest/policyimpl/dictionary/utils/probability_utils.h"
 

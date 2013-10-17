@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
