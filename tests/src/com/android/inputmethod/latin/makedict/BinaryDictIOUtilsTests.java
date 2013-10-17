@@ -330,8 +330,7 @@ public class BinaryDictIOUtilsTests extends AndroidTestCase {
 
     public void testInsertWordWithBigrams() {
         runTestInsertWordWithBigrams(BinaryDictUtils.VERSION3_WITH_DYNAMIC_UPDATE);
-        // TODO: Add a test for version 4.
-        // runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
+        runTestInsertWordWithBigrams(BinaryDictUtils.VERSION4_WITH_DYNAMIC_UPDATE);
     }
 
     private void runTestRandomWords(final FormatOptions formatOptions) {

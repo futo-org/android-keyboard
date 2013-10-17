@@ -40,16 +40,16 @@ public class SparseTableContentReader {
         public void read(final DictBuffer buffer);
     }
 
-    private final int mContentCount;
-    private final int mBlockSize;
+    protected final int mContentCount;
+    protected final int mBlockSize;
     protected final File mBaseDir;
-    private final File mLookupTableFile;
-    private final File[] mAddressTableFiles;
-    private final File[] mContentFiles;
-    private DictBuffer mLookupTableBuffer;
-    private final DictBuffer[] mAddressTableBuffers;
+    protected final File mLookupTableFile;
+    protected final File[] mAddressTableFiles;
+    protected final File[] mContentFiles;
+    protected DictBuffer mLookupTableBuffer;
+    protected final DictBuffer[] mAddressTableBuffers;
     private final DictBuffer[] mContentBuffers;
-    private final DictionaryBufferFactory mFactory;
+    protected final DictionaryBufferFactory mFactory;
 
     /**
      * Sole constructor of SparseTableContentReader.
