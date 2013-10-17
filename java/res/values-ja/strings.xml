@@ -50,7 +50,7 @@
     <string name="use_double_space_period_summary" msgid="6532892187247952799">"スペースバーをダブルタップするとピリオドとスペースを挿入できます"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
     <string name="auto_cap_summary" msgid="7934452761022946874">"英字入力で各文の最初の単語を大文字にします"</string>
-    <string name="edit_personal_dictionary" msgid="3996910038952940420">"ユーザー辞書"</string>
+    <string name="edit_personal_dictionary" msgid="3996910038952940420">"単語リスト"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"アドオン辞書"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"メイン辞書"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"修正候補を表示する"</string>
