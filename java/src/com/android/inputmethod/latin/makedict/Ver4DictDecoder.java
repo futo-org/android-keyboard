@@ -54,6 +54,28 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     private BigramContentReader mBigramReader;
     private ShortcutContentReader mShortcutReader;
 
+    /**
+     * Raw PtNode info straight out of a trie file in version 4 dictionary.
+     */
+    protected static final class Ver4PtNodeInfo {
+        public final int mFlags;
+        public final int[] mCharacters;
+        public final int mTerminalId;
+        public final int mChildrenPos;
+        public final int mParentPos;
+        public final int mNodeSize;
+
+        public Ver4PtNodeInfo(final int flags, final int[] characters, final int terminalId,
+                final int childrenPos, final int parentPos, final int nodeSize) {
+            mFlags = flags;
+            mCharacters = characters;
+            mTerminalId = terminalId;
+            mChildrenPos = childrenPos;
+            mParentPos = parentPos;
+            mNodeSize = nodeSize;
+        }
+    }
+
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
         mDictDirectory = dictDirectory;
@@ -255,63 +277,82 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         }
     }
 
+    private final int[] mCharacterBufferForReadingVer4PtNodeInfo
+            = new int[FormatSpec.MAX_WORD_LENGTH];
+
+    /**
+     * Reads PtNode from ptNodePos in the trie file and returns Ver4PtNodeInfo.
+     *
+     * @param ptNodePos the position of PtNode.
+     * @param options the format options.
+     * @return Ver4PtNodeInfo.
+     */
     // TODO: Make this buffer thread safe.
     // TODO: Support words longer than FormatSpec.MAX_WORD_LENGTH.
-    private final int[] mCharacterBuffer = new int[FormatSpec.MAX_WORD_LENGTH];
-    @Override
-    public PtNodeInfo readPtNode(int ptNodePos, FormatOptions options) {
-        int addressPointer = ptNodePos;
+    protected Ver4PtNodeInfo readVer4PtNodeInfo(final int ptNodePos, final FormatOptions options) {
+        int readingPos = ptNodePos;
         final int flags = PtNodeReader.readPtNodeOptionFlags(mDictBuffer);
-        addressPointer += FormatSpec.PTNODE_FLAGS_SIZE;
+        readingPos += FormatSpec.PTNODE_FLAGS_SIZE;
 
-        final int parentAddress = PtNodeReader.readParentAddress(mDictBuffer, options);
+        final int parentPos = PtNodeReader.readParentAddress(mDictBuffer, options);
         if (BinaryDictIOUtils.supportsDynamicUpdate(options)) {
-            addressPointer += FormatSpec.PARENT_ADDRESS_SIZE;
+            readingPos += FormatSpec.PARENT_ADDRESS_SIZE;
         }
 
         final int characters[];
         if (0 != (flags & FormatSpec.FLAG_HAS_MULTIPLE_CHARS)) {
             int index = 0;
             int character = CharEncoding.readChar(mDictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
+            readingPos += CharEncoding.getCharSize(character);
             while (FormatSpec.INVALID_CHARACTER != character
                     && index < FormatSpec.MAX_WORD_LENGTH) {
-                mCharacterBuffer[index++] = character;
+                mCharacterBufferForReadingVer4PtNodeInfo[index++] = character;
                 character = CharEncoding.readChar(mDictBuffer);
-                addressPointer += CharEncoding.getCharSize(character);
+                readingPos += CharEncoding.getCharSize(character);
             }
-            characters = Arrays.copyOfRange(mCharacterBuffer, 0, index);
+            characters = Arrays.copyOfRange(mCharacterBufferForReadingVer4PtNodeInfo, 0, index);
         } else {
             final int character = CharEncoding.readChar(mDictBuffer);
-            addressPointer += CharEncoding.getCharSize(character);
+            readingPos += CharEncoding.getCharSize(character);
             characters = new int[] { character };
         }
         final int terminalId;
         if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
             terminalId = PtNodeReader.readTerminalId(mDictBuffer);
-            addressPointer += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
+            readingPos += FormatSpec.PTNODE_TERMINAL_ID_SIZE;
         } else {
             terminalId = PtNode.NOT_A_TERMINAL;
         }
 
+        int childrenPos = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
+        if (childrenPos != FormatSpec.NO_CHILDREN_ADDRESS) {
+            childrenPos += readingPos;
+        }
+        readingPos += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
+
+        return new Ver4PtNodeInfo(flags, characters, terminalId, childrenPos, parentPos,
+                readingPos - ptNodePos);
+    }
+
+    @Override
+    public PtNodeInfo readPtNode(int ptNodePos, FormatOptions options) {
+        final Ver4PtNodeInfo nodeInfo = readVer4PtNodeInfo(ptNodePos, options);
+
         final int frequency;
-        if (0 != (FormatSpec.FLAG_IS_TERMINAL & flags)) {
-            frequency = PtNodeReader.readFrequency(mFrequencyBuffer, terminalId);
+        if (0 != (FormatSpec.FLAG_IS_TERMINAL & nodeInfo.mFlags)) {
+            frequency = PtNodeReader.readFrequency(mFrequencyBuffer, nodeInfo.mTerminalId);
         } else {
             frequency = PtNode.NOT_A_TERMINAL;
         }
-        int childrenAddress = PtNodeReader.readChildrenAddress(mDictBuffer, flags, options);
-        if (childrenAddress != FormatSpec.NO_CHILDREN_ADDRESS) {
-            childrenAddress += addressPointer;
-        }
-        addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
-        final ArrayList<WeightedString> shortcutTargets = mShortcutReader.readShortcuts(terminalId);
-        final ArrayList<PendingAttribute> bigrams =
-                mBigramReader.readTargetsAndFrequencies(terminalId,
-                        mTerminalAddressTableBuffer);
 
-        return new PtNodeInfo(ptNodePos, addressPointer, flags, characters, frequency,
-                parentAddress, childrenAddress, shortcutTargets, bigrams);
+        final ArrayList<WeightedString> shortcutTargets = mShortcutReader.readShortcuts(
+                nodeInfo.mTerminalId);
+        final ArrayList<PendingAttribute> bigrams = mBigramReader.readTargetsAndFrequencies(
+                nodeInfo.mTerminalId, mTerminalAddressTableBuffer);
+
+        return new PtNodeInfo(ptNodePos, ptNodePos + nodeInfo.mNodeSize, nodeInfo.mFlags,
+                nodeInfo.mCharacters, frequency, nodeInfo.mParentPos, nodeInfo.mChildrenPos,
+                shortcutTargets, bigrams);
     }
 
     private void deleteDictFiles() {
