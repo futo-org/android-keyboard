@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Same list as in English, but add armenian period and comma: -->
+    <!-- U+055D: "՝" ARMENIAN COMMA -->
+    <!-- U+0589: "։" ARMENIAN FULL STOP -->
+    <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
+    <string name="symbols_followed_by_space">.,;:!?)]}&amp;&#x0589;&#x055D;</string>
+    <!-- Symbols that separate words. Adding armenian period and comma. -->
+    <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
+    <string name="symbols_word_separators">"&#x0009;&#x0020;\n"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"&#x0589;&#x055D;</string>
+    <!-- The sentence separator code point, for capitalization -->
+    <!-- U+0589: "։" ARMENIAN FULL STOP   ; 589h = 1417d -->
+    <integer name="sentence_separator">1417</integer>
+</resources>
