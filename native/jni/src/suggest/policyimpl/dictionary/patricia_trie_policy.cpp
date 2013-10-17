@@ -25,12 +25,12 @@
 
 namespace latinime {
 
-void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
+void PatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
-    int nextPos = dicNode->getChildrenPos();
+    int nextPos = dicNode->getChildrenPtNodeArrayPos();
     if (nextPos < 0 || nextPos >= mDictBufferSize) {
         AKLOGE("Children PtNode array position is invalid. pos: %d, dict size: %d",
                 nextPos, mDictBufferSize);
@@ -52,14 +52,14 @@ void PatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
 
 // This retrieves code points and the probability of the word by its terminal position.
 // Due to the fact that words are ordered in the dictionary in a strict breadth-first order,
-// it is possible to check for this with advantageous complexity. For each node, we search
+// it is possible to check for this with advantageous complexity. For each PtNode array, we search
 // for PtNodes with children and compare the children position with the position we look for.
 // When we shoot the position we look for, it means the word we look for is in the children
 // of the previous PtNode. The only tricky part is the fact that if we arrive at the end of a
 // PtNode array with the last PtNode's children position still less than what we are searching for,
 // we must descend the last PtNode's children (for example, if the word we are searching for starts
 // with a z, it's the last PtNode of the root array, so all children addresses will be smaller
-// than the position we look for, and we have to descend the z node).
+// than the position we look for, and we have to descend the z PtNode).
 /* Parameters :
  * ptNodePos: the byte position of the terminal PtNode of the word we are searching for (this is
  *   what is stored as the "bigram position" in each bigram)
@@ -74,9 +74,9 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
     int pos = getRootPosition();
     int wordPos = 0;
     // One iteration of the outer loop iterates through PtNode arrays. As stated above, we will
-    // only traverse nodes that are actually a part of the terminal we are searching, so each time
-    // we enter this loop we are one depth level further than last time.
-    // The only reason we count nodes is because we want to reduce the probability of infinite
+    // only traverse PtNodes that are actually a part of the terminal we are searching, so each
+    // time we enter this loop we are one depth level further than last time.
+    // The only reason we count PtNodes is because we want to reduce the probability of infinite
     // looping in case there is a bug. Since we know there is an upper bound to the depth we are
     // supposed to traverse, it does not hurt to count iterations.
     for (int loopCount = maxCodePointCount; loopCount > 0; --loopCount) {
@@ -140,8 +140,9 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     found = true;
                 } else if (1 >= ptNodeCount) {
                     // However if we are on the LAST PtNode of this array, and we have NOT shot the
-                    // position we should descend THIS node. So we trick the lastCandidatePtNodePos
-                    // so that we will descend this PtNode, not the previous one.
+                    // position we should descend THIS PtNode. So we trick the
+                    // lastCandidatePtNodePos so that we will descend this PtNode, not the previous
+                    // one.
                     lastCandidatePtNodePos = startPos;
                     found = true;
                 } else {
@@ -149,7 +150,7 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
                     found = false;
                 }
             } else {
-                // Even if we don't have children here, we could still be on the last PtNode of /
+                // Even if we don't have children here, we could still be on the last PtNode of
                 // this array. If this is the case, we should descend the last PtNode that had
                 // children, and their position is already in lastCandidatePtNodePos.
                 found = (1 >= ptNodeCount);
@@ -230,9 +231,9 @@ int PatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
     return 0;
 }
 
-// This function gets the position of the terminal node of the exact matching word in the
+// This function gets the position of the terminal PtNode of the exact matching word in the
 // dictionary. If no match is found, it returns NOT_A_DICT_POS.
-int PatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
+int PatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     int pos = getRootPosition();
     int wordPos = 0;

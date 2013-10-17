@@ -84,9 +84,9 @@ class DynamicPatriciaTrieReadingHelper {
         } else {
             mIsError = false;
             mReadingState.mPos = ptNodeArrayPos;
-            mReadingState.mPrevTotalCodePointCount = 0;
-            mReadingState.mTotalNodeCount = 0;
-            mReadingState.mNodeArrayCount = 0;
+            mReadingState.mTotalCodePointCountSinceInitialization = 0;
+            mReadingState.mTotalPtNodeIndexInThisArrayChain = 0;
+            mReadingState.mPtNodeArrayIndexInThisArrayChain = 0;
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingStateStack.clear();
             nextPtNodeArray();
@@ -103,12 +103,12 @@ class DynamicPatriciaTrieReadingHelper {
         } else {
             mIsError = false;
             mReadingState.mPos = ptNodePos;
-            mReadingState.mNodeCount = 1;
-            mReadingState.mPrevTotalCodePointCount = 0;
-            mReadingState.mTotalNodeCount = 1;
-            mReadingState.mNodeArrayCount = 1;
+            mReadingState.mRemainingPtNodeCountInThisArray = 1;
+            mReadingState.mTotalCodePointCountSinceInitialization = 0;
+            mReadingState.mTotalPtNodeIndexInThisArrayChain = 1;
+            mReadingState.mPtNodeArrayIndexInThisArrayChain = 1;
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
-            mReadingState.mPosOfLastPtNodeArrayHead = NOT_A_DICT_POS;
+            mReadingState.mPosOfThisPtNodeArrayHead = NOT_A_DICT_POS;
             mReadingStateStack.clear();
             fetchPtNodeInfo();
         }
@@ -128,12 +128,13 @@ class DynamicPatriciaTrieReadingHelper {
 
     // Return code point count exclude the last read node's code points.
     AK_FORCE_INLINE int getPrevTotalCodePointCount() const {
-        return mReadingState.mPrevTotalCodePointCount;
+        return mReadingState.mTotalCodePointCountSinceInitialization;
     }
 
     // Return code point count include the last read node's code points.
     AK_FORCE_INLINE int getTotalCodePointCount() const {
-        return mReadingState.mPrevTotalCodePointCount + mNodeReader.getCodePointCount();
+        return mReadingState.mTotalCodePointCountSinceInitialization
+                + mNodeReader.getCodePointCount();
     }
 
     AK_FORCE_INLINE void fetchMergedNodeCodePointsInReverseOrder(
@@ -149,9 +150,9 @@ class DynamicPatriciaTrieReadingHelper {
     }
 
     AK_FORCE_INLINE void readNextSiblingNode() {
-        mReadingState.mNodeCount -= 1;
+        mReadingState.mRemainingPtNodeCountInThisArray -= 1;
         mReadingState.mPos = mNodeReader.getSiblingNodePos();
-        if (mReadingState.mNodeCount <= 0) {
+        if (mReadingState.mRemainingPtNodeCountInThisArray <= 0) {
             // All nodes in the current node array have been read.
             followForwardLink();
             if (!isEnd()) {
@@ -165,9 +166,10 @@ class DynamicPatriciaTrieReadingHelper {
     // Read the first child node of the current node.
     AK_FORCE_INLINE void readChildNode() {
         if (mNodeReader.hasChildren()) {
-            mReadingState.mPrevTotalCodePointCount += mNodeReader.getCodePointCount();
-            mReadingState.mTotalNodeCount = 0;
-            mReadingState.mNodeArrayCount = 0;
+            mReadingState.mTotalCodePointCountSinceInitialization +=
+                    mNodeReader.getCodePointCount();
+            mReadingState.mTotalPtNodeIndexInThisArrayChain = 0;
+            mReadingState.mPtNodeArrayIndexInThisArrayChain = 0;
             mReadingState.mPos = mNodeReader.getChildrenPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             // Read children node array.
@@ -183,13 +185,14 @@ class DynamicPatriciaTrieReadingHelper {
     // Read the parent node of the current node.
     AK_FORCE_INLINE void readParentNode() {
         if (mNodeReader.getParentPos() != NOT_A_DICT_POS) {
-            mReadingState.mPrevTotalCodePointCount += mNodeReader.getCodePointCount();
-            mReadingState.mTotalNodeCount = 1;
-            mReadingState.mNodeArrayCount = 1;
-            mReadingState.mNodeCount = 1;
+            mReadingState.mTotalCodePointCountSinceInitialization +=
+                    mNodeReader.getCodePointCount();
+            mReadingState.mTotalPtNodeIndexInThisArrayChain = 1;
+            mReadingState.mPtNodeArrayIndexInThisArrayChain = 1;
+            mReadingState.mRemainingPtNodeCountInThisArray = 1;
             mReadingState.mPos = mNodeReader.getParentPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
-            mReadingState.mPosOfLastPtNodeArrayHead = NOT_A_DICT_POS;
+            mReadingState.mPosOfThisPtNodeArrayHead = NOT_A_DICT_POS;
             fetchPtNodeInfo();
         } else {
             mReadingState.mPos = NOT_A_DICT_POS;
@@ -201,7 +204,7 @@ class DynamicPatriciaTrieReadingHelper {
     }
 
     AK_FORCE_INLINE int getPosOfLastPtNodeArrayHead() const {
-        return mReadingState.mPosOfLastPtNodeArrayHead;
+        return mReadingState.mPosOfThisPtNodeArrayHead;
     }
 
     AK_FORCE_INLINE void reloadCurrentPtNodeInfo() {
@@ -218,35 +221,41 @@ class DynamicPatriciaTrieReadingHelper {
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieReadingHelper);
 
-    class ReadingState {
+    // This class encapsulates the reading state of a position in the dictionary. It points at a
+    // specific PtNode in the dictionary.
+    class PtNodeReadingState {
      public:
         // Note that copy constructor and assignment operator are used for this class to use
         // std::vector.
-        ReadingState() : mPos(NOT_A_DICT_POS), mNodeCount(0), mPrevTotalCodePointCount(0),
-                mTotalNodeCount(0), mNodeArrayCount(0), mPosOfLastForwardLinkField(NOT_A_DICT_POS),
-                mPosOfLastPtNodeArrayHead(NOT_A_DICT_POS) {}
+        PtNodeReadingState() : mPos(NOT_A_DICT_POS), mRemainingPtNodeCountInThisArray(0),
+                mTotalCodePointCountSinceInitialization(0), mTotalPtNodeIndexInThisArrayChain(0),
+                mPtNodeArrayIndexInThisArrayChain(0), mPosOfLastForwardLinkField(NOT_A_DICT_POS),
+                mPosOfThisPtNodeArrayHead(NOT_A_DICT_POS) {}
 
         int mPos;
-        // Node count of a node array.
-        int mNodeCount;
-        int mPrevTotalCodePointCount;
-        int mTotalNodeCount;
-        int mNodeArrayCount;
+        // Remaining node count in the current array.
+        int mRemainingPtNodeCountInThisArray;
+        int mTotalCodePointCountSinceInitialization;
+        // Counter of PtNodes used to avoid infinite loops caused by broken or malicious links.
+        int mTotalPtNodeIndexInThisArrayChain;
+        // Counter of PtNode arrays used to avoid infinite loops caused by cyclic links of empty
+        // PtNode arrays.
+        int mPtNodeArrayIndexInThisArrayChain;
         int mPosOfLastForwardLinkField;
-        int mPosOfLastPtNodeArrayHead;
+        int mPosOfThisPtNodeArrayHead;
     };
 
     static const int MAX_CHILD_COUNT_TO_AVOID_INFINITE_LOOP;
-    static const int MAX_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP;
+    static const int MAX_PT_NODE_ARRAY_COUNT_TO_AVOID_INFINITE_LOOP;
     static const size_t MAX_READING_STATE_STACK_SIZE;
 
     // TODO: Introduce error code to track what caused the error.
     bool mIsError;
-    ReadingState mReadingState;
+    PtNodeReadingState mReadingState;
     const BufferWithExtendableBuffer *const mBuffer;
     DynamicPatriciaTrieNodeReader mNodeReader;
     int mMergedNodeCodePoints[MAX_WORD_LENGTH];
-    std::vector<ReadingState> mReadingStateStack;
+    std::vector<PtNodeReadingState> mReadingStateStack;
 
     void nextPtNodeArray();
 

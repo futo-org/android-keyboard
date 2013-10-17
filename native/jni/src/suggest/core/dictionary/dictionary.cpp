@@ -88,7 +88,7 @@ int Dictionary::getBigrams(const int *word, int length, int *outWords, int *freq
 }
 
 int Dictionary::getProbability(const int *word, int length) const {
-    int pos = getDictionaryStructurePolicy()->getTerminalNodePositionOfWord(word, length,
+    int pos = getDictionaryStructurePolicy()->getTerminalPtNodePositionOfWord(word, length,
             false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == pos) {
         return NOT_A_PROBABILITY;

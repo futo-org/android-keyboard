@@ -144,7 +144,7 @@ int BigramDictionary::getPredictions(const int *prevWord, const int prevWordLeng
 int BigramDictionary::getBigramListPositionForWord(const int *prevWord, const int prevWordLength,
         const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return NOT_A_DICT_POS;
-    int pos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(prevWord, prevWordLength,
+    int pos = mDictionaryStructurePolicy->getTerminalPtNodePositionOfWord(prevWord, prevWordLength,
             forceLowerCaseSearch);
     if (NOT_A_DICT_POS == pos) return NOT_A_DICT_POS;
     return mDictionaryStructurePolicy->getBigramsPositionOfPtNode(pos);
@@ -155,7 +155,7 @@ int BigramDictionary::getBigramProbability(const int *word0, int length0, const 
     int pos = getBigramListPositionForWord(word0, length0, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (NOT_A_DICT_POS == pos) return NOT_A_PROBABILITY;
-    int nextWordPos = mDictionaryStructurePolicy->getTerminalNodePositionOfWord(word1, length1,
+    int nextWordPos = mDictionaryStructurePolicy->getTerminalPtNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
     if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
 

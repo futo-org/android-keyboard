@@ -50,14 +50,14 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
         return 0;
     }
 
-    void createAndGetAllChildNodes(const DicNode *const dicNode,
+    void createAndGetAllChildDicNodes(const DicNode *const dicNode,
             DicNodeVector *const childDicNodes) const;
 
     int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int terminalPtNodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const;
 
-    int getTerminalNodePositionOfWord(const int *const inWord,
+    int getTerminalPtNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const;
 
     int getProbability(const int unigramProbability, const int bigramProbability) const;
