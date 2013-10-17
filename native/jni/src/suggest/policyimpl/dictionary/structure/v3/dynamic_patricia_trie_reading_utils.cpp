@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"

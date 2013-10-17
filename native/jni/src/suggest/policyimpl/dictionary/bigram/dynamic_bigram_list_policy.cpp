@@ -17,8 +17,8 @@
 #include "suggest/policyimpl/dictionary/bigram/dynamic_bigram_list_policy.h"
 
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 #include "suggest/policyimpl/dictionary/utils/forgetting_curve_utils.h"
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#include "suggest/policyimpl/dictionary/dictionary_structure_with_buffer_policy_factory.h"
+#include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 
 #include <stdint.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_policy.h"
-#include "suggest/policyimpl/dictionary/patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 

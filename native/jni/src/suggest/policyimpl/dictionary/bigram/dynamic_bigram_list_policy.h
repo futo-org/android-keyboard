@@ -22,7 +22,7 @@
 #include "defines.h"
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 #include "suggest/policyimpl/dictionary/bigram/bigram_list_read_write_utils.h"
-#include "suggest/policyimpl/dictionary/dynamic_patricia_trie_writing_helper.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_writing_helper.h"
 
 namespace latinime {
 
