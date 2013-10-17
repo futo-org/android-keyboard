@@ -60,5 +60,8 @@
             latin:keyWidth="15%p" />
         <include
             latin:keyboardLayout="@xml/row_symbols_shift4" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>
