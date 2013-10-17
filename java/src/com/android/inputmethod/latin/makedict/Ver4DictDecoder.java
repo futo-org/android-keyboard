@@ -51,9 +51,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     protected DictBuffer mDictBuffer;
     private DictBuffer mFrequencyBuffer;
     private DictBuffer mTerminalAddressTableBuffer;
-    private DictBuffer mShortcutBuffer;
     private BigramContentReader mBigramReader;
-    private SparseTable mShortcutAddressTable;
+    private ShortcutContentReader mShortcutReader;
 
     @UsedForTesting
     /* package */ Ver4DictDecoder(final File dictDirectory, final int factoryFlag) {
@@ -110,8 +109,9 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mBigramReader = new BigramContentReader(mDictDirectory.getName(),
                 mDictDirectory, mBufferFactory, false);
         mBigramReader.openBuffers();
-        mShortcutBuffer = mBufferFactory.getDictionaryBuffer(getFile(FILETYPE_SHORTCUT));
-        loadShortcutAddressSparseTable();
+        mShortcutReader = new ShortcutContentReader(mDictDirectory.getName(), mDictDirectory,
+                mBufferFactory);
+        mShortcutReader.openBuffers();
     }
 
     @Override
@@ -134,21 +134,6 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             throw new UnsupportedFormatException("File header has a wrong version : " + version);
         }
         return header;
-    }
-
-    // TODO: Let's have something like SparseTableContentsReader in this class.
-    private void loadShortcutAddressSparseTable() throws IOException {
-        final File lookupIndexFile = new File(mDictDirectory, mDictDirectory.getName()
-                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.LOOKUP_TABLE_FILE_SUFFIX);
-        final File contentFile = new File(mDictDirectory, mDictDirectory.getName()
-                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
-                + FormatSpec.SHORTCUT_CONTENT_ID);
-        final File timestampsFile = new File(mDictDirectory, mDictDirectory.getName()
-                + FormatSpec.SHORTCUT_FILE_EXTENSION + FormatSpec.CONTENT_TABLE_FILE_SUFFIX
-                + FormatSpec.SHORTCUT_CONTENT_ID);
-        mShortcutAddressTable = SparseTable.readFromFiles(lookupIndexFile,
-                new File[] { contentFile, timestampsFile },
-                FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE);
     }
 
     /**
@@ -194,31 +179,68 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
             read(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
                     new SparseTableContentReaderInterface() {
-                @Override
-                public void read(final DictBuffer buffer) {
-                    while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                        // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
-                        // remaining bigram entries are ignored.
-                        final int bigramFlags = buffer.readUnsignedByte();
-                        final int targetTerminalId = buffer.readUnsignedInt24();
-                        terminalAddressTableBuffer.position(
-                                targetTerminalId * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
-                        final int targetAddress = terminalAddressTableBuffer.readUnsignedInt24();
-                        bigrams.add(new PendingAttribute(
-                                bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
-                                targetAddress));
-                        if (0 == (bigramFlags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) {
-                            break;
+                        @Override
+                        public void read(final DictBuffer buffer) {
+                            while (bigrams.size() < FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                                // If bigrams.size() reaches FormatSpec.MAX_BIGRAMS_IN_A_PTNODE,
+                                // remaining bigram entries are ignored.
+                                final int bigramFlags = buffer.readUnsignedByte();
+                                final int targetTerminalId = buffer.readUnsignedInt24();
+                                terminalAddressTableBuffer.position(targetTerminalId
+                                        * FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
+                                final int targetAddress =
+                                        terminalAddressTableBuffer.readUnsignedInt24();
+                                bigrams.add(new PendingAttribute(bigramFlags
+                                        & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY,
+                                        targetAddress));
+                                if (0 == (bigramFlags
+                                        & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) {
+                                    break;
+                                }
+                            }
+                            if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
+                                throw new RuntimeException("Too many bigrams in a PtNode ("
+                                        + bigrams.size() + " but max is "
+                                        + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
+                            }
                         }
-                    }
-                    if (bigrams.size() >= FormatSpec.MAX_BIGRAMS_IN_A_PTNODE) {
-                        throw new RuntimeException("Too many bigrams in a PtNode (" + bigrams.size()
-                                + " but max is " + FormatSpec.MAX_BIGRAMS_IN_A_PTNODE + ")");
-                    }
-                }
-            });
+                    });
             if (bigrams.isEmpty()) return null;
             return bigrams;
+        }
+    }
+
+    /**
+     * An auxiliary class for reading shortcuts.
+     */
+    protected static class ShortcutContentReader extends SparseTableContentReader {
+        public ShortcutContentReader(final String name, final File baseDir,
+                final DictionaryBufferFactory factory) {
+            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION,
+                    FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    new String[] { name + FormatSpec.SHORTCUT_FILE_EXTENSION },
+                    new String[] { FormatSpec.SHORTCUT_CONTENT_ID }, factory);
+        }
+
+        public ArrayList<WeightedString> readShortcuts(final int terminalId) {
+            final ArrayList<WeightedString> shortcuts = CollectionUtils.newArrayList();
+            read(FormatSpec.SHORTCUT_CONTENT_INDEX, terminalId,
+                    new SparseTableContentReaderInterface() {
+                        @Override
+                        public void read(final DictBuffer buffer) {
+                            while (true) {
+                                final int flags = buffer.readUnsignedByte();
+                                final String word = CharEncoding.readString(buffer);
+                                shortcuts.add(new WeightedString(word,
+                                        flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
+                                if (0 == (flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) {
+                                    break;
+                                }
+                            }
+                        }
+                    });
+            if (shortcuts.isEmpty()) return null;
+            return shortcuts;
         }
     }
 
@@ -231,23 +253,6 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         protected static int readTerminalId(final DictBuffer dictBuffer) {
             return dictBuffer.readInt();
         }
-    }
-
-    private ArrayList<WeightedString> readShortcuts(final int terminalId) {
-        if (mShortcutAddressTable.get(0, terminalId) == SparseTable.NOT_EXIST) return null;
-
-        final ArrayList<WeightedString> ret = CollectionUtils.newArrayList();
-        final int posOfShortcuts = mShortcutAddressTable.get(FormatSpec.SHORTCUT_CONTENT_INDEX,
-                terminalId);
-        mShortcutBuffer.position(posOfShortcuts);
-        while (true) {
-            final int flags = mShortcutBuffer.readUnsignedByte();
-            final String word = CharEncoding.readString(mShortcutBuffer);
-            ret.add(new WeightedString(word,
-                    flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_FREQUENCY));
-            if (0 == (flags & FormatSpec.FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT)) break;
-        }
-        return ret;
     }
 
     // TODO: Make this buffer thread safe.
@@ -300,7 +305,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             childrenAddress += addressPointer;
         }
         addressPointer += BinaryDictIOUtils.getChildrenAddressSize(flags, options);
-        final ArrayList<WeightedString> shortcutTargets = readShortcuts(terminalId);
+        final ArrayList<WeightedString> shortcutTargets = mShortcutReader.readShortcuts(terminalId);
         final ArrayList<PendingAttribute> bigrams =
                 mBigramReader.readTargetsAndFrequencies(terminalId,
                         mTerminalAddressTableBuffer);
