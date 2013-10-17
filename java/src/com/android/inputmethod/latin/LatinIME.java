@@ -196,9 +196,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mLastSelectionStart = NOT_A_CURSOR_POSITION;
     private int mLastSelectionEnd = NOT_A_CURSOR_POSITION;
 
-    // Whether we are expecting an onUpdateSelection event to fire. If it does when we don't
-    // "expect" it, it means the user actually moved the cursor.
-    private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
     private final TreeSet<Long> mCurrentlyPressedHardwareKeys = CollectionUtils.newTreeSet();
@@ -1083,7 +1080,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
-                    composingSpanEnd, mExpectingUpdateSelection, mConnection);
+                    composingSpanEnd, mConnection);
         }
 
         final boolean selectionChanged = mLastSelectionStart != newSelStart
@@ -1102,14 +1099,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: revisit this when LatinIME supports hardware keyboards.
         // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
         // TODO: find a better way to simulate actual execution.
-        if (isInputViewShown() && !mExpectingUpdateSelection
+        if (isInputViewShown()
                 && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
-            // TAKE CARE: there is a race condition when we enter this test even when the user
-            // did not explicitly move the cursor. This happens when typing fast, where two keys
-            // turn this flag on in succession and both onUpdateSelection() calls arrive after
-            // the second one - the first call successfully avoids this test, but the second one
-            // enters. For the moment we rely on noComposingSpan to further reduce the impact.
-
             // TODO: the following is probably better done in resetEntireInputState().
             // it should only happen when the cursor moved, and the very purpose of the
             // test below is to narrow down whether this happened or not. Likewise with
@@ -1154,7 +1145,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mRecapitalizeStatus.deactivate();
             mKeyboardSwitcher.updateShiftState();
         }
-        mExpectingUpdateSelection = false;
 
         // Make a note of the cursor position
         mLastSelectionStart = newSelStart;
@@ -1733,7 +1723,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             handleCharacter(primaryCode, keyX, keyY, spaceState);
         }
-        mExpectingUpdateSelection = true;
         return didAutoCorrect;
     }
 
@@ -1799,7 +1788,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             } else {
                 commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             }
-            mExpectingUpdateSelection = true;
         }
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
         if (Character.isLetterOrDigit(codePointBeforeCursor)
@@ -1989,7 +1977,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mWordComposer.setBatchInputWord(batchInputText);
             mConnection.setComposingText(batchInputText, 1);
         }
-        mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {
             ResearchLogger.latinIME_onEndBatchInput(batchInputText, 0, suggestedWords);
@@ -2043,9 +2030,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void handleBackspace(final int spaceState) {
-        // We revert these in this method if the deletion doesn't happen.
+        // We revert this in this method if the deletion doesn't happen.
         mDeleteCount++;
-        mExpectingUpdateSelection = true;
 
         // In many cases, we may have to put the keyboard in auto-shift state again. However
         // we want to wait a few milliseconds before doing it to avoid the keyboard flashing
@@ -2138,10 +2124,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
                 final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
                 if (codePointBeforeCursor == Constants.NOT_A_CODE) {
-                    // Nothing to delete before the cursor. We have to revert the deletion states
-                    // that were updated at the beginning of this method.
+                    // Nothing to delete before the cursor. We have to revert the deletion count
+                    // that was updated at the beginning of this method.
                     mDeleteCount--;
-                    mExpectingUpdateSelection = false;
                     return;
                 }
                 final int lengthToDelete =
@@ -2650,7 +2635,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ResearchLogger.latinIme_commitCurrentAutoCorrection(typedWord, autoCorrection,
                         separator, mWordComposer.isBatchMode(), suggestedWords);
             }
-            mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separator);
             if (!typedWord.equals(autoCorrection)) {
@@ -2721,7 +2705,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // typed word.
         final String replacedWord = mWordComposer.getTypedWord();
         LatinImeLogger.logOnManualSuggestion(replacedWord, suggestion, index, suggestedWords);
-        mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
         if (ProductionFlag.USES_DEVELOPMENT_ONLY_DIAGNOSTICS) {

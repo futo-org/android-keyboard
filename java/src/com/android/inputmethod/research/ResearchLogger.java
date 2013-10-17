@@ -1161,8 +1161,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
-            final int composingSpanEnd, final boolean expectingUpdateSelection,
-            final RichInputConnection connection) {
+            final int composingSpanEnd, final RichInputConnection connection) {
         String word = "";
         if (connection != null) {
             TextRange range = connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1);
@@ -1174,7 +1173,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final String scrubbedWord = researchLogger.scrubWord(word);
         researchLogger.enqueueEvent(LOGSTATEMENT_LATINIME_ONUPDATESELECTION, lastSelectionStart,
                 lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart, newSelEnd,
-                composingSpanStart, composingSpanEnd, expectingUpdateSelection,
+                composingSpanStart, composingSpanEnd, false /* expectingUpdateSelection */,
                 false /* expectingUpdateSelectionFromLogger */, scrubbedWord);
     }
 
