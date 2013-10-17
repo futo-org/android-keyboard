@@ -37,14 +37,14 @@ class DictionaryStructureWithBufferPolicy {
 
     virtual int getRootPosition() const = 0;
 
-    virtual void createAndGetAllChildNodes(const DicNode *const dicNode,
+    virtual void createAndGetAllChildDicNodes(const DicNode *const dicNode,
             DicNodeVector *const childDicNodes) const = 0;
 
     virtual int getCodePointsAndProbabilityAndReturnCodePointCount(
             const int nodePos, const int maxCodePointCount, int *const outCodePoints,
             int *const outUnigramProbability) const = 0;
 
-    virtual int getTerminalNodePositionOfWord(const int *const inWord,
+    virtual int getTerminalPtNodePositionOfWord(const int *const inWord,
             const int length, const bool forceLowerCaseSearch) const = 0;
 
     virtual int getProbability(const int unigramProbability,

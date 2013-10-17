@@ -45,14 +45,14 @@ const int DynamicPatriciaTriePolicy::MAX_DICT_EXTENDED_REGION_SIZE = 1024 * 1024
 const int DynamicPatriciaTriePolicy::MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS =
         DynamicPatriciaTrieWritingHelper::MAX_DICTIONARY_SIZE - 1024;
 
-void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const dicNode,
+void DynamicPatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *const dicNode,
         DicNodeVector *const childDicNodes) const {
     if (!dicNode->hasChildren()) {
         return;
     }
     DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer,
             getBigramsStructurePolicy(), getShortcutsStructurePolicy());
-    readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPos());
+    readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPtNodeArrayPos());
     const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
     while (!readingHelper.isEnd()) {
         childDicNodes->pushLeavingChild(dicNode, nodeReader->getHeadPos(),
@@ -107,7 +107,7 @@ int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCoun
     return codePointCount;
 }
 
-int DynamicPatriciaTriePolicy::getTerminalNodePositionOfWord(const int *const inWord,
+int DynamicPatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
     int searchCodePoints[length];
     for (int i = 0; i < length; ++i) {
@@ -246,12 +246,12 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
         AKLOGE("The dictionary is too large to dynamically update.");
         return false;
     }
-    const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
+    const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
     if (word0Pos == NOT_A_DICT_POS) {
         return false;
     }
-    const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
+    const int word1Pos = getTerminalPtNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
     if (word1Pos == NOT_A_DICT_POS) {
         return false;
@@ -280,12 +280,12 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
         AKLOGE("The dictionary is too large to dynamically update.");
         return false;
     }
-    const int word0Pos = getTerminalNodePositionOfWord(word0, length0,
+    const int word0Pos = getTerminalPtNodePositionOfWord(word0, length0,
             false /* forceLowerCaseSearch */);
     if (word0Pos == NOT_A_DICT_POS) {
         return false;
     }
-    const int word1Pos = getTerminalNodePositionOfWord(word1, length1,
+    const int word1Pos = getTerminalPtNodePositionOfWord(word1, length1,
             false /* forceLowerCaseSearch */);
     if (word1Pos == NOT_A_DICT_POS) {
         return false;

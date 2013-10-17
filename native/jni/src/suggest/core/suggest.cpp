@@ -98,7 +98,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
             // Continue suggestion after partial commit.
             DicNode *topDicNode =
                     traverseSession->getDicTraverseCache()->setCommitPoint(commitPoint);
-            traverseSession->setPrevWordPos(topDicNode->getPrevWordNodePos());
+            traverseSession->setPrevWordPtNodePos(topDicNode->getPrevWordPtNodePos());
             traverseSession->getDicTraverseCache()->continueSearch();
             traverseSession->setPartiallyCommited();
         }
@@ -109,7 +109,7 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPo
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),
-                traverseSession->getPrevWordPos(), &rootNode);
+                traverseSession->getPrevWordPtNodePos(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
 }
@@ -231,7 +231,7 @@ int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequen
             BinaryDictionaryShortcutIterator shortcutIt(
                     traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
                     traverseSession->getDictionaryStructurePolicy()
-                            ->getShortcutPositionOfPtNode(terminalDicNode->getPos()));
+                            ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
             // Shortcut is not supported for multiple words suggestions.
             // TODO: Check shortcuts during traversal for multiple words suggestions.
             const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
@@ -421,15 +421,15 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                         }
                         break;
                     case UNRELATED_CHAR:
-                        // Just drop this node and do nothing.
+                        // Just drop this dicNode and do nothing.
                         break;
                     default:
-                        // Just drop this node and do nothing.
+                        // Just drop this dicNode and do nothing.
                         break;
                 }
             }
 
-            // Push the node for look-ahead correction
+            // Push the dicNode for look-ahead correction
             if (allowsErrorCorrections && canDoLookAheadCorrection) {
                 traverseSession->getDicTraverseCache()->copyPushNextActive(&dicNode);
             }
@@ -442,7 +442,7 @@ void Suggest::processTerminalDicNode(
     if (dicNode->getCompoundDistance() >= static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
         return;
     }
-    if (!dicNode->isTerminalWordNode()) {
+    if (!dicNode->isTerminalDicNode()) {
         return;
     }
     if (dicNode->shouldBeFilteredBySafetyNetForBigram()) {
@@ -463,7 +463,7 @@ void Suggest::processTerminalDicNode(
 
 /**
  * Adds the expanded dicNode to the next search priority queue. Also creates an additional next word
- * (by the space omission error correction) search path if input dicNode is on a terminal node.
+ * (by the space omission error correction) search path if input dicNode is on a terminal.
  */
 void Suggest::processExpandedDicNode(
         DicTraverseSession *traverseSession, DicNode *dicNode) const {
@@ -505,7 +505,7 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
-// Process the node codepoint as a digraph. This means that composite glyphs like the German
+// Process the DicNode codepoint as a digraph. This means that composite glyphs like the German
 // u-umlaut is expanded to the transliteration "ue". Note that this happens in parallel with
 // the normal non-digraph traversal, so both "uber" and "ueber" can be corrected to "[u-umlaut]ber".
 void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
@@ -518,7 +518,7 @@ void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
 /**
  * Handle the dicNode as an omission error (e.g., ths => this). Skip the current letter and consider
  * matches for all possible next letters. Note that just skipping the current letter without any
- * other conditions tends to flood the search dic nodes cache with omission nodes. Instead, check
+ * other conditions tends to flood the search DicNodes cache with omission DicNodes. Instead, check
  * the possible *next* letters after the omission to better limit search to plausible omissions.
  * Note that apostrophes are handled as omissions.
  */
@@ -605,7 +605,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
 }
 
 /**
- * Weight child node by aligning it to the key
+ * Weight child dicNode by aligning it to the key
  */
 void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const {
     const int inputSize = traverseSession->getInputSize();
