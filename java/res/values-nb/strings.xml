@@ -222,7 +222,7 @@
     <string name="do_not_download_over_metered" msgid="2176209579313941583">"Last ned via Wi-Fi"</string>
     <string name="dict_available_notification_title" msgid="6514288591959117288">"En ordliste er tilgjengelig for <xliff:g id="LANGUAGE">%1$s</xliff:g>"</string>
     <string name="dict_available_notification_description" msgid="1075194169443163487">"Trykk for å se gjennom og laste ned"</string>
-    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Laster ned: forslag blir snart tilgjengelige for <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
+    <string name="toast_downloading_suggestions" msgid="1313027353588566660">"Laster ned: Forslag blir snart tilgjengelige for <xliff:g id="LANGUAGE">%1$s</xliff:g>."</string>
     <string name="version_text" msgid="2715354215568469385">"Versjon <xliff:g id="VERSION_NUMBER">%1$s</xliff:g>"</string>
     <string name="user_dict_settings_add_menu_title" msgid="1254195365689387076">"Legg til"</string>
     <string name="user_dict_settings_add_dialog_title" msgid="4096700390211748168">"Legg til i ordlisten"</string>
