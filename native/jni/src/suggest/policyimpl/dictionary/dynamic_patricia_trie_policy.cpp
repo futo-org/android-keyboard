@@ -55,9 +55,16 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildNodes(const DicNode *const d
     readingHelper.initWithPtNodeArrayPos(dicNode->getChildrenPos());
     const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
     while (!readingHelper.isEnd()) {
+        bool isTerminal = nodeReader->isTerminal() && !nodeReader->isDeleted();
+        if (isTerminal && mHeaderPolicy.isDecayingDict()) {
+            // A DecayingDict may have a terminal PtNode that has a terminal DicNode whose
+            // probability is NOT_A_PROBABILITY. In such case, we don't want to treat it as a
+            // valid terminal DicNode.
+            isTerminal = getProbability(nodeReader->getProbability(), NOT_A_PROBABILITY)
+                    != NOT_A_PROBABILITY;
+        }
         childDicNodes->pushLeavingChild(dicNode, nodeReader->getHeadPos(),
-                nodeReader->getChildrenPos(), nodeReader->getProbability(),
-                nodeReader->isTerminal() && !nodeReader->isDeleted(),
+                nodeReader->getChildrenPos(), nodeReader->getProbability(), isTerminal,
                 nodeReader->hasChildren(), nodeReader->isBlacklisted() || nodeReader->isNotAWord(),
                 nodeReader->getCodePointCount(), readingHelper.getMergedNodeCodePoints());
         readingHelper.readNextSiblingNode();
