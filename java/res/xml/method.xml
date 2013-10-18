@@ -40,7 +40,7 @@
     es: Spanish/spanish
     es_US: Spanish United States/spanish
     (es_419: Spanish Latin America/qwerty)
-    et: Estonian/nordic
+    et_EE: Estonian/nordic
     fa: Persian/arabic
     fi: Finnish/nordic
     fr: French/azerty
@@ -49,21 +49,21 @@
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
-    hy: Armenian Phonetic/armenian_phonetic
+    hy_AM: Armenian Phonetic/armenian_phonetic
     in: Indonesian/qwerty    # "id" is official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
     iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
-    ka: Georgian/georgian
+    ka_GE: Georgian/georgian
     (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
-    km: Khmer/khmer
+    km_KH: Khmer/khmer
     ky: Kyrgyz/east_slavic
-    lo: Lao/lao
+    lo_LA: Lao/lao
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
-    mn: Mongolian/mongolian
-    ms: Malay/qwerty
+    mn_MN: Mongolian/mongolian
+    ms_MY: Malay/qwerty
     nb: Norwegian Bokmål/nordic
     (ne: Nepali Romanized/nepali_romanized)  # disabled temporarily
     (ne: Nepali Traditional/nepali_traditional)  # disabled temporarily
@@ -230,7 +230,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xec2d3955"
-            android:imeSubtypeLocale="et"
+            android:imeSubtypeLocale="et_EE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nordic,AsciiCapable,EmojiCapable"
     />
@@ -293,7 +293,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xe39ac3ca"
-            android:imeSubtypeLocale="hy"
+            android:imeSubtypeLocale="hy_AM"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=armenian_phonetic,EmojiCapable"
     />
@@ -330,7 +330,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x6e119e6a"
-            android:imeSubtypeLocale="ka"
+            android:imeSubtypeLocale="ka_GE"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=georgian,EmojiCapable"
     />
@@ -346,11 +346,10 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x1365683a"
-            android:imeSubtypeLocale="km"
+            android:imeSubtypeLocale="km_KH"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=khmer,EmojiCapable"
     />
-            <!-- android:subtypeId="Need this for km" -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x2e391c04"
@@ -361,7 +360,7 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x8315772c"
-            android:imeSubtypeLocale="lo"
+            android:imeSubtypeLocale="lo_LA"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=lao,EmojiCapable"
     />
@@ -389,14 +388,14 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0xcdcfc3ab"
-            android:imeSubtypeLocale="mn"
+            android:imeSubtypeLocale="mn_MN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=mongolian,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
-            android:imeSubtypeLocale="ms"
+            android:imeSubtypeLocale="ms_MY"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
     />
