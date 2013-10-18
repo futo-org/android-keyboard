@@ -278,9 +278,9 @@ public final class FormatSpec {
     static final int UNIGRAM_TIMESTAMP_SIZE = 4;
 
     // With the English main dictionary as of October 2013, the size of bigram address table is
-    // is 584KB with the block size being 4.
-    // This is 91% of that of full address table.
-    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 4;
+    // is 345KB with the block size being 16.
+    // This is 54% of that of full address table.
+    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 16;
     static final int BIGRAM_CONTENT_COUNT = 2;
     static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
     static final int BIGRAM_TIMESTAMP_CONTENT_INDEX = 1;
@@ -293,7 +293,7 @@ public final class FormatSpec {
     static final int SHORTCUT_CONTENT_COUNT = 1;
     static final int SHORTCUT_CONTENT_INDEX = 0;
     // With the English main dictionary as of October 2013, the size of shortcut address table is
-    // 29KB with the block size being 64.
+    // 26KB with the block size being 64.
     // This is only 4.4% of that of full address table.
     static final int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
     static final String SHORTCUT_CONTENT_ID = "_shortcut";
