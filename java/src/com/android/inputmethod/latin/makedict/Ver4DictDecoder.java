@@ -46,7 +46,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
     protected static final int FILETYPE_BIGRAM_FREQ = 4;
     protected static final int FILETYPE_SHORTCUT = 5;
 
-    private final File mDictDirectory;
+    protected final File mDictDirectory;
     protected final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
     protected DictBuffer mFrequencyBuffer;
@@ -178,7 +178,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         }
 
         // TODO: Consolidate this method and BigramContentWriter.getContentFilenames.
-        private static String[] getContentFilenames(final String name, final boolean hasTimestamp) {
+        protected static String[] getContentFilenames(final String name,
+                final boolean hasTimestamp) {
             final String[] contentFilenames;
             if (hasTimestamp) {
                 contentFilenames = new String[] { name + FormatSpec.BIGRAM_FILE_EXTENSION,
@@ -190,7 +191,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         }
 
         // TODO: Consolidate this method and BigramContentWriter.getContentIds.
-        private static String[] getContentIds(final boolean hasTimestamp) {
+        protected static String[] getContentIds(final boolean hasTimestamp) {
             final String[] contentIds;
             if (hasTimestamp) {
                 contentIds = new String[] { FormatSpec.BIGRAM_FREQ_CONTENT_ID,

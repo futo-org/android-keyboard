@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import android.util.Log;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * An implementation of DictUpdater for version 4 binary dictionary.
@@ -48,6 +50,91 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         super(dictDirectory, ((factoryType & MASK_DICTBUFFER) == USE_BYTEARRAY)
                 ? USE_BYTEARRAY : USE_WRITABLE_BYTEBUFFER);
         mFrequencyFile = getFile(FILETYPE_FREQUENCY);
+    }
+
+    private static class BigramContentUpdater extends SparseTableContentUpdater {
+        private final boolean mHasTimestamp;
+
+        public BigramContentUpdater(final String name, final File baseDir,
+                final boolean hasTimestamp) {
+            super(name + FormatSpec.BIGRAM_FILE_EXTENSION,
+                    FormatSpec.BIGRAM_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    BigramContentReader.getContentFilenames(name, hasTimestamp),
+                    BigramContentReader.getContentIds(hasTimestamp),
+                    new DictionaryBufferFromWritableByteBufferFactory());
+            mHasTimestamp = hasTimestamp;
+        }
+
+        public void insertBigramEntries(final int terminalId, final int frequency,
+                final ArrayList<PendingAttribute> entries) throws IOException {
+            if (terminalId < 0) {
+                throw new RuntimeException("Invalid terminal id : " + terminalId);
+            }
+            openStreamsAndBuffers();
+
+            if (entries == null || entries.isEmpty()) {
+                setContentValue(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId,
+                        SparseTable.NOT_EXIST);
+                return;
+            }
+            final int positionOfEntries =
+                    (int) mContentFiles[FormatSpec.BIGRAM_FREQ_CONTENT_INDEX].length();
+            setContentValue(FormatSpec.BIGRAM_FREQ_CONTENT_INDEX, terminalId, positionOfEntries);
+
+            final Iterator<PendingAttribute> bigramIterator = entries.iterator();
+            while (bigramIterator.hasNext()) {
+                final PendingAttribute entry = bigramIterator.next();
+                final int flags = BinaryDictEncoderUtils.makeBigramFlags(bigramIterator.hasNext(),
+                        0 /* offset */, entry.mFrequency, frequency, "" /* word */);
+                BinaryDictEncoderUtils.writeUIntToStream(
+                        mContentOutStreams[FormatSpec.BIGRAM_FREQ_CONTENT_INDEX], flags,
+                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
+                BinaryDictEncoderUtils.writeUIntToStream(
+                        mContentOutStreams[FormatSpec.BIGRAM_FREQ_CONTENT_INDEX], entry.mAddress,
+                        FormatSpec.PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE);
+            }
+            close();
+        }
+    }
+
+    private static class ShortcutContentUpdater extends SparseTableContentUpdater {
+        public ShortcutContentUpdater(final String name, final File baseDir) {
+            super(name + FormatSpec.SHORTCUT_FILE_EXTENSION,
+                    FormatSpec.SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE, baseDir,
+                    new String[] { name + FormatSpec.SHORTCUT_FILE_EXTENSION },
+                    new String[] { FormatSpec.SHORTCUT_CONTENT_ID },
+                    new DictionaryBufferFromWritableByteBufferFactory());
+        }
+
+        public void insertShortcuts(final int terminalId,
+                final ArrayList<WeightedString> shortcuts) throws IOException {
+            if (terminalId < 0) {
+                throw new RuntimeException("Invalid terminal id : " + terminalId);
+            }
+            openStreamsAndBuffers();
+            if (shortcuts == null || shortcuts.isEmpty()) {
+                setContentValue(FormatSpec.SHORTCUT_CONTENT_INDEX, terminalId,
+                        SparseTable.NOT_EXIST);
+                return;
+            }
+
+            final int positionOfShortcuts =
+                    (int) mContentFiles[FormatSpec.SHORTCUT_CONTENT_INDEX].length();
+            setContentValue(FormatSpec.SHORTCUT_CONTENT_INDEX, terminalId, positionOfShortcuts);
+
+            final Iterator<WeightedString> shortcutIterator = shortcuts.iterator();
+            while (shortcutIterator.hasNext()) {
+                final WeightedString target = shortcutIterator.next();
+                final int shortcutFlags = BinaryDictEncoderUtils.makeShortcutFlags(
+                        shortcutIterator.hasNext(), target.mFrequency);
+                BinaryDictEncoderUtils.writeUIntToStream(
+                        mContentOutStreams[FormatSpec.SHORTCUT_CONTENT_INDEX], shortcutFlags,
+                        FormatSpec.PTNODE_ATTRIBUTE_FLAGS_SIZE);
+                CharEncoding.writeString(mContentOutStreams[FormatSpec.SHORTCUT_CONTENT_INDEX],
+                        target.mWord);
+            }
+            close();
+        }
     }
 
     @Override
@@ -574,6 +661,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
                 true /* append */);
         BinaryDictEncoderUtils.writeUIntToStream(frequencyStream, frequency,
                 FormatSpec.FREQUENCY_AND_FLAGS_SIZE);
+        frequencyStream.close();
     }
 
     private void insertTerminalPosition(final int posOfTerminal) throws IOException {
@@ -581,14 +669,37 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
                 getFile(FILETYPE_TERMINAL_ADDRESS_TABLE), true /* append */);
         BinaryDictEncoderUtils.writeUIntToStream(terminalPosStream, posOfTerminal,
                 FormatSpec.TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE);
+        terminalPosStream.close();
     }
 
-    private void insertBigrams(final int terminalId, final ArrayList<PendingAttribute> bigrams) {
-        // TODO: Implement.
+    private void insertBigrams(final int terminalId, final int frequency,
+            final ArrayList<PendingAttribute> bigramAddresses)
+                    throws IOException, UnsupportedFormatException {
+        openDictBuffer();
+        final BigramContentUpdater updater = new BigramContentUpdater(mDictDirectory.getName(),
+                mDictDirectory, false);
+
+        // Convert addresses to terminal ids.
+        final ArrayList<PendingAttribute> bigrams = CollectionUtils.newArrayList();
+        mDictBuffer.position(0);
+        final FileHeader header = readHeader();
+        for (PendingAttribute attr : bigramAddresses) {
+            mDictBuffer.position(attr.mAddress);
+            final Ver4PtNodeInfo info = readVer4PtNodeInfo(attr.mAddress, header.mFormatOptions);
+            if (info.mTerminalId == PtNode.NOT_A_TERMINAL) {
+                throw new RuntimeException("We can't have a bigram target that's not a terminal.");
+            }
+            bigrams.add(new PendingAttribute(frequency, info.mTerminalId));
+        }
+        updater.insertBigramEntries(terminalId, frequency, bigrams);
+        close();
     }
 
-    private void insertShortcuts(final int terminalId, final ArrayList<WeightedString> shortcuts) {
-        // TODO: Implement.
+    private void insertShortcuts(final int terminalId, final ArrayList<WeightedString> shortcuts)
+            throws IOException {
+        final ShortcutContentUpdater updater = new ShortcutContentUpdater(mDictDirectory.getName(),
+                mDictDirectory);
+        updater.insertShortcuts(terminalId, shortcuts);
     }
 
     private void openBuffersAndStream() throws IOException {
@@ -597,7 +708,10 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
     }
 
     private void close() throws IOException {
-        mDictStream.close();
+        if (mDictStream != null) {
+            mDictStream.close();
+            mDictStream = null;
+        }
         mDictBuffer = null;
         mFrequencyBuffer = null;
         mTerminalAddressTableBuffer = null;
@@ -620,7 +734,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         mDictBuffer.put((byte) newFlags);
 
         updateFrequency(terminalId, frequency);
-        insertBigrams(terminalId,
+        insertBigrams(terminalId, frequency,
                 DynamicBinaryDictIOUtils.resolveBigramPositions(this, bigramStrings));
         insertShortcuts(terminalId, shortcuts);
     }
@@ -650,7 +764,7 @@ public class Ver4DictUpdater extends Ver4DictDecoder implements DictUpdater {
         insertTerminalPosition(posOfTerminal);
         close();
 
-        insertBigrams(newTerminalId,
+        insertBigrams(newTerminalId, frequency,
                 DynamicBinaryDictIOUtils.resolveBigramPositions(this, bigramStrings));
         insertShortcuts(newTerminalId, shortcuts);
     }
