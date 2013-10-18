@@ -169,6 +169,14 @@ public final class BinaryDictDecoderUtils {
             return size;
         }
 
+        static int getCharArraySize(final int[] chars, final int start, final int end) {
+            int size = 0;
+            for (int i = start; i < end; ++i) {
+                size += getCharSize(chars[i]);
+            }
+            return size;
+        }
+
         /**
          * Writes a char array to a byte buffer.
          *
@@ -244,6 +252,40 @@ public final class BinaryDictDecoderUtils {
             }
             buffer.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
             written += FormatSpec.PTNODE_TERMINATOR_SIZE;
+            return written;
+        }
+
+        /**
+         * Writes an array of code points with our character format to an OutputStream.
+         *
+         * This will also write the terminator byte.
+         *
+         * @param stream the OutputStream to write to.
+         * @param codePoints the array of code points
+         * @return the size written, in bytes.
+         */
+        // TODO: Merge this method with writeCharArray and rename the various write* methods to
+        // make the difference clear.
+        static int writeCodePoints(final OutputStream stream, final int[] codePoints,
+                final int startIndex, final int endIndex)
+                throws IOException {
+            int written = 0;
+            for (int i = startIndex; i < endIndex; ++i) {
+                final int codePoint = codePoints[i];
+                final int charSize = getCharSize(codePoint);
+                if (1 == charSize) {
+                    stream.write((byte) codePoint);
+                } else {
+                    stream.write((byte) (0xFF & (codePoint >> 16)));
+                    stream.write((byte) (0xFF & (codePoint >> 8)));
+                    stream.write((byte) (0xFF & codePoint));
+                }
+                written += charSize;
+            }
+            if (endIndex - startIndex > 1) {
+                stream.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+                written += FormatSpec.PTNODE_TERMINATOR_SIZE;
+            }
             return written;
         }
 

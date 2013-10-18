@@ -40,17 +40,17 @@ import java.util.Arrays;
 public class Ver4DictDecoder extends AbstractDictDecoder {
     private static final String TAG = Ver4DictDecoder.class.getSimpleName();
 
-    private static final int FILETYPE_TRIE = 1;
-    private static final int FILETYPE_FREQUENCY = 2;
-    private static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
-    private static final int FILETYPE_BIGRAM_FREQ = 4;
-    private static final int FILETYPE_SHORTCUT = 5;
+    protected static final int FILETYPE_TRIE = 1;
+    protected static final int FILETYPE_FREQUENCY = 2;
+    protected static final int FILETYPE_TERMINAL_ADDRESS_TABLE = 3;
+    protected static final int FILETYPE_BIGRAM_FREQ = 4;
+    protected static final int FILETYPE_SHORTCUT = 5;
 
     private final File mDictDirectory;
-    private final DictionaryBufferFactory mBufferFactory;
+    protected final DictionaryBufferFactory mBufferFactory;
     protected DictBuffer mDictBuffer;
-    private DictBuffer mFrequencyBuffer;
-    private DictBuffer mTerminalAddressTableBuffer;
+    protected DictBuffer mFrequencyBuffer;
+    protected DictBuffer mTerminalAddressTableBuffer;
     private BigramContentReader mBigramReader;
     private ShortcutContentReader mShortcutReader;
 
@@ -64,6 +64,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         public final int mChildrenPos;
         public final int mParentPos;
         public final int mNodeSize;
+        public int mStartIndexOfCharacters;
+        public int mEndIndexOfCharacters; // exclusive
 
         public Ver4PtNodeInfo(final int flags, final int[] characters, final int terminalId,
                 final int childrenPos, final int parentPos, final int nodeSize) {
@@ -73,6 +75,8 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
             mChildrenPos = childrenPos;
             mParentPos = parentPos;
             mNodeSize = nodeSize;
+            mStartIndexOfCharacters = 0;
+            mEndIndexOfCharacters = characters.length;
         }
     }
 
@@ -99,7 +103,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         mDictBuffer = mFrequencyBuffer = null;
     }
 
-    private File getFile(final int fileType) {
+    protected File getFile(final int fileType) {
         if (fileType == FILETYPE_TRIE) {
             return new File(mDictDirectory,
                     mDictDirectory.getName() + FormatSpec.TRIE_FILE_EXTENSION);
@@ -141,6 +145,7 @@ public class Ver4DictDecoder extends AbstractDictDecoder {
         return mDictBuffer != null;
     }
 
+    @UsedForTesting
     /* package */ DictBuffer getDictBuffer() {
         return mDictBuffer;
     }
