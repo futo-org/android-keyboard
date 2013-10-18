@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +33,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -241,10 +244,29 @@ public class Ver4DictEncoder implements DictEncoder {
         MakedictLog.i("Flattening the tree...");
         ArrayList<PtNodeArray> flatNodes = BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
         int terminalCount = 0;
+        final ArrayList<PtNode> nodes = CollectionUtils.newArrayList();
         for (final PtNodeArray array : flatNodes) {
             for (final PtNode node : array.mData) {
-                if (node.isTerminal()) node.mTerminalId = terminalCount++;
+                if (node.isTerminal()) {
+                    nodes.add(node);
+                    node.mTerminalId = terminalCount++;
+                }
             }
+        }
+        Collections.sort(nodes, new Comparator<PtNode>() {
+            @Override
+            public int compare(final PtNode lhs, final PtNode rhs) {
+                if (lhs.mFrequency != rhs.mFrequency) {
+                    return lhs.mFrequency < rhs.mFrequency ? -1 : 1;
+                }
+                if (lhs.mTerminalId < rhs.mTerminalId) return -1;
+                if (lhs.mTerminalId > rhs.mTerminalId) return 1;
+                return 0;
+            }
+        });
+        int count = 0;
+        for (final PtNode node : nodes) {
+            node.mTerminalId = count++;
         }
 
         MakedictLog.i("Computing addresses...");
