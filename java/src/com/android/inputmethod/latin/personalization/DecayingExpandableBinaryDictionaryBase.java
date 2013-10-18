@@ -114,15 +114,6 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     }
 
     /**
-     * Return whether the passed charsequence is in the dictionary.
-     */
-    @Override
-    public boolean isValidWord(final String word) {
-     // Words included only in the user history should be treated as not in dictionary words.
-        return false;
-    }
-
-    /**
      * Pair will be added to the decaying dictionary.
      *
      * The first word may be null. That means we don't know the context, in other words,
