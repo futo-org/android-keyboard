@@ -208,8 +208,7 @@ public final class BinaryDictDecoderUtils {
          * @param word the string to write.
          * @return the size written, in bytes.
          */
-        static int writeString(final byte[] buffer, final int origin,
-                final String word) {
+        static int writeString(final byte[] buffer, final int origin, final String word) {
             final int length = word.length();
             int index = origin;
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
@@ -231,26 +230,26 @@ public final class BinaryDictDecoderUtils {
          *
          * This will also write the terminator byte.
          *
-         * @param buffer the OutputStream to write to.
+         * @param stream the OutputStream to write to.
          * @param word the string to write.
          * @return the size written, in bytes.
          */
-        static int writeString(final OutputStream buffer, final String word) throws IOException {
+        static int writeString(final OutputStream stream, final String word) throws IOException {
             final int length = word.length();
             int written = 0;
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
                 final int codePoint = word.codePointAt(i);
                 final int charSize = getCharSize(codePoint);
                 if (1 == charSize) {
-                    buffer.write((byte) codePoint);
+                    stream.write((byte) codePoint);
                 } else {
-                    buffer.write((byte) (0xFF & (codePoint >> 16)));
-                    buffer.write((byte) (0xFF & (codePoint >> 8)));
-                    buffer.write((byte) (0xFF & codePoint));
+                    stream.write((byte) (0xFF & (codePoint >> 16)));
+                    stream.write((byte) (0xFF & (codePoint >> 8)));
+                    stream.write((byte) (0xFF & codePoint));
                 }
                 written += charSize;
             }
-            buffer.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
+            stream.write(FormatSpec.PTNODE_CHARACTERS_TERMINATOR);
             written += FormatSpec.PTNODE_TERMINATOR_SIZE;
             return written;
         }
