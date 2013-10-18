@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
@@ -239,6 +240,26 @@ public class BinaryDictEncoderUtils {
                 /* fall through */
             case 1:
                 stream.write(value & 0xFF);
+                break;
+            default:
+                /* nop */
+        }
+    }
+
+    static void writeUIntToDictBuffer(final DictBuffer dictBuffer, final int value,
+            final int size) {
+        switch(size) {
+            case 4:
+                dictBuffer.put((byte) ((value >> 24) & 0xFF));
+                /* fall through */
+            case 3:
+                dictBuffer.put((byte) ((value >> 16) & 0xFF));
+                /* fall through */
+            case 2:
+                dictBuffer.put((byte) ((value >> 8) & 0xFF));
+                /* fall through */
+            case 1:
+                dictBuffer.put((byte) (value & 0xFF));
                 break;
             default:
                 /* nop */

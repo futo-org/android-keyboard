@@ -245,8 +245,7 @@ public final class BinaryDictIOUtils {
     /**
      * @return the size written, in bytes. Always 3 bytes.
      */
-    static int writeSInt24ToBuffer(final DictBuffer dictBuffer,
-            final int value) {
+    static int writeSInt24ToBuffer(final DictBuffer dictBuffer, final int value) {
         final int absValue = Math.abs(value);
         dictBuffer.put((byte)(((value < 0 ? 0x80 : 0) | (absValue >> 16)) & 0xFF));
         dictBuffer.put((byte)((absValue >> 8) & 0xFF));
@@ -416,6 +415,25 @@ public final class BinaryDictIOUtils {
     }
 
     /**
+     * Writes a PtNodeCount to the stream.
+     *
+     * @param destination the stream to write.
+     * @param ptNodeCount the count.
+     * @return the size written in bytes.
+     */
+    static int writePtNodeCount(final OutputStream destination, final int ptNodeCount)
+            throws IOException {
+        final int countSize = BinaryDictIOUtils.getPtNodeCountSize(ptNodeCount);
+        // the count must fit on one byte or two bytes.
+        // Please see comments in FormatSpec.
+        if (countSize != 1 && countSize != 2) {
+            throw new RuntimeException("Strange size from getPtNodeCountSize : " + countSize);
+        }
+        BinaryDictEncoderUtils.writeUIntToStream(destination, ptNodeCount, countSize);
+        return countSize;
+    }
+
+    /**
      * Write a node array to the stream.
      *
      * @param destination the stream to write.
@@ -425,18 +443,7 @@ public final class BinaryDictIOUtils {
      */
     static int writeNodes(final OutputStream destination, final PtNodeInfo[] infos)
             throws IOException {
-        int size = getPtNodeCountSize(infos.length);
-        switch (getPtNodeCountSize(infos.length)) {
-            case 1:
-                destination.write((byte)infos.length);
-                break;
-            case 2:
-                destination.write((byte)(infos.length >> 8));
-                destination.write((byte)(infos.length & 0xFF));
-                break;
-            default:
-                throw new RuntimeException("Invalid node count size.");
-        }
+        int size = writePtNodeCount(destination, infos.length);
         for (final PtNodeInfo info : infos) size += writePtNode(destination, info);
         writeSInt24ToStream(destination, FormatSpec.NO_FORWARD_LINK_ADDRESS);
         return size + FormatSpec.FORWARD_LINK_ADDRESS_SIZE;
