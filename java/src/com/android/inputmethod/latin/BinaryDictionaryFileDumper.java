@@ -432,8 +432,9 @@ public final class BinaryDictionaryFileDumper {
 
         // Actually copy the file
         final byte[] buffer = new byte[FILE_READ_BUFFER_SIZE];
-        for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
+        for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer)) {
             output.write(buffer, 0, readBytes);
+        }
         input.close();
     }
 
@@ -478,8 +479,7 @@ public final class BinaryDictionaryFileDumper {
      * @param context the context for resources and providers.
      * @param clientId the client ID to use.
      */
-    public static void initializeClientRecordHelper(final Context context,
-            final String clientId) {
+    public static void initializeClientRecordHelper(final Context context, final String clientId) {
         try {
             final ContentProviderClient client = context.getContentResolver().
                     acquireContentProviderClient(getProviderUriBuilder("").build());

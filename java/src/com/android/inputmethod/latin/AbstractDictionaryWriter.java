@@ -55,8 +55,7 @@ abstract public class AbstractDictionaryWriter extends Dictionary {
 
     // TODO: Remove lastModifiedTime after making binary dictionary support forgetting curve.
     abstract public void addBigramWords(final String word0, final String word1,
-            final int frequency, final boolean isValid,
-            final long lastModifiedTime);
+            final int frequency, final boolean isValid, final long lastModifiedTime);
 
     abstract public void removeBigramWords(final String word0, final String word1);
 
