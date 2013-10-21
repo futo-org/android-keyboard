@@ -149,7 +149,8 @@ bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, con
 
 void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileName,
         const HeaderPolicy *const headerPolicy, const int unigramCount, const int bigramCount) {
-    BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    BufferWithExtendableBuffer headerBuffer(
+            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     const int extendedRegionSize = headerPolicy->getExtendedRegionSize() +
             mBuffer->getUsedAdditionalBufferSize();
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, false /* updatesLastUpdatedTime */,
@@ -161,8 +162,7 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileNam
 
 void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNodeArrayPos,
         const char *const fileName, const HeaderPolicy *const headerPolicy) {
-    BufferWithExtendableBuffer newDictBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */,
-            MAX_DICTIONARY_SIZE);
+    BufferWithExtendableBuffer newDictBuffer(MAX_DICTIONARY_SIZE);
     int unigramCount = 0;
     int bigramCount = 0;
     if (mNeedsToDecay) {
@@ -171,7 +171,8 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
     if (!runGC(rootPtNodeArrayPos, headerPolicy, &newDictBuffer, &unigramCount, &bigramCount)) {
         return;
     }
-    BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    BufferWithExtendableBuffer headerBuffer(
+            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!headerPolicy->writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
             mNeedsToDecay, unigramCount, bigramCount, 0 /* extendedRegionSize */)) {
         return;

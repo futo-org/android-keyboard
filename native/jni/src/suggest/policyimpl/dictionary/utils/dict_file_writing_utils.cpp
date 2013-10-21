@@ -44,12 +44,14 @@ const char *const DictFileWritingUtils::TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE =
 
 /* static */ bool DictFileWritingUtils::createEmptyV3DictFile(const char *const filePath,
         const HeaderReadWriteUtils::AttributeMap *const attributeMap) {
-    BufferWithExtendableBuffer headerBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    BufferWithExtendableBuffer headerBuffer(
+            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     HeaderPolicy headerPolicy(FormatUtils::VERSION_3, attributeMap);
     headerPolicy.writeHeaderToBuffer(&headerBuffer, true /* updatesLastUpdatedTime */,
             true /* updatesLastDecayedTime */, 0 /* unigramCount */, 0 /* bigramCount */,
             0 /* extendedRegionSize */);
-    BufferWithExtendableBuffer bodyBuffer(0 /* originalBuffer */, 0 /* originalBufferSize */);
+    BufferWithExtendableBuffer bodyBuffer(
+            BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE);
     if (!DynamicPatriciaTrieWritingUtils::writeEmptyDictionary(&bodyBuffer, 0 /* rootPos */)) {
         return false;
     }
