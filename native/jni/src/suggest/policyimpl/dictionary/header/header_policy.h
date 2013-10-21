@@ -30,8 +30,8 @@ namespace latinime {
 class HeaderPolicy : public DictionaryHeaderStructurePolicy {
  public:
     // Reads information from existing dictionary buffer.
-    HeaderPolicy(const uint8_t *const dictBuf, const int dictSize)
-            : mDictFormatVersion(FormatUtils::detectFormatVersion(dictBuf, dictSize)),
+    HeaderPolicy(const uint8_t *const dictBuf, const FormatUtils::FORMAT_VERSION formatVersion)
+            : mDictFormatVersion(formatVersion),
               mDictionaryFlags(HeaderReadWriteUtils::getFlags(dictBuf)),
               mSize(HeaderReadWriteUtils::getHeaderSize(dictBuf)),
               mAttributeMap(createAttributeMapAndReadAllAttributes(dictBuf)),
