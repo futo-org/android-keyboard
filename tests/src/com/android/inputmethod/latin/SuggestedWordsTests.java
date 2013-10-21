@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
 @SmallTest
 public class SuggestedWordsTests extends AndroidTestCase {
@@ -72,15 +73,20 @@ public class SuggestedWordsTests extends AndroidTestCase {
         return new SuggestedWordInfo(s, 100,
                 SuggestedWordInfo.KIND_TYPED, null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+                new Random().nextInt(1000000) /* autoCommitFirstWordConfidence */);
     }
 
     // Helper for testGetTransformedWordInfo
     private SuggestedWordInfo transformWordInfo(final String info,
             final int trailingSingleQuotesCount) {
-        return Suggest.getTransformedSuggestedWordInfo(createWordInfo(info),
+        final SuggestedWordInfo suggestedWordInfo = createWordInfo(info);
+        final SuggestedWordInfo returnedWordInfo =
+                Suggest.getTransformedSuggestedWordInfo(suggestedWordInfo,
                 Locale.ENGLISH, false /* isAllUpperCase */, false /* isFirstCharCapitalized */,
                 trailingSingleQuotesCount);
+        assertEquals(suggestedWordInfo.mAutoCommitFirstWordConfidence,
+                returnedWordInfo.mAutoCommitFirstWordConfidence);
+        return returnedWordInfo;
     }
 
     public void testGetTransformedSuggestedWordInfo() {

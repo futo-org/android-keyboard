@@ -479,7 +479,7 @@ public final class Suggest {
         }
         return new SuggestedWordInfo(sb.toString(), wordInfo.mScore, wordInfo.mKind,
                 wordInfo.mSourceDict, wordInfo.mIndexOfTouchPointOfSecondWord,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+                wordInfo.mAutoCommitFirstWordConfidence);
     }
 
     public void close() {
