@@ -57,6 +57,7 @@ LATIN_IME_CORE_SRC_FILES := \
         bloom_filter.cpp \
         dictionary.cpp \
         digraph_utils.cpp \
+        error_type_utils.cpp \
         multi_bigram_map.cpp) \
     $(addprefix suggest/core/layout/, \
         additional_proximity_chars.cpp \
