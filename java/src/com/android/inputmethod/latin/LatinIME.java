@@ -758,8 +758,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
-        if (mSuggestionStripView != null)
+        if (mSuggestionStripView != null) {
             mSuggestionStripView.setListener(this, view);
+        }
         if (LatinImeLogger.sVISUALDEBUG) {
             mKeyPreviewBackingView.setBackgroundColor(0x10FF0000);
         }
@@ -1099,8 +1100,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: revisit this when LatinIME supports hardware keyboards.
         // NOTE: the test harness subclasses LatinIME and overrides isInputViewShown().
         // TODO: find a better way to simulate actual execution.
-        if (isInputViewShown()
-                && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
+        if (isInputViewShown() && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
             // TODO: the following is probably better done in resetEntireInputState().
             // it should only happen when the cursor moved, and the very purpose of the
             // test below is to narrow down whether this happened or not. Likewise with
@@ -1330,8 +1330,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public boolean onEvaluateFullscreenMode() {
         // Reread resource value here, because this method is called by framework anytime as needed.
-        final boolean isFullscreenModeAllowed =
-                Settings.readUseFullscreenMode(getResources());
+        final boolean isFullscreenModeAllowed = Settings.readUseFullscreenMode(getResources());
         if (super.onEvaluateFullscreenMode() && isFullscreenModeAllowed) {
             // TODO: Remove this hack. Actually we should not really assume NO_EXTRACT_UI
             // implies NO_FULLSCREEN. However, the framework mistakenly does.  i.e. NO_EXTRACT_UI
@@ -1371,8 +1370,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
         mWordComposer.reset();
-        if (alsoResetLastComposedWord)
+        if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
+        }
     }
 
     private void commitTyped(final String separatorString) {
@@ -1419,15 +1419,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
             return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
         }
-        if (0 != auto) return WordComposer.CAPS_MODE_AUTO_SHIFTED;
+        if (0 != auto) {
+            return WordComposer.CAPS_MODE_AUTO_SHIFTED;
+        }
         return WordComposer.CAPS_MODE_OFF;
     }
 
     private void swapSwapperAndSpace() {
         final CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
-        if (lastTwo != null && lastTwo.length() == 2
-                && lastTwo.charAt(0) == Constants.CODE_SPACE) {
+        if (lastTwo != null && lastTwo.length() == 2 && lastTwo.charAt(0) == Constants.CODE_SPACE) {
             mConnection.deleteSurroundingText(2, 0);
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
@@ -1861,8 +1862,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
                 return;
             }
-            mHandler.obtainMessage(
-                    MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, batchPointers)
+            mHandler.obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, batchPointers)
                     .sendToTarget();
         }
 
@@ -1954,8 +1954,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // This method must run in UI Thread.
     public void onEndBatchInputAsyncInternal(final SuggestedWords suggestedWords) {
-        final String batchInputText = suggestedWords.isEmpty()
-                ? null : suggestedWords.getWord(0);
+        final String batchInputText = suggestedWords.isEmpty() ? null : suggestedWords.getWord(0);
         if (TextUtils.isEmpty(batchInputText)) {
             return;
         }
@@ -2171,8 +2170,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /*
      * Strip a trailing space if necessary and returns whether it's a swap weak space situation.
      */
-    private boolean maybeStripSpace(final int code,
-            final int spaceState, final boolean isFromSuggestionStrip) {
+    private boolean maybeStripSpace(final int code, final int spaceState,
+            final boolean isFromSuggestionStrip) {
         if (Constants.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
             mConnection.removeTrailingSpace();
             return false;
@@ -2187,8 +2186,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return false;
     }
 
-    private void handleCharacter(final int primaryCode, final int x,
-            final int y, final int spaceState) {
+    private void handleCharacter(final int primaryCode, final int x, final int y,
+            final int spaceState) {
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor handleNonSpecialCharacter
         // which has the same name as other handle* methods but is not the same.
@@ -2255,8 +2254,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
-            final boolean swapWeakSpace = maybeStripSpace(primaryCode,
-                    spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
+            final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
+                    Constants.SUGGESTION_STRIP_COORDINATE == x);
 
             sendKeyCodePoint(primaryCode);
 
@@ -2975,8 +2974,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 throw new RuntimeException("revertCommit, but we are composing a word");
             }
             final CharSequence wordBeforeCursor =
-                    mConnection.getTextBeforeCursor(deleteLength, 0)
-                            .subSequence(0, cancelLength);
+                    mConnection.getTextBeforeCursor(deleteLength, 0).subSequence(0, cancelLength);
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
                 throw new RuntimeException("revertCommit check failed: we thought we were "
                         + "reverting \"" + committedWord
@@ -3177,8 +3175,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     final Intent intent = IntentUtils.getInputLanguageSelectionIntent(
                             mRichImm.getInputMethodIdOfThisIme(),
                             Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     break;
                 case 1:
@@ -3187,9 +3185,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         };
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setItems(items, listener)
-                .setTitle(title);
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(this).setItems(items, listener).setTitle(title);
         showOptionDialog(builder.create());
     }
 
@@ -3254,7 +3251,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
         final SettingsValues settingsValues = mSettings.getCurrent();
-        p.println("  mIsSuggestionsSuggestionsRequested = "
+        p.println("  mIsSuggestionsRequested = "
                 + settingsValues.isSuggestionsRequested(mDisplayOrientation));
         p.println("  mCorrectionEnabled=" + settingsValues.mCorrectionEnabled);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
