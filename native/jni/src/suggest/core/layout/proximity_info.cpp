@@ -71,7 +71,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
                   && sweetSpotCenterYs && sweetSpotRadii),
           mProximityCharsArray(new int[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
                   /* proximityCharsLength */]),
-          mCodeToKeyMap() {
+          mLowerCodePointToKeyMap() {
     /* Let's check the input array length here to make sure */
     const jsize proximityCharsLength = env->GetArrayLength(proximityChars);
     if (proximityCharsLength != GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE) {
@@ -147,7 +147,14 @@ int ProximityInfo::getCodePointOf(const int keyIndex) const {
     if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
         return NOT_A_CODE_POINT;
     }
-    return mKeyIndexToCodePointG[keyIndex];
+    return mKeyIndexToLowerCodePointG[keyIndex];
+}
+
+int ProximityInfo::getOriginalCodePointOf(const int keyIndex) const {
+    if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
+        return NOT_A_CODE_POINT;
+    }
+    return mKeyIndexToOriginalCodePoint[keyIndex];
 }
 
 void ProximityInfo::initializeG() {
@@ -164,8 +171,9 @@ void ProximityInfo::initializeG() {
             const float gapY = sweetSpotCenterY - mCenterYsG[i];
             mSweetSpotCenterYsG[i] = static_cast<int>(mCenterYsG[i] + gapY * verticalScale);
         }
-        mCodeToKeyMap[lowerCode] = i;
-        mKeyIndexToCodePointG[i] = lowerCode;
+        mLowerCodePointToKeyMap[lowerCode] = i;
+        mKeyIndexToOriginalCodePoint[i] = code;
+        mKeyIndexToLowerCodePointG[i] = lowerCode;
     }
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
