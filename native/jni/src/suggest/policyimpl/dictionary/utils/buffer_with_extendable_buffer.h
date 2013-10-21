@@ -32,9 +32,17 @@ namespace latinime {
 // raw pointer but provides several methods that handle boundary checking for writing data.
 class BufferWithExtendableBuffer {
  public:
+    static const size_t DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE;
+
     BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
-            const int maxAdditionalBufferSize = MAX_ADDITIONAL_BUFFER_SIZE)
+            const int maxAdditionalBufferSize)
             : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
+              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
+              mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
+
+    // Without original buffer.
+    BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
+            : mOriginalBuffer(0), mOriginalBufferSize(0),
               mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
@@ -86,7 +94,6 @@ class BufferWithExtendableBuffer {
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
 
-    static const size_t MAX_ADDITIONAL_BUFFER_SIZE;
     static const int NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE;
     static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
 

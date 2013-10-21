@@ -23,6 +23,7 @@
 #include "suggest/policyimpl/dictionary/header/header_policy.h"
 #include "suggest/policyimpl/dictionary/shortcut/dynamic_shortcut_list_policy.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
 namespace latinime {
@@ -33,9 +34,10 @@ class DicNodeVector;
 class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
     DynamicPatriciaTriePolicy(const MmappedBuffer *const buffer)
-            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), buffer->getBufferSize()),
+            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), FormatUtils::VERSION_3),
               mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
-                      mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
+                      mBuffer->getBufferSize() - mHeaderPolicy.getSize(),
+                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
               mBigramListPolicy(&mHeaderPolicy, &mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),

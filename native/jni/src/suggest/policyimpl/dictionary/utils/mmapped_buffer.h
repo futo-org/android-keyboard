@@ -18,18 +18,21 @@
 #define LATINIME_MMAPPED_BUFFER_H
 
 #include <cerrno>
+#include <climits>
+#include <cstdio>
 #include <fcntl.h>
 #include <stdint.h>
 #include <sys/mman.h>
 #include <unistd.h>
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/utils/file_utils.h"
 
 namespace latinime {
 
 class MmappedBuffer {
  public:
-    static MmappedBuffer* openBuffer(const char *const path, const int bufferOffset,
+    static MmappedBuffer *openBuffer(const char *const path, const int bufferOffset,
             const int bufferSize, const bool isUpdatable) {
         const int openMode = isUpdatable ? O_RDWR : O_RDONLY;
         const int mmapFd = open(path, openMode);
@@ -59,7 +62,34 @@ class MmappedBuffer {
                 isUpdatable);
     }
 
+    // Mmap entire file.
+    static MmappedBuffer *openBuffer(const char *const path, const bool isUpdatable) {
+        const int fileSize = FileUtils::getFileSize(path);
+        if (fileSize == -1) {
+            return 0;
+        } else if (fileSize == 0) {
+            return new MmappedBuffer(isUpdatable);
+        } else {
+            return openBuffer(path, 0 /* bufferOffset */, fileSize, isUpdatable);
+        }
+    }
+
+    static MmappedBuffer *openBuffer(const char *const dirPath, const char *const fileName,
+            const bool isUpdatable) {
+        const int filePathBufferSize = PATH_MAX + 1 /* terminator */;
+        char filePath[filePathBufferSize];
+        const int filePathLength = snprintf(filePath, filePathBufferSize, "%s%s", dirPath,
+                fileName);
+        if (filePathLength >= filePathBufferSize) {
+            return 0;
+        }
+        return openBuffer(filePath, isUpdatable);
+    }
+
     ~MmappedBuffer() {
+        if (mAlignedSize == 0) {
+            return;
+        }
         int ret = munmap(mMmappedBuffer, mAlignedSize);
         if (ret != 0) {
             AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
@@ -88,6 +118,11 @@ class MmappedBuffer {
             const bool isUpdatable)
             : mBuffer(buffer), mBufferSize(bufferSize), mMmappedBuffer(mmappedBuffer),
               mAlignedSize(alignedSize), mMmapFd(mmapFd), mIsUpdatable(isUpdatable) {}
+
+    // Empty file. We have to handle an empty file as a valid part of a dictionary.
+    AK_FORCE_INLINE MmappedBuffer(const bool isUpdatable)
+            : mBuffer(0), mBufferSize(0), mMmappedBuffer(0), mAlignedSize(0), mMmapFd(0),
+              mIsUpdatable(isUpdatable) {}
 
     DISALLOW_IMPLICIT_CONSTRUCTORS(MmappedBuffer);
 
