@@ -30,6 +30,12 @@
 
 namespace latinime {
 
+int ProximityInfoState::getPrimaryOriginalCodePointAt(const int index) const {
+    const int primaryCodePoint = getPrimaryCodePointAt(index);
+    const int keyIndex = mProximityInfo->getKeyIndexOf(primaryCodePoint);
+    return mProximityInfo->getOriginalCodePointOf(keyIndex);
+}
+
 // TODO: Remove the dependency of "isGeometric"
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int *const inputCodes, const int inputSize,

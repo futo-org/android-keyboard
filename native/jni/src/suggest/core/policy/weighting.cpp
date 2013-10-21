@@ -20,6 +20,7 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
+#include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
@@ -82,8 +83,8 @@ static inline void profile(const CorrectionType correctionType, DicNode *const n
             traverseSession, parentDicNode, dicNode, &inputStateG);
     const float languageCost = Weighting::getLanguageCost(weighting, correctionType,
             traverseSession, parentDicNode, dicNode, multiBigramMap);
-    const ErrorType errorType = weighting->getErrorType(correctionType, traverseSession,
-            parentDicNode, dicNode);
+    const ErrorTypeUtils::ErrorType errorType = weighting->getErrorType(correctionType,
+            traverseSession, parentDicNode, dicNode);
     profile(correctionType, dicNode);
     if (inputStateG.mNeedsToUpdateInputStateG) {
         dicNode->updateInputIndexG(&inputStateG);

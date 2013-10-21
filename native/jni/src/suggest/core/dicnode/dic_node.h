@@ -576,7 +576,8 @@ class DicNode {
     // Caveat: Must not be called outside Weighting
     // This restriction is guaranteed by "friend"
     AK_FORCE_INLINE void addCost(const float spatialCost, const float languageCost,
-            const bool doNormalization, const int inputSize, const ErrorType errorType) {
+            const bool doNormalization, const int inputSize,
+            const ErrorTypeUtils::ErrorType errorType) {
         if (DEBUG_GEO_FULL) {
             LOGI_SHOW_ADD_COST_PROP;
         }
