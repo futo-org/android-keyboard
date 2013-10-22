@@ -217,15 +217,17 @@ public final class Suggest {
     public void getSuggestedWords(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions, final int sessionId,
+            final int[] additionalFeaturesOptions, final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
             getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo,
-                    blockOffensiveWords, additionalFeaturesOptions, sessionId, callback);
+                    blockOffensiveWords, additionalFeaturesOptions, sessionId, sequenceNumber,
+                    callback);
         } else {
             getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
-                    blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions, callback);
+                    blockOffensiveWords, isCorrectionEnabled, additionalFeaturesOptions,
+                    sequenceNumber, callback);
         }
     }
 
@@ -234,7 +236,8 @@ public final class Suggest {
     private void getSuggestedWordsForTypingInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final boolean isCorrectionEnabled,
-            final int[] additionalFeaturesOptions, final OnGetSuggestedWordsCallback callback) {
+            final int[] additionalFeaturesOptions, final int sequenceNumber,
+            final OnGetSuggestedWordsCallback callback) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -347,7 +350,7 @@ public final class Suggest {
                 hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                !wordComposer.isComposingWord() /* isPrediction */));
+                !wordComposer.isComposingWord() /* isPrediction */, sequenceNumber));
     }
 
     // Retrieves suggestions for the batch input
@@ -355,7 +358,8 @@ public final class Suggest {
     private void getSuggestedWordsForBatchInput(final WordComposer wordComposer,
             final String prevWordForBigram, final ProximityInfo proximityInfo,
             final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId, final OnGetSuggestedWordsCallback callback) {
+            final int sessionId, final int sequenceNumber,
+            final OnGetSuggestedWordsCallback callback) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
@@ -408,7 +412,7 @@ public final class Suggest {
                 false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */));
+                false /* isPrediction */, sequenceNumber));
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(

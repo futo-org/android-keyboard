@@ -29,6 +29,7 @@ import java.util.HashSet;
 public final class SuggestedWords {
     public static final int INDEX_OF_TYPED_WORD = 0;
     public static final int INDEX_OF_AUTO_CORRECTION = 1;
+    public static final int NOT_A_SEQUENCE_NUMBER = -1;
 
     private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
             CollectionUtils.newArrayList(0);
@@ -43,6 +44,7 @@ public final class SuggestedWords {
     public final boolean mIsPunctuationSuggestions;
     public final boolean mIsObsoleteSuggestions;
     public final boolean mIsPrediction;
+    public final int mSequenceNumber; // Sequence number for auto-commit.
     private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
@@ -51,12 +53,24 @@ public final class SuggestedWords {
             final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction) {
+        this(suggestedWordInfoList, typedWordValid, willAutoCorrect, isPunctuationSuggestions,
+                isObsoleteSuggestions, isPrediction, NOT_A_SEQUENCE_NUMBER);
+    }
+
+    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final boolean typedWordValid,
+            final boolean willAutoCorrect,
+            final boolean isPunctuationSuggestions,
+            final boolean isObsoleteSuggestions,
+            final boolean isPrediction,
+            final int sequenceNumber) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mWillAutoCorrect = willAutoCorrect;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
+        mSequenceNumber = sequenceNumber;
     }
 
     public boolean isEmpty() {
