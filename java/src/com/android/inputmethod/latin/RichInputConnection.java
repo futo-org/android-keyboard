@@ -294,7 +294,14 @@ public final class RichInputConnection {
         // the text field, then we can return the cached version right away.
         if (cachedLength >= n || cachedLength >= mExpectedCursorPosition) {
             final StringBuilder s = new StringBuilder(mCommittedTextBeforeComposingText);
-            s.append(mComposingText);
+            // We call #toString() here to create a temporary object.
+            // In some situations, this method is called on a worker thread, and it's possible
+            // the main thread touches the contents of mComposingText while this worker thread
+            // is suspended, because mComposingText is a StringBuilder. This may lead to crashes,
+            // so we call #toString() on it. That will result in the return value being strictly
+            // speaking wrong, but since this is used for basing bigram probability off, and
+            // it's only going to matter for one getSuggestions call, it's fine in the practice.
+            s.append(mComposingText.toString());
             if (s.length() > n) {
                 s.delete(0, s.length() - n);
             }
