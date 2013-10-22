@@ -1835,12 +1835,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         @Override
         public boolean handleMessage(final Message msg) {
+            // TODO: straighten message passing - we don't need two kinds of messages calling
+            // each other.
             switch (msg.what) {
                 case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
-                    updateBatchInput((InputPointers)msg.obj);
+                    updateBatchInput((InputPointers)msg.obj, msg.arg2 /* sequenceNumber */);
                     break;
                 case MSG_GET_SUGGESTED_WORDS:
-                    mLatinIme.getSuggestedWords(msg.arg1, (OnGetSuggestedWordsCallback) msg.obj);
+                    mLatinIme.getSuggestedWords(msg.arg1 /* sessionId */,
+                            msg.arg2 /* sequenceNumber */, (OnGetSuggestedWordsCallback) msg.obj);
                     break;
             }
             return true;
@@ -1857,14 +1860,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         // Run in the Handler thread.
-        private void updateBatchInput(final InputPointers batchPointers) {
+        private void updateBatchInput(final InputPointers batchPointers, final int sequenceNumber) {
             synchronized (mLock) {
                 if (!mInBatchInput) {
                     // Batch input has ended or canceled while the message was being delivered.
                     return;
                 }
 
-                getSuggestedWordsGestureLocked(batchPointers, new OnGetSuggestedWordsCallback() {
+                getSuggestedWordsGestureLocked(batchPointers, sequenceNumber,
+                        new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         mLatinIme.mHandler.showGesturePreviewAndSuggestionStrip(
@@ -1875,13 +1879,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         // Run in the UI thread.
-        public void onUpdateBatchInput(final InputPointers batchPointers) {
+        public void onUpdateBatchInput(final InputPointers batchPointers,
+                final int sequenceNumber) {
             if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
                 return;
             }
-            mHandler.obtainMessage(
-                    MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, batchPointers)
-                    .sendToTarget();
+            mHandler.obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, 0 /* arg1 */,
+                    sequenceNumber /* arg2 */, batchPointers /* obj */).sendToTarget();
         }
 
         public void onCancelBatchInput() {
@@ -1895,7 +1899,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Run in the UI thread.
         public void onEndBatchInput(final InputPointers batchPointers) {
             synchronized(mLock) {
-                getSuggestedWordsGestureLocked(batchPointers, new OnGetSuggestedWordsCallback() {
+                getSuggestedWordsGestureLocked(batchPointers, SuggestedWords.NOT_A_SEQUENCE_NUMBER,
+                        new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         mInBatchInput = false;
@@ -1910,10 +1915,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
         // be synchronized.
         private void getSuggestedWordsGestureLocked(final InputPointers batchPointers,
-                final OnGetSuggestedWordsCallback callback) {
+                final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
             mLatinIme.mWordComposer.setBatchInputPointers(batchPointers);
             mLatinIme.getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_GESTURE,
-                    new OnGetSuggestedWordsCallback() {
+                    sequenceNumber, new OnGetSuggestedWordsCallback() {
                 @Override
                 public void onGetSuggestedWords(SuggestedWords suggestedWords) {
                     final int suggestionCount = suggestedWords.size();
@@ -1928,9 +1933,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             });
         }
 
-        public void getSuggestedWords(final int sessionId,
+        public void getSuggestedWords(final int sessionId, final int sequenceNumber,
                 final OnGetSuggestedWordsCallback callback) {
-            mHandler.obtainMessage(MSG_GET_SUGGESTED_WORDS, sessionId, 0, callback).sendToTarget();
+            mHandler.obtainMessage(MSG_GET_SUGGESTED_WORDS, sessionId, sequenceNumber, callback)
+                    .sendToTarget();
         }
 
         private void onDestroy() {
@@ -1951,11 +1957,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    /* The sequence number member is only used in onUpdateBatchInput. It is increased each time
+     * auto-commit happens. The reason we need this is, when auto-commit happens we trim the
+     * input pointers that are held in a singleton, and to know how much to trim we rely on the
+     * results of the suggestion process that is held in mSuggestedWords.
+     * However, the suggestion process is asynchronous, and sometimes we may enter the
+     * onUpdateBatchInput method twice without having recomputed suggestions yet, or having
+     * received new suggestions generated from not-yet-trimmed input pointers. In this case, the
+     * mIndexOfTouchPointOfSecondWords member will be out of date, and we must not use it lest we
+     * remove an unrelated number of pointers (possibly even more than are left in the input
+     * pointers, leading to a crash).
+     * To avoid that, we increase the sequence number each time we auto-commit and trim the
+     * input pointers, and we do not use any suggested words that have been generated with an
+     * earlier sequence number.
+     */
+    private int mAutoCommitSequenceNumber = 1;
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
         if (mSettings.getCurrent().mPhraseGestureEnabled) {
             final SuggestedWordInfo candidate = mSuggestedWords.getAutoCommitCandidate();
-            if (null != candidate) {
+            // If these suggested words have been generated with out of date input pointers, then
+            // we skip auto-commit (see comments above on the mSequenceNumber member).
+            if (null != candidate && mSuggestedWords.mSequenceNumber >= mAutoCommitSequenceNumber) {
                 if (candidate.mSourceDict.shouldAutoCommit(candidate)) {
                     final String[] commitParts = candidate.mWord.split(" ", 2);
                     batchPointers.shift(candidate.mIndexOfTouchPointOfSecondWord);
@@ -1964,10 +1987,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mSpaceState = SPACE_STATE_PHANTOM;
                     mKeyboardSwitcher.updateShiftState();
                     mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+                    ++mAutoCommitSequenceNumber;
                 }
             }
         }
-        mInputUpdater.onUpdateBatchInput(batchPointers);
+        mInputUpdater.onUpdateBatchInput(batchPointers, mAutoCommitSequenceNumber);
     }
 
     // This method must run in UI Thread.
@@ -2502,7 +2526,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final AsyncResultHolder<SuggestedWords> holder = new AsyncResultHolder<SuggestedWords>();
         getSuggestedWordsOrOlderSuggestionsAsync(Suggest.SESSION_TYPING,
-                new OnGetSuggestedWordsCallback() {
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         holder.set(suggestedWords);
@@ -2517,7 +2541,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void getSuggestedWords(final int sessionId,
+    private void getSuggestedWords(final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final Suggest suggest = mSuggest;
@@ -2542,18 +2566,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive, currentSettings.mCorrectionEnabled,
-                additionalFeaturesOptions, sessionId, callback);
+                additionalFeaturesOptions, sessionId, sequenceNumber, callback);
     }
 
     private void getSuggestedWordsOrOlderSuggestionsAsync(final int sessionId,
-            final OnGetSuggestedWordsCallback callback) {
-        mInputUpdater.getSuggestedWords(sessionId, new OnGetSuggestedWordsCallback() {
-            @Override
-            public void onGetSuggestedWords(SuggestedWords suggestedWords) {
-                callback.onGetSuggestedWords(maybeRetrieveOlderSuggestions(
-                        mWordComposer.getTypedWord(), suggestedWords));
-            }
-        });
+            final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
+        mInputUpdater.getSuggestedWords(sessionId, sequenceNumber,
+                new OnGetSuggestedWordsCallback() {
+                    @Override
+                    public void onGetSuggestedWords(SuggestedWords suggestedWords) {
+                        callback.onGetSuggestedWords(maybeRetrieveOlderSuggestions(
+                                mWordComposer.getTypedWord(), suggestedWords));
+                    }
+                });
     }
 
     private SuggestedWords maybeRetrieveOlderSuggestions(final String typedWord,
@@ -2888,30 +2913,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // We come here if there weren't any suggestion spans on this word. We will try to
             // compute suggestions for it instead.
             mInputUpdater.getSuggestedWords(Suggest.SESSION_TYPING,
-                    new OnGetSuggestedWordsCallback() {
-                @Override
-                public void onGetSuggestedWords(
-                        final SuggestedWords suggestedWordsIncludingTypedWord) {
-                    final SuggestedWords suggestedWords;
-                    if (suggestedWordsIncludingTypedWord.size() > 1) {
-                        // We were able to compute new suggestions for this word.
-                        // Remove the typed word, since we don't want to display it in this case.
-                        // The #getSuggestedWordsExcludingTypedWord() method sets willAutoCorrect to
-                        // false.
-                        suggestedWords = suggestedWordsIncludingTypedWord
-                                .getSuggestedWordsExcludingTypedWord();
-                    } else {
-                        // No saved suggestions, and we were unable to compute any good one either.
-                        // Rather than displaying an empty suggestion strip, we'll display the
-                        // original word alone in the middle.
-                        // Since there is only one word, willAutoCorrect is false.
-                        suggestedWords = suggestedWordsIncludingTypedWord;
-                    }
-                    // We need to pass typedWord because mWordComposer.mTypedWord may differ from
-                    // typedWord.
-                    unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(suggestedWords,
-                        typedWord);
-                }});
+                    SuggestedWords.NOT_A_SEQUENCE_NUMBER, new OnGetSuggestedWordsCallback() {
+                        @Override
+                        public void onGetSuggestedWords(
+                                final SuggestedWords suggestedWordsIncludingTypedWord) {
+                            final SuggestedWords suggestedWords;
+                            if (suggestedWordsIncludingTypedWord.size() > 1) {
+                                // We were able to compute new suggestions for this word.
+                                // Remove the typed word, since we don't want to display it in this
+                                // case. The #getSuggestedWordsExcludingTypedWord() method sets
+                                // willAutoCorrect to false.
+                                suggestedWords = suggestedWordsIncludingTypedWord
+                                        .getSuggestedWordsExcludingTypedWord();
+                            } else {
+                                // No saved suggestions, and we were unable to compute any good one
+                                // either. Rather than displaying an empty suggestion strip, we'll
+                                // display the original word alone in the middle.
+                                // Since there is only one word, willAutoCorrect is false.
+                                suggestedWords = suggestedWordsIncludingTypedWord;
+                            }
+                            // We need to pass typedWord because mWordComposer.mTypedWord may
+                            // differ from typedWord.
+                            unsetIsAutoCorrectionIndicatorOnAndCallShowSuggestionStrip(
+                                    suggestedWords, typedWord);
+                        }});
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
             // them, and make willAutoCorrect false.
