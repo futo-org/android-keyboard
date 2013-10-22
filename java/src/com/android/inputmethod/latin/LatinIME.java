@@ -2517,6 +2517,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    private String getPreviousWordForSuggestion(final SettingsValues currentSettings) {
+        if (currentSettings.mCurrentLanguageHasSpaces) {
+            // If we are typing in a language with spaces we can just look up the previous
+            // word from textview.
+            return mConnection.getNthPreviousWord(currentSettings.mWordSeparators,
+                    mWordComposer.isComposingWord() ? 2 : 1);
+        } else {
+            return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
+                    : mLastComposedWord.mCommittedWord;
+        }
+    }
+
     private void getSuggestedWords(final int sessionId, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
@@ -2530,16 +2542,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // should just skip whitespace if any, so 1.
         final SettingsValues currentSettings = mSettings.getCurrent();
         final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
-        final String prevWord;
-        if (currentSettings.mCurrentLanguageHasSpaces) {
-            // If we are typing in a language with spaces we can just look up the previous
-            // word from textview.
-            prevWord = mConnection.getNthPreviousWord(currentSettings.mWordSeparators,
-                    mWordComposer.isComposingWord() ? 2 : 1);
-        } else {
-            prevWord = LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
-                    : mLastComposedWord.mCommittedWord;
-        }
+        final String prevWord = getPreviousWordForSuggestion(currentSettings);
         suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive, currentSettings.mCorrectionEnabled,
                 additionalFeaturesOptions, sessionId, sequenceNumber, callback);
