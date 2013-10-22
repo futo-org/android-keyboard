@@ -1779,9 +1779,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater.onStartBatchInput();
         mHandler.cancelUpdateSuggestionStrip();
         mConnection.beginBatchEdit();
-        final SettingsValues settingsValues = mSettings.getCurrent();
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mIsInternal) {
+            if (currentSettingsValues.mIsInternal) {
                 if (mWordComposer.isBatchMode()) {
                     LatinImeLoggerUtils.onAutoCorrection(
                             "", mWordComposer.getTypedWord(), " ", mWordComposer);
@@ -1808,12 +1808,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final int codePointBeforeCursor = mConnection.getCodePointBeforeCursor();
         if (Character.isLetterOrDigit(codePointBeforeCursor)
-                || settingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
+                || currentSettingsValues.isUsuallyFollowedBySpace(codePointBeforeCursor)) {
             mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
-        mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+        mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(getActualCapsMode(),
+                // Prev word is 1st word before cursor
+                getNthPreviousWordForSuggestion(currentSettingsValues, 1 /* nthPreviousWord */));
     }
 
     static final class InputUpdater implements Handler.Callback {
@@ -1986,7 +1988,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mConnection.commitText(commitParts[0], 0);
                     mSpaceState = SPACE_STATE_PHANTOM;
                     mKeyboardSwitcher.updateShiftState();
-                    mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+                    mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                            getActualCapsMode(), commitParts[0]);
                     ++mAutoCommitSequenceNumber;
                 }
             }
@@ -2295,7 +2298,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
-                mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
+                // We pass 1 to getPreviousWordForSuggestion because we were not composing a word
+                // yet, so the word we want is the 1st word before the cursor.
+                mWordComposer.setCapitalizedModeAndPreviousWordAtStartComposingTime(
+                        getActualCapsMode(),
+                        getNthPreviousWordForSuggestion(currentSettings, 1 /* nthPreviousWord */));
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
@@ -2537,12 +2544,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private String getPreviousWordForSuggestion(final SettingsValues currentSettings) {
+    /**
+     * Get the nth previous word before the cursor as context for the suggestion process.
+     * @param currentSettings the current settings values.
+     * @param nthPreviousWord reverse index of the word to get (1-indexed)
+     * @return the nth previous word before the cursor.
+     */
+    private String getNthPreviousWordForSuggestion(final SettingsValues currentSettings,
+            final int nthPreviousWord) {
         if (currentSettings.mCurrentLanguageHasSpaces) {
             // If we are typing in a language with spaces we can just look up the previous
             // word from textview.
-            return mConnection.getNthPreviousWord(currentSettings,
-                    mWordComposer.isComposingWord() ? 2 : 1);
+            return mConnection.getNthPreviousWord(currentSettings, nthPreviousWord);
         } else {
             return LastComposedWord.NOT_A_COMPOSED_WORD == mLastComposedWord ? null
                     : mLastComposedWord.mCommittedWord;
@@ -2562,8 +2575,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // should just skip whitespace if any, so 1.
         final SettingsValues currentSettings = mSettings.getCurrent();
         final int[] additionalFeaturesOptions = currentSettings.mAdditionalFeaturesSettingValues;
-        final String prevWord = getPreviousWordForSuggestion(currentSettings);
-        suggest.getSuggestedWords(mWordComposer, prevWord, keyboard.getProximityInfo(),
+
+        final String previousWord;
+        if (mWordComposer.isComposingWord() || mWordComposer.isBatchMode()) {
+            previousWord = mWordComposer.getPreviousWord();
+        } else {
+            // Not composing: this is for prediction.
+            // TODO: read the previous word earlier for prediction, like we are doing for
+            // normal suggestions.
+            previousWord = getNthPreviousWordForSuggestion(currentSettings, 1 /* nthPreviousWord*/);
+        }
+        if (DEBUG) {
+            // TODO: this is for checking consistency with older versions. Remove this when
+            // we are confident this is stable.
+            // We're checking the previous word in the text field against the memorized previous
+            // word. If we are composing a word we should have the second word before the cursor
+            // memorized, otherwise we should have the first.
+            final String rereadPrevWord = getNthPreviousWordForSuggestion(currentSettings,
+                    mWordComposer.isComposingWord() ? 2 : 1);
+            if (!TextUtils.equals(previousWord, rereadPrevWord)) {
+                throw new RuntimeException("Unexpected previous word: "
+                        + previousWord + " <> " + rereadPrevWord);
+            }
+        }
+        suggest.getSuggestedWords(mWordComposer, mWordComposer.getPreviousWord(),
+                keyboard.getProximityInfo(),
                 currentSettings.mBlockPotentiallyOffensive, currentSettings.mCorrectionEnabled,
                 additionalFeaturesOptions, sessionId, sequenceNumber, callback);
     }
@@ -2900,7 +2936,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
-        mWordComposer.setComposingWord(typedWord, mKeyboardSwitcher.getKeyboard());
+        mWordComposer.setComposingWord(typedWord,
+                getNthPreviousWordForSuggestion(currentSettings,
+                        // We want the previous word for suggestion. If we have chars in the word
+                        // before the cursor, then we want the word before that, hence 2; otherwise,
+                        // we want the word immediately before the cursor, hence 1.
+                        0 == numberOfCharsInWordBeforeCursor ? 1 : 2),
+                mKeyboardSwitcher.getKeyboard());
         mWordComposer.setCursorPositionWithinWord(
                 typedWord.codePointCount(0, numberOfCharsInWordBeforeCursor));
         mConnection.setComposingRegion(
@@ -2978,7 +3020,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void restartSuggestionsOnWordBeforeCursor(final String word) {
-        mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
+        mWordComposer.setComposingWord(word,
+                // Previous word is the 2nd word before cursor because we are restarting on the
+                // 1st word before cursor.
+                getNthPreviousWordForSuggestion(mSettings.getCurrent(), 2 /* nthPreviousWord */),
+                mKeyboardSwitcher.getKeyboard());
         final int length = word.length();
         mConnection.deleteSurroundingText(length, 0);
         mConnection.setComposingText(word, 1);
@@ -3044,7 +3090,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             // For languages without spaces, we revert the typed string but the cursor is flush
             // with the typed word, so we need to resume suggestions right away.
-            mWordComposer.setComposingWord(stringToCommit, mKeyboardSwitcher.getKeyboard());
+            mWordComposer.setComposingWord(stringToCommit, previousWord,
+                    mKeyboardSwitcher.getKeyboard());
             mConnection.setComposingText(stringToCommit, 1);
         }
         if (mSettings.isInternal()) {
