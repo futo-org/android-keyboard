@@ -26,30 +26,32 @@
 
 namespace latinime {
 
-/* static */ DictionaryStructureWithBufferPolicy *DictionaryStructureWithBufferPolicyFactory
-        ::newDictionaryStructureWithBufferPolicy(const char *const path, const int bufOffset,
-                const int size, const bool isUpdatable) {
-    // Allocated buffer in MmapedBuffer::openBuffer() will be freed in the destructor of
-    // impl classes of DictionaryStructureWithBufferPolicy.
-    const MmappedBuffer *const mmapedBuffer = MmappedBuffer::openBuffer(path, bufOffset, size,
-            isUpdatable);
-    if (!mmapedBuffer) {
-        return 0;
+/* static */ DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+        DictionaryStructureWithBufferPolicyFactory
+                ::newDictionaryStructureWithBufferPolicy(const char *const path,
+                        const int bufOffset, const int size, const bool isUpdatable) {
+    // Allocated buffer in MmapedBuffer::newBuffer() will be freed in the destructor of
+    // MmappedBufferWrapper if the instance has the responsibility.
+    MmappedBuffer::MmappedBufferPtr mmappedBuffer(MmappedBuffer::openBuffer(path, bufOffset, size,
+            isUpdatable));
+    if (!mmappedBuffer.get()) {
+        return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
     }
-    switch (FormatUtils::detectFormatVersion(mmapedBuffer->getBuffer(),
-            mmapedBuffer->getBufferSize())) {
+    switch (FormatUtils::detectFormatVersion(mmappedBuffer.get()->getBuffer(),
+            mmappedBuffer.get()->getBufferSize())) {
         case FormatUtils::VERSION_2:
-            return new PatriciaTriePolicy(mmapedBuffer);
+            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
+                    new PatriciaTriePolicy(mmappedBuffer));
         case FormatUtils::VERSION_3:
-            return new DynamicPatriciaTriePolicy(mmapedBuffer);
+            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
+                    new DynamicPatriciaTriePolicy(mmappedBuffer));
         case FormatUtils::VERSION_4:
             // TODO: Support version 4 dictionary format.
             // Fall through.
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number");
-            delete mmapedBuffer;
             ASSERT(false);
-            return 0;
+            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
     }
 }
 

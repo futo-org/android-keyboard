@@ -33,20 +33,19 @@ class DicNodeVector;
 
 class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    DynamicPatriciaTriePolicy(const MmappedBuffer *const buffer)
-            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), FormatUtils::VERSION_3),
-              mBufferWithExtendableBuffer(mBuffer->getBuffer() + mHeaderPolicy.getSize(),
-                      mBuffer->getBufferSize() - mHeaderPolicy.getSize(),
-                      BufferWithExtendableBuffer::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
+    DynamicPatriciaTriePolicy(const MmappedBuffer::MmappedBufferPtr &mmappedBuffer)
+            : mMmappedBuffer(mmappedBuffer),
+              mHeaderPolicy(mMmappedBuffer.get()->getBuffer(), FormatUtils::VERSION_3),
+              mBufferWithExtendableBuffer(mMmappedBuffer.get()->getBuffer()
+                      + mHeaderPolicy.getSize(), mMmappedBuffer.get()->getBufferSize()
+                              - mHeaderPolicy.getSize(),
+                                      BufferWithExtendableBuffer
+                                              ::DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE),
               mShortcutListPolicy(&mBufferWithExtendableBuffer),
               mBigramListPolicy(&mHeaderPolicy, &mBufferWithExtendableBuffer, &mShortcutListPolicy,
                       mHeaderPolicy.isDecayingDict()),
               mUnigramCount(mHeaderPolicy.getUnigramCount()),
               mBigramCount(mHeaderPolicy.getBigramCount()), mNeedsToDecayForTesting(false) {}
-
-    ~DynamicPatriciaTriePolicy() {
-        delete mBuffer;
-    }
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -110,7 +109,7 @@ class DynamicPatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     static const int MAX_DICT_EXTENDED_REGION_SIZE;
     static const int MIN_DICT_SIZE_TO_REFUSE_DYNAMIC_OPERATIONS;
 
-    const MmappedBuffer *const mBuffer;
+    const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     const HeaderPolicy mHeaderPolicy;
     BufferWithExtendableBuffer mBufferWithExtendableBuffer;
     DynamicShortcutListPolicy mShortcutListPolicy;
