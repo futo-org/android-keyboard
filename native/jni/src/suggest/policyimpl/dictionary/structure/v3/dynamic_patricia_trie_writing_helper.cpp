@@ -41,24 +41,26 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
         bool *const outAddedNewUnigram) {
     int parentPos = NOT_A_DICT_POS;
     while (!readingHelper->isEnd()) {
+        const PtNodeParams ptNodeParams(readingHelper->getPtNodeParams());
+        if (!ptNodeParams.isValid()) {
+            break;
+        }
         const int matchedCodePointCount = readingHelper->getPrevTotalCodePointCount();
-        if (!readingHelper->isMatchedCodePoint(0 /* index */,
+        if (!readingHelper->isMatchedCodePoint(ptNodeParams, 0 /* index */,
                 wordCodePoints[matchedCodePointCount])) {
             // The first code point is different from target code point. Skip this node and read
             // the next sibling node.
-            readingHelper->readNextSiblingNode();
+            readingHelper->readNextSiblingNode(ptNodeParams);
             continue;
         }
         // Check following merged node code points.
-        const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper->getNodeReader();
-        const int nodeCodePointCount = nodeReader->getCodePointCount();
+        const int nodeCodePointCount = ptNodeParams.getCodePointCount();
         for (int j = 1; j < nodeCodePointCount; ++j) {
             const int nextIndex = matchedCodePointCount + j;
-            if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(j,
+            if (nextIndex >= codePointCount || !readingHelper->isMatchedCodePoint(ptNodeParams, j,
                     wordCodePoints[matchedCodePointCount + j])) {
                 *outAddedNewUnigram = true;
-                return reallocatePtNodeAndAddNewPtNodes(nodeReader,
-                        readingHelper->getMergedNodeCodePoints(), j,
+                return reallocatePtNodeAndAddNewPtNodes(&ptNodeParams, j,
                         getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */,
                                 probability),
                         wordCodePoints + matchedCodePointCount,
@@ -66,20 +68,19 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
             }
         }
         // All characters are matched.
-        if (codePointCount == readingHelper->getTotalCodePointCount()) {
-            return setPtNodeProbability(nodeReader, probability,
-                    readingHelper->getMergedNodeCodePoints(), outAddedNewUnigram);
+        if (codePointCount == readingHelper->getTotalCodePointCount(ptNodeParams)) {
+            return setPtNodeProbability(&ptNodeParams, probability, outAddedNewUnigram);
         }
-        if (!nodeReader->hasChildren()) {
+        if (!ptNodeParams.hasChildren()) {
             *outAddedNewUnigram = true;
-            return createChildrenPtNodeArrayAndAChildPtNode(nodeReader,
+            return createChildrenPtNodeArrayAndAChildPtNode(&ptNodeParams,
                     getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability),
-                    wordCodePoints + readingHelper->getTotalCodePointCount(),
-                    codePointCount - readingHelper->getTotalCodePointCount());
+                    wordCodePoints + readingHelper->getTotalCodePointCount(ptNodeParams),
+                    codePointCount - readingHelper->getTotalCodePointCount(ptNodeParams));
         }
         // Advance to the children nodes.
-        parentPos = nodeReader->getHeadPos();
-        readingHelper->readChildNode();
+        parentPos = ptNodeParams.getHeadPos();
+        readingHelper->readChildNode(ptNodeParams);
     }
     if (readingHelper->isError()) {
         // The dictionary is invalid.
@@ -95,26 +96,24 @@ bool DynamicPatriciaTrieWritingHelper::addUnigramWord(
 
 bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const int word1Pos,
         const int probability, bool *const outAddedNewBigram) {
-    int mMergedNodeCodePoints[MAX_WORD_LENGTH];
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(word0Pos, MAX_WORD_LENGTH,
-            mMergedNodeCodePoints);
+    const PtNodeParams ptNodeParams(nodeReader.fetchNodeInfoInBufferFromPtNodePos(word0Pos));
     // Move node to add bigram entry.
     const int newNodePos = mBuffer->getTailPosition();
-    if (!markNodeAsMovedAndSetPosition(&nodeReader, newNodePos, newNodePos)) {
+    if (!markNodeAsMovedAndSetPosition(&ptNodeParams, newNodePos, newNodePos)) {
         return false;
     }
     int writingPos = newNodePos;
     // Write a new PtNode using original PtNode's info to the tail of the dictionary in mBuffer.
-    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, &nodeReader, nodeReader.getParentPos(),
-            mMergedNodeCodePoints, nodeReader.getCodePointCount(), nodeReader.getProbability(),
-            &writingPos)) {
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, &ptNodeParams, ptNodeParams.getParentPos(),
+            ptNodeParams.getCodePoints(), ptNodeParams.getCodePointCount(),
+            ptNodeParams.getProbability(), &writingPos)) {
         return false;
     }
-    nodeReader.fetchNodeInfoInBufferFromPtNodePos(newNodePos);
-    if (nodeReader.getBigramsPos() != NOT_A_DICT_POS) {
+    const PtNodeParams newPtNodeParams(nodeReader.fetchNodeInfoInBufferFromPtNodePos(newNodePos));
+    if (newPtNodeParams.getBigramsPos() != NOT_A_DICT_POS) {
         // Insert a new bigram entry into the existing bigram list.
-        int bigramListPos = nodeReader.getBigramsPos();
+        int bigramListPos = newPtNodeParams.getBigramsPos();
         return mBigramPolicy->addNewBigramEntryToBigramList(word1Pos, probability, &bigramListPos,
                 outAddedNewBigram);
     } else {
@@ -126,10 +125,11 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
         }
         // Then, Mark as the PtNode having bigram list in the flags.
         const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
-                PatriciaTrieReadingUtils::createAndGetFlags(nodeReader.isBlacklisted(),
-                        nodeReader.isNotAWord(), nodeReader.getProbability() != NOT_A_PROBABILITY,
-                        nodeReader.getShortcutPos() != NOT_A_DICT_POS, true /* hasBigrams */,
-                        nodeReader.getCodePointCount() > 1, CHILDREN_POSITION_FIELD_SIZE);
+                PatriciaTrieReadingUtils::createAndGetFlags(newPtNodeParams.isBlacklisted(),
+                        newPtNodeParams.isNotAWord(),
+                        newPtNodeParams.getProbability() != NOT_A_PROBABILITY,
+                        newPtNodeParams.getShortcutPos() != NOT_A_DICT_POS, true /* hasBigrams */,
+                        newPtNodeParams.getCodePointCount() > 1, CHILDREN_POSITION_FIELD_SIZE);
         writingPos = newNodePos;
         // Write updated flags into the moved PtNode's flags field.
         return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, updatedFlags,
@@ -140,11 +140,11 @@ bool DynamicPatriciaTrieWritingHelper::addBigramWords(const int word0Pos, const 
 // Remove a bigram relation from word0Pos to word1Pos.
 bool DynamicPatriciaTrieWritingHelper::removeBigramWords(const int word0Pos, const int word1Pos) {
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoInBufferFromPtNodePos(word0Pos);
-    if (nodeReader.getBigramsPos() == NOT_A_DICT_POS) {
+    const PtNodeParams ptNodeParams(nodeReader.fetchNodeInfoInBufferFromPtNodePos(word0Pos));
+    if (ptNodeParams.getBigramsPos() == NOT_A_DICT_POS) {
         return false;
     }
-    return mBigramPolicy->removeBigram(nodeReader.getBigramsPos(), word1Pos);
+    return mBigramPolicy->removeBigram(ptNodeParams.getBigramsPos(), word1Pos);
 }
 
 void DynamicPatriciaTrieWritingHelper::writeToDictFile(const char *const fileName,
@@ -181,8 +181,8 @@ void DynamicPatriciaTrieWritingHelper::writeToDictFileWithGC(const int rootPtNod
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsDeleted(
-        const DynamicPatriciaTrieNodeReader *const nodeToUpdate) {
-    int pos = nodeToUpdate->getHeadPos();
+        const PtNodeParams *const toBeUpdatedPtNodeParams) {
+    int pos = toBeUpdatedPtNodeParams->getHeadPos();
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(pos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
@@ -194,16 +194,16 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsDeleted(
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, false /* isMoved */,
                     true /* isDeleted */);
-    int writingPos = nodeToUpdate->getHeadPos();
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
     return DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, updatedFlags,
             &writingPos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
-        const DynamicPatriciaTrieNodeReader *const originalNode, const int movedPos,
+        const PtNodeParams *const toBeUpdatedPtNodeParams, const int movedPos,
         const int bigramLinkedNodePos) {
-    int pos = originalNode->getHeadPos();
+    int pos = toBeUpdatedPtNodeParams->getHeadPos();
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(pos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     if (usesAdditionalBuffer) {
@@ -215,7 +215,7 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
     const PatriciaTrieReadingUtils::NodeFlags updatedFlags =
             DynamicPatriciaTrieReadingUtils::updateAndGetFlags(originalFlags, true /* isMoved */,
                     false /* isDeleted */);
-    int writingPos = originalNode->getHeadPos();
+    int writingPos = toBeUpdatedPtNodeParams->getHeadPos();
     // Update flags.
     if (!DynamicPatriciaTrieWritingUtils::writeFlagsAndAdvancePosition(mBuffer, updatedFlags,
             &writingPos)) {
@@ -223,31 +223,32 @@ bool DynamicPatriciaTrieWritingHelper::markNodeAsMovedAndSetPosition(
     }
     // Update moved position, which is stored in the parent offset field.
     if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
-            mBuffer, movedPos, originalNode->getHeadPos(), &writingPos)) {
+            mBuffer, movedPos, toBeUpdatedPtNodeParams->getHeadPos(), &writingPos)) {
         return false;
     }
     // Update bigram linked node position, which is stored in the children position field.
-    int childrenPosFieldPos = originalNode->getChildrenPosFieldPos();
+    int childrenPosFieldPos = toBeUpdatedPtNodeParams->getChildrenPosFieldPos();
     if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(
             mBuffer, bigramLinkedNodePos, &childrenPosFieldPos)) {
         return false;
     }
-    if (originalNode->hasChildren()) {
+    if (toBeUpdatedPtNodeParams->hasChildren()) {
         // Update children's parent position.
-        DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
-        const DynamicPatriciaTrieNodeReader *const nodeReader = readingHelper.getNodeReader();
-        readingHelper.initWithPtNodeArrayPos(originalNode->getChildrenPos());
+        DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
+        DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, &nodeReader);
+        readingHelper.initWithPtNodeArrayPos(toBeUpdatedPtNodeParams->getChildrenPos());
         while (!readingHelper.isEnd()) {
-            int parentOffsetFieldPos = nodeReader->getHeadPos()
+            const PtNodeParams childPtNodeParams(readingHelper.getPtNodeParams());
+            int parentOffsetFieldPos = childPtNodeParams.getHeadPos()
                     + DynamicPatriciaTrieWritingUtils::NODE_FLAG_FIELD_SIZE;
             if (!DynamicPatriciaTrieWritingUtils::writeParentPosOffsetAndAdvancePosition(
-                    mBuffer, bigramLinkedNodePos, nodeReader->getHeadPos(),
+                    mBuffer, bigramLinkedNodePos, childPtNodeParams.getHeadPos(),
                     &parentOffsetFieldPos)) {
                 // Parent offset cannot be written because of a bug or a broken dictionary; thus,
                 // we give up to update dictionary.
                 return false;
             }
-            readingHelper.readNextSiblingNode();
+            readingHelper.readNextSiblingNode(childPtNodeParams);
         }
     }
     return true;
@@ -333,13 +334,13 @@ bool DynamicPatriciaTrieWritingHelper::writePtNodeToBuffer(
 
 bool DynamicPatriciaTrieWritingHelper::writePtNodeToBufferByCopyingPtNodeInfo(
         BufferWithExtendableBuffer *const bufferToWrite,
-        const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
+        const PtNodeParams *const originalPtNodeParams, const int parentPos,
         const int *const codePoints, const int codePointCount, const int probability,
         int *const writingPos) {
-    return writePtNodeWithFullInfoToBuffer(bufferToWrite, originalNode->isBlacklisted(),
-            originalNode->isNotAWord(), parentPos, codePoints, codePointCount, probability,
-            originalNode->getChildrenPos(), originalNode->getBigramsPos(),
-            originalNode->getShortcutPos(), writingPos);
+    return writePtNodeWithFullInfoToBuffer(bufferToWrite, originalPtNodeParams->isBlacklisted(),
+            originalPtNodeParams->isNotAWord(), parentPos, codePoints, codePointCount, probability,
+            originalPtNodeParams->getChildrenPos(), originalPtNodeParams->getBigramsPos(),
+            originalPtNodeParams->getShortcutPos(), writingPos);
 }
 
 bool DynamicPatriciaTrieWritingHelper::createAndInsertNodeIntoPtNodeArray(const int parentPos,
@@ -355,14 +356,14 @@ bool DynamicPatriciaTrieWritingHelper::createAndInsertNodeIntoPtNodeArray(const 
 }
 
 bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
-        const DynamicPatriciaTrieNodeReader *const originalPtNode, const int probability,
-        const int *const codePoints, bool *const outAddedNewUnigram) {
-    if (originalPtNode->isTerminal()) {
+        const PtNodeParams *const originalPtNodeParams, const int probability,
+        bool *const outAddedNewUnigram) {
+    if (originalPtNodeParams->isTerminal()) {
         // Overwrites the probability.
         *outAddedNewUnigram = false;
-        const int probabilityToWrite = getUpdatedProbability(originalPtNode->getProbability(),
-                probability);
-        int probabilityFieldPos = originalPtNode->getProbabilityFieldPos();
+        const int probabilityToWrite = getUpdatedProbability(
+                originalPtNodeParams->getProbability(), probability);
+        int probabilityFieldPos = originalPtNodeParams->getProbabilityFieldPos();
         if (!DynamicPatriciaTrieWritingUtils::writeProbabilityAndAdvancePosition(mBuffer,
                 probabilityToWrite, &probabilityFieldPos)) {
             return false;
@@ -371,11 +372,12 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
         // Make the node terminal and write the probability.
         *outAddedNewUnigram = true;
         int movedPos = mBuffer->getTailPosition();
-        if (!markNodeAsMovedAndSetPosition(originalPtNode, movedPos, movedPos)) {
+        if (!markNodeAsMovedAndSetPosition(originalPtNodeParams, movedPos, movedPos)) {
             return false;
         }
-        if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, originalPtNode,
-                originalPtNode->getParentPos(), codePoints, originalPtNode->getCodePointCount(),
+        if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, originalPtNodeParams,
+                originalPtNodeParams->getParentPos(), originalPtNodeParams->getCodePoints(),
+                originalPtNodeParams->getCodePointCount(),
                 getUpdatedProbability(NOT_A_PROBABILITY /* originalProbability */, probability),
                 &movedPos)) {
             return false;
@@ -385,15 +387,15 @@ bool DynamicPatriciaTrieWritingHelper::setPtNodeProbability(
 }
 
 bool DynamicPatriciaTrieWritingHelper::createChildrenPtNodeArrayAndAChildPtNode(
-        const DynamicPatriciaTrieNodeReader *const parentNode, const int probability,
+        const PtNodeParams *const parentPtNodeParams, const int probability,
         const int *const codePoints, const int codePointCount) {
     const int newPtNodeArrayPos = mBuffer->getTailPosition();
-    int childrenPosFieldPos = parentNode->getChildrenPosFieldPos();
+    int childrenPosFieldPos = parentPtNodeParams->getChildrenPosFieldPos();
     if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
             newPtNodeArrayPos, &childrenPosFieldPos)) {
         return false;
     }
-    return createNewPtNodeArrayWithAChildPtNode(parentNode->getHeadPos(), codePoints,
+    return createNewPtNodeArrayWithAChildPtNode(parentPtNodeParams->getHeadPos(), codePoints,
             codePointCount, probability);
 }
 
@@ -418,8 +420,7 @@ bool DynamicPatriciaTrieWritingHelper::createNewPtNodeArrayWithAChildPtNode(
 
 // Returns whether the dictionary updating was succeeded or not.
 bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
-        const DynamicPatriciaTrieNodeReader *const reallocatingPtNode,
-        const int *const reallocatingPtNodeCodePoints, const int overlappingCodePointCount,
+        const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
         const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
         const int newNodeCodePointCount) {
     // When addsExtraChild is true, split the reallocating PtNode and add new child.
@@ -435,8 +436,8 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     // Write the 1st part of the reallocating node. The children position will be updated later
     // with actual children position.
     const int newProbability = addsExtraChild ? NOT_A_PROBABILITY : probabilityOfNewPtNode;
-    if (!writePtNodeToBuffer(mBuffer, reallocatingPtNode->getParentPos(),
-            reallocatingPtNodeCodePoints, overlappingCodePointCount, newProbability,
+    if (!writePtNodeToBuffer(mBuffer, reallocatingPtNodeParams->getParentPos(),
+            reallocatingPtNodeParams->getCodePoints(), overlappingCodePointCount, newProbability,
             &writingPos)) {
         return false;
     }
@@ -449,11 +450,11 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
     }
     // Write the 2nd part of the reallocating node.
     const int secondPartOfReallocatedPtNodePos = writingPos;
-    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, reallocatingPtNode,
+    if (!writePtNodeToBufferByCopyingPtNodeInfo(mBuffer, reallocatingPtNodeParams,
             firstPartOfReallocatedPtNodePos,
-            reallocatingPtNodeCodePoints + overlappingCodePointCount,
-            reallocatingPtNode->getCodePointCount() - overlappingCodePointCount,
-            reallocatingPtNode->getProbability(), &writingPos)) {
+            reallocatingPtNodeParams->getCodePoints() + overlappingCodePointCount,
+            reallocatingPtNodeParams->getCodePointCount() - overlappingCodePointCount,
+            reallocatingPtNodeParams->getProbability(), &writingPos)) {
         return false;
     }
     if (addsExtraChild) {
@@ -468,16 +469,17 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
             NOT_A_DICT_POS /* forwardLinkPos */, &writingPos)) {
         return false;
     }
-    // Update original reallocatingPtNode as moved.
-    if (!markNodeAsMovedAndSetPosition(reallocatingPtNode, firstPartOfReallocatedPtNodePos,
+    // Update original reallocating PtNode as moved.
+    if (!markNodeAsMovedAndSetPosition(reallocatingPtNodeParams, firstPartOfReallocatedPtNodePos,
             secondPartOfReallocatedPtNodePos)) {
         return false;
     }
     // Load node info. Information of the 1st part will be fetched.
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
-    nodeReader.fetchNodeInfoInBufferFromPtNodePos(firstPartOfReallocatedPtNodePos);
+    const PtNodeParams ptNodeParams(
+            nodeReader.fetchNodeInfoInBufferFromPtNodePos(firstPartOfReallocatedPtNodePos));
     // Update children position.
-    int childrenPosFieldPos = nodeReader.getChildrenPosFieldPos();
+    int childrenPosFieldPos = ptNodeParams.getChildrenPosFieldPos();
     if (!DynamicPatriciaTrieWritingUtils::writeChildrenPositionAndAdvancePosition(mBuffer,
             actualChildrenPos, &childrenPosFieldPos)) {
         return false;
@@ -488,7 +490,8 @@ bool DynamicPatriciaTrieWritingHelper::reallocatePtNodeAndAddNewPtNodes(
 bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
         const HeaderPolicy *const headerPolicy, BufferWithExtendableBuffer *const bufferToWrite,
         int *const outUnigramCount, int *const outBigramCount) {
-    DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, mBigramPolicy, mShortcutPolicy);
+    DynamicPatriciaTrieNodeReader nodeReader(mBuffer, mBigramPolicy, mShortcutPolicy);
+    DynamicPatriciaTrieReadingHelper readingHelper(mBuffer, &nodeReader);
     readingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners
             ::TraversePolicyToUpdateUnigramProbabilityAndMarkUselessPtNodesAsDeleted
@@ -530,9 +533,10 @@ bool DynamicPatriciaTrieWritingHelper::runGC(const int rootPtNodeArrayPos,
     DynamicShortcutListPolicy newDictShortcutPolicy(bufferToWrite);
     DynamicBigramListPolicy newDictBigramPolicy(headerPolicy, bufferToWrite, &newDictShortcutPolicy,
             mNeedsToDecay);
-    // Create reading helper for the GCed dictionary.
-    DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictBigramPolicy,
+    // Create reading node reader and reading helper for the GCed dictionary.
+    DynamicPatriciaTrieNodeReader newDictNodeReader(bufferToWrite, &newDictBigramPolicy,
             &newDictShortcutPolicy);
+    DynamicPatriciaTrieReadingHelper newDictReadingHelper(bufferToWrite, &newDictNodeReader);
     newDictReadingHelper.initWithPtNodeArrayPos(rootPtNodeArrayPos);
     DynamicPatriciaTrieGcEventListeners::TraversePolicyToUpdateAllPositionFields
             traversePolicyToUpdateAllPositionFields(this, &newDictBigramPolicy, bufferToWrite,

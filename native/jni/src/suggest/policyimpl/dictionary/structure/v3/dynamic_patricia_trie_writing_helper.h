@@ -26,11 +26,12 @@ namespace latinime {
 
 class BufferWithExtendableBuffer;
 class DynamicBigramListPolicy;
-class DynamicPatriciaTrieNodeReader;
 class DynamicPatriciaTrieReadingHelper;
 class DynamicShortcutListPolicy;
 class HeaderPolicy;
+class PtNodeParams;
 
+// TODO: Make it independent from a particular format and move to pt_common.
 class DynamicPatriciaTrieWritingHelper {
  public:
     typedef hash_map_compat<int, int> PtNodeArrayPositionRelocationMap;
@@ -77,12 +78,12 @@ class DynamicPatriciaTrieWritingHelper {
 
     // CAVEAT: This method must be called only from inner classes of
     // DynamicPatriciaTrieGcEventListeners.
-    bool markNodeAsDeleted(const DynamicPatriciaTrieNodeReader *const nodeToUpdate);
+    bool markNodeAsDeleted(const PtNodeParams *const toBeUpdatedPtNodeParams);
 
     // CAVEAT: This method must be called only from this class or inner classes of
     // DynamicPatriciaTrieGcEventListeners.
     bool writePtNodeToBufferByCopyingPtNodeInfo(BufferWithExtendableBuffer *const bufferToWrite,
-            const DynamicPatriciaTrieNodeReader *const originalNode, const int parentPos,
+            const PtNodeParams *const originalPtNodeParams, const int parentPos,
             const int *const codePoints, const int codePointCount, const int probability,
             int *const writingPos);
 
@@ -96,7 +97,7 @@ class DynamicPatriciaTrieWritingHelper {
     DynamicShortcutListPolicy *const mShortcutPolicy;
     const bool mNeedsToDecay;
 
-    bool markNodeAsMovedAndSetPosition(const DynamicPatriciaTrieNodeReader *const nodeToUpdate,
+    bool markNodeAsMovedAndSetPosition(const PtNodeParams *const toBeUpdatedPtNodeParams,
             const int movedPos, const int bigramLinkedNodePos);
 
     bool writePtNodeWithFullInfoToBuffer(BufferWithExtendableBuffer *const bufferToWrite,
@@ -112,19 +113,17 @@ class DynamicPatriciaTrieWritingHelper {
     bool createAndInsertNodeIntoPtNodeArray(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability, int *const forwardLinkFieldPos);
 
-    bool setPtNodeProbability(const DynamicPatriciaTrieNodeReader *const originalNode,
-            const int probability, const int *const codePoints, bool *const outAddedNewUnigram);
+    bool setPtNodeProbability(const PtNodeParams *const originalPtNodeParams, const int probability,
+            bool *const outAddedNewUnigram);
 
-    bool createChildrenPtNodeArrayAndAChildPtNode(
-            const DynamicPatriciaTrieNodeReader *const parentNode, const int probability,
-            const int *const codePoints, const int codePointCount);
+    bool createChildrenPtNodeArrayAndAChildPtNode(const PtNodeParams *const parentPtNodeParams,
+            const int probability, const int *const codePoints, const int codePointCount);
 
     bool createNewPtNodeArrayWithAChildPtNode(const int parentPos, const int *const nodeCodePoints,
             const int nodeCodePointCount, const int probability);
 
     bool reallocatePtNodeAndAddNewPtNodes(
-            const DynamicPatriciaTrieNodeReader *const reallocatingPtNode,
-            const int *const reallocatingPtNodeCodePoints, const int overlappingCodePointCount,
+            const PtNodeParams *const reallocatingPtNodeParams, const int overlappingCodePointCount,
             const int probabilityOfNewPtNode, const int *const newNodeCodePoints,
             const int newNodeCodePointCount);
 
