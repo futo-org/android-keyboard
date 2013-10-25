@@ -34,15 +34,13 @@ class DicNodeVector;
 
 class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    PatriciaTriePolicy(const MmappedBuffer *const buffer)
-            : mBuffer(buffer), mHeaderPolicy(mBuffer->getBuffer(), FormatUtils::VERSION_2),
-              mDictRoot(mBuffer->getBuffer() + mHeaderPolicy.getSize()),
-              mDictBufferSize(mBuffer->getBufferSize() - mHeaderPolicy.getSize()),
+    PatriciaTriePolicy(const MmappedBuffer::MmappedBufferPtr &mmappedBuffer)
+            : mMmappedBuffer(mmappedBuffer),
+              mHeaderPolicy(mMmappedBuffer.get()->getBuffer(), FormatUtils::VERSION_2),
+              mDictRoot(mMmappedBuffer.get()->getBuffer() + mHeaderPolicy.getSize()),
+              mDictBufferSize(mMmappedBuffer.get()->getBufferSize()
+                      - mHeaderPolicy.getSize()),
               mBigramListPolicy(mDictRoot), mShortcutListPolicy(mDictRoot) {}
-
-    ~PatriciaTriePolicy() {
-        delete mBuffer;
-    }
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -125,7 +123,7 @@ class PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(PatriciaTriePolicy);
 
-    const MmappedBuffer *const mBuffer;
+    const MmappedBuffer::MmappedBufferPtr mMmappedBuffer;
     const HeaderPolicy mHeaderPolicy;
     const uint8_t *const mDictRoot;
     const int mDictBufferSize;

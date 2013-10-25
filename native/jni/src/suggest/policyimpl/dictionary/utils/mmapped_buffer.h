@@ -17,88 +17,27 @@
 #ifndef LATINIME_MMAPPED_BUFFER_H
 #define LATINIME_MMAPPED_BUFFER_H
 
-#include <cerrno>
-#include <climits>
-#include <cstdio>
-#include <fcntl.h>
 #include <stdint.h>
-#include <sys/mman.h>
-#include <unistd.h>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/utils/file_utils.h"
+#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
 class MmappedBuffer {
  public:
-    static MmappedBuffer *openBuffer(const char *const path, const int bufferOffset,
-            const int bufferSize, const bool isUpdatable) {
-        const int openMode = isUpdatable ? O_RDWR : O_RDONLY;
-        const int mmapFd = open(path, openMode);
-        if (mmapFd < 0) {
-            AKLOGE("DICT: Can't open the source. path=%s errno=%d", path, errno);
-            return 0;
-        }
-        const int pagesize = getpagesize();
-        const int offset = bufferOffset % pagesize;
-        int alignedOffset = bufferOffset - offset;
-        int alignedSize = bufferSize + offset;
-        const int protMode = isUpdatable ? PROT_READ | PROT_WRITE : PROT_READ;
-        void *const mmappedBuffer = mmap(0, alignedSize, protMode, MAP_PRIVATE, mmapFd,
-                alignedOffset);
-        if (mmappedBuffer == MAP_FAILED) {
-            AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
-            close(mmapFd);
-            return 0;
-        }
-        uint8_t *const buffer = static_cast<uint8_t *>(mmappedBuffer) + offset;
-        if (!buffer) {
-            AKLOGE("DICT: buffer is null");
-            close(mmapFd);
-            return 0;
-        }
-        return new MmappedBuffer(buffer, bufferSize, mmappedBuffer, alignedSize, mmapFd,
-                isUpdatable);
-    }
+    typedef ExclusiveOwnershipPointer<MmappedBuffer> MmappedBufferPtr;
+
+    static MmappedBufferPtr openBuffer(const char *const path,
+            const int bufferOffset, const int bufferSize, const bool isUpdatable);
 
     // Mmap entire file.
-    static MmappedBuffer *openBuffer(const char *const path, const bool isUpdatable) {
-        const int fileSize = FileUtils::getFileSize(path);
-        if (fileSize == -1) {
-            return 0;
-        } else if (fileSize == 0) {
-            return new MmappedBuffer(isUpdatable);
-        } else {
-            return openBuffer(path, 0 /* bufferOffset */, fileSize, isUpdatable);
-        }
-    }
+    static MmappedBufferPtr openBuffer(const char *const path, const bool isUpdatable);
 
-    static MmappedBuffer *openBuffer(const char *const dirPath, const char *const fileName,
-            const bool isUpdatable) {
-        const int filePathBufferSize = PATH_MAX + 1 /* terminator */;
-        char filePath[filePathBufferSize];
-        const int filePathLength = snprintf(filePath, filePathBufferSize, "%s%s", dirPath,
-                fileName);
-        if (filePathLength >= filePathBufferSize) {
-            return 0;
-        }
-        return openBuffer(filePath, isUpdatable);
-    }
+    static MmappedBufferPtr openBuffer(const char *const dirPath, const char *const fileName,
+            const bool isUpdatable);
 
-    ~MmappedBuffer() {
-        if (mAlignedSize == 0) {
-            return;
-        }
-        int ret = munmap(mMmappedBuffer, mAlignedSize);
-        if (ret != 0) {
-            AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
-        }
-        ret = close(mMmapFd);
-        if (ret != 0) {
-            AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
-        }
-    }
+    ~MmappedBuffer();
 
     AK_FORCE_INLINE uint8_t *getBuffer() const {
         return mBuffer;

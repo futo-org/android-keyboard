@@ -216,7 +216,7 @@ int DynamicPatriciaTriePolicy::getBigramsPositionOfPtNode(const int ptNodePos) c
 
 bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int length,
         const int probability) {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: addUnigramWord() is called for non-updatable dictionary.");
         return false;
     }
@@ -244,7 +244,7 @@ bool DynamicPatriciaTriePolicy::addUnigramWord(const int *const word, const int 
 
 bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1, const int probability) {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: addBigramWords() is called for non-updatable dictionary.");
         return false;
     }
@@ -278,7 +278,7 @@ bool DynamicPatriciaTriePolicy::addBigramWords(const int *const word0, const int
 
 bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const int length0,
         const int *const word1, const int length1) {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: removeBigramWords() is called for non-updatable dictionary.");
         return false;
     }
@@ -308,7 +308,7 @@ bool DynamicPatriciaTriePolicy::removeBigramWords(const int *const word0, const 
 }
 
 void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: flush() is called for non-updatable dictionary.");
         return;
     }
@@ -318,7 +318,7 @@ void DynamicPatriciaTriePolicy::flush(const char *const filePath) {
 }
 
 void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: flushWithGC() is called for non-updatable dictionary.");
         return;
     }
@@ -334,7 +334,7 @@ void DynamicPatriciaTriePolicy::flushWithGC(const char *const filePath) {
 }
 
 bool DynamicPatriciaTriePolicy::needsToRunGC(const bool mindsBlockByGC) const {
-    if (!mBuffer->isUpdatable()) {
+    if (!mMmappedBuffer.get()->isUpdatable()) {
         AKLOGI("Warning: needsToRunGC() is called for non-updatable dictionary.");
         return false;
     }

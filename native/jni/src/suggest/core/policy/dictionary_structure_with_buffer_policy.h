@@ -18,6 +18,7 @@
 #define LATINIME_DICTIONARY_STRUCTURE_POLICY_H
 
 #include "defines.h"
+#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
@@ -33,6 +34,8 @@ class DictionaryShortcutsStructurePolicy;
  */
 class DictionaryStructureWithBufferPolicy {
  public:
+    typedef ExclusiveOwnershipPointer<DictionaryStructureWithBufferPolicy> StructurePoilcyPtr;
+
     virtual ~DictionaryStructureWithBufferPolicy() {}
 
     virtual int getRootPosition() const = 0;

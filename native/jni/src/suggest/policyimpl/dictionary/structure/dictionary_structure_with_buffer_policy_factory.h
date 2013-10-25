@@ -21,13 +21,15 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "utils/exclusive_ownership_pointer.h"
 
 namespace latinime {
 
 class DictionaryStructureWithBufferPolicyFactory {
  public:
-    static DictionaryStructureWithBufferPolicy *newDictionaryStructureWithBufferPolicy(
-            const char *const path, const int bufOffset, const int size, const bool isUpdatable);
+    static DictionaryStructureWithBufferPolicy::StructurePoilcyPtr
+            newDictionaryStructureWithBufferPolicy(const char *const path, const int bufOffset,
+                    const int size, const bool isUpdatable);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictionaryStructureWithBufferPolicyFactory);
