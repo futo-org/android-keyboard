@@ -19,6 +19,9 @@
 
 #include "defines.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "suggest/policyimpl/dictionary/header/header_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
+#include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
 
@@ -28,7 +31,9 @@ class DicNodeVector;
 // TODO: Implement.
 class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
  public:
-    ~Ver4PatriciaTriePolicy() {}
+    Ver4PatriciaTriePolicy(const Ver4DictBuffers::Ver4DictBuffersPtr &buffers)
+            : mBuffers(buffers),
+              mHeaderPolicy(mBuffers.get()->getRawDictBuffer(), FormatUtils::VERSION_4) {};
 
     AK_FORCE_INLINE int getRootPosition() const {
         return 0;
@@ -53,7 +58,7 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
     int getBigramsPositionOfPtNode(const int ptNodePos) const;
 
     const DictionaryHeaderStructurePolicy *getHeaderStructurePolicy() const {
-        return 0;
+        return &mHeaderPolicy;
     }
 
     const DictionaryBigramsStructurePolicy *getBigramsStructurePolicy() const {
@@ -83,6 +88,9 @@ class Ver4PatriciaTriePolicy : public DictionaryStructureWithBufferPolicy {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4PatriciaTriePolicy);
+
+    const Ver4DictBuffers::Ver4DictBuffersPtr mBuffers;
+    const HeaderPolicy mHeaderPolicy;
 };
 } // namespace latinime
 #endif // LATINIME_VER4_PATRICIA_TRIE_POLICY_H
