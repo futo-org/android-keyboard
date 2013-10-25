@@ -17,10 +17,13 @@
 #include "suggest/policyimpl/dictionary/structure/dictionary_structure_with_buffer_policy_factory.h"
 
 #include <stdint.h>
+#include <string>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_buffers.h"
+#include "suggest/policyimpl/dictionary/structure/v4/ver4_patricia_trie_policy.h"
 #include "suggest/policyimpl/dictionary/utils/format_utils.h"
 #include "suggest/policyimpl/dictionary/utils/mmapped_buffer.h"
 
@@ -45,9 +48,26 @@ namespace latinime {
         case FormatUtils::VERSION_3:
             return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
                     new DynamicPatriciaTriePolicy(mmappedBuffer));
-        case FormatUtils::VERSION_4:
-            // TODO: Support version 4 dictionary format.
-            // Fall through.
+        case FormatUtils::VERSION_4: {
+            std::string dictDirPath(path);
+            const std::string::size_type pos =
+                    dictDirPath.rfind(Ver4DictConstants::TRIE_FILE_EXTENSION);
+            if (pos == std::string::npos) {
+                // Dictionary file name is not valid as a version 4 dictionary.
+                return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+            }
+            // Removing extension to get the base path.
+            dictDirPath.erase(pos);
+            const Ver4DictBuffers::Ver4DictBuffersPtr dictBuffers(
+                    Ver4DictBuffers::openVer4DictBuffers(dictDirPath.c_str(), mmappedBuffer));
+            if (!dictBuffers.get()->isValid()) {
+                AKLOGE("DICT: The dictionary doesn't satisfy ver4 format requirements.");
+                ASSERT(false);
+                return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(0);
+            }
+            return DictionaryStructureWithBufferPolicy::StructurePoilcyPtr(
+                    new Ver4PatriciaTriePolicy(dictBuffers));
+        }
         default:
             AKLOGE("DICT: dictionary format is unknown, bad magic number");
             ASSERT(false);
