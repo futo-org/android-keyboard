@@ -30,4 +30,6 @@ const char *const Ver4DictConstants::SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION = ".sh
 const char *const Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION =
         ".shortcut_index_shortcut";
 
+const int Ver4DictConstants::NOT_A_TERMINAL = -1;
+
 } // namespace latinime

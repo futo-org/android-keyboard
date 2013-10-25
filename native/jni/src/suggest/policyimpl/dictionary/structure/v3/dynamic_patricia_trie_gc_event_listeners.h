@@ -30,6 +30,7 @@
 namespace latinime {
 
 class DictionaryHeaderStructurePolicy;
+class PtNodeParams;
 
 class DynamicPatriciaTrieGcEventListeners {
  public:
@@ -66,8 +67,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onReadingPtNodeArrayTail() { return true; }
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints);
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
 
         int getValidUnigramCount() const {
             return mValidUnigramCount;
@@ -101,8 +101,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onReadingPtNodeArrayTail() { return true; }
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints);
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
 
         int getValidBigramEntryCount() const {
             return mValidBigramEntryCount;
@@ -133,8 +132,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onReadingPtNodeArrayTail();
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints);
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(TraversePolicyToPlaceAndWriteValidPtNodesToBuffer);
@@ -167,8 +165,7 @@ class DynamicPatriciaTrieGcEventListeners {
 
         bool onReadingPtNodeArrayTail() { return true; }
 
-        bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints);
+        bool onVisitingPtNode(const PtNodeParams *const ptNodeParams);
 
         int getUnigramCount() const {
             return mUnigramCount;

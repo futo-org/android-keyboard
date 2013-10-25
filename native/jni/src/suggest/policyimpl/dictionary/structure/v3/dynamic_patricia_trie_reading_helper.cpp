@@ -17,6 +17,8 @@
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_helper.h"
 
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 
 namespace latinime {
 
@@ -37,22 +39,26 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPostorderDepthFirstMa
         return false;
     }
     while (!isEnd()) {
+        const PtNodeParams ptNodeParams(getPtNodeParams());
+        if (!ptNodeParams.isValid()) {
+            break;
+        }
         if (!alreadyVisitedChildren) {
-            if (mNodeReader.hasChildren()) {
+            if (ptNodeParams.hasChildren()) {
                 // Move to the first child.
-                if (!listener->onDescend(mNodeReader.getChildrenPos())) {
+                if (!listener->onDescend(ptNodeParams.getChildrenPos())) {
                     return false;
                 }
                 pushReadingStateToStack();
-                readChildNode();
+                readChildNode(ptNodeParams);
             } else {
                 alreadyVisitedChildren = true;
             }
         } else {
-            if (!listener->onVisitingPtNode(&mNodeReader, mMergedNodeCodePoints)) {
+            if (!listener->onVisitingPtNode(&ptNodeParams)) {
                 return false;
             }
-            readNextSiblingNode();
+            readNextSiblingNode(ptNodeParams);
             if (isEnd()) {
                 // All PtNodes in current linked PtNode arrays have been visited.
                 // Return to the parent.
@@ -101,10 +107,14 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
     }
     pushReadingStateToStack();
     while (!isEnd()) {
+        const PtNodeParams ptNodeParams(getPtNodeParams());
+        if (!ptNodeParams.isValid()) {
+            break;
+        }
         if (alreadyVisitedAllPtNodesInArray) {
             if (alreadyVisitedChildren) {
                 // Move to next sibling PtNode's children.
-                readNextSiblingNode();
+                readNextSiblingNode(ptNodeParams);
                 if (isEnd()) {
                     // Return to the parent PTNode.
                     if (!listener->onAscend()) {
@@ -120,13 +130,13 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
                     alreadyVisitedChildren = false;
                 }
             } else {
-                if (mNodeReader.hasChildren()) {
+                if (ptNodeParams.hasChildren()) {
                     // Move to the first child.
-                    if (!listener->onDescend(mNodeReader.getChildrenPos())) {
+                    if (!listener->onDescend(ptNodeParams.getChildrenPos())) {
                         return false;
                     }
                     pushReadingStateToStack();
-                    readChildNode();
+                    readChildNode(ptNodeParams);
                     // Push state to return the head of PtNode array.
                     pushReadingStateToStack();
                     alreadyVisitedAllPtNodesInArray = false;
@@ -136,10 +146,10 @@ bool DynamicPatriciaTrieReadingHelper::traverseAllPtNodesInPtNodeArrayLevelPreor
                 }
             }
         } else {
-            if (!listener->onVisitingPtNode(&mNodeReader, mMergedNodeCodePoints)) {
+            if (!listener->onVisitingPtNode(&ptNodeParams)) {
                 return false;
             }
-            readNextSiblingNode();
+            readNextSiblingNode(ptNodeParams);
             if (isEnd()) {
                 if (!listener->onReadingPtNodeArrayTail()) {
                     return false;

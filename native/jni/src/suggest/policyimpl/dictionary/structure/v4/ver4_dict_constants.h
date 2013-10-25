@@ -34,6 +34,8 @@ class Ver4DictConstants {
     static const char *const SHORTCUT_LOOKUP_TABLE_FILE_EXTENSION;
     static const char *const SHORTCUT_CONTENT_TABLE_FILE_EXTENSION;
 
+    static const int NOT_A_TERMINAL;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Ver4DictConstants);
 };

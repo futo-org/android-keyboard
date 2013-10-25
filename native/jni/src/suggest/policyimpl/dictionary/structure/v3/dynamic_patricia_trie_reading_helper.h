@@ -21,9 +21,8 @@
 #include <vector>
 
 #include "defines.h"
-#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_node_reader.h"
-#include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_params.h"
+#include "suggest/policyimpl/dictionary/structure/pt_common/pt_node_reader.h"
 
 namespace latinime {
 
@@ -35,6 +34,7 @@ class DictionaryShortcutsStructurePolicy;
  * This class is used for traversing dynamic patricia trie. This class supports iterating nodes and
  * dealing with additional buffer. This class counts nodes and node arrays to avoid infinite loop.
  */
+// TODO: Move to pt_common.
 class DynamicPatriciaTrieReadingHelper {
  public:
     class TraversingEventListener {
@@ -51,8 +51,7 @@ class DynamicPatriciaTrieReadingHelper {
         virtual bool onReadingPtNodeArrayTail() = 0;
 
         // Returns whether the event handling was succeeded or not.
-        virtual bool onVisitingPtNode(const DynamicPatriciaTrieNodeReader *const node,
-                const int *const nodeCodePoints) = 0;
+        virtual bool onVisitingPtNode(const PtNodeParams *const node) = 0;
 
      protected:
         TraversingEventListener() {};
@@ -62,10 +61,9 @@ class DynamicPatriciaTrieReadingHelper {
     };
 
     DynamicPatriciaTrieReadingHelper(const BufferWithExtendableBuffer *const buffer,
-            const DictionaryBigramsStructurePolicy *const bigramsPolicy,
-            const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
+            const PtNodeReader *const ptNodeReader)
             : mIsError(false), mReadingState(), mBuffer(buffer),
-              mNodeReader(mBuffer, bigramsPolicy, shortcutsPolicy), mReadingStateStack() {}
+              mPtNodeReader(ptNodeReader), mReadingStateStack() {}
 
     ~DynamicPatriciaTrieReadingHelper() {}
 
@@ -90,9 +88,6 @@ class DynamicPatriciaTrieReadingHelper {
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingStateStack.clear();
             nextPtNodeArray();
-            if (!isEnd()) {
-                fetchPtNodeInfo();
-            }
         }
     }
 
@@ -110,20 +105,23 @@ class DynamicPatriciaTrieReadingHelper {
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingState.mPosOfThisPtNodeArrayHead = NOT_A_DICT_POS;
             mReadingStateStack.clear();
-            fetchPtNodeInfo();
         }
     }
 
-    AK_FORCE_INLINE const DynamicPatriciaTrieNodeReader* getNodeReader() const {
-        return &mNodeReader;
+    AK_FORCE_INLINE const PtNodeParams getPtNodeParams() const {
+        if (isEnd()) {
+            return PtNodeParams();
+        }
+        return mPtNodeReader->fetchNodeInfoInBufferFromPtNodePos(mReadingState.mPos);
     }
 
-    AK_FORCE_INLINE bool isValidTerminalNode() const {
-        return !isEnd() && !mNodeReader.isDeleted() && mNodeReader.isTerminal();
+    AK_FORCE_INLINE bool isValidTerminalNode(const PtNodeParams &ptNodeParams) const {
+        return !isEnd() && !ptNodeParams.isDeleted() && ptNodeParams.isTerminal();
     }
 
-    AK_FORCE_INLINE bool isMatchedCodePoint(const int index, const int codePoint) const {
-        return mMergedNodeCodePoints[index] == codePoint;
+    AK_FORCE_INLINE bool isMatchedCodePoint(const PtNodeParams &ptNodeParams, const int index,
+            const int codePoint) const {
+        return ptNodeParams.getCodePoints()[index] == codePoint;
     }
 
     // Return code point count exclude the last read node's code points.
@@ -132,68 +130,56 @@ class DynamicPatriciaTrieReadingHelper {
     }
 
     // Return code point count include the last read node's code points.
-    AK_FORCE_INLINE int getTotalCodePointCount() const {
+    AK_FORCE_INLINE int getTotalCodePointCount(const PtNodeParams &ptNodeParams) const {
         return mReadingState.mTotalCodePointCountSinceInitialization
-                + mNodeReader.getCodePointCount();
+                + ptNodeParams.getCodePointCount();
     }
 
-    AK_FORCE_INLINE void fetchMergedNodeCodePointsInReverseOrder(
+    AK_FORCE_INLINE void fetchMergedNodeCodePointsInReverseOrder(const PtNodeParams &ptNodeParams,
             const int index, int *const outCodePoints) const {
-        const int nodeCodePointCount = mNodeReader.getCodePointCount();
+        const int nodeCodePointCount = ptNodeParams.getCodePointCount();
+        const int *const nodeCodePoints = ptNodeParams.getCodePoints();
         for (int i =  0; i < nodeCodePointCount; ++i) {
-            outCodePoints[index + i] = mMergedNodeCodePoints[nodeCodePointCount - 1 - i];
+            outCodePoints[index + i] = nodeCodePoints[nodeCodePointCount - 1 - i];
         }
     }
 
-    AK_FORCE_INLINE const int *getMergedNodeCodePoints() const {
-        return mMergedNodeCodePoints;
-    }
-
-    AK_FORCE_INLINE void readNextSiblingNode() {
+    AK_FORCE_INLINE void readNextSiblingNode(const PtNodeParams &ptNodeParams) {
         mReadingState.mRemainingPtNodeCountInThisArray -= 1;
-        mReadingState.mPos = mNodeReader.getSiblingNodePos();
+        mReadingState.mPos = ptNodeParams.getSiblingNodePos();
         if (mReadingState.mRemainingPtNodeCountInThisArray <= 0) {
             // All nodes in the current node array have been read.
             followForwardLink();
-            if (!isEnd()) {
-                fetchPtNodeInfo();
-            }
-        } else {
-            fetchPtNodeInfo();
         }
     }
 
     // Read the first child node of the current node.
-    AK_FORCE_INLINE void readChildNode() {
-        if (mNodeReader.hasChildren()) {
+    AK_FORCE_INLINE void readChildNode(const PtNodeParams &ptNodeParams) {
+        if (ptNodeParams.hasChildren()) {
             mReadingState.mTotalCodePointCountSinceInitialization +=
-                    mNodeReader.getCodePointCount();
+                    ptNodeParams.getCodePointCount();
             mReadingState.mTotalPtNodeIndexInThisArrayChain = 0;
             mReadingState.mPtNodeArrayIndexInThisArrayChain = 0;
-            mReadingState.mPos = mNodeReader.getChildrenPos();
+            mReadingState.mPos = ptNodeParams.getChildrenPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             // Read children node array.
             nextPtNodeArray();
-            if (!isEnd()) {
-                fetchPtNodeInfo();
-            }
         } else {
             mReadingState.mPos = NOT_A_DICT_POS;
         }
     }
 
     // Read the parent node of the current node.
-    AK_FORCE_INLINE void readParentNode() {
-        if (mNodeReader.getParentPos() != NOT_A_DICT_POS) {
+    AK_FORCE_INLINE void readParentNode(const PtNodeParams &ptNodeParams) {
+        if (ptNodeParams.getParentPos() != NOT_A_DICT_POS) {
             mReadingState.mTotalCodePointCountSinceInitialization +=
-                    mNodeReader.getCodePointCount();
+                    ptNodeParams.getCodePointCount();
             mReadingState.mTotalPtNodeIndexInThisArrayChain = 1;
             mReadingState.mPtNodeArrayIndexInThisArrayChain = 1;
             mReadingState.mRemainingPtNodeCountInThisArray = 1;
-            mReadingState.mPos = mNodeReader.getParentPos();
+            mReadingState.mPos = ptNodeParams.getParentPos();
             mReadingState.mPosOfLastForwardLinkField = NOT_A_DICT_POS;
             mReadingState.mPosOfThisPtNodeArrayHead = NOT_A_DICT_POS;
-            fetchPtNodeInfo();
         } else {
             mReadingState.mPos = NOT_A_DICT_POS;
         }
@@ -205,12 +191,6 @@ class DynamicPatriciaTrieReadingHelper {
 
     AK_FORCE_INLINE int getPosOfLastPtNodeArrayHead() const {
         return mReadingState.mPosOfThisPtNodeArrayHead;
-    }
-
-    AK_FORCE_INLINE void reloadCurrentPtNodeInfo() {
-        if (!isEnd()) {
-            fetchPtNodeInfo();
-        }
     }
 
     bool traverseAllPtNodesInPostorderDepthFirstManner(TraversingEventListener *const listener);
@@ -253,23 +233,12 @@ class DynamicPatriciaTrieReadingHelper {
     bool mIsError;
     PtNodeReadingState mReadingState;
     const BufferWithExtendableBuffer *const mBuffer;
-    DynamicPatriciaTrieNodeReader mNodeReader;
-    int mMergedNodeCodePoints[MAX_WORD_LENGTH];
+    const PtNodeReader *const mPtNodeReader;
     std::vector<PtNodeReadingState> mReadingStateStack;
 
     void nextPtNodeArray();
 
     void followForwardLink();
-
-    AK_FORCE_INLINE void fetchPtNodeInfo() {
-        mNodeReader.fetchNodeInfoInBufferFromPtNodePosAndGetNodeCodePoints(mReadingState.mPos,
-                MAX_WORD_LENGTH, mMergedNodeCodePoints);
-        if (mNodeReader.getCodePointCount() <= 0) {
-            // Empty node is not allowed.
-            mIsError = true;
-            mReadingState.mPos = NOT_A_DICT_POS;
-        }
-    }
 
     AK_FORCE_INLINE void pushReadingStateToStack() {
         if (mReadingStateStack.size() > MAX_READING_STATE_STACK_SIZE) {
@@ -288,9 +257,6 @@ class DynamicPatriciaTrieReadingHelper {
         } else {
             mReadingState = mReadingStateStack.back();
             mReadingStateStack.pop_back();
-            if (!isEnd()) {
-                fetchPtNodeInfo();
-            }
         }
     }
 };

@@ -157,8 +157,9 @@ bool DynamicBigramListPolicy::updateAllBigramEntriesAndDeleteUselessEntries(
         }
         const int bigramTargetNodePos =
                 followBigramLinkAndGetCurrentBigramPtNodePos(originalBigramPos);
-        nodeReader.fetchNodeInfoInBufferFromPtNodePos(bigramTargetNodePos);
-        if (nodeReader.isDeleted() || !nodeReader.isTerminal()
+        const PtNodeParams ptNodeParams(nodeReader.fetchNodeInfoInBufferFromPtNodePos(
+                bigramTargetNodePos));
+        if (ptNodeParams.isDeleted() || !ptNodeParams.isTerminal()
                 || bigramTargetNodePos == NOT_A_DICT_POS) {
             // The target is no longer valid terminal. Invalidate the current bigram entry.
             if (!BigramListReadWriteUtils::writeBigramEntry(mBuffer, bigramFlags,
@@ -342,20 +343,22 @@ int DynamicBigramListPolicy::followBigramLinkAndGetCurrentBigramPtNodePos(
     if (originalBigramPos == NOT_A_DICT_POS) {
         return NOT_A_DICT_POS;
     }
-    int currentPos = originalBigramPos;
     DynamicPatriciaTrieNodeReader nodeReader(mBuffer, this /* bigramsPolicy */, mShortcutPolicy);
-    nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos);
+    int currentPos = NOT_A_DICT_POS;
     int bigramLinkCount = 0;
-    while (nodeReader.getBigramLinkedNodePos() != NOT_A_DICT_POS) {
-        currentPos = nodeReader.getBigramLinkedNodePos();
-        nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos);
+    int bigramLinkedNodePos = originalBigramPos;
+    do {
+        currentPos = bigramLinkedNodePos;
+        const PtNodeParams ptNodeParams(nodeReader.fetchNodeInfoInBufferFromPtNodePos(currentPos));
+        bigramLinkedNodePos = ptNodeParams.getBigramLinkedNodePos();
         bigramLinkCount++;
         if (bigramLinkCount > CONTINUING_BIGRAM_LINK_COUNT_LIMIT) {
             AKLOGE("Bigram link is invalid. start position: %d", originalBigramPos);
             ASSERT(false);
             return NOT_A_DICT_POS;
         }
-    }
+        bigramLinkedNodePos = ptNodeParams.getBigramLinkedNodePos();
+    } while (bigramLinkedNodePos != NOT_A_DICT_POS);
     return currentPos;
 }
 

@@ -18,107 +18,90 @@
 
 #include "suggest/core/policy/dictionary_bigrams_structure_policy.h"
 #include "suggest/core/policy/dictionary_shortcuts_structure_policy.h"
+#include "suggest/policyimpl/dictionary/structure/v2/patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/structure/v3/dynamic_patricia_trie_reading_utils.h"
 #include "suggest/policyimpl/dictionary/utils/buffer_with_extendable_buffer.h"
 
 namespace latinime {
 
-void DynamicPatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProcessMovedPtNode(
-        const int ptNodePos, const int maxCodePointCount, int *const outCodePoints) {
+const PtNodeParams DynamicPatriciaTrieNodeReader::fetchPtNodeInfoFromBufferAndProcessMovedPtNode(
+        const int ptNodePos, const int siblingNodePos, const int bigramLinkedNodePos) const {
     if (ptNodePos < 0 || ptNodePos >= mBuffer->getTailPosition()) {
         // Reading invalid position because of bug or broken dictionary.
         AKLOGE("Fetching PtNode info from invalid dictionary position: %d, dictionary size: %d",
                 ptNodePos, mBuffer->getTailPosition());
         ASSERT(false);
-        invalidatePtNodeInfo();
-        return;
+        return PtNodeParams();
     }
     const bool usesAdditionalBuffer = mBuffer->isInAdditionalBuffer(ptNodePos);
     const uint8_t *const dictBuf = mBuffer->getBuffer(usesAdditionalBuffer);
     int pos = ptNodePos;
-    mHeadPos = ptNodePos;
+    const int headPos = ptNodePos;
     if (usesAdditionalBuffer) {
         pos -= mBuffer->getOriginalBufferSize();
     }
-    mFlags = PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
+    const PatriciaTrieReadingUtils::NodeFlags flags =
+            PatriciaTrieReadingUtils::getFlagsAndAdvancePosition(dictBuf, &pos);
     const int parentPosOffset =
             DynamicPatriciaTrieReadingUtils::getParentPtNodePosOffsetAndAdvancePosition(dictBuf,
                     &pos);
-    mParentPos = DynamicPatriciaTrieReadingUtils::getParentPtNodePos(parentPosOffset, mHeadPos);
-    if (outCodePoints != 0) {
-        mCodePointCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
-                dictBuf, mFlags, maxCodePointCount, outCodePoints, &pos);
-    } else {
-        mCodePointCount = PatriciaTrieReadingUtils::skipCharacters(
-                dictBuf, mFlags, MAX_WORD_LENGTH, &pos);
-    }
-    if (isTerminal()) {
-        mProbabilityFieldPos = pos;
+    const int parentPos =
+            DynamicPatriciaTrieReadingUtils::getParentPtNodePos(parentPosOffset, headPos);
+    int codePoints[MAX_WORD_LENGTH];
+    const int codePonitCount = PatriciaTrieReadingUtils::getCharsAndAdvancePosition(
+            dictBuf, flags, MAX_WORD_LENGTH, codePoints, &pos);
+    int probability = NOT_A_PROBABILITY;
+    int probabilityFieldPos = NOT_A_DICT_POS;
+    if (PatriciaTrieReadingUtils::isTerminal(flags)) {
+        probabilityFieldPos = pos;
         if (usesAdditionalBuffer) {
-            mProbabilityFieldPos += mBuffer->getOriginalBufferSize();
+            probabilityFieldPos += mBuffer->getOriginalBufferSize();
         }
-        mProbability = PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictBuf, &pos);
-    } else {
-        mProbabilityFieldPos = NOT_A_DICT_POS;
-        mProbability = NOT_A_PROBABILITY;
+        probability = PatriciaTrieReadingUtils::readProbabilityAndAdvancePosition(dictBuf, &pos);
     }
-    mChildrenPosFieldPos = pos;
+    int childrenPosFieldPos = pos;
     if (usesAdditionalBuffer) {
-        mChildrenPosFieldPos += mBuffer->getOriginalBufferSize();
+        childrenPosFieldPos += mBuffer->getOriginalBufferSize();
     }
-    mChildrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
+    int childrenPos = DynamicPatriciaTrieReadingUtils::readChildrenPositionAndAdvancePosition(
             dictBuf, &pos);
-    if (usesAdditionalBuffer && mChildrenPos != NOT_A_DICT_POS) {
-        mChildrenPos += mBuffer->getOriginalBufferSize();
+    if (usesAdditionalBuffer && childrenPos != NOT_A_DICT_POS) {
+        childrenPos += mBuffer->getOriginalBufferSize();
     }
-    if (mSiblingPos == NOT_A_DICT_POS) {
-        if (DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
-            mBigramLinkedNodePos = mChildrenPos;
-        } else {
-            mBigramLinkedNodePos = NOT_A_DICT_POS;
+    int newBigramLinkedNodePos = bigramLinkedNodePos;
+    if (siblingNodePos == NOT_A_DICT_POS) {
+        if (DynamicPatriciaTrieReadingUtils::isMoved(flags)) {
+            newBigramLinkedNodePos = childrenPos;
         }
     }
     if (usesAdditionalBuffer) {
         pos += mBuffer->getOriginalBufferSize();
     }
-    if (PatriciaTrieReadingUtils::hasShortcutTargets(mFlags)) {
-        mShortcutPos = pos;
+    int shortcutsPos = NOT_A_DICT_POS;
+    if (PatriciaTrieReadingUtils::hasShortcutTargets(flags)) {
+        shortcutsPos = pos;
         mShortcutsPolicy->skipAllShortcuts(&pos);
-    } else {
-        mShortcutPos = NOT_A_DICT_POS;
     }
-    if (PatriciaTrieReadingUtils::hasBigrams(mFlags)) {
-        mBigramPos = pos;
+    int bigramsPos = NOT_A_DICT_POS;
+    if (PatriciaTrieReadingUtils::hasBigrams(flags)) {
+        bigramsPos = pos;
         mBigramsPolicy->skipAllBigrams(&pos);
-    } else {
-        mBigramPos = NOT_A_DICT_POS;
     }
-    // Update siblingPos if needed.
-    if (mSiblingPos == NOT_A_DICT_POS) {
+    int newSiblingNodePos = siblingNodePos;
+    if (siblingNodePos == NOT_A_DICT_POS) {
         // Sibling position is the tail position of current node.
-        mSiblingPos = pos;
+        newSiblingNodePos = pos;
     }
     // Read destination node if the read node is a moved node.
-    if (DynamicPatriciaTrieReadingUtils::isMoved(mFlags)) {
+    if (DynamicPatriciaTrieReadingUtils::isMoved(flags)) {
         // The destination position is stored at the same place as the parent position.
-        fetchPtNodeInfoFromBufferAndProcessMovedPtNode(mParentPos, maxCodePointCount,
-                outCodePoints);
+        return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(parentPos, newSiblingNodePos,
+                newBigramLinkedNodePos);
+    } else {
+        return PtNodeParams(headPos, flags, parentPos, codePonitCount, codePoints,
+                probabilityFieldPos, probability, childrenPosFieldPos, childrenPos,
+                newBigramLinkedNodePos, shortcutsPos, bigramsPos, newSiblingNodePos);
     }
-}
-
-void DynamicPatriciaTrieNodeReader::invalidatePtNodeInfo() {
-    mHeadPos = NOT_A_DICT_POS;
-    mFlags = 0;
-    mParentPos = NOT_A_DICT_POS;
-    mCodePointCount = 0;
-    mProbabilityFieldPos = NOT_A_DICT_POS;
-    mProbability = NOT_A_PROBABILITY;
-    mChildrenPosFieldPos = NOT_A_DICT_POS;
-    mChildrenPos = NOT_A_DICT_POS;
-    mBigramLinkedNodePos = NOT_A_DICT_POS;
-    mShortcutPos = NOT_A_DICT_POS;
-    mBigramPos = NOT_A_DICT_POS;
-    mSiblingPos = NOT_A_DICT_POS;
 }
 
 }
