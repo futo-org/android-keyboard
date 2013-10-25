@@ -29,7 +29,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時彈出"</string>
     <string name="general_category" msgid="1859088467017573195">"一般"</string>
     <string name="correction_category" msgid="2236750915056607613">"文字修正"</string>
-    <string name="gesture_typing_category" msgid="497263612130532630">"手勢輸入"</string>
+    <string name="gesture_typing_category" msgid="497263612130532630">"滑行輸入"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他選項"</string>
     <string name="advanced_settings" msgid="362895144495591463">"進階設定"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"進階選項"</string>
@@ -68,11 +68,11 @@
     <string name="auto_correction_threshold_mode_very_aggressive" msgid="1853309024129480416">"極大幅度更正"</string>
     <string name="bigram_prediction" msgid="1084449187723948550">"建議下一個字詞"</string>
     <string name="bigram_prediction_summary" msgid="3896362682751109677">"根據前一個字詞提供建議"</string>
-    <string name="gesture_input" msgid="826951152254563827">"啟用手勢輸入"</string>
+    <string name="gesture_input" msgid="826951152254563827">"啟用滑行輸入"</string>
     <string name="gesture_input_summary" msgid="9180350639305731231">"以滑動方式寫出字詞中字母來輸入字詞"</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"顯示手勢軌跡"</string>
     <string name="gesture_floating_preview_text" msgid="4443240334739381053">"動態浮動預覽"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用手勢輸入時顯示建議字詞"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="4472696213996203533">"使用滑行輸入時顯示建議字詞"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
     <string name="label_go_key" msgid="1635148082137219148">"前往"</string>
     <string name="label_next_key" msgid="362972844525672568">"下一頁"</string>
@@ -176,7 +176,7 @@
     <string name="error" msgid="8940763624668513648">"發生錯誤"</string>
     <string name="button_default" msgid="3988017840431881491">"預設"</string>
     <string name="setup_welcome_title" msgid="6112821709832031715">"歡迎使用 <xliff:g id="APPLICATION_NAME">%s</xliff:g>"</string>
-    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"含手勢輸入功能"</string>
+    <string name="setup_welcome_additional_description" msgid="8150252008545768953">"含滑行輸入功能"</string>
     <string name="setup_start_action" msgid="8936036460897347708">"開始設定"</string>
     <string name="setup_next_action" msgid="371821437915144603">"下一步"</string>
     <string name="setup_steps_title" msgid="6400373034871816182">"正在設定「<xliff:g id="APPLICATION_NAME">%s</xliff:g>」"</string>
