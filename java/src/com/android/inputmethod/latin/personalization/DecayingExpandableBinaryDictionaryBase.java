@@ -46,6 +46,7 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
     private static final String TAG = DecayingExpandableBinaryDictionaryBase.class.getSimpleName();
     public static final boolean DBG_SAVE_RESTORE = false;
     private static final boolean DBG_STRESS_TEST = false;
+    private static final boolean DBG_DUMP_ON_CLOSE = false;
     private static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
 
     /** Any pair being typed or picked */
@@ -82,6 +83,9 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     @Override
     public void close() {
+        if (DBG_DUMP_ON_CLOSE) {
+            dumpAllWordsForDebug();
+        }
         if (!ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
             closeBinaryDictionary();
         }
@@ -219,6 +223,55 @@ public abstract class DecayingExpandableBinaryDictionaryBase extends ExpandableB
 
     public void unRegisterUpdateSession(PersonalizationDictionaryUpdateSession session) {
         mSessions.remove(session);
+    }
+
+    @UsedForTesting
+    public void dumpAllWordsForDebug() {
+        runAfterGcForDebug(new Runnable() {
+            @Override
+            public void run() {
+                dumpAllWordsForDebugLocked();
+            }
+        });
+    }
+
+    private void dumpAllWordsForDebugLocked() {
+        Log.d(TAG, "dumpAllWordsForDebug started.");
+        final OnAddWordListener listener = new OnAddWordListener() {
+            @Override
+            public void setUnigram(final String word, final String shortcutTarget,
+                    final int frequency, final int shortcutFreq) {
+                Log.d(TAG, "load unigram: " + word + "," + frequency);
+            }
+
+            @Override
+            public void setBigram(final String word0, final String word1, final int frequency) {
+                if (word0.length() < Constants.DICTIONARY_MAX_WORD_LENGTH
+                        && word1.length() < Constants.DICTIONARY_MAX_WORD_LENGTH) {
+                    Log.d(TAG, "load bigram: " + word0 + "," + word1 + "," + frequency);
+                } else {
+                    Log.d(TAG, "Skip inserting a too long bigram: " + word0 + "," + word1 + ","
+                            + frequency);
+                }
+            }
+        };
+
+        // Load the dictionary from binary file
+        final File dictFile = new File(mContext.getFilesDir(), mFileName);
+        final DictDecoder dictDecoder = FormatSpec.getDictDecoder(dictFile,
+                DictDecoder.USE_BYTEARRAY);
+        if (dictDecoder == null) {
+            // This is an expected condition: we don't have a user history dictionary for this
+            // language yet. It will be created sometime later.
+            return;
+        }
+
+        try {
+            dictDecoder.openDictBuffer();
+            UserHistoryDictIOUtils.readDictionaryBinary(dictDecoder, listener);
+        } catch (IOException e) {
+            Log.d(TAG, "IOException on opening a bytebuffer", e);
+        }
     }
 
     @UsedForTesting
