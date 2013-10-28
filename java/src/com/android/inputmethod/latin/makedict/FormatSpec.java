@@ -264,7 +264,7 @@ public final class FormatSpec {
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
     // These values are used only by version 4 or later.
-    static final String TRIE_FILE_EXTENSION = ".trie";
+    public static final String TRIE_FILE_EXTENSION = ".trie";
     static final String FREQ_FILE_EXTENSION = ".freq";
     static final String UNIGRAM_TIMESTAMP_FILE_EXTENSION = ".timestamp";
     // tat = Terminal Address Table
