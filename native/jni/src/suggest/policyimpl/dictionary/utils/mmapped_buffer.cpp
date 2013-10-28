@@ -30,8 +30,7 @@ namespace latinime {
 /* static */ MmappedBuffer::MmappedBufferPtr MmappedBuffer::openBuffer(
         const char *const path, const int bufferOffset, const int bufferSize,
         const bool isUpdatable) {
-    const int openMode = isUpdatable ? O_RDWR : O_RDONLY;
-    const int mmapFd = open(path, openMode);
+    const int mmapFd = open(path, O_RDONLY);
     if (mmapFd < 0) {
         AKLOGE("DICT: Can't open the source. path=%s errno=%d", path, errno);
         return MmappedBufferPtr(0);
