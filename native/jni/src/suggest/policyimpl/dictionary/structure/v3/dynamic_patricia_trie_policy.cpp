@@ -77,95 +77,17 @@ void DynamicPatriciaTriePolicy::createAndGetAllChildDicNodes(const DicNode *cons
 int DynamicPatriciaTriePolicy::getCodePointsAndProbabilityAndReturnCodePointCount(
         const int ptNodePos, const int maxCodePointCount, int *const outCodePoints,
         int *const outUnigramProbability) const {
-    // This method traverses parent nodes from the terminal by following parent pointers; thus,
-    // node code points are stored in the buffer in the reverse order.
-    int reverseCodePoints[maxCodePointCount];
     DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer, &mNodeReader);
-    // First, read the terminal node and get its probability.
     readingHelper.initWithPtNodePos(ptNodePos);
-
-    const PtNodeParams terminalPtNodeParams(readingHelper.getPtNodeParams());
-    if (!readingHelper.isValidTerminalNode(terminalPtNodeParams)) {
-        // Node at the ptNodePos is not a valid terminal node.
-        *outUnigramProbability = NOT_A_PROBABILITY;
-        return 0;
-    }
-    // Store terminal node probability.
-    *outUnigramProbability = terminalPtNodeParams.getProbability();
-    // Then, following parent node link to the dictionary root and fetch node code points.
-    int totalCodePointCount = 0;
-    while (!readingHelper.isEnd()) {
-        const PtNodeParams ptNodeParams(readingHelper.getPtNodeParams());
-        totalCodePointCount = readingHelper.getTotalCodePointCount(ptNodeParams);
-        if (!ptNodeParams.isValid() || totalCodePointCount > maxCodePointCount) {
-            // The ptNodePos is not a valid terminal node position in the dictionary.
-            *outUnigramProbability = NOT_A_PROBABILITY;
-            return 0;
-        }
-        // Store node code points to buffer in the reverse order.
-        readingHelper.fetchMergedNodeCodePointsInReverseOrder(ptNodeParams,
-                readingHelper.getPrevTotalCodePointCount(), reverseCodePoints);
-        // Follow parent node toward the root node.
-        readingHelper.readParentNode(ptNodeParams);
-    }
-    if (readingHelper.isError()) {
-        // The node position or the dictionary is invalid.
-        *outUnigramProbability = NOT_A_PROBABILITY;
-        return 0;
-    }
-    // Reverse the stored code points to output them.
-    for (int i = 0; i < totalCodePointCount; ++i) {
-        outCodePoints[i] = reverseCodePoints[totalCodePointCount - i - 1];
-    }
-    return totalCodePointCount;
+    return readingHelper.getCodePointsAndProbabilityAndReturnCodePointCount(maxCodePointCount,
+            outCodePoints, outUnigramProbability);
 }
 
 int DynamicPatriciaTriePolicy::getTerminalPtNodePositionOfWord(const int *const inWord,
         const int length, const bool forceLowerCaseSearch) const {
-    int searchCodePoints[length];
-    for (int i = 0; i < length; ++i) {
-        searchCodePoints[i] = forceLowerCaseSearch ? CharUtils::toLowerCase(inWord[i]) : inWord[i];
-    }
-
     DynamicPatriciaTrieReadingHelper readingHelper(&mBufferWithExtendableBuffer, &mNodeReader);
     readingHelper.initWithPtNodeArrayPos(getRootPosition());
-    while (!readingHelper.isEnd()) {
-        const PtNodeParams ptNodeParams(readingHelper.getPtNodeParams());
-        if (!ptNodeParams.isValid()) {
-            break;
-        }
-        const int matchedCodePointCount = readingHelper.getPrevTotalCodePointCount();
-        if (readingHelper.getTotalCodePointCount(ptNodeParams) > length
-                || !readingHelper.isMatchedCodePoint(ptNodeParams, 0 /* index */,
-                        searchCodePoints[matchedCodePointCount])) {
-            // Current node has too many code points or its first code point is different from
-            // target code point. Skip this node and read the next sibling node.
-            readingHelper.readNextSiblingNode(ptNodeParams);
-            continue;
-        }
-        // Check following merged node code points.
-        const int nodeCodePointCount = ptNodeParams.getCodePointCount();
-        for (int j = 1; j < nodeCodePointCount; ++j) {
-            if (!readingHelper.isMatchedCodePoint(ptNodeParams,
-                    j, searchCodePoints[matchedCodePointCount + j])) {
-                // Different code point is found. The given word is not included in the dictionary.
-                return NOT_A_DICT_POS;
-            }
-        }
-        // All characters are matched.
-        if (length == readingHelper.getTotalCodePointCount(ptNodeParams)) {
-            // Terminal position is found.
-            return ptNodeParams.getHeadPos();
-        }
-        if (!ptNodeParams.hasChildren()) {
-            return NOT_A_DICT_POS;
-        }
-        // Advance to the children nodes.
-        readingHelper.readChildNode(ptNodeParams);
-    }
-    // If we already traversed the tree further than the word is long, there means
-    // there was no match (or we would have found it).
-    return NOT_A_DICT_POS;
+    return readingHelper.getTerminalPtNodePositionOfWord(inWord, length, forceLowerCaseSearch);
 }
 
 int DynamicPatriciaTriePolicy::getProbability(const int unigramProbability,
