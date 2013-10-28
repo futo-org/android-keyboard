@@ -198,6 +198,12 @@ class DynamicPatriciaTrieReadingHelper {
     bool traverseAllPtNodesInPtNodeArrayLevelPreorderDepthFirstManner(
             TraversingEventListener *const listener);
 
+    int getCodePointsAndProbabilityAndReturnCodePointCount(const int maxCodePointCount,
+            int *const outCodePoints, int *const outUnigramProbability);
+
+    int getTerminalPtNodePositionOfWord(const int *const inWord, const int length,
+            const bool forceLowerCaseSearch);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieReadingHelper);
 
