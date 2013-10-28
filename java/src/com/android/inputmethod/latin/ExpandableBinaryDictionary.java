@@ -55,7 +55,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     // TODO: Remove.
     /** Whether to call binary dictionary dynamically updating methods. */
-    public static boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = true;
+    public static final boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = true;
 
     private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
 
@@ -732,5 +732,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     @UsedForTesting
     public boolean isTerminatedForTests() {
         return getExecutor(mFilename).isTerminated();
+    }
+
+    @UsedForTesting
+    protected void runAfterGcForDebug(final Runnable r) {
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mBinaryDictionary.flushWithGC();
+                    r.run();
+                } finally {
+                    mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                }
+            }
+        });
     }
 }
