@@ -39,6 +39,15 @@ class SingleDictContent : public DictContent {
         return mMmappedBuffer.get() != 0;
     }
 
+ protected:
+    BufferWithExtendableBuffer *getWritableBuffer() {
+        return &mExpandableContentBuffer;
+    }
+
+    const BufferWithExtendableBuffer *getBuffer() const {
+        return &mExpandableContentBuffer;
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(SingleDictContent);
 

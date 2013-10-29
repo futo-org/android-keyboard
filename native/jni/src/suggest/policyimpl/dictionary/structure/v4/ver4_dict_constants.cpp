@@ -31,5 +31,7 @@ const char *const Ver4DictConstants::SHORTCUT_CONTENT_TABLE_FILE_EXTENSION =
         ".shortcut_index_shortcut";
 
 const int Ver4DictConstants::NOT_A_TERMINAL = -1;
+const int Ver4DictConstants::PROBABILITY_SIZE = 1;
+const int Ver4DictConstants::FLAGS_IN_PROBABILITY_FILE_SIZE = 1;
 
 } // namespace latinime
