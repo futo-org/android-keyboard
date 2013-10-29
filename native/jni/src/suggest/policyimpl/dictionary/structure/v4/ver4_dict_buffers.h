@@ -18,6 +18,7 @@
 #define LATINIME_VER4_DICT_BUFFER_H
 
 #include "defines.h"
+#include "suggest/policyimpl/dictionary/structure/v4/content/probability_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/single_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/content/sparse_table_dict_content.h"
 #include "suggest/policyimpl/dictionary/structure/v4/ver4_dict_constants.h"
@@ -42,8 +43,16 @@ class Ver4DictBuffers {
                 && mShortcutDictContent.isValid();
     }
 
-    AK_FORCE_INLINE const uint8_t *getRawDictBuffer() const {
+    AK_FORCE_INLINE uint8_t *getRawDictBuffer() const {
         return mDictBuffer.get()->getBuffer();
+    }
+
+    AK_FORCE_INLINE int getRawDictBufferSize() const {
+        return mDictBuffer.get()->getBufferSize();
+    }
+
+    AK_FORCE_INLINE const ProbabilityDictContent *getProbabilityDictContent() const {
+        return &mProbabilityDictContent;
     }
 
  private:
@@ -54,8 +63,7 @@ class Ver4DictBuffers {
             : mDictBuffer(dictBuffer),
               mTerminalAddressTable(dictDirPath,
                       Ver4DictConstants::TERMINAL_ADDRESS_TABLE_FILE_EXTENSION, isUpdatable),
-              mProbabilityDictContent(dictDirPath, Ver4DictConstants::FREQ_FILE_EXTENSION,
-                      isUpdatable),
+              mProbabilityDictContent(dictDirPath, isUpdatable),
               mBigramDictContent(dictDirPath,
                       Ver4DictConstants::BIGRAM_LOOKUP_TABLE_FILE_EXTENSION,
                       Ver4DictConstants::BIGRAM_CONTENT_TABLE_FILE_EXTENSION,
@@ -67,7 +75,7 @@ class Ver4DictBuffers {
 
     const MmappedBuffer::MmappedBufferPtr mDictBuffer;
     SingleDictContent mTerminalAddressTable;
-    SingleDictContent mProbabilityDictContent;
+    ProbabilityDictContent mProbabilityDictContent;
     SparseTableDictContent mBigramDictContent;
     SparseTableDictContent mShortcutDictContent;
 };
