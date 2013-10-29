@@ -3276,6 +3276,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final Printer p = new PrintWriterPrinter(fout);
         p.println("LatinIME state :");
+        p.println("  VersionCode = " + ApplicationUtils.getVersionCode(this));
+        p.println("  VersionName = " + ApplicationUtils.getVersionName(this));
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
