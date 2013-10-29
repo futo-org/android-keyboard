@@ -33,6 +33,7 @@ import java.util.LinkedList;
  * be searched for suggestions and valid words.
  */
 // TODO: Remove after binary dictionary supports dynamic update.
+@UsedForTesting
 public class ExpandableDictionary extends Dictionary {
     private static final String TAG = ExpandableDictionary.class.getSimpleName();
     /**
@@ -146,6 +147,7 @@ public class ExpandableDictionary extends Dictionary {
 
     private int[][] mCodes;
 
+    @UsedForTesting
     public ExpandableDictionary(final String dictType) {
         super(dictType);
         clearDictionary();
@@ -164,6 +166,7 @@ public class ExpandableDictionary extends Dictionary {
      * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
      *   if shortcutTarget is null.
      */
+    @UsedForTesting
     public void addWord(final String word, final String shortcutTarget, final int frequency,
             final int shortcutFreq) {
         if (word.length() >= Constants.DICTIONARY_MAX_WORD_LENGTH) {
