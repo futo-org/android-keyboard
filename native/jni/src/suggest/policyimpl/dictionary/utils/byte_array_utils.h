@@ -114,6 +114,24 @@ class ByteArrayUtils {
         return buffer[(*pos)++];
     }
 
+    static AK_FORCE_INLINE int readUintAndAdvancePosition(const uint8_t *const buffer,
+            const int size, int *const pos) {
+        // size must be in 1 to 4.
+        ASSERT(size >= 1 && size <= 4);
+        switch (size) {
+            case 1:
+                return ByteArrayUtils::readUint8AndAdvancePosition(buffer, pos);
+            case 2:
+                return ByteArrayUtils::readUint16AndAdvancePosition(buffer, pos);
+            case 3:
+                return ByteArrayUtils::readUint24AndAdvancePosition(buffer, pos);
+            case 4:
+                return ByteArrayUtils::readUint32AndAdvancePosition(buffer, pos);
+            default:
+                return 0;
+        }
+    }
+
     /**
      * Code Point Reading
      *
