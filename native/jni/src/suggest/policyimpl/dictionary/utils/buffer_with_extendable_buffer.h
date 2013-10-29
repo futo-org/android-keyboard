@@ -71,6 +71,8 @@ class BufferWithExtendableBuffer {
         }
     }
 
+    uint32_t readUintAndAdvancePosition(const int size, int *const pos) const;
+
     AK_FORCE_INLINE int getOriginalBufferSize() const {
         return mOriginalBufferSize;
     }

@@ -23,6 +23,20 @@ const int BufferWithExtendableBuffer::NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE = 9
 // TODO: Needs to allocate larger memory corresponding to the current vector size.
 const size_t BufferWithExtendableBuffer::EXTEND_ADDITIONAL_BUFFER_SIZE_STEP = 128 * 1024;
 
+uint32_t BufferWithExtendableBuffer::readUintAndAdvancePosition(const int size,
+        int *const pos) const {
+    const bool readingPosIsInAdditionalBuffer = isInAdditionalBuffer(*pos);
+    if (readingPosIsInAdditionalBuffer) {
+        *pos -= mOriginalBufferSize;
+    }
+    const int value = ByteArrayUtils::readUintAndAdvancePosition(
+            getBuffer(readingPosIsInAdditionalBuffer), size, pos);
+    if (readingPosIsInAdditionalBuffer) {
+        *pos += mOriginalBufferSize;
+    }
+    return value;
+}
+
 bool BufferWithExtendableBuffer::writeUintAndAdvancePosition(const uint32_t data, const int size,
         int *const pos) {
     if (!(size >= 1 && size <= 4)) {
