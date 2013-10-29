@@ -70,6 +70,7 @@ public final class UserHistoryDictIOUtils {
     /**
      * Writes dictionary to file.
      */
+    @UsedForTesting
     public static void writeDictionary(final DictEncoder dictEncoder,
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
             final FormatOptions formatOptions) {
