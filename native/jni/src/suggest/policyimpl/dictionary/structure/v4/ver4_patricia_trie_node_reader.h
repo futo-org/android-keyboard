@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H
-#define LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H
+#ifndef LATINIME_VER4_PATRICIA_TRIE_NODE_READER_H
+#define LATINIME_VER4_PATRICIA_TRIE_NODE_READER_H
 
 #include <stdint.h>
 
@@ -26,22 +26,19 @@
 namespace latinime {
 
 class BufferWithExtendableBuffer;
-class DictionaryBigramsStructurePolicy;
-class DictionaryShortcutsStructurePolicy;
+class ProbabilityDictContent;
 
 /*
- * This class is used for helping to read nodes of dynamic patricia trie. This class handles moved
- * node and reads node attributes.
+ * This class is used for helping to read nodes of ver4 patricia trie. This class handles moved
+ * node and reads node attributes including probability form probabilityBuffer.
  */
-class DynamicPatriciaTrieNodeReader : public PtNodeReader {
+class Ver4PatriciaTrieNodeReader : public PtNodeReader {
  public:
-    DynamicPatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
-            const DictionaryBigramsStructurePolicy *const bigramsPolicy,
-            const DictionaryShortcutsStructurePolicy *const shortcutsPolicy)
-            : mBuffer(buffer), mBigramsPolicy(bigramsPolicy),
-              mShortcutsPolicy(shortcutsPolicy) {}
+    Ver4PatriciaTrieNodeReader(const BufferWithExtendableBuffer *const buffer,
+            const ProbabilityDictContent *const probabilityDictContent)
+            : mBuffer(buffer), mProbabilityDictContent(probabilityDictContent) {}
 
-    ~DynamicPatriciaTrieNodeReader() {}
+    ~Ver4PatriciaTrieNodeReader() {}
 
     virtual const PtNodeParams fetchNodeInfoInBufferFromPtNodePos(const int ptNodePos) const {
         return fetchPtNodeInfoFromBufferAndProcessMovedPtNode(ptNodePos,
@@ -49,14 +46,13 @@ class DynamicPatriciaTrieNodeReader : public PtNodeReader {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(DynamicPatriciaTrieNodeReader);
+    DISALLOW_COPY_AND_ASSIGN(Ver4PatriciaTrieNodeReader);
 
     const BufferWithExtendableBuffer *const mBuffer;
-    const DictionaryBigramsStructurePolicy *const mBigramsPolicy;
-    const DictionaryShortcutsStructurePolicy *const mShortcutsPolicy;
+    const ProbabilityDictContent *const mProbabilityDictContent;
 
     const PtNodeParams fetchPtNodeInfoFromBufferAndProcessMovedPtNode(const int ptNodePos,
             const int siblingNodePos, const int bigramLinkedNodePos) const;
 };
 } // namespace latinime
-#endif /* LATINIME_DYNAMIC_PATRICIA_TRIE_NODE_READER_H */
+#endif /* LATINIME_VER4_PATRICIA_TRIE_NODE_READER_H */

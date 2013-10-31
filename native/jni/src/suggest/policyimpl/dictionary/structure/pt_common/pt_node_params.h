@@ -32,7 +32,7 @@ class PtNodeParams {
     // Invalid PtNode.
     PtNodeParams() : mHeadPos(NOT_A_DICT_POS), mFlags(0), mParentPos(NOT_A_DICT_POS),
             mCodePointCount(0), mCodePoints(), mTerminalIdFieldPos(NOT_A_DICT_POS),
-            mTerminalId(Ver4DictConstants::NOT_A_TERMINAL), mProbabilityFieldPos(NOT_A_DICT_POS),
+            mTerminalId(Ver4DictConstants::NOT_A_TERMINAL_ID), mProbabilityFieldPos(NOT_A_DICT_POS),
             mProbability(NOT_A_PROBABILITY), mChildrenPosFieldPos(NOT_A_DICT_POS),
             mChildrenPos(NOT_A_DICT_POS), mBigramLinkedNodePos(NOT_A_DICT_POS),
             mShortcutPos(NOT_A_DICT_POS), mBigramPos(NOT_A_DICT_POS),
@@ -53,6 +53,7 @@ class PtNodeParams {
         memcpy(mCodePoints, ptNodeParams.getCodePoints(), sizeof(int) * mCodePointCount);
     }
 
+    // PtNode without terminal id.
     PtNodeParams(const int headPos, const PatriciaTrieReadingUtils::NodeFlags flags,
             const int parentPos, const int codePointCount, const int *const codePoints,
             const int probabilityFieldPos, const int probability, const int childrenPosFieldPos,
@@ -60,11 +61,28 @@ class PtNodeParams {
             const int bigramPos, const int siblingPos)
             : mHeadPos(headPos), mFlags(flags), mParentPos(parentPos),
               mCodePointCount(codePointCount), mCodePoints(),
-              mTerminalIdFieldPos(NOT_A_DICT_POS), mTerminalId(Ver4DictConstants::NOT_A_TERMINAL),
+              mTerminalIdFieldPos(NOT_A_DICT_POS),
+              mTerminalId(Ver4DictConstants::NOT_A_TERMINAL_ID),
               mProbabilityFieldPos(probabilityFieldPos), mProbability(probability),
               mChildrenPosFieldPos(childrenPosFieldPos), mChildrenPos(childrenPos),
               mBigramLinkedNodePos(bigramLinkedNodePos), mShortcutPos(shortcutPos),
               mBigramPos(bigramPos), mSiblingPos(siblingPos) {
+        memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
+    }
+
+    // PtNode with a terminal id.
+    PtNodeParams(const int headPos, const PatriciaTrieReadingUtils::NodeFlags flags,
+            const int parentPos, const int codePointCount, const int *const codePoints,
+            const int terminalIdFieldPos, const int terminalId, const int probability,
+            const int childrenPosFieldPos, const int childrenPos, const int bigramLinkedNodePos,
+            const int siblingPos)
+            : mHeadPos(headPos), mFlags(flags), mParentPos(parentPos),
+              mCodePointCount(codePointCount), mCodePoints(),
+              mTerminalIdFieldPos(terminalIdFieldPos), mTerminalId(terminalId),
+              mProbabilityFieldPos(NOT_A_DICT_POS), mProbability(probability),
+              mChildrenPosFieldPos(childrenPosFieldPos), mChildrenPos(childrenPos),
+              mBigramLinkedNodePos(bigramLinkedNodePos), mShortcutPos(terminalId),
+              mBigramPos(terminalId), mSiblingPos(siblingPos) {
         memcpy(mCodePoints, codePoints, sizeof(int) * mCodePointCount);
     }
 
